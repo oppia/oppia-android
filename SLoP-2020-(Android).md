@@ -1,0 +1,41 @@
+**_Note: For details about the programme have a look at [Oppia-SLoP](https://github.com/oppia/oppia/wiki/SLoP-2020)._**
+
+# Instructions for students
+### How do I get started?
+1. Register as a student on the SLoP [website](https://slop.dscdaiict.in/).
+2. Follow the instructions on the [Getting Started page](https://github.com/oppia/oppia-android/wiki). **Please note, when filling up the contributor survey please indicate that you are taking part in SLoP.**
+3. Once you have submitted the CLA and New Contributor Survey, you will be contacted by your on-boarding mentor (mostly within 24 hours) who will help you make your first contributions to Oppia-Android. But while you wait for the mentor to contact you, feel free to take a look at following resources:
+    - [Oppia-android codebase and architecture](https://github.com/oppia/oppia-android/wiki/Overview-of-the-Oppia-Android-codebase-and-architecture)
+    - [Guidance on submitting PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR)
+    - [Oppia-Android testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing)
+    - [Working on UI](https://github.com/oppia/oppia-android/wiki/Working-on-UI)
+    - You can also have a look at the issues with the following labels: ”good first issue”, “good second issue”, “SLoP 2020” android to pick an issue that suits your skills and interests. 
+4. Your onboarding mentor will suggest starter issues for you to work on. These issues will have score labels of the form “**DSC <number> point**”.
+5. If you would like to take up issues that are not part of above labels or do not have a score label, please contact your onboarding mentor and request for the score for the issue. Your mentor will assign a score to the issue and communicate the same to the org admins. The org admins will then add the relevant label to the issue.
+
+### Expectations from students
+1. Look for issues which are not assigned to anyone and comment on the issue mentioning your mentor name that you would like to work on it. Once the mentor approves you can start working on it.
+2. Make sure that the issue that you are working on has a score assigned to it before you finish the PR for that issue.
+3. Keep in touch with your mentor and give updates on regular time intervals. This can be something which you can figure out with your mentor. It's a good practice to communicate to your mentor atleast once a week.
+4. Your PRs should get reviewed by your mentor within 24 hours but if for some reason the mentor is not reachable for more than 24 hours then assign your PRs to Rajat (@rt4914) for review. **NOTE: wait for atleast 24 hours to get a reply from a mentor.**
+5. In case of any doubts or issues you should immediately talk to your mentor.
+
+# Instructions for mentors
+
+### Who are the mentors?
+For initial 2 PRs default mentors will be Ben and Rajat.
+After 2 PRs tentative mentor list: Akshay, Mohamed, Pulkit, Sarthak
+
+### Expectations
+1. Please review assigned PRs within a 24 hr period.
+    - If you cannot review in that time frame, due to a one-off problem, please communicate the same in the PR thread and mention when you     
+    - would be able to review the PR.
+If you cannot review PRs in a 24 hr time frame for an extended period, consider temporarily assigning code-ownership to another experienced contributor.
+2. If a student shows no activity for an assigned issue for >1 week, de-assign them so that other contributors get a chance to work on the issue.
+3. Project leads may need to score project specific issues if a student requests to work on them (see “Scoring”).
+4. Mentors are encouraged to have check-ins with their students on a weekly basis to make sure the students aren't stuck and are having a positive experience.
+5. The level of mentoring is expected to be slightly higher than that of hacktoberfest and dealing with new contributors but less than that of GSoC.
+Please note: Apart from the standard “24 hr review” rule, there is no formal time commitment for a mentor.
+
+### Escalation Policy
+If there are any SLoP-related doubts / concerns, please reach out to the org admins (@kevintab95, @rt4914, @BenHenning).
