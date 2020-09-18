@@ -59,12 +59,12 @@
       app:layout_constraintStart_toEndOf="@+id/ivPlayPauseAudio"
       app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <ImageView
       android:id="@+id/tvAudioLanguage"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:fontFamily="sans-serif-medium"
       android:gravity="center"
+      android:src="@drawable/ic_audio_lang_24px"
       android:minWidth="48dp"
       android:minHeight="48dp"
       android:onClick="@{(v) -> audioFragment.languageSelectionClicked()}"
@@ -72,10 +72,9 @@
       android:paddingTop="16dp"
       android:paddingEnd="16dp"
       android:paddingBottom="16dp"
-      android:text="@{viewModel.currentLanguageCode}"
+      android:contentDescription="@{viewModel.currentLanguageCode}"
       android:textAllCaps="true"
       android:textColor="@color/white"
-      android:textSize="14sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
