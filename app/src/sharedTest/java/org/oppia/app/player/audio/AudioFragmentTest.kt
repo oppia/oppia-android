@@ -147,7 +147,7 @@ class AudioFragmentTest {
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
+      onView(withId(R.id.tvAudioLanguage)).check(matches(withContentDescription("EN")))
     }
   }
 
@@ -160,7 +160,7 @@ class AudioFragmentTest {
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_HINDI
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("HI")))
+      onView(withId(R.id.tvAudioLanguage)).check(matches(withContentDescription("HI")))
     }
   }
 
@@ -171,7 +171,7 @@ class AudioFragmentTest {
         PROFILE_ID_INVALID_AUDIO_LANGUAGE
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
+      onView(withId(R.id.tvAudioLanguage)).check(matches(withContentDescription("EN")))
     }
   }
 
