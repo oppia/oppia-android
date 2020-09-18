@@ -15,7 +15,7 @@
 
 # Combine all arguments into a single whitelist variable for simplicity. See:
 # https://unix.stackexchange.com/a/197794.
-test_whitelist="'$*'"
+test_whitelist="$*"
 
 echo "Using Android Home: $ANDROID_HOME"
 echo "Running emulator tests using test whitelist: $test_whitelist"
