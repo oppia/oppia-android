@@ -47,8 +47,13 @@ for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
   # https://stackoverflow.com/a/3162500.
   test_name=${qualified_test_name##*.}
 
-  # Check if this test is in the whitelist. See: https://stackoverflow.com/a/20473191.
-  if [[ $test_whitelist =~ (^|[[:space:]])"$qualified_test_name"($|[[:space:]]) ]] ; then
+  # Check if this test is in the whitelist. Note that a regex approach (like
+  # https://stackoverflow.com/a/20473191) can't be used due to a potential bug in Regex matching on
+  # OSX (see https://stackoverflow.com/q/50884800). Instead, wildcards are more reliable:
+  # https://linuxize.com/post/how-to-check-if-string-contains-substring-in-bash/. Note that wildcard
+  # matching works because qualified test names are guaranteed to be unique in this setting since
+  # they're derived from the directory structure.
+  if [[ "$test_whitelist" == *"$qualified_test_name"* ]] ; then
     # If it's in the whitelist, start execution.
     echo "Running $test_name"
 
