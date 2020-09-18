@@ -118,7 +118,8 @@ for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
       video_file_name="${file##*/}"
       # https://stackoverflow.com/a/3915075.
       adb pull $file "$scratch_directory/$video_file_name"
-      local_video_file_path=$(realpath "$scratch_directory/$video_file_name")
+      # See https://stackoverflow.com/a/3572105 for the realpath alternative used here for OSX.
+      local_video_file_path="$PWD/${scratch_directory#./}/$video_file_name"
       echo "file '$local_video_file_path'" >> $scratch_directory/video_list.txt
     done <<< "$files_to_combine"
 
