@@ -14,7 +14,164 @@ on:
 # linters: Kotlin and Protobuf Linting
 # robolectric_tests: Robolectric tests for all modules except the app module
 # app_tests: Non-flaky Robolectric tests for the app module
+# bazel_build_app: Build & upload the app binary to verify Bazel builds still work
+# app_emulator_tests: Run whitelisted app module Espresso tests using an emulator
 jobs:
+  linters:
+    name: Lint Tests
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Ktlint
+        run: |
+          KTLINT="0.37.0"
+          echo Using Ktlint $KTLINT
+          curl -sSLO https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
+          chmod a+x ktlint
+
+      -  name: Download buf
+         run: |
+           BUFVERSION="v0.15.0"
+           echo Using Bufbuild version $BUFVERSION
+           curl -sSL https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m) > buf
+           chmod a+x buf
+
+      - name: Kotlin lint check
+        run: ./ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt && echo "Lint completed successfully"
+
+      -  name: Protobuf lint check
+         run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
+
+  robolectric_tests:
+    name: Robolectric Tests (Non-App Modules)
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}
+
+      - name: Set up JDK 1.9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.9
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: ./gradlew androidDependencies
+
+      - name: Build App
+        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
+        run: sudo ./gradlew assembleDebug
+
+      - name: Utility tests
+        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
+        run:  sudo ./gradlew :utility:testDebugUnitTest
+      - name: Upload Utility Test Reports
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        with:
+          name: utility reports
+          path: utility/build/reports
+
+      - name: Domain tests
+        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
+        run:  sudo ./gradlew :domain:testDebugUnitTest
+      - name: Upload Domain Test Reports
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        with:
+          name: domain reports
+          path: domain/build/reports
+
+      - name: Testing tests
+        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
+        run:  sudo ./gradlew :testing:testDebugUnitTest
+      - name: Upload Testing Test Reports
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        with:
+          name: testing reports
+          path: testing/build/reports
+
+  app_tests:
+    name: Robolectric Tests - App Module (Non-Flaky)
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}
+
+      - name: Set up JDK 1.9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.9
+
+      - name: Robolectric tests - App Module
+        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
+        run: |
+          sudo ./gradlew :app:testDebugUnitTest
+      - name: Upload App Test Reports
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        with:
+          name: app reports
+          path: app/build/reports
+
+  bazel_build_app:
+    name: Build Binary with Bazel
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up bazel
+        uses: jwlawson/actions-setup-bazel@v1
+        with:
+          bazel-version: '3.4.1'
+      - name: Clone Oppia Bazel
+        run: git clone https://github.com/oppia/bazel.git $HOME/oppia-bazel
+      - name: Set up JDK 9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 9
+      - name: Extract Android Tools
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/tmp/android_tools
+          cd $HOME/oppia-bazel
+          unzip bazel-tools.zip
+          tar -xf $HOME/oppia-bazel/android_tools.tar.gz -C $GITHUB_WORKSPACE/tmp/android_tools
+      - name: Unzip Bazel Binary and Build Oppia
+        run: |
+          cd $HOME/oppia-bazel
+          unzip bazel-build.zip
+          cd $GITHUB_WORKSPACE
+          chmod a+x $HOME/oppia-bazel/bazel
+          $HOME/oppia-bazel/bazel build //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
+          cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
+      - uses: actions/upload-artifact@v2
+        with:
+          name: oppia-bazel-apk
+          path: /home/runner/work/oppia-android/oppia-android/oppia.apk
+      - uses: actions/checkout@v2
+
   app_emulator_tests:
     name: Espresso Emulator Tests - App Module (Non-Flaky)
     runs-on: macos-10.15
@@ -44,14 +201,10 @@ jobs:
       - name: Set up platform tools
         run: sdkmanager platform-tools
 
-      #- name: Debug run emulator tests directly
-      #  run: scripts/run_emulator_tests.sh
-
-      #- name: Set up Android SDK tools
-      #  uses: android-actions/setup-android@v2.0.1
-
       - name: Run emulator tests
         uses: ReactiveCircus/android-emulator-runner@v2.11.0
+        env:
+          TEST_WHITELIST: org.oppia.app.splash.SplashActivityTest
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
@@ -60,11 +213,10 @@ jobs:
           # Note that 'sudo' is not run here since it will drop necessary
           # environmental variables that were overwritten above to ensure
           # correct access to the Android SDK & home directories.
-          script: export TEST_WHITELIST="org.oppia.app.splash.SplashActivityTest"; ./scripts/run_emulator_tests.sh
+          script: ./scripts/run_emulator_tests.sh $TEST_WHITELIST
 
       # Upload all test results to GitHub (including detailed reports and videos, if any).
       - uses: actions/upload-artifact@v2
         with:
           name: emulator-test-output
           path: emulator_test_output/
-

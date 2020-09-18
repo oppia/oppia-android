@@ -1,13 +1,13 @@
 #!/bin/bash
 #
-# Runs all whitelisted Espresso-enabled tests, relying on the environmental variable TEST_WHITELIST
-# to be defined (where the variable is a string with space-separated fully qualified test suite
-# names that should be run). This script will run each test in sequence, noisily skipping ignored
-# tests, and save both output logs and a video recording of the test.
+# Runs all whitelisted Espresso-enabled tests, relying on an argument to be provided where the
+# string is a string with space-separated fully qualified test suite names that should be run. This
+# script will run each test in sequence, noisily skipping ignored tests, and save both output logs
+# and a video recording of the test.
 #
 # While this script is meant for Continuous Integration use, it can also be used locally for a
 # specific test like so:
-#   TEST_WHITELIST="org.oppia.app.splash.SplashActivityTest" bash ./scripts/run_emulator_tests.sh
+#   bash ./scripts/run_emulator_tests.sh "org.oppia.app.splash.SplashActivityTest other.test..."
 #
 # As the name implies, this is intended to be used with an emulator. However, it may also work with
 # a real device as it just relies on ADB. The script does not expose a way to select which ADB
@@ -18,15 +18,15 @@ echo "Building all instrumentation tests (debug)"
 ./gradlew --full-stacktrace :app:compileDebugAndroidTestJavaWithJavac
 
 # Establish directory for emulator test artifacts.
-EMULATOR_TESTS_DIRECTORY=./emulator_test_output
-mkdir -pv $EMULATOR_TESTS_DIRECTORY
+emulator_tests_directory=./emulator_test_output
+mkdir -pv $emulator_tests_directory
 
 test_suite_status=0
 
 # Iterate over all tests that are compatible with running on an emulator. Reference:
 # https://stackoverflow.com/a/5247919. Note that the Bash 4.0 globstar option isn't used here since
 # the OSX version running on GitHub actions does not support this setting.
-echo "Running emulator tests using test whitelist: $TEST_WHITELIST"
+echo "Running emulator tests using test whitelist: $test_whitelist"
 for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
   # First, remove the shared test directory reference. See: https://stackoverflow.com/a/10987027.
   stripped_file_name="${file_name#app/src/sharedTest/java/}"
@@ -45,11 +45,11 @@ for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
   test_name=${qualified_test_name##*.}
 
   # Check if this test is in the whitelist. See: https://stackoverflow.com/a/20473191.
-  if [[ $TEST_WHITELIST =~ (^|[[:space:]])"$qualified_test_name"($|[[:space:]]) ]] ; then
+  if [[ $test_whitelist =~ (^|[[:space:]])"$qualified_test_name"($|[[:space:]]) ]] ; then
     # If it's in the whitelist, start execution.
     echo "Running $test_name"
 
-    scratch_directory=$EMULATOR_TESTS_DIRECTORY/scratch
+    scratch_directory=$emulator_tests_directory/scratch
     mkdir -p $scratch_directory
 
     # Ensure any previous video recordings are removed, including scratch work.
@@ -120,24 +120,24 @@ for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
     done <<< "$files_to_combine"
 
     # Make sure the final combined file doesn't currently exist.
-    rm "$EMULATOR_TESTS_DIRECTORY/$test_directory_name/$test_name.mp4" &> /dev/null
+    rm "$emulator_tests_directory/$test_directory_name/$test_name.mp4" &> /dev/null
 
-    mkdir -pv "$EMULATOR_TESTS_DIRECTORY/$test_directory_name"
+    mkdir -pv "$emulator_tests_directory/$test_directory_name"
 
     # https://stackoverflow.com/a/11175851 for how the video concatenation works.
     # https://superuser.com/a/1363938 for quieting ffmpeg.
     ffmpeg -v quiet -f concat -safe 0 -i $scratch_directory/video_list.txt -c copy $scratch_directory/combined.mp4
     # Per https://trac.ffmpeg.org/wiki/ChangingFrameRate, change frame rate to 3 to reduce file
     # size.
-    ffmpeg -v quiet -i $scratch_directory/combined.mp4 -filter:v fps=fps=3 "$EMULATOR_TESTS_DIRECTORY/$test_directory_name/$test_name.mp4"
+    ffmpeg -v quiet -i $scratch_directory/combined.mp4 -filter:v fps=fps=3 "$emulator_tests_directory/$test_directory_name/$test_name.mp4"
 
     # Scratch directory cleanup.
     rm -r $scratch_directory &> /dev/null
 
     # Record artifacts to upload: an overview index of tests run for this test suite, and the
     # specific suite's results.
-    cp app/build/reports/androidTests/connected/index.html "$EMULATOR_TESTS_DIRECTORY/$test_directory_name/"
-    cp "app/build/reports/androidTests/connected/$qualified_test_name.html" "$EMULATOR_TESTS_DIRECTORY/$test_directory_name/"
+    cp app/build/reports/androidTests/connected/index.html "$emulator_tests_directory/$test_directory_name/"
+    cp "app/build/reports/androidTests/connected/$qualified_test_name.html" "$emulator_tests_directory/$test_directory_name/"
 
     if [ $test_result -ne 0 ]; then
       # If any tests fail, make sure the overall test suite fails.
