@@ -44,8 +44,8 @@ jobs:
       - name: Kotlin lint check
         run: ./ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt && echo "Lint completed successfully"
 
-      -  name: Protobuf lint check
-         run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
+      - name: Protobuf lint check
+        run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
 
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
@@ -101,7 +101,7 @@ jobs:
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
         with:
-          name: testing reports
+          name: non-app-robolectric-reports
           path: testing/build/reports
 
   app_tests:
@@ -131,7 +131,7 @@ jobs:
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
         with:
-          name: app reports
+          name: app-robolectric-reports
           path: app/build/reports
 
   bazel_build_app:
@@ -170,7 +170,6 @@ jobs:
         with:
           name: oppia-bazel-apk
           path: /home/runner/work/oppia-android/oppia-android/oppia.apk
-      - uses: actions/checkout@v2
 
   app_emulator_tests:
     name: Espresso Emulator Tests - App Module (Non-Flaky)
@@ -224,6 +223,7 @@ jobs:
 
       # Upload all test results to GitHub (including detailed reports and videos, if any).
       - uses: actions/upload-artifact@v2
+        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
         with:
           name: emulator-test-output
           path: emulator_test_output/
