@@ -175,6 +175,8 @@ jobs:
   app_emulator_tests:
     name: Espresso Emulator Tests - App Module (Non-Flaky)
     runs-on: macos-10.15
+    env:
+      TEST_WHITELIST: org.oppia.app.splash.SplashActivityTest
     strategy:
       matrix:
         api-level: [29]
@@ -182,6 +184,15 @@ jobs:
         profile: [Nexus 6]
         #profile: [Pixel XL]
     steps:
+      - name: Test env variable
+        run: echo ${TEST_WHITELIST}
+
+      - name: Test env variable 2
+        run: echo "Test whitelist ${TEST_WHITELIST}"
+
+      - name: Test env variable 3
+        run: echo $TEST_WHITELIST
+
       - uses: actions/checkout@v2
 
       - uses: actions/cache@v2
@@ -203,8 +214,6 @@ jobs:
 
       - name: Run emulator tests
         uses: ReactiveCircus/android-emulator-runner@v2.11.0
-        env:
-          TEST_WHITELIST: org.oppia.app.splash.SplashActivityTest
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
@@ -213,7 +222,7 @@ jobs:
           # Note that 'sudo' is not run here since it will drop necessary
           # environmental variables that were overwritten above to ensure
           # correct access to the Android SDK & home directories.
-          script: ./scripts/run_emulator_tests.sh $TEST_WHITELIST
+          script: ./scripts/run_emulator_tests.sh ${TEST_WHITELIST}
 
       # Upload all test results to GitHub (including detailed reports and videos, if any).
       - uses: actions/upload-artifact@v2
