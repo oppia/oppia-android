@@ -59,7 +59,6 @@ import org.oppia.app.application.ApplicationModule
 import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.options.OptionsActivity
-import org.oppia.app.player.state.StateFragmentTest
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.testing.ExplorationInjectionActivity
@@ -733,7 +732,7 @@ class ExplorationActivityTest {
       val dataSource = createAudioDataSource(
         explorationId = RATIOS_EXPLORATION_ID_0, audioFileName = "content-en-057j51i2es.mp3"
       )
-      addShadowMediaPlayerException(dataSource, IOException("Test does not have networking"))
+      addShadowMediaPlayerException(dataSource!!, IOException("Test does not have networking"))
     }
   }
 
@@ -747,13 +746,13 @@ class ExplorationActivityTest {
       val dataSource2 = createAudioDataSource(
         explorationId = FRACTIONS_EXPLORATION_ID_0, audioFileName = "content-hi-en-l8ik9pdxj2a.mp3"
       )
-      addShadowMediaPlayerException(dataSource, IOException("Test does not have networking"))
-      addShadowMediaPlayerException(dataSource2, IOException("Test does not have networking"))
+      addShadowMediaPlayerException(dataSource!!, IOException("Test does not have networking"))
+      addShadowMediaPlayerException(dataSource2!!, IOException("Test does not have networking"))
     }
   }
 
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
-    val classLoader = StateFragmentTest::class.java.classLoader!!
+    val classLoader = ExplorationActivityTest::class.java.classLoader!!
     val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
     val addException =
       shadowMediaPlayerClass.getDeclaredMethod(
@@ -763,14 +762,13 @@ class ExplorationActivityTest {
   }
 
   private fun isOnRobolectric(): Boolean {
-    return ApplicationProvider.getApplicationContext<ExplorationActivityTest.TestApplication>()
-      .isOnRobolectric()
+    return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
   }
 
   @Suppress("SameParameterValue")
-  private fun createAudioDataSource(explorationId: String, audioFileName: String): Any {
+  private fun createAudioDataSource(explorationId: String, audioFileName: String): Any? {
     val audioUrl = createAudioUrl(explorationId, audioFileName)
-    val classLoader = StateFragmentTest::class.java.classLoader!!
+    val classLoader = ExplorationActivityTest::class.java.classLoader!!
     val dataSourceClass = classLoader.loadClass("org.robolectric.shadows.util.DataSource")
     val toDataSource =
       dataSourceClass.getDeclaredMethod(
