@@ -1,0 +1,57 @@
+package org.oppia.app.customview
+
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.DashPathEffect
+import android.graphics.Paint
+import android.graphics.Path
+import android.util.AttributeSet
+import android.view.View
+import androidx.annotation.Nullable
+
+class VerticalDashedLine : View {
+
+  private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+  private val path: Path = Path()
+
+  constructor(context: Context?) : super(context) {
+    init()
+  }
+
+  constructor(context: Context?, @Nullable attrs: AttributeSet?) : super(context, attrs) {
+    init()
+  }
+
+  constructor(context: Context?, @Nullable attrs: AttributeSet?, defStyleAttr: Int) : super(
+    context,
+    attrs,
+    defStyleAttr
+  ) {
+    init()
+  }
+
+  private fun init() {
+    paint.style = Paint.Style.STROKE
+    paint.strokeCap = Paint.Cap.ROUND
+    paint.strokeWidth = 10F
+    paint.color = Color.GRAY
+    paint.pathEffect = DashPathEffect(floatArrayOf(20f, 25f), 20F)
+  }
+
+  override fun onDraw(canvas: Canvas) {
+    super.onDraw(canvas)
+    path.reset()
+    path.moveTo((width / 2).toFloat(), 0F)
+    path.quadTo(
+      (width / 2).toFloat(), (height / 2).toFloat(),
+      (width / 2).toFloat(), height.toFloat()
+    )
+    canvas.drawPath(path, paint)
+  }
+
+//  fun setOrientation(orientation: Orientation) {
+//    this.orientation = orientation
+//    invalidate()
+//  }
+}

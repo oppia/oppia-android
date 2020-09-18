@@ -41,6 +41,13 @@
         android:layout_height="wrap_content"
         android:clipToPadding="true"
         android:contentDescription="@{viewModel.name}">
+        <org.oppia.app.customview.VerticalDashedLine
+          android:layout_width="5dp"
+          android:layout_height="match_parent"
+          android:paddingTop="20dp"
+          android:paddingBottom="20dp"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"/>
 
         <org.oppia.app.customview.LessonThumbnailImageView
           android:id="@+id/chapter_thumbnail"
