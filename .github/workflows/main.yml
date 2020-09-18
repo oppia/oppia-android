@@ -195,10 +195,16 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      - name: Test env variable 4
+        run: echo $TEST_WHITELIST
+
       - uses: actions/cache@v2
         with:
          path: ~/.gradle/caches
          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}
+
+      - name: Test env variable 5
+        run: echo $TEST_WHITELIST
 
       # Set up Java 8 since it's required for building binaries dependent on the Android SDK.
       - name: Set up JDK 1.8
@@ -206,14 +212,23 @@ jobs:
         with:
           java-version: 1.8
 
+      - name: Test env variable 6
+        run: echo $TEST_WHITELIST
+
       - name: Set up Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.0.7
+
+      - name: Test env variable 7
+        run: echo $TEST_WHITELIST
 
       - name: Set up platform tools
         run: sdkmanager platform-tools
 
+      - name: Test env variable 8
+        run: echo $TEST_WHITELIST
+
       - name: Export environment variable
-        run: export TEST_WHITELIST_CONFIG=${TEST_WHITELIST}
+        run: export TEST_WHITELIST_CONFIG=${TEST_WHITELIST} && echo "Test config here $TEST_WHITELIST_CONFIG"
 
       - name: Test env variable
         run: echo "Test exported variable $TEST_WHITELIST_CONFIG"
