@@ -68,15 +68,15 @@ jobs:
 
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: ./gradlew androidDependencies
+        run: ./gradlew --full-stacktrace androidDependencies
 
       - name: Build App
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-        run: sudo ./gradlew assembleDebug
+        run: sudo ./gradlew --full-stacktrace assembleDebug
 
       - name: Utility tests
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-        run:  sudo ./gradlew :utility:testDebugUnitTest
+        run:  sudo ./gradlew --full-stacktrace :utility:testDebugUnitTest
       - name: Upload Utility Test Reports
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
@@ -86,7 +86,7 @@ jobs:
 
       - name: Domain tests
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-        run:  sudo ./gradlew :domain:testDebugUnitTest
+        run:  sudo ./gradlew --full-stacktrace :domain:testDebugUnitTest
       - name: Upload Domain Test Reports
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
@@ -96,7 +96,7 @@ jobs:
 
       - name: Testing tests
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-        run:  sudo ./gradlew :testing:testDebugUnitTest
+        run:  sudo ./gradlew --full-stacktrace :testing:testDebugUnitTest
       - name: Upload Testing Test Reports
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
@@ -126,7 +126,7 @@ jobs:
       - name: Robolectric tests - App Module
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run: |
-          sudo ./gradlew :app:testDebugUnitTest
+          sudo ./gradlew --full-stacktrace :app:testDebugUnitTest
       - name: Upload App Test Reports
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
@@ -175,8 +175,6 @@ jobs:
   app_emulator_tests:
     name: Espresso Emulator Tests - App Module (Non-Flaky)
     runs-on: macos-10.15
-    env:
-      TEST_WHITELIST: org.oppia.app.splash.SplashActivityTest
     strategy:
       matrix:
         api-level: [29]
@@ -184,27 +182,12 @@ jobs:
         profile: [Nexus 6]
         #profile: [Pixel XL]
     steps:
-      - name: Test env variable
-        run: echo ${TEST_WHITELIST}
-
-      - name: Test env variable 2
-        run: echo "Test whitelist ${TEST_WHITELIST}"
-
-      - name: Test env variable 3
-        run: echo $TEST_WHITELIST
-
       - uses: actions/checkout@v2
-
-      - name: Test env variable 4
-        run: echo $TEST_WHITELIST
 
       - uses: actions/cache@v2
         with:
          path: ~/.gradle/caches
          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}
-
-      - name: Test env variable 5
-        run: echo $TEST_WHITELIST
 
       # Set up Java 8 since it's required for building binaries dependent on the Android SDK.
       - name: Set up JDK 1.8
@@ -212,26 +195,14 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Test env variable 6
-        run: echo $TEST_WHITELIST
+      - name: Check ffmpeg
+        run: ffmpeg -version
 
       - name: Set up Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.0.7
 
-      - name: Test env variable 7
-        run: echo $TEST_WHITELIST
-
       - name: Set up platform tools
         run: sdkmanager platform-tools
-
-      - name: Test env variable 8
-        run: echo $TEST_WHITELIST
-
-      - name: Export environment variable
-        run: export TEST_WHITELIST_CONFIG=${TEST_WHITELIST} && echo "Test config here $TEST_WHITELIST_CONFIG"
-
-      - name: Test env variable
-        run: echo "Test exported variable $TEST_WHITELIST_CONFIG"
 
       - name: Run emulator tests
         uses: ReactiveCircus/android-emulator-runner@v2.11.0
@@ -243,8 +214,7 @@ jobs:
           # Note that 'sudo' is not run here since it will drop necessary
           # environmental variables that were overwritten above to ensure
           # correct access to the Android SDK & home directories.
-          # TODO: figure out how to make GitHub env variables work with android-emulator-runner
-          script: echo $TEST_WHITELIST_CONFIG; ./scripts/run_emulator_tests.sh $TEST_WHITELIST_CONFIG
+          script: ./scripts/run_emulator_tests.sh "org.oppia.app.splash.SplashActivityTest"
 
       # Upload all test results to GitHub (including detailed reports and videos, if any).
       - uses: actions/upload-artifact@v2
