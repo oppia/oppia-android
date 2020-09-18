@@ -216,7 +216,7 @@ jobs:
           # Note that 'sudo' is not run here since it will drop necessary
           # environmental variables that were overwritten above to ensure
           # correct access to the Android SDK & home directories.
-          script: ./scripts/run_emulator_tests.sh "org.oppia.app.splash.SplashActivityTest"
+          script: ./scripts/run_emulator_tests.sh "org.oppia.app.splash.SplashActivityTest org.oppia.app.player.state.StateFragmentTest"
 
       # Upload all test results to GitHub (including detailed reports and videos, if any).
       - uses: actions/upload-artifact@v2
