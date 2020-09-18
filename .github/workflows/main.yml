@@ -195,6 +195,12 @@ jobs:
         with:
           java-version: 1.8
 
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Install ffmpeg
+        run: brew install ffmpeg
+
       - name: Check ffmpeg
         run: ffmpeg -version
 
