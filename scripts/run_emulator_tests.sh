@@ -13,7 +13,11 @@
 # a real device as it just relies on ADB. The script does not expose a way to select which ADB
 # device to use, so if multiple devices are present then this script will not work.
 
+test_whilist="$1"
+
 echo "Using Android Home: $ANDROID_HOME"
+echo "Running emulator tests using test whitelist: $test_whitelist"
+
 echo "Building all instrumentation tests (debug)"
 ./gradlew --full-stacktrace :app:compileDebugAndroidTestJavaWithJavac
 
@@ -26,7 +30,6 @@ test_suite_status=0
 # Iterate over all tests that are compatible with running on an emulator. Reference:
 # https://stackoverflow.com/a/5247919. Note that the Bash 4.0 globstar option isn't used here since
 # the OSX version running on GitHub actions does not support this setting.
-echo "Running emulator tests using test whitelist: $test_whitelist"
 for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
   # First, remove the shared test directory reference. See: https://stackoverflow.com/a/10987027.
   stripped_file_name="${file_name#app/src/sharedTest/java/}"
