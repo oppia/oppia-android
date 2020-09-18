@@ -13,7 +13,7 @@
 # a real device as it just relies on ADB. The script does not expose a way to select which ADB
 # device to use, so if multiple devices are present then this script will not work.
 
-test_whilist="$1"
+test_whitelist="$1"
 
 echo "Using Android Home: $ANDROID_HOME"
 echo "Running emulator tests using test whitelist: $test_whitelist"
