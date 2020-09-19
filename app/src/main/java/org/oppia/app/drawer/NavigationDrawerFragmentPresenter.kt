@@ -235,8 +235,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
         NavigationDrawerItem.SWITCH_PROFILE -> {
           val isAdminSelected = getFooterViewModel().isAdministratorControlsSelected.get() ?: false
-          lastCheckedItem = binding.fragmentDrawerNavView.checkedItem
-          val id: Int = lastCheckedItem?.itemId ?: -1
+          val id: Int = if (!isAdminSelected) {
+            lastCheckedItem?.itemId ?: -1
+          } else {
+            -1
+          }
           val previousFragment =
             fragment.childFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
           if (previousFragment != null) {
@@ -268,8 +271,39 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   fun markLastCheckedItemCloseDrawer(lastCheckedItemId: Int, isAdminSelected: Boolean) {
     if (isAdminSelected) {
       getFooterViewModel().isAdministratorControlsSelected.set(true)
+      binding.fragmentDrawerNavView.menu.getItem(
+        NavigationDrawerItem.HOME.ordinal
+      ).isChecked = false
+      binding.fragmentDrawerNavView.menu.getItem(
+        NavigationDrawerItem.SWITCH_PROFILE.ordinal
+      ).isChecked = false
+      binding.fragmentDrawerNavView.menu.getItem(
+        NavigationDrawerItem.DOWNLOADS.ordinal
+      ).isChecked = false
+      binding.fragmentDrawerNavView.menu.getItem(
+        NavigationDrawerItem.HELP.ordinal
+      ).isChecked = false
+      binding.fragmentDrawerNavView.menu.getItem(
+        NavigationDrawerItem.OPTIONS.ordinal
+      ).isChecked = false
     } else {
-      if (lastCheckedItemId != -1) {
+      if (lastCheckedItemId == -1) {
+        binding.fragmentDrawerNavView.menu.getItem(
+          NavigationDrawerItem.HOME.ordinal
+        ).isChecked = false
+        binding.fragmentDrawerNavView.menu.getItem(
+          NavigationDrawerItem.SWITCH_PROFILE.ordinal
+        ).isChecked = false
+        binding.fragmentDrawerNavView.menu.getItem(
+          NavigationDrawerItem.DOWNLOADS.ordinal
+        ).isChecked = false
+        binding.fragmentDrawerNavView.menu.getItem(
+          NavigationDrawerItem.HELP.ordinal
+        ).isChecked = false
+        binding.fragmentDrawerNavView.menu.getItem(
+          NavigationDrawerItem.OPTIONS.ordinal
+        ).isChecked = false
+      } else {
         binding.fragmentDrawerNavView.menu.getItem(
           when (lastCheckedItemId) {
             NavigationDrawerItem.HOME.value -> 0
@@ -280,6 +314,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             else -> 0
           }
         ).isChecked = true
+        if (lastCheckedItemId == NavigationDrawerItem.SWITCH_PROFILE.value) {
+          binding.fragmentDrawerNavView.menu.getItem(
+            NavigationDrawerItem.SWITCH_PROFILE.ordinal
+          ).isChecked = false
+        }
       }
     }
     drawerLayout.closeDrawers()
@@ -376,9 +415,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         R.string.drawer_close_content_description
       ) {
         override fun onDrawerOpened(drawerView: View) {
-          binding.fragmentDrawerNavView.menu.getItem(
-            NavigationDrawerItem.SWITCH_PROFILE.ordinal
-          ).isChecked = false
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
@@ -421,6 +457,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
+    lastCheckedItem = binding.fragmentDrawerNavView.checkedItem
     openActivityByMenuItemId(menuItem.itemId)
     return true
   }

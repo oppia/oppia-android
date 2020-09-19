@@ -72,11 +72,11 @@ class ExitProfileDialogFragment : DialogFragment() {
       .setMessage(R.string.home_activity_back_dialog_message)
       .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
         if (isFromNavigationDrawer) {
-//          exitProfileDialogInterface.markLastCheckedItemCloseDrawer(
-//            lastCheckedItemId,
-//            isAdminSelected
-//          )
-//          exitProfileDialogInterface.unmarkSwitchProfileItemCloseDrawer()
+          exitProfileDialogInterface.markLastCheckedItemCloseDrawer(
+            lastCheckedItemId,
+            isAdminSelected
+          )
+          exitProfileDialogInterface.unmarkSwitchProfileItemCloseDrawer()
         }
         dialog.dismiss()
       }
