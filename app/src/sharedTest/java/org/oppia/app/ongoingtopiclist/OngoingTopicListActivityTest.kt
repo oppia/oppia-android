@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -36,7 +35,6 @@ import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -73,6 +71,7 @@ import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.testing.CachingTestModule
@@ -107,11 +106,14 @@ class OngoingTopicListActivityTest {
   @Inject
   lateinit var storyProfileTestHelper: StoryProgressTestHelper
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
+    testCoroutineDispatchers.registerIdlingResource()
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     FirebaseApp.initializeApp(context)
     storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
@@ -126,7 +128,7 @@ class OngoingTopicListActivityTest {
 
   @After
   fun tearDown() {
-    IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -135,15 +137,13 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix OngoingTopicListActivityTest
-  @Ignore
   fun testOngoingTopicList_checkItem0_titleIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
         internalProfileId
       )
     ).use {
-      waitForTheView(withText("Ratios and Proportional Reasoning"))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -163,15 +163,13 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix OngoingTopicListActivityTest
-  @Ignore
   fun testOngoingTopicList_clickItem0_intentIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
         internalProfileId
       )
     ).use {
-      waitForTheView(withText("Ratios and Proportional Reasoning"))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -190,8 +188,6 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix OngoingTopicListActivityTest
-  @Ignore
   fun testOngoingTopicList_changeConfiguration_clickItem0_intentIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
@@ -199,7 +195,7 @@ class OngoingTopicListActivityTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      waitForTheView(withText("Ratios and Proportional Reasoning"))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -218,15 +214,13 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix OngoingTopicListActivityTest
-  @Ignore
   fun testOngoingTopicList_checkItem0_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
         internalProfileId
       )
     ).use {
-      waitForTheView(withText("2 Lessons"))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -246,8 +240,6 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix OngoingTopicListActivityTest
-  @Ignore
   fun testOngoingTopicList_changeConfiguration_checkItem1_titleIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
@@ -255,7 +247,7 @@ class OngoingTopicListActivityTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      waitForTheView(withText("Fractions"))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -275,13 +267,11 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix OngoingTopicListActivityTest
-  @Ignore
   fun testOngoingTopicList_checkItem1_titleIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(internalProfileId)
     ).use {
-      waitForTheView(withText("Fractions"))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -301,15 +291,13 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix OngoingTopicListActivityTest
-  @Ignore
   fun testOngoingTopicList_checkItem1_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
         internalProfileId
       )
     ).use {
-      waitForTheView(withText("1 Lesson"))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -329,8 +317,6 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix OngoingTopicListActivityTest
-  @Ignore
   fun testOngoingTopicList_changeConfiguration_checkItem1_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
@@ -338,7 +324,7 @@ class OngoingTopicListActivityTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      waitForTheView(withText("1 Lesson"))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -358,8 +344,6 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix OngoingTopicListActivityTest
-  @Ignore
   fun testTopicPracticeFragment_loadFragment_changeConfiguration_topicNameIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
@@ -367,7 +351,7 @@ class OngoingTopicListActivityTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      waitForTheView(withText("Ratios and Proportional Reasoning"))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
