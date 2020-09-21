@@ -14,7 +14,7 @@ density=$5
 device_width_px=$6
 device_height_px=$7
 
-echo "Creating AVD with name '$avd_name' with system image: system-images;android-$api_level;$target;$abi"
+echo "Creating AVD with name '$avd_name' using density $density, dimensions ($device_width_px x $device_height_px) with system image: system-images;android-$api_level;$target;$abi"
 echo no | $ANDROID_HOME/tools/bin/avdmanager create avd --force -n $avd_name -k "system-images;android-$api_level;$target;$abi"
 
 config_file_path=~/.android/avd/$avd_name.avd/config.ini

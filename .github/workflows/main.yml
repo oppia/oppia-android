@@ -223,6 +223,13 @@ jobs:
           export AVD_DENSITY="${!DENSITY_VARIABLE_NAME}"
           export AVD_WIDTH_PX="${!WIDTH_PX_VARIABLE_NAME}"
           export AVD_HEIGHT_PX="${!HEIGHT_PX_VARIABLE_NAME}"
+          echo "Test avd name $AVD_NAME"
+          echo "Test avd density AVD_DENSITY"
+          echo "Test avd width AVD_WIDTH_PX"
+          echo "Test avd height AVD_HEIGHT_PX"
+
+      - name: Debug AVD variables
+        run: echo "Debug avd name $AVD_NAME"; echo "Debug avd density AVD_DENSITY"; echo "Debug avd width AVD_WIDTH_PX"; echo "Debug avd height AVD_HEIGHT_PX"
 
       - name: Create AVD
         run: bash ./scripts/create_avd.sh $AVD_NAME ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.abi }} $AVD_DENSITY $AVD_WIDTH_PX $AVD_HEIGHT_PX
