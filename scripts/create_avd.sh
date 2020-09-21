@@ -6,18 +6,28 @@
 # An example to emulate the Pixel XL device on a 64-bit host with SDK 29, no Play Store support:
 #   bash ./scripts/create_avd.sh test_avd 29 default x86_x64 560 2560 1440
 
-avd_name=$1
-api_level=$2
-target=$3
-abi=$4
-density=$5
-device_width_px=$6
-device_height_px=$7
+avd_path=$1
+avd_name=$2
+api_level=$3
+target=$4
+abi=$5
+density=$6
+device_width_px=$7
+device_height_px=$8
+
+if [[ "$avd_path" == /* ]]; then
+  abs_avd_path=$avd_path
+else
+  # See https://stackoverflow.com/a/3572105 for the realpath alternative used here for OSX.
+  abs_avd_path="$PWD/${avd_path#./}"
+fi
 
 echo "Creating AVD with name '$avd_name' using density $density, dimensions ($device_width_px x $device_height_px) with system image: system-images;android-$api_level;$target;$abi"
-echo no | $ANDROID_HOME/tools/bin/avdmanager create avd --force -n $avd_name -k "system-images;android-$api_level;$target;$abi"
+echo "Creating AVD in path: $abs_avd_path"
+mkdir -p $abs_avd_path
+echo no | $ANDROID_HOME/tools/bin/avdmanager create avd --force -n $avd_name -k "system-images;android-$api_level;$target;$abi" -p "$avd_path"
 
-config_file_path=~/.android/avd/$avd_name.avd/config.ini
+config_file_path=$abs_avd_path/config.ini
 
 echo "hw.accelerometer=yes" >> $config_file_path
 echo "hw.audioInput=yes" >> $config_file_path
