@@ -18,11 +18,9 @@ on:
 # app_emulator_tests: Run whitelisted app module Espresso tests using an emulator
 jobs:
   linters:
+    if: "false"
     name: Lint Tests
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-18.04]
+    runs-on: ubuntu-18.04
 
     steps:
       - uses: actions/checkout@v2
@@ -48,11 +46,9 @@ jobs:
         run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
 
   robolectric_tests:
+    if: "false"
     name: Robolectric Tests (Non-App Modules)
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-18.04]
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -105,11 +101,9 @@ jobs:
           path: testing/build/reports
 
   app_tests:
+    if: "false"
     name: Robolectric Tests - App Module (Non-Flaky)
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-18.04]
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
 
@@ -135,11 +129,9 @@ jobs:
           path: app/build/reports
 
   bazel_build_app:
+    if: "false"
     name: Build Binary with Bazel
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-18.04]
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up bazel
@@ -173,11 +165,21 @@ jobs:
 
   app_emulator_tests:
     name: Espresso Emulator Tests - App Module (Non-Flaky)
+    # Note that emulator tests must currently run on MacOS due to GitHub Actions Linux machines not
+    # supporting KVM (which is required for newer Android emulators).
     runs-on: macos-10.15
+    env:
+      # The list of tests to run using an emulator.
+      TEST_WHITELIST: org.oppia.app.splash.SplashActivityTest org.oppia.app.player.state.StateFragmentTest
+
+      # DEVICE MAPPING: (density width_px height_px)
+      # 5.5 inch xxxhdpi device.
+      PIXEL_XL: (560 2560 1440)
     strategy:
       matrix:
         api-level: [29]
         target: [default]
+        abi: [x86_64]
         profile: [Nexus 6]
         #profile: [Pixel XL]
     steps:
@@ -203,20 +205,54 @@ jobs:
       - name: Set up Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.0.7
 
-      - name: Set up platform tools
-        run: sdkmanager platform-tools
+      - name: Accept licenses
+        run: yes | sdkmanager --licenses
+
+      - name: Set up platform tools, SDK tools, and system images
+        run: sdkmanager "platform-tools" "platforms;android-${{ matrix.api-level }}" "system-images;android-${{ matrix.api-level }};${{ matrix.target }};${{ matrix.abi }}"
+
+      # See https://stackoverflow.com/a/40307663 for a reference for how variable extraction works.
+      - name: Extract AVD variables
+        run: |
+          export AVD_NAME=$(echo "${{ matrix.profile }}" | tr '[:upper:]' '[:lower:]' | tr -s ' ' '_')
+          DEVICE_NAME_KEY=$(echo $AVD_NAME | tr '[:lower:]' '[:upper:]')
+          DENSITY_VARIABLE_NAME="${DEVICE_NAME_KEY}[0]"
+          if [[ "$DENSITY_VARIABLE_NAME" == "$DEVICE_NAME_KEY" ]]; then echo "Using unknown AVD name: $AVD_NAME"; exit 1; fi
+          WIDTH_PX_VARIABLE_NAME="${DEVICE_NAME_KEY}[1]"
+          HEIGHT_PX_VARIABLE_NAME="${DEVICE_NAME_KEY}[2]"
+          export AVD_DENSITY="${!DENSITY_VARIABLE_NAME}"
+          export AVD_WIDTH_PX="${!WIDTH_PX_VARIABLE_NAME}"
+          export AVD_HEIGHT_PX="${!HEIGHT_PX_VARIABLE_NAME}"
+
+      - name: Create AVD
+        run: bash ./scripts/create_avd.sh $AVD_NAME ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.abi }} $AVD_DENSITY $AVD_WIDTH_PX $AVD_HEIGHT_PX
+
+      # Start an emulator with the options used by:
+      # https://github.com/ReactiveCircus/android-emulator-runner.
+      - name: Start Emulator
+        run: $ANDROID_HOME/emulator/emulator -avd $AVD_NAME -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &
+
+      - name: Wait for Emulator
+        run: bash ./scripts/wait_for_emulator.sh
 
       - name: Run emulator tests
-        uses: ReactiveCircus/android-emulator-runner@v2.11.0
-        with:
-          api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
-          profile: ${{ matrix.profile }}
-          arch: x86_64
+        run: echo "Pretend to run emulator tests using $TEST_WHITELIST"
+      #  run: bash ./scripts/run_emulator_tests.sh $TEST_WHITELIST
+
+      #- name: Run emulator tests
+      #  uses: ReactiveCircus/android-emulator-runner@v2.11.0
+      #  with:
+      #    api-level: ${{ matrix.api-level }}
+      #    target: ${{ matrix.target }}
+      #    profile: ${{ matrix.profile }}
+      #    arch: x86_64
           # Note that 'sudo' is not run here since it will drop necessary
           # environmental variables that were overwritten above to ensure
           # correct access to the Android SDK & home directories.
-          script: ./scripts/run_emulator_tests.sh "org.oppia.app.splash.SplashActivityTest org.oppia.app.player.state.StateFragmentTest"
+      #    script: export TEST_WHITELIST="org.oppia.app.splash.SplashActivityTest org.oppia.app.player.state.StateFragmentTest"; ./scripts/run_emulator_tests.sh $TEST_WHITELIST
+
+      - name: Stop Emulator
+        run: adb -s emulator-5554 emu kill
 
       # Upload all test results to GitHub (including detailed reports and videos, if any).
       - uses: actions/upload-artifact@v2
