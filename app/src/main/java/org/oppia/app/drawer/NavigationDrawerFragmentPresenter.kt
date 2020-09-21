@@ -1,5 +1,6 @@
 package org.oppia.app.drawer
 
+import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -110,11 +111,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
               activity,
               internalProfileId
             )
+          intent.setFlags(FLAG_ACTIVITY_SINGLE_TOP)
           fragment.activity!!.startActivity(intent)
-          if (previousMenuItemId != null &&
-            NavigationDrawerItem.valueFromNavId(previousMenuItemId!!) !=
-            NavigationDrawerItem.HOME
-          ) {
+          if (previousMenuItemId != NavigationDrawerItem.HOME.ordinal) {
             fragment.activity!!.finish()
           }
           drawerLayout.closeDrawers()
