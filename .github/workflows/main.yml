@@ -196,17 +196,17 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Set up Homebrew
-        uses: Homebrew/actions/setup-homebrew@master
+      #- name: Set up Homebrew
+      #  uses: Homebrew/actions/setup-homebrew@master
 
-      - name: Install ffmpeg
-        run: brew install ffmpeg
+      #- name: Install ffmpeg
+      #  run: brew install ffmpeg
 
       - name: Set up Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.0.7
 
       - name: Accept licenses
-        run: yes | sdkmanager --licenses
+        run: echo y | sdkmanager --licenses
 
       - name: Set up platform tools, SDK tools, and system images
         run: sdkmanager "platform-tools" "platforms;android-${{ matrix.api-level }}" "system-images;android-${{ matrix.api-level }};${{ matrix.target }};${{ matrix.abi }}"
