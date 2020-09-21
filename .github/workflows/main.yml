@@ -214,22 +214,19 @@ jobs:
       # See https://stackoverflow.com/a/40307663 for a reference for how variable extraction works.
       - name: Extract AVD variables
         run: |
-          export AVD_NAME=$(echo "${{ matrix.profile }}" | tr '[:upper:]' '[:lower:]' | tr -s ' ' '_')
+          AVD_NAME=$(echo "${{ matrix.profile }}" | tr '[:upper:]' '[:lower:]' | tr -s ' ' '_')
           DEVICE_NAME_KEY=$(echo $AVD_NAME | tr '[:lower:]' '[:upper:]')
           DENSITY_VARIABLE_NAME="${DEVICE_NAME_KEY}[0]"
           if [[ "$DENSITY_VARIABLE_NAME" == "$DEVICE_NAME_KEY" ]]; then echo "Using unknown AVD name: $AVD_NAME"; exit 1; fi
           WIDTH_PX_VARIABLE_NAME="${DEVICE_NAME_KEY}[1]"
           HEIGHT_PX_VARIABLE_NAME="${DEVICE_NAME_KEY}[2]"
-          export AVD_DENSITY="${!DENSITY_VARIABLE_NAME}"
-          export AVD_WIDTH_PX="${!WIDTH_PX_VARIABLE_NAME}"
-          export AVD_HEIGHT_PX="${!HEIGHT_PX_VARIABLE_NAME}"
-          echo "Test avd name $AVD_NAME"
-          echo "Test avd density AVD_DENSITY"
-          echo "Test avd width AVD_WIDTH_PX"
-          echo "Test avd height AVD_HEIGHT_PX"
+          echo "::set-env name=AVD_NAME::$AVD_NAME"
+          echo "::set-env name=AVD_DENSITY::${!DENSITY_VARIABLE_NAME}"
+          echo "::set-env name=AVD_WIDTH_PX::${!WIDTH_PX_VARIABLE_NAME}"
+          echo "::set-env name=AVD_HEIGHT_PX::${!HEIGHT_PX_VARIABLE_NAME}"
 
       - name: Debug AVD variables
-        run: echo "Debug avd name $AVD_NAME"; echo "Debug avd density AVD_DENSITY"; echo "Debug avd width AVD_WIDTH_PX"; echo "Debug avd height AVD_HEIGHT_PX"
+        run: echo "Debug avd name $AVD_NAME"; echo "Debug avd density $AVD_DENSITY"; echo "Debug avd width $AVD_WIDTH_PX"; echo "Debug avd height $AVD_HEIGHT_PX"
 
       - name: Create AVD
         run: bash ./scripts/create_avd.sh $AVD_NAME ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.abi }} $AVD_DENSITY $AVD_WIDTH_PX $AVD_HEIGHT_PX
