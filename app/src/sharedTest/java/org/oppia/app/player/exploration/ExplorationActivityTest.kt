@@ -283,6 +283,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
+  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithNoVoiceover_openPrototypeExploration_configurationChange_checkAudioButtonIsHidden() { // ktlint-disable max-line-length
     launch<ExplorationActivity>(
@@ -344,6 +345,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
+  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_changeConfiguration_checkOpensCellularAudioDialog() { // ktlint-disable max-line-length
     setupAudio()
@@ -367,6 +369,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
+  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickNegative_checkAudioFragmentIsHidden() { // ktlint-disable max-line-length
     setupAudio()
@@ -399,6 +402,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
+  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickPositive_checkAudioFragmentIsVisible() { // ktlint-disable max-line-length
     setupAudio()
@@ -440,6 +444,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
+  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickCheckboxAndNegative_clickAudioIcon_checkAudioFragmentIsHiddenAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
     setupAudio()
@@ -476,6 +481,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
+  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickCheckboxAndPositive_clickAudioIconTwice_checkAudioFragmentIsVisibleAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
     setupAudio()
@@ -513,6 +519,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
+  // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
@@ -548,6 +555,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
+  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsHinglish() { // ktlint-disable max-line-length
     setupAudioForFraction()
@@ -594,6 +602,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
+  // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
@@ -674,6 +683,7 @@ class ExplorationActivityTest {
     }
   }
 
+  // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): Check this test case too. It works in pair with below test case.
   @Test
   fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickCancel_dismissesDialog() { // ktlint-disable max-line-length
@@ -691,6 +701,7 @@ class ExplorationActivityTest {
     assertThat(explorationActivityTestRule.activity.isFinishing).isFalse()
   }
 
+  // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
