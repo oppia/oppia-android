@@ -81,11 +81,11 @@ import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.CoroutineExecutorService
+import org.oppia.testing.EditTextInputAction
 import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
-import org.oppia.testing.TestingUtils
 import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
@@ -131,7 +131,7 @@ class StateFragmentLocalTest {
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
   @Inject
-  lateinit var testingUtils: TestingUtils
+  lateinit var editTextInputAction: EditTextInputAction
 
   private val internalProfileId: Int = 1
   private val solutionIndex: Int = 4
@@ -1112,7 +1112,7 @@ class StateFragmentLocalTest {
   private fun submitFractionAnswer(answerText: String) {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(FRACTION_INPUT_INTERACTION))
     onView(withId(R.id.fraction_input_interaction_view)).perform(
-      testingUtils.appendText(answerText)
+      editTextInputAction.appendText(answerText)
     )
     testCoroutineDispatchers.runCurrent()
 

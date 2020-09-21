@@ -14,7 +14,7 @@ import javax.inject.Inject
  * properly input digits for text views using 'android:digits'. See
  * https://github.com/robolectric/robolectric/issues/5110 for specifics.
  */
-class TestingUtils @Inject constructor(
+class EditTextInputAction @Inject constructor(
   val testCoroutineDispatchers: TestCoroutineDispatchers
 ) {
 

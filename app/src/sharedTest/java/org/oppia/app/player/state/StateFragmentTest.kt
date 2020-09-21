@@ -113,6 +113,7 @@ import org.oppia.domain.topic.TEST_EXPLORATION_ID_6
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.CoroutineExecutorService
+import org.oppia.testing.EditTextInputAction
 import org.oppia.testing.IsOnRobolectric
 import org.oppia.testing.OppiaTestRule
 import org.oppia.testing.RunOn
@@ -121,7 +122,6 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.TestPlatform
-import org.oppia.testing.TestingUtils
 import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
@@ -156,7 +156,7 @@ class StateFragmentTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var testingUtils: TestingUtils
+  lateinit var editTextInputAction: EditTextInputAction
 
   @Inject
   @field:BackgroundDispatcher
@@ -1225,7 +1225,7 @@ class StateFragmentTest {
 
   private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
     onView(withId(interactionViewId)).perform(
-      testingUtils.appendText(text),
+      editTextInputAction.appendText(text),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()
