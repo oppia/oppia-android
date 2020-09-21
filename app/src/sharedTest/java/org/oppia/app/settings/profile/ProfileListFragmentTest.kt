@@ -23,7 +23,6 @@ import dagger.Component
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -57,6 +56,7 @@ import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
@@ -86,15 +86,20 @@ class ProfileListFragmentTest {
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
     FirebaseApp.initializeApp(context)
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -103,11 +108,10 @@ class ProfileListFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileListFragmentTest
-  @Ignore
   fun testProfileListFragment_initializeProfiles_checkProfilesAreShown() {
     profileTestHelper.initializeProfiles()
     launch(ProfileListActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -142,11 +146,10 @@ class ProfileListFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileListFragmentTest
-  @Ignore
   fun testProfileListFragment_initializeProfiles_changeConfiguration_checkProfilesAreShown() {
     profileTestHelper.initializeProfiles()
     launch(ProfileListActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -182,12 +185,11 @@ class ProfileListFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileListFragmentTest
-  @Ignore
   fun testProfileListFragment_addManyProfiles_checkProfilesAreSorted() {
     profileTestHelper.initializeProfiles()
     profileTestHelper.addMoreProfiles(5)
     launch(ProfileListActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -262,11 +264,10 @@ class ProfileListFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileListFragmentTest
-  @Ignore
   fun testProfileListFragment_initializeProfile_clickProfile_checkOpensProfileEditActivity() {
     profileTestHelper.initializeProfiles()
     launch(ProfileListActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(atPosition(R.id.profile_list_recycler_view, 0)).perform(click())
       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
