@@ -196,8 +196,11 @@ jobs:
         with:
           java-version: 1.8
 
-      #- name: Set up Homebrew
-      #  uses: Homebrew/actions/setup-homebrew@master
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Upgrade Bash
+        run: brew install bash
 
       #- name: Install ffmpeg
       #  run: brew install ffmpeg
