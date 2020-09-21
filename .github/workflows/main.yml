@@ -217,7 +217,7 @@ jobs:
           AVD_NAME=$(echo "${{ matrix.profile }}" | tr '[:upper:]' '[:lower:]' | tr -s ' ' '_')
           DEVICE_NAME_KEY=$(echo $AVD_NAME | tr '[:lower:]' '[:upper:]')
           DENSITY_VARIABLE_NAME="${DEVICE_NAME_KEY}[0]"
-          if [[ "$DENSITY_VARIABLE_NAME" == "${!DEVICE_NAME_KEY}" ]]; then echo "Using unknown AVD name: $AVD_NAME"; exit 1; fi
+          if [[ "${!DENSITY_VARIABLE_NAME}" == "$DEVICE_NAME_KEY" ]]; then echo "Using unknown AVD name: $AVD_NAME"; exit 1; fi
           WIDTH_PX_VARIABLE_NAME="${DEVICE_NAME_KEY}[1]"
           HEIGHT_PX_VARIABLE_NAME="${DEVICE_NAME_KEY}[2]"
           echo "::set-env name=AVD_NAME::$AVD_NAME"
