@@ -224,8 +224,8 @@ jobs:
       - name: Install ffmpeg
         run: brew install ffmpeg
 
-      - name: Set up platform tools and system images
-        run: sdkmanager "platform-tools" "system-images;android-${{ matrix.api-level }};${{ matrix.target }};${{ matrix.abi }}"
+      - name: Set up platform tools, SDK tools, and system images
+        run: sdkmanager "platform-tools" "platforms;android-${{ matrix.api-level }}" "system-images;android-${{ matrix.api-level }};${{ matrix.target }};${{ matrix.abi }}"
 
       # See https://stackoverflow.com/a/40307663 for a reference for how variable extraction works.
       - name: Extract AVD variables
@@ -257,8 +257,9 @@ jobs:
       # Start an emulator with the options used by:
       # https://github.com/ReactiveCircus/android-emulator-runner.
       - name: Start emulator
-        run: $ANDROID_SDK/emulator/emulator -avd $AVD_NAME -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &
+        run: $ANDROID_HOME/emulator/emulator -avd $AVD_NAME -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &
 
+      # Wait up to 4 minutes for the emulator to start, then send interrupt. After 5 minutes, kill the process.
       - name: Wait for emulator
         run: (timeout -k 4m 5m bash ./scripts/wait_for_emulator.sh) || echo Failed to start emulator
 
