@@ -67,9 +67,10 @@ for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
     scratch_directory=$emulator_tests_directory/scratch
     mkdir -p $scratch_directory
 
-    # Ensure any previous video recordings are removed, including scratch work.
+    # Ensure any previous video or logcat recordings are removed, including scratch work.
     adb shell rm /sdcard/scratch*.mp4 &> /dev/null
     adb shell rm /sdcard/record_command_pid.txt &> /dev/null
+    rm $scratch_directory/*.log &> /dev/null
 
     # Start the video recording in the background and track its PID along with the PID of the screen
     # recording process running on Android. Note that the command is set up to record up to 10
@@ -95,6 +96,10 @@ for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
     parent_android_pid=$(adb shell cat /sdcard/record_command_pid.txt)
     screen_record_group_android_pid=$(adb shell ps -A | grep -E "[0-9]+ +$parent_android_pid" | awk '{print $2}')
 
+    # Start listening for all logcat logs & save them to a scratch file.
+    adb logcat -f $scratch_directory/logcat.log &
+    logcat_pid=$!
+
     # Start the actual test. Note that the stdin redirection is needed to ensure that Gradle doesn't
     # immediately pause after being backgrounded. See: https://stackoverflow.com/a/17626350. Also
     # for reference on running a specific test: https://stackoverflow.com/a/42518783.
@@ -119,6 +124,10 @@ for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
 
     # Wait for the screen record proces to finish writing the file before downloading it.
     wait $screen_record_pid
+
+    # Terminate the logcat process & wait for it.
+    kill -INT $logcat_pid
+    wait $logcat_pid
 
     files_to_combine=$(adb shell ls -1 /sdcard/scratch*.mp4)
     rm $scratch_directory/*.mp4 &> /dev/null
@@ -147,12 +156,13 @@ for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
     # size.
     ffmpeg -v quiet -i $scratch_directory/combined.mp4 -filter:v fps=fps=3 "$emulator_tests_directory/$test_directory_name/$test_name.mp4"
 
+    # Record artifacts to upload: an overview index of tests run for this test suite, the specific
+    # suite's results, and logcat logs. Reference: https://askubuntu.com/a/86891.
+    cp app/build/reports/androidTests/connected/. "$emulator_tests_directory/$test_directory_name/"
+    cp $scratch_directory/*.log "$emulator_tests_directory/$test_directory_name/"
+
     # Scratch directory cleanup.
     rm -r $scratch_directory &> /dev/null
-
-    # Record artifacts to upload: an overview index of tests run for this test suite, and the
-    # specific suite's results. Reference: https://askubuntu.com/a/86891.
-    cp app/build/reports/androidTests/connected/. "$emulator_tests_directory/$test_directory_name/"
 
     if [ $test_result -ne 0 ]; then
       # If any tests fail, make sure the overall test suite fails.
