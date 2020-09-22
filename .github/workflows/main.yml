@@ -172,16 +172,21 @@ jobs:
       # The list of tests to run using an emulator.
       TEST_WHITELIST: org.oppia.app.splash.SplashActivityTest org.oppia.app.player.state.StateFragmentTest
 
-      # DEVICE MAPPING: (density width_px height_px)
-      # 5.5 inch xxxhdpi device.
-      PIXEL_XL: (560 2560 1440)
+      # DEVICE MAPPING: (density width_px height_px).
+      # Reference: https://material.io/resources/devices/.
+      HTC_HERO: (160 320 480) # 3.2 inches mdpi (1.0 * mdpi, fudged slightly) handset.
+      ANDROID_ONE: (240 480 854) # 4.5 inch hdpi (1.5 * mdpi) handset.
+      NEXUS_4: (320 768 1280) # 4.7 inch xhdpi (2.0 * mdpi) handset.
+      NEXUS_5X: (416 1080 1920) # 5.2 inch xxhdpi (2.6 * mdpi) handset.
+      PIXEL_XL: (560 1440 2560) # 5.5 inch xxxhdpi (3.5 * mdpi) handset.
+      SAMSUNG_GALAXY_TAB_10: (160 800 1280) # # 10.1 inch mdpi (1.0 * mdpi) tablet.
+      NEXUS_10: (320 1280 800) # 10.1 inch xhdpi (2.0 * mdpi) tablet.
     strategy:
       matrix:
         api-level: [29]
         target: [default]
         abi: [x86_64]
         device_profile: [Pixel XL]
-        #profile: [Pixel XL]
     steps:
       - uses: actions/checkout@v2
 
@@ -196,11 +201,11 @@ jobs:
         with:
           java-version: 1.8
 
-      #- name: Set up Homebrew
-      #  uses: Homebrew/actions/setup-homebrew@master
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
 
-      #- name: Install ffmpeg
-      #  run: brew install ffmpeg
+      - name: Install ffmpeg
+        run: brew install ffmpeg
 
       - name: Set up Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.0.7
@@ -230,9 +235,6 @@ jobs:
           echo "::set-env name=AVD_WIDTH_PX::${!WIDTH_PX_VARIABLE_NAME}"
           echo "::set-env name=AVD_HEIGHT_PX::${!HEIGHT_PX_VARIABLE_NAME}"
 
-      - name: Debug AVD variables
-        run: echo "Debug avd name $AVD_NAME"; echo "Debug avd density $AVD_DENSITY"; echo "Debug avd width $AVD_WIDTH_PX"; echo "Debug avd height $AVD_HEIGHT_PX"
-
       - name: Create AVD
         run: bash ./scripts/create_avd.sh ./$AVD_NAME $AVD_NAME ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.abi }} $AVD_DENSITY $AVD_WIDTH_PX $AVD_HEIGHT_PX
 
@@ -245,20 +247,7 @@ jobs:
         run: bash ./scripts/wait_for_emulator.sh
 
       - name: Run emulator tests
-        run: echo "Pretend to run emulator tests using $TEST_WHITELIST"
-      #  run: bash ./scripts/run_emulator_tests.sh $TEST_WHITELIST
-
-      #- name: Run emulator tests
-      #  uses: ReactiveCircus/android-emulator-runner@v2.11.0
-      #  with:
-      #    api-level: ${{ matrix.api-level }}
-      #    target: ${{ matrix.target }}
-      #    profile: ${{ matrix.profile }}
-      #    arch: x86_64
-          # Note that 'sudo' is not run here since it will drop necessary
-          # environmental variables that were overwritten above to ensure
-          # correct access to the Android SDK & home directories.
-      #    script: export TEST_WHITELIST="org.oppia.app.splash.SplashActivityTest org.oppia.app.player.state.StateFragmentTest"; ./scripts/run_emulator_tests.sh $TEST_WHITELIST
+        run: bash ./scripts/run_emulator_tests.sh $TEST_WHITELIST
 
       - name: Stop Emulator
         run: adb -s emulator-5554 emu kill
