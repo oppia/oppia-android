@@ -217,8 +217,9 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
-      - name: Install timeout
-        run: brew install timeout
+      # Install coreutils for timeout command.
+      - name: Install coreutils
+        run: brew install coreutils
 
       - name: Install ffmpeg
         run: brew install ffmpeg
