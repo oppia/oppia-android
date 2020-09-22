@@ -169,7 +169,7 @@ jobs:
     # supporting KVM (which is required for newer Android emulators).
     runs-on: macos-10.15
     env:
-      # The list of tests to run using an emulator.
+      # The list of (space-separated) tests to run using an emulator.
       TEST_WHITELIST: org.oppia.app.splash.SplashActivityTest
 
       # DEVICE MAPPING: density width_px height_px
@@ -245,6 +245,8 @@ jobs:
           echo "::set-env name=AVD_WIDTH_PX::${DEVICE_SETTINGS[1]}"
           echo "::set-env name=AVD_HEIGHT_PX::${DEVICE_SETTINGS[2]}"
 
+      # Create a new AVD in a local directory to avoid needing a cross-platform way to find the
+      # default location for AVDs.
       - name: Create AVD
         run: bash ./scripts/create_avd.sh ./$AVD_NAME $AVD_NAME ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.abi }} $AVD_DENSITY $AVD_WIDTH_PX $AVD_HEIGHT_PX
 

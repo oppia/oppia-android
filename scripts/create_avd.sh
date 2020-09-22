@@ -29,6 +29,8 @@ echo no | $ANDROID_HOME/tools/bin/avdmanager create avd --force -n $avd_name -k 
 
 config_file_path=$abs_avd_path/config.ini
 
+# Fill in common properties for consistency with AVDs created by Android Studio, and with the custom
+# set device density & screen dimensions.
 echo "hw.accelerometer=yes" >> $config_file_path
 echo "hw.audioInput=yes" >> $config_file_path
 echo "hw.battery=yes" >> $config_file_path
