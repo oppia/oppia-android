@@ -2,10 +2,15 @@ package org.oppia.app.settings.profile
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
+import android.view.View
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
@@ -25,9 +30,9 @@ import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -59,6 +64,7 @@ import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
@@ -88,16 +94,21 @@ class ProfileResetPinActivityTest {
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -106,8 +117,6 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_startActivityWithAdmin_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -116,22 +125,22 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_startActivityWithAdmin_changeConfiguration_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -140,27 +149,27 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
         .perform(
-          typeText("12345"),
+          appendText("12345"),
           closeSoftKeyboard()
         )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo()
       ).perform(
-        typeText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
 
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_startActivityWithUser_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -169,22 +178,22 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_checkPinLengthError() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -193,12 +202,13 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("1234"),
+        appendText("1234"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("1234"),
+        appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -214,8 +224,6 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_changeConfiguration_checkPinLengthError() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -224,12 +232,13 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("1234"),
+        appendText("1234"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("1234"),
+        appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
@@ -299,8 +308,6 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_startActivityWithAdmin_inputWrongConfirmPin_clickSave_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -309,12 +316,13 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("1234"),
+        appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -329,8 +337,6 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_startActivityWithAdmin_inputWrongConfirmPin_clickSave_changeConfiguration_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -339,12 +345,13 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("1234"),
+        appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -365,8 +372,6 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_changeConfiguration_inputPinExists_confirmInputPinExists_saveButtonIsClickable() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -375,12 +380,13 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -429,8 +435,6 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_startActivityWithUser_inputShortPin_clickSave_checkPinLengthError() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -439,12 +443,13 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("12"),
+        appendText("12"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("12"),
+        appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -486,8 +491,6 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_startActivityWithUser_inputWrongConfirmPin_clickSave_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -496,12 +499,13 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("12"),
+        appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -611,8 +615,6 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -621,12 +623,13 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("12"),
+        appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
@@ -634,8 +637,6 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable_clearInputPin_saveButtonIsNotClickable() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -644,12 +645,13 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("12"),
+        appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
@@ -662,8 +664,6 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable_clearConfirmInputPin_saveButtonIsNotClickable() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -672,12 +672,13 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("12"),
+        appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
@@ -690,8 +691,6 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileResetPinActivityTest
-  @Ignore
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable_clearConfirmInputPin_changeConfiguration_saveButtonIsNotClickable() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -700,12 +699,13 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("12"),
+        appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
@@ -716,6 +716,30 @@ class ProfileResetPinActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
         .check(matches(not(isClickable())))
+    }
+  }
+
+  /**
+   * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
+   * properly input digits for text views using 'android:digits'. See
+   * https://github.com/robolectric/robolectric/issues/5110 for specifics.
+   */
+  private fun appendText(text: String): ViewAction {
+    val typeTextViewAction = typeText(text)
+    return object : ViewAction {
+      override fun getDescription(): String = typeTextViewAction.description
+
+      override fun getConstraints(): Matcher<View> = typeTextViewAction.constraints
+
+      override fun perform(uiController: UiController?, view: View?) {
+        // Appending text only works on Robolectric, whereas Espresso needs to use typeText().
+        if (Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
+          (view as? EditText)?.append(text)
+          testCoroutineDispatchers.runCurrent()
+        } else {
+          typeTextViewAction.perform(uiController, view)
+        }
+      }
     }
   }
 
