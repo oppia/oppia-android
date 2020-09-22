@@ -75,7 +75,7 @@ jobs:
         run:  sudo ./gradlew --full-stacktrace :utility:testDebugUnitTest
       - name: Upload Utility Test Reports
         uses: actions/upload-artifact@v2
-        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status.
         with:
           name: utility reports
           path: utility/build/reports
@@ -85,7 +85,7 @@ jobs:
         run:  sudo ./gradlew --full-stacktrace :domain:testDebugUnitTest
       - name: Upload Domain Test Reports
         uses: actions/upload-artifact@v2
-        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status.
         with:
           name: domain reports
           path: domain/build/reports
@@ -95,7 +95,7 @@ jobs:
         run:  sudo ./gradlew --full-stacktrace :testing:testDebugUnitTest
       - name: Upload Testing Test Reports
         uses: actions/upload-artifact@v2
-        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status.
         with:
           name: non-app-robolectric-reports
           path: testing/build/reports
@@ -123,7 +123,7 @@ jobs:
           sudo ./gradlew --full-stacktrace :app:testDebugUnitTest
       - name: Upload App Test Reports
         uses: actions/upload-artifact@v2
-        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status.
         with:
           name: app-robolectric-reports
           path: app/build/reports
@@ -170,7 +170,7 @@ jobs:
     runs-on: macos-10.15
     env:
       # The list of tests to run using an emulator.
-      TEST_WHITELIST: org.oppia.app.splash.SplashActivityTest org.oppia.app.player.state.StateFragmentTest
+      TEST_WHITELIST: org.oppia.app.splash.SplashActivityTest
 
       # DEVICE MAPPING: density width_px height_px
       # Reference: https://material.io/resources/devices/.
@@ -187,6 +187,7 @@ jobs:
         target: [default]
         abi: [x86_64]
         device_profile: [Pixel XL]
+        #device_profile: [HTC Hero, Android One, Nexus 4, Nexus 5X, Pixel XL, Samsung Galaxy Tab 10, Nexus 10]
     steps:
       - uses: actions/checkout@v2
 
@@ -201,17 +202,23 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Set up Homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-
-      - name: Install ffmpeg
-        run: brew install ffmpeg
-
       - name: Set up Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.0.7
 
       - name: Accept licenses
         run: echo y | sdkmanager --licenses
+
+      - name: Start building Android tests (debug) in background
+        run: |
+          ./gradlew --full-stacktrace :app:compileDebugAndroidTestJavaWithJavac &
+          BACKGROUND_BUILD_PID=$!
+          echo "::set-env name=BACKGROUND_BUILD_PID::$BACKGROUND_BUILD_PID"
+
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Install ffmpeg
+        run: brew install ffmpeg
 
       - name: Set up platform tools, SDK tools, and system images
         run: sdkmanager "platform-tools" "platforms;android-${{ matrix.api-level }}" "system-images;android-${{ matrix.api-level }};${{ matrix.target }};${{ matrix.abi }}"
@@ -249,15 +256,21 @@ jobs:
       - name: Wait for Emulator
         run: bash ./scripts/wait_for_emulator.sh
 
+      # Wait for the earlier Gradle build to finish to start the emulator tests faster. See:
+      # https://stackoverflow.com/a/41613532.
+      - name: Wait for Gradle build to complete
+        run: lsof -p $BACKGROUND_BUILD_PID +r 1 &>/dev/null
+
       - name: Run emulator tests
-        run: bash ./scripts/run_emulator_tests.sh $TEST_WHITELIST
+        run: bash ./scripts/run_emulator_tests.sh $AVD_NAME $TEST_WHITELIST
 
       - name: Stop Emulator
+        if: ${{ always() }} # IMPORTANT: Try to stop the emulator regardless of status.
         run: adb -s emulator-5554 emu kill
 
       # Upload all test results to GitHub (including detailed reports and videos, if any).
       - uses: actions/upload-artifact@v2
-        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status.
         with:
           name: emulator-test-output
           path: emulator_test_output/

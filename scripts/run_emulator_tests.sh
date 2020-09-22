@@ -7,28 +7,29 @@
 #
 # While this script is meant for Continuous Integration use, it can also be used locally for a
 # specific test like so:
-#   bash ./scripts/run_emulator_tests.sh org.oppia.app.splash.SplashActivityTest other.test...
+#   bash ./scripts/run_emulator_tests.sh <avd_name> org.oppia.app.splash.SplashActivityTest other.test...
+#
+# avd_name denotes the device that the tests are running on. All logs for the tests of this run will
+# be saved under ./emulator_test_output/<avd_name>/.
 #
 # As the name implies, this is intended to be used with an emulator. However, it may also work with
 # a real device as it just relies on ADB. The script does not expose a way to select which ADB
 # device to use, so if multiple devices are present then this script will not work.
 
 # Combine all arguments into a single whitelist variable for simplicity. See:
-# https://unix.stackexchange.com/a/197794.
+# https://unix.stackexchange.com/a/197794 & https://unix.stackexchange.com/a/225951.
+avd_name="$1"
+shift # Omit device name.
 test_whitelist="'$*'"
 
 echo "Using Android Home: $ANDROID_HOME"
-echo "Argument 0: $0"
-echo "Argument 1: $1"
-echo "Argument 2: $2"
-echo "Argument 3: $3"
-echo "Running emulator tests using test whitelist: $test_whitelist"
+echo "Running emulator tests on AVD $avd_name using test whitelist: $test_whitelist"
 
-echo "Building all instrumentation tests (debug)"
+echo "Verifying all instrumentation tests are built (debug)"
 ./gradlew --full-stacktrace :app:compileDebugAndroidTestJavaWithJavac
 
 # Establish directory for emulator test artifacts.
-emulator_tests_directory=./emulator_test_output
+emulator_tests_directory="./emulator_test_output/$avd_name"
 mkdir -pv $emulator_tests_directory
 
 test_suite_status=0
@@ -150,9 +151,8 @@ for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
     rm -r $scratch_directory &> /dev/null
 
     # Record artifacts to upload: an overview index of tests run for this test suite, and the
-    # specific suite's results.
-    cp app/build/reports/androidTests/connected/index.html "$emulator_tests_directory/$test_directory_name/"
-    cp "app/build/reports/androidTests/connected/$qualified_test_name.html" "$emulator_tests_directory/$test_directory_name/"
+    # specific suite's results. Reference: https://askubuntu.com/a/86891.
+    cp app/build/reports/androidTests/connected/. "$emulator_tests_directory/$test_directory_name/"
 
     if [ $test_result -ne 0 ]; then
       # If any tests fail, make sure the overall test suite fails.
