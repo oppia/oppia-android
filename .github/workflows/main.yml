@@ -186,8 +186,8 @@ jobs:
         api-level: [29]
         target: [default]
         abi: [x86_64]
-        device_profile: [Pixel XL]
-        #device_profile: [HTC Hero, Android One, Nexus 4, Nexus 5X, Pixel XL, Samsung Galaxy Tab 10, Nexus 10]
+        #device_profile: [Pixel XL]
+        device_profile: [HTC Hero, Android One, Nexus 4, Nexus 5X, Pixel XL, Samsung Galaxy Tab 10, Nexus 10]
     steps:
       - uses: actions/checkout@v2
 
