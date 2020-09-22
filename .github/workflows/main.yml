@@ -183,7 +183,7 @@ jobs:
       NEXUS_10: 320 1280 800 # 10.1 inch xhdpi (2.0 * mdpi) tablet.
     strategy:
       matrix:
-        api-level: [29]
+        api-level: [28]
         target: [default]
         abi: [x86_64]
         device_profile: [Pixel XL]
@@ -252,10 +252,10 @@ jobs:
 
       # Start an emulator with the options used by:
       # https://github.com/ReactiveCircus/android-emulator-runner.
-      - name: Start Emulator
+      - name: Start emulator
         run: $ANDROID_HOME/emulator/emulator -avd $AVD_NAME -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &
 
-      - name: Wait for Emulator
+      - name: Wait for emulator
         run: bash ./scripts/wait_for_emulator.sh
 
       # Wait for the earlier Gradle build to finish to start the emulator tests faster. See:
@@ -264,9 +264,9 @@ jobs:
         run: lsof -p $BACKGROUND_BUILD_PID +r 1 &>/dev/null
 
       - name: Run emulator tests
-        run: bash ./scripts/run_emulator_tests.sh $AVD_NAME $TEST_WHITELIST
+        run: bash ./scripts/run_emulator_tests.sh $AVD_NAME ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.abi }} $TEST_WHITELIST
 
-      - name: Stop Emulator
+      - name: Stop emulator
         if: ${{ always() }} # IMPORTANT: Try to stop the emulator regardless of status.
         run: adb -s emulator-5554 emu kill
 

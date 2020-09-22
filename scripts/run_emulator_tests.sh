@@ -7,10 +7,11 @@
 #
 # While this script is meant for Continuous Integration use, it can also be used locally for a
 # specific test like so:
-#   bash ./scripts/run_emulator_tests.sh <avd_name> org.oppia.app.splash.SplashActivityTest other.test...
+#   bash ./scripts/run_emulator_tests.sh <avd_name> <api_level> <target> <abi> org.oppia.app.splash.SplashActivityTest other.test...
 #
-# avd_name denotes the device that the tests are running on. All logs for the tests of this run will
-# be saved under ./emulator_test_output/<avd_name>/.
+# avd_name, api_level, target, and abi denote the configuration the tests are running under. All
+# logs for the tests of this run will be saved under ./emulator_test_output/<config_name>/ where
+# config_name is derived from the above properties.
 #
 # As the name implies, this is intended to be used with an emulator. However, it may also work with
 # a real device as it just relies on ADB. The script does not expose a way to select which ADB
@@ -19,17 +20,21 @@
 # Combine all arguments into a single whitelist variable for simplicity. See:
 # https://unix.stackexchange.com/a/197794 & https://unix.stackexchange.com/a/225951.
 avd_name="$1"
-shift # Omit device name.
+api_level="$2"
+target="$3"
+abi="$4"
+shift 4 # Omit config properties.
 test_whitelist="'$*'"
+config_name="$avd_name-API$api_level-$target-$abi"
 
 echo "Using Android Home: $ANDROID_HOME"
-echo "Running emulator tests on AVD $avd_name using test whitelist: $test_whitelist"
+echo "Running emulator tests with configuration: $config_name using test whitelist: $test_whitelist"
 
 echo "Verifying all instrumentation tests are built (debug)"
 ./gradlew --full-stacktrace :app:compileDebugAndroidTestJavaWithJavac
 
 # Establish directory for emulator test artifacts.
-emulator_tests_directory="./emulator_test_output/$avd_name"
+emulator_tests_directory="./emulator_test_output/$config_name"
 mkdir -pv $emulator_tests_directory
 
 test_suite_status=0

@@ -2,7 +2,7 @@
 # Waits for an eumulator to be fully booted & ready for testing. Note that this script does not
 # support multiple emulators or devices being attached locally.
 
-echo "Waiting for emulator to come online fully"
+echo "Waiting for emulator to come fully online"
 
 # See https://stackoverflow.com/a/45991252 and https://stackoverflow.com/a/46316745 for specifics.
 # Wait for the device to be in 'device' state and booted.
