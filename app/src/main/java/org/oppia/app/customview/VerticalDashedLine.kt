@@ -6,9 +6,11 @@ import android.graphics.Color
 import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.graphics.Path
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.Nullable
+import androidx.annotation.RequiresApi
 
 class VerticalDashedLine : View {
 
@@ -16,11 +18,11 @@ class VerticalDashedLine : View {
   private val path: Path = Path()
 
   constructor(context: Context?) : super(context) {
-    init()
+    initialize()
   }
 
   constructor(context: Context?, @Nullable attrs: AttributeSet?) : super(context, attrs) {
-    init()
+    initialize()
   }
 
   constructor(context: Context?, @Nullable attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -28,10 +30,20 @@ class VerticalDashedLine : View {
     attrs,
     defStyleAttr
   ) {
-    init()
+    initialize()
   }
 
-  private fun init() {
+  @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+  constructor(
+    context: Context?,
+    @Nullable attrs: AttributeSet?,
+    defStyleAttr: Int,
+    defStyleRes: Int
+  ) : super(context, attrs, defStyleAttr, defStyleRes) {
+    initialize()
+  }
+
+  private fun initialize() {
     paint.style = Paint.Style.STROKE
     paint.strokeCap = Paint.Cap.ROUND
     paint.strokeWidth = 10F
@@ -43,11 +55,55 @@ class VerticalDashedLine : View {
     super.onDraw(canvas)
     path.reset()
     path.moveTo((width / 2).toFloat(), 0F)
-    path.quadTo(
-      (width / 2).toFloat(), (height / 2).toFloat(),
+    path.quadTo((width / 2).toFloat(), height.toFloat() / 2,
       (width / 2).toFloat(), height.toFloat()
     )
-    canvas.drawPath(path, paint)
+  }
+
+  override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+    val desiredWidth = 10
+    val desiredHeight = 100
+
+    val widthMode = View.MeasureSpec.EXACTLY
+    val widthSize = View.MeasureSpec.getSize(widthMeasureSpec)
+    val heightMode = View.MeasureSpec.getMode(heightMeasureSpec)
+    val heightSize = View.MeasureSpec.getSize(heightMeasureSpec)
+
+    val width: Int
+    val height: Int
+
+    //Measure Width
+
+    //Measure Width
+    width = if (widthMode == View.MeasureSpec.EXACTLY) {
+      //Must be this size
+      widthSize
+    } else if (widthMode == View.MeasureSpec.AT_MOST) {
+      //Can't be bigger than...
+      Math.min(desiredWidth, widthSize)
+    } else {
+      //Be whatever you want
+      widthSize
+    }
+
+    //Measure Height
+
+    //Measure Height
+    height = if (heightMode == View.MeasureSpec.EXACTLY) {
+      //Must be this size
+      heightSize
+    } else if (heightMode == View.MeasureSpec.AT_MOST) {
+      //Can't be bigger than...
+      heightSize
+    } else {
+      //Be whatever you want
+      heightSize
+    }
+
+    //MUST CALL THIS
+
+    //MUST CALL THIS
+    setMeasuredDimension(width, height)
   }
 
 //  fun setOrientation(orientation: Orientation) {
