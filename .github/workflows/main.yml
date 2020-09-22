@@ -223,7 +223,9 @@ jobs:
           WIDTH_PX_VARIABLE_NAME="${DEVICE_NAME_KEY}[1]"
           HEIGHT_PX_VARIABLE_NAME="${DEVICE_NAME_KEY}[2]"
           # For reference: https://unix.stackexchange.com/a/364097 & https://unix.stackexchange.com/a/560315.
-          if [[ -z ${!DENSITY_VARIABLE_NAME+x} || -z ${!WIDTH_PX_VARIABLE_NAME+x} || -z ${!HEIGHT_PX_VARIABLE_NAME+x} ]]; then echo "Using invalid AVD name: ${{ matrix.device_profile }}"; exit 1; fi
+          if [[ -z ${!DENSITY_VARIABLE_NAME+x} ]]; then echo "Using invalid AVD name: ${{ matrix.device_profile }}. No density defined."; exit 1; fi
+          if [[ -z ${!WIDTH_PX_VARIABLE_NAME+x} ]]; then echo "Using invalid AVD name: ${{ matrix.device_profile }}. No width defined."; exit 1; fi
+          if [[ -z ${!HEIGHT_PX_VARIABLE_NAME+x} ]]; then echo "Using invalid AVD name: ${{ matrix.device_profile }}. No height defined."; exit 1; fi
 
           echo "::set-env name=AVD_NAME::$AVD_NAME"
           echo "::set-env name=AVD_DENSITY::${!DENSITY_VARIABLE_NAME}"
