@@ -217,7 +217,7 @@ jobs:
           AVD_NAME=$(echo "${{ matrix.device_profile }}" | tr '[:upper:]' '[:lower:]' | tr -s ' ' '_')
           DEVICE_NAME_KEY=$(echo $AVD_NAME | tr '[:lower:]' '[:upper:]')
           echo "Using $DEVICE_NAME_KEY to look up device information"
-          if [[ -z ${!$DEVICE_NAME_KEY+x} ]]; then echo "Using unknown AVD name: ${{ matrix.device_profile }}"; exit 1; fi
+          if [[ -z ${!DEVICE_NAME_KEY+x} ]]; then echo "Using unknown AVD name: ${{ matrix.device_profile }}"; exit 1; fi
 
           DENSITY_VARIABLE_NAME="${DEVICE_NAME_KEY}[0]"
           WIDTH_PX_VARIABLE_NAME="${DEVICE_NAME_KEY}[1]"
