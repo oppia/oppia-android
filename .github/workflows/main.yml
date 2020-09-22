@@ -224,7 +224,7 @@ jobs:
           # Note that this additional parsing is necessary since GitHub stores environment variables
           # as strings, so arrays can't be explicitly defined.
           DEVICE_SETTINGS_FLATTENED="${!DEVICE_NAME_KEY}
-          delim=',' read -r -a DEVICE_SETTINGS <<< "$DEVICE_SETTINGS_FLATTENED"
+          delim=' ' read -r -a DEVICE_SETTINGS <<< "$DEVICE_SETTINGS_FLATTENED"
           if [[ ${#DEVICE_SETTINGS[@]} != 3 ]]; then echo "Using invalid AVD name: ${{ matrix.device_profile }}. Expected 3 device specs, not: ${#DEVICE_SETTINGS[@]}"; exit 1; fi
 
           echo "::set-env name=AVD_NAME::$AVD_NAME"
