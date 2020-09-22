@@ -10,7 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -122,13 +121,10 @@ class QuestionAssessmentProgressControllerTest {
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnsweredQuestionOutcome>>
 
-  @Before
-  fun setUp() {
-    setUpTestApplicationWithSeed(questionSeed = 0)
-  }
-
   @Test
   fun testGetCurrentQuestion_noSessionStarted_returnsPendingResult() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+
     val resultLiveData =
       questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
@@ -140,6 +136,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testGetCurrentQuestion_sessionStarted_withEmptyQuestionList_fails() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     questionTrainingController.startQuestionTrainingSession(listOf())
 
     val resultLiveData =
@@ -159,6 +156,8 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testStartTrainingSession_succeeds() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+
     val resultLiveData =
       questionTrainingController.startQuestionTrainingSession(TEST_SKILL_ID_LIST_012)
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
@@ -170,6 +169,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testGetCurrentQuestion_playSession_returnsPendingResultFromLoadingSession() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     val currentQuestionLiveData =
       questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
@@ -188,6 +188,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testGetCurrentQuestion_playSession_loaded_returnsInitialQuestionPending() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     startTrainingSession(TEST_SKILL_ID_LIST_012)
 
     val currentQuestionLiveData =
@@ -210,6 +211,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testGetCurrentQuestion_playInvalidSession_thenPlayValidExp_returnsInitialPendingQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     // Start with starting an invalid training session.
     startTrainingSession(listOf())
     endTrainingSession()
@@ -236,6 +238,8 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testStopTrainingSession_withoutStartingSession_fails() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+
     val resultLiveData =
       questionTrainingController.stopQuestionTrainingSession()
     testCoroutineDispatchers.runCurrent()
@@ -249,6 +253,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testStartTrainingSession_withoutFinishingPrevious_fails() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     questionTrainingController.startQuestionTrainingSession(TEST_SKILL_ID_LIST_012)
 
     val resultLiveData =
@@ -264,6 +269,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testStopTrainingSession_afterStartingPreviousSession_succeeds() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     questionTrainingController.startQuestionTrainingSession(TEST_SKILL_ID_LIST_012)
 
     val resultLiveData =
@@ -276,6 +282,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testGetCurrentQuestion_playSecondSession_afterFinishingPrev_loaded_returnsInitialQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     val currentQuestionLiveData =
       questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
@@ -301,6 +308,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testSubmitAnswer_beforePlaying_failsWithError() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     val result =
       questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
@@ -489,6 +497,8 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testMoveToNext_beforePlaying_failsWithError() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+
     val moveToStateResult =
       questionAssessmentProgressController.moveToNextQuestion()
     moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
@@ -504,6 +514,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testMoveToNext_forPendingInitialQuestion_failsWithError() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
@@ -627,6 +638,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testGetCurrentQuestion_secondQuestion_submitRightAnswer_pendingQuestionBecomesCompleted() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
@@ -654,6 +666,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testGetCurrentQuestion_secondQuestion_submitWrongAnswer_updatePendingQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
@@ -681,6 +694,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testSubmitAnswer_forNumericInput_correctAnswer_returnsOutcomeWithTransition() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
@@ -701,6 +715,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testSubmitAnswer_forNumericInput_wrongAnswer_returnsOutcomeWithTransition() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
@@ -721,6 +736,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testGetCurrentQuestion_thirdQuestion_isTerminalQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     val currentQuestionLiveData =
       questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
@@ -743,6 +759,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testMoveToNext_onFinalQuestion_failsWithError() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
@@ -766,6 +783,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testGetCurrentQuestion_afterPlayingSecondSession_returnsTerminalQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     val currentQuestionLiveData =
       questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
@@ -786,6 +804,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testGetCurrentQuestion_afterPlayingThroughPrevSessions_returnsQuestionFromSecondSession() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     val currentQuestionLiveData =
       questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
@@ -811,6 +830,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testMoveToNext_onFinalQuestion_failsWithError_logsException() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
@@ -830,6 +850,8 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testSubmitAnswer_beforePlaying_failsWithError_logsException() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+
     val result =
       questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
@@ -844,6 +866,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
@@ -882,6 +905,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testRevealHint_forWrongAnswer_showHint_returnHintIsRevealed() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     val currentQuestionLiveData =
       questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
@@ -938,6 +962,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   fun testRevealSolution_forWrongAnswer_showSolution_returnSolutionIsRevealed() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
     val currentQuestionLiveData =
       questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)

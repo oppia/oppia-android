@@ -58,6 +58,7 @@ import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
@@ -86,6 +87,9 @@ class ProfileRenameActivityTest {
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -140,7 +144,9 @@ class ProfileRenameActivityTest {
           isDescendantOfA(withId(R.id.input_name))
         )
       ).perform(typeText("James"))
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).check(matches(isEnabled()))
     }
   }
@@ -159,7 +165,9 @@ class ProfileRenameActivityTest {
           isDescendantOfA(withId(R.id.input_name))
         )
       ).perform(typeText("James"))
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).check(
         matches(
           withText("James")
@@ -240,7 +248,9 @@ class ProfileRenameActivityTest {
           isDescendantOfA(withId(R.id.input_name))
         )
       ).perform(typeText("123"))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.error_text),
@@ -266,13 +276,16 @@ class ProfileRenameActivityTest {
           isDescendantOfA(withId(R.id.input_name))
         )
       ).perform(typeText("123"))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.input),
           isDescendantOfA(withId(R.id.input_name))
         )
       ).perform(typeText(" "))
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.error_text),
@@ -294,7 +307,9 @@ class ProfileRenameActivityTest {
         typeText("test"),
         closeSoftKeyboard()
       )
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).check(
         matches(
           withText("test")
@@ -317,8 +332,11 @@ class ProfileRenameActivityTest {
         typeText("Admin"),
         closeSoftKeyboard()
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.error_text),
@@ -338,6 +356,7 @@ class ProfileRenameActivityTest {
     ).use {
       onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
     }
   }

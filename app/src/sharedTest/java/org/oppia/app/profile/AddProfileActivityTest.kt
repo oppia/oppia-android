@@ -515,8 +515,10 @@ class AddProfileActivityTest {
       ).perform(
         typeText("123"), closeSoftKeyboard()
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.error_text),
@@ -530,6 +532,7 @@ class AddProfileActivityTest {
   fun testAddProfileActivity_changeConfiguration_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() { // ktlint-disable max-line-length
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(
         allOf(
@@ -539,8 +542,10 @@ class AddProfileActivityTest {
       ).perform(
         typeText("123"), closeSoftKeyboard()
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.error_text),
@@ -565,6 +570,7 @@ class AddProfileActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.input),
@@ -599,6 +605,7 @@ class AddProfileActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.input),
