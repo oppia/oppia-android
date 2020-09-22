@@ -172,15 +172,15 @@ jobs:
       # The list of tests to run using an emulator.
       TEST_WHITELIST: org.oppia.app.splash.SplashActivityTest org.oppia.app.player.state.StateFragmentTest
 
-      # DEVICE MAPPING: (density width_px height_px).
+      # DEVICE MAPPING: density width_px height_px
       # Reference: https://material.io/resources/devices/.
-      HTC_HERO: (160 320 480) # 3.2 inches mdpi (1.0 * mdpi, fudged slightly) handset.
-      ANDROID_ONE: (240 480 854) # 4.5 inch hdpi (1.5 * mdpi) handset.
-      NEXUS_4: (320 768 1280) # 4.7 inch xhdpi (2.0 * mdpi) handset.
-      NEXUS_5X: (416 1080 1920) # 5.2 inch xxhdpi (2.6 * mdpi) handset.
-      PIXEL_XL: (560 1440 2560) # 5.5 inch xxxhdpi (3.5 * mdpi) handset.
-      SAMSUNG_GALAXY_TAB_10: (160 800 1280) # # 10.1 inch mdpi (1.0 * mdpi) tablet.
-      NEXUS_10: (320 1280 800) # 10.1 inch xhdpi (2.0 * mdpi) tablet.
+      HTC_HERO: 160 320 480 # 3.2 inches mdpi (1.0 * mdpi, fudged slightly) handset.
+      ANDROID_ONE: 240 480 854 # 4.5 inch hdpi (1.5 * mdpi) handset.
+      NEXUS_4: 320 768 1280 # 4.7 inch xhdpi (2.0 * mdpi) handset.
+      NEXUS_5X: 416 1080 1920 # 5.2 inch xxhdpi (2.6 * mdpi) handset.
+      PIXEL_XL: 560 1440 2560 # 5.5 inch xxxhdpi (3.5 * mdpi) handset.
+      SAMSUNG_GALAXY_TAB_10: 160 800 1280 # # 10.1 inch mdpi (1.0 * mdpi) tablet.
+      NEXUS_10: 320 1280 800 # 10.1 inch xhdpi (2.0 * mdpi) tablet.
     strategy:
       matrix:
         api-level: [29]
@@ -222,18 +222,21 @@ jobs:
           AVD_NAME=$(echo "${{ matrix.device_profile }}" | tr '[:upper:]' '[:lower:]' | tr -s ' ' '_')
           DEVICE_NAME_KEY=$(echo $AVD_NAME | tr '[:lower:]' '[:upper:]')
           echo "Using $DEVICE_NAME_KEY to look up device information"
+          # For reference: https://unix.stackexchange.com/a/364097 & https://unix.stackexchange.com/a/560315.
           if [[ -z ${!DEVICE_NAME_KEY+x} ]]; then echo "Using unknown AVD name: ${{ matrix.device_profile }}"; exit 1; fi
 
-          DENSITY_VARIABLE_NAME="${DEVICE_NAME_KEY}[0]"
-          WIDTH_PX_VARIABLE_NAME="${DEVICE_NAME_KEY}[1]"
-          HEIGHT_PX_VARIABLE_NAME="${DEVICE_NAME_KEY}[2]"
-          # For reference: https://unix.stackexchange.com/a/364097 & https://unix.stackexchange.com/a/560315.
-          if [[ -z ${!DENSITY_VARIABLE_NAME+x} || -z ${!WIDTH_PX_VARIABLE_NAME+x} || -z ${!HEIGHT_PX_VARIABLE_NAME+x} ]]; then echo "Using invalid AVD name: ${{ matrix.device_profile }}"; exit 1; fi
+          # Reference: https://stackoverflow.com/a/10586169 & https://unix.stackexchange.com/a/193042.
+          # Note that this additional parsing is necessary since GitHub stores environment variables
+          # as strings, so arrays can't be explicitly defined.
+          DEVICE_SETTINGS_FLATTENED="${!DEVICE_NAME_KEY}"
+          echo "Debug flattened dev settings $DEVICE_SETTINGS_FLATTENED"
+          delim=' ' read -r -a DEVICE_SETTINGS <<< "$DEVICE_SETTINGS_FLATTENED"
+          if [[ ${#DEVICE_SETTINGS[@]} != 3 ]]; then echo "Using invalid AVD name: ${{ matrix.device_profile }}. Expected 3 device specs, not: ${#DEVICE_SETTINGS[@]}"; exit 1; fi
 
           echo "::set-env name=AVD_NAME::$AVD_NAME"
-          echo "::set-env name=AVD_DENSITY::${!DENSITY_VARIABLE_NAME}"
-          echo "::set-env name=AVD_WIDTH_PX::${!WIDTH_PX_VARIABLE_NAME}"
-          echo "::set-env name=AVD_HEIGHT_PX::${!HEIGHT_PX_VARIABLE_NAME}"
+          echo "::set-env name=AVD_DENSITY::${DEVICE_SETTINGS[0]}"
+          echo "::set-env name=AVD_WIDTH_PX::${DEVICE_SETTINGS[1]}"
+          echo "::set-env name=AVD_HEIGHT_PX::${DEVICE_SETTINGS[2]}"
 
       - name: Create AVD
         run: bash ./scripts/create_avd.sh ./$AVD_NAME $AVD_NAME ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.abi }} $AVD_DENSITY $AVD_WIDTH_PX $AVD_HEIGHT_PX
