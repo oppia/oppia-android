@@ -189,6 +189,12 @@ jobs:
         with:
          path: ~/.gradle/caches
          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}
+      - name: Debug
+        run: |
+          echo "Pixel XL -- $PIXEL_XL"
+          echo "Pixel XL elem 0 -- ${PIXEL_XL[0]}"
+          echo "Pixel XL elem 1 -- ${PIXEL_XL[1]}"
+          echo "Pixel XL elem 2 -- ${PIXEL_XL[2]}"
 
       # Set up Java 8 since it's required for building binaries dependent on the Android SDK.
       - name: Set up JDK 1.8
@@ -218,7 +224,7 @@ jobs:
           DEVICE_NAME_KEY=$(echo $AVD_NAME | tr '[:lower:]' '[:upper:]')
           echo "Using $DEVICE_NAME_KEY to look up device information"
           if [[ -z ${!DEVICE_NAME_KEY+x} ]]; then echo "Using unknown AVD name: ${{ matrix.device_profile }}"; exit 1; fi
-
+          
           DENSITY_VARIABLE_NAME="${DEVICE_NAME_KEY}[0]"
           WIDTH_PX_VARIABLE_NAME="${DEVICE_NAME_KEY}[1]"
           HEIGHT_PX_VARIABLE_NAME="${DEVICE_NAME_KEY}[2]"
