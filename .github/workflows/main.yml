@@ -210,7 +210,7 @@ jobs:
 
       - name: Start building Android tests (debug) in background
         run: |
-          ./gradlew --full-stacktrace :app:compileDebugAndroidTestJavaWithJavac &
+          ./gradlew --full-stacktrace :app:compileDebugAndroidTestJavaWithJavac | tee ./build_output.log &
           BACKGROUND_BUILD_PID=$!
           echo "::set-env name=BACKGROUND_BUILD_PID::$BACKGROUND_BUILD_PID"
 
@@ -280,3 +280,4 @@ jobs:
         with:
           name: emulator-test-output
           path: emulator_test_output/
+          files: build_output.log
