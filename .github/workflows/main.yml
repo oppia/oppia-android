@@ -183,7 +183,7 @@ jobs:
       NEXUS_10: 320 1280 800 # 10.1 inch xhdpi (2.0 * mdpi) tablet.
     strategy:
       matrix:
-        api-level: [28]
+        api-level: [29]
         target: [default]
         abi: [x86_64]
         device_profile: [Pixel XL]
@@ -224,8 +224,9 @@ jobs:
       - name: Install ffmpeg
         run: brew install ffmpeg
 
+      # Reference for silencing downlaod progress: https://stackoverflow.com/a/52464819.
       - name: Set up platform tools, SDK tools, and system images
-        run: sdkmanager "platform-tools" "platforms;android-${{ matrix.api-level }}" "system-images;android-${{ matrix.api-level }};${{ matrix.target }};${{ matrix.abi }}"
+        run: sdkmanager "platform-tools" "platforms;android-${{ matrix.api-level }}" "system-images;android-${{ matrix.api-level }};${{ matrix.target }};${{ matrix.abi }}" | grep -v Unzipping
 
       # See https://stackoverflow.com/a/40307663 for a reference for how variable extraction works.
       - name: Extract AVD variables
