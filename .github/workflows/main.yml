@@ -226,16 +226,12 @@ jobs:
           DEVICE_SETTINGS_FLATTENED="${!DEVICE_NAME_KEY}"
           echo "Debug flattened dev settings $DEVICE_SETTINGS_FLATTENED"
           delim=' ' read -r -a DEVICE_SETTINGS <<< "$DEVICE_SETTINGS_FLATTENED"
-          echo "Debug dev settings $DEVICE_SETTINGS with length ${#DEVICE_SETTINGS[@]}"
           if [[ ${#DEVICE_SETTINGS[@]} != 3 ]]; then echo "Using invalid AVD name: ${{ matrix.device_profile }}. Expected 3 device specs, not: ${#DEVICE_SETTINGS[@]}"; exit 1; fi
-          echo "Dev settings[0] ${DEVICE_SETTINGS[0]}"
-          echo "Dev settings[1] ${DEVICE_SETTINGS[1]}"
-          echo "Dev settings[2] ${DEVICE_SETTINGS[2]}"
 
           echo "::set-env name=AVD_NAME::$AVD_NAME"
-          echo "::set-env name=AVD_DENSITY::${DENSITY_VARIABLE_NAME[0]}"
-          echo "::set-env name=AVD_WIDTH_PX::${DENSITY_VARIABLE_NAME[1]}"
-          echo "::set-env name=AVD_HEIGHT_PX::${DENSITY_VARIABLE_NAME[2]}"
+          echo "::set-env name=AVD_DENSITY::${DEVICE_SETTINGS[0]}"
+          echo "::set-env name=AVD_WIDTH_PX::${DEVICE_SETTINGS[1]}"
+          echo "::set-env name=AVD_HEIGHT_PX::${DEVICE_SETTINGS[2]}"
 
       - name: Debug AVD variables
         run: echo "Debug avd name $AVD_NAME"; echo "Debug avd density $AVD_DENSITY"; echo "Debug avd width $AVD_WIDTH_PX"; echo "Debug avd height $AVD_HEIGHT_PX"
