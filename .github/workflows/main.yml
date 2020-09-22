@@ -174,7 +174,7 @@ jobs:
 
       # DEVICE MAPPING: (density width_px height_px)
       # 5.5 inch xxxhdpi device.
-      PIXEL_XL: (560 2560 1440)
+      PIXEL_XL: 560 2560 1440
     strategy:
       matrix:
         api-level: [29]
@@ -223,7 +223,7 @@ jobs:
           # Reference: https://stackoverflow.com/a/10586169 & https://unix.stackexchange.com/a/193042.
           # Note that this additional parsing is necessary since GitHub stores environment variables
           # as strings, so arrays can't be explicitly defined.
-          DEVICE_SETTINGS_FLATTENED="${!DEVICE_NAME_KEY}
+          DEVICE_SETTINGS_FLATTENED="${!DEVICE_NAME_KEY}"
           delim=' ' read -r -a DEVICE_SETTINGS <<< "$DEVICE_SETTINGS_FLATTENED"
           if [[ ${#DEVICE_SETTINGS[@]} != 3 ]]; then echo "Using invalid AVD name: ${{ matrix.device_profile }}. Expected 3 device specs, not: ${#DEVICE_SETTINGS[@]}"; exit 1; fi
 
