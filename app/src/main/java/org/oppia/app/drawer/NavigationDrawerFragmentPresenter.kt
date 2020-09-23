@@ -111,7 +111,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
               activity,
               internalProfileId
             )
+
+          // added a flag to intent so that the activity created only once and used if already existed,
+          // as for other menu item this case is not applicable,
           intent.setFlags(FLAG_ACTIVITY_SINGLE_TOP)
+
           fragment.activity!!.startActivity(intent)
           if (previousMenuItemId != NavigationDrawerItem.HOME.ordinal) {
             fragment.activity!!.finish()
