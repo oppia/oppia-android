@@ -11,6 +11,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import java.util.Locale
 import javax.inject.Inject
@@ -26,7 +27,9 @@ class ProfileChooserViewModel @Inject constructor(
   private val routeToAdminPinListener = fragment as RouteToAdminPinListener
 
   val profiles: LiveData<List<ProfileChooserUiModel>> by lazy {
-    Transformations.map(profileManagementController.getProfiles(), ::processGetProfilesResult)
+    Transformations.map(
+      profileManagementController.getProfiles().toLiveData(), ::processGetProfilesResult
+    )
   }
 
   lateinit var adminPin: String

@@ -10,6 +10,7 @@ import org.oppia.app.shim.IntentFactoryShim
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
@@ -29,7 +30,7 @@ class CompletedStoryListViewModel @Inject constructor(
   private val completedStoryListResultLiveData: LiveData<AsyncResult<CompletedStoryList>> by lazy {
     topicController.getCompletedStoryList(
       ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    )
+    ).toLiveData()
   }
 
   private val completedStoryLiveData: LiveData<CompletedStoryList> by lazy {

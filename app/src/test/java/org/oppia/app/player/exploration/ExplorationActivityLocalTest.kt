@@ -15,6 +15,8 @@ import org.junit.runner.RunWith
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.model.EventLog
@@ -166,7 +168,7 @@ class ExplorationActivityLocalTest {
     fun inject(explorationActivityLocalTest: ExplorationActivityLocalTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory {
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerExplorationActivityLocalTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -180,5 +182,7 @@ class ExplorationActivityLocalTest {
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 }

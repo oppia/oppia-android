@@ -32,6 +32,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.domain.question.QuestionAssessmentProgressController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.gcsresource.QuestionResourceBucketName
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.system.OppiaClock
@@ -58,7 +59,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private val questionViewModel by lazy { getQuestionPlayerViewModel() }
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
-    questionAssessmentProgressController.getCurrentQuestion()
+    questionAssessmentProgressController.getCurrentQuestion().toLiveData()
   }
   private lateinit var binding: QuestionPlayerFragmentBinding
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler

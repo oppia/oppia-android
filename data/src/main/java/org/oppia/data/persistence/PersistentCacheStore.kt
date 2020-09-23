@@ -20,15 +20,16 @@ import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
 /**
- * An on-disk persistent cache for proto messages that ensures reads and writes happen in a well-defined order. Note
- * that if this cache is used like a [DataProvider], there is a race condition between the initial store's data being
- * retrieved and any early writes to the store (writes generally win). If this is not ideal, callers should use
- * [primeCacheAsync] to synchronously kick-off a read update to the store that is guaranteed to complete before any writes.
- * This will be reflected in the first time the store's state is delivered to a subscriber to a LiveData version of this
- * data provider.
+ * An on-disk persistent cache for proto messages that ensures reads and writes happen in a
+ * well-defined order. Note that if this cache is used like a [DataProvider], there is a race
+ * condition between the initial store's data being retrieved and any early writes to the store
+ * (writes generally win). If this is not ideal, callers should use [primeCacheAsync] to
+ * synchronously kick-off a read update to the store that is guaranteed to complete before any
+ * writes. This will be reflected in the first time the store's state is delivered to a subscriber
+ * to a LiveData version of this data provider.
  *
- * Note that this is a fast-response data provider, meaning it will provide a pending [AsyncResult] to subscribers
- * immediately until the actual store is retrieved from disk.
+ * Note that this is a fast-response data provider, meaning it will provide a pending [AsyncResult]
+ * to subscribers immediately until the actual store is retrieved from disk.
  */
 class PersistentCacheStore<T : MessageLite> private constructor(
   context: Context,
@@ -37,7 +38,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   cacheName: String,
   private val initialValue: T,
   directory: File = context.filesDir
-) : DataProvider<T> {
+) : DataProvider<T>(context) {
   private val cacheFileName = "$cacheName.cache"
   private val providerId = PersistentCacheStoreId(cacheFileName)
   private val failureLock = ReentrantLock()
@@ -66,9 +67,10 @@ class PersistentCacheStore<T : MessageLite> private constructor(
         return AsyncResult.pending()
       }
 
-      // Second, check if a previous deferred read failed. The store stays in a failed state until the next storeData()
-      // call to avoid hitting the same failure again. Eventually, the class could be updated with some sort of retry or
-      // recovery mechanism if failures show up in real use cases.
+      // Second, check if a previous deferred read failed. The store stays in a failed state until
+      // the next storeData() call to avoid hitting the same failure again. Eventually, the class
+      // could be updated with some sort of retry or recovery mechanism if failures show up in real
+      // use cases.
       failureLock.withLock {
         deferredLoadCacheFailure?.let {
           // A previous read failed.
@@ -83,21 +85,24 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   }
 
   /**
-   * Kicks off a read operation to update the in-memory cache. This operation blocks against calls to [storeDataAsync]
-   * and deferred calls to [retrieveData].
+   * Kicks off a read operation to update the in-memory cache. This operation blocks against calls
+   * to [storeDataAsync] and deferred calls to [retrieveData].
    *
-   * @param forceUpdate indicates whether to force a reset of the in-memory cache. Note that this only forces a load; if
-   *     the load fails then the store will remain in its same state. If this value is false (the default), it will only
-   *     perform file I/O if the cache is not already loaded into memory.
-   * @returns a [Deferred] that completes upon the completion of priming the cache, or failure to do so with the failed
-   *     exception. Note that the failure reason will not be propagated to a LiveData-converted version of this data
-   *     provider, so it must be handled at the callsite for this method.
+   * @param forceUpdate indicates whether to force a reset of the in-memory cache. Note that this
+   *     only forces a load; if the load fails then the store will remain in its same state. If this
+   *     value is false (the default), it will only perform file I/O if the cache is not already
+   *     loaded into memory.
+   * @returns a [Deferred] that completes upon the completion of priming the cache, or failure to do
+   *     so with the failed exception. Note that the failure reason will not be propagated to a
+   *     LiveData-converted version of this data provider, so it must be handled at the callsite for
+   *     this method.
    */
   fun primeCacheAsync(forceUpdate: Boolean = false): Deferred<Any> {
     return cache.updateIfPresentAsync { cachePayload ->
       if (forceUpdate || cachePayload.state == CacheState.UNLOADED) {
-        // Store the retrieved on-disk cache, if it's present (otherwise set up state such that retrieveData() does not
-        // attempt to load the file from disk again since the attempt was made here).
+        // Store the retrieved on-disk cache, if it's present (otherwise set up state such that
+        // retrieveData() does not attempt to load the file from disk again since the attempt was
+        // made here).
         loadFileCache(cachePayload)
       } else {
         // Otherwise, keep the cache the same.
@@ -107,9 +112,9 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   }
 
   /**
-   * Callers should use this read function if they they don't care or specifically do not
-   * want to observe changes to the underlying store. If the file is not in memory, it will
-   * loaded from disk and observers will be notified.
+   * Callers should use this read function if they they don't care or specifically do not want to
+   * observe changes to the underlying store. If the file is not in memory, it will loaded from disk
+   * and observers will be notified.
    *
    * @return a deferred value that contains the value of the cached payload.
    */
@@ -131,13 +136,15 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   }
 
   /**
-   * Calls the specified value with the current on-disk contents and saves the result of the function to disk. Note that
-   * the function used here should be non-blocking, thread-safe, and should have no side effects.
+   * Calls the specified value with the current on-disk contents and saves the result of the
+   * function to disk. Note that the function used here should be non-blocking, thread-safe, and
+   * should have no side effects.
    *
-   * @param updateInMemoryCache indicates whether this change to the on-disk store should also update the in-memory
-   *     store, and propagate that change to all subscribers to this data provider. This may be ideal if callers want to
-   *     control "snapshots" of the store that subscribers have access to, however it's recommended to keep all store
-   *     calls consistent in whether they update the in-memory cache to avoid complex potential in-memory/on-disk sync
+   * @param updateInMemoryCache indicates whether this change to the on-disk store should also
+   *     update the in-memory store, and propagate that change to all subscribers to this data
+   *     provider. This may be ideal if callers want to control "snapshots" of the store that
+   *     subscribers have access to, however it's recommended to keep all store calls consistent in
+   *     whether they update the in-memory cache to avoid complex potential in-memory/on-disk sync
    *     issues.
    */
   fun storeDataAsync(updateInMemoryCache: Boolean = true, update: (T) -> T): Deferred<Any> {
@@ -162,8 +169,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   }
 
   /**
-   * Returns a [Deferred] indicating when the cache was cleared and its on-disk file, removed. This does notify
-   * subscribers.
+   * Returns a [Deferred] indicating when the cache was cleared and its on-disk file, removed. This
+   * does notify subscribers.
    */
   fun clearCacheAsync(): Deferred<Any> {
     return cache.updateIfPresentAsync {
@@ -173,8 +180,9 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       failureLock.withLock {
         deferredLoadCacheFailure = null
       }
-      // Always clear the in-memory cache and reset it to the initial value (the cache itself should never be fully
-      // deleted since the rest of the store assumes a value is always present in it).
+      // Always clear the in-memory cache and reset it to the initial value (the cache itself should
+      // never be fully deleted since the rest of the store assumes a value is always present in
+      // it).
       CachePayload(state = CacheState.UNLOADED, value = initialValue)
     }
   }
@@ -191,8 +199,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   }
 
   /**
-   * Loads the file store from disk, and returns the most up-to-date cache payload. This should only be called from the
-   * cache's update thread.
+   * Loads the file store from disk, and returns the most up-to-date cache payload. This should only
+   * be called from the cache's update thread.
    */
   @Suppress("UNCHECKED_CAST") // Cast is ensured since root proto is initialValue with type T.
   private fun loadFileCache(currentPayload: CachePayload<T>): CachePayload<T> {
@@ -211,7 +219,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       failureLock.withLock {
         deferredLoadCacheFailure = e
       }
-      // Update the cache to have an in-memory copy of the current payload since on-disk retrieval failed.
+      // Update the cache to have an in-memory copy of the current payload since on-disk retrieval
+      // failed.
       CachePayload(
         state = CacheState.IN_MEMORY_ONLY,
         value = currentPayload.value
@@ -220,8 +229,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   }
 
   /**
-   * Stores the file store to disk, and returns the persisted payload. This should only be called from the cache's
-   * update thread.
+   * Stores the file store to disk, and returns the persisted payload. This should only be called
+   * from the cache's update thread.
    */
   private fun storeFileCache(currentPayload: CachePayload<T>, update: (T) -> T): CachePayload<T> {
     val updatedCacheValue = update(currentPayload.value)
@@ -263,11 +272,11 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     }
   }
 
-  // TODO(#59): Use @ApplicationContext instead of Context once package dependencies allow for cross-module circular
-  // dependencies. Currently, the data module cannot depend on the app module.
+  // TODO(#59): Use @ApplicationContext instead of Context once package dependencies allow for
+  //  cross-module circular ependencies. Currently, the data module cannot depend on the app module.
   /**
-   * An injectable factory for [PersistentCacheStore]s. The stores themselves should be retrievable from central
-   * controllers since they can't be placed directly in the Dagger graph.
+   * An injectable factory for [PersistentCacheStore]s. The stores themselves should be retrievable
+   * from central controllers since they can't be placed directly in the Dagger graph.
    */
   @Singleton
   class Factory @Inject constructor(
@@ -277,7 +286,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     private val directoryManagementUtil: DirectoryManagementUtil
   ) {
     /**
-     * Returns a new [PersistentCacheStore] with the specified cache name and initial value under the shared directory context.filesDir.
+     * Returns a new [PersistentCacheStore] with the specified cache name and initial value under
+     * the shared directory context.filesDir.
      *
      * Use this method when data is shared by all profiles.
      */
@@ -292,8 +302,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     }
 
     /**
-     * Returns a new [PersistentCacheStore] with the specified cache name and initial value under the directory specified by profileId.
-     * Use this method when data is unique to each profile.
+     * Returns a new [PersistentCacheStore] with the specified cache name and initial value under
+     * the directory specified by profileId. Use this method when data is unique to each profile.
      */
     fun <T : MessageLite> createPerProfile(
       cacheName: String,

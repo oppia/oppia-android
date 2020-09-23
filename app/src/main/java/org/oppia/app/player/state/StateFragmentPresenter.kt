@@ -34,6 +34,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.domain.topic.StoryProgressController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
@@ -78,7 +79,7 @@ class StateFragmentPresenter @Inject constructor(
   }
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
-    explorationProgressController.getCurrentState()
+    explorationProgressController.getCurrentState().toLiveData()
   }
 
   fun handleCreateView(

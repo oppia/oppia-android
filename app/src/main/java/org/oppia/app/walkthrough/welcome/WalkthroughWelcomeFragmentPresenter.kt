@@ -19,6 +19,7 @@ import org.oppia.app.walkthrough.WalkthroughPageChanger
 import org.oppia.app.walkthrough.WalkthroughPages
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -68,7 +69,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId),
+      profileManagementController.getProfile(profileId).toLiveData(),
       ::processGetProfileResult
     )
   }

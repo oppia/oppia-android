@@ -18,6 +18,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -67,7 +68,9 @@ class PinPasswordActivityPresenter @Inject constructor(
           ) {
             if (inputtedPin.toString() == pinViewModel.correctPin.get()) {
               profileManagementController
-                .loginToProfile(ProfileId.newBuilder().setInternalId(profileId).build())
+                .loginToProfile(
+                  ProfileId.newBuilder().setInternalId(profileId).build()
+                ).toLiveData()
                 .observe(
                   activity,
                   Observer {

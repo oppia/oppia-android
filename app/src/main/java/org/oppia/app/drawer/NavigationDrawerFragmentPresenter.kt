@@ -33,6 +33,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
@@ -87,7 +88,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId),
+      profileManagementController.getProfile(profileId).toLiveData(),
       ::processGetProfileResult
     )
   }
@@ -136,7 +137,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun getCompletedStoryListCount(): LiveData<CompletedStoryList> {
     return Transformations.map(
-      topicController.getCompletedStoryList(profileId),
+      topicController.getCompletedStoryList(profileId).toLiveData(),
       ::processGetCompletedStoryListResult
     )
   }
@@ -165,7 +166,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun getOngoingTopicListCount(): LiveData<OngoingTopicList> {
     return Transformations.map(
-      topicController.getOngoingTopicList(profileId),
+      topicController.getOngoingTopicList(profileId).toLiveData(),
       ::processGetOngoingTopicListResult
     )
   }

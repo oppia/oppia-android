@@ -16,6 +16,7 @@ import org.oppia.app.profile.ProfileInputView
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [ProfileRenameActivity]. */
@@ -66,7 +67,7 @@ class ProfileRenameActivityPresenter @Inject constructor(
         return@setOnClickListener
       }
       profileManagementController
-        .updateName(ProfileId.newBuilder().setInternalId(profileId).build(), name)
+        .updateName(ProfileId.newBuilder().setInternalId(profileId).build(), name).toLiveData()
         .observe(
           activity,
           Observer {

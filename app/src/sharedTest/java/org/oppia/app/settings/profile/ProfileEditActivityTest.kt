@@ -61,6 +61,7 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.testing.CachingTestModule
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
 import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
@@ -326,7 +327,7 @@ class ProfileEditActivityTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    )
+    ).toLiveData()
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -348,7 +349,7 @@ class ProfileEditActivityTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    )
+    ).toLiveData()
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -380,7 +381,7 @@ class ProfileEditActivityTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
+  interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 

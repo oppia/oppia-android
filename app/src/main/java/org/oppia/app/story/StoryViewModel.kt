@@ -14,6 +14,7 @@ import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
@@ -39,7 +40,7 @@ class StoryViewModel @Inject constructor(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       topicId,
       storyId
-    )
+    ).toLiveData()
   }
 
   private val storyLiveData: LiveData<StorySummary> by lazy {

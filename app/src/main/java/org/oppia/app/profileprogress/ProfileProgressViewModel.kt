@@ -19,6 +19,7 @@ import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
@@ -57,7 +58,7 @@ class ProfileProgressViewModel @Inject constructor(
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId), ::processGetProfileResult
+      profileManagementController.getProfile(profileId).toLiveData(), ::processGetProfileResult
     )
   }
 
@@ -82,7 +83,7 @@ class ProfileProgressViewModel @Inject constructor(
   }
 
   private val ongoingStoryListResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-    topicListController.getOngoingStoryList(profileId)
+    topicListController.getOngoingStoryList(profileId).toLiveData()
   }
 
   private val ongoingStoryListLiveData: LiveData<OngoingStoryList> by lazy {
@@ -147,7 +148,7 @@ class ProfileProgressViewModel @Inject constructor(
 
   private fun getCompletedStoryListCount(): LiveData<CompletedStoryList> {
     return Transformations.map(
-      topicController.getCompletedStoryList(profileId),
+      topicController.getCompletedStoryList(profileId).toLiveData(),
       ::processGetCompletedStoryListResult
     )
   }
@@ -176,7 +177,7 @@ class ProfileProgressViewModel @Inject constructor(
 
   private fun getOngoingTopicListCount(): LiveData<OngoingTopicList> {
     return Transformations.map(
-      topicController.getOngoingTopicList(profileId),
+      topicController.getOngoingTopicList(profileId).toLiveData(),
       ::processGetOngoingTopicListResult
     )
   }

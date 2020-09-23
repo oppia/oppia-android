@@ -8,6 +8,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.domain.question.QuestionAssessmentProgressController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -20,7 +21,7 @@ class HintsAndSolutionQuestionManagerFragmentPresenter @Inject constructor(
 ) {
 
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
-    questionProgressController.getCurrentQuestion()
+    questionProgressController.getCurrentQuestion().toLiveData()
   }
 
   fun handleCreateView(): View? {

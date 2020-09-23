@@ -34,6 +34,9 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -49,7 +52,7 @@ import javax.inject.Singleton
 /** Tests for [StoryProgressTestHelper]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = StoryProgressTestHelperTest.TestApplication::class)
 class StoryProgressTestHelperTest {
   @Rule
   @JvmField
@@ -109,10 +112,7 @@ class StoryProgressTestHelperTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerStoryProgressTestHelperTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
@@ -123,7 +123,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -144,7 +146,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -166,7 +168,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -184,7 +188,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId)
+    topicController.getCompletedStoryList(profileId).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -202,7 +206,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -223,7 +229,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -245,7 +251,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -263,7 +271,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId)
+    topicController.getCompletedStoryList(profileId).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -281,7 +289,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -302,7 +312,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -322,7 +332,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -339,7 +351,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId)
+    topicController.getCompletedStoryList(profileId).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -358,7 +370,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -379,7 +393,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -399,7 +413,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -416,7 +432,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId)
+    topicController.getCompletedStoryList(profileId).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -435,7 +451,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId, RATIOS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId, RATIOS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
 
     testCoroutineDispatchers.runCurrent()
 
@@ -461,7 +479,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getStory(profileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+    topicController.getStory(profileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -481,7 +499,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -499,7 +519,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId)
+    topicController.getCompletedStoryList(profileId).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -518,7 +538,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId, RATIOS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId, RATIOS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -543,7 +565,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getStory(profileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+    topicController.getStory(profileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -566,7 +588,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -584,7 +608,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId)
+    topicController.getCompletedStoryList(profileId).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -602,7 +626,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId)
+    topicListController.getOngoingStoryList(profileId).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -625,7 +649,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId)
+    topicListController.getOngoingStoryList(profileId).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -648,7 +672,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId)
+    topicListController.getOngoingStoryList(profileId).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -676,7 +700,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId)
+    topicListController.getOngoingStoryList(profileId).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -794,7 +818,7 @@ class StoryProgressTestHelperTest {
       TestDispatcherModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -804,5 +828,19 @@ class StoryProgressTestHelperTest {
     }
 
     fun inject(storyProgressTestHelperTest: StoryProgressTestHelperTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerStoryProgressTestHelperTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(storyProgressTestHelperTest: StoryProgressTestHelperTest) {
+      component.inject(storyProgressTestHelperTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

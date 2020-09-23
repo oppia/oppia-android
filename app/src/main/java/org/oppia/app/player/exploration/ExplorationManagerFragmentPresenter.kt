@@ -11,6 +11,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.ReadingTextSize
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -36,7 +37,7 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
 
   private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId),
+      profileManagementController.getProfile(profileId).toLiveData(),
       ::processReadingTextSizeResult
     )
   }

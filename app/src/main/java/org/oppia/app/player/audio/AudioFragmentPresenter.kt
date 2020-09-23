@@ -26,6 +26,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularAudioDialogController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
@@ -64,7 +65,7 @@ class AudioFragmentPresenter @Inject constructor(
     internalProfileId: Int
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    cellularAudioDialogController.getCellularDataPreference()
+    cellularAudioDialogController.getCellularDataPreference().toLiveData()
       .observe(
         fragment,
         Observer<AsyncResult<CellularDataPreference>> {
@@ -112,7 +113,7 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun getProfileData(): LiveData<String> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId),
+      profileManagementController.getProfile(profileId).toLiveData(),
       ::processGetProfileResult
     )
   }

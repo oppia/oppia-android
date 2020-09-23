@@ -16,6 +16,7 @@ import org.oppia.app.model.ReadingTextSize
 import org.oppia.app.viewmodel.ObservableArrayList
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -47,7 +48,7 @@ class OptionControlsViewModel @Inject constructor(
   }
 
   private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
-    profileManagementController.getProfile(profileId)
+    profileManagementController.getProfile(profileId).toLiveData()
   }
 
   private val profileLiveData: LiveData<Profile> by lazy { getProfileData() }
