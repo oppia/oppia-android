@@ -98,7 +98,6 @@ class ProfileResetPinActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 

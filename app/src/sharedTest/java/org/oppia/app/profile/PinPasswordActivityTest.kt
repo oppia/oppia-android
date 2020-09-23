@@ -108,7 +108,6 @@ class PinPasswordActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 

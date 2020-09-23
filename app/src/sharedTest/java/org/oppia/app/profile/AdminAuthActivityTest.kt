@@ -93,7 +93,6 @@ class AdminAuthActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
