@@ -1,9 +1,9 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.os.Bundle
-import org.oppia.app.R
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.utility.ClickableAreasImage
+import org.oppia.android.app.R
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.utility.ClickableAreasImage
 
 /** Test Activity used for testing [ClickableAreasImage] functionality */
 class ImageRegionSelectionTestActivity : InjectableAppCompatActivity() {

@@ -1,6 +1,6 @@
-package org.oppia.app.player.exploration
+package org.oppia.android.app.player.exploration
 
-import org.oppia.app.model.State
+import org.oppia.android.app.model.State
 
 /** Listener for fetching current exploration state data. */
 interface HintsAndSolutionExplorationManagerListener {

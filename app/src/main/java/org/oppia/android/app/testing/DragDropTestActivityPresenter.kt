@@ -1,12 +1,12 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
-import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.android.app.R
+import org.oppia.android.app.recyclerview.BindableAdapter
 import javax.inject.Inject
 
 /** The presenter for [DragDropTestActivity] */

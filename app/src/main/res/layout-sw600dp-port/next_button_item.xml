@@ -8,7 +8,7 @@
 
     <variable
       name="buttonViewModel"
-      type="org.oppia.app.player.state.itemviewmodel.NextButtonViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.NextButtonViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

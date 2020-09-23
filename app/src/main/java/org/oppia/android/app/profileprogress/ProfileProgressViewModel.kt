@@ -1,4 +1,4 @@
-package org.oppia.app.profileprogress
+package org.oppia.android.app.profileprogress
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -6,21 +6,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.app.R
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.CompletedStoryList
-import org.oppia.app.model.OngoingStoryList
-import org.oppia.app.model.OngoingTopicList
-import org.oppia.app.model.Profile
-import org.oppia.app.model.ProfileId
-import org.oppia.app.shim.IntentFactoryShim
-import org.oppia.app.viewmodel.ObservableViewModel
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.domain.topic.TopicController
-import org.oppia.domain.topic.TopicListController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.parser.StoryHtmlParserEntityType
+import org.oppia.android.app.R
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.CompletedStoryList
+import org.oppia.android.app.model.OngoingStoryList
+import org.oppia.android.app.model.OngoingTopicList
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.shim.IntentFactoryShim
+import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
 /** The [ObservableViewModel] for [ProfileProgressFragment]. */

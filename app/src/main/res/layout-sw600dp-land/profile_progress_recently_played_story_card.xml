@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.profileprogress.RecentlyPlayedStorySummaryViewModel" />
+      type="org.oppia.android.app.profileprogress.RecentlyPlayedStorySummaryViewModel" />
   </data>
 
   <com.google.android.material.card.MaterialCardView
@@ -28,7 +28,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-      <org.oppia.app.customview.LessonThumbnailImageView
+      <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/lesson_thumbnail"
         android:layout_width="0dp"
         android:layout_height="0dp"

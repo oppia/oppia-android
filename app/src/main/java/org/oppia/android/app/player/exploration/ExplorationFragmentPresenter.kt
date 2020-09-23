@@ -1,16 +1,16 @@
-package org.oppia.app.player.exploration
+package org.oppia.android.app.player.exploration
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.app.R
-import org.oppia.app.databinding.ExplorationFragmentBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.EventLog
-import org.oppia.app.player.state.StateFragment
-import org.oppia.domain.oppialogger.OppiaLogger
-import org.oppia.util.system.OppiaClock
+import org.oppia.android.app.R
+import org.oppia.android.app.databinding.ExplorationFragmentBinding
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.player.state.StateFragment
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [ExplorationFragment]. */

@@ -1,4 +1,4 @@
-package org.oppia.app.topic.practice
+package org.oppia.android.app.topic.practice
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,19 +6,19 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.oppia.app.databinding.TopicPracticeFooterViewBinding
-import org.oppia.app.databinding.TopicPracticeFragmentBinding
-import org.oppia.app.databinding.TopicPracticeHeaderViewBinding
-import org.oppia.app.databinding.TopicPracticeSubtopicBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.topic.RouteToQuestionPlayerListener
-import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
-import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
-import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
-import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.app.databinding.TopicPracticeFooterViewBinding
+import org.oppia.android.app.databinding.TopicPracticeFragmentBinding
+import org.oppia.android.app.databinding.TopicPracticeHeaderViewBinding
+import org.oppia.android.app.databinding.TopicPracticeSubtopicBinding
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.topic.RouteToQuestionPlayerListener
+import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
+import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
+import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
+import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [TopicPracticeFragment]. */

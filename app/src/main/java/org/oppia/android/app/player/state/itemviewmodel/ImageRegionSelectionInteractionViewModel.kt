@@ -1,20 +1,20 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
 import android.content.Context
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
-import org.oppia.app.R
-import org.oppia.app.model.ClickOnImage
-import org.oppia.app.model.ImageWithRegions
-import org.oppia.app.model.Interaction
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.app.utility.DefaultRegionClickedEvent
-import org.oppia.app.utility.NamedRegionClickedEvent
-import org.oppia.app.utility.OnClickableAreaClickedListener
-import org.oppia.app.utility.RegionClickedEvent
+import org.oppia.android.app.R
+import org.oppia.android.app.model.ClickOnImage
+import org.oppia.android.app.model.ImageWithRegions
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.utility.DefaultRegionClickedEvent
+import org.oppia.android.app.utility.NamedRegionClickedEvent
+import org.oppia.android.app.utility.OnClickableAreaClickedListener
+import org.oppia.android.app.utility.RegionClickedEvent
 
 /** [StateItemViewModel] for image region selection. */
 class ImageRegionSelectionInteractionViewModel(

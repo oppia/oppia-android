@@ -1,4 +1,4 @@
-package org.oppia.app.view
+package org.oppia.android.app.view
 
 import javax.inject.Scope
 

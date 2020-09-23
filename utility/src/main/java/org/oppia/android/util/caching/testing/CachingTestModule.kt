@@ -1,9 +1,9 @@
-package org.oppia.util.caching.testing
+package org.oppia.android.util.caching.testing
 
 import dagger.Module
 import dagger.Provides
-import org.oppia.util.caching.CacheAssetsLocally
-import org.oppia.util.caching.TopicListToCache
+import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.TopicListToCache
 
 /**
  * Provides test dependencies corresponding to the app's caching policies. In particular, this

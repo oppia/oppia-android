@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.android.app.player.state.hintsandsolution
 
 import javax.inject.Qualifier
 

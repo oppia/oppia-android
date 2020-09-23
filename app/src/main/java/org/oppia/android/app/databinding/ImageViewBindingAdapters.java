@@ -1,4 +1,4 @@
-package org.oppia.app.databinding;
+package org.oppia.android.app.databinding;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -12,9 +12,9 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import org.oppia.app.R;
-import org.oppia.app.model.LessonThumbnailGraphic;
-import org.oppia.app.model.ProfileAvatar;
+import org.oppia.android.app.R;
+import org.oppia.android.app.model.LessonThumbnailGraphic;
+import org.oppia.android.app.model.ProfileAvatar;
 
 /** Holds all custom binding adapters that bind to [ImageView]. */
 public final class ImageViewBindingAdapters {

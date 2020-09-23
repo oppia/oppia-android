@@ -1,4 +1,4 @@
-package org.oppia.util.gcsresource
+package org.oppia.android.util.gcsresource
 
 import dagger.Module
 import dagger.Provides

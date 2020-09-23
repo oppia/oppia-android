@@ -34,7 +34,7 @@
 
   <fragment
     android:id="@+id/help_activity_fragment_navigation_drawer"
-    android:name="org.oppia.app.drawer.NavigationDrawerFragment"
+    android:name="org.oppia.android.app.drawer.NavigationDrawerFragment"
     android:layout_width="304dp"
     android:layout_height="match_parent"
     android:layout_gravity="start"

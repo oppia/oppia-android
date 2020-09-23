@@ -1,4 +1,4 @@
-package org.oppia.app.application
+package org.oppia.android.app.application
 
 import javax.inject.Qualifier
 

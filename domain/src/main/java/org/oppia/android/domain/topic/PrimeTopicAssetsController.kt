@@ -1,10 +1,10 @@
-package org.oppia.domain.topic
+package org.oppia.android.domain.topic
 
 // TODO(#169): Remove this controller & download priming once downloads are properly supported.
 
 /**
  * Controller for conditionally pre-priming assets to enable full download support. Whether
- * downloading is enabled is gated by the [org.oppia.util.caching.CacheAssetsLocally] annotation.
+ * downloading is enabled is gated by the [org.oppia.android.util.caching.CacheAssetsLocally] annotation.
  */
 interface PrimeTopicAssetsController {
   /**

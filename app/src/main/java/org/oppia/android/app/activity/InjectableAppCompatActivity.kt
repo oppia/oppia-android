@@ -1,15 +1,15 @@
-package org.oppia.app.activity
+package org.oppia.android.app.activity
 
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import org.oppia.app.application.ActivityComponentFactory
-import org.oppia.app.fragment.FragmentComponent
+import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.fragment.FragmentComponent
 
 /**
  * An [AppCompatActivity] that facilitates field injection to child activities and constituent fragments that extend
- * [org.oppia.app.fragment.InjectableFragment].
+ * [org.oppia.android.app.fragment.InjectableFragment].
  */
 abstract class InjectableAppCompatActivity : AppCompatActivity() {
   /**

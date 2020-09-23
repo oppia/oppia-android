@@ -1,8 +1,8 @@
-package org.oppia.app.story
+package org.oppia.android.app.story
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
+import org.oppia.android.app.R
+import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
 
 /** The presenter for [StoryActivity]. */

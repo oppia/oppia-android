@@ -1,9 +1,9 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.util.networking.NetworkConnectionUtil
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
 /** Activity used in [ExplorationActivityTest] to get certain dependencies. */

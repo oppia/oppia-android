@@ -6,7 +6,7 @@
 
     <variable
       name="buttonViewModel"
-      type="org.oppia.app.player.state.itemviewmodel.ReplayButtonViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.ReplayButtonViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,4 +1,4 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import android.content.Context
 import android.text.InputFilter
@@ -10,9 +10,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import org.oppia.app.R
-import org.oppia.app.application.ApplicationInjectorProvider
-import org.oppia.app.shim.ViewBindingShim
+import org.oppia.android.app.R
+import org.oppia.android.app.application.ApplicationInjectorProvider
+import org.oppia.android.app.shim.ViewBindingShim
 import javax.inject.Inject
 
 /** Custom view that is used for name or pin input with error messages. */

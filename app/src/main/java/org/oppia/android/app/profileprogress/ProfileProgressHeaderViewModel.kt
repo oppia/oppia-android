@@ -1,10 +1,10 @@
-package org.oppia.app.profileprogress
+package org.oppia.android.app.profileprogress
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
-import org.oppia.app.home.RouteToRecentlyPlayedListener
-import org.oppia.app.model.Profile
+import org.oppia.android.app.home.RouteToRecentlyPlayedListener
+import org.oppia.android.app.model.Profile
 
 /** Header [ViewModel] for the recycler view in [ProfileProgressFragment]. */
 class ProfileProgressHeaderViewModel(activity: AppCompatActivity, fragment: Fragment) :

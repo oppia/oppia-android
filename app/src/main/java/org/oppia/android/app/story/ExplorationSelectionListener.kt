@@ -1,4 +1,4 @@
-package org.oppia.app.story
+package org.oppia.android.app.story
 
 /** Listener for cases when the user taps on a specific chapter/exploration to play. */
 interface ExplorationSelectionListener {

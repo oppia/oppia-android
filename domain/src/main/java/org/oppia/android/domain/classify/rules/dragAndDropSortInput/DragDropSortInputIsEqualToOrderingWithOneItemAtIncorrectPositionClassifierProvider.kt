@@ -1,11 +1,11 @@
-package org.oppia.domain.classify.rules.dragAndDropSortInput
+package org.oppia.android.domain.classify.rules.dragAndDropSortInput
 
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.ListOfSetsOfHtmlStrings
-import org.oppia.app.model.StringList
-import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.GenericRuleClassifier
-import org.oppia.domain.classify.rules.RuleClassifierProvider
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.StringList
+import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.domain.classify.rules.GenericRuleClassifier
+import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import javax.inject.Inject
 
 /**

@@ -1,11 +1,11 @@
-package org.oppia.app.help.faq
+package org.oppia.android.app.help.faq
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.app.R
-import org.oppia.app.help.faq.faqItemViewModel.FAQContentViewModel
-import org.oppia.app.help.faq.faqItemViewModel.FAQHeaderViewModel
-import org.oppia.app.help.faq.faqItemViewModel.FAQItemViewModel
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.R
+import org.oppia.android.app.help.faq.faqItemViewModel.FAQContentViewModel
+import org.oppia.android.app.help.faq.faqItemViewModel.FAQHeaderViewModel
+import org.oppia.android.app.help.faq.faqItemViewModel.FAQItemViewModel
+import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 /** View model in [FAQListFragment]. */

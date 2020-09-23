@@ -1,7 +1,7 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.databinding.ObservableBoolean
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** [ObservableViewModel] for MultipleChoiceInput values or ItemSelectionInput values. */
 class SelectionInteractionContentViewModel(

@@ -1,16 +1,16 @@
-package org.oppia.app.topic.conceptcard
+package org.oppia.android.app.topic.conceptcard
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.app.R
-import org.oppia.app.databinding.ConceptCardFragmentBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.EventLog
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.oppialogger.OppiaLogger
-import org.oppia.util.system.OppiaClock
+import org.oppia.android.app.R
+import org.oppia.android.app.databinding.ConceptCardFragmentBinding
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** Presenter for [ConceptCardFragment], sets up bindings from ViewModel */

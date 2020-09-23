@@ -1,9 +1,9 @@
-package org.oppia.app.administratorcontrols.appversion
+package org.oppia.android.app.administratorcontrols.appversion
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
+import org.oppia.android.app.R
+import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
 
 /** The presenter for [AppVersionActivity]. */

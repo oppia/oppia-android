@@ -1,9 +1,9 @@
-package org.oppia.testing
+package org.oppia.android.testing
 
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import org.oppia.testing.TestCoroutineDispatcher.TaskIdleListener
+import org.oppia.android.testing.TestCoroutineDispatcher.TaskIdleListener
 import javax.inject.Inject
 
 /**

@@ -1,4 +1,4 @@
-package org.oppia.app.mydownloads
+package org.oppia.android.app.mydownloads
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

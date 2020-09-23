@@ -1,12 +1,12 @@
-package org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel
+package org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel
 
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import org.oppia.app.model.DeviceSettings
-import org.oppia.app.model.ProfileId
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.app.model.DeviceSettings
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.logging.ConsoleLogger
 
 /** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsDownloadPermissionsViewModel(

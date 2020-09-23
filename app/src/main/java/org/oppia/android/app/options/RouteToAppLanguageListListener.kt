@@ -1,4 +1,4 @@
-package org.oppia.app.options
+package org.oppia.android.app.options
 
 /** Listener for when an activity should route to a [AppLanguageActivity]. */
 interface RouteToAppLanguageListListener {

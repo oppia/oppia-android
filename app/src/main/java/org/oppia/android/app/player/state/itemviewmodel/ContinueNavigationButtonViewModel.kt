@@ -1,7 +1,7 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
-import org.oppia.app.player.state.listener.ContinueNavigationButtonListener
-import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
+import org.oppia.android.app.player.state.listener.ContinueNavigationButtonListener
+import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 
 /**
  * [StateItemViewModel] for navigating to previous states and continuing to a new state. This differs from

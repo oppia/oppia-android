@@ -1,11 +1,11 @@
-package org.oppia.domain.classify.rules.textinput
+package org.oppia.android.domain.classify.rules.textinput
 
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.TextInputRules
+import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.domain.classify.rules.TextInputRules
 
 /** Module that binds rule classifiers corresponding to the text input interaction. */
 @Module

@@ -1,8 +1,8 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.databinding.ObservableField
-import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
-import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
+import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
+import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 
 /** [StateItemViewModel] for navigation to previous states and submitting new answers. */
 class SubmitButtonViewModel(

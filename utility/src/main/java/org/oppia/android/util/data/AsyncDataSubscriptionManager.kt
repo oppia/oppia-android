@@ -1,13 +1,13 @@
-package org.oppia.util.data
+package org.oppia.android.util.data
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.ConcurrentQueueMap
-import org.oppia.util.threading.dequeue
-import org.oppia.util.threading.enqueue
-import org.oppia.util.threading.getQueue
+import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.ConcurrentQueueMap
+import org.oppia.android.util.threading.dequeue
+import org.oppia.android.util.threading.enqueue
+import org.oppia.android.util.threading.getQueue
 import javax.inject.Inject
 import javax.inject.Singleton
 

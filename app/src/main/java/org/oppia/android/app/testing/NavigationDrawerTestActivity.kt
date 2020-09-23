@@ -1,14 +1,14 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.app.R
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
-import org.oppia.app.home.HomeActivityPresenter
-import org.oppia.app.home.RouteToTopicListener
-import org.oppia.app.topic.TopicActivity
+import org.oppia.android.app.R
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.home.HomeActivityPresenter
+import org.oppia.android.app.home.RouteToTopicListener
+import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
 class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopicListener {

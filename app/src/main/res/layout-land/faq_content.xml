@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.help.faq.faqItemViewModel.FAQContentViewModel" />
+      type="org.oppia.android.app.help.faq.faqItemViewModel.FAQContentViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

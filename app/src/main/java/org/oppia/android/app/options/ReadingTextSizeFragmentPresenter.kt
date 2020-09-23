@@ -1,4 +1,4 @@
-package org.oppia.app.options
+package org.oppia.android.app.options
 
 import android.content.Intent
 import android.util.TypedValue
@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
-import org.oppia.app.R
-import org.oppia.app.databinding.ReadingTextSizeFragmentBinding
-import org.oppia.app.model.ReadingTextSize
+import org.oppia.android.app.R
+import org.oppia.android.app.databinding.ReadingTextSizeFragmentBinding
+import org.oppia.android.app.model.ReadingTextSize
 import javax.inject.Inject
 
 private const val SMALL_TEXT_SIZE_SCALE = 0.8f

@@ -1,4 +1,4 @@
-package org.oppia.app.help
+package org.oppia.android.app.help
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.oppia.app.databinding.HelpFragmentBinding
-import org.oppia.app.databinding.HelpItemBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.android.app.databinding.HelpFragmentBinding
+import org.oppia.android.app.databinding.HelpItemBinding
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 /** The presenter for [HelpFragment]. */

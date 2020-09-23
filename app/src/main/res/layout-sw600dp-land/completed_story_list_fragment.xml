@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.completedstorylist.CompletedStoryListViewModel" />
+      type="org.oppia.android.app.completedstorylist.CompletedStoryListViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

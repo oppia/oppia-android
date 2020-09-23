@@ -1,4 +1,4 @@
-package org.oppia.app.home.recentlyplayed
+package org.oppia.android.app.home.recentlyplayed
 
 import android.content.Context
 import android.content.res.Configuration
@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
-import org.oppia.app.databinding.OngoingStoryCardBinding
-import org.oppia.app.databinding.SectionTitleBinding
+import org.oppia.android.app.R
+import org.oppia.android.app.databinding.OngoingStoryCardBinding
+import org.oppia.android.app.databinding.SectionTitleBinding
 
 private const val VIEW_TYPE_SECTION_TITLE_TEXT = 1
 private const val VIEW_TYPE_SECTION_STORY_ITEM = 2

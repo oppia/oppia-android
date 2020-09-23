@@ -1,4 +1,4 @@
-package org.oppia.domain.onboarding
+package org.oppia.android.domain.onboarding
 
 import dagger.Binds
 import dagger.Module

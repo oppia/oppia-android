@@ -1,4 +1,4 @@
-package org.oppia.util.logging
+package org.oppia.android.util.logging
 
 import javax.inject.Qualifier
 

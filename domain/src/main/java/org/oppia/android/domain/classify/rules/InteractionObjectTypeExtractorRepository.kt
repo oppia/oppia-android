@@ -1,7 +1,7 @@
-package org.oppia.domain.classify.rules
+package org.oppia.android.domain.classify.rules
 
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.InteractionObject.ObjectTypeCase
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass

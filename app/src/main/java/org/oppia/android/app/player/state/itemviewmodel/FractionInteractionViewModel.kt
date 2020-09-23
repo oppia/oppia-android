@@ -1,18 +1,18 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
-import org.oppia.app.R
-import org.oppia.app.model.Interaction
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.UserAnswer
-import org.oppia.app.parser.StringToFractionParser
-import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.R
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.parser.StringToFractionParser
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 
 /** [StateItemViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel(

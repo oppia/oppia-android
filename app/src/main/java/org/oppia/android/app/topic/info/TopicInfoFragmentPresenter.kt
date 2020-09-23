@@ -1,4 +1,4 @@
-package org.oppia.app.topic.info
+package org.oppia.android.app.topic.info
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,17 +7,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.app.R
-import org.oppia.app.databinding.TopicInfoFragmentBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.ProfileId
-import org.oppia.app.model.Topic
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.parser.HtmlParser
+import org.oppia.android.app.R
+import org.oppia.android.app.databinding.TopicInfoFragmentBinding
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Topic
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.HtmlParser
 import javax.inject.Inject
 
 /** The presenter for [TopicInfoFragment]. */

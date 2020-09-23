@@ -1,8 +1,8 @@
-package org.oppia.app.help.faq.faqItemViewModel
+package org.oppia.android.app.help.faq.faqItemViewModel
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
-import org.oppia.app.help.faq.RouteToFAQSingleListener
+import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 
 /** Content view model for the recycler view in [FAQFragment]. */
 class FAQContentViewModel(

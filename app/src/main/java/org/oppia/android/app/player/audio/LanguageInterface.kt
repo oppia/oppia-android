@@ -1,4 +1,4 @@
-package org.oppia.app.player.audio
+package org.oppia.android.app.player.audio
 
 /** Interface to receive selected language from [LanguageDialogFragment]. */
 interface LanguageInterface {

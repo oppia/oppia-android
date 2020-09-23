@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.answerhandling
+package org.oppia.android.app.player.state.answerhandling
 
 /**
  * A handler for interaction answer's error receiving and change in answer availability status to update submit button.

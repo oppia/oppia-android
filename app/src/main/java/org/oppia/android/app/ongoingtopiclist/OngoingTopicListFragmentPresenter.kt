@@ -1,4 +1,4 @@
-package org.oppia.app.ongoingtopiclist
+package org.oppia.android.app.ongoingtopiclist
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.app.R
-import org.oppia.app.databinding.OngoingTopicItemBinding
-import org.oppia.app.databinding.OngoingTopicListFragmentBinding
-import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.android.app.R
+import org.oppia.android.app.databinding.OngoingTopicItemBinding
+import org.oppia.android.app.databinding.OngoingTopicListFragmentBinding
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 /** The presenter for [OngoingTopicListFragment]. */

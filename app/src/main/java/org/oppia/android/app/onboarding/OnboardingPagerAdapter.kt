@@ -1,4 +1,4 @@
-package org.oppia.app.onboarding
+package org.oppia.android.app.onboarding
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
 import androidx.viewpager.widget.PagerAdapter
-import org.oppia.app.databinding.OnboardingSlideBinding
-import org.oppia.app.databinding.OnboardingSlideFinalBinding
+import org.oppia.android.app.databinding.OnboardingSlideBinding
+import org.oppia.android.app.databinding.OnboardingSlideFinalBinding
 
 /** Adapter to control the slide details in onboarding flow. */
 class OnboardingPagerAdapter(

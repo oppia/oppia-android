@@ -1,16 +1,16 @@
-package org.oppia.app.settings.profile
+package org.oppia.android.app.settings.profile
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import org.oppia.app.databinding.ProfileListFragmentBinding
-import org.oppia.app.databinding.ProfileListProfileViewBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.Profile
-import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.android.app.databinding.ProfileListFragmentBinding
+import org.oppia.android.app.databinding.ProfileListProfileViewBinding
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 /** The presenter for [ProfileListFragment]. */

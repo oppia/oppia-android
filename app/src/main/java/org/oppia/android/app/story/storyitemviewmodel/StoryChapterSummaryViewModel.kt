@@ -1,13 +1,13 @@
-package org.oppia.app.story.storyitemviewmodel
+package org.oppia.android.app.story.storyitemviewmodel
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import org.oppia.app.model.ChapterSummary
-import org.oppia.app.model.LessonThumbnail
-import org.oppia.app.story.ExplorationSelectionListener
-import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.LessonThumbnail
+import org.oppia.android.app.story.ExplorationSelectionListener
+import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.logging.ConsoleLogger
 
 private const val STORY_VIEWER_TAG = "StoryViewer"
 

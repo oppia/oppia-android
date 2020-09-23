@@ -1,4 +1,4 @@
-package org.oppia.app.topic
+package org.oppia.android.app.topic
 
 /** Listener for when an activity should route to a Question Player. */
 interface RouteToQuestionPlayerListener {

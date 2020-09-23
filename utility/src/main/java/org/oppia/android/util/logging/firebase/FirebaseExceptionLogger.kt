@@ -1,7 +1,7 @@
-package org.oppia.util.logging.firebase
+package org.oppia.android.util.logging.firebase
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import org.oppia.util.logging.ExceptionLogger
+import org.oppia.android.util.logging.ExceptionLogger
 
 /** Logger for providing custom crash reporting to Firebase Crashlytics. */
 class FirebaseExceptionLogger(

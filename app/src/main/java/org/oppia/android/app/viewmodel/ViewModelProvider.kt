@@ -1,4 +1,4 @@
-package org.oppia.app.viewmodel
+package org.oppia.android.app.viewmodel
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment

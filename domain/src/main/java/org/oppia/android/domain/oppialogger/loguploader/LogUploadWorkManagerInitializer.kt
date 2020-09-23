@@ -1,4 +1,4 @@
-package org.oppia.domain.oppialogger.loguploader
+package org.oppia.android.domain.oppialogger.loguploader
 
 import android.content.Context
 import androidx.work.Constraints
@@ -6,8 +6,8 @@ import androidx.work.Data
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import org.oppia.domain.oppialogger.ApplicationStartupListener
-import org.oppia.util.logging.LogUploader
+import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.util.logging.LogUploader
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import android.app.Dialog
 import android.text.Editable
@@ -8,12 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import org.oppia.app.R
-import org.oppia.app.databinding.ResetPinDialogBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.ProfileId
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.android.app.R
+import org.oppia.android.app.databinding.ResetPinDialogBinding
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
 /** The presenter for [ResetPinDialogFragment]. */

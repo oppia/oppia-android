@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
 /** [StateItemViewModel] for feedback blurbs. */
 class FeedbackViewModel(

@@ -1,4 +1,4 @@
-package org.oppia.app.walkthrough
+package org.oppia.android.app.walkthrough
 
 /** Listener for when an activity should move to a previous page during a walkthrough flow. */
 interface WalkthroughActivityListener {

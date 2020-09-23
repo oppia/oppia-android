@@ -5,7 +5,7 @@
 
     <import type="android.view.View" />
 
-    <import type="org.oppia.app.model.ChapterPlayState" />
+    <import type="org.oppia.android.app.model.ChapterPlayState" />
 
     <variable
       name="index"
@@ -13,7 +13,7 @@
 
     <variable
       name="chapterSummary"
-      type="org.oppia.app.model.ChapterSummary" />
+      type="org.oppia.android.app.model.ChapterSummary" />
   </data>
 
   <LinearLayout

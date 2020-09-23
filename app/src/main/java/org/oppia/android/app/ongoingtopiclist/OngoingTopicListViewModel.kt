@@ -1,17 +1,17 @@
-package org.oppia.app.ongoingtopiclist
+package org.oppia.android.app.ongoingtopiclist
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.OngoingTopicList
-import org.oppia.app.model.ProfileId
-import org.oppia.app.shim.IntentFactoryShim
-import org.oppia.app.viewmodel.ObservableViewModel
-import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.OngoingTopicList
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.shim.IntentFactoryShim
+import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
 /** The ObservableViewModel for [OngoingTopicListFragment]. */

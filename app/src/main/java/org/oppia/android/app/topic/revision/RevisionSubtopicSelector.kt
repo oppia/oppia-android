@@ -1,6 +1,6 @@
-package org.oppia.app.topic.revision
+package org.oppia.android.app.topic.revision
 
-import org.oppia.app.model.Subtopic
+import org.oppia.android.app.model.Subtopic
 
 /** Listener for when a subtopic is selected for revision. */
 interface RevisionSubtopicSelector {

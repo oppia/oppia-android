@@ -1,4 +1,4 @@
-package org.oppia.app.player.audio
+package org.oppia.android.app.player.audio
 
 /** Interface to show or hide the audio button and change its icon. */
 interface AudioButtonListener {

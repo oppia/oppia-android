@@ -1,14 +1,14 @@
-package org.oppia.app.hintsandsolution
+package org.oppia.android.app.hintsandsolution
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.databinding.HintsDividerBinding
-import org.oppia.app.databinding.HintsSummaryBinding
-import org.oppia.app.databinding.SolutionSummaryBinding
-import org.oppia.util.parser.HtmlParser
+import org.oppia.android.app.databinding.HintsDividerBinding
+import org.oppia.android.app.databinding.HintsSummaryBinding
+import org.oppia.android.app.databinding.SolutionSummaryBinding
+import org.oppia.android.util.parser.HtmlParser
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 

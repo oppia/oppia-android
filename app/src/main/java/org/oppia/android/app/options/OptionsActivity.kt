@@ -1,12 +1,12 @@
-package org.oppia.app.options
+package org.oppia.android.app.options
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
-import org.oppia.app.R
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.R
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
 
 private const val SELECTED_OPTIONS_TITLE_KEY = "SELECTED_OPTIONS_TITLE_KEY"

@@ -1,12 +1,12 @@
-package org.oppia.app.help
+package org.oppia.android.app.help
 
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.drawer.NavigationDrawerFragment
+import org.oppia.android.app.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.drawer.NavigationDrawerFragment
 import javax.inject.Inject
 
 /** The presenter for [HelpActivity]. */

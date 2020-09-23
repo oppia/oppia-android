@@ -1,13 +1,13 @@
-package org.oppia.app.hintsandsolution
+package org.oppia.android.app.hintsandsolution
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.R
-import org.oppia.app.fragment.InjectableDialogFragment
-import org.oppia.app.model.State
+import org.oppia.android.app.R
+import org.oppia.android.app.fragment.InjectableDialogFragment
+import org.oppia.android.app.model.State
 import javax.inject.Inject
 
 private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY = "CURRENT_EXPANDED_LIST_INDEX"

@@ -1,19 +1,19 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.home.RouteToExplorationListener
-import org.oppia.app.player.exploration.ExplorationActivity
-import org.oppia.app.story.StoryActivity
-import org.oppia.app.topic.RouteToQuestionPlayerListener
-import org.oppia.app.topic.RouteToRevisionCardListener
-import org.oppia.app.topic.RouteToStoryListener
-import org.oppia.app.topic.TopicActivityPresenter
-import org.oppia.app.topic.TopicFragment
-import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.app.topic.revisioncard.RevisionCardActivity
-import org.oppia.domain.topic.TEST_STORY_ID_1
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.story.StoryActivity
+import org.oppia.android.app.topic.RouteToQuestionPlayerListener
+import org.oppia.android.app.topic.RouteToRevisionCardListener
+import org.oppia.android.app.topic.RouteToStoryListener
+import org.oppia.android.app.topic.TopicActivityPresenter
+import org.oppia.android.app.topic.TopicFragment
+import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
+import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.domain.topic.TEST_STORY_ID_1
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
 /** The test activity for [TopicFragment] to test displaying story by storyId. */

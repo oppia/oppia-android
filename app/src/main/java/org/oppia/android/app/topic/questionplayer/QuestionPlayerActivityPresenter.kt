@@ -1,15 +1,15 @@
-package org.oppia.app.topic.questionplayer
+package org.oppia.android.app.topic.questionplayer
 
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.QuestionPlayerActivityBinding
-import org.oppia.domain.question.QuestionTrainingController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.app.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.databinding.QuestionPlayerActivityBinding
+import org.oppia.android.domain.question.QuestionTrainingController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"

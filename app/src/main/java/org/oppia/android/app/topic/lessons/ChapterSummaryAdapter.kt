@@ -1,12 +1,12 @@
-package org.oppia.app.topic.lessons
+package org.oppia.android.app.topic.lessons
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
-import org.oppia.app.databinding.LessonsChapterViewBinding
-import org.oppia.app.model.ChapterSummary
+import org.oppia.android.app.R
+import org.oppia.android.app.databinding.LessonsChapterViewBinding
+import org.oppia.android.app.model.ChapterSummary
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 

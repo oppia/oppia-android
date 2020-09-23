@@ -1,4 +1,4 @@
-package org.oppia.util.data
+package org.oppia.android.util.data
 
 /**
  * Represents a provider of data that can be delivered and changed asynchronously.

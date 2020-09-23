@@ -1,6 +1,6 @@
-package org.oppia.app.player.exploration
+package org.oppia.android.app.player.exploration
 
-import org.oppia.app.model.ReadingTextSize
+import org.oppia.android.app.model.ReadingTextSize
 
 /**
  * To set the font-size correctly we need to fetch it before loading the `ExplorationFragment` and

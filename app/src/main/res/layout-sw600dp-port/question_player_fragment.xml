@@ -9,7 +9,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.questionplayer.QuestionPlayerViewModel" />
+      type="org.oppia.android.app.topic.questionplayer.QuestionPlayerViewModel" />
   </data>
 
   <FrameLayout

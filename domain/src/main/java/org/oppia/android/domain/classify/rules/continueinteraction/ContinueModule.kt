@@ -1,9 +1,9 @@
-package org.oppia.domain.classify.rules.continueinteraction
+package org.oppia.android.domain.classify.rules.continueinteraction
 
 import dagger.Module
 import dagger.multibindings.Multibinds
-import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.ContinueRules
+import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.domain.classify.rules.ContinueRules
 
 /** Module that binds rule classifiers corresponding to the continue interaction. */
 @Module

@@ -1,9 +1,9 @@
-package org.oppia.domain.exploration
+package org.oppia.android.domain.exploration
 
-import org.oppia.app.model.Exploration
-import org.oppia.app.model.State
-import org.oppia.domain.state.StateDeck
-import org.oppia.domain.state.StateGraph
+import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.State
+import org.oppia.android.domain.state.StateDeck
+import org.oppia.android.domain.state.StateGraph
 
 // TODO(#186): Use an interaction repository to retrieve whether a specific ID corresponds to a terminal interaction.
 private const val TERMINAL_INTERACTION_ID = "EndExploration"

@@ -1,13 +1,13 @@
-package org.oppia.app.home.topiclist
+package org.oppia.android.app.home.topiclist
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import org.oppia.app.home.RouteToTopicPlayStoryListener
-import org.oppia.app.model.PromotedStory
-import org.oppia.app.shim.IntentFactoryShim
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.shim.IntentFactoryShim
+import org.oppia.android.app.viewmodel.ObservableViewModel
 
 // TODO(#283): Add download status information to promoted-story-card.
 

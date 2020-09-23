@@ -1,19 +1,19 @@
-package org.oppia.app.customview
+package org.oppia.android.app.customview
 
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import org.oppia.app.R
-import org.oppia.app.model.LessonThumbnail
-import org.oppia.app.model.LessonThumbnailGraphic
-import org.oppia.app.shim.ViewComponentFactory
-import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.parser.DefaultGcsPrefix
-import org.oppia.util.parser.ImageLoader
-import org.oppia.util.parser.ImageViewTarget
-import org.oppia.util.parser.ThumbnailDownloadUrlTemplate
+import org.oppia.android.app.R
+import org.oppia.android.app.model.LessonThumbnail
+import org.oppia.android.app.model.LessonThumbnailGraphic
+import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.parser.DefaultGcsPrefix
+import org.oppia.android.util.parser.ImageLoader
+import org.oppia.android.util.parser.ImageViewTarget
+import org.oppia.android.util.parser.ThumbnailDownloadUrlTemplate
 import javax.inject.Inject
 
 /** A custom [AppCompatImageView] used to show lesson thumbnails. */

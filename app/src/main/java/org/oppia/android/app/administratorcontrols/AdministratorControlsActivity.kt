@@ -1,14 +1,14 @@
-package org.oppia.app.administratorcontrols
+package org.oppia.android.app.administratorcontrols
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import org.oppia.app.R
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
-import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
-import org.oppia.app.settings.profile.ProfileListActivity
+import org.oppia.android.app.R
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.settings.profile.ProfileListActivity
 import javax.inject.Inject
 
 const val SELECTED_CONTROLS_TITLE_KEY = "SELECTED_CONTROLS_TITLE_KEY"

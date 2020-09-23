@@ -1,14 +1,14 @@
-package org.oppia.app.topic.questionplayer
+package org.oppia.android.app.topic.questionplayer
 
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.EphemeralQuestion
-import org.oppia.domain.question.QuestionAssessmentProgressController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EphemeralQuestion
+import org.oppia.android.domain.question.QuestionAssessmentProgressController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [HintsAndSolutionQuestionManagerFragment]. */

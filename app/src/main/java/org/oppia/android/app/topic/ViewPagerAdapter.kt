@@ -1,12 +1,12 @@
-package org.oppia.app.topic
+package org.oppia.android.app.topic
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import org.oppia.app.topic.info.TopicInfoFragment
-import org.oppia.app.topic.lessons.TopicLessonsFragment
-import org.oppia.app.topic.practice.TopicPracticeFragment
-import org.oppia.app.topic.revision.TopicRevisionFragment
+import org.oppia.android.app.topic.info.TopicInfoFragment
+import org.oppia.android.app.topic.lessons.TopicLessonsFragment
+import org.oppia.android.app.topic.practice.TopicPracticeFragment
+import org.oppia.android.app.topic.revision.TopicRevisionFragment
 
 /** Adapter to bind fragments to [FragmentStatePagerAdapter] inside [TopicFragment]. */
 class ViewPagerAdapter(

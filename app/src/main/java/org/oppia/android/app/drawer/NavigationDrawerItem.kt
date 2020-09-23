@@ -1,6 +1,6 @@
-package org.oppia.app.drawer
+package org.oppia.android.app.drawer
 
-import org.oppia.app.R
+import org.oppia.android.app.R
 
 /** Represents different destinations that can be selected by the user from the navigation drawer. */
 enum class NavigationDrawerItem(val value: Int) {

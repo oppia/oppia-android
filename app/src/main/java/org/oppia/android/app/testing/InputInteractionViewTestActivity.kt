@@ -1,23 +1,23 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.app.R
-import org.oppia.app.customview.interaction.FractionInputInteractionView
-import org.oppia.app.customview.interaction.NumericInputInteractionView
-import org.oppia.app.customview.interaction.TextInputInteractionView
-import org.oppia.app.databinding.ActivityInputInteractionViewTestBinding
-import org.oppia.app.model.Interaction
-import org.oppia.app.model.SchemaObject
-import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
-import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
-import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
-import org.oppia.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
-import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
-import org.oppia.app.player.state.listener.StateKeyboardButtonListener
+import org.oppia.android.app.R
+import org.oppia.android.app.customview.interaction.FractionInputInteractionView
+import org.oppia.android.app.customview.interaction.NumericInputInteractionView
+import org.oppia.android.app.customview.interaction.TextInputInteractionView
+import org.oppia.android.app.databinding.ActivityInputInteractionViewTestBinding
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.SchemaObject
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
+import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
+import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
+import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
+import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
+import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 
 /**
  * This is a dummy activity to test input interaction views.

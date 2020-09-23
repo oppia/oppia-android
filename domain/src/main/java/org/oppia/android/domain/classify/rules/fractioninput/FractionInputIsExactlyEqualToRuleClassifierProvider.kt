@@ -1,10 +1,10 @@
-package org.oppia.domain.classify.rules.fractioninput
+package org.oppia.android.domain.classify.rules.fractioninput
 
-import org.oppia.app.model.Fraction
-import org.oppia.app.model.InteractionObject
-import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.GenericRuleClassifier
-import org.oppia.domain.classify.rules.RuleClassifierProvider
+import org.oppia.android.app.model.Fraction
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.domain.classify.rules.GenericRuleClassifier
+import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import javax.inject.Inject
 
 /**

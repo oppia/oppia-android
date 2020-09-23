@@ -1,4 +1,4 @@
-package org.oppia.app.utility
+package org.oppia.android.app.utility
 
 import android.graphics.RectF
 import android.view.MotionEvent
@@ -6,10 +6,10 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
-import org.oppia.app.R
-import org.oppia.app.model.ImageWithRegions
-import org.oppia.app.player.state.ImageRegionSelectionInteractionView
-import org.oppia.app.shim.ViewBindingShim
+import org.oppia.android.app.R
+import org.oppia.android.app.model.ImageWithRegions
+import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
+import org.oppia.android.app.shim.ViewBindingShim
 import kotlin.math.roundToInt
 
 /**

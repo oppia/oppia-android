@@ -1,4 +1,4 @@
-package org.oppia.app.databinding;
+package org.oppia.android.app.databinding;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -6,8 +6,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
-import org.oppia.app.R;
-import org.oppia.util.system.OppiaDateTimeFormatter;
+import org.oppia.android.app.R;
+import org.oppia.android.util.system.OppiaDateTimeFormatter;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 

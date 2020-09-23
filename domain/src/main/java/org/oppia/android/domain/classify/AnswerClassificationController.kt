@@ -1,16 +1,16 @@
-package org.oppia.domain.classify
+package org.oppia.android.domain.classify
 
-import org.oppia.app.model.AnswerGroup
-import org.oppia.app.model.Interaction
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.Outcome
+import org.oppia.android.app.model.AnswerGroup
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.Outcome
 import javax.inject.Inject
 
 // TODO(#59): Restrict the visibility of this class to only other controllers.
 /**
  * Controller responsible for classifying user answers to a specific outcome based on Oppia's interaction rule engine.
  * This controller is not meant to be interacted with directly by the UI. Instead, UIs wanting to submit answers should
- * do so via various progress controllers, like [org.oppia.domain.topic.StoryProgressController].
+ * do so via various progress controllers, like [org.oppia.android.domain.topic.StoryProgressController].
  *
  * This controller should only be interacted with via background threads.
  */

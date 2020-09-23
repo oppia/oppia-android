@@ -1,5 +1,5 @@
 // ktlint-disable filename
-package org.oppia.util.gcsresource
+package org.oppia.android.util.gcsresource
 
 import javax.inject.Qualifier
 

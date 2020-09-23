@@ -1,4 +1,4 @@
-package org.oppia.app.onboarding
+package org.oppia.android.app.onboarding
 
 /** Listener for buttons in OnboardingFragment */
 interface OnboardingNavigationListener {

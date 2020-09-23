@@ -1,4 +1,4 @@
-package org.oppia.util.profile
+package org.oppia.android.util.profile
 
 import android.content.Context
 import java.io.File

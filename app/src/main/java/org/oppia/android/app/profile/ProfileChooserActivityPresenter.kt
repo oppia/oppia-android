@@ -1,10 +1,10 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.testing.ProfileChooserFragmentTestActivity
-import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.android.app.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
+import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
 /** The presenter for [ProfileChooserActivity]. */

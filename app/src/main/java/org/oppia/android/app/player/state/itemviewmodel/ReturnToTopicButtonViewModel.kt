@@ -1,7 +1,7 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
-import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
-import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
+import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
 
 /** [StateItemViewModel] for both previous state navigation and navigating back to the topic containing this lesson. */
 class ReturnToTopicButtonViewModel(

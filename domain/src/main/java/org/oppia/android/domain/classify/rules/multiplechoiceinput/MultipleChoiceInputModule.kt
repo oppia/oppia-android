@@ -1,11 +1,11 @@
-package org.oppia.domain.classify.rules.multiplechoiceinput
+package org.oppia.android.domain.classify.rules.multiplechoiceinput
 
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.MultipleChoiceInputRules
+import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.domain.classify.rules.MultipleChoiceInputRules
 
 /** Module that binds rule classifiers corresponding to the multiple choice input interaction. */
 @Module

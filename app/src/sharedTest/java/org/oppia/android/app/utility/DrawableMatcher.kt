@@ -1,4 +1,4 @@
-package org.oppia.app.utility
+package org.oppia.android.app.utility
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

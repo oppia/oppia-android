@@ -1,4 +1,4 @@
-package org.oppia.data.backends
+package org.oppia.android.data.backends
 
 import org.json.JSONException
 import org.json.JSONObject

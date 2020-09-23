@@ -1,6 +1,6 @@
-package org.oppia.app.application
+package org.oppia.android.app.application
 
-import org.oppia.app.profile.ProfileInputView
+import org.oppia.android.app.profile.ProfileInputView
 
 /** Injector for application-level dependencies that can't be directly injected where needed. */
 interface ApplicationInjector {
