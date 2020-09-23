@@ -2,28 +2,22 @@ package org.oppia.app.topic.questionplayer
 
 import android.app.Application
 import android.content.Context
-import android.view.View
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.hamcrest.BaseMatcher
-import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,6 +51,7 @@ import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.TEST_SKILL_ID_1
+import org.oppia.testing.EditTextInputAction
 import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
@@ -95,6 +90,9 @@ class QuestionPlayerActivityLocalTest {
   @Inject
   @field:ApplicationContext
   lateinit var context: Context
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
 
   private val SKILL_ID_LIST = arrayListOf(TEST_SKILL_ID_1)
 
@@ -204,35 +202,13 @@ class QuestionPlayerActivityLocalTest {
   private fun submitWrongAnswerToQuestionPlayerFractionInput() {
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
-    onView(withId(R.id.text_input_interaction_view)).perform(appendText("1"))
+    onView(withId(R.id.text_input_interaction_view)).perform(editTextInputAction.appendText("1"))
     testCoroutineDispatchers.runCurrent()
 
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON))
     onView(withId(R.id.submit_answer_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
-  }
-
-  /**
-   * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
-   * properly input digits for text views using 'android:digits'. See
-   * https://github.com/robolectric/robolectric/issues/5110 for specifics.
-   */
-  private fun appendText(text: String): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String {
-        return "appendText($text)"
-      }
-
-      override fun getConstraints(): Matcher<View> {
-        return CoreMatchers.allOf(isEnabled())
-      }
-
-      override fun perform(uiController: UiController?, view: View?) {
-        (view as? EditText)?.append(text)
-        testCoroutineDispatchers.runCurrent()
-      }
-    }
   }
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {

@@ -2,15 +2,10 @@ package org.oppia.app.profile
 
 import android.app.Application
 import android.content.Context
-import android.os.Build
-import android.view.View
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
@@ -26,7 +21,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -62,6 +56,7 @@ import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.testing.EditTextInputAction
 import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
@@ -91,6 +86,9 @@ class AdminAuthActivityTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
 
   private val internalProfileId: Int = 0
 
@@ -124,7 +122,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -167,7 +165,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -210,7 +208,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12354"),
+        editTextInputAction.appendText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -445,7 +443,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -470,7 +468,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12354"),
+        editTextInputAction.appendText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -520,31 +518,6 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
-    }
-  }
-
-  // TODO(#1840): Introduce central utility file for appendText in Testing
-  /**
-   * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
-   * properly input digits for text views using 'android:digits'. See
-   * https://github.com/robolectric/robolectric/issues/5110 for specifics.
-   */
-  private fun appendText(text: String): ViewAction {
-    val typeTextViewAction = typeText(text)
-    return object : ViewAction {
-      override fun getDescription(): String = typeTextViewAction.description
-
-      override fun getConstraints(): Matcher<View> = typeTextViewAction.constraints
-
-      override fun perform(uiController: UiController?, view: View?) {
-        // Appending text only works on Robolectric, whereas Espresso needs to use typeText().
-        if (Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
-          (view as? EditText)?.append(text)
-          testCoroutineDispatchers.runCurrent()
-        } else {
-          typeTextViewAction.perform(uiController, view)
-        }
-      }
     }
   }
 
