@@ -182,13 +182,19 @@ jobs:
       SAMSUNG_GALAXY_TAB_10: 160 800 1280 # # 10.1 inch mdpi (1.0 * mdpi) tablet.
       NEXUS_10: 320 1280 800 # 10.1 inch xhdpi (2.0 * mdpi) tablet.
     strategy:
+      # Ensure all runs continue even if one fails. This can help with isolating whether an issue is
+      # configuration-specific.
+      fail-fast: false
       matrix:
         api-level: [29]
         target: [default]
         abi: [x86_64]
-        #device_profile: [Pixel XL]
-        device_profile: [HTC Hero, Android One, Nexus 4, Nexus 5X, Pixel XL, Samsung Galaxy Tab 10, Nexus 10]
+        #device-profile: [Pixel XL]
+        device-profile: [HTC Hero, Android One, Nexus 4, Nexus 5X, Pixel XL, Samsung Galaxy Tab 10, Nexus 10]
     steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.5.0
+
       - uses: actions/checkout@v2
 
       - uses: actions/cache@v2
@@ -229,11 +235,11 @@ jobs:
       # See https://stackoverflow.com/a/40307663 for a reference for how variable extraction works.
       - name: Extract AVD variables
         run: |
-          AVD_NAME=$(echo "${{ matrix.device_profile }}" | tr '[:upper:]' '[:lower:]' | tr -s ' ' '_')
+          AVD_NAME=$(echo "${{ matrix.device-profile }}" | tr '[:upper:]' '[:lower:]' | tr -s ' ' '_')
           DEVICE_NAME_KEY=$(echo $AVD_NAME | tr '[:lower:]' '[:upper:]')
           echo "Using $DEVICE_NAME_KEY to look up device information"
           # For reference: https://unix.stackexchange.com/a/364097 & https://unix.stackexchange.com/a/560315.
-          if [[ -z ${!DEVICE_NAME_KEY+x} ]]; then echo "Using unknown AVD name: ${{ matrix.device_profile }}"; exit 1; fi
+          if [[ -z ${!DEVICE_NAME_KEY+x} ]]; then echo "Using unknown AVD name: ${{ matrix.device-profile }}"; exit 1; fi
 
           # Reference: https://stackoverflow.com/a/10586169 & https://unix.stackexchange.com/a/193042.
           # Note that this additional parsing is necessary since GitHub stores environment variables
@@ -241,7 +247,7 @@ jobs:
           DEVICE_SETTINGS_FLATTENED="${!DEVICE_NAME_KEY}"
           echo "Debug flattened dev settings $DEVICE_SETTINGS_FLATTENED"
           delim=' ' read -r -a DEVICE_SETTINGS <<< "$DEVICE_SETTINGS_FLATTENED"
-          if [[ ${#DEVICE_SETTINGS[@]} != 3 ]]; then echo "Using invalid AVD name: ${{ matrix.device_profile }}. Expected 3 device specs, not: ${#DEVICE_SETTINGS[@]}"; exit 1; fi
+          if [[ ${#DEVICE_SETTINGS[@]} != 3 ]]; then echo "Using invalid AVD name: ${{ matrix.device-profile }}. Expected 3 device specs, not: ${#DEVICE_SETTINGS[@]}"; exit 1; fi
 
           echo "::set-env name=AVD_NAME::$AVD_NAME"
           echo "::set-env name=AVD_DENSITY::${DEVICE_SETTINGS[0]}"
@@ -278,6 +284,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status.
         with:
-          name: emulator-test-output
-          path: emulator_test_output/
-          files: build_output.log
+          name: emulator-test-output-${{ matrix.device-profile }}-API${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.abi }}
+          path: |
+            emulator_test_output/
+            build_output.log
