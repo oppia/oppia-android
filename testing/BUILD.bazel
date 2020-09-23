@@ -13,7 +13,7 @@ load("//testing:testing_test.bzl", "testing_test")
 kt_android_library(
      name = "testing",
      custom_package = "org.oppia.testing",
-     srcs = glob(["src/main/java/org/oppia/testing/**/*.kt"]),
+     srcs = glob(["src/main/java/org/oppia/android/testing/**/*.kt"]),
      manifest = "src/main/AndroidManifest.xml",
      deps = [
          ":dagger",
@@ -55,28 +55,28 @@ TEST_DEPS = [
 
 testing_test(
     name = "CoroutineExecutorServiceTest",
-    srcs = ["src/test/java/org/oppia/testing/CoroutineExecutorServiceTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/testing/CoroutineExecutorServiceTest.kt"],
     test_class = "org.oppia.testing.CoroutineExecutorServiceTest",
     deps = TEST_DEPS,
 )
 
 testing_test(
     name = "FakeEventLoggerTest",
-    srcs = ["src/test/java/org/oppia/testing/FakeEventLoggerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/testing/FakeEventLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeEventLoggerTest",
     deps = TEST_DEPS,
 )
 
 testing_test(
     name = "FakeExceptionLoggerTest",
-    srcs = ["src/test/java/org/oppia/testing/FakeExceptionLoggerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/testing/FakeExceptionLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeExceptionLoggerTest",
     deps = TEST_DEPS,
 )
 
 testing_test(
     name = "ProfileTestHelperTest",
-    srcs = ["src/test/java/org/oppia/testing/profile/ProfileTestHelperTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/testing/profile/ProfileTestHelperTest.kt"],
     test_class = "org.oppia.testing.profile.ProfileTestHelperTest",
     deps = TEST_DEPS,
 )

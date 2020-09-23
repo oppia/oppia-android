@@ -10,7 +10,7 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 kt_android_library(
     name = "persistent_cache_store",
     custom_package = "org.oppia.data.persistence",
-    srcs = ["src/main/java/org/oppia/data/persistence/PersistentCacheStore.kt"],
+    srcs = ["src/main/java/org/oppia/android/data/persistence/PersistentCacheStore.kt"],
     manifest = "src/main/AndroidManifest.xml",
     deps = [
         ":dagger",

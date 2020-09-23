@@ -11,7 +11,7 @@ load("//domain:domain_test.bzl", "domain_test")
 kt_android_library(
     name = "domain",
     custom_package = "org.oppia.domain",
-    srcs = glob(["src/main/java/org/oppia/domain/**/*.kt"]),
+    srcs = glob(["src/main/java/org/oppia/android/domain/**/*.kt"]),
     assets = glob(["src/main/assets/**"]),
     assets_dir = "src/main/assets/",
     manifest = "src/main/AndroidManifest.xml",
@@ -40,28 +40,28 @@ TEST_DEPS = [
 
 domain_test(
     name = "AudioPlayerControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/audio/AudioPlayerControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/audio/AudioPlayerControllerTest.kt"],
     test_class = "org.oppia.domain.audio.AudioPlayerControllerTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "CellularAudioDialogControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/audio/CellularAudioDialogControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/audio/CellularAudioDialogControllerTest.kt"],
     test_class = "org.oppia.domain.audio.CellularAudioDialogControllerTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "AnswerClassificationControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/classify/AnswerClassificationControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/classify/AnswerClassificationControllerTest.kt"],
     test_class = "org.oppia.domain.classify.AnswerClassificationControllerTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "NumericInputEqualsRuleClassifierProviderTest",
-    srcs = ["src/test/java/org/oppia/domain/classify/NumericInputEqualsRuleClassifierProviderTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/classify/NumericInputEqualsRuleClassifierProviderTest.kt"],
     test_class = "org.oppia.domain.classify.NumericInputEqualsRuleClassifierProviderTest",
     deps = TEST_DEPS,
 )
@@ -69,7 +69,7 @@ domain_test(
 domain_test(
     name = "DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest.kt"
+        "src/test/java/org/oppia/android/domain/classify/rules/dragAndDropSortInput/DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest",
     deps = TEST_DEPS,
@@ -78,7 +78,7 @@ domain_test(
 domain_test(
     name = "DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest.kt"
+        "src/test/java/org/oppia/android/domain/classify/rules/dragAndDropSortInput/DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest",
     deps = TEST_DEPS,
@@ -87,7 +87,7 @@ domain_test(
 domain_test(
     name = "DragDropSortInputIsEqualToOrderingClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/DragDropSortInputIsEqualToOrderingClassifierProviderTest.kt"
+        "src/test/java/org/oppia/android/domain/classify/rules/dragAndDropSortInput/DragDropSortInputIsEqualToOrderingClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputIsEqualToOrderingClassifierProviderTest",
     deps = TEST_DEPS,
@@ -96,7 +96,7 @@ domain_test(
 domain_test(
     name = "DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest.kt"
+        "src/test/java/org/oppia/android/domain/classify/rules/dragAndDropSortInput/DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest",
     deps = TEST_DEPS,
@@ -105,7 +105,7 @@ domain_test(
 domain_test(
     name = "ImageClickInputIsInRegionRuleClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/imageClickInput/ImageClickInputIsInRegionRuleClassifierProviderTest.kt"
+        "src/test/java/org/oppia/android/domain/classify/rules/imageClickInput/ImageClickInputIsInRegionRuleClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.imageClickInput.ImageClickInputIsInRegionRuleClassifierProviderTest",
     deps = TEST_DEPS,
@@ -114,7 +114,7 @@ domain_test(
 domain_test(
     name = "MultipleChoiceInputEqualsRuleClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/multiplechoiceinput/MultipleChoiceInputEqualsRuleClassifierProviderTest.kt"
+        "src/test/java/org/oppia/android/domain/classify/rules/multiplechoiceinput/MultipleChoiceInputEqualsRuleClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputEqualsRuleClassifierProviderTest",
     deps = TEST_DEPS,
@@ -123,7 +123,7 @@ domain_test(
 domain_test(
     name = "TextInputContainsRuleClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/textinput/TextInputContainsRuleClassifierProviderTest.kt"
+        "src/test/java/org/oppia/android/domain/classify/rules/textinput/TextInputContainsRuleClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.textinput.TextInputContainsRuleClassifierProviderTest",
     deps = TEST_DEPS,
@@ -132,7 +132,7 @@ domain_test(
 domain_test(
     name = "TextInputEqualsRuleClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/textinput/TextInputEqualsRuleClassifierProviderTest.kt"
+        "src/test/java/org/oppia/android/domain/classify/rules/textinput/TextInputEqualsRuleClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.textinput.TextInputEqualsRuleClassifierProviderTest",
     deps = TEST_DEPS,
@@ -140,91 +140,91 @@ domain_test(
 
 domain_test(
     name = "ExplorationDataControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/exploration/ExplorationDataControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/exploration/ExplorationDataControllerTest.kt"],
     test_class = "org.oppia.domain.exploration.ExplorationDataControllerTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "ExplorationProgressControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/exploration/ExplorationProgressControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/exploration/ExplorationProgressControllerTest.kt"],
     test_class = "org.oppia.domain.exploration.ExplorationProgressControllerTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "AppStartupStateControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/onboarding/AppStartupStateControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt"],
     test_class = "org.oppia.domain.onboarding.AppStartupStateControllerTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "AnalyticsControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/oppialogger/analytics/AnalyticsControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsControllerTest.kt"],
     test_class = "org.oppia.domain.oppialogger.analytics.AnalyticsControllerTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "ProfileManagementControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/profile/ProfileManagementControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/profile/ProfileManagementControllerTest.kt"],
     test_class = "org.oppia.domain.profile.ProfileManagementControllerTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "QuestionAssessmentProgressControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/question/QuestionAssessmentProgressControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/question/QuestionAssessmentProgressControllerTest.kt"],
     test_class = "org.oppia.domain.question.QuestionAssessmentProgressControllerTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "QuestionTrainingControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/question/QuestionTrainingControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/question/QuestionTrainingControllerTest.kt"],
     test_class = "org.oppia.domain.question.QuestionTrainingControllerTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "StoryProgressControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/topic/StoryProgressControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/topic/StoryProgressControllerTest.kt"],
     test_class = "org.oppia.domain.topic.StoryProgressControllerTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "StoryProgressTestHelperTest",
-    srcs = ["src/test/java/org/oppia/domain/topic/StoryProgressTestHelperTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/topic/StoryProgressTestHelperTest.kt"],
     test_class = "org.oppia.domain.topic.StoryProgressTestHelperTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "TopicControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/topic/TopicControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/topic/TopicControllerTest.kt"],
     test_class = "org.oppia.domain.topic.TopicControllerTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "TopicListControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/topic/TopicListControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/topic/TopicListControllerTest.kt"],
     test_class = "org.oppia.domain.topic.TopicListControllerTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "InteractionObjectExtensionsTest",
-    srcs = ["src/test/java/org/oppia/domain/util/InteractionObjectExtensionsTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/util/InteractionObjectExtensionsTest.kt"],
     test_class = "org.oppia.domain.util.InteractionObjectExtensionsTest",
     deps = TEST_DEPS,
 )
 
 domain_test(
     name = "StateRetrieverTest",
-    srcs = ["src/test/java/org/oppia/domain/util/StateRetrieverTest.kt"],
+    srcs = ["src/test/java/org/oppia/android/domain/util/StateRetrieverTest.kt"],
     test_class = "org.oppia.domain.util.StateRetrieverTest",
     deps = TEST_DEPS,
 )
