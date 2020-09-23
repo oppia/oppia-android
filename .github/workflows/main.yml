@@ -271,9 +271,10 @@ jobs:
         run: (timeout -k 4m 5m bash ./scripts/wait_for_emulator.sh) || echo Failed to start emulator
 
       # Wait for the earlier Gradle build to finish to start the emulator tests faster. See:
-      # https://stackoverflow.com/a/41613532.
+      # https://stackoverflow.com/a/41613532. Also, only block if the build isn't already
+      # finished. See: https://stackoverflow.com/a/3044045.
       - name: Wait for Gradle build to complete
-        run: lsof -p $BACKGROUND_BUILD_PID +r 1 &>/dev/null
+        run: kill -0 $BACKGROUND_BUILD_PID && lsof -p $BACKGROUND_BUILD_PID +r 1 &>/dev/null
 
       - name: Run emulator tests
         run: bash ./scripts/run_emulator_tests.sh $AVD_NAME ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.abi }} $TEST_WHITELIST
