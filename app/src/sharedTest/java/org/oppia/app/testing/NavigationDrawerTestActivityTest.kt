@@ -41,8 +41,6 @@ import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
@@ -87,15 +85,12 @@ import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
-import org.oppia.util.logging.EnableConsoleLog
-import org.oppia.util.logging.EnableFileLog
-import org.oppia.util.logging.GlobalLogLevel
-import org.oppia.util.logging.LogLevel
 import org.oppia.util.logging.LoggerModule
 import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.util.parser.GlideImageLoaderModule
@@ -128,6 +123,9 @@ class NavigationDrawerTestActivityTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   private val internalProfileId = 0
   private val internalProfileId1 = 1
   private lateinit var oppiaClock: OppiaClock
@@ -138,6 +136,7 @@ class NavigationDrawerTestActivityTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
+    testCoroutineDispatchers.registerIdlingResource()
     storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
       ProfileId.newBuilder().setInternalId(
         internalProfileId
@@ -148,6 +147,7 @@ class NavigationDrawerTestActivityTest {
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -319,6 +319,27 @@ class NavigationDrawerTestActivityTest {
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
+  fun testNavigationDrawerTestActivity_withAdminProfile_checkAdministratorControlsDisplayedAgain() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
+        .check(matches(isDisplayed())).perform(click())
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
+        .check(matches(isDisplayed())).perform(click())
+      onView(withText(context.getString(R.string.administrator_controls_edit_account)))
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -601,29 +622,6 @@ class NavigationDrawerTestActivityTest {
 
   private fun findParent(view: ViewParent): ViewParent {
     return view.getParent()
-  }
-
-  @Module
-  class TestModule {
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
-
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
