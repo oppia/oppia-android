@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.android.app.databinding.DefaultAudioFragmentBinding
+import org.oppia.android.databinding.DefaultAudioFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [DefaultAudioFragment]. */

@@ -1,7 +1,7 @@
 package org.oppia.android.app.utility
 
 import android.content.Context
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.model.RatioExpression
 
 /**

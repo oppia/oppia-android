@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.oppia.android.app.databinding.FaqContentBinding
-import org.oppia.android.app.databinding.FaqItemHeaderBinding
-import org.oppia.android.app.databinding.FaqListFragmentBinding
+import org.oppia.android.databinding.FaqContentBinding
+import org.oppia.android.databinding.FaqItemHeaderBinding
+import org.oppia.android.databinding.FaqListFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQContentViewModel
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQHeaderViewModel

@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.shim.ViewBindingShim

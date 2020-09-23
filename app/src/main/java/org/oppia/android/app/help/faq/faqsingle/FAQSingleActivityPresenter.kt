@@ -4,9 +4,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.databinding.FaqSingleActivityBinding
+import org.oppia.android.databinding.FaqSingleActivityBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.HtmlParser
 import javax.inject.Inject

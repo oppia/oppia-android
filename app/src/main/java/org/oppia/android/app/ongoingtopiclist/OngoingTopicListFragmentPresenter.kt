@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.android.app.R
-import org.oppia.android.app.databinding.OngoingTopicItemBinding
-import org.oppia.android.app.databinding.OngoingTopicListFragmentBinding
+import org.oppia.android.R
+import org.oppia.android.databinding.OngoingTopicItemBinding
+import org.oppia.android.databinding.OngoingTopicListFragmentBinding
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import javax.inject.Inject

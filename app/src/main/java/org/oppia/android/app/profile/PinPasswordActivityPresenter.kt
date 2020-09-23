@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
-import org.oppia.android.app.R
-import org.oppia.android.app.databinding.PinPasswordActivityBinding
+import org.oppia.android.R
+import org.oppia.android.databinding.PinPasswordActivityBinding
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.utility.LifecycleSafeTimerFactory

@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
-import org.oppia.android.app.R
-import org.oppia.android.app.databinding.ReadingTextSizeFragmentBinding
+import org.oppia.android.R
+import org.oppia.android.databinding.ReadingTextSizeFragmentBinding
 import org.oppia.android.app.model.ReadingTextSize
 import javax.inject.Inject
 

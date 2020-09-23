@@ -2,7 +2,7 @@ package org.oppia.android.app.topic
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
 import javax.inject.Inject

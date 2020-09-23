@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.android.app.databinding.RevisionCardFragmentBinding
+import org.oppia.android.databinding.RevisionCardFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.viewmodel.ViewModelProvider

@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.android.app.R
-import org.oppia.android.app.databinding.ProfileProgressFragmentBinding
-import org.oppia.android.app.databinding.ProfileProgressHeaderBinding
-import org.oppia.android.app.databinding.ProfileProgressRecentlyPlayedStoryCardBinding
+import org.oppia.android.R
+import org.oppia.android.databinding.ProfileProgressFragmentBinding
+import org.oppia.android.databinding.ProfileProgressHeaderBinding
+import org.oppia.android.databinding.ProfileProgressRecentlyPlayedStoryCardBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
 import javax.inject.Inject

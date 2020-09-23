@@ -7,7 +7,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
-import org.oppia.android.app.R;
+import org.oppia.android.R;
 
 /** Holds all custom binding adapters that set background drawables. */
 public final class DrawableBindingAdapters {

@@ -3,7 +3,7 @@ package org.oppia.android.app.deprecation
 import android.app.Dialog
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.app.R
+import org.oppia.android.R
 import javax.inject.Inject
 
 /**

@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import org.oppia.android.app.R
-import org.oppia.android.app.databinding.MyDownloadsFragmentBinding
+import org.oppia.android.R
+import org.oppia.android.databinding.MyDownloadsFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import javax.inject.Inject
 

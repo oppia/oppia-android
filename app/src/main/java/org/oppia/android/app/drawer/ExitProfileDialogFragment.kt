@@ -7,7 +7,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.profile.ProfileChooserActivity
 
 /** [DialogFragment] that gives option to either cancel or exit current profile. */

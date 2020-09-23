@@ -20,7 +20,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -28,8 +28,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.databinding.TestTextViewForIntWithDataBindingBinding
-import org.oppia.android.app.databinding.TestTextViewForStringWithDataBindingBinding
+import org.oppia.android.databinding.TestTextViewForIntWithDataBindingBinding
+import org.oppia.android.databinding.TestTextViewForStringWithDataBindingBinding
 import org.oppia.android.app.model.TestModel
 import org.oppia.android.app.model.TestModel.ModelTypeCase
 import org.oppia.android.app.parser.HtmlParserTest

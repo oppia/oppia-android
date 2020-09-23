@@ -7,8 +7,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import org.oppia.android.app.R
-import org.oppia.android.app.databinding.AdminSettingsDialogBinding
+import org.oppia.android.R
+import org.oppia.android.databinding.AdminSettingsDialogBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import javax.inject.Inject

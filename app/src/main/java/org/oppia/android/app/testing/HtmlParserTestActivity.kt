@@ -3,7 +3,7 @@ package org.oppia.android.app.testing
 import android.os.Bundle
 import android.text.Spannable
 import android.widget.TextView
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.HtmlParser

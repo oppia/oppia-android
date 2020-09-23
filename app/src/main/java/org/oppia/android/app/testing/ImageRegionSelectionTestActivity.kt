@@ -1,7 +1,7 @@
 package org.oppia.android.app.testing
 
 import android.os.Bundle
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.utility.ClickableAreasImage
 

@@ -10,7 +10,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.shim.ViewBindingShim
 import javax.inject.Inject

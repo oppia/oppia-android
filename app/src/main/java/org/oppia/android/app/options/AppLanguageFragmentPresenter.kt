@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.android.app.databinding.AppLanguageFragmentBinding
+import org.oppia.android.databinding.AppLanguageFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [AppLanguageFragment]. */

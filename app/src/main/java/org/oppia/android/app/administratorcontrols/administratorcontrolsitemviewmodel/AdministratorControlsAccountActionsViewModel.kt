@@ -3,7 +3,7 @@ package org.oppia.android.app.administratorcontrols.administratorcontrolsitemvie
 import android.content.Intent
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.shim.IntentFactoryShim
 
 /** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */

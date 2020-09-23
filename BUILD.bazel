@@ -6,7 +6,7 @@ android_binary(
     enable_data_binding = True,
     manifest = "//app:src/main/AndroidManifest.xml",
     manifest_values = {
-        "applicationId": "org.oppia.app",
+        "applicationId": "org.oppia.android",
         "versionCode": "0",
         "versionName": "0.1-alpha",
         "minSdkVersion": "19",

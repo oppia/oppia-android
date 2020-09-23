@@ -1,7 +1,7 @@
 package org.oppia.android.app.settings.profile
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
 

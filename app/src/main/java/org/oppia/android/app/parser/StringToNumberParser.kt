@@ -2,7 +2,7 @@ package org.oppia.android.app.parser
 
 import android.content.Context
 import androidx.annotation.StringRes
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.domain.util.normalizeWhitespace
 
 /** This class contains methods that help to parse string to number, check realtime and submit time errors. */

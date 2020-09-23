@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.customview.interaction.FractionInputInteractionView
 import org.oppia.android.app.customview.interaction.NumericInputInteractionView
 import org.oppia.android.app.customview.interaction.TextInputInteractionView
-import org.oppia.android.app.databinding.ActivityInputInteractionViewTestBinding
+import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.SchemaObject
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory

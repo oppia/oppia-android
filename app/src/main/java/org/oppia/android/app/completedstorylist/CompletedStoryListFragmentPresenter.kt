@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.android.app.R
-import org.oppia.android.app.databinding.CompletedStoryItemBinding
-import org.oppia.android.app.databinding.CompletedStoryListFragmentBinding
+import org.oppia.android.R
+import org.oppia.android.databinding.CompletedStoryItemBinding
+import org.oppia.android.databinding.CompletedStoryListFragmentBinding
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import javax.inject.Inject

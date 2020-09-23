@@ -8,10 +8,10 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.android.app.databinding.AdminAuthActivityBinding
+import org.oppia.android.databinding.AdminAuthActivityBinding
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 

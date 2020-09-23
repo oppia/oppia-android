@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.android.app.R
-import org.oppia.android.app.databinding.ExplorationFragmentBinding
+import org.oppia.android.R
+import org.oppia.android.databinding.ExplorationFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.player.state.StateFragment

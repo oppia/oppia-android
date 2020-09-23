@@ -6,7 +6,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
-import org.oppia.android.app.R;
+import org.oppia.android.R;
 import org.oppia.android.util.system.OppiaDateTimeFormatter;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;

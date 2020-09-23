@@ -1,7 +1,7 @@
 package org.oppia.android.app.help
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** [ObservableViewModel] for the recycler view of HelpActivity. */
