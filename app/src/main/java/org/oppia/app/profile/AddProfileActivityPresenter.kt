@@ -30,6 +30,7 @@ import org.oppia.app.databinding.AddProfileActivityBinding
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
@@ -214,7 +215,7 @@ class AddProfileActivityPresenter @Inject constructor(
           allowDownloadAccess = allowDownloadAccess,
           colorRgb = activity.intent.getIntExtra(KEY_ADD_PROFILE_COLOR_RGB, -10710042),
           isAdmin = false
-        )
+        ).toLiveData()
         .observe(
           activity,
           Observer {

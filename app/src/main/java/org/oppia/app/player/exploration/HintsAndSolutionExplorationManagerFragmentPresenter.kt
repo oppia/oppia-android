@@ -8,6 +8,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.EphemeralState
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -20,7 +21,7 @@ class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
 ) {
 
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
-    explorationProgressController.getCurrentState()
+    explorationProgressController.getCurrentState().toLiveData()
   }
 
   fun handleCreateView(): View? {

@@ -18,6 +18,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.shim.IntentFactoryShim
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -37,7 +38,7 @@ class AdministratorControlsViewModel @Inject constructor(
 
   private val deviceSettingsLiveData: LiveData<DeviceSettings> by lazy {
     Transformations.map(
-      profileManagementController.getDeviceSettings(),
+      profileManagementController.getDeviceSettings().toLiveData(),
       ::processGetDeviceSettingsResult
     )
   }

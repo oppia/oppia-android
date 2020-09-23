@@ -30,6 +30,7 @@ import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.datetime.DateTimeUtil
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.StoryHtmlParserEntityType
@@ -119,7 +120,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId),
+      profileManagementController.getProfile(profileId).toLiveData(),
       ::processGetProfileResult
     )
   }
@@ -185,7 +186,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val ongoingStoryListSummaryResultLiveData:
     LiveData<AsyncResult<OngoingStoryList>>
     by lazy {
-      topicListController.getOngoingStoryList(profileId)
+      topicListController.getOngoingStoryList(profileId).toLiveData()
     }
 
   private fun subscribeToOngoingStoryList() {

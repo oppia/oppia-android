@@ -14,6 +14,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [ResetPinDialogFragment]. */
@@ -77,7 +78,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
         }
         if (input.length == 3) {
           profileManagementController
-            .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), input)
+            .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), input).toLiveData()
             .observe(
               fragment,
               Observer {

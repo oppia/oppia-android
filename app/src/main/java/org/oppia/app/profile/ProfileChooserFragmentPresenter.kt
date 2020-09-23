@@ -26,6 +26,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.statusbar.StatusBarColor
 import org.oppia.util.system.OppiaClock
@@ -119,7 +120,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private val wasProfileEverBeenAdded: LiveData<Boolean> by lazy {
     Transformations.map(
-      profileManagementController.getWasProfileEverAdded(),
+      profileManagementController.getWasProfileEverAdded().toLiveData(),
       ::processWasProfileEverBeenAddedResult
     )
   }
@@ -174,7 +175,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.profileChooserItem.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
-        profileManagementController.loginToProfile(model.profile.id).observe(
+        profileManagementController.loginToProfile(model.profile.id).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {

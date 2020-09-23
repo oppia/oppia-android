@@ -14,7 +14,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,6 +35,9 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -52,7 +54,7 @@ import javax.inject.Singleton
 
 /** Tests for [AppStartupStateController]. */
 @RunWith(AndroidJUnit4::class)
-@Config(manifest = Config.NONE)
+@Config(application = AppStartupStateControllerTest.TestApplication::class)
 class AppStartupStateControllerTest {
   @Rule
   @JvmField
@@ -82,28 +84,11 @@ class AppStartupStateControllerTest {
 
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
-  @Before
-  fun setUp() {
-    setUpTestApplicationComponent()
-
-    // By default, set up the application to never expire.
-    setUpOppiaApplication(expirationEnabled = false, expDate = "9999-12-31")
-  }
-
-  private fun setUpTestApplicationComponent() {
-    DaggerAppStartupStateControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
-  }
-
-  private fun simulateAppRestart() {
-    setUpTestApplicationComponent()
-  }
-
   @Test
   fun testController_providesInitialLiveData_indicatesUserHasNotOnboardedTheApp() {
-    val appStartupState = appStartupStateController.getAppStartupState()
+    setUpDefaultTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -114,7 +99,8 @@ class AppStartupStateControllerTest {
 
   @Test
   fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() { // ktlint-disable max-line-length
-    val appStartupState = appStartupStateController.getAppStartupState()
+    setUpDefaultTestApplicationComponent()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
 
     appStartupState.observeForever(mockOnboardingObserver)
     appStartupStateController.markOnboardingFlowCompleted()
@@ -129,13 +115,15 @@ class AppStartupStateControllerTest {
 
   @Test
   fun testController_settingAppOnboarded_observedNewController_userOnboardedApp() {
-    appStartupStateController.markOnboardingFlowCompleted()
-    testCoroutineDispatchers.runCurrent()
+    // Simulate the previous app already having completed onboarding.
+    executeInPreviousApp { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
 
-    // Create the controller by creating another singleton graph and injecting it (simulating the
-    // app being recreated).
-    simulateAppRestart()
-    val appStartupState = appStartupStateController.getAppStartupState()
+    // Create the application after previous arrangement to simulate a re-creation.
+    setUpDefaultTestApplicationComponent()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -149,18 +137,25 @@ class AppStartupStateControllerTest {
   @Test
   @Suppress("DeferredResultUnused")
   fun testController_onboardedApp_cleared_observeNewController_userDidNotOnboardApp() {
-    val onboardingFlowStore = cacheFactory.create(
-      "on_boarding_flow",
-      OnboardingState.getDefaultInstance()
-    )
-    appStartupStateController.markOnboardingFlowCompleted()
-    testCoroutineDispatchers.runCurrent()
-    // Clear, then recreate the controller.
-    onboardingFlowStore.clearCacheAsync()
-    testCoroutineDispatchers.runCurrent()
-    simulateAppRestart()
+    // Simulate the previous app already having completed onboarding, then cleared.
+    executeInPreviousApp { testComponent ->
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+      val onboardingFlowStore = testComponent.getCacheFactory().create(
+        "on_boarding_flow",
+        OnboardingState.getDefaultInstance()
+      )
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+      // Clear, then recreate the controller.
+      onboardingFlowStore.clearCacheAsync()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    // Create the application after previous arrangement to simulate a re-creation.
+    setUpDefaultTestApplicationComponent()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -172,9 +167,10 @@ class AppStartupStateControllerTest {
 
   @Test
   fun testInitialAppOpen_appDeprecationEnabled_beforeDeprecationDate_appNotDeprecated() {
+    setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -185,9 +181,10 @@ class AppStartupStateControllerTest {
 
   @Test
   fun testInitialAppOpen_appDeprecationEnabled_onDeprecationDate_appIsDeprecated() {
+    setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringForToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -198,9 +195,10 @@ class AppStartupStateControllerTest {
 
   @Test
   fun testInitialAppOpen_appDeprecationEnabled_afterDeprecationDate_appIsDeprecated() {
+    setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -211,9 +209,10 @@ class AppStartupStateControllerTest {
 
   @Test
   fun testInitialAppOpen_appDeprecationDisabled_afterDeprecationDate_appIsNotDeprecated() {
+    setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = false, expDate = dateStringBeforeToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -224,10 +223,17 @@ class AppStartupStateControllerTest {
 
   @Test
   fun testSecondAppOpen_onboardingFlowNotDone_deprecationEnabled_beforeDepDate_appNotDeprecated() {
+    executeInPreviousApp { testComponent ->
+      setUpOppiaApplicationForContext(
+        context = testComponent.getContext(),
+        expirationEnabled = true,
+        expDate = dateStringAfterToday()
+      )
+    }
+    setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
-    simulateAppRestart()
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -238,10 +244,17 @@ class AppStartupStateControllerTest {
 
   @Test
   fun testSecondAppOpen_onboardingFlowNotDone_deprecationEnabled_afterDepDate_appIsDeprecated() {
+    executeInPreviousApp { testComponent ->
+      setUpOppiaApplicationForContext(
+        context = testComponent.getContext(),
+        expirationEnabled = true,
+        expDate = dateStringBeforeToday()
+      )
+    }
+    setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
-    simulateAppRestart()
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -252,12 +265,20 @@ class AppStartupStateControllerTest {
 
   @Test
   fun testSecondAppOpen_onboardingFlowCompleted_depEnabled_beforeDepDate_appNotDeprecated() {
-    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
-    appStartupStateController.markOnboardingFlowCompleted()
-    testCoroutineDispatchers.runCurrent()
-    simulateAppRestart()
+    executeInPreviousApp { testComponent ->
+      setUpOppiaApplicationForContext(
+        context = testComponent.getContext(),
+        expirationEnabled = true,
+        expDate = dateStringAfterToday()
+      )
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
+
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -269,12 +290,20 @@ class AppStartupStateControllerTest {
 
   @Test
   fun testSecondAppOpen_onboardingFlowCompleted_deprecationEnabled_afterDepDate_appIsDeprecated() {
-    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
-    appStartupStateController.markOnboardingFlowCompleted()
-    testCoroutineDispatchers.runCurrent()
-    simulateAppRestart()
+    executeInPreviousApp { testComponent ->
+      setUpOppiaApplicationForContext(
+        context = testComponent.getContext(),
+        expirationEnabled = true,
+        expDate = dateStringBeforeToday()
+      )
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+      testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
+
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -282,6 +311,38 @@ class AppStartupStateControllerTest {
     verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
     assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
     assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(APP_IS_DEPRECATED)
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun setUpDefaultTestApplicationComponent() {
+    setUpTestApplicationComponent()
+
+    // By default, set up the application to never expire.
+    setUpOppiaApplication(expirationEnabled = false, expDate = "9999-12-31")
+  }
+
+  /**
+   * Creates a separate test application component and executes the specified block. This should be
+   * called before [setUpTestApplicationComponent] to avoid undefined behavior in production code.
+   * This can be used to simulate arranging state in a "prior" run of the app.
+   *
+   * Note that only dependencies fetched from the specified [TestApplicationComponent] should be
+   * used, not any class-level injected dependencies.
+   */
+  private fun executeInPreviousApp(block: (TestApplicationComponent) -> Unit) {
+    val testApplication = TestApplication()
+    // The true application is hooked as a base context. This is to make sure the new application
+    // can behave like a real Android application class (per Robolectric) without having a shared
+    // Dagger dependency graph with the application under test.
+    testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
+    block(
+      DaggerAppStartupStateControllerTest_TestApplicationComponent.builder()
+        .setApplication(testApplication)
+        .build()
+    )
   }
 
   /** Returns a date string occurring before today. */
@@ -307,6 +368,14 @@ class AppStartupStateControllerTest {
   }
 
   private fun setUpOppiaApplication(expirationEnabled: Boolean, expDate: String) {
+    setUpOppiaApplicationForContext(context, expirationEnabled, expDate)
+  }
+
+  private fun setUpOppiaApplicationForContext(
+    context: Context,
+    expirationEnabled: Boolean,
+    expDate: String
+  ) {
     val packageManager = shadowOf(context.packageManager)
     val applicationInfo =
       ApplicationInfoBuilder.newBuilder()
@@ -360,7 +429,7 @@ class AppStartupStateControllerTest {
       ExpirationMetaDataRetrieverModule::class // Use real implementation to test closer to prod.
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -369,6 +438,32 @@ class AppStartupStateControllerTest {
       fun build(): TestApplicationComponent
     }
 
+    fun getAppStartupStateController(): AppStartupStateController
+
+    fun getCacheFactory(): PersistentCacheStore.Factory
+
+    fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
+
+    fun getContext(): Context
+
     fun inject(appStartupStateControllerTest: AppStartupStateControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerAppStartupStateControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(appStartupStateControllerTest: AppStartupStateControllerTest) {
+      component.inject(appStartupStateControllerTest)
+    }
+
+    public override fun attachBaseContext(base: Context?) {
+      super.attachBaseContext(base)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

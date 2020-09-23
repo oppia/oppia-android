@@ -21,6 +21,7 @@ import org.oppia.app.model.PromotedStory
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
@@ -70,7 +71,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     by lazy {
       topicListController.getOngoingStoryList(
         ProfileId.newBuilder().setInternalId(internalProfileId).build()
-      )
+      ).toLiveData()
     }
 
   private fun subscribeToOngoingStoryList() {

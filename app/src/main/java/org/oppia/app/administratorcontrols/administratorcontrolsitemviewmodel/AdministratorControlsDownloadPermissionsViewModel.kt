@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import org.oppia.app.model.DeviceSettings
 import org.oppia.app.model.ProfileId
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 
 /** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
@@ -23,25 +24,27 @@ class AdministratorControlsDownloadPermissionsViewModel(
     ObservableField<Boolean>(deviceSettings.automaticallyUpdateTopics)
 
   fun onTopicWifiUpdatePermissionChanged(checked: Boolean) {
-    profileManagementController.updateWifiPermissionDeviceSettings(userProfileId, checked).observe(
-      fragment,
-      Observer {
-        if (it.isFailure()) {
-          logger.e(
-            "AdministratorControlsFragment",
-            "Failed to update topic update on wifi permission",
-            it.getErrorOrNull()!!
-          )
+    profileManagementController.updateWifiPermissionDeviceSettings(userProfileId, checked)
+      .toLiveData()
+      .observe(
+        fragment,
+        Observer {
+          if (it.isFailure()) {
+            logger.e(
+              "AdministratorControlsFragment",
+              "Failed to update topic update on wifi permission",
+              it.getErrorOrNull()!!
+            )
+          }
         }
-      }
-    )
+      )
   }
 
   fun onTopicAutoUpdatePermissionChanged(checked: Boolean) {
     profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
       userProfileId,
       checked
-    ).observe(
+    ).toLiveData().observe(
       fragment,
       Observer {
         if (it.isFailure()) {

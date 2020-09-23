@@ -13,6 +13,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.profile.ProfileInputView
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [ProfileResetPinActivity]. */
@@ -115,7 +116,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
         return@setOnClickListener
       }
       profileManagementController
-        .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), pin)
+        .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), pin).toLiveData()
         .observe(
           activity,
           Observer {

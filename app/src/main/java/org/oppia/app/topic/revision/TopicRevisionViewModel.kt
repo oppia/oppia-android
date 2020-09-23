@@ -10,6 +10,7 @@ import org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewM
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
@@ -29,7 +30,7 @@ class TopicRevisionViewModel @Inject constructor(
     fragment as RevisionSubtopicSelector
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(profileId, topicId)
+    topicController.getTopic(profileId, topicId).toLiveData()
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }

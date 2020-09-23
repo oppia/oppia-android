@@ -1,12 +1,11 @@
 package org.oppia.domain.onboarding
 
-import androidx.lifecycle.LiveData
 import org.oppia.app.model.AppStartupState
 import org.oppia.app.model.AppStartupState.StartupMode
 import org.oppia.app.model.OnboardingState
 import org.oppia.data.persistence.PersistentCacheStore
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProvider
+import org.oppia.util.data.DataProviders.Companion.transform
 import org.oppia.util.logging.ConsoleLogger
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -21,7 +20,6 @@ private const val APP_STARTUP_STATE_DATA_PROVIDER_ID = "app_startup_state_data_p
 @Singleton
 class AppStartupStateController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
-  private val dataProviders: DataProviders,
   private val consoleLogger: ConsoleLogger,
   private val expirationMetaDataRetriever: ExpirationMetaDataRetriever
 ) {
@@ -31,7 +29,7 @@ class AppStartupStateController @Inject constructor(
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
 
   private val appStartupStateDataProvider by lazy {
-    dataProviders.transform(APP_STARTUP_STATE_DATA_PROVIDER_ID, onboardingFlowStore) {
+    onboardingFlowStore.transform(APP_STARTUP_STATE_DATA_PROVIDER_ID) {
       AppStartupState.newBuilder().setStartupMode(computeAppStartupMode(it)).build()
     }
   }
@@ -68,12 +66,10 @@ class AppStartupStateController @Inject constructor(
   }
 
   /**
-   * Returns a [LiveData] containing the user's startup state, which in turn affect what initial app
-   * flow the user is directed to.
+   * Returns a [DataProvider] containing the user's startup state, which in turn affect what initial
+   * app flow the user is directed to.
    */
-  fun getAppStartupState(): LiveData<AsyncResult<AppStartupState>> {
-    return dataProviders.convertToLiveData(appStartupStateDataProvider)
-  }
+  fun getAppStartupState(): DataProvider<AppStartupState> = appStartupStateDataProvider
 
   private fun computeAppStartupMode(onboardingState: OnboardingState): StartupMode {
     return when {

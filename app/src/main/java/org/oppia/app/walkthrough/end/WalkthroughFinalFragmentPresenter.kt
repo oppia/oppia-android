@@ -16,6 +16,7 @@ import org.oppia.app.model.Topic
 import org.oppia.app.walkthrough.WalkthroughActivity
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -82,7 +83,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(profileId, topicId = topicId)
+    topicController.getTopic(profileId, topicId = topicId).toLiveData()
   }
 
   private fun getTopic(): LiveData<Topic> {

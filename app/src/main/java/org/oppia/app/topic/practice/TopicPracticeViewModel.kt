@@ -12,6 +12,7 @@ import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicV
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -29,7 +30,7 @@ class TopicPracticeViewModel @Inject constructor(
     topicController.getTopic(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       topicId
-    )
+    ).toLiveData()
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }

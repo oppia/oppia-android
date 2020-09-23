@@ -15,6 +15,7 @@ import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.domain.onboarding.AppStartupStateController
 import org.oppia.domain.topic.PrimeTopicAssetsController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -77,7 +78,7 @@ class SplashActivityPresenter @Inject constructor(
 
   private fun getOnboardingFlow(): LiveData<StartupMode> {
     return Transformations.map(
-      appStartupStateController.getAppStartupState(),
+      appStartupStateController.getAppStartupState().toLiveData(),
       ::processStartupState
     )
   }

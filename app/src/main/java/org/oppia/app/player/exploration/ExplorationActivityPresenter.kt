@@ -23,6 +23,7 @@ import org.oppia.app.utility.FontScaleConfigurationUtil
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -229,7 +230,7 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   private fun updateToolbarTitle(explorationId: String) {
-    subscribeToExploration(explorationDataController.getExplorationById(explorationId))
+    subscribeToExploration(explorationDataController.getExplorationById(explorationId).toLiveData())
   }
 
   private fun subscribeToExploration(

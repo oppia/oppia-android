@@ -1,10 +1,8 @@
 package org.oppia.domain.audio
 
-import androidx.lifecycle.LiveData
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.data.persistence.PersistentCacheStore
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProvider
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,7 +11,6 @@ import javax.inject.Singleton
 @Singleton
 class CellularAudioDialogController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
-  private val dataProviders: DataProviders,
   private val logger: ConsoleLogger
 ) {
   private val cellularDataStore = cacheStoreFactory.create(
@@ -61,8 +58,6 @@ class CellularAudioDialogController @Inject constructor(
     }
   }
 
-  /** Returns a [LiveData] result indicating the user's cellular data preferences. */
-  fun getCellularDataPreference(): LiveData<AsyncResult<CellularDataPreference>> {
-    return dataProviders.convertToLiveData(cellularDataStore)
-  }
+  /** Returns a [DataProvider] indicating the user's cellular data preferences. */
+  fun getCellularDataPreference(): DataProvider<CellularDataPreference> = cellularDataStore
 }
