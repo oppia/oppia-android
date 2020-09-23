@@ -2,15 +2,10 @@ package org.oppia.app.profile
 
 import android.app.Application
 import android.content.Context
-import android.os.Build
-import android.view.View
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
@@ -28,7 +23,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
 import dagger.Component
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -65,6 +59,7 @@ import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.testing.EditTextInputAction
 import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
@@ -99,6 +94,9 @@ class AdminPinActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
+
   @Before
   fun setUp() {
     Intents.init()
@@ -126,12 +124,12 @@ class AdminPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -179,13 +177,13 @@ class AdminPinActivityTest {
       .use {
         testCoroutineDispatchers.runCurrent()
         onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-          appendText("12345"),
+          editTextInputAction.appendText("12345"),
           closeSoftKeyboard()
         )
         testCoroutineDispatchers.runCurrent()
         onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
           scrollTo(),
-          appendText("12345"),
+          editTextInputAction.appendText("12345"),
           closeSoftKeyboard()
         )
         testCoroutineDispatchers.runCurrent()
@@ -279,12 +277,12 @@ class AdminPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("1234"),
+        editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -408,12 +406,12 @@ class AdminPinActivityTest {
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -464,13 +462,13 @@ class AdminPinActivityTest {
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -569,13 +567,13 @@ class AdminPinActivityTest {
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-        appendText("1234"),
+        editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -709,13 +707,13 @@ class AdminPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-        appendText("54321"),
+        editTextInputAction.appendText("54321"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -779,30 +777,6 @@ class AdminPinActivityTest {
       onView(withId(R.id.submit_button)).perform(scrollTo())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
-    }
-  }
-
-  /**
-   * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
-   * properly input digits for text views using 'android:digits'. See
-   * https://github.com/robolectric/robolectric/issues/5110 for specifics.
-   */
-  private fun appendText(text: String): ViewAction {
-    val typeTextViewAction = typeText(text)
-    return object : ViewAction {
-      override fun getDescription(): String = typeTextViewAction.description
-
-      override fun getConstraints(): Matcher<View> = typeTextViewAction.constraints
-
-      override fun perform(uiController: UiController?, view: View?) {
-        // Appending text only works on Robolectric, whereas Espresso needs to use typeText().
-        if (Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
-          (view as? EditText)?.append(text)
-          testCoroutineDispatchers.runCurrent()
-        } else {
-          typeTextViewAction.perform(uiController, view)
-        }
-      }
     }
   }
 

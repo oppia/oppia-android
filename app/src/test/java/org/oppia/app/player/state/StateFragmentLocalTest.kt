@@ -3,7 +3,6 @@ package org.oppia.app.player.state
 import android.app.Application
 import android.content.Context
 import android.view.View
-import android.widget.EditText
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
@@ -12,7 +11,6 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -21,7 +19,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
@@ -37,7 +34,6 @@ import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -85,6 +81,7 @@ import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.CoroutineExecutorService
+import org.oppia.testing.EditTextInputAction
 import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
@@ -132,6 +129,9 @@ class StateFragmentLocalTest {
   @Inject
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
 
   private val internalProfileId: Int = 1
   private val solutionIndex: Int = 4
@@ -1111,7 +1111,9 @@ class StateFragmentLocalTest {
 
   private fun submitFractionAnswer(answerText: String) {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(FRACTION_INPUT_INTERACTION))
-    onView(withId(R.id.fraction_input_interaction_view)).perform(appendText(answerText))
+    onView(withId(R.id.fraction_input_interaction_view)).perform(
+      editTextInputAction.appendText(answerText)
+    )
     testCoroutineDispatchers.runCurrent()
 
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
@@ -1250,28 +1252,6 @@ class StateFragmentLocalTest {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
     onView(withId(R.id.next_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
-  }
-
-  /**
-   * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
-   * properly input digits for text views using 'android:digits'. See
-   * https://github.com/robolectric/robolectric/issues/5110 for specifics.
-   */
-  private fun appendText(text: String): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String {
-        return "appendText($text)"
-      }
-
-      override fun getConstraints(): Matcher<View> {
-        return allOf(isEnabled())
-      }
-
-      override fun perform(uiController: UiController?, view: View?) {
-        (view as? EditText)?.append(text)
-        testCoroutineDispatchers.runCurrent()
-      }
-    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
