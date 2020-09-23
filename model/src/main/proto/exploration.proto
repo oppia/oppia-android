@@ -8,11 +8,11 @@ import "interaction_object.proto";
 import "translation.proto";
 import "voiceover.proto";
 
-option java_package = "org.oppia.app.model";
+option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
 // Structure for a single exploration.
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeExploration.kt
+// Maps from: data/src/main/java/org.oppia.android.android/data/backends/gae/model/GaeExploration.kt
 message Exploration {
   // The ID of the exploration.
   string id = 1;
@@ -29,7 +29,7 @@ message Exploration {
 }
 
 // Structure for a param change.
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeParamChange.kt
+// Maps from: data/src/main/java/org.oppia.android.android/data/backends/gae/model/GaeParamChange.kt
 message ParamChange {
   string generator_id = 1;
   string name = 2;
@@ -37,7 +37,7 @@ message ParamChange {
 }
 
 // Structure for a param spec.
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeParamSpec.kt
+// Maps from: data/src/main/java/org.oppia.android.android/data/backends/gae/model/GaeParamSpec.kt
 message ParamSpec {
   ObjectType obj_type = 1;
 }
@@ -49,7 +49,7 @@ enum ObjectType {
 }
 
 // Structure for a single state
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeState.kt
+// Maps from: data/src/main/java/org.oppia.android.android/data/backends/gae/model/GaeState.kt
 message State {
   // The name of the State.
   string name = 1;
@@ -76,7 +76,7 @@ message ParamChangeCustomizationArgs {
 }
 
 // Structure for a single interaction
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeInteractionInstance.kt
+// Maps from: data/src/main/java/org.oppia.android.android/data/backends/gae/model/GaeInteractionInstance.kt
 message Interaction {
   string id = 1;
   repeated AnswerGroup answer_groups = 2;
@@ -117,7 +117,7 @@ message CustomSchemaValue {
 }
 
 // Structure for a single answer group
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeAnswerGroup.kt
+// Maps from: data/src/main/java/org.oppia.android.android/data/backends/gae/model/GaeAnswerGroup.kt
 message AnswerGroup {
   string tagged_skill_misconception_id = 1;
   Outcome outcome = 2;
@@ -132,7 +132,7 @@ message TrainingData {
 }
 
 // Structure for a single solution
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeSolution.kt
+// Maps from: data/src/main/java/org.oppia.android.android/data/backends/gae/model/GaeSolution.kt
 message Solution {
   string interaction_id = 1;
   // Flag that is true if correct_answer is the only correct answer of the question.
@@ -146,7 +146,7 @@ message Solution {
 }
 
 // Structure for a Correct answer in Solution
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeSolution.kt
+// Maps from: data/src/main/java/org.oppia.android.android/data/backends/gae/model/GaeSolution.kt
 message CorrectAnswer {
   int32 denominator = 1;
   int32 numerator = 2;
@@ -156,7 +156,7 @@ message CorrectAnswer {
 }
 
 // Structure for a single hint
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeHint.kt
+// Maps from: data/src/main/java/org.oppia.android.android/data/backends/gae/model/GaeHint.kt
 message Hint {
   // Hint data.
   SubtitledHtml hint_content = 1;
@@ -167,7 +167,7 @@ message Hint {
 }
 
 // Structure for a single outcome
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeOutcome.kt
+// Maps from: data/src/main/java/org.oppia.android.android/data/backends/gae/model/GaeOutcome.kt
 message Outcome {
   string dest_state_name = 1;
   string refresher_exploration_id = 2;
