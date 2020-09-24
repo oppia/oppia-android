@@ -1,6 +1,6 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
-import org.oppia.app.player.state.listener.ReplayButtonListener
+import org.oppia.android.app.player.state.listener.ReplayButtonListener
 
 /** [StateItemViewModel] for replaying the current lesson experience. */
 class ReplayButtonViewModel(

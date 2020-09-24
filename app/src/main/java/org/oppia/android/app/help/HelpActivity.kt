@@ -1,12 +1,12 @@
-package org.oppia.app.help
+package org.oppia.android.app.help
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.app.R
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
-import org.oppia.app.help.faq.FAQListActivity
+import org.oppia.android.R
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.help.faq.FAQListActivity
 import javax.inject.Inject
 
 /** The help page activity for FAQs and feedback. */

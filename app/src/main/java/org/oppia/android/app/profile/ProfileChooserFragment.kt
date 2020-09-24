@@ -1,11 +1,11 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
+import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that allows user to select a profile or create new ones. */

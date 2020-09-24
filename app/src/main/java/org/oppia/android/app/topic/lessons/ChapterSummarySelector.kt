@@ -1,6 +1,6 @@
-package org.oppia.app.topic.lessons
+package org.oppia.android.app.topic.lessons
 
-import org.oppia.app.model.ChapterSummary
+import org.oppia.android.app.model.ChapterSummary
 
 /** Interface to transfer the selected chapter summary to [TopicLessonsFragmentPresenter]. */
 interface ChapterSummarySelector {

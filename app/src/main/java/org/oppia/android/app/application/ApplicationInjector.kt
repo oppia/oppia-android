@@ -1,7 +1,7 @@
-package org.oppia.app.application
+package org.oppia.android.app.application
 
-import org.oppia.app.profile.ProfileInputView
-import org.oppia.util.data.DataProvidersInjector
+import org.oppia.android.app.profile.ProfileInputView
+import org.oppia.android.util.data.DataProvidersInjector
 
 /** Injector for application-level dependencies that can't be directly injected where needed. */
 interface ApplicationInjector : DataProvidersInjector {

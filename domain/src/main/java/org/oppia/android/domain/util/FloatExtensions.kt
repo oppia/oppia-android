@@ -1,4 +1,4 @@
-package org.oppia.domain.util
+package org.oppia.android.domain.util
 
 import kotlin.math.abs
 

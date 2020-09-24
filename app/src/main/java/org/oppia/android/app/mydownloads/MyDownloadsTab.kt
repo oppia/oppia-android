@@ -1,4 +1,4 @@
-package org.oppia.app.mydownloads
+package org.oppia.android.app.mydownloads
 
 /** Enum to store the tabs of [MyDownloadsFragment] and get tab by position. */
 enum class MyDownloadsTab(private var position: Int) {

@@ -1,9 +1,9 @@
-package org.oppia.app.profileprogress
+package org.oppia.android.app.profileprogress
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.app.home.RouteToTopicPlayStoryListener
-import org.oppia.app.model.PromotedStory
-import org.oppia.app.shim.IntentFactoryShim
+import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.shim.IntentFactoryShim
 
 /** Recently played item [ViewModel] for the recycler view in [ProfileProgressFragment]. */
 class RecentlyPlayedStorySummaryViewModel(

@@ -1,4 +1,4 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -11,15 +11,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
-import org.oppia.app.R
-import org.oppia.app.databinding.PinPasswordActivityBinding
-import org.oppia.app.home.HomeActivity
-import org.oppia.app.model.ProfileId
-import org.oppia.app.utility.LifecycleSafeTimerFactory
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.statusbar.StatusBarColor
+import org.oppia.android.R
+import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.utility.LifecycleSafeTimerFactory
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.PinPasswordActivityBinding
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"

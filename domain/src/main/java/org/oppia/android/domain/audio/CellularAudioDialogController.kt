@@ -1,9 +1,9 @@
-package org.oppia.domain.audio
+package org.oppia.android.domain.audio
 
-import org.oppia.app.model.CellularDataPreference
-import org.oppia.data.persistence.PersistentCacheStore
-import org.oppia.util.data.DataProvider
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.app.model.CellularDataPreference
+import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 import javax.inject.Singleton
 

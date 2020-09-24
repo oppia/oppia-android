@@ -1,11 +1,11 @@
-package org.oppia.app.walkthrough.end
+package org.oppia.android.app.walkthrough.end
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
+import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"

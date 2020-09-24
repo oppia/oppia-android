@@ -1,7 +1,7 @@
-package org.oppia.app.walkthrough.welcome
+package org.oppia.android.app.walkthrough.welcome
 
 import androidx.databinding.ObservableField
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** [ViewModel] for displaying user profile details in walkthrough welcome fragment. */
 class WalkthroughWelcomeViewModel : ObservableViewModel() {

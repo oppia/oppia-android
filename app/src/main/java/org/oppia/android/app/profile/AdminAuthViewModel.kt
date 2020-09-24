@@ -1,10 +1,10 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.ObservableField
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 /** The ViewModel for [AdminAuthActivity]. */

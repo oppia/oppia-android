@@ -1,4 +1,4 @@
-package org.oppia.util.accessibility
+package org.oppia.android.util.accessibility
 
 import android.view.accessibility.AccessibilityManager
 

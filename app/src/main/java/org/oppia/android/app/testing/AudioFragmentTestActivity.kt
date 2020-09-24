@@ -1,9 +1,9 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 const val KEY_AUDIO_FRAGMENT_TEST_PROFILE_ID = "KEY_AUDIO_FRAGMENT_TEST_PROFILE_ID"

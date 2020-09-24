@@ -1,10 +1,10 @@
-package org.oppia.app.application
+package org.oppia.android.app.application
 
 import android.app.Application
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import org.oppia.app.activity.ActivityComponent
+import org.oppia.android.app.activity.ActivityComponent
 import javax.inject.Singleton
 
 /** Provides core infrastructure needed to support all other dependencies in the app. */

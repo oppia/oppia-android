@@ -1,26 +1,26 @@
-package org.oppia.domain.util
+package org.oppia.android.domain.util
 
-import org.oppia.app.model.ClickOnImage
-import org.oppia.app.model.Fraction
-import org.oppia.app.model.ImageWithRegions
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.InteractionObject.ObjectTypeCase.BOOL_VALUE
-import org.oppia.app.model.InteractionObject.ObjectTypeCase.CLICK_ON_IMAGE
-import org.oppia.app.model.InteractionObject.ObjectTypeCase.FRACTION
-import org.oppia.app.model.InteractionObject.ObjectTypeCase.IMAGE_WITH_REGIONS
-import org.oppia.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING
-import org.oppia.app.model.InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT
-import org.oppia.app.model.InteractionObject.ObjectTypeCase.NORMALIZED_STRING
-import org.oppia.app.model.InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS
-import org.oppia.app.model.InteractionObject.ObjectTypeCase.OBJECTTYPE_NOT_SET
-import org.oppia.app.model.InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
-import org.oppia.app.model.InteractionObject.ObjectTypeCase.REAL
-import org.oppia.app.model.InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING
-import org.oppia.app.model.InteractionObject.ObjectTypeCase.SIGNED_INT
-import org.oppia.app.model.ListOfSetsOfHtmlStrings
-import org.oppia.app.model.NumberUnit
-import org.oppia.app.model.NumberWithUnits
-import org.oppia.app.model.StringList
+import org.oppia.android.app.model.ClickOnImage
+import org.oppia.android.app.model.Fraction
+import org.oppia.android.app.model.ImageWithRegions
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.BOOL_VALUE
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.CLICK_ON_IMAGE
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.FRACTION
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.IMAGE_WITH_REGIONS
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NORMALIZED_STRING
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.OBJECTTYPE_NOT_SET
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.REAL
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.SIGNED_INT
+import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.NumberUnit
+import org.oppia.android.app.model.NumberWithUnits
+import org.oppia.android.app.model.StringList
 
 /** Returns a parsable string representation of a user-submitted answer version of this [InteractionObject]. */
 fun InteractionObject.toAnswerString(): String {

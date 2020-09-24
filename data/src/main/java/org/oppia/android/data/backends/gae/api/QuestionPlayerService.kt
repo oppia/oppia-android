@@ -1,6 +1,6 @@
-package org.oppia.data.backends.gae.api
+package org.oppia.android.data.backends.gae.api
 
-import org.oppia.data.backends.gae.model.GaeQuestionPlayer
+import org.oppia.android.data.backends.gae.model.GaeQuestionPlayer
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

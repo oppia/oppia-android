@@ -1,4 +1,4 @@
-package org.oppia.app.player.audio
+package org.oppia.android.app.player.audio
 
 /** Interface to check the preference regarding alert for [CellularAudioDialogFragment]. */
 interface CellularDataInterface {

@@ -1,17 +1,17 @@
-package org.oppia.app.hintsandsolution
+package org.oppia.android.app.hintsandsolution
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.app.R
-import org.oppia.app.databinding.HintsAndSolutionFragmentBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.State
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.util.parser.HtmlParser
+import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.State
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.HintsAndSolutionFragmentBinding
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.HtmlParser
 import javax.inject.Inject
 
 /** Presenter for [HintsAndSolutionDialogFragment], sets up bindings from ViewModel. */

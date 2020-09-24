@@ -1,4 +1,4 @@
-package org.oppia.app.mydownloads
+package org.oppia.android.app.mydownloads
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import org.oppia.app.R
-import org.oppia.app.databinding.MyDownloadsFragmentBinding
-import org.oppia.app.fragment.FragmentScope
+import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.databinding.MyDownloadsFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [MyDownloadsFragment]. */

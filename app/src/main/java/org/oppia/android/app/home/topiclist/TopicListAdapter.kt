@@ -1,4 +1,4 @@
-package org.oppia.app.home.topiclist
+package org.oppia.android.app.home.topiclist
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,14 +6,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
-import org.oppia.app.databinding.AllTopicsBinding
-import org.oppia.app.databinding.PromotedStoryListBinding
-import org.oppia.app.databinding.TopicSummaryViewBinding
-import org.oppia.app.databinding.WelcomeBinding
-import org.oppia.app.home.HomeItemViewModel
-import org.oppia.app.home.WelcomeViewModel
-import org.oppia.app.recyclerview.StartSnapHelper
+import org.oppia.android.R
+import org.oppia.android.app.home.HomeItemViewModel
+import org.oppia.android.app.home.WelcomeViewModel
+import org.oppia.android.app.recyclerview.StartSnapHelper
+import org.oppia.android.databinding.AllTopicsBinding
+import org.oppia.android.databinding.PromotedStoryListBinding
+import org.oppia.android.databinding.TopicSummaryViewBinding
+import org.oppia.android.databinding.WelcomeBinding
 
 private const val VIEW_TYPE_WELCOME_MESSAGE = 1
 private const val VIEW_TYPE_PROMOTED_STORY_LIST = 2

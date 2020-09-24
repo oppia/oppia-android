@@ -1,15 +1,15 @@
-package org.oppia.app.topic.revisioncard
+package org.oppia.android.app.topic.revisioncard
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.app.databinding.RevisionCardFragmentBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.EventLog
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.oppialogger.OppiaLogger
-import org.oppia.util.system.OppiaClock
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.RevisionCardFragmentBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */

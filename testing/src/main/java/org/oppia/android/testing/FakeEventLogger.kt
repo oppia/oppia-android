@@ -1,7 +1,7 @@
-package org.oppia.testing
+package org.oppia.android.testing
 
-import org.oppia.app.model.EventLog
-import org.oppia.util.logging.EventLogger
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.util.logging.EventLogger
 import javax.inject.Inject
 import javax.inject.Singleton
 

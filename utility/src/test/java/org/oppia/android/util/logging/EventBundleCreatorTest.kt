@@ -1,4 +1,4 @@
-package org.oppia.util.logging
+package org.oppia.android.util.logging
 
 import android.app.Application
 import android.content.Context
@@ -12,7 +12,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.model.EventLog
+import org.oppia.android.app.model.EventLog
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton

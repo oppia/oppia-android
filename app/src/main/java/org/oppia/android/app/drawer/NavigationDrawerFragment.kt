@@ -1,4 +1,4 @@
-package org.oppia.app.drawer
+package org.oppia.android.app.drawer
 
 import android.content.Context
 import android.os.Bundle
@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
-import org.oppia.app.fragment.InjectableFragment
+import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** [NavigationDrawerFragment] to show navigation drawer. */

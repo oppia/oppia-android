@@ -1,10 +1,10 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
-import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts

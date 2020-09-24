@@ -1,4 +1,4 @@
-package org.oppia.app.topic.conceptcard
+package org.oppia.android.app.topic.conceptcard
 
 /** Allows parent activity to dismiss the [ConceptCardFragment] */
 interface ConceptCardListener {

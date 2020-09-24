@@ -1,15 +1,15 @@
-package org.oppia.app.profileprogress
+package org.oppia.android.app.profileprogress
 
 import android.content.Intent
 import android.provider.MediaStore
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.model.ProfileId
-import org.oppia.app.profile.GALLERY_INTENT_RESULT_CODE
-import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.profile.GALLERY_INTENT_RESULT_CODE
+import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
 /** The presenter for [ProfileProgressActivity]. */

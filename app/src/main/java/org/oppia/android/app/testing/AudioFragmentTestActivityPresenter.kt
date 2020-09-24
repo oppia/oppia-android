@@ -1,13 +1,13 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.model.State
-import org.oppia.app.model.SubtitledHtml
-import org.oppia.app.model.Voiceover
-import org.oppia.app.model.VoiceoverMapping
-import org.oppia.app.player.audio.AudioFragment
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.State
+import org.oppia.android.app.model.SubtitledHtml
+import org.oppia.android.app.model.Voiceover
+import org.oppia.android.app.model.VoiceoverMapping
+import org.oppia.android.app.player.audio.AudioFragment
 import javax.inject.Inject
 
 /** The presenter for [AudioFragmentTestActivity] */

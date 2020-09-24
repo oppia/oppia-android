@@ -1,11 +1,11 @@
-package org.oppia.app.help.faq
+package org.oppia.android.app.help.faq
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.FaqListActivityBinding
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.databinding.FaqListActivityBinding
 import javax.inject.Inject
 
 /** The presenter for [FAQListActivity]. */

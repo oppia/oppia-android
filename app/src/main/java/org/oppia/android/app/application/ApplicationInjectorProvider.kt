@@ -1,7 +1,7 @@
-package org.oppia.app.application
+package org.oppia.android.app.application
 
-import org.oppia.util.data.DataProvidersInjector
-import org.oppia.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
 
 /** Provider for [ApplicationInjector]. The application context will implement this interface. */
 interface ApplicationInjectorProvider : DataProvidersInjectorProvider {

@@ -6,7 +6,7 @@
 
     <import type="android.view.View" />
 
-    <import type="org.oppia.app.model.ChapterPlayState" />
+    <import type="org.oppia.android.app.model.ChapterPlayState" />
 
     <variable
       name="htmlContent"
@@ -14,7 +14,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
+      type="org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
   </data>
 
   <FrameLayout
@@ -42,7 +42,7 @@
         android:clipToPadding="true"
         android:contentDescription="@{viewModel.name}">
 
-        <org.oppia.app.customview.LessonThumbnailImageView
+        <org.oppia.android.app.customview.LessonThumbnailImageView
           android:id="@+id/chapter_thumbnail"
           android:layout_width="match_parent"
           android:layout_height="0dp"

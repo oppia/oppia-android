@@ -1,8 +1,8 @@
-package org.oppia.app.onboarding
+package org.oppia.android.app.onboarding
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 /** [ViewModel] for [OnboardingFragment]. */

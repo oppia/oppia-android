@@ -1,6 +1,6 @@
-package org.oppia.app.topic.lessons
+package org.oppia.android.app.topic.lessons
 
-import org.oppia.app.model.StorySummary
+import org.oppia.android.app.model.StorySummary
 
 /** Interface to transfer the selected story summary to [TopicLessonsFragmentPresenter]. */
 interface StorySummarySelector {

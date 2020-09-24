@@ -1,15 +1,15 @@
-package org.oppia.domain.question
+package org.oppia.android.domain.question
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import org.oppia.app.model.Question
-import org.oppia.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProvider
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.data.DataProviders.Companion.transform
-import org.oppia.util.system.OppiaClock
+import org.oppia.android.app.model.Question
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random

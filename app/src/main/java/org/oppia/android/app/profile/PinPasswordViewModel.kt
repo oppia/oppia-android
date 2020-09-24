@@ -1,16 +1,16 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.model.Profile
-import org.oppia.app.model.ProfileId
-import org.oppia.app.viewmodel.ObservableViewModel
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The ViewModel for [PinPasswordActivity]. */

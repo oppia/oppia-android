@@ -1,4 +1,4 @@
-package org.oppia.app.story
+package org.oppia.android.app.story
 
 interface StoryFragmentScroller {
   /**

@@ -1,15 +1,15 @@
-package org.oppia.app.topic.lessons
+package org.oppia.android.app.topic.lessons
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
-import org.oppia.app.model.StorySummary
-import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.app.topic.STORY_ID_ARGUMENT_KEY
-import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
+import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.StorySummary
+import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.topic.STORY_ID_ARGUMENT_KEY
+import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
 private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"

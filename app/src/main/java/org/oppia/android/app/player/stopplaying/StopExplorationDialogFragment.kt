@@ -1,4 +1,4 @@
-package org.oppia.app.player.stopplaying
+package org.oppia.android.app.player.stopplaying
 
 import android.app.Dialog
 import android.content.Context
@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
-import org.oppia.app.R
+import org.oppia.android.R
 
 /**
  * DialogFragment that gives option to learner to stop exploration in between.

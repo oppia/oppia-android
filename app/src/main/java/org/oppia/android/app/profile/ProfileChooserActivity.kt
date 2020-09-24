@@ -1,9 +1,9 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** Activity that controls profile creation and selection. */

@@ -1,6 +1,6 @@
-package org.oppia.app.player.state.answerhandling
+package org.oppia.android.app.player.state.answerhandling
 
-import org.oppia.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswer
 
 /**
  * A handler for interaction answers. Handlers can either require an additional user action before the answer can be

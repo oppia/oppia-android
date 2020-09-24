@@ -1,4 +1,4 @@
-package org.oppia.app.hintsandsolution
+package org.oppia.android.app.hintsandsolution
 
 /**
  * Interface to keep track of hint-index for which HintList is visible/expanded.

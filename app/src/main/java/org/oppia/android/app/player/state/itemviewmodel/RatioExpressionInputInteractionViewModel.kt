@@ -1,20 +1,20 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
-import org.oppia.app.R
-import org.oppia.app.model.Interaction
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.UserAnswer
-import org.oppia.app.parser.StringToRatioParser
-import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.app.utility.toAccessibleAnswerString
-import org.oppia.domain.util.toAnswerString
+import org.oppia.android.R
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.parser.StringToRatioParser
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.utility.toAccessibleAnswerString
+import org.oppia.android.domain.util.toAnswerString
 
 /** [StateItemViewModel] for the ratio expression input interaction. */
 class RatioExpressionInputInteractionViewModel(

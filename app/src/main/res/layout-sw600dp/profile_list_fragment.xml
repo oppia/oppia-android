@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.settings.profile.ProfileListViewModel" />
+      type="org.oppia.android.app.settings.profile.ProfileListViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

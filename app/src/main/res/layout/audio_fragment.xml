@@ -3,14 +3,14 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-    <import type="org.oppia.app.player.audio.AudioViewModel.UiAudioPlayStatus" />
+    <import type="org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus" />
     <import type="android.view.View" />
     <variable
       name="audioFragment"
-      type="org.oppia.app.player.audio.LanguageInterface" />
+      type="org.oppia.android.app.player.audio.LanguageInterface" />
     <variable
       name="viewModel"
-      type="org.oppia.app.player.audio.AudioViewModel" />
+      type="org.oppia.android.app.player.audio.AudioViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

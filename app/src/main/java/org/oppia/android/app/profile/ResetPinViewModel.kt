@@ -1,8 +1,8 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import androidx.databinding.ObservableField
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 /** The ViewModel for [ResetPinDialogFragment]. */

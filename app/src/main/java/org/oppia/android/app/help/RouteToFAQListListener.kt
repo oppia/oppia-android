@@ -1,4 +1,4 @@
-package org.oppia.app.help
+package org.oppia.android.app.help
 
 /** Listener for when a selection should result to [FAQListActivity]. */
 interface RouteToFAQListListener {

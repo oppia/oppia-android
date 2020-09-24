@@ -1,4 +1,4 @@
-package org.oppia.util.profile
+package org.oppia.android.util.profile
 
 import android.app.Application
 import android.content.Context
@@ -12,11 +12,11 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.testing.TestDispatcherModule
-import org.oppia.util.logging.EnableConsoleLog
-import org.oppia.util.logging.EnableFileLog
-import org.oppia.util.logging.GlobalLogLevel
-import org.oppia.util.logging.LogLevel
+import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.util.logging.EnableConsoleLog
+import org.oppia.android.util.logging.EnableFileLog
+import org.oppia.android.util.logging.GlobalLogLevel
+import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File
@@ -132,7 +132,7 @@ class DirectoryManagementUtilTest {
 
   private fun getAbsoluteDirPath(path: String): String {
     /**
-     * context.filesDir.toString() looks like /tmp/robolectric-Method_test_name/org.oppia.util.test-dataDir/files
+     * context.filesDir.toString() looks like /tmp/robolectric-Method_test_name/org.oppia.android.util.test-dataDir/files
      * dropLast(5) removes files from the path and then it appends the real path with "app_" as a prefix
      */
     return context.filesDir.toString().dropLast(5) + "app_" + path

@@ -1,15 +1,15 @@
-package org.oppia.app.player.exploration
+package org.oppia.android.app.player.exploration
 
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.EphemeralState
-import org.oppia.domain.exploration.ExplorationProgressController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.domain.exploration.ExplorationProgressController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [HintsAndSolutionExplorationManagerFragment]. */

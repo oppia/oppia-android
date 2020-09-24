@@ -1,4 +1,4 @@
-package org.oppia.domain.classify
+package org.oppia.android.domain.classify
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
@@ -9,9 +9,9 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.model.InteractionObject
-import org.oppia.domain.classify.rules.numericinput.NumericInputEqualsRuleClassifierProvider
-import org.oppia.domain.util.FLOAT_EQUALITY_INTERVAL
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputEqualsRuleClassifierProvider
+import org.oppia.android.domain.util.FLOAT_EQUALITY_INTERVAL
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject

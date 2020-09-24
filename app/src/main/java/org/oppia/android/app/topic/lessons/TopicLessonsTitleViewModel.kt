@@ -1,4 +1,4 @@
-package org.oppia.app.topic.lessons
+package org.oppia.android.app.topic.lessons
 
 import androidx.lifecycle.ViewModel
 

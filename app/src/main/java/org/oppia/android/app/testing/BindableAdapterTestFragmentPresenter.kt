@@ -1,14 +1,14 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
-import org.oppia.app.databinding.TestFragmentBinding
-import org.oppia.app.model.TestModel
-import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.android.app.model.TestModel
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.TestFragmentBinding
 import javax.inject.Inject
 
 /** The test-only fragment presenter corresponding to [BindableAdapterTestFragment]. */

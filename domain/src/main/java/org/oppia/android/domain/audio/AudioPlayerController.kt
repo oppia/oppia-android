@@ -1,4 +1,4 @@
-package org.oppia.domain.audio
+package org.oppia.android.domain.audio
 
 import android.media.MediaDataSource
 import android.media.MediaPlayer
@@ -11,13 +11,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.oppia.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.util.caching.AssetRepository
-import org.oppia.util.caching.CacheAssetsLocally
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.system.OppiaClock
-import org.oppia.util.threading.BackgroundDispatcher
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.util.caching.AssetRepository
+import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.system.OppiaClock
+import org.oppia.android.util.threading.BackgroundDispatcher
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock

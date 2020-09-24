@@ -1,12 +1,12 @@
-package org.oppia.domain.onboarding
+package org.oppia.android.domain.onboarding
 
-import org.oppia.app.model.AppStartupState
-import org.oppia.app.model.AppStartupState.StartupMode
-import org.oppia.app.model.OnboardingState
-import org.oppia.data.persistence.PersistentCacheStore
-import org.oppia.util.data.DataProvider
-import org.oppia.util.data.DataProviders.Companion.transform
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.app.model.AppStartupState
+import org.oppia.android.app.model.AppStartupState.StartupMode
+import org.oppia.android.app.model.OnboardingState
+import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.logging.ConsoleLogger
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date

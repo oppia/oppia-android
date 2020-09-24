@@ -1,7 +1,7 @@
-package org.oppia.app.fragment
+package org.oppia.android.app.fragment
 
 import dagger.Module
-import org.oppia.app.view.ViewComponent
+import org.oppia.android.app.view.ViewComponent
 
 /** Root fragment module. */
 @Module(subcomponents = [ViewComponent::class])

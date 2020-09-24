@@ -1,11 +1,11 @@
-package org.oppia.app.walkthrough.topiclist.topiclistviewmodel
+package org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel
 
 import android.graphics.Color
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
-import org.oppia.app.home.topiclist.TopicSummaryClickListener
-import org.oppia.app.model.TopicSummary
-import org.oppia.app.walkthrough.topiclist.WalkthroughTopicItemViewModel
+import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
+import org.oppia.android.app.model.TopicSummary
+import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicItemViewModel
 
 // TODO(#206): Remove the color darkening computation and properly set up the topic thumbnails.
 // These values were roughly computed based on the mocks. They won't produce the same colors since darker colors in the

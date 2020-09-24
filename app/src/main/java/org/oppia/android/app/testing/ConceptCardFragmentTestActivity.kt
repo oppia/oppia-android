@@ -1,9 +1,9 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.topic.conceptcard.ConceptCardFragment
-import org.oppia.app.topic.conceptcard.ConceptCardListener
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
 /** Test Activity used for testing ConceptCardFragment */

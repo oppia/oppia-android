@@ -1,4 +1,4 @@
-package org.oppia.app.home
+package org.oppia.android.app.home
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel

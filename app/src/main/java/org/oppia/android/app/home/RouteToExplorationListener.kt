@@ -1,4 +1,4 @@
-package org.oppia.app.home
+package org.oppia.android.app.home
 
 /** Listener for when an activity should route to a exploration. */
 interface RouteToExplorationListener {

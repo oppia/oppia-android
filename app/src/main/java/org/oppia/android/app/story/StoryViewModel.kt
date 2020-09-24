@@ -1,22 +1,22 @@
-package org.oppia.app.story
+package org.oppia.android.app.story
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.ChapterPlayState
-import org.oppia.app.model.ChapterSummary
-import org.oppia.app.model.ProfileId
-import org.oppia.app.model.StorySummary
-import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
-import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
-import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
-import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.parser.StoryHtmlParserEntityType
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StorySummary
+import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
+import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
+import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
+import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
 /** The ViewModel for StoryFragment. */

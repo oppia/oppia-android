@@ -1,8 +1,8 @@
-package org.oppia.app.home.recentlyplayed
+package org.oppia.android.app.home.recentlyplayed
 
 import android.view.View
 import androidx.lifecycle.ViewModel
-import org.oppia.app.model.PromotedStory
+import org.oppia.android.app.model.PromotedStory
 
 // TODO(#297): Add download status information to promoted-story-card.
 

@@ -1,4 +1,4 @@
-package org.oppia.domain.profile
+package org.oppia.android.domain.profile
 
 import android.app.Application
 import android.content.Context
@@ -21,26 +21,26 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.app.model.AppLanguage
-import org.oppia.app.model.AudioLanguage
-import org.oppia.app.model.DeviceSettings
-import org.oppia.app.model.Profile
-import org.oppia.app.model.ProfileDatabase
-import org.oppia.app.model.ProfileId
-import org.oppia.app.model.ReadingTextSize
-import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.testing.TestCoroutineDispatchers
-import org.oppia.testing.TestDispatcherModule
-import org.oppia.testing.TestLogReportingModule
-import org.oppia.testing.profile.ProfileTestHelper
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.data.DataProvidersInjector
-import org.oppia.util.data.DataProvidersInjectorProvider
-import org.oppia.util.logging.EnableConsoleLog
-import org.oppia.util.logging.EnableFileLog
-import org.oppia.util.logging.GlobalLogLevel
-import org.oppia.util.logging.LogLevel
+import org.oppia.android.app.model.AppLanguage
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.DeviceSettings
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileDatabase
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.testing.TestCoroutineDispatchers
+import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.logging.EnableConsoleLog
+import org.oppia.android.util.logging.EnableFileLog
+import org.oppia.android.util.logging.GlobalLogLevel
+import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File
@@ -557,7 +557,7 @@ class ProfileManagementControllerTest {
     verifyUpdateFailed()
     assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat()
       .contains(
-        "org.oppia.domain.profile.ProfileManagementController\$ProfileNotFoundException: " +
+        "org.oppia.android.domain.profile.ProfileManagementController\$ProfileNotFoundException: " +
           "ProfileId 6 is not associated with an existing profile"
       )
   }
@@ -984,7 +984,7 @@ class ProfileManagementControllerTest {
 
   private fun getAbsoluteDirPath(path: String): String {
     /**
-     * context.filesDir.toString() looks like /tmp/robolectric-Method_test_name/org.oppia.util.test-dataDir/files
+     * context.filesDir.toString() looks like /tmp/robolectric-Method_test_name/org.oppia.android.util.test-dataDir/files
      * dropLast(5) removes files from the path and then it appends the real path with "app_" as a prefix
      */
     return context.filesDir.toString().dropLast(5) + "app_" + path
