@@ -3,7 +3,6 @@ package org.oppia.android.app.topic.revision
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/topic/revision/TopicRevisionViewModel.kt
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Topic
@@ -13,18 +12,17 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
-=======
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.ProfileId
-import org.oppia.app.model.Topic
-import org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
-import org.oppia.app.viewmodel.ObservableViewModel
-import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.parser.TopicHtmlParserEntityType
->>>>>>> develop:app/src/main/java/org/oppia/app/topic/revision/TopicRevisionViewModel.kt
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Topic
+import org.oppia.android.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
+import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.TopicHtmlParserEntityType
+>>>>>>> develop:app/src/main/java/org.oppia.android.app.topic/revision/TopicRevisionViewModel.kt
 import javax.inject.Inject
 
 /** [ObservableViewModel] for [TopicRevisionFragment]. */

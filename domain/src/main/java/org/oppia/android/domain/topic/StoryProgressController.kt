@@ -1,7 +1,6 @@
 package org.oppia.android.domain.topic
 
 import kotlinx.coroutines.Deferred
-<<<<<<< HEAD:domain/src/main/java/org/oppia/android/domain/topic/StoryProgressController.kt
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ProfileId
@@ -13,20 +12,19 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.logging.ConsoleLogger
-=======
-import org.oppia.app.model.ChapterPlayState
-import org.oppia.app.model.ChapterProgress
-import org.oppia.app.model.ProfileId
-import org.oppia.app.model.StoryProgress
-import org.oppia.app.model.TopicProgress
-import org.oppia.app.model.TopicProgressDatabase
-import org.oppia.data.persistence.PersistentCacheStore
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProvider
-import org.oppia.util.data.DataProviders
-import org.oppia.util.data.DataProviders.Companion.transformAsync
-import org.oppia.util.logging.ConsoleLogger
->>>>>>> develop:domain/src/main/java/org/oppia/domain/topic/StoryProgressController.kt
+import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.ChapterProgress
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StoryProgress
+import org.oppia.android.app.model.TopicProgress
+import org.oppia.android.app.model.TopicProgressDatabase
+import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.logging.ConsoleLogger
+>>>>>>> develop:domain/src/main/java/org.oppia.android.domain.topic/StoryProgressController.kt
 import javax.inject.Inject
 import javax.inject.Singleton
 

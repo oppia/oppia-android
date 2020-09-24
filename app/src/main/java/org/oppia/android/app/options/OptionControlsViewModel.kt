@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/options/OptionControlsViewModel.kt
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.AudioLanguage
@@ -18,19 +17,18 @@ import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
-=======
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.AppLanguage
-import org.oppia.app.model.AudioLanguage
-import org.oppia.app.model.Profile
-import org.oppia.app.model.ProfileId
-import org.oppia.app.model.ReadingTextSize
-import org.oppia.app.viewmodel.ObservableArrayList
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
->>>>>>> develop:app/src/main/java/org/oppia/app/options/OptionControlsViewModel.kt
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.AppLanguage
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.viewmodel.ObservableArrayList
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
+>>>>>>> develop:app/src/main/java/org.oppia.android.app.options/OptionControlsViewModel.kt
 import javax.inject.Inject
 
 /** [ViewModel] for [OptionsFragment]. */

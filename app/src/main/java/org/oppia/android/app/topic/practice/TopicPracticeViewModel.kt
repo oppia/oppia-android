@@ -2,7 +2,6 @@ package org.oppia.android.app.topic.practice
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/topic/practice/TopicPracticeViewModel.kt
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Topic
@@ -14,20 +13,19 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
-=======
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.ProfileId
-import org.oppia.app.model.Topic
-import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
-import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
-import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
-import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
-import org.oppia.app.viewmodel.ObservableViewModel
-import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
->>>>>>> develop:app/src/main/java/org/oppia/app/topic/practice/TopicPracticeViewModel.kt
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Topic
+import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
+import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
+import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
+import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
+import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
+>>>>>>> develop:app/src/main/java/org.oppia.android.app.topic/practice/TopicPracticeViewModel.kt
 import javax.inject.Inject
 
 /** [ObservableViewModel] for [TopicPracticeFragment]. */

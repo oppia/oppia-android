@@ -13,7 +13,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
-<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/profile/ProfileChooserFragmentPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.databinding.ProfileChooserAddViewBinding
 import org.oppia.android.databinding.ProfileChooserFragmentBinding
@@ -30,25 +29,24 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.statusbar.StatusBarColor
 import org.oppia.android.util.system.OppiaClock
-=======
-import org.oppia.app.R
-import org.oppia.app.databinding.ProfileChooserAddViewBinding
-import org.oppia.app.databinding.ProfileChooserFragmentBinding
-import org.oppia.app.databinding.ProfileChooserProfileViewBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.home.HomeActivity
-import org.oppia.app.model.EventLog
-import org.oppia.app.model.ProfileChooserUiModel
-import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.oppialogger.OppiaLogger
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.statusbar.StatusBarColor
-import org.oppia.util.system.OppiaClock
->>>>>>> develop:app/src/main/java/org/oppia/app/profile/ProfileChooserFragmentPresenter.kt
+import org.oppia.android.app.R
+import org.oppia.android.app.databinding.ProfileChooserAddViewBinding
+import org.oppia.android.app.databinding.ProfileChooserFragmentBinding
+import org.oppia.android.app.databinding.ProfileChooserProfileViewBinding
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.ProfileChooserUiModel
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.statusbar.StatusBarColor
+import org.oppia.android.util.system.OppiaClock
+>>>>>>> develop:app/src/main/java/org.oppia.android.app.profile/ProfileChooserFragmentPresenter.kt
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(

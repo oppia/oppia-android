@@ -6,7 +6,6 @@ import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/settings/profile/ProfileResetPinActivityPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.ProfileResetPinActivityBinding
@@ -14,16 +13,15 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.profile.ProfileInputView
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.domain.profile.ProfileManagementController
-=======
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.ProfileResetPinActivityBinding
-import org.oppia.app.model.ProfileId
-import org.oppia.app.profile.ProfileInputView
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.DataProviders.Companion.toLiveData
->>>>>>> develop:app/src/main/java/org/oppia/app/settings/profile/ProfileResetPinActivityPresenter.kt
+import org.oppia.android.app.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.databinding.ProfileResetPinActivityBinding
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.profile.ProfileInputView
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+>>>>>>> develop:app/src/main/java/org.oppia.android.app.settings/profile/ProfileResetPinActivityPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [ProfileResetPinActivity]. */

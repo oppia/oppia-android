@@ -2,7 +2,6 @@ package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-<<<<<<< HEAD:domain/src/main/java/org/oppia/android/domain/exploration/ExplorationProgressController.kt
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
@@ -16,22 +15,21 @@ import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.OppiaClock
-=======
-import org.oppia.app.model.AnswerOutcome
-import org.oppia.app.model.EphemeralState
-import org.oppia.app.model.Exploration
-import org.oppia.app.model.Hint
-import org.oppia.app.model.Solution
-import org.oppia.app.model.State
-import org.oppia.app.model.UserAnswer
-import org.oppia.domain.classify.AnswerClassificationController
-import org.oppia.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.util.data.AsyncDataSubscriptionManager
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProvider
-import org.oppia.util.data.DataProviders
-import org.oppia.util.system.OppiaClock
->>>>>>> develop:domain/src/main/java/org/oppia/domain/exploration/ExplorationProgressController.kt
+import org.oppia.android.app.model.AnswerOutcome
+import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.Solution
+import org.oppia.android.app.model.State
+import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.domain.classify.AnswerClassificationController
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.util.data.AsyncDataSubscriptionManager
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.system.OppiaClock
+>>>>>>> develop:domain/src/main/java/org.oppia.android.domain.exploration/ExplorationProgressController.kt
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton

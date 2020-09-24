@@ -1,4 +1,4 @@
-package org.oppia.util.data
+package org.oppia.android.util.data
 
 /** Injector for [DataProviders]. Implemented by a generated Dagger application component. */
 interface DataProvidersInjector {

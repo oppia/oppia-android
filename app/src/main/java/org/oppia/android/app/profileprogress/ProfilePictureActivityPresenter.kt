@@ -5,7 +5,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/profileprogress/ProfilePictureActivityPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.ProfilePictureActivityBinding
@@ -16,19 +15,18 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.statusbar.StatusBarColor
-=======
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.ProfilePictureActivityBinding
-import org.oppia.app.model.Profile
-import org.oppia.app.model.ProfileAvatar
-import org.oppia.app.model.ProfileId
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.statusbar.StatusBarColor
->>>>>>> develop:app/src/main/java/org/oppia/app/profileprogress/ProfilePictureActivityPresenter.kt
+import org.oppia.android.app.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.databinding.ProfilePictureActivityBinding
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileAvatar
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.statusbar.StatusBarColor
+>>>>>>> develop:app/src/main/java/org.oppia.android.app.profileprogress/ProfilePictureActivityPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [ProfilePictureActivity]. */

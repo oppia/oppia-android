@@ -8,22 +8,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/profile/ResetPinDialogFragmentPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.databinding.ResetPinDialogBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.domain.profile.ProfileManagementController
-=======
-import org.oppia.app.R
-import org.oppia.app.databinding.ResetPinDialogBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.ProfileId
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.DataProviders.Companion.toLiveData
->>>>>>> develop:app/src/main/java/org/oppia/app/profile/ResetPinDialogFragmentPresenter.kt
+import org.oppia.android.app.R
+import org.oppia.android.app.databinding.ResetPinDialogBinding
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+>>>>>>> develop:app/src/main/java/org.oppia.android.app.profile/ResetPinDialogFragmentPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [ResetPinDialogFragment]. */

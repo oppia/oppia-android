@@ -1,18 +1,16 @@
 package org.oppia.android.domain.audio
 
-<<<<<<< HEAD:domain/src/main/java/org/oppia/android/domain/audio/CellularAudioDialogController.kt
 import androidx.lifecycle.LiveData
 import org.oppia.android.app.model.CellularDataPreference
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.logging.ConsoleLogger
-=======
-import org.oppia.app.model.CellularDataPreference
-import org.oppia.data.persistence.PersistentCacheStore
-import org.oppia.util.data.DataProvider
-import org.oppia.util.logging.ConsoleLogger
->>>>>>> develop:domain/src/main/java/org/oppia/domain/audio/CellularAudioDialogController.kt
+import org.oppia.android.app.model.CellularDataPreference
+import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.logging.ConsoleLogger
+>>>>>>> develop:domain/src/main/java/org.oppia.android.domain.audio/CellularAudioDialogController.kt
 import javax.inject.Inject
 import javax.inject.Singleton
 

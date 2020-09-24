@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/profile/AdminPinActivityPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
@@ -16,16 +15,15 @@ import org.oppia.android.databinding.AdminPinActivityBinding
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.domain.profile.ProfileManagementController
-=======
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.app.databinding.AdminPinActivityBinding
-import org.oppia.app.model.ProfileId
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.DataProviders.Companion.toLiveData
->>>>>>> develop:app/src/main/java/org/oppia/app/profile/AdminPinActivityPresenter.kt
+import org.oppia.android.app.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.databinding.AdminPinActivityBinding
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+>>>>>>> develop:app/src/main/java/org.oppia.android.app.profile/AdminPinActivityPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [AdminPinActivity]. */

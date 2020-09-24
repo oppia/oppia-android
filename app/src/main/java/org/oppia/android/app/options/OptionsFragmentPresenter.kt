@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/options/OptionsFragmentPresenter.kt
 import org.oppia.android.databinding.OptionAppLanguageBinding
 import org.oppia.android.databinding.OptionAudioLanguageBinding
 import org.oppia.android.databinding.OptionStoryTextSizeBinding
@@ -22,23 +21,22 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.logging.ConsoleLogger
-=======
-import org.oppia.app.databinding.OptionAppLanguageBinding
-import org.oppia.app.databinding.OptionAudioLanguageBinding
-import org.oppia.app.databinding.OptionStoryTextSizeBinding
-import org.oppia.app.databinding.OptionsFragmentBinding
-import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.AppLanguage
-import org.oppia.app.model.AudioLanguage
-import org.oppia.app.model.ProfileId
-import org.oppia.app.model.ReadingTextSize
-import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
->>>>>>> develop:app/src/main/java/org/oppia/app/options/OptionsFragmentPresenter.kt
+import org.oppia.android.app.databinding.OptionAppLanguageBinding
+import org.oppia.android.app.databinding.OptionAudioLanguageBinding
+import org.oppia.android.app.databinding.OptionStoryTextSizeBinding
+import org.oppia.android.app.databinding.OptionsFragmentBinding
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.AppLanguage
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
+>>>>>>> develop:app/src/main/java/org.oppia.android.app.options/OptionsFragmentPresenter.kt
 import java.security.InvalidParameterException
 import javax.inject.Inject
 

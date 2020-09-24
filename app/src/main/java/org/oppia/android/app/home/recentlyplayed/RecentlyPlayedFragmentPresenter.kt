@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedFragmentPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.databinding.RecentlyPlayedFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
@@ -24,21 +23,20 @@ import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
-=======
-import org.oppia.app.R
-import org.oppia.app.databinding.RecentlyPlayedFragmentBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.home.RouteToExplorationListener
-import org.oppia.app.model.OngoingStoryList
-import org.oppia.app.model.ProfileId
-import org.oppia.app.model.PromotedStory
-import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.topic.TopicListController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.parser.StoryHtmlParserEntityType
->>>>>>> develop:app/src/main/java/org/oppia/app/home/recentlyplayed/RecentlyPlayedFragmentPresenter.kt
+import org.oppia.android.app.R
+import org.oppia.android.app.databinding.RecentlyPlayedFragmentBinding
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.OngoingStoryList
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.StoryHtmlParserEntityType
+>>>>>>> develop:app/src/main/java/org.oppia.android.app.home/recentlyplayed/RecentlyPlayedFragmentPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [RecentlyPlayedFragment]. */

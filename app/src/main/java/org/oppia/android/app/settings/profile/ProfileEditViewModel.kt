@@ -4,7 +4,6 @@ import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditViewModel.kt
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
@@ -12,16 +11,15 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
-=======
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.model.Profile
-import org.oppia.app.model.ProfileId
-import org.oppia.app.viewmodel.ObservableViewModel
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
->>>>>>> develop:app/src/main/java/org/oppia/app/settings/profile/ProfileEditViewModel.kt
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
+>>>>>>> develop:app/src/main/java/org.oppia.android.app.settings/profile/ProfileEditViewModel.kt
 import javax.inject.Inject
 
 // TODO(#1633): Fix ViewModel to not depend on View
