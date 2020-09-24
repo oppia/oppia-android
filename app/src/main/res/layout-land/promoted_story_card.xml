@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.home.topiclist.PromotedStoryViewModel" />
+      type="org.oppia.android.app.home.topiclist.PromotedStoryViewModel" />
   </data>
 
   <com.google.android.material.card.MaterialCardView
@@ -31,7 +31,7 @@
       app:layout_constraintTop_toBottomOf="@id/recently_played_stories_text_view"
       app:roundedRectDrawableWithColor="@{viewModel.promotedStoryObservable.lessonThumbnail.backgroundColorRgb}">
 
-      <org.oppia.app.customview.LessonThumbnailImageView
+      <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/lesson_thumbnail"
         android:layout_width="match_parent"
         android:layout_height="0dp"

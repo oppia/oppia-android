@@ -1,0 +1,88 @@
+package org.oppia.android.app.profileprogress
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
+import org.oppia.android.app.home.RouteToRecentlyPlayedListener
+import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
+import javax.inject.Inject
+
+/** Activity to display profile progress. */
+class ProfileProgressActivity :
+  InjectableAppCompatActivity(),
+  RouteToCompletedStoryListListener,
+  RouteToOngoingTopicListListener,
+  RouteToRecentlyPlayedListener,
+  ProfilePictureDialogInterface {
+
+  @Inject
+  lateinit var profileProgressActivityPresenter: ProfileProgressActivityPresenter
+  private var internalProfileId = -1
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    activityComponent.inject(this)
+    internalProfileId = intent.getIntExtra(PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, -1)
+    profileProgressActivityPresenter.handleOnCreate(internalProfileId)
+  }
+
+  override fun routeToRecentlyPlayed() {
+    startActivity(
+      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
+        this,
+        internalProfileId
+      )
+    )
+  }
+
+  override fun routeToCompletedStory() {
+    startActivity(
+      CompletedStoryListActivity.createCompletedStoryListActivityIntent(
+        this,
+        internalProfileId
+      )
+    )
+  }
+
+  override fun routeToOngoingTopic() {
+    startActivity(
+      OngoingTopicListActivity.createOngoingTopicListActivityIntent(
+        this,
+        internalProfileId
+      )
+    )
+  }
+
+  companion object {
+    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    const val PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY =
+      "ProfileProgressActivity.internal_profile_id"
+
+    fun createProfileProgressActivityIntent(context: Context, internalProfileId: Int): Intent {
+      val intent = Intent(context, ProfileProgressActivity::class.java)
+      intent.putExtra(PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
+      return intent
+    }
+  }
+
+  override fun showProfilePicture() {
+    startActivity(
+      ProfilePictureActivity.createProfilePictureActivityIntent(
+        this,
+        internalProfileId
+      )
+    )
+  }
+
+  override fun showGalleryForProfilePicture() {
+    profileProgressActivityPresenter.openGalleryIntent()
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+    profileProgressActivityPresenter.handleOnActivityResult(data)
+  }
+}

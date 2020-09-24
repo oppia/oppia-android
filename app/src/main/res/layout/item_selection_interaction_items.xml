@@ -6,7 +6,7 @@
       type="CharSequence"/>
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel"/>
+      type="org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel"/>
   </data>
 
   <RelativeLayout

@@ -9,7 +9,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.settings.profile.ProfileEditViewModel" />
+      type="org.oppia.android.app.settings.profile.ProfileEditViewModel" />
   </data>
 
   <ScrollView

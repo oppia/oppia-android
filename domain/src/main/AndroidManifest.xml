@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="org.oppia.domain">
+  package="org.oppia.android.domain">
   <uses-sdk android:targetSdkVersion="28" />
 </manifest>
