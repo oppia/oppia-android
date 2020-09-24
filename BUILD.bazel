@@ -12,7 +12,7 @@ android_binary(
         "minSdkVersion": "19",
         "targetSdkVersion": "29",
     },
-    multidex = "native",  # TODO(#1875): re-enable legacy for optimized release builds.
+    multidex = "native",  # TODO(#1875): Re-enable legacy for optimized release builds.
     deps = [
         "//app",
     ],
