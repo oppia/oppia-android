@@ -1,7 +1,7 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.databinding.ObservableField
-import org.oppia.app.model.UserAnswer
+import org.oppia.android.app.model.UserAnswer
 
 /** [StateItemViewModel] for previously submitted answers. */
 class SubmittedAnswerViewModel(

@@ -1,6 +1,6 @@
-package org.oppia.app.topic.questionplayer
+package org.oppia.android.app.topic.questionplayer
 
-import org.oppia.app.model.State
+import org.oppia.android.app.model.State
 
 /** Listener for fetching current Question state data. */
 interface HintsAndSolutionQuestionManagerListener {

@@ -1,11 +1,11 @@
-package org.oppia.domain.classify.rules.fractioninput
+package org.oppia.android.domain.classify.rules.fractioninput
 
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.FractionInputRules
+import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.domain.classify.rules.FractionInputRules
 
 /** Module that binds rule classifiers corresponding to the fraction input interaction. */
 @Module

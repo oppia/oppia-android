@@ -1,4 +1,4 @@
-package org.oppia.domain.oppialogger.loguploader
+package org.oppia.android.domain.oppialogger.loguploader
 
 import androidx.work.Configuration
 import dagger.Module

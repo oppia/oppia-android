@@ -1,10 +1,10 @@
-package org.oppia.app.drawer
+package org.oppia.android.app.drawer
 
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import org.oppia.app.model.Profile
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 /** [ViewModel] for displaying User profile details in navigation header. */

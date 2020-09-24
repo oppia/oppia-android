@@ -1,11 +1,11 @@
-package org.oppia.domain.classify.rules.dragAndDropSortInput
+package org.oppia.android.domain.classify.rules.dragAndDropSortInput
 
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.DragDropSortInputRules
+import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.domain.classify.rules.DragDropSortInputRules
 
 /** Module that binds rule classifiers corresponding to the drag drop sort input interaction. */
 @Module

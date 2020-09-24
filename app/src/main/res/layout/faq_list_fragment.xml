@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.help.faq.FAQListViewModel" />
+      type="org.oppia.android.app.help.faq.FAQListViewModel" />
   </data>
 
   <androidx.core.widget.NestedScrollView

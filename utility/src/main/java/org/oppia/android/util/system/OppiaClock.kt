@@ -1,4 +1,4 @@
-package org.oppia.util.system
+package org.oppia.android.util.system
 
 import android.annotation.SuppressLint
 import android.os.SystemClock

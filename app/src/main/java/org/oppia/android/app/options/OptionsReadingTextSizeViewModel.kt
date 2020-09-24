@@ -1,4 +1,4 @@
-package org.oppia.app.options
+package org.oppia.android.app.options
 
 import androidx.databinding.ObservableField
 

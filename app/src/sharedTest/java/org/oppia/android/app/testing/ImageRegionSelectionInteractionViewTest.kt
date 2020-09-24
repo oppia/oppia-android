@@ -1,4 +1,4 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.app.Application
 import android.content.Context
@@ -27,51 +27,51 @@ import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityComponent
-import org.oppia.app.application.ActivityComponentFactory
-import org.oppia.app.application.ApplicationComponent
-import org.oppia.app.application.ApplicationInjector
-import org.oppia.app.application.ApplicationInjectorProvider
-import org.oppia.app.application.ApplicationModule
-import org.oppia.app.application.ApplicationStartupListenerModule
-import org.oppia.app.player.state.ImageRegionSelectionInteractionView
-import org.oppia.app.player.state.StateFragment
-import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.app.shim.ViewBindingShimModule
-import org.oppia.app.utility.DefaultRegionClickedEvent
-import org.oppia.app.utility.NamedRegionClickedEvent
-import org.oppia.app.utility.OnClickableAreaClickedListener
-import org.oppia.app.utility.RegionClickedEvent
-import org.oppia.app.utility.capture
-import org.oppia.app.utility.clickPoint
-import org.oppia.domain.classify.InteractionsModule
-import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
-import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
-import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
-import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
-import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
-import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
-import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
-import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
-import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
-import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
-import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
-import org.oppia.domain.question.QuestionModule
-import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.testing.TestAccessibilityModule
-import org.oppia.testing.TestDispatcherModule
-import org.oppia.testing.TestLogReportingModule
-import org.oppia.util.caching.testing.CachingTestModule
-import org.oppia.util.gcsresource.GcsResourceModule
-import org.oppia.util.logging.LoggerModule
-import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.util.parser.GlideImageLoaderModule
-import org.oppia.util.parser.HtmlParserEntityTypeModule
-import org.oppia.util.parser.ImageParsingModule
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.application.ApplicationComponent
+import org.oppia.android.app.application.ApplicationInjector
+import org.oppia.android.app.application.ApplicationInjectorProvider
+import org.oppia.android.app.application.ApplicationModule
+import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
+import org.oppia.android.app.player.state.StateFragment
+import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.utility.DefaultRegionClickedEvent
+import org.oppia.android.app.utility.NamedRegionClickedEvent
+import org.oppia.android.app.utility.OnClickableAreaClickedListener
+import org.oppia.android.app.utility.RegionClickedEvent
+import org.oppia.android.app.utility.capture
+import org.oppia.android.app.utility.clickPoint
+import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.parser.GlideImageLoaderModule
+import org.oppia.android.util.parser.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -188,7 +188,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Roboelectric")
+  @Ignore("Move to Robolectric")
   fun testView_withTalkbackEnabled_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -224,7 +224,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Roboelectric")
+  @Ignore("Move to Robolectric")
   fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -248,7 +248,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Roboelectric")
+  @Ignore("Move to Robolectric")
   fun testView_withTalkbackEnabled_clickOnDefaultRegion_defaultRegionNotClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
       scenario.onActivity {

@@ -1,4 +1,4 @@
-package org.oppia.util.parser
+package org.oppia.android.util.parser
 
 import android.graphics.drawable.PictureDrawable
 import com.bumptech.glide.load.Options

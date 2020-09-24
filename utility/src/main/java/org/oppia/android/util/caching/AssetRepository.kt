@@ -1,7 +1,7 @@
-package org.oppia.util.caching
+package org.oppia.android.util.caching
 
 import android.content.Context
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.util.logging.ConsoleLogger
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream

@@ -1,4 +1,4 @@
-package org.oppia.data.persistence
+package org.oppia.android.data.persistence
 
 import android.app.Application
 import android.content.Context
@@ -27,16 +27,16 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyZeroInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.app.model.TestMessage
-import org.oppia.testing.TestCoroutineDispatchers
-import org.oppia.testing.TestDispatcherModule
-import org.oppia.testing.TestLogReportingModule
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.data.DataProvidersInjector
-import org.oppia.util.data.DataProvidersInjectorProvider
-import org.oppia.util.threading.BackgroundDispatcher
+import org.oppia.android.app.model.TestMessage
+import org.oppia.android.testing.TestCoroutineDispatchers
+import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File

@@ -1,9 +1,9 @@
-package org.oppia.util.logging.firebase
+package org.oppia.android.util.logging.firebase
 
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import org.oppia.util.logging.LogUploader
+import org.oppia.android.util.logging.LogUploader
 import javax.inject.Inject
 
 private const val OPPIA_EVENT_WORK = "OPPIA_EVENT_WORK_REQUEST"

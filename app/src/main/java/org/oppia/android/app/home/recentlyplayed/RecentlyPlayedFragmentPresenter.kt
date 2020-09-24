@@ -1,4 +1,4 @@
-package org.oppia.app.home.recentlyplayed
+package org.oppia.android.app.home.recentlyplayed
 
 import android.content.res.Resources
 import android.view.LayoutInflater
@@ -11,19 +11,19 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
-import org.oppia.app.databinding.RecentlyPlayedFragmentBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.home.RouteToExplorationListener
-import org.oppia.app.model.OngoingStoryList
-import org.oppia.app.model.ProfileId
-import org.oppia.app.model.PromotedStory
-import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.topic.TopicListController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.parser.StoryHtmlParserEntityType
+import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.OngoingStoryList
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.databinding.RecentlyPlayedFragmentBinding
+import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
 /** The presenter for [RecentlyPlayedFragment]. */

@@ -1,4 +1,4 @@
-package org.oppia.app.topic
+package org.oppia.android.app.topic
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,13 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import org.oppia.app.R
-import org.oppia.app.databinding.TopicFragmentBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.EventLog
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.oppialogger.OppiaLogger
-import org.oppia.util.system.OppiaClock
+import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.TopicFragmentBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [TopicFragment]. */

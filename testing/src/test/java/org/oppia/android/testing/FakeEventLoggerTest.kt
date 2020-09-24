@@ -1,4 +1,4 @@
-package org.oppia.testing
+package org.oppia.android.testing
 
 import android.app.Application
 import android.content.Context
@@ -13,9 +13,9 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.model.EventLog
-import org.oppia.app.model.EventLog.Priority
-import org.oppia.util.logging.EventLogger
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.Priority
+import org.oppia.android.util.logging.EventLogger
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject

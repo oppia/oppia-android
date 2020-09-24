@@ -1,6 +1,6 @@
-package org.oppia.app.player.audio
+package org.oppia.android.app.player.audio
 
-import org.oppia.app.model.State
+import org.oppia.android.app.model.State
 
 /** Manager for updating audio state within the state player. */
 interface AudioUiManager {

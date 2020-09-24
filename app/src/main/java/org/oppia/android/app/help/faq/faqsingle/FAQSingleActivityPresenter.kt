@@ -1,14 +1,14 @@
-package org.oppia.app.help.faq.faqsingle
+package org.oppia.android.app.help.faq.faqsingle
 
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.FaqSingleActivityBinding
-import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.parser.HtmlParser
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.databinding.FaqSingleActivityBinding
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.parser.HtmlParser
 import javax.inject.Inject
 
 /** The presenter for [FAQSingleActivity]. */

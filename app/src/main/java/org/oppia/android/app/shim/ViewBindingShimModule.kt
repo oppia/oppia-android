@@ -1,4 +1,4 @@
-package org.oppia.app.shim
+package org.oppia.android.app.shim
 
 import dagger.Binds
 import dagger.Module

@@ -1,11 +1,11 @@
-package org.oppia.app.parser
+package org.oppia.android.app.parser
 
 import android.content.Context
 import androidx.annotation.StringRes
-import org.oppia.app.R
-import org.oppia.app.model.RatioExpression
-import org.oppia.domain.util.normalizeWhitespace
-import org.oppia.domain.util.removeWhitespace
+import org.oppia.android.R
+import org.oppia.android.app.model.RatioExpression
+import org.oppia.android.domain.util.normalizeWhitespace
+import org.oppia.android.domain.util.removeWhitespace
 
 /**
  * Utility for parsing [RatioExpression]s from strings and validating strings can be parsed

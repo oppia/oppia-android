@@ -1,6 +1,6 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
-import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
+import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 
 /**
  * [StateItemViewModel] for navigating to a previous state. Unlike other navigation buttons, this model only represents

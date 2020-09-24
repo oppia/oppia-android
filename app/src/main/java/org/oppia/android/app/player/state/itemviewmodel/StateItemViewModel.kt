@@ -1,6 +1,6 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /**
  * The root [ObservableViewModel] for all individual items that may be displayed in the state fragment recycler view.

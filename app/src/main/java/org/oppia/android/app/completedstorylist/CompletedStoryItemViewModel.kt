@@ -1,10 +1,10 @@
-package org.oppia.app.completedstorylist
+package org.oppia.android.app.completedstorylist
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.app.home.RouteToTopicPlayStoryListener
-import org.oppia.app.model.CompletedStory
-import org.oppia.app.shim.IntentFactoryShim
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.model.CompletedStory
+import org.oppia.android.app.shim.IntentFactoryShim
+import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** Completed story view model for the recycler view in [CompletedStoryListFragment]. */
 class CompletedStoryItemViewModel(

@@ -1,4 +1,4 @@
-package org.oppia.app.onboarding
+package org.oppia.android.app.onboarding
 
 /** Enum to store the slides of [OnboardingFragment] and get slide by position. */
 enum class ViewPagerSlide(private var position: Int) {

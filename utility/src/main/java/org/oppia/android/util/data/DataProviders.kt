@@ -1,4 +1,4 @@
-package org.oppia.util.data
+package org.oppia.android.util.data
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -7,8 +7,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.oppia.util.logging.ExceptionLogger
-import org.oppia.util.threading.BackgroundDispatcher
+import org.oppia.android.util.logging.ExceptionLogger
+import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject

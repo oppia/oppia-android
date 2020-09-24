@@ -1,4 +1,4 @@
-package org.oppia.util.data
+package org.oppia.android.util.data
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
@@ -11,11 +11,11 @@ import kotlinx.coroutines.async
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.testing.BackgroundTestDispatcher
-import org.oppia.testing.FakeSystemClock
-import org.oppia.testing.TestCoroutineDispatcher
-import org.oppia.testing.TestCoroutineDispatchers
-import org.oppia.testing.TestDispatcherModule
+import org.oppia.android.testing.BackgroundTestDispatcher
+import org.oppia.android.testing.FakeSystemClock
+import org.oppia.android.testing.TestCoroutineDispatcher
+import org.oppia.android.testing.TestCoroutineDispatchers
+import org.oppia.android.testing.TestDispatcherModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton

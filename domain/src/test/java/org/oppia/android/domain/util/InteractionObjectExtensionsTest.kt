@@ -1,20 +1,20 @@
-package org.oppia.domain.util
+package org.oppia.android.domain.util
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.model.ClickOnImage
-import org.oppia.app.model.ImageWithRegions
-import org.oppia.app.model.ImageWithRegions.LabeledRegion
-import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region
-import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.NormalizedRectangle2d
-import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.RegionType.RECTANGLE
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.ListOfSetsOfHtmlStrings
-import org.oppia.app.model.Point2d
-import org.oppia.app.model.RatioExpression
-import org.oppia.app.model.StringList
+import org.oppia.android.app.model.ClickOnImage
+import org.oppia.android.app.model.ImageWithRegions
+import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
+import org.oppia.android.app.model.ImageWithRegions.LabeledRegion.Region
+import org.oppia.android.app.model.ImageWithRegions.LabeledRegion.Region.NormalizedRectangle2d
+import org.oppia.android.app.model.ImageWithRegions.LabeledRegion.Region.RegionType.RECTANGLE
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.Point2d
+import org.oppia.android.app.model.RatioExpression
+import org.oppia.android.app.model.StringList
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 

@@ -1,7 +1,7 @@
-package org.oppia.domain.onboarding.testing
+package org.oppia.android.domain.onboarding.testing
 
 import android.os.Bundle
-import org.oppia.domain.onboarding.ExpirationMetaDataRetriever
+import org.oppia.android.domain.onboarding.ExpirationMetaDataRetriever
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -1,11 +1,11 @@
-package org.oppia.testing.profile
+package org.oppia.android.testing.profile
 
 import androidx.lifecycle.LiveData
-import org.oppia.app.model.ProfileId
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.testing.TestCoroutineDispatchers
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.testing.TestCoroutineDispatchers
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** This helper allows tests to easily create new profiles and switch between them. */

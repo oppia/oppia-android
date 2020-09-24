@@ -1,8 +1,8 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
-import org.oppia.app.model.Interaction
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
-import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 
 /**
  * Returns a new [StateItemViewModel] corresponding to this interaction with the GCS entity ID, the [Interaction]

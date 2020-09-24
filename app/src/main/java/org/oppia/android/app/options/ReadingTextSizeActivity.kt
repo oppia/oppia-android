@@ -1,9 +1,9 @@
-package org.oppia.app.options
+package org.oppia.android.app.options
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** The activity to change the text size of the reading content in the app. */

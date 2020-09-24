@@ -1,4 +1,4 @@
-package org.oppia.app.viewmodel
+package org.oppia.android.app.viewmodel
 
 import androidx.databinding.ListChangeRegistry
 import androidx.databinding.ObservableList

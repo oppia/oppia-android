@@ -1,14 +1,14 @@
-package org.oppia.app.topic.questionplayer
+package org.oppia.android.app.topic.questionplayer
 
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
-import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
-import org.oppia.app.viewmodel.ObservableArrayList
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.viewmodel.ObservableArrayList
+import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 /** [ObservableViewModel] for the question player. */

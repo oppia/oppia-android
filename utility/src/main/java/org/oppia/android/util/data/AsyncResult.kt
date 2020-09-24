@@ -1,4 +1,4 @@
-package org.oppia.util.data
+package org.oppia.android.util.data
 
 import android.os.SystemClock
 

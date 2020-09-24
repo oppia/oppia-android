@@ -1,4 +1,4 @@
-package org.oppia.app.recyclerview
+package org.oppia.android.app.recyclerview
 
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable

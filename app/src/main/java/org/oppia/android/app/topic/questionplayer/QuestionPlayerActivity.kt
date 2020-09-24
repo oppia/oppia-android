@@ -1,21 +1,21 @@
-package org.oppia.app.topic.questionplayer
+package org.oppia.android.app.topic.questionplayer
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
-import org.oppia.app.hintsandsolution.HintsAndSolutionListener
-import org.oppia.app.hintsandsolution.RevealHintListener
-import org.oppia.app.hintsandsolution.RevealSolutionInterface
-import org.oppia.app.model.State
-import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
-import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
-import org.oppia.app.player.state.listener.StateKeyboardButtonListener
-import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
-import org.oppia.app.player.stopplaying.StopExplorationDialogFragment
-import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
-import org.oppia.app.topic.conceptcard.ConceptCardListener
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
+import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
+import org.oppia.android.app.hintsandsolution.RevealHintListener
+import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.android.app.model.State
+import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
+import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
+import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
+import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
+import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
+import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
 const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY =

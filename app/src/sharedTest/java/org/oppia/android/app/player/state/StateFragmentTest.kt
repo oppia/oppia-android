@@ -1,4 +1,4 @@
-package org.oppia.app.player.state
+package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
@@ -55,84 +55,83 @@ import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityComponent
-import org.oppia.app.application.ActivityComponentFactory
-import org.oppia.app.application.ApplicationComponent
-import org.oppia.app.application.ApplicationInjector
-import org.oppia.app.application.ApplicationInjectorProvider
-import org.oppia.app.application.ApplicationModule
-import org.oppia.app.application.ApplicationStartupListenerModule
-import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMITTED_ANSWER
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
-import org.oppia.app.player.state.testing.StateFragmentTestActivity
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.shim.ViewBindingShimModule
-import org.oppia.app.utility.ChildViewCoordinatesProvider
-import org.oppia.app.utility.CustomGeneralLocation
-import org.oppia.app.utility.DragViewAction
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.app.utility.RecyclerViewCoordinatesProvider
-import org.oppia.app.utility.clickPoint
-import org.oppia.data.backends.gae.NetworkModule
-import org.oppia.domain.classify.InteractionsModule
-import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
-import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
-import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
-import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
-import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
-import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
-import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
-import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
-import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
-import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
-import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
-import org.oppia.domain.question.QuestionModule
-import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
-import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
-import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
-import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
-import org.oppia.domain.topic.TEST_EXPLORATION_ID_5
-import org.oppia.domain.topic.TEST_EXPLORATION_ID_6
-import org.oppia.domain.topic.TEST_STORY_ID_0
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.testing.CoroutineExecutorService
-import org.oppia.testing.EditTextInputAction
-import org.oppia.testing.IsOnRobolectric
-import org.oppia.testing.OppiaTestRule
-import org.oppia.testing.RunOn
-import org.oppia.testing.TestAccessibilityModule
-import org.oppia.testing.TestCoroutineDispatchers
-import org.oppia.testing.TestDispatcherModule
-import org.oppia.testing.TestLogReportingModule
-import org.oppia.testing.TestPlatform
-import org.oppia.testing.profile.ProfileTestHelper
-import org.oppia.util.caching.testing.CachingTestModule
-import org.oppia.util.gcsresource.GcsResourceModule
-import org.oppia.util.logging.LoggerModule
-import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.util.parser.GlideImageLoaderModule
-import org.oppia.util.parser.HtmlParserEntityTypeModule
-import org.oppia.util.parser.ImageParsingModule
-import org.oppia.util.threading.BackgroundDispatcher
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.application.ApplicationComponent
+import org.oppia.android.app.application.ApplicationInjector
+import org.oppia.android.app.application.ApplicationInjectorProvider
+import org.oppia.android.app.application.ApplicationModule
+import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMITTED_ANSWER
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
+import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.utility.ChildViewCoordinatesProvider
+import org.oppia.android.app.utility.CustomGeneralLocation
+import org.oppia.android.app.utility.DragViewAction
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.app.utility.RecyclerViewCoordinatesProvider
+import org.oppia.android.app.utility.clickPoint
+import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_0
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_6
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.CoroutineExecutorService
+import org.oppia.android.testing.EditTextInputAction
+import org.oppia.android.testing.IsOnRobolectric
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
+import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
+import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.parser.GlideImageLoaderModule
+import org.oppia.android.util.parser.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
@@ -1400,22 +1399,22 @@ class StateFragmentTest {
     return find { text in it.first }?.second
   }
 
+  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, NetworkModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class,
-      ApplicationStartupListenerModule::class, HintsAndSolutionConfigFastShowTestModule::class,
-      WorkManagerConfigurationModule::class, LogUploadWorkerModule::class,
-      FirebaseLogUploaderModule::class
+      TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
+      ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
+      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
+      NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
+      ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
+      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
+      QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
+      LogStorageModule::class, CachingTestModule::class, PrimeTopicAssetsControllerModule::class,
+      ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
+      RatioInputModule::class, ApplicationStartupListenerModule::class,
+      HintsAndSolutionConfigFastShowTestModule::class, WorkManagerConfigurationModule::class,
+      LogUploadWorkerModule::class, FirebaseLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

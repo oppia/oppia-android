@@ -1,7 +1,7 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** Test Activity used for testing [ProfileChooserFragment] */

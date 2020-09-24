@@ -1,4 +1,4 @@
-package org.oppia.util.statusbar
+package org.oppia.android.util.statusbar
 
 import android.os.Build
 import android.view.View

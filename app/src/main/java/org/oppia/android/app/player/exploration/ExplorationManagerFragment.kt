@@ -1,8 +1,8 @@
-package org.oppia.app.player.exploration
+package org.oppia.android.app.player.exploration
 
 import android.content.Context
 import android.os.Bundle
-import org.oppia.app.fragment.InjectableFragment
+import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /**

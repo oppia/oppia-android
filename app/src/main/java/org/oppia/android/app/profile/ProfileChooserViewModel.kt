@@ -1,18 +1,18 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.Profile
-import org.oppia.app.model.ProfileAvatar
-import org.oppia.app.model.ProfileChooserUiModel
-import org.oppia.app.model.ProfileId
-import org.oppia.app.viewmodel.ObservableViewModel
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileAvatar
+import org.oppia.android.app.model.ProfileChooserUiModel
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
 import java.util.Locale
 import javax.inject.Inject
 

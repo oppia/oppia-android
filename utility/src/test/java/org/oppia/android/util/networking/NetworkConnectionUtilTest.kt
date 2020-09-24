@@ -1,4 +1,4 @@
-package org.oppia.util.networking
+package org.oppia.android.util.networking
 
 import android.app.Application
 import android.content.Context
@@ -13,11 +13,11 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.testing.TestDispatcherModule
-import org.oppia.util.logging.EnableConsoleLog
-import org.oppia.util.logging.EnableFileLog
-import org.oppia.util.logging.GlobalLogLevel
-import org.oppia.util.logging.LogLevel
+import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.util.logging.EnableConsoleLog
+import org.oppia.android.util.logging.EnableFileLog
+import org.oppia.android.util.logging.GlobalLogLevel
+import org.oppia.android.util.logging.LogLevel
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode

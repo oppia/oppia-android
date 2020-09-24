@@ -1,12 +1,12 @@
-package org.oppia.app.onboarding
+package org.oppia.android.app.onboarding
 
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
-import org.oppia.app.R
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.R
+import org.oppia.android.app.viewmodel.ObservableViewModel
 
 const val TOTAL_NUMBER_OF_SLIDES = 4
 

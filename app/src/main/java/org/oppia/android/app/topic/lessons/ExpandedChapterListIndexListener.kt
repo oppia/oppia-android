@@ -1,4 +1,4 @@
-package org.oppia.app.topic.lessons
+package org.oppia.android.app.topic.lessons
 
 /**
  * Interface to keep track of story-index for which ChapterList is visible/expanded.

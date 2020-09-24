@@ -1,4 +1,4 @@
-package org.oppia.testing
+package org.oppia.android.testing
 
 import android.annotation.SuppressLint
 import kotlinx.coroutines.CancellableContinuation

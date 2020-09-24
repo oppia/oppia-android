@@ -1,11 +1,11 @@
-package org.oppia.domain.classify.rules.numericinput
+package org.oppia.android.domain.classify.rules.numericinput
 
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.NumericInputRules
+import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.domain.classify.rules.NumericInputRules
 
 /** Module that binds rule classifiers corresponding to the numeric input interaction. */
 @Module

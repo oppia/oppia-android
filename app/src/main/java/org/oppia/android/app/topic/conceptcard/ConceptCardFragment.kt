@@ -1,12 +1,12 @@
-package org.oppia.app.topic.conceptcard
+package org.oppia.android.app.topic.conceptcard
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.R
-import org.oppia.app.fragment.InjectableDialogFragment
+import org.oppia.android.R
+import org.oppia.android.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
 private const val KEY_SKILL_ID = "SKILL_ID"

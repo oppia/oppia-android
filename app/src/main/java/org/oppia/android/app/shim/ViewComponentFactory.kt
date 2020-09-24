@@ -1,7 +1,7 @@
-package org.oppia.app.shim
+package org.oppia.android.app.shim
 
 import android.view.View
-import org.oppia.app.view.ViewComponent
+import org.oppia.android.app.view.ViewComponent
 
 interface ViewComponentFactory {
   /**

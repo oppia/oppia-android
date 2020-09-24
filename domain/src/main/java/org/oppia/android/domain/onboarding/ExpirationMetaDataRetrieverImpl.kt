@@ -1,4 +1,4 @@
-package org.oppia.domain.onboarding
+package org.oppia.android.domain.onboarding
 
 import android.content.Context
 import android.content.pm.PackageManager

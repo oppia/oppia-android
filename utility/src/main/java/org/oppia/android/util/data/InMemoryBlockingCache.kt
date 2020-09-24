@@ -1,10 +1,10 @@
-package org.oppia.util.data
+package org.oppia.android.util.data
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
-import org.oppia.util.threading.BlockingDispatcher
+import org.oppia.android.util.threading.BlockingDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -9,13 +9,13 @@ android {
   compileSdkVersion 29
   buildToolsVersion "29.0.2"
   defaultConfig {
-    applicationId "org.oppia.app"
+    applicationId "org.oppia.android"
     minSdkVersion 19
     targetSdkVersion 29
     versionCode 1
     versionName "1.0"
     multiDexEnabled true
-    testInstrumentationRunner "org.oppia.testing.OppiaTestRunner"
+    testInstrumentationRunner "org.oppia.android.testing.OppiaTestRunner"
     // https://developer.android.com/training/testing/junit-runner#ato-gradle
     testInstrumentationRunnerArguments clearPackageData: 'true'
     javaCompileOptions {

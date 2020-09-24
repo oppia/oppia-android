@@ -1,4 +1,4 @@
-package org.oppia.app.deprecation
+package org.oppia.android.app.deprecation
 
 /** Listener for when the app deprecation dialog is closed. */
 interface DeprecationNoticeExitAppListener {

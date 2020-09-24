@@ -1,4 +1,4 @@
-package org.oppia.domain.classify.rules
+package org.oppia.android.domain.classify.rules
 
 import javax.inject.Qualifier
 

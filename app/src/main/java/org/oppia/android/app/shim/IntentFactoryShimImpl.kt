@@ -1,12 +1,12 @@
-package org.oppia.app.shim
+package org.oppia.android.app.shim
 
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
-import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
-import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
-import org.oppia.app.profile.ProfileChooserActivity
-import org.oppia.app.topic.TopicActivity
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.profile.ProfileChooserActivity
+import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
 /**

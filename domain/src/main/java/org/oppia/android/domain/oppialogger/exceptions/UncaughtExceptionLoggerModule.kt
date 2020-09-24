@@ -1,9 +1,9 @@
-package org.oppia.domain.oppialogger.exceptions
+package org.oppia.android.domain.oppialogger.exceptions
 
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
-import org.oppia.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
 /** Binds [UncaughtExceptionLoggerStartupListener] as an [ApplicationStartupListener] */
 @Module

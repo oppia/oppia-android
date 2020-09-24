@@ -1,14 +1,14 @@
-package org.oppia.domain.oppialogger.exceptions
+package org.oppia.android.domain.oppialogger.exceptions
 
-import org.oppia.app.model.ExceptionLog
-import org.oppia.app.model.ExceptionLog.ExceptionType
-import org.oppia.app.model.OppiaExceptionLogs
-import org.oppia.data.persistence.PersistentCacheStore
-import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
-import org.oppia.util.data.DataProvider
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.logging.ExceptionLogger
-import org.oppia.util.networking.NetworkConnectionUtil
+import org.oppia.android.app.model.ExceptionLog
+import org.oppia.android.app.model.ExceptionLog.ExceptionType
+import org.oppia.android.app.model.OppiaExceptionLogs
+import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.logging.ExceptionLogger
+import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
 private const val EXCEPTIONS_CONTROLLER = "Exceptions Controller"
@@ -96,7 +96,7 @@ class ExceptionsController @Inject constructor(
     stackTraceElement: StackTraceElement
   ): ExceptionLog.StackTraceElement {
     return ExceptionLog.StackTraceElement.newBuilder()
-      .setFileName(stackTraceElement.fileName)
+      .setFileName(stackTraceElement.fileName ?: "") // Sometimes the file name is unavailable.
       .setMethodName(stackTraceElement.methodName)
       .setLineNumber(stackTraceElement.lineNumber)
       .setDeclaringClass(stackTraceElement.className)

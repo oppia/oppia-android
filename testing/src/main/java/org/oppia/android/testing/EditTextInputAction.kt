@@ -1,4 +1,4 @@
-package org.oppia.testing
+package org.oppia.android.testing
 
 import android.view.View
 import android.widget.EditText

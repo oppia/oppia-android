@@ -1,14 +1,14 @@
-package org.oppia.util.logging
+package org.oppia.android.util.logging
 
 import android.os.Bundle
-import org.oppia.app.model.EventLog
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
 
 const val TIMESTAMP_KEY = "timestamp"
 const val TOPIC_ID_KEY = "topicId"

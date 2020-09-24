@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.drawer.NavigationDrawerHeaderViewModel" />
+      type="org.oppia.android.app.drawer.NavigationDrawerHeaderViewModel" />
   </data>
 
   <LinearLayout

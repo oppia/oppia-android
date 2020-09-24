@@ -1,11 +1,11 @@
-package org.oppia.app.story
+package org.oppia.android.app.story
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
+import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 private const val KEY_INTERNAL_PROFILE_ID_ARGUMENT = "INTERNAL_PROFILE_ID"

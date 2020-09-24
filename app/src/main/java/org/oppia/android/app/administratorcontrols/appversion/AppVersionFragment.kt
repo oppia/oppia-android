@@ -1,11 +1,11 @@
-package org.oppia.app.administratorcontrols.appversion
+package org.oppia.android.app.administratorcontrols.appversion
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
+import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that contains app version and last update time of the Oppia application. */

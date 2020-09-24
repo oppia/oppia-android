@@ -1,14 +1,14 @@
-package org.oppia.domain.state
+package org.oppia.android.domain.state
 
-import org.oppia.app.model.AnswerAndResponse
-import org.oppia.app.model.CompletedState
-import org.oppia.app.model.EphemeralState
-import org.oppia.app.model.Hint
-import org.oppia.app.model.PendingState
-import org.oppia.app.model.Solution
-import org.oppia.app.model.State
-import org.oppia.app.model.SubtitledHtml
-import org.oppia.app.model.UserAnswer
+import org.oppia.android.app.model.AnswerAndResponse
+import org.oppia.android.app.model.CompletedState
+import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.PendingState
+import org.oppia.android.app.model.Solution
+import org.oppia.android.app.model.State
+import org.oppia.android.app.model.SubtitledHtml
+import org.oppia.android.app.model.UserAnswer
 
 // TODO(#59): Hide the visibility of this class to domain implementations.
 

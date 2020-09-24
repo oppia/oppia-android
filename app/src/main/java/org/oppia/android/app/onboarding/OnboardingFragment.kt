@@ -1,11 +1,11 @@
-package org.oppia.app.onboarding
+package org.oppia.android.app.onboarding
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
+import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that contains an onboarding flow of the app. */

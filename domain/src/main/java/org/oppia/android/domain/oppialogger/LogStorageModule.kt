@@ -1,4 +1,4 @@
-package org.oppia.domain.oppialogger
+package org.oppia.android.domain.oppialogger
 
 import dagger.Module
 import dagger.Provides

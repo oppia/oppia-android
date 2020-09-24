@@ -1,10 +1,10 @@
-package org.oppia.app.utility
+package org.oppia.android.app.utility
 
 import android.content.Context
 import android.content.Context.WINDOW_SERVICE
 import android.util.DisplayMetrics
 import android.view.WindowManager
-import org.oppia.app.model.ReadingTextSize
+import org.oppia.android.app.model.ReadingTextSize
 import javax.inject.Inject
 
 /** Utility to change the scale of font for the entire app. */

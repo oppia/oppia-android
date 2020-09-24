@@ -1,4 +1,4 @@
-package org.oppia.util.data
+package org.oppia.android.util.data
 
 /** Provider for [DataProvidersInjector]s. To be implemented by the application class. */
 interface DataProvidersInjectorProvider {

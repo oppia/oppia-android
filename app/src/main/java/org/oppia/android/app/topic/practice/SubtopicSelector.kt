@@ -1,4 +1,4 @@
-package org.oppia.app.topic.practice
+package org.oppia.android.app.topic.practice
 
 /** Interface to update the selectedSubtopicList in [TopicPracticeFragmentPresenter]. */
 interface SubtopicSelector {

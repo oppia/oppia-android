@@ -1,4 +1,4 @@
-package org.oppia.app.walkthrough.welcome
+package org.oppia.android.app.walkthrough.welcome
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,19 +8,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.app.R
-import org.oppia.app.databinding.WalkthroughWelcomeFragmentBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.Profile
-import org.oppia.app.model.ProfileId
-import org.oppia.app.walkthrough.WalkthroughActivity
-import org.oppia.app.walkthrough.WalkthroughFragmentChangeListener
-import org.oppia.app.walkthrough.WalkthroughPageChanger
-import org.oppia.app.walkthrough.WalkthroughPages
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders.Companion.toLiveData
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.walkthrough.WalkthroughActivity
+import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
+import org.oppia.android.app.walkthrough.WalkthroughPageChanger
+import org.oppia.android.app.walkthrough.WalkthroughPages
+import org.oppia.android.databinding.WalkthroughWelcomeFragmentBinding
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughWelcomeFragment]. */

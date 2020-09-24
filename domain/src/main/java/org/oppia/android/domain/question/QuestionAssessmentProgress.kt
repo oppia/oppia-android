@@ -1,9 +1,9 @@
-package org.oppia.domain.question
+package org.oppia.android.domain.question
 
-import org.oppia.app.model.Question
-import org.oppia.app.model.State
-import org.oppia.domain.state.StateDeck
-import org.oppia.domain.state.StateList
+import org.oppia.android.app.model.Question
+import org.oppia.android.app.model.State
+import org.oppia.android.domain.state.StateDeck
+import org.oppia.android.domain.state.StateList
 
 /**
  * Private class that encapsulates the mutable state of a question progress controller. This class is not thread-safe,

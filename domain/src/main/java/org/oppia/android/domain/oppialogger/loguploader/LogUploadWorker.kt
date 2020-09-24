@@ -1,17 +1,17 @@
-package org.oppia.domain.oppialogger.loguploader
+package org.oppia.android.domain.oppialogger.loguploader
 
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import org.oppia.domain.oppialogger.analytics.AnalyticsController
-import org.oppia.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.domain.oppialogger.exceptions.toException
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.logging.EventLogger
-import org.oppia.util.logging.ExceptionLogger
-import org.oppia.util.threading.BackgroundDispatcher
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.oppialogger.exceptions.toException
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.ExceptionLogger
+import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
 /** Worker class that extracts log reports from the cache store and logs them to the remote service. */

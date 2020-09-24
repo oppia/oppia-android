@@ -1,12 +1,12 @@
-package org.oppia.app.home.recentlyplayed
+package org.oppia.android.app.home.recentlyplayed
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
-import org.oppia.app.model.PromotedStory
+import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.PromotedStory
 import javax.inject.Inject
 
 private const val RECENTLY_PLAYED_FRAGMENT_INTERNAL_PROFILE_ID_KEY =
