@@ -133,7 +133,7 @@ jobs:
          path: app/build/reports
 
   bazel_build_app:
-    name: Build Binary with Bazel
+    name: Build Oppia targets with Bazel
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -150,19 +150,19 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 9
-      - name: Extract Android Tools
+      - name: Extract Android tools
         run: |
           mkdir -p $GITHUB_WORKSPACE/tmp/android_tools
           cd $HOME/oppia-bazel
           unzip bazel-tools.zip
           tar -xf $HOME/oppia-bazel/android_tools.tar.gz -C $GITHUB_WORKSPACE/tmp/android_tools
-      - name: Unzip Bazel Binary and Build Oppia
+      - name: Unzip Bazel binary and build all Oppia targets
         run: |
           cd $HOME/oppia-bazel
           unzip bazel-build.zip
           cd $GITHUB_WORKSPACE
           chmod a+x $HOME/oppia-bazel/bazel
-          $HOME/oppia-bazel/bazel build //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
+          $HOME/oppia-bazel/bazel build //... --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
           cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
       - uses: actions/upload-artifact@v2
         with:
