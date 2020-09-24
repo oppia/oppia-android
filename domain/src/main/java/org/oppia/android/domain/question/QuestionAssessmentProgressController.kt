@@ -35,7 +35,6 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.data.DataProviders.NestedTransformedDataProvider
 import org.oppia.android.util.system.OppiaClock
->>>>>>> develop:domain/src/main/java/org.oppia.android.domain.question/QuestionAssessmentProgressController.kt
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -15,7 +15,6 @@ import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.logging.ConsoleLogger
->>>>>>> develop:domain/src/main/java/org.oppia.android.domain.onboarding/AppStartupStateController.kt
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date

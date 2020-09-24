@@ -13,7 +13,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.OppiaClock
->>>>>>> develop:domain/src/main/java/org.oppia.android.domain.exploration/ExplorationDataController.kt
 import javax.inject.Inject
 
 private const val EXPLORATION_DATA_PROVIDER_ID = "ExplorationDataProvider"

@@ -60,7 +60,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.system.OppiaClock
->>>>>>> develop:app/src/main/java/org.oppia.android.app.topic/questionplayer/QuestionPlayerFragmentPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [QuestionPlayerFragment]. */

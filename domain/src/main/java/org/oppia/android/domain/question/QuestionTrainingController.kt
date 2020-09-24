@@ -17,7 +17,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.system.OppiaClock
->>>>>>> develop:domain/src/main/java/org.oppia.android.domain.question/QuestionTrainingController.kt
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random

@@ -57,7 +57,6 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
->>>>>>> develop:domain/src/test/java/org.oppia.android.domain.onboarding/AppStartupStateControllerTest.kt
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import java.text.SimpleDateFormat

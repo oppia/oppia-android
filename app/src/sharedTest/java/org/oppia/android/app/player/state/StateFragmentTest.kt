@@ -207,7 +207,6 @@ import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
->>>>>>> develop:app/src/sharedTest/java/org.oppia.android.app.player/state/StateFragmentTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException

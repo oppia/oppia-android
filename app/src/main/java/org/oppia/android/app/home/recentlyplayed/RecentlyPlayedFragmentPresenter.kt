@@ -36,7 +36,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
->>>>>>> develop:app/src/main/java/org.oppia.android.app.home/recentlyplayed/RecentlyPlayedFragmentPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [RecentlyPlayedFragment]. */

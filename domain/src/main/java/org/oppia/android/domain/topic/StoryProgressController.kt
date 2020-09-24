@@ -24,7 +24,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.logging.ConsoleLogger
->>>>>>> develop:domain/src/main/java/org.oppia.android.domain.topic/StoryProgressController.kt
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -36,7 +36,6 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
->>>>>>> develop:app/src/main/java/org.oppia.android.app.options/OptionsFragmentPresenter.kt
 import java.security.InvalidParameterException
 import javax.inject.Inject
 

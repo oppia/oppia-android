@@ -44,7 +44,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.threading.BackgroundDispatcher
->>>>>>> develop:data/src/test/java/org.oppia.android.data.persistence/PersistentCacheStoreTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File

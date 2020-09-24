@@ -55,7 +55,6 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.system.OppiaClock
->>>>>>> develop:domain/src/main/java/org.oppia.android.domain.topic/TopicController.kt
 import javax.inject.Inject
 import javax.inject.Singleton
 

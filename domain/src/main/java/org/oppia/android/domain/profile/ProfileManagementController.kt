@@ -42,7 +42,6 @@ import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.system.OppiaClock
->>>>>>> develop:domain/src/main/java/org.oppia.android.domain.profile/ProfileManagementController.kt
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Date

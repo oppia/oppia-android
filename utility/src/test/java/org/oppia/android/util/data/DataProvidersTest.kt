@@ -42,7 +42,6 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.threading.BackgroundDispatcher
->>>>>>> develop:utility/src/test/java/org.oppia.android.util.data/DataProvidersTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject

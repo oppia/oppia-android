@@ -62,7 +62,6 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
->>>>>>> develop:app/src/main/java/org.oppia.android.app.home/HomeFragmentPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [HomeFragment]. */

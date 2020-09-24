@@ -35,7 +35,6 @@ import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
->>>>>>> develop:domain/src/main/java/org.oppia.android.domain.topic/TopicListController.kt
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

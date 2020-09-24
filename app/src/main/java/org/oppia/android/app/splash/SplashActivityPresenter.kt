@@ -28,7 +28,6 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
->>>>>>> develop:app/src/main/java/org.oppia.android.app.splash/SplashActivityPresenter.kt
 import javax.inject.Inject
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"

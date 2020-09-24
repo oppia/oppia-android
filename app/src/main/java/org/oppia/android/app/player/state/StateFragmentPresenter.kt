@@ -62,7 +62,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
->>>>>>> develop:app/src/main/java/org.oppia.android.app.player/state/StateFragmentPresenter.kt
 import java.util.Date
 import javax.inject.Inject
 

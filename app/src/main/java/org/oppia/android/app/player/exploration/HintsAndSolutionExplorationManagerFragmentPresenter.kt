@@ -15,7 +15,6 @@ import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
->>>>>>> develop:app/src/main/java/org.oppia.android.app.player/exploration/HintsAndSolutionExplorationManagerFragmentPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [HintsAndSolutionExplorationManagerFragment]. */

@@ -64,7 +64,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.parser.DefaultGcsPrefix
 import org.oppia.android.util.parser.ImageDownloadUrlTemplate
->>>>>>> develop:domain/src/test/java/org.oppia.android.domain.topic/StoryProgressTestHelperTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject

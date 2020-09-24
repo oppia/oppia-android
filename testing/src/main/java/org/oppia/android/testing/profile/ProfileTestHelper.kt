@@ -10,7 +10,6 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
->>>>>>> develop:testing/src/main/java/org/oppia/testing/profile/ProfileTestHelper.kt
 import javax.inject.Inject
 
 /** This helper allows tests to easily create new profiles and switch between them. */

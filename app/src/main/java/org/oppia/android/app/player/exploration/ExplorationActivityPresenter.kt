@@ -38,7 +38,6 @@ import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
->>>>>>> develop:app/src/main/java/org.oppia.android.app.player/exploration/ExplorationActivityPresenter.kt
 import javax.inject.Inject
 
 const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"

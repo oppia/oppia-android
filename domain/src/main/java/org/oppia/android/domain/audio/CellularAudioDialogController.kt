@@ -10,7 +10,6 @@ import org.oppia.android.app.model.CellularDataPreference
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.ConsoleLogger
->>>>>>> develop:domain/src/main/java/org.oppia.android.domain.audio/CellularAudioDialogController.kt
 import javax.inject.Inject
 import javax.inject.Singleton
 

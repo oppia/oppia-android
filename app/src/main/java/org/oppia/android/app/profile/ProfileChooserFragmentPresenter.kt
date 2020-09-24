@@ -46,7 +46,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.statusbar.StatusBarColor
 import org.oppia.android.util.system.OppiaClock
->>>>>>> develop:app/src/main/java/org.oppia.android.app.profile/ProfileChooserFragmentPresenter.kt
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
