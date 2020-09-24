@@ -42,9 +42,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.parser.DefaultGcsPrefix
 import org.oppia.android.util.parser.ImageDownloadUrlTemplate
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
-import org.oppia.android.testing.TestLogReportingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Date

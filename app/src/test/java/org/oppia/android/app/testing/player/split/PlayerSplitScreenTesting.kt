@@ -52,9 +52,6 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestDispatcherModule
-import org.oppia.android.testing.TestLogReportingModule
 import org.robolectric.annotation.Config
 import javax.inject.Singleton
 

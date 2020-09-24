@@ -48,10 +48,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
-import org.oppia.android.testing.FakeEventLogger
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
-import org.oppia.android.testing.TestLogReportingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
