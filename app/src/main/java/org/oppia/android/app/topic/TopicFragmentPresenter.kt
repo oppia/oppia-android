@@ -8,10 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import org.oppia.android.R
-import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject

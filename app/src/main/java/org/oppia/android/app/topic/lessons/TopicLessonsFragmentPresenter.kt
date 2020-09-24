@@ -8,18 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.android.databinding.TopicLessonsFragmentBinding
-import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.home.RouteToExplorationListener
-import org.oppia.android.app.model.ChapterSummary
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.StorySummary
-import org.oppia.android.app.model.Topic
-import org.oppia.android.app.topic.RouteToStoryListener
-import org.oppia.android.domain.exploration.ExplorationDataController
-import org.oppia.android.domain.topic.TopicController
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.app.databinding.TopicLessonsFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
@@ -28,6 +16,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.topic.RouteToStoryListener
+import org.oppia.android.databinding.TopicLessonsFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult

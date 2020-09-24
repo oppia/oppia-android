@@ -8,9 +8,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.android.databinding.WalkthroughTopicHeaderViewBinding
-import org.oppia.android.databinding.WalkthroughTopicListFragmentBinding
-import org.oppia.android.databinding.WalkthroughTopicSummaryViewBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -19,6 +16,9 @@ import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.android.app.walkthrough.WalkthroughPages
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel
+import org.oppia.android.databinding.WalkthroughTopicHeaderViewBinding
+import org.oppia.android.databinding.WalkthroughTopicListFragmentBinding
+import org.oppia.android.databinding.WalkthroughTopicSummaryViewBinding
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughTopicListFragment]. */

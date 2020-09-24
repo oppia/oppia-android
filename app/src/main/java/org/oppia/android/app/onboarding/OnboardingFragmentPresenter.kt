@@ -9,9 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import org.oppia.android.R
-import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 

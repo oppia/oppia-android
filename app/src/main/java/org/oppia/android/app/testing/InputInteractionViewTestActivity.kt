@@ -8,7 +8,6 @@ import org.oppia.android.R
 import org.oppia.android.app.customview.interaction.FractionInputInteractionView
 import org.oppia.android.app.customview.interaction.NumericInputInteractionView
 import org.oppia.android.app.customview.interaction.TextInputInteractionView
-import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.SchemaObject
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
@@ -18,6 +17,7 @@ import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
+import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
 
 /**
  * This is a dummy activity to test input interaction views.

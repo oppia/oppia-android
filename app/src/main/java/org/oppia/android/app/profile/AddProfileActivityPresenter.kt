@@ -25,15 +25,11 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.databinding.AddProfileActivityBinding
-import org.oppia.android.app.viewmodel.ViewModelProvider
-import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.app.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.AddProfileActivityBinding
 import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.AddProfileActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData

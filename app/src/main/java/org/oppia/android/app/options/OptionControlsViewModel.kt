@@ -16,16 +16,6 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.AppLanguage
-import org.oppia.android.app.model.AudioLanguage
-import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ReadingTextSize
-import org.oppia.android.app.viewmodel.ObservableArrayList
-import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject

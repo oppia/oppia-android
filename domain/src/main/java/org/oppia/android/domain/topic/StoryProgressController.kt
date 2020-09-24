@@ -11,17 +11,6 @@ import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.app.model.ChapterPlayState
-import org.oppia.android.app.model.ChapterProgress
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.StoryProgress
-import org.oppia.android.app.model.TopicProgress
-import org.oppia.android.app.model.TopicProgressDatabase
-import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject

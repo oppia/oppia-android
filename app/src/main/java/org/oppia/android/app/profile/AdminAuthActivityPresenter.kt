@@ -11,8 +11,8 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.android.databinding.AdminAuthActivityBinding
 import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.AdminAuthActivityBinding
 import javax.inject.Inject
 
 const val KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE = "ADMIN_AUTH_INPUT_ERROR_MESSAGE"

@@ -6,16 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
-import org.oppia.android.app.model.AppStartupState
-import org.oppia.android.app.model.AppStartupState.StartupMode
-import org.oppia.android.app.onboarding.OnboardingActivity
-import org.oppia.android.app.profile.ProfileChooserActivity
-import org.oppia.android.domain.onboarding.AppStartupStateController
-import org.oppia.android.domain.topic.PrimeTopicAssetsController
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.app.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment

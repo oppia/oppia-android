@@ -12,17 +12,6 @@ import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeS
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.Topic
-import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
-import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
-import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
-import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
-import org.oppia.android.app.viewmodel.ObservableViewModel
-import org.oppia.android.domain.topic.TopicController
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject

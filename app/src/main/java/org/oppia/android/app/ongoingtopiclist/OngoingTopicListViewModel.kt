@@ -10,15 +10,6 @@ import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
-import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.OngoingTopicList
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.shim.IntentFactoryShim
-import org.oppia.android.app.viewmodel.ObservableViewModel
-import org.oppia.android.domain.topic.TopicController
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.TopicHtmlParserEntityType

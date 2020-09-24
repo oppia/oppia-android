@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
-import org.oppia.android.databinding.AdminSettingsDialogBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.AdminSettingsDialogBinding
 import javax.inject.Inject
 
 /** The presenter for [AdminSettingsDialogFragment]. */

@@ -11,13 +11,13 @@ import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
+import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
+import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.android.databinding.DragDropInteractionItemsBinding
 import org.oppia.android.databinding.DragDropSingleItemBinding
 import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.android.databinding.ProfileInputViewBinding
-import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
-import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.android.util.parser.HtmlParser
 import javax.inject.Inject
 

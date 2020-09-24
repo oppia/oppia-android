@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
-import org.oppia.android.databinding.ReadingTextSizeFragmentBinding
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.databinding.ReadingTextSizeFragmentBinding
 import javax.inject.Inject
 
 private const val SMALL_TEXT_SIZE_SCALE = 0.8f

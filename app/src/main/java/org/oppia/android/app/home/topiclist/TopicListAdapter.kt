@@ -7,13 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
+import org.oppia.android.app.home.HomeItemViewModel
+import org.oppia.android.app.home.WelcomeViewModel
+import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.databinding.AllTopicsBinding
 import org.oppia.android.databinding.PromotedStoryListBinding
 import org.oppia.android.databinding.TopicSummaryViewBinding
 import org.oppia.android.databinding.WelcomeBinding
-import org.oppia.android.app.home.HomeItemViewModel
-import org.oppia.android.app.home.WelcomeViewModel
-import org.oppia.android.app.recyclerview.StartSnapHelper
 
 private const val VIEW_TYPE_WELCOME_MESSAGE = 1
 private const val VIEW_TYPE_PROMOTED_STORY_LIST = 2

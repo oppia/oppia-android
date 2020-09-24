@@ -9,17 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
-import org.oppia.android.databinding.WalkthroughWelcomeFragmentBinding
-import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.walkthrough.WalkthroughActivity
-import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
-import org.oppia.android.app.walkthrough.WalkthroughPageChanger
-import org.oppia.android.app.walkthrough.WalkthroughPages
-import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.app.R
 import org.oppia.android.app.databinding.WalkthroughWelcomeFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
@@ -29,6 +18,7 @@ import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.android.app.walkthrough.WalkthroughPageChanger
 import org.oppia.android.app.walkthrough.WalkthroughPages
+import org.oppia.android.databinding.WalkthroughWelcomeFragmentBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData

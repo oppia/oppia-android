@@ -28,8 +28,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.databinding.TestTextViewForIntWithDataBindingBinding
-import org.oppia.android.databinding.TestTextViewForStringWithDataBindingBinding
 import org.oppia.android.app.model.TestModel
 import org.oppia.android.app.model.TestModel.ModelTypeCase
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
@@ -40,6 +38,8 @@ import org.oppia.android.app.testing.BindableAdapterTestActivity
 import org.oppia.android.app.testing.BindableAdapterTestFragment
 import org.oppia.android.app.testing.BindableAdapterTestFragmentPresenter
 import org.oppia.android.app.testing.BindableAdapterTestViewModel
+import org.oppia.android.databinding.TestTextViewForIntWithDataBindingBinding
+import org.oppia.android.databinding.TestTextViewForStringWithDataBindingBinding
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule

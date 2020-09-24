@@ -3,8 +3,8 @@ package org.oppia.android.app.mydownloads
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.databinding.UpdatesTabFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.databinding.UpdatesTabFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [UpdatesTabFragment]. */

@@ -6,10 +6,6 @@ import androidx.lifecycle.Observer
 import org.oppia.android.app.model.DeviceSettings
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.app.model.DeviceSettings
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 

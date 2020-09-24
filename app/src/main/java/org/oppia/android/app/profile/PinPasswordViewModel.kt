@@ -9,13 +9,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.viewmodel.ObservableViewModel
-import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject

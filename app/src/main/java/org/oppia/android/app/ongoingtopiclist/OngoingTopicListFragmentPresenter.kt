@@ -7,10 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
-import org.oppia.android.databinding.OngoingTopicItemBinding
-import org.oppia.android.databinding.OngoingTopicListFragmentBinding
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.OngoingTopicItemBinding
+import org.oppia.android.databinding.OngoingTopicListFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [OngoingTopicListFragment]. */
