@@ -14,8 +14,6 @@ import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
-import org.oppia.android.app.R
-import org.oppia.android.app.databinding.StateFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.EphemeralState

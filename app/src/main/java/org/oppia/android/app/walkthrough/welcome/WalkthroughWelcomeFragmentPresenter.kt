@@ -9,8 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
-import org.oppia.android.app.R
-import org.oppia.android.app.databinding.WalkthroughWelcomeFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId

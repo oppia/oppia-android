@@ -12,9 +12,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
-import org.oppia.android.app.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.databinding.ExplorationActivityBinding
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ReadingTextSize

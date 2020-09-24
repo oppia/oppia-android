@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
-import org.oppia.android.app.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.model.AppStartupState

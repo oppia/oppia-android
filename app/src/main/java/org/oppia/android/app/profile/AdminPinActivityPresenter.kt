@@ -9,10 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.android.R
-import org.oppia.android.app.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.android.app.databinding.AdminPinActivityBinding
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminPinActivityBinding

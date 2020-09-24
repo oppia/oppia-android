@@ -7,10 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.app.databinding.OptionAppLanguageBinding
-import org.oppia.android.app.databinding.OptionAudioLanguageBinding
-import org.oppia.android.app.databinding.OptionStoryTextSizeBinding
-import org.oppia.android.app.databinding.OptionsFragmentBinding
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguage
