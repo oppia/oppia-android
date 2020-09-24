@@ -133,7 +133,7 @@ jobs:
          path: app/build/reports
 
   bazel_build_app:
-    name: Build Oppia targets with Bazel
+    name: Build Binary with Bazel
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
