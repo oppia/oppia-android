@@ -21,6 +21,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+<<<<<<< HEAD:testing/src/test/java/org/oppia/android/testing/profile/ProfileTestHelperTest.kt
 import org.oppia.android.app.model.Profile
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -32,6 +33,22 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+=======
+import org.oppia.app.model.Profile
+import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
+>>>>>>> develop:testing/src/test/java/org/oppia/testing/profile/ProfileTestHelperTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -40,7 +57,7 @@ import javax.inject.Singleton
 /** Tests for [ProfileTestHelperTest]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = ProfileTestHelperTest.TestApplication::class)
 class ProfileTestHelperTest {
   @Rule
   @JvmField
@@ -76,16 +93,13 @@ class ProfileTestHelperTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerProfileTestHelperTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
   fun testInitializeProfiles_initializeProfiles_checkProfilesAreAddedAndCurrentIsSet() {
     profileTestHelper.initializeProfiles().observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+    profileManagementController.getProfiles().toLiveData().observeForever(mockProfilesObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
@@ -103,7 +117,7 @@ class ProfileTestHelperTest {
   @Test
   fun testInitializeProfiles_addOnlyAdminProfile_checkProfileIsAddedAndCurrentIsSet() {
     profileTestHelper.addOnlyAdminProfile().observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+    profileManagementController.getProfiles().toLiveData().observeForever(mockProfilesObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
@@ -121,7 +135,7 @@ class ProfileTestHelperTest {
   fun testAddMoreProfiles_addMoreProfiles_checkProfilesAreAdded() {
     profileTestHelper.addMoreProfiles(10)
     testCoroutineDispatchers.runCurrent()
-    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+    profileManagementController.getProfiles().toLiveData().observeForever(mockProfilesObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
@@ -185,7 +199,7 @@ class ProfileTestHelperTest {
       TestDispatcherModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -195,5 +209,19 @@ class ProfileTestHelperTest {
     }
 
     fun inject(profileTestHelperTest: ProfileTestHelperTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerProfileTestHelperTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(profileTestHelperTest: ProfileTestHelperTest) {
+      component.inject(profileTestHelperTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

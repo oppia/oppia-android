@@ -21,6 +21,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+<<<<<<< HEAD:domain/src/test/java/org/oppia/android/domain/oppialogger/exceptions/ExceptionsControllerTest.kt
 import org.oppia.android.app.model.ExceptionLog.ExceptionType
 import org.oppia.android.app.model.OppiaExceptionLogs
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
@@ -35,6 +36,25 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtil
+=======
+import org.oppia.app.model.ExceptionLog.ExceptionType
+import org.oppia.app.model.OppiaExceptionLogs
+import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.testing.FakeExceptionLogger
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
+import org.oppia.util.networking.NetworkConnectionUtil
+>>>>>>> develop:domain/src/test/java/org/oppia/domain/oppialogger/exceptions/ExceptionsControllerTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -46,8 +66,8 @@ private const val TEST_TIMESTAMP_IN_MILLIS_THREE = 1556094100000
 private const val TEST_TIMESTAMP_IN_MILLIS_FOUR = 1556094000000
 
 @RunWith(AndroidJUnit4::class)
-@Config(manifest = Config.NONE)
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(application = ExceptionsControllerTest.TestApplication::class)
 class ExceptionsControllerTest {
 
   @Rule
@@ -110,7 +130,7 @@ class ExceptionsControllerTest {
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -135,7 +155,7 @@ class ExceptionsControllerTest {
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -173,7 +193,7 @@ class ExceptionsControllerTest {
     )
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -215,7 +235,7 @@ class ExceptionsControllerTest {
     )
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -234,7 +254,7 @@ class ExceptionsControllerTest {
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -261,7 +281,7 @@ class ExceptionsControllerTest {
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -280,7 +300,7 @@ class ExceptionsControllerTest {
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -301,7 +321,7 @@ class ExceptionsControllerTest {
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -316,10 +336,7 @@ class ExceptionsControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerExceptionsControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -362,7 +379,7 @@ class ExceptionsControllerTest {
       TestLogStorageModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -371,5 +388,19 @@ class ExceptionsControllerTest {
     }
 
     fun inject(exceptionsControllerTest: ExceptionsControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerExceptionsControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(exceptionsControllerTest: ExceptionsControllerTest) {
+      component.inject(exceptionsControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

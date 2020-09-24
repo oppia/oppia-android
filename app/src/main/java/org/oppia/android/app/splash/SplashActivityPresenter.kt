@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/splash/SplashActivityPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
@@ -16,6 +17,20 @@ import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.topic.PrimeTopicAssetsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
+=======
+import org.oppia.app.R
+import org.oppia.app.activity.ActivityScope
+import org.oppia.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
+import org.oppia.app.model.AppStartupState
+import org.oppia.app.model.AppStartupState.StartupMode
+import org.oppia.app.onboarding.OnboardingActivity
+import org.oppia.app.profile.ProfileChooserActivity
+import org.oppia.domain.onboarding.AppStartupStateController
+import org.oppia.domain.topic.PrimeTopicAssetsController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.logging.ConsoleLogger
+>>>>>>> develop:app/src/main/java/org/oppia/app/splash/SplashActivityPresenter.kt
 import javax.inject.Inject
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
@@ -77,7 +92,7 @@ class SplashActivityPresenter @Inject constructor(
 
   private fun getOnboardingFlow(): LiveData<StartupMode> {
     return Transformations.map(
-      appStartupStateController.getAppStartupState(),
+      appStartupStateController.getAppStartupState().toLiveData(),
       ::processStartupState
     )
   }

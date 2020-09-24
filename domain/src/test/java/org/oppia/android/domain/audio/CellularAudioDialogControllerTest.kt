@@ -21,6 +21,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+<<<<<<< HEAD:domain/src/test/java/org/oppia/android/domain/audio/CellularAudioDialogControllerTest.kt
 import org.oppia.android.app.model.CellularDataPreference
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -30,6 +31,20 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+=======
+import org.oppia.app.model.CellularDataPreference
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
+>>>>>>> develop:domain/src/test/java/org/oppia/domain/audio/CellularAudioDialogControllerTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -37,7 +52,7 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = CellularAudioDialogControllerTest.TestApplication::class)
 class CellularAudioDialogControllerTest {
   @Rule
   @JvmField
@@ -61,16 +76,13 @@ class CellularAudioDialogControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerCellularAudioDialogControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
   fun testController_providesInitialLiveData_indicatesToNotHideDialogAndNotUseCellularData() {
     val cellularDataPreference =
-      cellularAudioDialogController.getCellularDataPreference()
+      cellularAudioDialogController.getCellularDataPreference().toLiveData()
     cellularDataPreference.observeForever(mockCellularDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -83,7 +95,7 @@ class CellularAudioDialogControllerTest {
   @Test
   fun testController_setNeverUseCellularDataPref_providesLiveData_indicatesToHideDialogAndNotUseCellularData() { // ktlint-disable max-line-length
     val appHistory =
-      cellularAudioDialogController.getCellularDataPreference()
+      cellularAudioDialogController.getCellularDataPreference().toLiveData()
 
     appHistory.observeForever(mockCellularDataObserver)
     cellularAudioDialogController.setNeverUseCellularDataPreference()
@@ -98,7 +110,7 @@ class CellularAudioDialogControllerTest {
   @Test
   fun testController_setAlwaysUseCellularDataPref_providesLiveData_indicatesToHideDialogAndUseCellularData() { // ktlint-disable max-line-length
     val appHistory =
-      cellularAudioDialogController.getCellularDataPreference()
+      cellularAudioDialogController.getCellularDataPreference().toLiveData()
 
     appHistory.observeForever(mockCellularDataObserver)
     cellularAudioDialogController.setAlwaysUseCellularDataPreference()
@@ -117,7 +129,7 @@ class CellularAudioDialogControllerTest {
 
     setUpTestApplicationComponent()
     val appHistory =
-      cellularAudioDialogController.getCellularDataPreference()
+      cellularAudioDialogController.getCellularDataPreference().toLiveData()
     appHistory.observeForever(mockCellularDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -134,7 +146,7 @@ class CellularAudioDialogControllerTest {
 
     setUpTestApplicationComponent()
     val appHistory =
-      cellularAudioDialogController.getCellularDataPreference()
+      cellularAudioDialogController.getCellularDataPreference().toLiveData()
     appHistory.observeForever(mockCellularDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -177,7 +189,7 @@ class CellularAudioDialogControllerTest {
       TestLogReportingModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -186,5 +198,19 @@ class CellularAudioDialogControllerTest {
     }
 
     fun inject(cellularDataControllerTest: CellularAudioDialogControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerCellularAudioDialogControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(cellularDataControllerTest: CellularAudioDialogControllerTest) {
+      component.inject(cellularDataControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

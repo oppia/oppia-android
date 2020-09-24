@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/player/audio/AudioFragmentPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.databinding.AudioFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
@@ -28,6 +29,24 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
+=======
+import org.oppia.app.R
+import org.oppia.app.databinding.AudioFragmentBinding
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.AudioLanguage
+import org.oppia.app.model.CellularDataPreference
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.State
+import org.oppia.app.player.audio.AudioViewModel.UiAudioPlayStatus
+import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.audio.CellularAudioDialogController
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.networking.NetworkConnectionUtil
+>>>>>>> develop:app/src/main/java/org/oppia/app/player/audio/AudioFragmentPresenter.kt
 import javax.inject.Inject
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
@@ -64,7 +83,7 @@ class AudioFragmentPresenter @Inject constructor(
     internalProfileId: Int
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    cellularAudioDialogController.getCellularDataPreference()
+    cellularAudioDialogController.getCellularDataPreference().toLiveData()
       .observe(
         fragment,
         Observer<AsyncResult<CellularDataPreference>> {
@@ -112,7 +131,7 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun getProfileData(): LiveData<String> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId),
+      profileManagementController.getProfile(profileId).toLiveData(),
       ::processGetProfileResult
     )
   }

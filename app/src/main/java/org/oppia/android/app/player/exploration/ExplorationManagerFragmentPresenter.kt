@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/player/exploration/ExplorationManagerFragmentPresenter.kt
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
@@ -12,6 +13,16 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
+=======
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.ReadingTextSize
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.logging.ConsoleLogger
+>>>>>>> develop:app/src/main/java/org/oppia/app/player/exploration/ExplorationManagerFragmentPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [ExplorationManagerFragment]. */
@@ -36,7 +47,7 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
 
   private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId),
+      profileManagementController.getProfile(profileId).toLiveData(),
       ::processReadingTextSizeResult
     )
   }

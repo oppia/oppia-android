@@ -3,6 +3,7 @@ package org.oppia.android.app.story
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/story/StoryViewModel.kt
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
@@ -16,6 +17,22 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
+=======
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.ChapterPlayState
+import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.StorySummary
+import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
+import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
+import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
+import org.oppia.domain.exploration.ExplorationDataController
+import org.oppia.domain.topic.TopicController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.StoryHtmlParserEntityType
+>>>>>>> develop:app/src/main/java/org/oppia/app/story/StoryViewModel.kt
 import javax.inject.Inject
 
 /** The ViewModel for StoryFragment. */
@@ -39,7 +56,7 @@ class StoryViewModel @Inject constructor(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       topicId,
       storyId
-    )
+    ).toLiveData()
   }
 
   private val storyLiveData: LiveData<StorySummary> by lazy {

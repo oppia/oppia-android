@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerFragmentPresenter.kt
 import org.oppia.android.databinding.QuestionPlayerFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnsweredQuestionOutcome
@@ -35,6 +36,33 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.system.OppiaClock
+=======
+import org.oppia.app.databinding.QuestionPlayerFragmentBinding
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.AnsweredQuestionOutcome
+import org.oppia.app.model.EphemeralQuestion
+import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.EventLog
+import org.oppia.app.model.HelpIndex
+import org.oppia.app.model.Hint
+import org.oppia.app.model.Solution
+import org.oppia.app.model.State
+import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.state.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
+import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
+import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
+import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.app.utility.SplitScreenManager
+import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.oppialogger.OppiaLogger
+import org.oppia.domain.question.QuestionAssessmentProgressController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.gcsresource.QuestionResourceBucketName
+import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.system.OppiaClock
+>>>>>>> develop:app/src/main/java/org/oppia/app/topic/questionplayer/QuestionPlayerFragmentPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [QuestionPlayerFragment]. */
@@ -58,7 +86,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private val questionViewModel by lazy { getQuestionPlayerViewModel() }
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
-    questionAssessmentProgressController.getCurrentQuestion()
+    questionAssessmentProgressController.getCurrentQuestion().toLiveData()
   }
   private lateinit var binding: QuestionPlayerFragmentBinding
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler

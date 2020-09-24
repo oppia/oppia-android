@@ -2,11 +2,20 @@ package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+<<<<<<< HEAD:domain/src/main/java/org/oppia/android/domain/exploration/ExplorationDataController.kt
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.OppiaClock
+=======
+import org.oppia.app.model.Exploration
+import org.oppia.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
+import org.oppia.util.data.DataProviders
+import org.oppia.util.system.OppiaClock
+>>>>>>> develop:domain/src/main/java/org/oppia/domain/exploration/ExplorationDataController.kt
 import javax.inject.Inject
 
 private const val EXPLORATION_DATA_PROVIDER_ID = "ExplorationDataProvider"
@@ -25,13 +34,12 @@ class ExplorationDataController @Inject constructor(
   private val oppiaClock: OppiaClock
 ) {
   /** Returns an [Exploration] given an ID. */
-  fun getExplorationById(id: String): LiveData<AsyncResult<Exploration>> {
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync(
+  fun getExplorationById(id: String): DataProvider<Exploration> {
+    return dataProviders.createInMemoryDataProviderAsync(
       EXPLORATION_DATA_PROVIDER_ID
     ) {
       retrieveExplorationById(id)
     }
-    return dataProviders.convertToLiveData(dataProvider)
   }
 
   /**

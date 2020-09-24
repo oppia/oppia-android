@@ -16,6 +16,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+<<<<<<< HEAD:app/src/test/java/org/oppia/android/app/testing/player/state/StateFragmentAccessibilityTest.kt
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -62,6 +63,56 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
+=======
+import org.oppia.app.R
+import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.application.ActivityComponentFactory
+import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationContext
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
+import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
+import org.oppia.app.player.state.StateFragment
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.app.player.state.testing.StateFragmentTestActivity
+import org.oppia.app.recyclerview.RecyclerViewMatcher
+import org.oppia.app.shim.IntentFactoryShimModule
+import org.oppia.app.shim.ViewBindingShimModule
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
+import org.oppia.domain.topic.TEST_STORY_ID_0
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.profile.ProfileTestHelper
+import org.oppia.util.accessibility.FakeAccessibilityManager
+import org.oppia.util.caching.testing.CachingTestModule
+import org.oppia.util.gcsresource.GcsResourceModule
+import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.HtmlParserEntityTypeModule
+import org.oppia.util.parser.ImageParsingModule
+>>>>>>> develop:app/src/test/java/org/oppia/app/testing/player/state/StateFragmentAccessibilityTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -185,7 +236,7 @@ class StateFragmentAccessibilityTest {
     fun inject(stateFragmentAccessibilityTest: StateFragmentAccessibilityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory {
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerStateFragmentAccessibilityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -199,5 +250,7 @@ class StateFragmentAccessibilityTest {
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 }

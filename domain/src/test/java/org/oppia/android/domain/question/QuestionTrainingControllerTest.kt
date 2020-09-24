@@ -10,7 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,6 +20,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+<<<<<<< HEAD:domain/src/test/java/org/oppia/android/domain/question/QuestionTrainingControllerTest.kt
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -49,6 +49,39 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+=======
+import org.oppia.app.model.EphemeralQuestion
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.topic.TEST_QUESTION_ID_0
+import org.oppia.domain.topic.TEST_QUESTION_ID_1
+import org.oppia.domain.topic.TEST_QUESTION_ID_3
+import org.oppia.domain.topic.TEST_SKILL_ID_0
+import org.oppia.domain.topic.TEST_SKILL_ID_1
+import org.oppia.domain.topic.TEST_SKILL_ID_2
+import org.oppia.testing.FakeExceptionLogger
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
+>>>>>>> develop:domain/src/test/java/org/oppia/domain/question/QuestionTrainingControllerTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -57,7 +90,7 @@ import javax.inject.Singleton
 /** Tests for [QuestionTrainingController]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = QuestionTrainingControllerTest.TestApplication::class)
 class QuestionTrainingControllerTest {
   @Rule
   @JvmField
@@ -87,21 +120,9 @@ class QuestionTrainingControllerTest {
   @Captor
   lateinit var currentQuestionResultCaptor: ArgumentCaptor<AsyncResult<EphemeralQuestion>>
 
-  @Before
-  fun setUp() {
-    TestQuestionModule.questionSeed = 0
-    setUpTestApplicationComponent()
-  }
-
-  private fun setUpTestApplicationComponent() {
-    DaggerQuestionTrainingControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
-  }
-
   @Test
   fun testController_startTrainingSession_succeeds() {
+    setUpTestApplicationComponent(questionSeed = 0)
     val questionListLiveData =
       questionTrainingController.startQuestionTrainingSession(
         listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
@@ -117,13 +138,14 @@ class QuestionTrainingControllerTest {
 
   @Test
   fun testController_startTrainingSession_sessionStartsWithInitialQuestion() {
+    setUpTestApplicationComponent(questionSeed = 0)
     questionTrainingController.startQuestionTrainingSession(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
     testCoroutineDispatchers.runCurrent()
 
     val resultLiveData =
-      questionAssessmentProgressController.getCurrentQuestion()
+      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -136,8 +158,7 @@ class QuestionTrainingControllerTest {
 
   @Test
   fun testController_startTrainingSession_differentSeed_succeeds() {
-    TestQuestionModule.questionSeed = 2
-    setUpTestApplicationComponent() // Recreate with the new seed
+    setUpTestApplicationComponent(questionSeed = 2)
     val questionListLiveData =
       questionTrainingController.startQuestionTrainingSession(
         listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
@@ -153,15 +174,14 @@ class QuestionTrainingControllerTest {
 
   @Test
   fun testController_startTrainingSession_differentSeed_sessionStartsWithInitialQuestion() {
-    TestQuestionModule.questionSeed = 2
-    setUpTestApplicationComponent() // Recreate with the new seed
+    setUpTestApplicationComponent(questionSeed = 2)
     questionTrainingController.startQuestionTrainingSession(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
     testCoroutineDispatchers.runCurrent()
 
     val resultLiveData =
-      questionAssessmentProgressController.getCurrentQuestion()
+      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -174,6 +194,7 @@ class QuestionTrainingControllerTest {
 
   @Test
   fun testController_startTrainingSession_differentSkills_succeeds() {
+    setUpTestApplicationComponent(questionSeed = 0)
     val questionListLiveData =
       questionTrainingController.startQuestionTrainingSession(
         listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
@@ -189,13 +210,14 @@ class QuestionTrainingControllerTest {
 
   @Test
   fun testController_startTrainingSession_differentSkills_sessionStartsWithInitialQuestion() {
+    setUpTestApplicationComponent(questionSeed = 0)
     questionTrainingController.startQuestionTrainingSession(
       listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
     )
     testCoroutineDispatchers.runCurrent()
 
     val resultLiveData =
-      questionAssessmentProgressController.getCurrentQuestion()
+      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -208,6 +230,7 @@ class QuestionTrainingControllerTest {
 
   @Test
   fun testController_startTrainingSession_noSkills_fails() {
+    setUpTestApplicationComponent(questionSeed = 0)
     val questionListLiveData =
       questionTrainingController.startQuestionTrainingSession(listOf())
     testCoroutineDispatchers.runCurrent()
@@ -221,6 +244,7 @@ class QuestionTrainingControllerTest {
 
   @Test
   fun testController_startTrainingSession_noSkills_fails_logsException() {
+    setUpTestApplicationComponent(questionSeed = 0)
     questionTrainingController.startQuestionTrainingSession(listOf())
     questionTrainingController.startQuestionTrainingSession(listOf())
     testCoroutineDispatchers.runCurrent()
@@ -234,6 +258,7 @@ class QuestionTrainingControllerTest {
 
   @Test
   fun testStopTrainingSession_withoutStartingSession_fails_logsException() {
+    setUpTestApplicationComponent(questionSeed = 0)
     questionTrainingController.stopQuestionTrainingSession()
     testCoroutineDispatchers.runCurrent()
 
@@ -242,6 +267,11 @@ class QuestionTrainingControllerTest {
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
     assertThat(exception).hasMessageThat()
       .contains("Cannot stop a new training session which wasn't started")
+  }
+
+  private fun setUpTestApplicationComponent(questionSeed: Long) {
+    TestQuestionModule.questionSeed = questionSeed
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -295,7 +325,7 @@ class QuestionTrainingControllerTest {
       LogStorageModule::class, TestDispatcherModule::class, RatioInputModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -305,5 +335,19 @@ class QuestionTrainingControllerTest {
     }
 
     fun inject(questionTrainingControllerTest: QuestionTrainingControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerQuestionTrainingControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(questionTrainingControllerTest: QuestionTrainingControllerTest) {
+      component.inject(questionTrainingControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

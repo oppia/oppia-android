@@ -1,7 +1,7 @@
 package org.oppia.android.domain.topic
 
-import androidx.lifecycle.LiveData
 import kotlinx.coroutines.Deferred
+<<<<<<< HEAD:domain/src/main/java/org/oppia/android/domain/topic/StoryProgressController.kt
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ProfileId
@@ -13,6 +13,20 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.logging.ConsoleLogger
+=======
+import org.oppia.app.model.ChapterPlayState
+import org.oppia.app.model.ChapterProgress
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.StoryProgress
+import org.oppia.app.model.TopicProgress
+import org.oppia.app.model.TopicProgressDatabase
+import org.oppia.data.persistence.PersistentCacheStore
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
+import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProviders.Companion.transformAsync
+import org.oppia.util.logging.ConsoleLogger
+>>>>>>> develop:domain/src/main/java/org/oppia/domain/topic/StoryProgressController.kt
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -48,15 +62,19 @@ private const val ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID = "add_story_progre
 private const val RECENTLY_PLAYED_CHAPTER_TRANSFORMED_PROVIDER_ID =
   "recently_played_chapter_transformed_id"
 
-/** Controller that records and provides completion statuses of chapters within the context of a story. */
+/**
+ * Controller that records and provides completion statuses of chapters within the context of a
+ * story.
+ */
 @Singleton
 class StoryProgressController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val logger: ConsoleLogger
 ) {
-  // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype, or if that just
-  //  indicates that they can't be started due to previous chapter not yet being completed.
+  // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype,
+  //  or if that just indicates that they can't be started due to previous chapter not yet being
+  //  completed.
 
   /** These Statuses correspond to the exceptions above such that if the deferred contains. */
   private enum class StoryProgressActionStatus {
@@ -66,16 +84,16 @@ class StoryProgressController @Inject constructor(
   private val cacheStoreMap = mutableMapOf<ProfileId, PersistentCacheStore<TopicProgressDatabase>>()
 
   /**
-   * Records the specified chapter completed within the context of the specified exploration, story, topic. Returns a [LiveData] that
-   * provides exactly one [AsyncResult] to indicate whether this operation has succeeded. This method will never return
-   * a pending result.
+   * Records the specified chapter completed within the context of the specified exploration, story,
+   * topic. Returns a [DataProvider] that provides exactly one [AsyncResult] to indicate whether
+   * this operation has succeeded. This method will never return a pending result.
    *
    * @param profileId the ID corresponding to the profile for which progress needs to be stored.
    * @param topicId the ID corresponding to the topic for which progress needs to be stored.
    * @param storyId the ID corresponding to the story for which progress needs to be stored.
    * @param explorationId the chapter id which will marked as [ChapterPlayState.COMPLETED]
    * @param completionTimestamp the timestamp at the exploration was finished.
-   * @return a [LiveData] that indicates the success/failure of this record progress operation.
+   * @return a [DataProvider] that indicates the success/failure of this record progress operation.
    */
   fun recordCompletedChapter(
     profileId: ProfileId,
@@ -83,7 +101,7 @@ class StoryProgressController @Inject constructor(
     storyId: String,
     explorationId: String,
     completionTimestamp: Long
-  ): LiveData<AsyncResult<Any?>> {
+  ): DataProvider<Any?> {
     val deferred =
       retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
         updateInMemoryCache = true
@@ -120,24 +138,25 @@ class StoryProgressController @Inject constructor(
         Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)
       }
 
-    return dataProviders.convertToLiveData(
-      dataProviders.createInMemoryDataProviderAsync(ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync getDeferredResult(deferred)
-      }
-    )
+    return dataProviders.createInMemoryDataProviderAsync(
+      ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResult(deferred)
+    }
   }
 
   /**
-   * Records the recently played chapter for a specified exploration, story, topic. Returns a [LiveData] that
-   * provides exactly one [AsyncResult] to indicate whether this operation has succeeded. This method will never return
-   * a pending result.
+   * Records the recently played chapter for a specified exploration, story, topic. Returns a
+   * [DataProvider] that provides exactly one [AsyncResult] to indicate whether this operation has
+   * succeeded. This method will never return a pending result.
    *
    * @param profileId the ID corresponding to the profile for which progress needs to be stored.
    * @param topicId the ID corresponding to the topic for which progress needs to be stored.
    * @param storyId the ID corresponding to the story for which progress needs to be stored.
-   * @param explorationId the chapter id which will marked as [ChapterPlayState.NOT_STARTED] if it has not been [ChapterPlayState.COMPLETED] already.
+   * @param explorationId the chapter id which will marked as [ChapterPlayState.NOT_STARTED] if it
+   *    has not been [ChapterPlayState.COMPLETED] already.
    * @param lastPlayedTimestamp the timestamp at which the exploration was last played.
-   * @return a [LiveData] that indicates the success/failure of this record progress operation.
+   * @return a [DataProvider] that indicates the success/failure of this record progress operation.
    */
   fun recordRecentlyPlayedChapter(
     profileId: ProfileId,
@@ -145,7 +164,7 @@ class StoryProgressController @Inject constructor(
     storyId: String,
     explorationId: String,
     lastPlayedTimestamp: Long
-  ): LiveData<AsyncResult<Any?>> {
+  ): DataProvider<Any?> {
     val deferred =
       retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
         updateInMemoryCache = true
@@ -200,27 +219,23 @@ class StoryProgressController @Inject constructor(
         Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)
       }
 
-    return dataProviders.convertToLiveData(
-      dataProviders.createInMemoryDataProviderAsync(
-        RECENTLY_PLAYED_CHAPTER_TRANSFORMED_PROVIDER_ID
-      ) {
-        return@createInMemoryDataProviderAsync getDeferredResult(deferred)
-      }
-    )
+    return dataProviders.createInMemoryDataProviderAsync(
+      RECENTLY_PLAYED_CHAPTER_TRANSFORMED_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResult(deferred)
+    }
   }
 
   /** Returns list of [TopicProgress] [DataProvider] for a particular profile. */
   internal fun retrieveTopicProgressListDataProvider(
     profileId: ProfileId
   ): DataProvider<List<TopicProgress>> {
-    return dataProviders.transformAsync(
-      TRANSFORMED_GET_STORY_PROGRESS_LIST_PROVIDER_ID,
-      retrieveCacheStore(profileId)
-    ) { topicProgressDatabase ->
-      val topicProgressList = mutableListOf<TopicProgress>()
-      topicProgressList.addAll(topicProgressDatabase.topicProgressMap.values)
-      AsyncResult.success(topicProgressList.toList())
-    }
+    return retrieveCacheStore(profileId)
+      .transformAsync(TRANSFORMED_GET_STORY_PROGRESS_LIST_PROVIDER_ID) { topicProgressDatabase ->
+        val topicProgressList = mutableListOf<TopicProgress>()
+        topicProgressList.addAll(topicProgressDatabase.topicProgressMap.values)
+        AsyncResult.success(topicProgressList.toList())
+      }
   }
 
   /** Returns a [TopicProgress] [DataProvider] for a specific topicId, per-profile basis. */
@@ -228,12 +243,10 @@ class StoryProgressController @Inject constructor(
     profileId: ProfileId,
     topicId: String
   ): DataProvider<TopicProgress> {
-    return dataProviders.transformAsync(
-      TRANSFORMED_GET_TOPIC_PROGRESS_PROVIDER_ID,
-      retrieveCacheStore(profileId)
-    ) {
-      AsyncResult.success(it.topicProgressMap[topicId] ?: TopicProgress.getDefaultInstance())
-    }
+    return retrieveCacheStore(profileId)
+      .transformAsync(TRANSFORMED_GET_TOPIC_PROGRESS_PROVIDER_ID) {
+        AsyncResult.success(it.topicProgressMap[topicId] ?: TopicProgress.getDefaultInstance())
+      }
   }
 
   /** Returns a [StoryProgress] [DataProvider] for a specific storyId, per-profile basis. */
@@ -242,12 +255,10 @@ class StoryProgressController @Inject constructor(
     topicId: String,
     storyId: String
   ): DataProvider<StoryProgress> {
-    return dataProviders.transformAsync(
-      TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
-      retrieveTopicProgressDataProvider(profileId, topicId)
-    ) {
-      AsyncResult.success(it.storyProgressMap[storyId] ?: StoryProgress.getDefaultInstance())
-    }
+    return retrieveTopicProgressDataProvider(profileId, topicId)
+      .transformAsync(TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID) {
+        AsyncResult.success(it.storyProgressMap[storyId] ?: StoryProgress.getDefaultInstance())
+      }
   }
 
   private suspend fun getDeferredResult(

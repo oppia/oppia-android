@@ -5,15 +5,10 @@ import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
-import android.os.Build
-import android.view.View
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.typeText
@@ -35,12 +30,12 @@ import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import com.google.firebase.FirebaseApp
 import dagger.Component
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+<<<<<<< HEAD:app/src/sharedTest/java/org/oppia/android/app/profile/PinPasswordActivityTest.kt
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -83,6 +78,51 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
+=======
+import org.oppia.app.R
+import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.application.ActivityComponentFactory
+import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
+import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
+import org.oppia.app.home.HomeActivity
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.app.shim.ViewBindingShimModule
+import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.testing.EditTextInputAction
+import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.profile.ProfileTestHelper
+import org.oppia.util.caching.testing.CachingTestModule
+import org.oppia.util.gcsresource.GcsResourceModule
+import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.HtmlParserEntityTypeModule
+import org.oppia.util.parser.ImageParsingModule
+>>>>>>> develop:app/src/sharedTest/java/org/oppia/app/profile/PinPasswordActivityTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -107,6 +147,9 @@ class PinPasswordActivityTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
 
   private val adminPin = "12345"
   private val adminId = 0
@@ -154,7 +197,7 @@ class PinPasswordActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.input_pin)).perform(appendText("12345"))
+      onView(withId(R.id.input_pin)).perform(editTextInputAction.appendText("12345"))
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(HomeActivity::class.java.name))
     }
@@ -170,7 +213,7 @@ class PinPasswordActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.input_pin)).perform(appendText("123"))
+      onView(withId(R.id.input_pin)).perform(editTextInputAction.appendText("123"))
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(HomeActivity::class.java.name))
     }
@@ -188,7 +231,7 @@ class PinPasswordActivityTest {
       testCoroutineDispatchers.runCurrent()
       closeSoftKeyboard()
       onView(withId(R.id.input_pin)).perform(closeSoftKeyboard())
-        .perform(appendText("54321"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("54321"), closeSoftKeyboard())
       onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(
         matches(
           isDisplayed()
@@ -207,7 +250,9 @@ class PinPasswordActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.input_pin)).perform(appendText("321"), closeSoftKeyboard())
+      onView(withId(R.id.input_pin)).perform(
+        editTextInputAction.appendText("321"), closeSoftKeyboard()
+      )
       onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(
         matches(
           isDisplayed()
@@ -226,7 +271,10 @@ class PinPasswordActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.input_pin)).perform(appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.input_pin)).perform(
+        editTextInputAction.appendText(""),
+        closeSoftKeyboard()
+      )
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(withText(context.getString(R.string.pin_password_forgot_message)))
         .inRoot(isDialog())
@@ -247,7 +295,7 @@ class PinPasswordActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("1234"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("1234"), closeSoftKeyboard())
 
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
@@ -261,7 +309,7 @@ class PinPasswordActivityTest {
         .check(matches(withText(context.getString(R.string.admin_settings_incorrect))))
 
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("5"),
+        editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin))))
@@ -284,7 +332,7 @@ class PinPasswordActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("12345"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
 
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
@@ -292,7 +340,7 @@ class PinPasswordActivityTest {
 
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("32"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("32"), closeSoftKeyboard())
 
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
@@ -306,7 +354,7 @@ class PinPasswordActivityTest {
         .check(matches(withText(context.getString(R.string.add_profile_error_pin_length))))
 
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("1"),
+        editTextInputAction.appendText("1"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin))))
@@ -328,14 +376,14 @@ class PinPasswordActivityTest {
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("12345"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
 
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
         .perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("321"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("321"), closeSoftKeyboard())
 
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
@@ -345,7 +393,10 @@ class PinPasswordActivityTest {
       onView(withText(context.getString(R.string.pin_password_close)))
         .inRoot(isDialog())
         .perform(click())
-      onView(withId(R.id.input_pin)).perform(appendText("123"), closeSoftKeyboard())
+      onView(withId(R.id.input_pin)).perform(
+        editTextInputAction.appendText("123"),
+        closeSoftKeyboard()
+      )
       onView(withText(context.getString(R.string.pin_password_incorrect_pin)))
         .check(matches(isDisplayed()))
     }
@@ -364,14 +415,14 @@ class PinPasswordActivityTest {
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("12345"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
 
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
         .perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("321"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("321"), closeSoftKeyboard())
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
         .perform(click())
@@ -380,7 +431,7 @@ class PinPasswordActivityTest {
       onView(withText(context.getString(R.string.pin_password_close)))
         .inRoot(isDialog())
         .perform(click())
-      onView(withId(R.id.input_pin)).perform(appendText("321"))
+      onView(withId(R.id.input_pin)).perform(editTextInputAction.appendText("321"))
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(HomeActivity::class.java.name))
     }
@@ -399,7 +450,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("1234"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("1234"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
@@ -420,7 +471,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("12345"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
         .perform(click())
@@ -444,14 +495,14 @@ class PinPasswordActivityTest {
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("12345"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
 
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
         .perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("123"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
@@ -495,7 +546,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("1234"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("1234"), closeSoftKeyboard())
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
         .perform(click())
@@ -509,7 +560,7 @@ class PinPasswordActivityTest {
 
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("5"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("5"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
@@ -530,14 +581,14 @@ class PinPasswordActivityTest {
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("12345"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
 
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
         .perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
-        .perform(appendText("11"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("11"), closeSoftKeyboard())
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
         .perform(click())
@@ -563,7 +614,10 @@ class PinPasswordActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       closeSoftKeyboard()
-      onView(withId(R.id.input_pin)).perform(appendText("54321"), closeSoftKeyboard())
+      onView(withId(R.id.input_pin)).perform(
+        editTextInputAction.appendText("54321"),
+        closeSoftKeyboard()
+      )
       onView(isRoot()).perform(orientationLandscape())
       onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(
         matches(
@@ -705,31 +759,6 @@ class PinPasswordActivityTest {
     }
   }
 
-  // TODO(#1840)
-  /**
-   * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
-   * properly input digits for text views using 'android:digits'. See
-   * https://github.com/robolectric/robolectric/issues/5110 for specifics.
-   */
-  private fun appendText(text: String): ViewAction {
-    val typeTextViewAction = typeText(text)
-    return object : ViewAction {
-      override fun getDescription(): String = typeTextViewAction.description
-
-      override fun getConstraints(): Matcher<View> = typeTextViewAction.constraints
-
-      override fun perform(uiController: UiController?, view: View?) {
-        // Appending text only works on Robolectric, whereas Espresso needs to use typeText().
-        if (Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
-          (view as? EditText)?.append(text)
-          testCoroutineDispatchers.runCurrent()
-        } else {
-          typeTextViewAction.perform(uiController, view)
-        }
-      }
-    }
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
@@ -750,7 +779,7 @@ class PinPasswordActivityTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
+  interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 

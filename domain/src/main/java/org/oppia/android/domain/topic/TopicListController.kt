@@ -4,6 +4,7 @@ import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.json.JSONObject
+<<<<<<< HEAD:domain/src/main/java/org/oppia/android/domain/topic/TopicListController.kt
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
@@ -19,6 +20,24 @@ import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
+=======
+import org.oppia.app.model.ChapterPlayState
+import org.oppia.app.model.ChapterProgress
+import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.LessonThumbnail
+import org.oppia.app.model.LessonThumbnailGraphic
+import org.oppia.app.model.OngoingStoryList
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.PromotedStory
+import org.oppia.app.model.Topic
+import org.oppia.app.model.TopicList
+import org.oppia.app.model.TopicProgress
+import org.oppia.app.model.TopicSummary
+import org.oppia.domain.util.JsonAssetRetriever
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
+import org.oppia.util.data.DataProviders.Companion.transformAsync
+>>>>>>> develop:domain/src/main/java/org/oppia/domain/topic/TopicListController.kt
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -74,7 +93,6 @@ private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 /** Controller for retrieving the list of topics available to the learner to play. */
 @Singleton
 class TopicListController @Inject constructor(
-  private val dataProviders: DataProviders,
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val topicController: TopicController,
   private val storyProgressController: StoryProgressController
@@ -88,23 +106,20 @@ class TopicListController @Inject constructor(
   }
 
   /**
-   * Returns the list of ongoing [PromotedStory]s that can be viewed via a link on the homescreen. The total number of
-   * promoted stories should correspond to the ongoing story count within the [TopicList] returned by [getTopicList].
+   * Returns the list of ongoing [PromotedStory]s that can be viewed via a link on the homescreen.
+   * The total number of promoted stories should correspond to the ongoing story count within the
+   * [TopicList] returned by [getTopicList].
    *
-   * @param profileId the ID corresponding to the profile for which [PromotedStory] needs to be fetched.
-   * @return a [LiveData] for a [OngoingStoryList].
+   * @param profileId the ID corresponding to the profile for which [PromotedStory] needs to be
+   *    fetched.
+   * @return a [DataProvider] for an [OngoingStoryList].
    */
-
-  fun getOngoingStoryList(profileId: ProfileId): LiveData<AsyncResult<OngoingStoryList>> {
-    val ongoingStoryListDataProvider = dataProviders.transformAsync(
-      TRANSFORMED_GET_ONGOING_STORY_LIST_PROVIDER_ID,
-      storyProgressController.retrieveTopicProgressListDataProvider(profileId)
-    ) {
-      val ongoingStoryList = createOngoingStoryListFromProgress(it)
-      AsyncResult.success(ongoingStoryList)
-    }
-
-    return dataProviders.convertToLiveData(ongoingStoryListDataProvider)
+  fun getOngoingStoryList(profileId: ProfileId): DataProvider<OngoingStoryList> {
+    return storyProgressController.retrieveTopicProgressListDataProvider(profileId)
+      .transformAsync(TRANSFORMED_GET_ONGOING_STORY_LIST_PROVIDER_ID) {
+        val ongoingStoryList = createOngoingStoryListFromProgress(it)
+        AsyncResult.success(ongoingStoryList)
+      }
   }
 
   private fun createTopicList(): TopicList {

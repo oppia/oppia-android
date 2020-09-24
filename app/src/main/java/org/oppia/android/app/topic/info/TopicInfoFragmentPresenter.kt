@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/topic/info/TopicInfoFragmentPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.databinding.TopicInfoFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
@@ -18,6 +19,20 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.HtmlParser
+=======
+import org.oppia.app.R
+import org.oppia.app.databinding.TopicInfoFragmentBinding
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.Topic
+import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.topic.TopicController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.gcsresource.DefaultResourceBucketName
+import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.HtmlParser
+>>>>>>> develop:app/src/main/java/org/oppia/app/topic/info/TopicInfoFragmentPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [TopicInfoFragment]. */
@@ -87,7 +102,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
     topicController.getTopic(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       topicId
-    )
+    ).toLiveData()
   }
 
   private fun getTopicList(): LiveData<Topic> {

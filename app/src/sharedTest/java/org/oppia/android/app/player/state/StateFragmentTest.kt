@@ -2,11 +2,9 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
-import android.os.Build
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
-import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +20,6 @@ import androidx.test.espresso.action.GeneralLocation
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
-import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
@@ -58,6 +55,7 @@ import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+<<<<<<< HEAD:app/src/sharedTest/java/org/oppia/android/app/player/state/StateFragmentTest.kt
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -132,6 +130,86 @@ import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
+=======
+import org.oppia.app.R
+import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.application.ActivityComponentFactory
+import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
+import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMITTED_ANSWER
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
+import org.oppia.app.player.state.testing.StateFragmentTestActivity
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.shim.ViewBindingShimModule
+import org.oppia.app.utility.ChildViewCoordinatesProvider
+import org.oppia.app.utility.CustomGeneralLocation
+import org.oppia.app.utility.DragViewAction
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.app.utility.RecyclerViewCoordinatesProvider
+import org.oppia.app.utility.clickPoint
+import org.oppia.data.backends.gae.NetworkModule
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_6
+import org.oppia.domain.topic.TEST_STORY_ID_0
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.CoroutineExecutorService
+import org.oppia.testing.EditTextInputAction
+import org.oppia.testing.IsOnRobolectric
+import org.oppia.testing.OppiaTestRule
+import org.oppia.testing.RunOn
+import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.TestPlatform
+import org.oppia.testing.profile.ProfileTestHelper
+import org.oppia.util.caching.testing.CachingTestModule
+import org.oppia.util.gcsresource.GcsResourceModule
+import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.HtmlParserEntityTypeModule
+import org.oppia.util.parser.ImageParsingModule
+import org.oppia.util.threading.BackgroundDispatcher
+>>>>>>> develop:app/src/sharedTest/java/org/oppia/app/player/state/StateFragmentTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
@@ -155,6 +233,9 @@ class StateFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
 
   @Inject
   @field:BackgroundDispatcher
@@ -1223,7 +1304,7 @@ class StateFragmentTest {
 
   private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
     onView(withId(interactionViewId)).perform(
-      appendText(text),
+      editTextInputAction.appendText(text),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()
@@ -1347,30 +1428,6 @@ class StateFragmentTest {
   }
 
   /**
-   * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
-   * properly input digits for text views using 'android:digits'. See
-   * https://github.com/robolectric/robolectric/issues/5110 for specifics.
-   */
-  private fun appendText(text: String): ViewAction {
-    val typeTextViewAction = typeText(text)
-    return object : ViewAction {
-      override fun getDescription(): String = typeTextViewAction.description
-
-      override fun getConstraints(): Matcher<View> = typeTextViewAction.constraints
-
-      override fun perform(uiController: UiController?, view: View?) {
-        // Appending text only works on Robolectric, whereas Espresso needs to use typeText().
-        if (Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
-          (view as? EditText)?.append(text)
-          testCoroutineDispatchers.runCurrent()
-        } else {
-          typeTextViewAction.perform(uiController, view)
-        }
-      }
-    }
-  }
-
-  /**
    * Returns an action that finds a TextView containing the specific text, finds a ClickableSpan
    * within that text view that contains the specified text, then clicks it. The need for this was
    * inspired by https://stackoverflow.com/q/38314077.
@@ -1453,7 +1510,7 @@ class StateFragmentTest {
     fun isOnRobolectric(): Boolean
   }
 
-  class TestApplication : Application(), ActivityComponentFactory {
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerStateFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1467,5 +1524,7 @@ class StateFragmentTest {
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 }

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsViewModel.kt
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAccountActionsViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
@@ -19,6 +20,22 @@ import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
+=======
+import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAccountActionsViewModel
+import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
+import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
+import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsGeneralViewModel
+import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsItemViewModel
+import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.DeviceSettings
+import org.oppia.app.model.ProfileId
+import org.oppia.app.shim.IntentFactoryShim
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.logging.ConsoleLogger
+>>>>>>> develop:app/src/main/java/org/oppia/app/administratorcontrols/AdministratorControlsViewModel.kt
 import javax.inject.Inject
 
 /** [ViewModel] for [AdministratorControlsFragment]. */
@@ -37,7 +54,7 @@ class AdministratorControlsViewModel @Inject constructor(
 
   private val deviceSettingsLiveData: LiveData<DeviceSettings> by lazy {
     Transformations.map(
-      profileManagementController.getDeviceSettings(),
+      profileManagementController.getDeviceSettings().toLiveData(),
       ::processGetDeviceSettingsResult
     )
   }

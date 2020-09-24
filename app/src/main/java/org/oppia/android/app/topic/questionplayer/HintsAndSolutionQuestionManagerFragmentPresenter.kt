@@ -4,11 +4,20 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/topic/questionplayer/HintsAndSolutionQuestionManagerFragmentPresenter.kt
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.domain.question.QuestionAssessmentProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
+=======
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.EphemeralQuestion
+import org.oppia.domain.question.QuestionAssessmentProgressController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.logging.ConsoleLogger
+>>>>>>> develop:app/src/main/java/org/oppia/app/topic/questionplayer/HintsAndSolutionQuestionManagerFragmentPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [HintsAndSolutionQuestionManagerFragment]. */
@@ -20,7 +29,7 @@ class HintsAndSolutionQuestionManagerFragmentPresenter @Inject constructor(
 ) {
 
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
-    questionProgressController.getCurrentQuestion()
+    questionProgressController.getCurrentQuestion().toLiveData()
   }
 
   fun handleCreateView(): View? {

@@ -2,15 +2,10 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
-import android.os.Build
-import android.view.View
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
@@ -26,13 +21,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
+<<<<<<< HEAD:app/src/sharedTest/java/org/oppia/android/app/profile/AdminAuthActivityTest.kt
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
@@ -73,6 +68,49 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
+=======
+import org.oppia.app.R
+import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.app.application.ActivityComponentFactory
+import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
+import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.app.shim.ViewBindingShimModule
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.testing.EditTextInputAction
+import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.caching.testing.CachingTestModule
+import org.oppia.util.gcsresource.GcsResourceModule
+import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.HtmlParserEntityTypeModule
+import org.oppia.util.parser.ImageParsingModule
+>>>>>>> develop:app/src/sharedTest/java/org/oppia/app/profile/AdminAuthActivityTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -91,6 +129,9 @@ class AdminAuthActivityTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
 
   private val internalProfileId: Int = 0
 
@@ -124,7 +165,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -167,7 +208,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -210,7 +251,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12354"),
+        editTextInputAction.appendText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -445,7 +486,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -470,7 +511,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12354"),
+        editTextInputAction.appendText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -523,31 +564,6 @@ class AdminAuthActivityTest {
     }
   }
 
-  // TODO(#1840): Introduce central utility file for appendText in Testing
-  /**
-   * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
-   * properly input digits for text views using 'android:digits'. See
-   * https://github.com/robolectric/robolectric/issues/5110 for specifics.
-   */
-  private fun appendText(text: String): ViewAction {
-    val typeTextViewAction = typeText(text)
-    return object : ViewAction {
-      override fun getDescription(): String = typeTextViewAction.description
-
-      override fun getConstraints(): Matcher<View> = typeTextViewAction.constraints
-
-      override fun perform(uiController: UiController?, view: View?) {
-        // Appending text only works on Robolectric, whereas Espresso needs to use typeText().
-        if (Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
-          (view as? EditText)?.append(text)
-          testCoroutineDispatchers.runCurrent()
-        } else {
-          typeTextViewAction.perform(uiController, view)
-        }
-      }
-    }
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
@@ -568,7 +584,7 @@ class AdminAuthActivityTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
+  interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 

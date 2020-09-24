@@ -24,12 +24,22 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/profile/AddProfileActivityPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.AddProfileActivityBinding
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
+=======
+import org.oppia.app.R
+import org.oppia.app.activity.ActivityScope
+import org.oppia.app.databinding.AddProfileActivityBinding
+import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+>>>>>>> develop:app/src/main/java/org/oppia/app/profile/AddProfileActivityPresenter.kt
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
@@ -214,7 +224,7 @@ class AddProfileActivityPresenter @Inject constructor(
           allowDownloadAccess = allowDownloadAccess,
           colorRgb = activity.intent.getIntExtra(KEY_ADD_PROFILE_COLOR_RGB, -10710042),
           isAdmin = false
-        )
+        ).toLiveData()
         .observe(
           activity,
           Observer {

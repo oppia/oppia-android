@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/walkthrough/end/WalkthroughFinalFragmentPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.databinding.WalkthroughFinalFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
@@ -17,6 +18,18 @@ import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
+=======
+import org.oppia.app.R
+import org.oppia.app.databinding.WalkthroughFinalFragmentBinding
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.Topic
+import org.oppia.app.walkthrough.WalkthroughActivity
+import org.oppia.domain.topic.TopicController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.logging.ConsoleLogger
+>>>>>>> develop:app/src/main/java/org/oppia/app/walkthrough/end/WalkthroughFinalFragmentPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughFinalFragment]. */
@@ -82,7 +95,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(profileId, topicId = topicId)
+    topicController.getTopic(profileId, topicId = topicId).toLiveData()
   }
 
   private fun getTopic(): LiveData<Topic> {

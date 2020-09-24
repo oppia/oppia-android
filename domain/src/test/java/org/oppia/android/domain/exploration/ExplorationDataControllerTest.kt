@@ -21,6 +21,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+<<<<<<< HEAD:domain/src/test/java/org/oppia/android/domain/exploration/ExplorationDataControllerTest.kt
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -53,6 +54,43 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+=======
+import org.oppia.app.model.Exploration
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_1
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_3
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
+import org.oppia.testing.FakeExceptionLogger
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
+>>>>>>> develop:domain/src/test/java/org/oppia/domain/exploration/ExplorationDataControllerTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
@@ -62,7 +100,7 @@ import javax.inject.Singleton
 /** Tests for [ExplorationDataController]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = ExplorationDataControllerTest.TestApplication::class)
 class ExplorationDataControllerTest {
   @Rule
   @JvmField
@@ -89,16 +127,13 @@ class ExplorationDataControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerExplorationDataControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
   fun testController_providesInitialLiveDataForTheWelcomeExploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
+      explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
     val expectedExplorationStateSet = listOf(
@@ -119,7 +154,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForTheAboutOppiaExploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(TEST_EXPLORATION_ID_1)
+      explorationDataController.getExplorationById(TEST_EXPLORATION_ID_1).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
     val expectedExplorationStateSet = listOf(
@@ -140,7 +175,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForFractions0Exploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_0)
+      explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_0).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
@@ -156,7 +191,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForFractions1Exploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_1)
+      explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_1).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -172,7 +207,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForRatios0Exploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_0)
+      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_0).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -188,7 +223,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForRatios1Exploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_1)
+      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_1).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -204,7 +239,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForRatios2Exploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_2)
+      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_2).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -220,7 +255,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForRatios3Exploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_3)
+      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_3).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -236,7 +271,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_returnsNullForNonExistentExploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById("NON_EXISTENT_TEST")
+      explorationDataController.getExplorationById("NON_EXISTENT_TEST").toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -248,7 +283,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_returnsNull_logsException() {
     val explorationLiveData =
-      explorationDataController.getExplorationById("NON_EXISTENT_TEST")
+      explorationDataController.getExplorationById("NON_EXISTENT_TEST").toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -318,7 +353,7 @@ class ExplorationDataControllerTest {
       RatioInputModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -328,5 +363,19 @@ class ExplorationDataControllerTest {
     }
 
     fun inject(explorationDataControllerTest: ExplorationDataControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerExplorationDataControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(explorationDataControllerTest: ExplorationDataControllerTest) {
+      component.inject(explorationDataControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

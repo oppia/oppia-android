@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/home/HomeFragmentPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.databinding.HomeFragmentBinding
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
@@ -35,6 +36,35 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
+=======
+import org.oppia.app.R
+import org.oppia.app.databinding.HomeFragmentBinding
+import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.home.topiclist.AllTopicsViewModel
+import org.oppia.app.home.topiclist.PromotedStoryListViewModel
+import org.oppia.app.home.topiclist.PromotedStoryViewModel
+import org.oppia.app.home.topiclist.TopicListAdapter
+import org.oppia.app.home.topiclist.TopicSummaryClickListener
+import org.oppia.app.home.topiclist.TopicSummaryViewModel
+import org.oppia.app.model.EventLog
+import org.oppia.app.model.OngoingStoryList
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.TopicList
+import org.oppia.app.model.TopicSummary
+import org.oppia.app.shim.IntentFactoryShim
+import org.oppia.domain.oppialogger.OppiaLogger
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.topic.TopicListController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.datetime.DateTimeUtil
+import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.StoryHtmlParserEntityType
+import org.oppia.util.parser.TopicHtmlParserEntityType
+import org.oppia.util.system.OppiaClock
+>>>>>>> develop:app/src/main/java/org/oppia/app/home/HomeFragmentPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [HomeFragment]. */
@@ -119,7 +149,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId),
+      profileManagementController.getProfile(profileId).toLiveData(),
       ::processGetProfileResult
     )
   }
@@ -185,7 +215,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val ongoingStoryListSummaryResultLiveData:
     LiveData<AsyncResult<OngoingStoryList>>
     by lazy {
-      topicListController.getOngoingStoryList(profileId)
+      topicListController.getOngoingStoryList(profileId).toLiveData()
     }
 
   private fun subscribeToOngoingStoryList() {

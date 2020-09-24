@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/options/OptionsFragmentPresenter.kt
 import org.oppia.android.databinding.OptionAppLanguageBinding
 import org.oppia.android.databinding.OptionAudioLanguageBinding
 import org.oppia.android.databinding.OptionStoryTextSizeBinding
@@ -21,6 +22,23 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.logging.ConsoleLogger
+=======
+import org.oppia.app.databinding.OptionAppLanguageBinding
+import org.oppia.app.databinding.OptionAudioLanguageBinding
+import org.oppia.app.databinding.OptionStoryTextSizeBinding
+import org.oppia.app.databinding.OptionsFragmentBinding
+import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.AppLanguage
+import org.oppia.app.model.AudioLanguage
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.ReadingTextSize
+import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.logging.ConsoleLogger
+>>>>>>> develop:app/src/main/java/org/oppia/app/options/OptionsFragmentPresenter.kt
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
@@ -187,7 +205,7 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateReadingTextSize(
           profileId,
           ReadingTextSize.SMALL_TEXT_SIZE
-        ).observe(
+        ).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {
@@ -206,7 +224,7 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateReadingTextSize(
           profileId,
           ReadingTextSize.MEDIUM_TEXT_SIZE
-        ).observe(
+        ).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {
@@ -225,7 +243,7 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateReadingTextSize(
           profileId,
           ReadingTextSize.LARGE_TEXT_SIZE
-        ).observe(
+        ).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {
@@ -245,7 +263,7 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateReadingTextSize(
           profileId,
           ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
-        ).observe(
+        ).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {
@@ -270,7 +288,7 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.ENGLISH_APP_LANGUAGE
-        ).observe(
+        ).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {
@@ -289,7 +307,7 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.HINDI_APP_LANGUAGE
-        ).observe(
+        ).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {
@@ -308,7 +326,7 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.CHINESE_APP_LANGUAGE
-        ).observe(
+        ).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {
@@ -327,7 +345,7 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.FRENCH_APP_LANGUAGE
-        ).observe(
+        ).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {
@@ -353,7 +371,7 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.NO_AUDIO
-        ).observe(
+        ).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {
@@ -372,7 +390,7 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-        ).observe(
+        ).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {
@@ -391,7 +409,7 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.HINDI_AUDIO_LANGUAGE
-        ).observe(
+        ).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {
@@ -410,7 +428,7 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.CHINESE_AUDIO_LANGUAGE
-        ).observe(
+        ).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {
@@ -429,7 +447,7 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.FRENCH_AUDIO_LANGUAGE
-        ).observe(
+        ).toLiveData().observe(
           fragment,
           Observer {
             if (it.isSuccess()) {

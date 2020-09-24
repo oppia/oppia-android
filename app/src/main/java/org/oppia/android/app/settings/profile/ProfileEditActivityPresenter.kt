@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditActivityPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.ProfileEditActivityBinding
@@ -13,6 +14,16 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.logging.ConsoleLogger
+=======
+import org.oppia.app.R
+import org.oppia.app.activity.ActivityScope
+import org.oppia.app.databinding.ProfileEditActivityBinding
+import org.oppia.app.model.ProfileId
+import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.logging.ConsoleLogger
+>>>>>>> develop:app/src/main/java/org/oppia/app/settings/profile/ProfileEditActivityPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [ProfileEditActivity]. */
@@ -68,7 +79,7 @@ class ProfileEditActivityPresenter @Inject constructor(
         profileManagementController.updateAllowDownloadAccess(
           ProfileId.newBuilder().setInternalId(profileId).build(),
           checked
-        ).observe(
+        ).toLiveData().observe(
           activity,
           Observer {
             if (it.isFailure()) {
@@ -97,7 +108,7 @@ class ProfileEditActivityPresenter @Inject constructor(
       }
       .setPositiveButton(R.string.profile_edit_delete_dialog_positive) { dialog, _ ->
         profileManagementController
-          .deleteProfile(ProfileId.newBuilder().setInternalId(profileId).build())
+          .deleteProfile(ProfileId.newBuilder().setInternalId(profileId).build()).toLiveData()
           .observe(
             activity,
             Observer {

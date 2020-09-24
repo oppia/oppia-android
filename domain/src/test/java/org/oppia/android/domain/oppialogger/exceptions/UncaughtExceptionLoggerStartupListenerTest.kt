@@ -21,6 +21,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+<<<<<<< HEAD:domain/src/test/java/org/oppia/android/domain/oppialogger/exceptions/UncaughtExceptionLoggerStartupListenerTest.kt
 import org.oppia.android.app.model.OppiaExceptionLogs
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.FakeExceptionLogger
@@ -34,13 +35,33 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtil
+=======
+import org.oppia.app.model.OppiaExceptionLogs
+import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.testing.FakeExceptionLogger
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
+import org.oppia.util.networking.NetworkConnectionUtil
+>>>>>>> develop:domain/src/test/java/org/oppia/domain/oppialogger/exceptions/UncaughtExceptionLoggerStartupListenerTest.kt
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
-@Config(manifest = Config.NONE)
+@LooperMode(LooperMode.Mode.PAUSED)
+@Config(application = UncaughtExceptionLoggerStartupListenerTest.TestApplication::class)
 class UncaughtExceptionLoggerStartupListenerTest {
 
   @Rule
@@ -87,7 +108,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
     )
 
     val cachedExceptions = exceptionsController.getExceptionLogStore()
-    dataProviders.convertToLiveData(cachedExceptions).observeForever(mockOppiaExceptionLogsObserver)
+    cachedExceptions.toLiveData().observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockOppiaExceptionLogsObserver, atLeastOnce())
@@ -113,10 +134,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerUncaughtExceptionLoggerStartupListenerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Qualifier
@@ -162,7 +180,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
       TestDispatcherModule::class, TestLogStorageModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -170,8 +188,20 @@ class UncaughtExceptionLoggerStartupListenerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(
-      uncaughtExceptionLoggerStartupListenerTest: UncaughtExceptionLoggerStartupListenerTest
-    )
+    fun inject(startupListenerTest: UncaughtExceptionLoggerStartupListenerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerUncaughtExceptionLoggerStartupListenerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(startupListenerTest: UncaughtExceptionLoggerStartupListenerTest) {
+      component.inject(startupListenerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

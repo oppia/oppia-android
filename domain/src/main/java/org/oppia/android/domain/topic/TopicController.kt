@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
 import org.json.JSONObject
+<<<<<<< HEAD:domain/src/main/java/org/oppia/android/domain/topic/TopicController.kt
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
@@ -29,6 +30,34 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.OppiaClock
+=======
+import org.oppia.app.model.ChapterPlayState
+import org.oppia.app.model.ChapterProgress
+import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.CompletedStory
+import org.oppia.app.model.CompletedStoryList
+import org.oppia.app.model.ConceptCard
+import org.oppia.app.model.LessonThumbnail
+import org.oppia.app.model.LessonThumbnailGraphic
+import org.oppia.app.model.OngoingTopicList
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.Question
+import org.oppia.app.model.RevisionCard
+import org.oppia.app.model.StoryProgress
+import org.oppia.app.model.StorySummary
+import org.oppia.app.model.Subtopic
+import org.oppia.app.model.Topic
+import org.oppia.app.model.TopicProgress
+import org.oppia.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.domain.question.QuestionRetriever
+import org.oppia.domain.util.JsonAssetRetriever
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
+import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProviders.Companion.combineWith
+import org.oppia.util.data.DataProviders.Companion.transformAsync
+import org.oppia.util.system.OppiaClock
+>>>>>>> develop:domain/src/main/java/org/oppia/domain/topic/TopicController.kt
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -90,9 +119,9 @@ class TopicController @Inject constructor(
    *
    * @param profileId the ID corresponding to the profile for which progress needs fetched.
    * @param topicId the ID corresponding to the topic which needs to be returned.
-   * @return a [LiveData] for [Topic] combined with [TopicProgress].
+   * @return a [DataProvider] for [Topic] combined with [TopicProgress].
    */
-  fun getTopic(profileId: ProfileId, topicId: String): LiveData<AsyncResult<Topic>> {
+  fun getTopic(profileId: ProfileId, topicId: String): DataProvider<Topic> {
     val topicDataProvider =
       dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_TOPIC_PROVIDER_ID) {
         return@createInMemoryDataProviderAsync AsyncResult.success(retrieveTopic(topicId))
@@ -100,13 +129,10 @@ class TopicController @Inject constructor(
     val topicProgressDataProvider =
       storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)
 
-    return dataProviders.convertToLiveData(
-      dataProviders.combine(
-        COMBINED_TOPIC_PROVIDER_ID,
-        topicDataProvider,
-        topicProgressDataProvider,
-        ::combineTopicAndTopicProgress
-      )
+    return topicDataProvider.combineWith(
+      topicProgressDataProvider,
+      COMBINED_TOPIC_PROVIDER_ID,
+      ::combineTopicAndTopicProgress
     )
   }
 
@@ -116,13 +142,13 @@ class TopicController @Inject constructor(
    * @param profileId the ID corresponding to the profile for which progress needs fetched.
    * @param topicId the ID corresponding to the topic which contains this story.
    * @param storyId the ID corresponding to the story which needs to be returned.
-   * @return a [LiveData] for [StorySummary] combined with [StoryProgress].
+   * @return a [DataProvider] for [StorySummary] combined with [StoryProgress].
    */
   fun getStory(
     profileId: ProfileId,
     topicId: String,
     storyId: String
-  ): LiveData<AsyncResult<StorySummary>> {
+  ): DataProvider<StorySummary> {
     val storyDataProvider =
       dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_STORY_PROVIDER_ID) {
         return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(topicId, storyId))
@@ -130,17 +156,17 @@ class TopicController @Inject constructor(
     val storyProgressDataProvider =
       storyProgressController.retrieveStoryProgressDataProvider(profileId, topicId, storyId)
 
-    return dataProviders.convertToLiveData(
-      dataProviders.combine(
-        COMBINED_STORY_PROVIDER_ID,
-        storyDataProvider,
-        storyProgressDataProvider,
-        ::combineStorySummaryAndStoryProgress
-      )
+    return storyDataProvider.combineWith(
+      storyProgressDataProvider,
+      COMBINED_STORY_PROVIDER_ID,
+      ::combineStorySummaryAndStoryProgress
     )
   }
 
-  /** Returns the [ConceptCard] corresponding to the specified skill ID, or a failed result if there is none. */
+  /**
+   * Returns the [ConceptCard] corresponding to the specified skill ID, or a failed result if there
+   * is none.
+   */
   fun getConceptCard(skillId: String): LiveData<AsyncResult<ConceptCard>> {
     return MutableLiveData(
       try {
@@ -152,7 +178,10 @@ class TopicController @Inject constructor(
     )
   }
 
-  /** Returns the [RevisionCard] corresponding to the specified topic Id and subtopic ID, or a failed result if there is none. */
+  /**
+   * Returns the [RevisionCard] corresponding to the specified topic Id and subtopic ID, or a failed
+   * result if there is none.
+   */
   fun getRevisionCard(topicId: String, subtopicId: Int): LiveData<AsyncResult<RevisionCard>> {
     return MutableLiveData(
       try {
@@ -164,44 +193,43 @@ class TopicController @Inject constructor(
     )
   }
 
-  /** Returns the list of all completed stories in the form of [CompletedStoryList] for a specific profile. */
-  fun getCompletedStoryList(profileId: ProfileId): LiveData<AsyncResult<CompletedStoryList>> {
-    return dataProviders.convertToLiveData(
-      dataProviders.transformAsync(
-        TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID,
-        storyProgressController.retrieveTopicProgressListDataProvider(profileId)
-      ) {
-        val completedStoryListBuilder = CompletedStoryList.newBuilder()
-        it.forEach { topicProgress ->
-          val topic = retrieveTopic(topicProgress.topicId)
-          val storyProgressList = mutableListOf<StoryProgress>()
-          val transformedStoryProgressList = topicProgress
-            .storyProgressMap.values.toList()
-          storyProgressList.addAll(transformedStoryProgressList)
+  /**
+   * Returns the list of all completed stories in the form of [CompletedStoryList] for a specific
+   * profile.
+   */
+  fun getCompletedStoryList(profileId: ProfileId): DataProvider<CompletedStoryList> {
+    return storyProgressController.retrieveTopicProgressListDataProvider(
+      profileId
+    ).transformAsync(TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID) {
+      val completedStoryListBuilder = CompletedStoryList.newBuilder()
+      it.forEach { topicProgress ->
+        val topic = retrieveTopic(topicProgress.topicId)
+        val storyProgressList = mutableListOf<StoryProgress>()
+        val transformedStoryProgressList = topicProgress
+          .storyProgressMap.values.toList()
+        storyProgressList.addAll(transformedStoryProgressList)
 
-          completedStoryListBuilder.addAllCompletedStory(
-            createCompletedStoryListFromProgress(
-              topic,
-              storyProgressList
-            )
+        completedStoryListBuilder.addAllCompletedStory(
+          createCompletedStoryListFromProgress(
+            topic,
+            storyProgressList
           )
-        }
-        AsyncResult.success(completedStoryListBuilder.build())
+        )
       }
-    )
+      AsyncResult.success(completedStoryListBuilder.build())
+    }
   }
 
-  /** Returns the list of ongoing topics in the form on [OngoingTopicList] for a specific profile. */
-  fun getOngoingTopicList(profileId: ProfileId): LiveData<AsyncResult<OngoingTopicList>> {
-    val ongoingTopicListDataProvider = dataProviders.transformAsync(
-      TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID,
-      storyProgressController.retrieveTopicProgressListDataProvider(profileId)
-    ) {
+  /**
+   * Returns the list of ongoing topics in the form on [OngoingTopicList] for a specific profile.
+   */
+  fun getOngoingTopicList(profileId: ProfileId): DataProvider<OngoingTopicList> {
+    return storyProgressController.retrieveTopicProgressListDataProvider(
+      profileId
+    ).transformAsync(TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID) {
       val ongoingTopicList = createOngoingTopicListFromProgress(it)
       AsyncResult.success(ongoingTopicList)
     }
-
-    return dataProviders.convertToLiveData(ongoingTopicListDataProvider)
   }
 
   fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
@@ -250,7 +278,8 @@ class TopicController @Inject constructor(
       return false
     }
 
-    // If there is atleast 1 completed chapter and 1 not-completed chapter, it is definitely an ongoing-topic.
+    // If there is at least 1 completed chapter and 1 not-completed chapter, it is definitely an
+    // ongoing-topic.
     if (startedChapterProgressList.isNotEmpty()) {
       return true
     }
@@ -374,7 +403,10 @@ class TopicController @Inject constructor(
     return questionRetriever.loadQuestions(skillIdsList)
   }
 
-  /** Helper function for [combineTopicAndTopicProgress] to set first chapter as NOT_STARTED in [StorySummary]. */
+  /**
+   * Helper function for [combineTopicAndTopicProgress] to set first chapter as NOT_STARTED in
+   * [StorySummary].
+   */
   private fun setFirstChapterAsNotStarted(storySummary: StorySummary): StorySummary {
     return if (storySummary.chapterList.isNotEmpty()) {
       val storyBuilder = storySummary.toBuilder()
@@ -415,8 +447,8 @@ class TopicController @Inject constructor(
   }
 
   /**
-   * Creates the subtopic list of a topic from its json representation. The json file is expected to have
-   * a key called 'subtopic' that contains an array of skill Ids,subtopic_id and title.
+   * Creates the subtopic list of a topic from its json representation. The json file is expected to
+   * have a key called 'subtopic' that contains an array of skill Ids,subtopic_id and title.
    */
   private fun createSubtopicListFromJsonArray(subtopicJsonArray: JSONArray?): List<Subtopic> {
     val subtopicList = mutableListOf<Subtopic>()
@@ -482,8 +514,8 @@ class TopicController @Inject constructor(
   }
 
   /**
-   * Creates a list of [StorySummary]s for topic from its json representation. The json file is expected to have
-   * a key called 'canonical_story_dicts' that contains an array of story objects.
+   * Creates a list of [StorySummary]s for topic from its json representation. The json file is
+   * expected to have a key called 'canonical_story_dicts' that contains an array of story objects.
    */
   private fun createStorySummaryListFromJsonArray(
     topicId: String,
@@ -499,7 +531,10 @@ class TopicController @Inject constructor(
     return storySummaryList
   }
 
-  /** Creates a list of [StorySummary]s for topic given its json representation and the index of the story in json. */
+  /**
+   * Creates a list of [StorySummary]s for topic given its json representation and the index of the
+   * story in json.
+   */
   private fun createStorySummaryFromJson(topicId: String, storyId: String): StorySummary {
     val storyDataJsonObject = jsonAssetRetriever.loadJsonFromAsset("$storyId.json")
     return StorySummary.newBuilder()

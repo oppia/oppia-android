@@ -27,6 +27,7 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyZeroInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+<<<<<<< HEAD:data/src/test/java/org/oppia/android/data/persistence/PersistentCacheStoreTest.kt
 import org.oppia.android.app.model.TestMessage
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -34,6 +35,18 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.threading.BackgroundDispatcher
+=======
+import org.oppia.app.model.TestMessage
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
+import org.oppia.util.threading.BackgroundDispatcher
+>>>>>>> develop:data/src/test/java/org/oppia/data/persistence/PersistentCacheStoreTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File
@@ -48,7 +61,7 @@ private const val CACHE_NAME_2 = "test_cache_2"
 /** Tests for [PersistentCacheStore]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = PersistentCacheStoreTest.TestApplication::class)
 class PersistentCacheStoreTest {
   private companion object {
     private val TEST_MESSAGE_VERSION_1 = TestMessage.newBuilder().setVersion(1).build()
@@ -582,7 +595,7 @@ class PersistentCacheStoreTest {
     cacheStore: PersistentCacheStore<T>,
     observer: Observer<AsyncResult<T>>
   ) {
-    dataProviders.convertToLiveData(cacheStore).observeForever(observer)
+    cacheStore.toLiveData().observeForever(observer)
     testCoroutineDispatchers.advanceUntilIdle()
   }
 
@@ -601,10 +614,7 @@ class PersistentCacheStoreTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerPersistentCacheStoreTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -626,7 +636,7 @@ class PersistentCacheStoreTest {
       TestLogReportingModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -636,5 +646,19 @@ class PersistentCacheStoreTest {
     }
 
     fun inject(persistentCacheStoreTest: PersistentCacheStoreTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerPersistentCacheStoreTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(persistentCacheStoreTest: PersistentCacheStoreTest) {
+      component.inject(persistentCacheStoreTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

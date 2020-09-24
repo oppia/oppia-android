@@ -21,6 +21,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+<<<<<<< HEAD:domain/src/test/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsControllerTest.kt
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
@@ -45,6 +46,35 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
+=======
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
+import org.oppia.app.model.EventLog.EventAction
+import org.oppia.app.model.EventLog.Priority
+import org.oppia.app.model.OppiaEventLogs
+import org.oppia.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.domain.oppialogger.OppiaLogger
+import org.oppia.testing.FakeEventLogger
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
+import org.oppia.util.networking.NetworkConnectionUtil
+import org.oppia.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
+>>>>>>> develop:domain/src/test/java/org/oppia/domain/oppialogger/analytics/AnalyticsControllerTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -61,7 +91,7 @@ const val TEST_SUB_TOPIC_ID = 1
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = AnalyticsControllerTest.TestApplication::class)
 class AnalyticsControllerTest {
 
   @Rule
@@ -370,7 +400,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLogs = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
+    val eventLogs = analyticsController.getEventLogStore().toLiveData()
     eventLogs.observeForever(this.mockOppiaEventLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
     verify(
@@ -400,7 +430,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLogs = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
+    val eventLogs = analyticsController.getEventLogStore().toLiveData()
     eventLogs.observeForever(this.mockOppiaEventLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
     verify(
@@ -421,7 +451,7 @@ class AnalyticsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     logMultipleEvents()
 
-    val eventLogs = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
+    val eventLogs = analyticsController.getEventLogStore().toLiveData()
     eventLogs.observeForever(this.mockOppiaEventLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
     verify(
@@ -457,7 +487,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLogs = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
+    val eventLogs = analyticsController.getEventLogStore().toLiveData()
     eventLogs.observeForever(this.mockOppiaEventLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
     verify(
@@ -498,7 +528,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    val cachedEventLogs = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
+    val cachedEventLogs = analyticsController.getEventLogStore().toLiveData()
     cachedEventLogs.observeForever(this.mockOppiaEventLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
     verify(
@@ -527,7 +557,7 @@ class AnalyticsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     logMultipleEvents()
 
-    val cachedEventLogs = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
+    val cachedEventLogs = analyticsController.getEventLogStore().toLiveData()
     cachedEventLogs.observeForever(this.mockOppiaEventLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
     verify(
@@ -551,10 +581,7 @@ class AnalyticsControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerAnalyticsControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun logMultipleEvents() {
@@ -644,7 +671,7 @@ class AnalyticsControllerTest {
 
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -653,5 +680,19 @@ class AnalyticsControllerTest {
     }
 
     fun inject(analyticsControllerTest: AnalyticsControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerAnalyticsControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(analyticsControllerTest: AnalyticsControllerTest) {
+      component.inject(analyticsControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

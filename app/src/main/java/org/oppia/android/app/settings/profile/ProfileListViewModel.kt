@@ -2,12 +2,22 @@ package org.oppia.android.app.settings.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/settings/profile/ProfileListViewModel.kt
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
+=======
+import org.oppia.app.activity.ActivityScope
+import org.oppia.app.model.Profile
+import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.logging.ConsoleLogger
+>>>>>>> develop:app/src/main/java/org/oppia/app/settings/profile/ProfileListViewModel.kt
 import java.util.Locale
 import javax.inject.Inject
 
@@ -18,7 +28,9 @@ class ProfileListViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
   val profiles: LiveData<List<Profile>> by lazy {
-    Transformations.map(profileManagementController.getProfiles(), ::processGetProfilesResult)
+    Transformations.map(
+      profileManagementController.getProfiles().toLiveData(), ::processGetProfilesResult
+    )
   }
 
   private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<Profile> {

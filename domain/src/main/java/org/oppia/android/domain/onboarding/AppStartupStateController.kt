@@ -1,5 +1,6 @@
 package org.oppia.android.domain.onboarding
 
+<<<<<<< HEAD:domain/src/main/java/org/oppia/android/domain/onboarding/AppStartupStateController.kt
 import androidx.lifecycle.LiveData
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.StartupMode
@@ -8,6 +9,15 @@ import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.logging.ConsoleLogger
+=======
+import org.oppia.app.model.AppStartupState
+import org.oppia.app.model.AppStartupState.StartupMode
+import org.oppia.app.model.OnboardingState
+import org.oppia.data.persistence.PersistentCacheStore
+import org.oppia.util.data.DataProvider
+import org.oppia.util.data.DataProviders.Companion.transform
+import org.oppia.util.logging.ConsoleLogger
+>>>>>>> develop:domain/src/main/java/org/oppia/domain/onboarding/AppStartupStateController.kt
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -21,7 +31,6 @@ private const val APP_STARTUP_STATE_DATA_PROVIDER_ID = "app_startup_state_data_p
 @Singleton
 class AppStartupStateController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
-  private val dataProviders: DataProviders,
   private val consoleLogger: ConsoleLogger,
   private val expirationMetaDataRetriever: ExpirationMetaDataRetriever
 ) {
@@ -31,7 +40,7 @@ class AppStartupStateController @Inject constructor(
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
 
   private val appStartupStateDataProvider by lazy {
-    dataProviders.transform(APP_STARTUP_STATE_DATA_PROVIDER_ID, onboardingFlowStore) {
+    onboardingFlowStore.transform(APP_STARTUP_STATE_DATA_PROVIDER_ID) {
       AppStartupState.newBuilder().setStartupMode(computeAppStartupMode(it)).build()
     }
   }
@@ -68,12 +77,10 @@ class AppStartupStateController @Inject constructor(
   }
 
   /**
-   * Returns a [LiveData] containing the user's startup state, which in turn affect what initial app
-   * flow the user is directed to.
+   * Returns a [DataProvider] containing the user's startup state, which in turn affect what initial
+   * app flow the user is directed to.
    */
-  fun getAppStartupState(): LiveData<AsyncResult<AppStartupState>> {
-    return dataProviders.convertToLiveData(appStartupStateDataProvider)
-  }
+  fun getAppStartupState(): DataProvider<AppStartupState> = appStartupStateDataProvider
 
   private fun computeAppStartupMode(onboardingState: OnboardingState): StartupMode {
     return when {

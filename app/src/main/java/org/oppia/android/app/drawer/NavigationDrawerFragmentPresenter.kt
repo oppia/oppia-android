@@ -14,6 +14,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.google.android.material.navigation.NavigationView
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/drawer/NavigationDrawerFragmentPresenter.kt
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.databinding.DrawerFragmentBinding
@@ -35,6 +36,30 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.statusbar.StatusBarColor
+=======
+import org.oppia.app.R
+import org.oppia.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.app.databinding.DrawerFragmentBinding
+import org.oppia.app.databinding.NavHeaderNavigationDrawerBinding
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.help.HelpActivity
+import org.oppia.app.home.HomeActivity
+import org.oppia.app.model.CompletedStoryList
+import org.oppia.app.model.OngoingTopicList
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
+import org.oppia.app.mydownloads.MyDownloadsActivity
+import org.oppia.app.options.OptionsActivity
+import org.oppia.app.profileprogress.ProfileProgressActivity
+import org.oppia.app.topic.TopicActivity
+import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.topic.TopicController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.statusbar.StatusBarColor
+>>>>>>> develop:app/src/main/java/org/oppia/app/drawer/NavigationDrawerFragmentPresenter.kt
 import javax.inject.Inject
 
 const val KEY_NAVIGATION_PROFILE_ID = "KEY_NAVIGATION_PROFILE_ID"
@@ -87,7 +112,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId),
+      profileManagementController.getProfile(profileId).toLiveData(),
       ::processGetProfileResult
     )
   }
@@ -136,7 +161,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun getCompletedStoryListCount(): LiveData<CompletedStoryList> {
     return Transformations.map(
-      topicController.getCompletedStoryList(profileId),
+      topicController.getCompletedStoryList(profileId).toLiveData(),
       ::processGetCompletedStoryListResult
     )
   }
@@ -165,7 +190,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun getOngoingTopicListCount(): LiveData<OngoingTopicList> {
     return Transformations.map(
-      topicController.getOngoingTopicList(profileId),
+      topicController.getOngoingTopicList(profileId).toLiveData(),
       ::processGetOngoingTopicListResult
     )
   }

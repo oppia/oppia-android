@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/profileprogress/ProfileProgressViewModel.kt
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.CompletedStoryList
@@ -21,6 +22,24 @@ import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
+=======
+import org.oppia.app.R
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.CompletedStoryList
+import org.oppia.app.model.OngoingStoryList
+import org.oppia.app.model.OngoingTopicList
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
+import org.oppia.app.shim.IntentFactoryShim
+import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.topic.TopicController
+import org.oppia.domain.topic.TopicListController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.StoryHtmlParserEntityType
+>>>>>>> develop:app/src/main/java/org/oppia/app/profileprogress/ProfileProgressViewModel.kt
 import javax.inject.Inject
 
 /** The [ObservableViewModel] for [ProfileProgressFragment]. */
@@ -57,7 +76,7 @@ class ProfileProgressViewModel @Inject constructor(
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId), ::processGetProfileResult
+      profileManagementController.getProfile(profileId).toLiveData(), ::processGetProfileResult
     )
   }
 
@@ -82,7 +101,7 @@ class ProfileProgressViewModel @Inject constructor(
   }
 
   private val ongoingStoryListResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-    topicListController.getOngoingStoryList(profileId)
+    topicListController.getOngoingStoryList(profileId).toLiveData()
   }
 
   private val ongoingStoryListLiveData: LiveData<OngoingStoryList> by lazy {
@@ -147,7 +166,7 @@ class ProfileProgressViewModel @Inject constructor(
 
   private fun getCompletedStoryListCount(): LiveData<CompletedStoryList> {
     return Transformations.map(
-      topicController.getCompletedStoryList(profileId),
+      topicController.getCompletedStoryList(profileId).toLiveData(),
       ::processGetCompletedStoryListResult
     )
   }
@@ -176,7 +195,7 @@ class ProfileProgressViewModel @Inject constructor(
 
   private fun getOngoingTopicListCount(): LiveData<OngoingTopicList> {
     return Transformations.map(
-      topicController.getOngoingTopicList(profileId),
+      topicController.getOngoingTopicList(profileId).toLiveData(),
       ::processGetOngoingTopicListResult
     )
   }

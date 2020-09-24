@@ -1,10 +1,18 @@
 package org.oppia.android.testing.profile
 
 import androidx.lifecycle.LiveData
+<<<<<<< HEAD:testing/src/main/java/org/oppia/android/testing/profile/ProfileTestHelper.kt
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.util.data.AsyncResult
+=======
+import org.oppia.app.model.ProfileId
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+>>>>>>> develop:testing/src/main/java/org/oppia/testing/profile/ProfileTestHelper.kt
 import javax.inject.Inject
 
 /** This helper allows tests to easily create new profiles and switch between them. */
@@ -41,7 +49,7 @@ class ProfileTestHelper @Inject constructor(
     val result = profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(0)
         .build()
-    )
+    ).toLiveData()
     testCoroutineDispatchers.runCurrent()
     return result
   }
@@ -55,10 +63,10 @@ class ProfileTestHelper @Inject constructor(
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    )
+    ).toLiveData()
     val result = profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(0).build()
-    )
+    ).toLiveData()
     testCoroutineDispatchers.runCurrent()
     return result
   }
@@ -87,7 +95,7 @@ class ProfileTestHelper @Inject constructor(
   private fun logIntoProfile(internalProfileId: Int): LiveData<AsyncResult<Any?>> {
     val result = profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    )
+    ).toLiveData()
     testCoroutineDispatchers.runCurrent()
     return result
   }

@@ -2,15 +2,10 @@ package org.oppia.android.app.settings.profile
 
 import android.app.Application
 import android.content.Context
-import android.os.Build
-import android.view.View
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
@@ -30,11 +25,11 @@ import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+<<<<<<< HEAD:app/src/sharedTest/java/org/oppia/android/app/settings/profile/ProfileResetPinActivityTest.kt
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -75,6 +70,49 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
+=======
+import org.oppia.app.R
+import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.application.ActivityComponentFactory
+import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
+import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.app.shim.ViewBindingShimModule
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.testing.EditTextInputAction
+import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.profile.ProfileTestHelper
+import org.oppia.util.caching.testing.CachingTestModule
+import org.oppia.util.gcsresource.GcsResourceModule
+import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.HtmlParserEntityTypeModule
+import org.oppia.util.parser.ImageParsingModule
+>>>>>>> develop:app/src/sharedTest/java/org/oppia/app/settings/profile/ProfileResetPinActivityTest.kt
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -96,6 +134,9 @@ class ProfileResetPinActivityTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
 
   @Before
   fun setUp() {
@@ -127,11 +168,11 @@ class ProfileResetPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -153,13 +194,13 @@ class ProfileResetPinActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
         .perform(
-          appendText("12345"),
+          editTextInputAction.appendText("12345"),
           closeSoftKeyboard()
         )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo()
       ).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
 
@@ -180,11 +221,11 @@ class ProfileResetPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("123"),
+        editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("123"),
+        editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -204,11 +245,11 @@ class ProfileResetPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("1234"),
+        editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("1234"),
+        editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -234,11 +275,11 @@ class ProfileResetPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("1234"),
+        editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("1234"),
+        editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
@@ -318,11 +359,11 @@ class ProfileResetPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("1234"),
+        editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -347,11 +388,11 @@ class ProfileResetPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("1234"),
+        editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -382,11 +423,11 @@ class ProfileResetPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -445,11 +486,11 @@ class ProfileResetPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12"),
+        editTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("12"),
+        editTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -501,11 +542,11 @@ class ProfileResetPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("123"),
+        editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("12"),
+        editTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -625,11 +666,11 @@ class ProfileResetPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("123"),
+        editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("12"),
+        editTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
@@ -647,11 +688,11 @@ class ProfileResetPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("123"),
+        editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("12"),
+        editTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
@@ -674,11 +715,11 @@ class ProfileResetPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("123"),
+        editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("12"),
+        editTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
@@ -701,11 +742,11 @@ class ProfileResetPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("123"),
+        editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("12"),
+        editTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
@@ -716,30 +757,6 @@ class ProfileResetPinActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
         .check(matches(not(isClickable())))
-    }
-  }
-
-  /**
-   * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
-   * properly input digits for text views using 'android:digits'. See
-   * https://github.com/robolectric/robolectric/issues/5110 for specifics.
-   */
-  private fun appendText(text: String): ViewAction {
-    val typeTextViewAction = typeText(text)
-    return object : ViewAction {
-      override fun getDescription(): String = typeTextViewAction.description
-
-      override fun getConstraints(): Matcher<View> = typeTextViewAction.constraints
-
-      override fun perform(uiController: UiController?, view: View?) {
-        // Appending text only works on Robolectric, whereas Espresso needs to use typeText().
-        if (Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
-          (view as? EditText)?.append(text)
-          testCoroutineDispatchers.runCurrent()
-        } else {
-          typeTextViewAction.perform(uiController, view)
-        }
-      }
     }
   }
 
@@ -763,7 +780,7 @@ class ProfileResetPinActivityTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
+  interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 

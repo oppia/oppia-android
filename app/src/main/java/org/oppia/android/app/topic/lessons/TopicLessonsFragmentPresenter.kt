@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+<<<<<<< HEAD:app/src/main/java/org/oppia/android/app/topic/lessons/TopicLessonsFragmentPresenter.kt
 import org.oppia.android.databinding.TopicLessonsFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
@@ -20,6 +21,21 @@ import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
+=======
+import org.oppia.app.databinding.TopicLessonsFragmentBinding
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.home.RouteToExplorationListener
+import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.StorySummary
+import org.oppia.app.model.Topic
+import org.oppia.app.topic.RouteToStoryListener
+import org.oppia.domain.exploration.ExplorationDataController
+import org.oppia.domain.topic.TopicController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.logging.ConsoleLogger
+>>>>>>> develop:app/src/main/java/org/oppia/app/topic/lessons/TopicLessonsFragmentPresenter.kt
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -77,7 +93,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     topicController.getTopic(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       topicId
-    )
+    ).toLiveData()
   }
 
   private fun subscribeToTopicLiveData() {
