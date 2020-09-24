@@ -89,7 +89,6 @@ import org.oppia.android.app.utility.DragViewAction
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.RecyclerViewCoordinatesProvider
 import org.oppia.android.app.utility.clickPoint
-import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -1421,22 +1420,22 @@ class StateFragmentTest {
     return find { text in it.first }?.second
   }
 
+  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, NetworkModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class,
-      ApplicationStartupListenerModule::class, HintsAndSolutionConfigFastShowTestModule::class,
-      WorkManagerConfigurationModule::class, LogUploadWorkerModule::class,
-      FirebaseLogUploaderModule::class
+      TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
+      ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
+      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
+      NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
+      ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
+      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
+      QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
+      LogStorageModule::class, CachingTestModule::class, PrimeTopicAssetsControllerModule::class,
+      ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
+      RatioInputModule::class, ApplicationStartupListenerModule::class,
+      HintsAndSolutionConfigFastShowTestModule::class, WorkManagerConfigurationModule::class,
+      LogUploadWorkerModule::class, FirebaseLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

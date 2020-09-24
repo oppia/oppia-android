@@ -32,7 +32,6 @@ import org.oppia.android.databinding.TestTextViewForIntWithDataBindingBinding
 import org.oppia.android.databinding.TestTextViewForStringWithDataBindingBinding
 import org.oppia.android.app.model.TestModel
 import org.oppia.android.app.model.TestModel.ModelTypeCase
-import org.oppia.android.app.parser.HtmlParserTest
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -66,6 +65,7 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
@@ -408,7 +408,7 @@ class BindableAdapterTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, HtmlParserTest.ImageTestModule::class, ImageParsingModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,

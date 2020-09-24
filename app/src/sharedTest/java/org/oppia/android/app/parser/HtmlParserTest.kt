@@ -65,6 +65,7 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.CustomBulletSpan
 import org.oppia.android.util.parser.GlideImageLoader
+import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParser
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageLoader
@@ -258,12 +259,6 @@ class HtmlParserTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  @Module
-  abstract class ImageTestModule {
-    @Binds
-    abstract fun provideGlideImageLoader(impl: GlideImageLoader): ImageLoader
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
@@ -274,7 +269,7 @@ class HtmlParserTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, ImageTestModule::class, ImageParsingModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,

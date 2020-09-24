@@ -96,7 +96,7 @@ class ExceptionsController @Inject constructor(
     stackTraceElement: StackTraceElement
   ): ExceptionLog.StackTraceElement {
     return ExceptionLog.StackTraceElement.newBuilder()
-      .setFileName(stackTraceElement.fileName)
+      .setFileName(stackTraceElement.fileName ?: "") // Sometimes the file name is unavailable.
       .setMethodName(stackTraceElement.methodName)
       .setLineNumber(stackTraceElement.lineNumber)
       .setDeclaringClass(stackTraceElement.className)

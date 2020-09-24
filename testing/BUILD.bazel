@@ -1,7 +1,7 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
-'''
+"""
 This library contains fake objects used for testing as well as tests for these objects.
-'''
+"""
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
@@ -11,29 +11,29 @@ load("//testing:testing_test.bzl", "testing_test")
 
 # Library for general-purpose testing fakes.
 kt_android_library(
-     name = "testing",
-     custom_package = "org.oppia.testing",
-     srcs = glob(["src/main/java/org/oppia/android/testing/**/*.kt"]),
-     manifest = "src/main/AndroidManifest.xml",
-     deps = [
-         ":dagger",
-         "//utility",
+    name = "testing",
+    srcs = glob(["src/main/java/org/oppia/android/testing/**/*.kt"]),
+    custom_package = "org.oppia.android.testing",
+    manifest = "src/main/AndroidManifest.xml",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":dagger",
         "//domain",
-         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
-         artifact("org.robolectric:robolectric"),
-         artifact("org.jetbrains.kotlin:kotlin-reflect"),
-         artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
-         artifact("com.google.truth:truth"),
-         artifact("androidx.test.ext:junit"),
-         artifact("org.mockito:mockito-core"),
-         artifact("junit:junit:4.12"),
-         artifact("androidx.test.espresso:espresso-contrib:3.1.0"),
-         artifact("androidx.test.espresso:espresso-core:3.2.0"),
-         artifact("androidx.test.espresso:espresso-intents:3.1.0"),
-         artifact("androidx.test:runner:1.2.0"),
-     ],
-     visibility = ["//visibility:public"],
- )
+        "//utility",
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
+        artifact("org.robolectric:robolectric"),
+        artifact("org.jetbrains.kotlin:kotlin-reflect"),
+        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
+        artifact("com.google.truth:truth"),
+        artifact("androidx.test.ext:junit"),
+        artifact("org.mockito:mockito-core"),
+        artifact("junit:junit:4.12"),
+        artifact("androidx.test.espresso:espresso-contrib:3.1.0"),
+        artifact("androidx.test.espresso:espresso-core:3.2.0"),
+        artifact("androidx.test.espresso:espresso-intents:3.1.0"),
+        artifact("androidx.test:runner:1.2.0"),
+    ],
+)
 
 TEST_DEPS = [
     ":testing",
@@ -56,28 +56,28 @@ TEST_DEPS = [
 testing_test(
     name = "CoroutineExecutorServiceTest",
     srcs = ["src/test/java/org/oppia/android/testing/CoroutineExecutorServiceTest.kt"],
-    test_class = "org.oppia.testing.CoroutineExecutorServiceTest",
+    test_class = "org.oppia.android.testing.CoroutineExecutorServiceTest",
     deps = TEST_DEPS,
 )
 
 testing_test(
     name = "FakeEventLoggerTest",
     srcs = ["src/test/java/org/oppia/android/testing/FakeEventLoggerTest.kt"],
-    test_class = "org.oppia.testing.FakeEventLoggerTest",
+    test_class = "org.oppia.android.testing.FakeEventLoggerTest",
     deps = TEST_DEPS,
 )
 
 testing_test(
     name = "FakeExceptionLoggerTest",
     srcs = ["src/test/java/org/oppia/android/testing/FakeExceptionLoggerTest.kt"],
-    test_class = "org.oppia.testing.FakeExceptionLoggerTest",
+    test_class = "org.oppia.android.testing.FakeExceptionLoggerTest",
     deps = TEST_DEPS,
 )
 
 testing_test(
     name = "ProfileTestHelperTest",
     srcs = ["src/test/java/org/oppia/android/testing/profile/ProfileTestHelperTest.kt"],
-    test_class = "org.oppia.testing.profile.ProfileTestHelperTest",
+    test_class = "org.oppia.android.testing.profile.ProfileTestHelperTest",
     deps = TEST_DEPS,
 )
 

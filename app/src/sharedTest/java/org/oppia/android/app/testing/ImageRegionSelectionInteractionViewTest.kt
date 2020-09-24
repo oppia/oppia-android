@@ -188,7 +188,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Roboelectric")
+  @Ignore("Move to Robolectric")
   fun testView_withTalkbackEnabled_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -224,7 +224,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Roboelectric")
+  @Ignore("Move to Robolectric")
   fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -248,7 +248,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Roboelectric")
+  @Ignore("Move to Robolectric")
   fun testView_withTalkbackEnabled_clickOnDefaultRegion_defaultRegionNotClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
       scenario.onActivity {

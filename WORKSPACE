@@ -1,6 +1,6 @@
-'''
+"""
 This file lists and imports all external dependencies needed to build Oppia Android.
-'''
+"""
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
@@ -16,60 +16,72 @@ android_sdk_repository(
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
 RULES_JVM_EXTERNAL_TAG = "2.9"
+
 RULES_JVM_EXTERNAL_SHA = "e5b97a31a3e8feed91636f42e19b11c49487b85e5de2f387c999ea14d77c7f45"
+
 http_archive(
     name = "rules_jvm_external",
-    strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
     sha256 = RULES_JVM_EXTERNAL_SHA,
+    strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
     url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
 )
 
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
 RULES_KOTLIN_VERSION = "legacy-1.4.0-rcx-oppia-exclusive-rc01"
+
 RULES_KOTLIN_SHA = "600f3d916eda5531dd70614ec96dc92b4ac24da0e1d815eb94559976e9bea8aa"
+
 http_archive(
-   name = "io_bazel_rules_kotlin",
-   urls = ["https://github.com/oppia/rules_kotlin/archive/%s.zip" % RULES_KOTLIN_VERSION],
-   type = "zip",
-   strip_prefix = "rules_kotlin-%s" % RULES_KOTLIN_VERSION,
-   sha256 = RULES_KOTLIN_SHA,
+    name = "io_bazel_rules_kotlin",
+    sha256 = RULES_KOTLIN_SHA,
+    strip_prefix = "rules_kotlin-%s" % RULES_KOTLIN_VERSION,
+    type = "zip",
+    urls = ["https://github.com/oppia/rules_kotlin/archive/%s.zip" % RULES_KOTLIN_VERSION],
 )
 
 # TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
 load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
+
 kt_download_local_dev_dependencies()
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
+
 kotlin_repositories()
+
 kt_register_toolchains()
 
-'''
+"""
 The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
 module while helping us avoid the unnecessary compilation of protoc. Referecences:
 - https://github.com/google/startup-os/blob/5f30a62/WORKSPACE#L179-L187
 - https://github.com/bazelbuild/bazel/issues/7095
-'''
+"""
+
 bind(
     name = "proto_compiler",
-    actual = "//tools:protoc"
+    actual = "//tools:protoc",
 )
 
 bind(
     name = "proto_java_toolchain",
-    actual = "//tools:java_toolchain"
+    actual = "//tools:java_toolchain",
 )
 
 load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
+
 rules_java_dependencies()
+
 rules_java_toolchains()
 
 # Add support for Dagger
 DAGGER_TAG = "2.28.1"
+
 DAGGER_SHA = "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd"
+
 http_archive(
     name = "dagger",
-    strip_prefix = "dagger-dagger-%s" % DAGGER_TAG,
     sha256 = DAGGER_SHA,
+    strip_prefix = "dagger-dagger-%s" % DAGGER_TAG,
     urls = ["https://github.com/google/dagger/archive/dagger-%s.zip" % DAGGER_TAG],
 )
 
@@ -78,10 +90,12 @@ load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 # Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
     name = "robolectric",
-    urls = ["https://github.com/oppia/robolectric-bazel/archive/4.x-oppia-exclusive-rc02.tar.gz"],
     strip_prefix = "robolectric-bazel-4.x-oppia-exclusive-rc02",
+    urls = ["https://github.com/oppia/robolectric-bazel/archive/4.x-oppia-exclusive-rc02.tar.gz"],
 )
+
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
+
 robolectric_repositories()
 
 # Add support for Firebase Crashlytics
@@ -92,6 +106,7 @@ git_repository(
 )
 
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
+
 google_services_workspace_dependencies()
 
 git_repository(
@@ -101,8 +116,8 @@ git_repository(
 )
 
 bind(
-  name = "databinding_annotation_processor",
-  actual = "//tools/android:compiler_annotation_processor",
+    name = "databinding_annotation_processor",
+    actual = "//tools/android:compiler_annotation_processor",
 )
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
@@ -131,13 +146,16 @@ maven_install(
         "androidx.navigation:navigation-ui:2.0.0",
         "androidx.navigation:navigation-ui-ktx:2.0.0",
         "androidx.recyclerview:recyclerview:1.0.0",
+        "androidx.room:room-runtime:2.2.5",
         "androidx.test.espresso:espresso-contrib:3.1.0",
         "androidx.test.espresso:espresso-core:3.2.0",
         "androidx.test.espresso:espresso-intents:3.1.0",
         "androidx.test.ext:junit:1.1.1",
         "androidx.test:runner:1.2.0",
         "androidx.viewpager:viewpager:1.0.0",
+        "androidx.work:work-runtime:2.4.0",
         "androidx.work:work-runtime-ktx:2.4.0",
+        "androidx.work:work-testing:2.4.0",
         "com.android.support:support-annotations:28.0.0",
         "com.caverock:androidsvg-aar:1.4",
         "com.chaos.view:pinview:1.4.3",
@@ -148,6 +166,7 @@ maven_install(
         "com.google.firebase:firebase-analytics:17.5.0",
         "com.google.firebase:firebase-crashlytics:17.1.1",
         "com.google.gms:google-services:4.3.3",
+        "com.google.guava:guava:28.1-android",
         "com.google.truth:truth:0.43",
         "com.squareup.retrofit2:converter-gson:2.5.0",
         "com.squareup.retrofit2:retrofit:2.9.0",
