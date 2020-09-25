@@ -30,8 +30,6 @@ import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.util.data.DataProviders.Companion.transform
-import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode

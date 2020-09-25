@@ -19,7 +19,6 @@ import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

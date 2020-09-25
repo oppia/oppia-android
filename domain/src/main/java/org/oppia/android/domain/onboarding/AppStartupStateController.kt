@@ -7,7 +7,6 @@ import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.logging.ConsoleLogger
 import java.text.ParseException
 import java.text.SimpleDateFormat
