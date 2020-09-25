@@ -6,7 +6,7 @@
 
     <import type="android.view.View" />
 
-    <import type="org.oppia.android.app.model.ChapterPlayState" />
+    <import type="org.oppia.app.model.ChapterPlayState" />
 
     <variable
       name="htmlContent"

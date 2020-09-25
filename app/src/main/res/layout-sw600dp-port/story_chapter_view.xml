@@ -14,7 +14,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
+      type="org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
   </data>
 
   <FrameLayout
@@ -42,14 +42,14 @@
         android:clipToPadding="true"
         android:contentDescription="@{viewModel.name}">
 
-        <org.oppia.app.customview.VerticalDashedLine
+        <org.oppia.android.app.customview.VerticalDashedLine
           android:layout_width="wrap_content"
           android:layout_height="200dp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <org.oppia.app.customview.LessonThumbnailImageView
+        <org.oppia.android.app.customview.LessonThumbnailImageView
           android:id="@+id/chapter_thumbnail"
           android:layout_width="match_parent"
           android:layout_height="0dp"

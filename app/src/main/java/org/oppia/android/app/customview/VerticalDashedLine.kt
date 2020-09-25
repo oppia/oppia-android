@@ -1,4 +1,4 @@
-package org.oppia.app.customview
+package org.oppia.android.app.customview
 
 import android.content.Context
 import android.graphics.Canvas
