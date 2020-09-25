@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

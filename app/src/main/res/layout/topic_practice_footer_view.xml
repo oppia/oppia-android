@@ -10,7 +10,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel" />
+      type="org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

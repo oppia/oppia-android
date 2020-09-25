@@ -1,7 +1,7 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
-'''
+"""
 This library provides data to the rest of the application.
-'''
+"""
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
@@ -9,9 +9,10 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 
 kt_android_library(
     name = "persistent_cache_store",
-    custom_package = "org.oppia.data.persistence",
-    srcs = ["src/main/java/org/oppia/data/persistence/PersistentCacheStore.kt"],
+    srcs = ["src/main/java/org/oppia/android/data/persistence/PersistentCacheStore.kt"],
+    custom_package = "org.oppia.android.data.persistence",
     manifest = "src/main/AndroidManifest.xml",
+    visibility = ["//visibility:public"],
     deps = [
         ":dagger",
         "//model",
@@ -21,7 +22,6 @@ kt_android_library(
         artifact("com.caverock:androidsvg-aar"),
         artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
     ],
-    visibility = ["//visibility:public"],
 )
 
 dagger_rules()

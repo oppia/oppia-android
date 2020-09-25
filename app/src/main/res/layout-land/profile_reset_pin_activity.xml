@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.settings.profile.ProfileResetPinViewModel" />
+      type="org.oppia.android.app.settings.profile.ProfileResetPinViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -79,7 +79,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-          <org.oppia.app.profile.ProfileInputView
+          <org.oppia.android.app.profile.ProfileInputView
             android:id="@+id/input_pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
             profile:inputLength="@{viewModel.isAdmin ? 5 : 3}"
             profile:label="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_pin_label : @string/profile_reset_pin_user_pin_label}" />
 
-          <org.oppia.app.profile.ProfileInputView
+          <org.oppia.android.app.profile.ProfileInputView
             android:id="@+id/input_confirm_pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

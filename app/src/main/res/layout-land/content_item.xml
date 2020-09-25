@@ -11,7 +11,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.ContentViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.ContentViewModel" />
   </data>
 
   <FrameLayout

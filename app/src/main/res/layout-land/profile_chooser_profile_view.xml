@@ -17,7 +17,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.model.ProfileChooserUiModel" />
+      type="org.oppia.android.app.model.ProfileChooserUiModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

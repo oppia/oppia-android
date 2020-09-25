@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel" />
   </data>
 
   <LinearLayout
@@ -23,7 +23,7 @@
     app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/space_112dp : @dimen/space_128dp}"
     app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/space_144dp : @dimen/space_128dp}">
 
-    <org.oppia.app.customview.interaction.FractionInputInteractionView
+    <org.oppia.android.app.customview.interaction.FractionInputInteractionView
       android:id="@+id/fraction_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

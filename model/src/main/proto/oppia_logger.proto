@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package model;
 
-option java_package = "org.oppia.app.model";
+option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
 // Structure for an event log.

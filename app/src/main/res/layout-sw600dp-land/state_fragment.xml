@@ -9,7 +9,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.StateViewModel" />
+      type="org.oppia.android.app.player.state.StateViewModel" />
   </data>
 
   <FrameLayout

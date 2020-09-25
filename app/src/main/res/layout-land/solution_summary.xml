@@ -13,7 +13,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.hintsandsolution.SolutionViewModel" />
+      type="org.oppia.android.app.hintsandsolution.SolutionViewModel" />
   </data>
 
     <LinearLayout

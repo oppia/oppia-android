@@ -14,11 +14,11 @@
 
     <variable
       name="submittedListAnswer"
-      type="org.oppia.app.model.ListOfSetsOfHtmlStrings" />
+      type="org.oppia.android.app.model.ListOfSetsOfHtmlStrings" />
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.SubmittedAnswerViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.SubmittedAnswerViewModel" />
   </data>
 
   <LinearLayout

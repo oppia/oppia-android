@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.TextInputViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel" />
   </data>
 
   <FrameLayout
@@ -21,7 +21,7 @@
     app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/space_112dp : @dimen/space_128dp}"
     app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/space_144dp : @dimen/space_128dp}">
 
-    <org.oppia.app.customview.interaction.TextInputInteractionView
+    <org.oppia.android.app.customview.interaction.TextInputInteractionView
       android:id="@+id/text_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
