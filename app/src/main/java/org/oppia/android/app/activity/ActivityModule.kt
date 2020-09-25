@@ -1,7 +1,7 @@
-package org.oppia.app.activity
+package org.oppia.android.app.activity
 
 import dagger.Module
-import org.oppia.app.fragment.FragmentComponent
+import org.oppia.android.app.fragment.FragmentComponent
 
 /** Root activity module. */
 @Module(subcomponents = [FragmentComponent::class])

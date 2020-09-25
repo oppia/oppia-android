@@ -1,4 +1,4 @@
-package org.oppia.app.recyclerview
+package org.oppia.android.app.recyclerview
 
 import android.content.res.Resources
 import android.view.View

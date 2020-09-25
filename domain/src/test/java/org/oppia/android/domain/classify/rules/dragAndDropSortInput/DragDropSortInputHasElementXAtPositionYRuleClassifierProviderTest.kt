@@ -1,4 +1,4 @@
-package org.oppia.domain.classify.rules.dragAndDropSortInput
+package org.oppia.android.domain.classify.rules.dragAndDropSortInput
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
@@ -9,10 +9,10 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.ListOfSetsOfHtmlStrings
-import org.oppia.app.model.StringList
-import org.oppia.domain.classify.RuleClassifier
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.StringList
+import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject

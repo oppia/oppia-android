@@ -1,4 +1,4 @@
-package org.oppia.app.topic.revisioncard
+package org.oppia.android.app.topic.revisioncard
 
 import android.view.MenuItem
 import android.widget.TextView
@@ -8,15 +8,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.RevisionCardActivityBinding
-import org.oppia.app.help.HelpActivity
-import org.oppia.app.model.RevisionCard
-import org.oppia.app.options.OptionsActivity
-import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.help.HelpActivity
+import org.oppia.android.app.model.RevisionCard
+import org.oppia.android.app.options.OptionsActivity
+import org.oppia.android.databinding.RevisionCardActivityBinding
+import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [RevisionCardActivity]. */

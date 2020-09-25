@@ -1,4 +1,4 @@
-package org.oppia.domain.classify
+package org.oppia.android.domain.classify
 
 /**
  * An answer classifier for a specific interaction type. Instances of this classifier should be bound to a map of

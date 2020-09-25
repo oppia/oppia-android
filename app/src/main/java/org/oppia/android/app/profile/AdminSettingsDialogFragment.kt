@@ -1,9 +1,9 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import org.oppia.app.fragment.InjectableDialogFragment
+import org.oppia.android.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
 const val KEY_ADMIN_SETTINGS_PIN = "ADMIN_SETTINGS_PIN"

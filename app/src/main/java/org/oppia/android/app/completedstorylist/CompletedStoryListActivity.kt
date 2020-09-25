@@ -1,9 +1,9 @@
-package org.oppia.app.completedstorylist
+package org.oppia.android.app.completedstorylist
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** Activity for completed stories. */

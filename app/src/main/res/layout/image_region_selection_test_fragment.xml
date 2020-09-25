@@ -6,7 +6,7 @@
   android:layout_height="wrap_content"
   tools:context=".testing.ImageRegionSelectionTestActivity">
 
-  <org.oppia.app.player.state.ImageRegionSelectionInteractionView
+  <org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
     android:id="@+id/clickable_image_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

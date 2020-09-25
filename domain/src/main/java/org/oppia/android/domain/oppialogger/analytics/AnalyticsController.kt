@@ -1,19 +1,19 @@
-package org.oppia.domain.oppialogger.analytics
+package org.oppia.android.domain.oppialogger.analytics
 
 import androidx.lifecycle.LiveData
-import org.oppia.app.model.EventLog
-import org.oppia.app.model.EventLog.EventAction
-import org.oppia.app.model.EventLog.Priority
-import org.oppia.app.model.OppiaEventLogs
-import org.oppia.data.persistence.PersistentCacheStore
-import org.oppia.domain.oppialogger.EventLogStorageCacheSize
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.logging.EventLogger
-import org.oppia.util.logging.ExceptionLogger
-import org.oppia.util.networking.NetworkConnectionUtil
-import org.oppia.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.EventAction
+import org.oppia.android.app.model.EventLog.Priority
+import org.oppia.android.app.model.OppiaEventLogs
+import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.ExceptionLogger
+import org.oppia.android.util.networking.NetworkConnectionUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import javax.inject.Inject
 
 /** Controller for handling analytics event logging.

@@ -1,9 +1,9 @@
-package org.oppia.testing
+package org.oppia.android.testing
 
 import dagger.Binds
 import dagger.Module
-import org.oppia.util.logging.EventLogger
-import org.oppia.util.logging.ExceptionLogger
+import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.ExceptionLogger
 
 /** Provides fake log reporting dependencies. */
 @Module

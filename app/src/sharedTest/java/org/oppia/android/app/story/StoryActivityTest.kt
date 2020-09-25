@@ -1,4 +1,4 @@
-package org.oppia.app.story
+package org.oppia.android.app.story
 
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
@@ -20,11 +20,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.player.exploration.ExplorationActivity
-import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
-import org.oppia.domain.topic.TEST_STORY_ID_1
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.R
+import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_1
+import org.oppia.android.domain.topic.TEST_STORY_ID_1
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [StoryActivity]. */

@@ -1,19 +1,19 @@
-package org.oppia.app.player.audio
+package org.oppia.android.app.player.audio
 
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.State
-import org.oppia.app.model.Voiceover
-import org.oppia.app.model.VoiceoverMapping
-import org.oppia.app.viewmodel.ObservableViewModel
-import org.oppia.domain.audio.AudioPlayerController
-import org.oppia.domain.audio.AudioPlayerController.PlayProgress
-import org.oppia.domain.audio.AudioPlayerController.PlayStatus
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.State
+import org.oppia.android.app.model.Voiceover
+import org.oppia.android.app.model.VoiceoverMapping
+import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.audio.AudioPlayerController
+import org.oppia.android.domain.audio.AudioPlayerController.PlayProgress
+import org.oppia.android.domain.audio.AudioPlayerController.PlayStatus
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import java.util.Locale
 import javax.inject.Inject
 

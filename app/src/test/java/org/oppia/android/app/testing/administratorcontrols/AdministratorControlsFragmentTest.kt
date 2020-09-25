@@ -1,4 +1,4 @@
-package org.oppia.app.testing.administratorcontrols
+package org.oppia.android.app.testing.administratorcontrols
 
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
@@ -18,12 +18,12 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
-import org.oppia.app.administratorcontrols.appversion.AppVersionFragment
-import org.oppia.app.settings.profile.ProfileListActivity
-import org.oppia.app.settings.profile.ProfileListFragment
+import org.oppia.android.R
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
+import org.oppia.android.app.settings.profile.ProfileListActivity
+import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)

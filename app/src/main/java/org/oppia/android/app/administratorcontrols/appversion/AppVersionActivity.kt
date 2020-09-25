@@ -1,10 +1,10 @@
-package org.oppia.app.administratorcontrols.appversion
+package org.oppia.android.app.administratorcontrols.appversion
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** Activity for App Version. */

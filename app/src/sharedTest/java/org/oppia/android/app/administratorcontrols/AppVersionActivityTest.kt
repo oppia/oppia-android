@@ -1,4 +1,4 @@
-package org.oppia.app.administratorcontrols
+package org.oppia.android.app.administratorcontrols
 
 import android.app.Application
 import android.content.Context
@@ -28,14 +28,14 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.app.utility.getLastUpdateTime
-import org.oppia.app.utility.getVersionName
-import org.oppia.util.system.OppiaDateTimeFormatter
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
+import org.oppia.android.R
+import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.app.utility.getLastUpdateTime
+import org.oppia.android.app.utility.getVersionName
+import org.oppia.android.util.system.OppiaDateTimeFormatter
+import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.BlockingDispatcher
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject

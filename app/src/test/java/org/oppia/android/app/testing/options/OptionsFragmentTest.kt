@@ -1,4 +1,4 @@
-package org.oppia.app.testing.options
+package org.oppia.android.app.testing.options
 
 import android.content.Intent
 import androidx.test.core.app.ActivityScenario.launch
@@ -16,18 +16,18 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.options.APP_LANGUAGE
-import org.oppia.app.options.AUDIO_LANGUAGE
-import org.oppia.app.options.AppLanguageActivity
-import org.oppia.app.options.AppLanguageFragment
-import org.oppia.app.options.DefaultAudioActivity
-import org.oppia.app.options.DefaultAudioFragment
-import org.oppia.app.options.OptionsActivity
-import org.oppia.app.options.READING_TEXT_SIZE
-import org.oppia.app.options.ReadingTextSizeActivity
-import org.oppia.app.options.ReadingTextSizeFragment
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.R
+import org.oppia.android.app.options.APP_LANGUAGE
+import org.oppia.android.app.options.AUDIO_LANGUAGE
+import org.oppia.android.app.options.AppLanguageActivity
+import org.oppia.android.app.options.AppLanguageFragment
+import org.oppia.android.app.options.DefaultAudioActivity
+import org.oppia.android.app.options.DefaultAudioFragment
+import org.oppia.android.app.options.OptionsActivity
+import org.oppia.android.app.options.READING_TEXT_SIZE
+import org.oppia.android.app.options.ReadingTextSizeActivity
+import org.oppia.android.app.options.ReadingTextSizeFragment
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 

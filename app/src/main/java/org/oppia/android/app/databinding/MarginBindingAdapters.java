@@ -1,4 +1,4 @@
-package org.oppia.app.databinding;
+package org.oppia.android.app.databinding;
 
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;

@@ -1,4 +1,4 @@
-package org.oppia.app.activity
+package org.oppia.android.app.activity
 
 import javax.inject.Scope
 

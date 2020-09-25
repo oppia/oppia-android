@@ -1,4 +1,4 @@
-package org.oppia.app.walkthrough
+package org.oppia.android.app.walkthrough
 
 /** Represents current state of [WalkthroughActivity]. */
 enum class WalkthroughPages(val value: Int) {

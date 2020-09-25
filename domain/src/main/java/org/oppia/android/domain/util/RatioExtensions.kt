@@ -1,6 +1,6 @@
-package org.oppia.domain.util
+package org.oppia.android.domain.util
 
-import org.oppia.app.model.RatioExpression
+import org.oppia.android.app.model.RatioExpression
 
 /**
  * Returns this Ratio in its most simplified form.

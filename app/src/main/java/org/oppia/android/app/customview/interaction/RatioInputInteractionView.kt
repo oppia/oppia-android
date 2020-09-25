@@ -1,4 +1,4 @@
-package org.oppia.app.customview.interaction
+package org.oppia.android.app.customview.interaction
 
 import android.content.Context
 import android.graphics.Typeface
@@ -7,8 +7,8 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import org.oppia.app.player.state.listener.StateKeyboardButtonListener
-import org.oppia.app.utility.KeyboardHelper
+import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
+import org.oppia.android.app.utility.KeyboardHelper
 
 /** The custom EditText class for ratio input interaction view. */
 class RatioInputInteractionView @JvmOverloads constructor(

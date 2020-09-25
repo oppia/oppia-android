@@ -1,4 +1,4 @@
-package org.oppia.app.shim
+package org.oppia.android.app.shim
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,15 +10,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
-import org.oppia.app.databinding.DragDropInteractionItemsBinding
-import org.oppia.app.databinding.DragDropSingleItemBinding
-import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
-import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
-import org.oppia.app.databinding.ProfileInputViewBinding
-import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
-import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
-import org.oppia.util.parser.HtmlParser
+import org.oppia.android.R
+import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
+import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.android.databinding.DragDropInteractionItemsBinding
+import org.oppia.android.databinding.DragDropSingleItemBinding
+import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
+import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
+import org.oppia.android.databinding.ProfileInputViewBinding
+import org.oppia.android.util.parser.HtmlParser
 import javax.inject.Inject
 
 /**

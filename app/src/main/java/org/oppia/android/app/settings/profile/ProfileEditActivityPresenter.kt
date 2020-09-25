@@ -1,4 +1,4 @@
-package org.oppia.app.settings.profile
+package org.oppia.android.app.settings.profile
 
 import android.content.Intent
 import android.widget.Switch
@@ -6,13 +6,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.ProfileEditActivityBinding
-import org.oppia.app.model.ProfileId
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.ProfileEditActivityBinding
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [ProfileEditActivity]. */

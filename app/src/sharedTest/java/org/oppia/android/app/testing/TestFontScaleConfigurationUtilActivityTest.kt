@@ -1,4 +1,4 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.content.Context
 import android.content.Intent
@@ -13,9 +13,9 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.model.ReadingTextSize
-import org.oppia.app.utility.FontSizeMatcher.Companion.withFontSize
+import org.oppia.android.R
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.utility.FontSizeMatcher.Companion.withFontSize
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [TestFontScaleConfigurationUtilActivity]. */

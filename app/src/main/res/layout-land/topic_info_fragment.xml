@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.info.TopicInfoViewModel" />
+      type="org.oppia.android.app.topic.info.TopicInfoViewModel" />
   </data>
 
   <ScrollView

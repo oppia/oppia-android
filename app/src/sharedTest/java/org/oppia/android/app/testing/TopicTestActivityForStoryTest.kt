@@ -1,4 +1,4 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -13,11 +13,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.Matchers.containsString
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.topic.TopicTab
-import org.oppia.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
+import org.oppia.android.R
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.topic.TopicTab
+import org.oppia.android.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [TopicTestActivityForStory]. */

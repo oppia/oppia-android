@@ -1,4 +1,4 @@
-package org.oppia.app.fragment
+package org.oppia.android.app.fragment
 
 import javax.inject.Scope
 

@@ -1,4 +1,4 @@
-package org.oppia.app.options
+package org.oppia.android.app.options
 
 import android.view.View
 import android.widget.FrameLayout
@@ -6,9 +6,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.drawer.NavigationDrawerFragment
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.drawer.NavigationDrawerFragment
 import javax.inject.Inject
 
 /** The presenter for [OptionsActivity]. */

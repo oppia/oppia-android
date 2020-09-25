@@ -1,4 +1,4 @@
-package org.oppia.app.walkthrough.topiclist
+package org.oppia.android.app.walkthrough.topiclist
 
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -8,17 +8,17 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.app.databinding.WalkthroughTopicHeaderViewBinding
-import org.oppia.app.databinding.WalkthroughTopicListFragmentBinding
-import org.oppia.app.databinding.WalkthroughTopicSummaryViewBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.TopicSummary
-import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.app.walkthrough.WalkthroughFragmentChangeListener
-import org.oppia.app.walkthrough.WalkthroughPages
-import org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
-import org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.TopicSummary
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
+import org.oppia.android.app.walkthrough.WalkthroughPages
+import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
+import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel
+import org.oppia.android.databinding.WalkthroughTopicHeaderViewBinding
+import org.oppia.android.databinding.WalkthroughTopicListFragmentBinding
+import org.oppia.android.databinding.WalkthroughTopicSummaryViewBinding
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughTopicListFragment]. */

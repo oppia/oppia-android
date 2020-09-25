@@ -1,4 +1,4 @@
-package org.oppia.data.backends.test
+package org.oppia.android.data.backends.test
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
@@ -11,10 +11,10 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.data.backends.ApiUtils
-import org.oppia.data.backends.api.MockTopicService
-import org.oppia.data.backends.gae.NetworkInterceptor
-import org.oppia.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.ApiUtils
+import org.oppia.android.data.backends.api.MockTopicService
+import org.oppia.android.data.backends.gae.NetworkInterceptor
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import javax.inject.Inject

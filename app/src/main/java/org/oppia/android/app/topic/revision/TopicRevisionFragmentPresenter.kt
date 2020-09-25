@@ -1,4 +1,4 @@
-package org.oppia.app.topic.revision
+package org.oppia.android.app.topic.revision
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,15 +6,15 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.app.R
-import org.oppia.app.databinding.TopicRevisionFragmentBinding
-import org.oppia.app.databinding.TopicRevisionSummaryViewBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.Subtopic
-import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.topic.RouteToRevisionCardListener
-import org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
-import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.Subtopic
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.topic.RouteToRevisionCardListener
+import org.oppia.android.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.TopicRevisionFragmentBinding
+import org.oppia.android.databinding.TopicRevisionSummaryViewBinding
 import javax.inject.Inject
 
 /** The presenter for [TopicRevisionFragment]. */

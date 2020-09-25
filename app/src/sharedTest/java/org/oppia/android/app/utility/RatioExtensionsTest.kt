@@ -1,4 +1,4 @@
-package org.oppia.app.utility
+package org.oppia.android.app.utility
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -7,7 +7,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.model.RatioExpression
+import org.oppia.android.app.model.RatioExpression
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [RatioExtensions]. */

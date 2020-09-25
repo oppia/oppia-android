@@ -1,10 +1,10 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.topic.RouteToRevisionCardListener
-import org.oppia.app.topic.revision.TopicRevisionFragment
-import org.oppia.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.topic.RouteToRevisionCardListener
+import org.oppia.android.app.topic.revision.TopicRevisionFragment
+import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import javax.inject.Inject
 
 /** Test Activity used for testing [TopicRevisionFragment] */

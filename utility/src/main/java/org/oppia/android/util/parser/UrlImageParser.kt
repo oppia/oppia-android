@@ -1,4 +1,4 @@
-package org.oppia.util.parser
+package org.oppia.android.util.parser
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -14,7 +14,7 @@ import android.view.ViewTreeObserver
 import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import org.oppia.util.R
+import org.oppia.android.util.R
 import javax.inject.Inject
 import kotlin.math.max
 

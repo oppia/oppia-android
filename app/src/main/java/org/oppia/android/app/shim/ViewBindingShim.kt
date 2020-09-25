@@ -1,4 +1,4 @@
-package org.oppia.app.shim
+package org.oppia.android.app.shim
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,9 +9,9 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
-import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
-import org.oppia.util.parser.HtmlParser
+import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
+import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.android.util.parser.HtmlParser
 
 /**
  * Creates bindings for Views in order to avoid View files directly depending on Binding files.

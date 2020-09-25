@@ -1,4 +1,4 @@
-package org.oppia.app.faq
+package org.oppia.android.app.faq
 
 import android.content.Context
 import android.content.Intent
@@ -12,8 +12,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.help.faq.faqsingle.FAQSingleActivity
+import org.oppia.android.R
+import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [FAQSingleActivity]. */

@@ -1,16 +1,16 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
-import org.oppia.app.model.Interaction
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.StringList
-import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
-import org.oppia.app.viewmodel.ObservableArrayList
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.StringList
+import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.viewmodel.ObservableArrayList
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {

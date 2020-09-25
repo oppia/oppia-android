@@ -1,6 +1,6 @@
-package org.oppia.testing
+package org.oppia.android.testing
 
-import org.oppia.util.logging.ExceptionLogger
+import org.oppia.android.util.logging.ExceptionLogger
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.Exception

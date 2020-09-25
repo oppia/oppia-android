@@ -1,8 +1,8 @@
-package org.oppia.app.options
+package org.oppia.android.app.options
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
 
 /** The presenter for [AppLanguageActivity]. */

@@ -1,14 +1,14 @@
-package org.oppia.app.administratorcontrols.appversion
+package org.oppia.android.app.administratorcontrols.appversion
 
 import android.content.Context
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.utility.getLastUpdateTime
-import org.oppia.app.utility.getVersionName
-import org.oppia.app.viewmodel.ObservableViewModel
-import org.oppia.util.system.OppiaDateTimeFormatter
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.utility.getLastUpdateTime
+import org.oppia.android.app.utility.getVersionName
+import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.util.system.OppiaDateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
 

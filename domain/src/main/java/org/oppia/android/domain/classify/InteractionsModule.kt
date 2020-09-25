@@ -1,19 +1,19 @@
-package org.oppia.domain.classify
+package org.oppia.android.domain.classify
 
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import org.oppia.domain.classify.rules.ContinueRules
-import org.oppia.domain.classify.rules.DragDropSortInputRules
-import org.oppia.domain.classify.rules.FractionInputRules
-import org.oppia.domain.classify.rules.ImageClickInputRules
-import org.oppia.domain.classify.rules.ItemSelectionInputRules
-import org.oppia.domain.classify.rules.MultipleChoiceInputRules
-import org.oppia.domain.classify.rules.NumberWithUnitsRules
-import org.oppia.domain.classify.rules.NumericInputRules
-import org.oppia.domain.classify.rules.RatioExpressionInputRules
-import org.oppia.domain.classify.rules.TextInputRules
+import org.oppia.android.domain.classify.rules.ContinueRules
+import org.oppia.android.domain.classify.rules.DragDropSortInputRules
+import org.oppia.android.domain.classify.rules.FractionInputRules
+import org.oppia.android.domain.classify.rules.ImageClickInputRules
+import org.oppia.android.domain.classify.rules.ItemSelectionInputRules
+import org.oppia.android.domain.classify.rules.MultipleChoiceInputRules
+import org.oppia.android.domain.classify.rules.NumberWithUnitsRules
+import org.oppia.android.domain.classify.rules.NumericInputRules
+import org.oppia.android.domain.classify.rules.RatioExpressionInputRules
+import org.oppia.android.domain.classify.rules.TextInputRules
 
 /** Module that provides a map of [InteractionClassifier]s. */
 @Module

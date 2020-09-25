@@ -1,4 +1,4 @@
-package org.oppia.domain.question
+package org.oppia.android.domain.question
 
 import javax.inject.Inject
 import javax.inject.Singleton

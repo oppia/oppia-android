@@ -1,4 +1,4 @@
-package org.oppia.data.backends.gae
+package org.oppia.android.data.backends.gae
 
 /** An object that contains functions and constants specifically related to network only. */
 object NetworkSettings {

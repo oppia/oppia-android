@@ -1,4 +1,4 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,9 +12,9 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.profileprogress.ProfileProgressActivity
-import org.oppia.app.profileprogress.ProfileProgressFragment
+import org.oppia.android.R
+import org.oppia.android.app.profileprogress.ProfileProgressActivity
+import org.oppia.android.app.profileprogress.ProfileProgressFragment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 

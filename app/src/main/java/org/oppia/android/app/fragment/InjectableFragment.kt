@@ -1,11 +1,11 @@
-package org.oppia.app.fragment
+package org.oppia.android.app.fragment
 
 import android.content.Context
 import android.view.View
 import androidx.fragment.app.Fragment
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.shim.ViewComponentFactory
-import org.oppia.app.view.ViewComponent
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponent
 
 /**
  * A fragment that facilitates field injection to children. This fragment can only be used with

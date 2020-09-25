@@ -1,4 +1,4 @@
-package org.oppia.util.parser
+package org.oppia.android.util.parser
 
 import android.content.Context
 import android.graphics.drawable.PictureDrawable
@@ -7,7 +7,7 @@ import com.bumptech.glide.Registry
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.module.AppGlideModule
 import com.caverock.androidsvg.SVG
-import org.oppia.util.caching.AssetRepository
+import org.oppia.android.util.caching.AssetRepository
 import java.io.InputStream
 
 /** Custom [AppGlideModule] to enable loading images from [AssetRepository] via Glide. */

@@ -1,6 +1,6 @@
-package org.oppia.domain.util
+package org.oppia.android.domain.util
 
-import org.oppia.app.model.Fraction
+import org.oppia.android.app.model.Fraction
 
 /**
  * Returns a float version of this fraction.

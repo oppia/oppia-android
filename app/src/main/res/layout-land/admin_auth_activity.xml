@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.profile.AdminAuthViewModel" />
+      type="org.oppia.android.app.profile.AdminAuthViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -89,7 +89,7 @@
             app:layout_constraintStart_toStartOf="@+id/admin_auth_heading_textview"
             app:layout_constraintTop_toBottomOf="@id/admin_auth_heading_textview" />
 
-          <org.oppia.app.profile.ProfileInputView
+          <org.oppia.android.app.profile.ProfileInputView
             android:id="@+id/admin_auth_input_pin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

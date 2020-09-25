@@ -5,7 +5,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel" />
+      type="org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel" />
   </data>
 
   <TextView

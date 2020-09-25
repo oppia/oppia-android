@@ -6,11 +6,11 @@
 
     <variable
       name="commonViewModel"
-      type="org.oppia.app.administratorcontrols.AdministratorControlsViewModel" />
+      type="org.oppia.android.app.administratorcontrols.AdministratorControlsViewModel" />
 
     <variable
       name="viewModel"
-      type="org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel" />
+      type="org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

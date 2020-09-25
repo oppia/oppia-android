@@ -1,4 +1,4 @@
-package org.oppia.app.walkthrough
+package org.oppia.android.app.walkthrough
 
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
@@ -20,10 +20,10 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.app.utility.ProgressMatcher.Companion.withProgress
+import org.oppia.android.R
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.app.utility.ProgressMatcher.Companion.withProgress
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [WalkthroughFinalFragment]. */

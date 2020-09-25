@@ -1,4 +1,4 @@
-package org.oppia.util.logging
+package org.oppia.android.util.logging
 
 import dagger.Module
 import dagger.Provides

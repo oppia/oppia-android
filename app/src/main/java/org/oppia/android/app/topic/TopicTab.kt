@@ -1,4 +1,4 @@
-package org.oppia.app.topic
+package org.oppia.android.app.topic
 
 /** Enum to store the tabs of [TopicFragment] and get tab by position. */
 enum class TopicTab(private var position: Int) {

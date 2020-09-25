@@ -1,4 +1,4 @@
-package org.oppia.domain.oppialogger
+package org.oppia.android.domain.oppialogger
 
 /** Listener that gets created at application startup. */
 interface ApplicationStartupListener {

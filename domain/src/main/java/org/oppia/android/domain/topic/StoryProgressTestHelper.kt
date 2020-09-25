@@ -1,6 +1,6 @@
-package org.oppia.domain.topic
+package org.oppia.android.domain.topic
 
-import org.oppia.app.model.ProfileId
+import org.oppia.android.app.model.ProfileId
 import java.util.Date
 import javax.inject.Inject
 

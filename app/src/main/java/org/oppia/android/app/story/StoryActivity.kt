@@ -1,11 +1,11 @@
-package org.oppia.app.story
+package org.oppia.android.app.story
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.home.RouteToExplorationListener
-import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.player.exploration.ExplorationActivity
 import javax.inject.Inject
 
 /** Activity for stories. */

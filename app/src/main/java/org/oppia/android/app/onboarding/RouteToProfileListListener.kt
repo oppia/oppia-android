@@ -1,4 +1,4 @@
-package org.oppia.app.onboarding
+package org.oppia.android.app.onboarding
 
 /** Listener for when an activity should route to [ProfileActivity]. */
 interface RouteToProfileListListener {

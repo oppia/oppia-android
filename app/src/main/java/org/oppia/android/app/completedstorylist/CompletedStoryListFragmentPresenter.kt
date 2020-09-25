@@ -1,4 +1,4 @@
-package org.oppia.app.completedstorylist
+package org.oppia.android.app.completedstorylist
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.app.R
-import org.oppia.app.databinding.CompletedStoryItemBinding
-import org.oppia.app.databinding.CompletedStoryListFragmentBinding
-import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.android.R
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.CompletedStoryItemBinding
+import org.oppia.android.databinding.CompletedStoryListFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [CompletedStoryListFragment]. */

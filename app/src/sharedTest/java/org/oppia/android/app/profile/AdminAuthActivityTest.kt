@@ -1,4 +1,4 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
@@ -29,14 +29,14 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.testing.TestDispatcherModule
-import org.oppia.util.logging.EnableConsoleLog
-import org.oppia.util.logging.EnableFileLog
-import org.oppia.util.logging.GlobalLogLevel
-import org.oppia.util.logging.LogLevel
+import org.oppia.android.R
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.util.logging.EnableConsoleLog
+import org.oppia.android.util.logging.EnableFileLog
+import org.oppia.android.util.logging.GlobalLogLevel
+import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton

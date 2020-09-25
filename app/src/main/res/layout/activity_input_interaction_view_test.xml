@@ -9,19 +9,19 @@
 
     <variable
       name="fractionInteractionViewModel"
-      type="org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel" />
 
     <variable
       name="numericInputViewModel"
-      type="org.oppia.app.player.state.itemviewmodel.NumericInputViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel" />
 
     <variable
       name="textInputViewModel"
-      type="org.oppia.app.player.state.itemviewmodel.TextInputViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel" />
 
     <variable
       name="ratioInteractionInputViewModel"
-      type="org.oppia.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel" />
   </data>
 
   <LinearLayout
@@ -33,7 +33,7 @@
     android:orientation="vertical"
     tools:context=".testing.InputInteractionViewTestActivity">
 
-    <org.oppia.app.customview.interaction.FractionInputInteractionView
+    <org.oppia.android.app.customview.interaction.FractionInputInteractionView
       android:id="@+id/test_fraction_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
       android:textSize="12sp"
       android:visibility="@{fractionInteractionViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
-    <org.oppia.app.customview.interaction.RatioInputInteractionView
+    <org.oppia.android.app.customview.interaction.RatioInputInteractionView
       android:id="@+id/test_ratio_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
       android:textSize="12sp"
       android:visibility="@{ratioInteractionInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
-    <org.oppia.app.customview.interaction.NumericInputInteractionView
+    <org.oppia.android.app.customview.interaction.NumericInputInteractionView
       android:id="@+id/test_number_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -133,7 +133,7 @@
       android:textSize="12sp"
       android:visibility="@{numericInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
-    <org.oppia.app.customview.interaction.TextInputInteractionView
+    <org.oppia.android.app.customview.interaction.TextInputInteractionView
       android:id="@+id/test_text_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

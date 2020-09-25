@@ -1,4 +1,4 @@
-package org.oppia.util.parser
+package org.oppia.android.util.parser
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -7,8 +7,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import org.oppia.util.caching.AssetRepository
-import org.oppia.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.AssetRepository
+import org.oppia.android.util.caching.CacheAssetsLocally
 import javax.inject.Inject
 
 /** An [ImageLoader] that uses Glide. */

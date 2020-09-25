@@ -1,19 +1,19 @@
-package org.oppia.app.topic.revisioncard
+package org.oppia.android.app.topic.revisioncard
 
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.RevisionCard
-import org.oppia.app.viewmodel.ObservableViewModel
-import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.parser.HtmlParser
-import org.oppia.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.RevisionCard
+import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
 // TODO(#1633): Fix ViewModel to not depend on View

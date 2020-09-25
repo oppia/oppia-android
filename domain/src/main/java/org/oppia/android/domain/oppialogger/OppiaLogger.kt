@@ -1,8 +1,8 @@
-package org.oppia.domain.oppialogger
+package org.oppia.android.domain.oppialogger
 
-import org.oppia.app.model.EventLog
-import org.oppia.app.model.EventLog.EventAction
-import org.oppia.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.EventAction
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import javax.inject.Inject
 
 /** Logger that handles event logging. */

@@ -1,4 +1,4 @@
-package org.oppia.app.topic.lessons
+package org.oppia.android.app.topic.lessons
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,18 +8,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.app.databinding.TopicLessonsFragmentBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.home.RouteToExplorationListener
-import org.oppia.app.model.ChapterSummary
-import org.oppia.app.model.ProfileId
-import org.oppia.app.model.StorySummary
-import org.oppia.app.model.Topic
-import org.oppia.app.topic.RouteToStoryListener
-import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StorySummary
+import org.oppia.android.app.model.Topic
+import org.oppia.android.app.topic.RouteToStoryListener
+import org.oppia.android.databinding.TopicLessonsFragmentBinding
+import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */

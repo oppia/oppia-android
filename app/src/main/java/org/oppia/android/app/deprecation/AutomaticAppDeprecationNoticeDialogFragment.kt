@@ -1,9 +1,9 @@
-package org.oppia.app.deprecation
+package org.oppia.android.app.deprecation
 
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import org.oppia.app.fragment.InjectableDialogFragment
+import org.oppia.android.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
 /**

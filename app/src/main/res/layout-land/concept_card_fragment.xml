@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.conceptcard.ConceptCardViewModel" />
+      type="org.oppia.android.app.topic.conceptcard.ConceptCardViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

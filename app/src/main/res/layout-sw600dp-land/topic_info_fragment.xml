@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.info.TopicInfoViewModel" />
+      type="org.oppia.android.app.topic.info.TopicInfoViewModel" />
   </data>
 
   <LinearLayout
@@ -143,7 +143,7 @@
       app:layout_constraintStart_toStartOf="@+id/guideline6"
       app:layout_constraintTop_toTopOf="parent">
 
-      <org.oppia.app.customview.LessonThumbnailImageView
+      <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/topic_thumbnail_image_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"

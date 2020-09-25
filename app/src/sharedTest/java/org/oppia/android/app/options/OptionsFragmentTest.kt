@@ -1,4 +1,4 @@
-package org.oppia.app.options
+package org.oppia.android.app.options
 
 import android.app.Activity
 import android.app.Application
@@ -30,16 +30,16 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.testing.TestDispatcherModule
-import org.oppia.testing.TestLogReportingModule
-import org.oppia.testing.profile.ProfileTestHelper
-import org.oppia.util.logging.EnableConsoleLog
-import org.oppia.util.logging.EnableFileLog
-import org.oppia.util.logging.GlobalLogLevel
-import org.oppia.util.logging.LogLevel
+import org.oppia.android.R
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.util.logging.EnableConsoleLog
+import org.oppia.android.util.logging.EnableFileLog
+import org.oppia.android.util.logging.GlobalLogLevel
+import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -1,12 +1,12 @@
-package org.oppia.app.topic
+package org.oppia.android.app.topic
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
 /** Fragment that contains tabs for Topic. */

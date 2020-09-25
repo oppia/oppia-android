@@ -1,4 +1,4 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import android.app.Activity
 import android.content.Context
@@ -24,12 +24,12 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.AddProfileActivityBinding
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.AsyncResult
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.AddProfileActivityBinding
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1

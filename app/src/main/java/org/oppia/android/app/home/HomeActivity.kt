@@ -1,14 +1,14 @@
-package org.oppia.app.home
+package org.oppia.android.app.home
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import org.oppia.app.R
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
-import org.oppia.app.profile.ProfileChooserActivity
-import org.oppia.app.topic.TopicActivity
+import org.oppia.android.R
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.profile.ProfileChooserActivity
+import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */

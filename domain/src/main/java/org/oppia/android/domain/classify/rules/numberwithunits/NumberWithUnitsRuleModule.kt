@@ -1,11 +1,11 @@
-package org.oppia.domain.classify.rules.numberwithunits
+package org.oppia.android.domain.classify.rules.numberwithunits
 
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.NumberWithUnitsRules
+import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.domain.classify.rules.NumberWithUnitsRules
 
 /** Module that binds rule classifiers corresponding to the number with units interaction. */
 @Module

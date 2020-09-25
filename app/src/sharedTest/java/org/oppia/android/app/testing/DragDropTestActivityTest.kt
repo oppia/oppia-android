@@ -1,4 +1,4 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -12,15 +12,15 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.recyclerview.DragAndDropItemFacilitator
-import org.oppia.app.recyclerview.OnDragEndedListener
-import org.oppia.app.recyclerview.OnItemDragListener
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.app.utility.ChildViewCoordinatesProvider
-import org.oppia.app.utility.CustomGeneralLocation
-import org.oppia.app.utility.DragViewAction
-import org.oppia.app.utility.RecyclerViewCoordinatesProvider
+import org.oppia.android.R
+import org.oppia.android.app.recyclerview.DragAndDropItemFacilitator
+import org.oppia.android.app.recyclerview.OnDragEndedListener
+import org.oppia.android.app.recyclerview.OnItemDragListener
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.android.app.utility.ChildViewCoordinatesProvider
+import org.oppia.android.app.utility.CustomGeneralLocation
+import org.oppia.android.app.utility.DragViewAction
+import org.oppia.android.app.utility.RecyclerViewCoordinatesProvider
 import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)

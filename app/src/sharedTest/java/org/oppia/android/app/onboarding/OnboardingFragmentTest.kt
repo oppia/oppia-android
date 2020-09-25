@@ -1,4 +1,4 @@
-package org.oppia.app.onboarding
+package org.oppia.android.app.onboarding
 
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
@@ -25,9 +25,9 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.profile.ProfileChooserActivity
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.R
+import org.oppia.android.app.profile.ProfileChooserActivity
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [OnboardingFragment]. */

@@ -1,14 +1,14 @@
-package org.oppia.domain.topic
+package org.oppia.android.domain.topic
 
 import org.json.JSONArray
 import org.json.JSONObject
-import org.oppia.app.model.ConceptCard
-import org.oppia.app.model.SubtitledHtml
-import org.oppia.app.model.Translation
-import org.oppia.app.model.TranslationMapping
-import org.oppia.app.model.Voiceover
-import org.oppia.app.model.VoiceoverMapping
-import org.oppia.domain.util.JsonAssetRetriever
+import org.oppia.android.app.model.ConceptCard
+import org.oppia.android.app.model.SubtitledHtml
+import org.oppia.android.app.model.Translation
+import org.oppia.android.app.model.TranslationMapping
+import org.oppia.android.app.model.Voiceover
+import org.oppia.android.app.model.VoiceoverMapping
+import org.oppia.android.domain.util.JsonAssetRetriever
 import javax.inject.Inject
 
 // TODO(#1580): Restrict access using Bazel visibilities.

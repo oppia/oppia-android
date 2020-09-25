@@ -1,4 +1,4 @@
-package org.oppia.app.topic.revisioncard
+package org.oppia.android.app.topic.revisioncard
 
 import android.content.Context
 import androidx.test.core.app.ActivityScenario.launch
@@ -22,16 +22,16 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.help.HelpActivity
-import org.oppia.app.options.OptionsActivity
-import org.oppia.app.parser.RichTextViewMatcher.Companion.containsRichText
-import org.oppia.app.player.exploration.ExplorationActivity
-import org.oppia.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent // ktlint-disable max-line-length
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
-import org.oppia.domain.topic.SUBTOPIC_TOPIC_ID
-import org.oppia.domain.topic.SUBTOPIC_TOPIC_ID_2
+import org.oppia.android.R
+import org.oppia.android.app.help.HelpActivity
+import org.oppia.android.app.options.OptionsActivity
+import org.oppia.android.app.parser.RichTextViewMatcher.Companion.containsRichText
+import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent // ktlint-disable max-line-length
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
+import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 

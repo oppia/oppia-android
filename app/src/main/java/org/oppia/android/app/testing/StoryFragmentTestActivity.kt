@@ -3,8 +3,8 @@ package org.oppia.app.testing
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.home.RouteToExplorationListener
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.home.RouteToExplorationListener
 import javax.inject.Inject
 
 const val INTERNAL_PROFILE_ID_TEST_INTENT_EXTRA = "StoryFragmentTestActivity.internalProfileId"

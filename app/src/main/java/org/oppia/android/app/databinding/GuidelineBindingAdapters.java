@@ -1,4 +1,4 @@
-package org.oppia.app.databinding;
+package org.oppia.android.app.databinding;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;

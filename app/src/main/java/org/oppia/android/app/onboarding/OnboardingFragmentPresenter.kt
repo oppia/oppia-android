@@ -1,4 +1,4 @@
-package org.oppia.app.onboarding
+package org.oppia.android.app.onboarding
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +8,11 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import org.oppia.app.R
-import org.oppia.app.databinding.OnboardingFragmentBinding
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.util.statusbar.StatusBarColor
+import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.OnboardingFragmentBinding
+import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 /** The presenter for [OnboardingFragment]. */

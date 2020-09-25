@@ -1,6 +1,6 @@
-package org.oppia.app.home.recentlyplayed
+package org.oppia.android.app.home.recentlyplayed
 
-import org.oppia.app.model.PromotedStory
+import org.oppia.android.app.model.PromotedStory
 
 /** Listener interface for when ongoing story is clicked in the UI. */
 interface OngoingStoryClickListener {

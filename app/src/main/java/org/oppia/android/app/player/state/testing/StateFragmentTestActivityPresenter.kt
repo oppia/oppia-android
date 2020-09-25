@@ -1,22 +1,22 @@
-package org.oppia.app.player.state.testing
+package org.oppia.android.app.player.state.testing
 
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.StateFragmentTestActivityBinding
-import org.oppia.app.player.exploration.HintsAndSolutionExplorationManagerFragment
-import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
-import org.oppia.app.player.state.StateFragment
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
-import org.oppia.domain.topic.TEST_STORY_ID_0
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
+import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+import org.oppia.android.app.player.state.StateFragment
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.StateFragmentTestActivityBinding
+import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"

@@ -1,11 +1,11 @@
-package org.oppia.domain.classify.rules.itemselectioninput
+package org.oppia.android.domain.classify.rules.itemselectioninput
 
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.ItemSelectionInputRules
+import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.domain.classify.rules.ItemSelectionInputRules
 
 /** Module that binds rule classifiers corresponding to the item selection choice input interaction. */
 @Module

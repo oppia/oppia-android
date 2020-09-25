@@ -1,4 +1,4 @@
-package org.oppia.testing
+package org.oppia.android.testing
 
 import android.os.Build
 import dagger.Module
@@ -7,8 +7,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
+import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.BlockingDispatcher
 import java.util.concurrent.Executors
 import javax.inject.Provider
 import javax.inject.Singleton

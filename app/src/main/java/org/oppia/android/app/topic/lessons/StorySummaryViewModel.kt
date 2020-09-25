@@ -1,7 +1,7 @@
-package org.oppia.app.topic.lessons
+package org.oppia.android.app.topic.lessons
 
 import androidx.lifecycle.ViewModel
-import org.oppia.app.model.StorySummary
+import org.oppia.android.app.model.StorySummary
 
 /** [ViewModel] for displaying a story summary. */
 class StorySummaryViewModel(

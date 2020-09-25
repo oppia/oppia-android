@@ -1,4 +1,4 @@
-package org.oppia.app.databinding;
+package org.oppia.android.app.databinding;
 
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
@@ -7,7 +7,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
-import org.oppia.app.R;
+import org.oppia.android.R;
 
 /** Holds all custom binding adapters that set background drawables. */
 public final class DrawableBindingAdapters {
