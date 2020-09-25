@@ -188,7 +188,8 @@ class TopicListAdapter(
 
       val marginMax = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_max)
 
-      val marginTopBottom = (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_12)
+      val marginTopBottom =
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.space_12dp)
 
       val marginMin = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_min)
 
