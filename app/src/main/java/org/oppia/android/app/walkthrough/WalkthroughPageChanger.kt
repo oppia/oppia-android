@@ -1,4 +1,4 @@
-package org.oppia.app.walkthrough
+package org.oppia.android.app.walkthrough
 
 /**
  * Listener for when an activity should change pages during the app walkthrough flow's welcome

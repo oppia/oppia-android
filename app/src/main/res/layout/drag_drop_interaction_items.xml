@@ -10,7 +10,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,22 +1,22 @@
-package org.oppia.app.topic.questionplayer
+package org.oppia.android.app.topic.questionplayer
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
-import org.oppia.app.model.HelpIndex
-import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
-import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
-import org.oppia.app.player.state.listener.ContinueNavigationButtonListener
-import org.oppia.app.player.state.listener.NextNavigationButtonListener
-import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
-import org.oppia.app.player.state.listener.ReplayButtonListener
-import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
-import org.oppia.app.player.state.listener.ShowHintAvailabilityListener
-import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
+import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.player.state.listener.ContinueNavigationButtonListener
+import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
+import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
+import org.oppia.android.app.player.state.listener.ReplayButtonListener
+import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
+import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 
 /** Fragment that contains all questions in Question Player. */

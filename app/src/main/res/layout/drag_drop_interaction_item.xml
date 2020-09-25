@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.DragAndDropSortInteractionViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.DragAndDropSortInteractionViewModel" />
   </data>
   <!--  Margins -->
   <!--  Exploration Split View -> 32, 40, 32 ,0 -->
@@ -56,7 +56,7 @@
       app:layoutMarginStart="@{viewModel.isSplitView ? @dimen/margin_16 : @dimen/margin_12}"
       app:layoutMarginTop="@{viewModel.isSplitView ? @dimen/margin_16 : @dimen/margin_8}" />
 
-    <org.oppia.app.player.state.DragDropSortInteractionView
+    <org.oppia.android.app.player.state.DragDropSortInteractionView
       android:id="@+id/drag_drop_interaction_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

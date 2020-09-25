@@ -1,6 +1,6 @@
-package org.oppia.domain.classify
+package org.oppia.android.domain.classify
 
-import org.oppia.app.model.InteractionObject
+import org.oppia.android.app.model.InteractionObject
 
 /** An answer classifier for a specific interaction rule. */
 interface RuleClassifier {

@@ -1,6 +1,6 @@
-package org.oppia.util.logging
+package org.oppia.android.util.logging
 
-import org.oppia.app.model.EventLog
+import org.oppia.android.app.model.EventLog
 
 /**
  * Logger for tracking events.

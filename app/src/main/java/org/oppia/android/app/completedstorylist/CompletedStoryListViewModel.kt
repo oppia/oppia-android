@@ -1,17 +1,17 @@
-package org.oppia.app.completedstorylist
+package org.oppia.android.app.completedstorylist
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.CompletedStoryList
-import org.oppia.app.model.ProfileId
-import org.oppia.app.shim.IntentFactoryShim
-import org.oppia.app.viewmodel.ObservableViewModel
-import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.parser.StoryHtmlParserEntityType
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.CompletedStoryList
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.shim.IntentFactoryShim
+import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
 /** The ObservableViewModel for [CompletedStoryListFragment]. */

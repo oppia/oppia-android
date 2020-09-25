@@ -1,14 +1,14 @@
-package org.oppia.app.topic.revision
+package org.oppia.android.app.topic.revision
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
-import org.oppia.app.model.Subtopic
-import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
+import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.Subtopic
+import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
 /** Fragment that card for topic revision. */

@@ -1,4 +1,4 @@
-package org.oppia.util.threading
+package org.oppia.android.util.threading
 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue

@@ -6,7 +6,7 @@
 
     <variable
       name="answerItem"
-      type="org.oppia.app.model.StringList" />
+      type="org.oppia.android.app.model.StringList" />
   </data>
 
   <androidx.recyclerview.widget.RecyclerView

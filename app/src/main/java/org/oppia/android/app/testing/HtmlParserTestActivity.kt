@@ -1,12 +1,12 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.os.Bundle
 import android.text.Spannable
 import android.widget.TextView
-import org.oppia.app.R
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.parser.HtmlParser
+import org.oppia.android.R
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.parser.HtmlParser
 import javax.inject.Inject
 
 /** This is a dummy activity to test Html parsing. */

@@ -1,4 +1,4 @@
-package org.oppia.testing
+package org.oppia.android.testing
 
 import android.app.Application
 import android.content.Context
@@ -29,8 +29,8 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.threading.BackgroundDispatcher
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException

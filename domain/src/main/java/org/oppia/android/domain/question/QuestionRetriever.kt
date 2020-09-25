@@ -1,9 +1,9 @@
-package org.oppia.domain.question
+package org.oppia.android.domain.question
 
 import org.json.JSONObject
-import org.oppia.app.model.Question
-import org.oppia.domain.util.JsonAssetRetriever
-import org.oppia.domain.util.StateRetriever
+import org.oppia.android.app.model.Question
+import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.domain.util.StateRetriever
 import javax.inject.Inject
 
 // TODO(#1580): Restrict access using Bazel visibilities.

@@ -1,11 +1,11 @@
-package org.oppia.domain.state
+package org.oppia.android.domain.state
 
-import org.oppia.app.model.AnsweredQuestionOutcome
-import org.oppia.app.model.Hint
-import org.oppia.app.model.Outcome
-import org.oppia.app.model.Question
-import org.oppia.app.model.Solution
-import org.oppia.app.model.State
+import org.oppia.android.app.model.AnsweredQuestionOutcome
+import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.Outcome
+import org.oppia.android.app.model.Question
+import org.oppia.android.app.model.Solution
+import org.oppia.android.app.model.State
 
 /**
  * List that provides lookup access for [State]s based on a list of [Question]s and functionality for processing the

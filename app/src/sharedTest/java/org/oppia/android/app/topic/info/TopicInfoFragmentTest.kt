@@ -1,4 +1,4 @@
-package org.oppia.app.topic.info
+package org.oppia.android.app.topic.info
 
 import android.view.View
 import android.widget.TextView
@@ -26,11 +26,11 @@ import org.hamcrest.TypeSafeMatcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.topic.TopicActivity
-import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.domain.topic.RATIOS_TOPIC_ID
+import org.oppia.android.R
+import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.robolectric.annotation.LooperMode
 
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"

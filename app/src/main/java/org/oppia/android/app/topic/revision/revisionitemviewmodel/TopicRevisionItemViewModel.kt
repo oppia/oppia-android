@@ -1,8 +1,8 @@
-package org.oppia.app.topic.revision.revisionitemviewmodel
+package org.oppia.android.app.topic.revision.revisionitemviewmodel
 
-import org.oppia.app.model.Subtopic
-import org.oppia.app.topic.revision.RevisionSubtopicSelector
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.model.Subtopic
+import org.oppia.android.app.topic.revision.RevisionSubtopicSelector
+import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** [ObservableViewModel] for child views of recycler view present in the [TopicRevisionFragment]. */
 class TopicRevisionItemViewModel(

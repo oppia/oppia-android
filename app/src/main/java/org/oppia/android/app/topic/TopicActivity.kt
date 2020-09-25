@@ -1,15 +1,15 @@
-package org.oppia.app.topic
+package org.oppia.android.app.topic
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
-import org.oppia.app.home.RouteToExplorationListener
-import org.oppia.app.player.exploration.ExplorationActivity
-import org.oppia.app.story.StoryActivity
-import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.app.topic.revisioncard.RevisionCardActivity
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.story.StoryActivity
+import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
+import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import javax.inject.Inject
 
 private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"

@@ -1,8 +1,8 @@
-package org.oppia.domain.topic
+package org.oppia.android.domain.topic
 
 import dagger.Module
 import dagger.Provides
-import org.oppia.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.CacheAssetsLocally
 import javax.inject.Provider
 
 /**

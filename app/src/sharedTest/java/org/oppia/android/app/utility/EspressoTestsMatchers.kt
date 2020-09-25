@@ -1,8 +1,8 @@
-package org.oppia.app.utility
+package org.oppia.android.app.utility
 
 import android.view.View
 import org.hamcrest.Matcher
-import org.oppia.app.utility.TabMatcher.Companion.matchCurrentTabTitleCheck
+import org.oppia.android.app.utility.TabMatcher.Companion.matchCurrentTabTitleCheck
 
 // https://medium.com/@dbottillo/android-ui-test-espresso-matcher-for-imageview-1a28c832626f#.4snjg8frw
 /** This object mainly facilitates as bridge between test-cases and various custom test-matchers. */

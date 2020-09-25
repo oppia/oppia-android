@@ -1,8 +1,8 @@
-package org.oppia.domain.oppialogger.exceptions
+package org.oppia.android.domain.oppialogger.exceptions
 
-import org.oppia.domain.oppialogger.ApplicationStartupListener
-import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.system.OppiaClock
+import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** Handler for catching fatal exceptions before the defaultUncaughtExceptionHandler. */

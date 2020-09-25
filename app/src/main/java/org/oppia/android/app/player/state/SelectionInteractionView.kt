@@ -1,4 +1,4 @@
-package org.oppia.app.player.state
+package org.oppia.android.app.player.state
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,14 +7,14 @@ import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
-import org.oppia.app.player.state.itemviewmodel.SelectionItemInputType
-import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.shim.ViewBindingShim
-import org.oppia.app.shim.ViewComponentFactory
-import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.util.parser.HtmlParser
+import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.android.app.player.state.itemviewmodel.SelectionItemInputType
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.shim.ViewBindingShim
+import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.HtmlParser
 import javax.inject.Inject
 
 /**

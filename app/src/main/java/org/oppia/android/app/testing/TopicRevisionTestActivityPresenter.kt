@@ -1,9 +1,9 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.topic.revision.TopicRevisionFragment
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.topic.revision.TopicRevisionFragment
 import javax.inject.Inject
 
 /** The presenter for [TopicRevisionTestActivity]. */

@@ -1,11 +1,11 @@
-package org.oppia.app.options
+package org.oppia.android.app.options
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
-import org.oppia.app.databinding.LanguageItemsBinding
+import org.oppia.android.R
+import org.oppia.android.databinding.LanguageItemsBinding
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 

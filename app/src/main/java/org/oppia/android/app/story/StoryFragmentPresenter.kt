@@ -1,4 +1,4 @@
-package org.oppia.app.story
+package org.oppia.android.app.story
 
 import android.content.res.Resources
 import android.util.DisplayMetrics
@@ -12,20 +12,20 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.databinding.StoryChapterViewBinding
-import org.oppia.app.databinding.StoryFragmentBinding
-import org.oppia.app.databinding.StoryHeaderViewBinding
-import org.oppia.app.home.RouteToExplorationListener
-import org.oppia.app.model.EventLog
-import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
-import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
-import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
-import org.oppia.domain.oppialogger.OppiaLogger
-import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.parser.HtmlParser
-import org.oppia.util.parser.TopicHtmlParserEntityType
-import org.oppia.util.system.OppiaClock
+import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
+import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
+import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
+import org.oppia.android.databinding.StoryChapterViewBinding
+import org.oppia.android.databinding.StoryFragmentBinding
+import org.oppia.android.databinding.StoryHeaderViewBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [StoryFragment]. */

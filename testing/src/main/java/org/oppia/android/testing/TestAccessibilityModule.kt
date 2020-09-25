@@ -1,9 +1,9 @@
-package org.oppia.testing
+package org.oppia.android.testing
 
 import dagger.Binds
 import dagger.Module
-import org.oppia.util.accessibility.CustomAccessibilityManager
-import org.oppia.util.accessibility.FakeAccessibilityManager
+import org.oppia.android.util.accessibility.CustomAccessibilityManager
+import org.oppia.android.util.accessibility.FakeAccessibilityManager
 
 /** Provides fake accessible status for testing. */
 @Module

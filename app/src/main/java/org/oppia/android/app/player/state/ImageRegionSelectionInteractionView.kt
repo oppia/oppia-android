@@ -1,4 +1,4 @@
-package org.oppia.app.player.state
+package org.oppia.android.app.player.state
 
 import android.content.Context
 import android.util.AttributeSet
@@ -8,18 +8,18 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.forEachIndexed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import org.oppia.app.model.ImageWithRegions
-import org.oppia.app.shim.ViewBindingShim
-import org.oppia.app.shim.ViewComponentFactory
-import org.oppia.app.utility.ClickableAreasImage
-import org.oppia.app.utility.OnClickableAreaClickedListener
-import org.oppia.util.accessibility.CustomAccessibilityManager
-import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.parser.DefaultGcsPrefix
-import org.oppia.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.util.parser.ImageDownloadUrlTemplate
-import org.oppia.util.parser.ImageLoader
-import org.oppia.util.parser.ImageViewTarget
+import org.oppia.android.app.model.ImageWithRegions
+import org.oppia.android.app.shim.ViewBindingShim
+import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.app.utility.ClickableAreasImage
+import org.oppia.android.app.utility.OnClickableAreaClickedListener
+import org.oppia.android.util.accessibility.CustomAccessibilityManager
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.parser.DefaultGcsPrefix
+import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.ImageDownloadUrlTemplate
+import org.oppia.android.util.parser.ImageLoader
+import org.oppia.android.util.parser.ImageViewTarget
 import javax.inject.Inject
 
 /**

@@ -1,11 +1,11 @@
-package org.oppia.app.mydownloads
+package org.oppia.android.app.mydownloads
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
-import org.oppia.app.home.HomeActivity
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.home.HomeActivity
 import javax.inject.Inject
 
 /** The activity for displaying [MyDownloadsFragment]. */

@@ -1,10 +1,10 @@
-package org.oppia.domain.classify.rules.textinput
+package org.oppia.android.domain.classify.rules.textinput
 
-import org.oppia.app.model.InteractionObject
-import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.GenericRuleClassifier
-import org.oppia.domain.classify.rules.RuleClassifierProvider
-import org.oppia.domain.util.normalizeWhitespace
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.domain.classify.rules.GenericRuleClassifier
+import org.oppia.android.domain.classify.rules.RuleClassifierProvider
+import org.oppia.android.domain.util.normalizeWhitespace
 import javax.inject.Inject
 
 /**

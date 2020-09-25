@@ -1,12 +1,12 @@
-package org.oppia.app.player.audio
+package org.oppia.android.app.player.audio
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
-import org.oppia.app.model.State
+import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.State
 import javax.inject.Inject
 
 /** Fragment that controls audio for a content-card. */

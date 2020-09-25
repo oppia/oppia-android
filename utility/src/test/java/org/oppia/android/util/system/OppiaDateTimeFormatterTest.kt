@@ -1,4 +1,4 @@
-package org.oppia.util.system
+package org.oppia.android.util.system
 
 import android.app.Application
 import android.content.Context

@@ -1,15 +1,15 @@
-package org.oppia.app.player.state
+package org.oppia.android.app.player.state
 
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import androidx.lifecycle.ViewModel
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
-import org.oppia.app.viewmodel.ObservableArrayList
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.viewmodel.ObservableArrayList
+import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 /** [ViewModel] for state-fragment. */

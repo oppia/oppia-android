@@ -1,4 +1,4 @@
-package org.oppia.app.profileprogress
+package org.oppia.android.app.profileprogress
 
 /** Listener for when an activity should route to [OngoingTopicListActivity]. */
 interface RouteToOngoingTopicListListener {

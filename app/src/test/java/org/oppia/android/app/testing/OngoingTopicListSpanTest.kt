@@ -1,4 +1,4 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,9 +13,9 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
-import org.oppia.app.ongoingtopiclist.OngoingTopicListFragment
+import org.oppia.android.R
+import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
+import org.oppia.android.app.ongoingtopiclist.OngoingTopicListFragment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 

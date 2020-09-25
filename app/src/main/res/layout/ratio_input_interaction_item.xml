@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel" />
   </data>
 
   <LinearLayout
@@ -23,7 +23,7 @@
     app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/margin_24 : @dimen/margin_32}"
     app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/margin_40 : @dimen/margin_32}">
 
-    <org.oppia.app.customview.interaction.RatioInputInteractionView
+    <org.oppia.android.app.customview.interaction.RatioInputInteractionView
       android:id="@+id/ratio_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

@@ -1,11 +1,11 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
+import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 const val BINDABLE_TEST_FRAGMENT_TAG = "bindable_adapter_test_fragment"

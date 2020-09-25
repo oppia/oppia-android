@@ -1,4 +1,4 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 import android.content.Context
 import android.os.Bundle
@@ -8,11 +8,11 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.app.databinding.AdminAuthActivityBinding
-import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.AdminAuthActivityBinding
 import javax.inject.Inject
 
 const val KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE = "ADMIN_AUTH_INPUT_ERROR_MESSAGE"

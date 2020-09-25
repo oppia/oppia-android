@@ -1,4 +1,4 @@
-package org.oppia.app.help.faq.faqsingle
+package org.oppia.android.app.help.faq.faqsingle
 
 import android.os.Build
 import android.text.Html
@@ -6,9 +6,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.FaqSingleActivityBinding
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.databinding.FaqSingleActivityBinding
 import javax.inject.Inject
 
 /** The presenter for [FAQSingleActivity]. */

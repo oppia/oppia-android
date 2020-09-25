@@ -1,4 +1,4 @@
-package org.oppia.app.testing.player.split
+package org.oppia.android.app.testing.player.split
 
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -10,8 +10,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.testing.ExplorationTestActivity
-import org.oppia.app.utility.SplitScreenManager
+import org.oppia.android.app.testing.ExplorationTestActivity
+import org.oppia.android.app.utility.SplitScreenManager
 import org.robolectric.annotation.Config
 
 // Devices reference: https://material.io/resources/devices/

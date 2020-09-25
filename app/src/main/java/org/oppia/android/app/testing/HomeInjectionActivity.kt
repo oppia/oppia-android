@@ -1,9 +1,9 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.system.OppiaClock
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** Activity used in [HomeActivityTest] to get certain dependencies. */

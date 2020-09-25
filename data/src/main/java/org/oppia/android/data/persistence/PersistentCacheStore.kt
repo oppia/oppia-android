@@ -1,15 +1,15 @@
-package org.oppia.data.persistence
+package org.oppia.android.data.persistence
 
 import android.content.Context
 import androidx.annotation.GuardedBy
 import com.google.protobuf.MessageLite
 import kotlinx.coroutines.Deferred
-import org.oppia.app.model.ProfileId
-import org.oppia.util.data.AsyncDataSubscriptionManager
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProvider
-import org.oppia.util.data.InMemoryBlockingCache
-import org.oppia.util.profile.DirectoryManagementUtil
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.data.AsyncDataSubscriptionManager
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.InMemoryBlockingCache
+import org.oppia.android.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream

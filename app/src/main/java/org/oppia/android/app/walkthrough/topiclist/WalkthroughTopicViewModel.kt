@@ -1,16 +1,16 @@
-package org.oppia.app.walkthrough.topiclist
+package org.oppia.android.app.walkthrough.topiclist
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.app.home.topiclist.TopicSummaryClickListener
-import org.oppia.app.model.TopicList
-import org.oppia.app.viewmodel.ObservableViewModel
-import org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
-import org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel
-import org.oppia.domain.topic.TopicListController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.ConsoleLogger
+import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
+import org.oppia.android.app.model.TopicList
+import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
+import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel
+import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The ObservableViewModel for [WalkthroughTopicListFragment]. */

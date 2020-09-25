@@ -1,8 +1,8 @@
-package org.oppia.app.player.exploration
+package org.oppia.android.app.player.exploration
 
 import androidx.databinding.ObservableField
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 /** The ViewModel for [ExplorationActivity] */

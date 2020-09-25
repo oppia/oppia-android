@@ -1,4 +1,4 @@
-package org.oppia.testing
+package org.oppia.android.testing
 
 import java.lang.reflect.Method
 import java.time.Duration

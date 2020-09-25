@@ -1,11 +1,11 @@
-package org.oppia.app.ongoingtopiclist
+package org.oppia.android.app.ongoingtopiclist
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
-import org.oppia.app.home.RouteToTopicListener
-import org.oppia.app.model.Topic
-import org.oppia.app.shim.IntentFactoryShim
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.home.RouteToTopicListener
+import org.oppia.android.app.model.Topic
+import org.oppia.android.app.shim.IntentFactoryShim
+import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** [ViewModel] for displaying topic item in [OngoingTopicListActivity]. */
 class OngoingTopicItemViewModel(

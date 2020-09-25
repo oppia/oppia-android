@@ -1,4 +1,4 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.app.Application
 import android.content.Context
@@ -29,21 +29,21 @@ import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
-import org.oppia.app.R
-import org.oppia.app.player.state.ImageRegionSelectionInteractionView
-import org.oppia.app.player.state.StateFragment
-import org.oppia.app.utility.DefaultRegionClickedEvent
-import org.oppia.app.utility.NamedRegionClickedEvent
-import org.oppia.app.utility.OnClickableAreaClickedListener
-import org.oppia.app.utility.RegionClickedEvent
-import org.oppia.app.utility.capture
-import org.oppia.app.utility.clickPoint
-import org.oppia.testing.TestDispatcherModule
-import org.oppia.testing.TestLogReportingModule
-import org.oppia.util.logging.EnableConsoleLog
-import org.oppia.util.logging.EnableFileLog
-import org.oppia.util.logging.GlobalLogLevel
-import org.oppia.util.logging.LogLevel
+import org.oppia.android.R
+import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
+import org.oppia.android.app.player.state.StateFragment
+import org.oppia.android.app.utility.DefaultRegionClickedEvent
+import org.oppia.android.app.utility.NamedRegionClickedEvent
+import org.oppia.android.app.utility.OnClickableAreaClickedListener
+import org.oppia.android.app.utility.RegionClickedEvent
+import org.oppia.android.app.utility.capture
+import org.oppia.android.app.utility.clickPoint
+import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.util.logging.EnableConsoleLog
+import org.oppia.android.util.logging.EnableFileLog
+import org.oppia.android.util.logging.GlobalLogLevel
+import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -152,7 +152,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Roboelectric")
+  @Ignore("Move to Robolectric")
   fun testView_withTalkbackEnabled_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -188,7 +188,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Roboelectric")
+  @Ignore("Move to Robolectric")
   fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -212,7 +212,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Roboelectric")
+  @Ignore("Move to Robolectric")
   fun testView_withTalkbackEnabled_clickOnDefaultRegion_defaultRegionNotClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
       scenario.onActivity {

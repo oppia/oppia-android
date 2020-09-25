@@ -1,10 +1,10 @@
-package org.oppia.app.parser
+package org.oppia.android.app.parser
 
 import android.content.Context
 import androidx.annotation.StringRes
-import org.oppia.app.R
-import org.oppia.app.model.Fraction
-import org.oppia.domain.util.normalizeWhitespace
+import org.oppia.android.R
+import org.oppia.android.app.model.Fraction
+import org.oppia.android.domain.util.normalizeWhitespace
 
 /** This class contains method that helps to parse string to fraction. */
 class StringToFractionParser {

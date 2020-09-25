@@ -1,4 +1,4 @@
-package org.oppia.util.parser
+package org.oppia.android.util.parser
 
 import android.widget.ImageView
 import com.bumptech.glide.request.target.CustomTarget

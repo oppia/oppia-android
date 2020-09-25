@@ -1,4 +1,4 @@
-package org.oppia.app.parser
+package org.oppia.android.app.parser
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -7,7 +7,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.model.RatioExpression
+import org.oppia.android.app.model.RatioExpression
 import org.robolectric.annotation.LooperMode
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast

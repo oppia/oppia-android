@@ -1,4 +1,4 @@
-package org.oppia.app.home.recentlyplayed
+package org.oppia.android.app.home.recentlyplayed
 
 import androidx.lifecycle.ViewModel
 

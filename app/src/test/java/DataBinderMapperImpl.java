@@ -9,6 +9,6 @@ package androidx.databinding;
  */
 public final class DataBinderMapperImpl extends MergedDataBinderMapper {
   DataBinderMapperImpl() {
-    addMapper(new org.oppia.app.test.DataBinderMapperImpl());
+    addMapper(new org.oppia.android.app.test.DataBinderMapperImpl());
   }
 }

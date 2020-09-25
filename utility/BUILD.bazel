@@ -1,7 +1,7 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
-'''
+"""
 This library contains utilities that all other modules, minus model, depend on.
-'''
+"""
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
@@ -12,21 +12,22 @@ load("//utility:utility_test.bzl", "utility_test")
 # Library for general-purpose utilities.
 kt_android_library(
     name = "utility",
-    custom_package = "org.oppia.util",
-    srcs = glob(["src/main/java/org/oppia/util/**/*.kt"]),
-    resource_files = glob(["src/main/res/**/*.xml"]),
+    srcs = glob(["src/main/java/org/oppia/android/util/**/*.kt"]),
+    custom_package = "org.oppia.android.util",
     manifest = "src/main/AndroidManifest.xml",
+    resource_files = glob(["src/main/res/**/*.xml"]),
+    visibility = ["//visibility:public"],
     deps = [
         ":dagger",
-        "//model",
         "//app:crashlytics",
         "//app:crashlytics_deps",
+        "//model",
         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
         artifact("androidx.appcompat:appcompat"),
         artifact("com.github.bumptech.glide:glide"),
+        artifact("com.google.guava:guava"),
         artifact("com.caverock:androidsvg-aar"),
     ],
-    visibility = ["//visibility:public"],
 )
 
 TEST_DEPS = [
@@ -46,57 +47,57 @@ TEST_DEPS = [
 
 utility_test(
     name = "AsyncResultTest",
-    srcs = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
-    test_class = "org.oppia.util.data.AsyncResultTest",
+    srcs = ["src/test/java/org/oppia/android/util/data/AsyncResultTest.kt"],
+    test_class = "org.oppia.android.util.data.AsyncResultTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "DataProvidersTest",
-    srcs = ["src/test/java/org/oppia/util/data/DataProvidersTest.kt"],
-    test_class = "org.oppia.util.data.DataProvidersTest",
+    srcs = ["src/test/java/org/oppia/android/util/data/DataProvidersTest.kt"],
+    test_class = "org.oppia.android.util.data.DataProvidersTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "InMemoryBlockingCacheTest",
-    srcs = ["src/test/java/org/oppia/util/data/InMemoryBlockingCacheTest.kt"],
-    test_class = "org.oppia.util.data.InMemoryBlockingCacheTest",
+    srcs = ["src/test/java/org/oppia/android/util/data/InMemoryBlockingCacheTest.kt"],
+    test_class = "org.oppia.android.util.data.InMemoryBlockingCacheTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "DateTimeUtilTest",
-    srcs = ["src/test/java/org/oppia/util/datetime/DateTimeUtilTest.kt"],
-    test_class = "org.oppia.util.datetime.DateTimeUtilTest",
+    srcs = ["src/test/java/org/oppia/android/util/datetime/DateTimeUtilTest.kt"],
+    test_class = "org.oppia.android.util.datetime.DateTimeUtilTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "EventBundleCreatorTest",
-    srcs = ["src/test/java/org/oppia/util/logging/EventBundleCreatorTest.kt"],
-    test_class = "org.oppia.util.logging.EventBundleCreatorTest",
+    srcs = ["src/test/java/org/oppia/android/util/logging/EventBundleCreatorTest.kt"],
+    test_class = "org.oppia.android.util.logging.EventBundleCreatorTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "NetworkConnectionUtilTest",
-    srcs = ["src/test/java/org/oppia/util/networking/NetworkConnectionUtilTest.kt"],
-    test_class = "org.oppia.util.networking.NetworkConnectionUtilTest",
+    srcs = ["src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilTest.kt"],
+    test_class = "org.oppia.android.util.networking.NetworkConnectionUtilTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "DirectoryManagementUtilTest",
-    srcs = ["src/test/java/org/oppia/util/profile/DirectoryManagementUtilTest.kt"],
-    test_class = "org.oppia.util.profile.DirectoryManagementUtilTest",
+    srcs = ["src/test/java/org/oppia/android/util/profile/DirectoryManagementUtilTest.kt"],
+    test_class = "org.oppia.android.util.profile.DirectoryManagementUtilTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "OppiaDateTimeFormatterTest",
-    srcs = ["src/test/java/org/oppia/util/system/OppiaDateTimeFormatterTest.kt"],
-    test_class = "org.oppia.util.system.OppiaDateTimeFormatterTest",
+    srcs = ["src/test/java/org/oppia/android/util/system/OppiaDateTimeFormatterTest.kt"],
+    test_class = "org.oppia.android.util.system.OppiaDateTimeFormatterTest",
     deps = TEST_DEPS,
 )
 

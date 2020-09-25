@@ -1,4 +1,4 @@
-package org.oppia.app.mydownloads
+package org.oppia.android.app.mydownloads
 
 import android.app.Application
 import android.content.Context
@@ -23,10 +23,10 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
+import org.oppia.android.R
+import org.oppia.android.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
+import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.BlockingDispatcher
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 

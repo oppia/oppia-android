@@ -1,12 +1,12 @@
-package org.oppia.app.topic.revisioncard
+package org.oppia.android.app.topic.revisioncard
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import org.oppia.app.R
-import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.android.R
+import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** Activity for revision card. */

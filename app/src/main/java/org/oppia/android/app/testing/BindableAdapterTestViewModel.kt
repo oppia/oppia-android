@@ -1,9 +1,9 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import androidx.lifecycle.MutableLiveData
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.TestModel
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.TestModel
+import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 // TODO(#59): Make this view model only included in relevant tests instead of all prod builds.

@@ -1,12 +1,12 @@
-package org.oppia.data.backends.api
+package org.oppia.android.data.backends.api
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import org.oppia.data.backends.ApiUtils
-import org.oppia.data.backends.gae.NetworkInterceptor
-import org.oppia.data.backends.gae.NetworkSettings
-import org.oppia.data.backends.gae.api.ConceptCardService
-import org.oppia.data.backends.gae.model.GaeConceptCard
+import org.oppia.android.data.backends.ApiUtils
+import org.oppia.android.data.backends.gae.NetworkInterceptor
+import org.oppia.android.data.backends.gae.NetworkSettings
+import org.oppia.android.data.backends.gae.api.ConceptCardService
+import org.oppia.android.data.backends.gae.model.GaeConceptCard
 import retrofit2.Call
 import retrofit2.mock.BehaviorDelegate
 

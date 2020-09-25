@@ -1,4 +1,4 @@
-package org.oppia.app.drawer
+package org.oppia.android.app.drawer
 
 /** Listener for when an activity should route to [ProfileProgressActivity]. */
 interface RouteToProfileProgressListener {

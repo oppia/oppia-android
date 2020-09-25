@@ -1,4 +1,4 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,7 +13,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.profile.ProfileChooserFragment
+import org.oppia.android.app.profile.ProfileChooserFragment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 

@@ -1,4 +1,4 @@
-package org.oppia.app.profileprogress
+package org.oppia.android.app.profileprogress
 
 /** Interface to handle option selection in [ProfilePictureEditDialogFragment]. */
 interface ProfilePictureDialogInterface {

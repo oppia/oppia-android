@@ -1,4 +1,4 @@
-package org.oppia.app.topic.revision
+package org.oppia.android.app.topic.revision
 
 import android.app.Application
 import android.content.Context
@@ -30,15 +30,15 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.app.topic.TopicActivity
-import org.oppia.app.topic.TopicTab
-import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
+import org.oppia.android.R
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.topic.TopicTab
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.android.util.threading.BackgroundDispatcher
+import org.oppia.android.util.threading.BlockingDispatcher
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 

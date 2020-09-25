@@ -1,4 +1,4 @@
-package org.oppia.app.profile
+package org.oppia.android.app.profile
 
 /** Interface to route dialogs in user Forgot Password flow. */
 interface ProfileRouteDialogInterface {

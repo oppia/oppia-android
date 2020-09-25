@@ -1,4 +1,4 @@
-package org.oppia.testing
+package org.oppia.android.testing
 
 // TODO(#1274): Add thorough testing for this class.
 

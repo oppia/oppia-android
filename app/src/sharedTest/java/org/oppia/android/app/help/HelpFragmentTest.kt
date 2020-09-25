@@ -1,4 +1,4 @@
-package org.oppia.app.help
+package org.oppia.android.app.help
 
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
@@ -26,11 +26,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.help.faq.FAQListActivity
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.R
+import org.oppia.android.app.help.faq.FAQListActivity
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)

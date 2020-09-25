@@ -1,8 +1,8 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.model.StringList
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.model.StringList
+import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** [ObservableViewModel] for DragDropSortInput values. */
 class DragDropInteractionContentViewModel(

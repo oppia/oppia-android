@@ -1,4 +1,4 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.content.res.Configuration
 import androidx.test.core.app.ActivityScenario
@@ -15,8 +15,8 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.model.InteractionObject
+import org.oppia.android.R
+import org.oppia.android.app.model.InteractionObject
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [InputInteractionViewTestActivity]. */

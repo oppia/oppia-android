@@ -1,4 +1,4 @@
-package org.oppia.app.customview.interaction
+package org.oppia.android.app.customview.interaction
 
 import android.content.Context
 import android.graphics.Typeface
@@ -7,9 +7,9 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import org.oppia.app.player.state.listener.StateKeyboardButtonListener
-import org.oppia.app.utility.KeyboardHelper.Companion.hideSoftKeyboard
-import org.oppia.app.utility.KeyboardHelper.Companion.showSoftKeyboard
+import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
+import org.oppia.android.app.utility.KeyboardHelper.Companion.hideSoftKeyboard
+import org.oppia.android.app.utility.KeyboardHelper.Companion.showSoftKeyboard
 
 // TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
 //  hint="Write here."

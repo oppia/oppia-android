@@ -1,11 +1,11 @@
-package org.oppia.util.logging
+package org.oppia.android.util.logging
 
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.oppia.util.threading.BlockingDispatcher
+import org.oppia.android.util.threading.BlockingDispatcher
 import java.io.File
 import java.util.Calendar
 import javax.inject.Inject

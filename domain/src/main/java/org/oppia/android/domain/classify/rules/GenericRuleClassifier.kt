@@ -1,7 +1,7 @@
-package org.oppia.domain.classify.rules
+package org.oppia.android.domain.classify.rules
 
-import org.oppia.app.model.InteractionObject
-import org.oppia.domain.classify.RuleClassifier
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.RuleClassifier
 import javax.inject.Inject
 
 /**

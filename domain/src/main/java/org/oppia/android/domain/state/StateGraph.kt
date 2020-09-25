@@ -1,10 +1,10 @@
-package org.oppia.domain.state
+package org.oppia.android.domain.state
 
-import org.oppia.app.model.AnswerOutcome
-import org.oppia.app.model.Hint
-import org.oppia.app.model.Outcome
-import org.oppia.app.model.Solution
-import org.oppia.app.model.State
+import org.oppia.android.app.model.AnswerOutcome
+import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.Outcome
+import org.oppia.android.app.model.Solution
+import org.oppia.android.app.model.State
 
 /**
  * Graph that provides lookup access for [State]s and functionality for processing the outcome of a submitted learner

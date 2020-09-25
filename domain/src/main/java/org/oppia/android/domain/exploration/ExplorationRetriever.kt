@@ -1,10 +1,10 @@
-package org.oppia.domain.exploration
+package org.oppia.android.domain.exploration
 
 import org.json.JSONObject
-import org.oppia.app.model.Exploration
-import org.oppia.app.model.State
-import org.oppia.domain.util.JsonAssetRetriever
-import org.oppia.domain.util.StateRetriever
+import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.State
+import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.domain.util.StateRetriever
 import javax.inject.Inject
 
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed

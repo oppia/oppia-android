@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.info.TopicInfoViewModel" />
+      type="org.oppia.android.app.topic.info.TopicInfoViewModel" />
   </data>
 
   <ScrollView
@@ -21,7 +21,7 @@
       android:layout_height="wrap_content"
       android:paddingBottom="112dp">
 
-      <org.oppia.app.customview.LessonThumbnailImageView
+      <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/topic_thumbnail_image_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"

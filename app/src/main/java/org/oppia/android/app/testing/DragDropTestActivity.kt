@@ -1,10 +1,10 @@
-package org.oppia.app.testing
+package org.oppia.android.app.testing
 
 import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.recyclerview.OnDragEndedListener
-import org.oppia.app.recyclerview.OnItemDragListener
+import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.recyclerview.OnDragEndedListener
+import org.oppia.android.app.recyclerview.OnItemDragListener
 import javax.inject.Inject
 
 /** Test Activity used for testing [DragAndDropItemFacilitator] functionality */

@@ -1,4 +1,4 @@
-package org.oppia.data.backends.test
+package org.oppia.android.data.backends.test
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -6,10 +6,10 @@ import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.data.backends.api.MockTopicService
-import org.oppia.data.backends.gae.NetworkInterceptor
-import org.oppia.data.backends.gae.NetworkSettings
-import org.oppia.data.backends.gae.api.TopicService
+import org.oppia.android.data.backends.api.MockTopicService
+import org.oppia.android.data.backends.gae.NetworkInterceptor
+import org.oppia.android.data.backends.gae.NetworkSettings
+import org.oppia.android.data.backends.gae.api.TopicService
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory

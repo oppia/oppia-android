@@ -1,4 +1,4 @@
-package org.oppia.app.faq
+package org.oppia.android.app.faq
 
 import android.content.Context
 import android.content.res.Resources
@@ -22,12 +22,12 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.help.faq.FAQListActivity
-import org.oppia.app.help.faq.faqsingle.FAQSingleActivity
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.R
+import org.oppia.android.app.help.faq.FAQListActivity
+import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [FAQListFragment]. */

@@ -1,4 +1,4 @@
-package org.oppia.app.settings.profile
+package org.oppia.android.app.settings.profile
 
 import android.content.Context
 import android.content.Intent
@@ -8,14 +8,14 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import org.oppia.app.R
-import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.ProfileRenameActivityBinding
-import org.oppia.app.model.ProfileId
-import org.oppia.app.profile.ProfileInputView
-import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.AsyncResult
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.profile.ProfileInputView
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.ProfileRenameActivityBinding
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
 
 /** The presenter for [ProfileRenameActivity]. */

@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel
 
 import android.content.Context
 import androidx.fragment.app.Fragment
@@ -6,7 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
+import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 
 /**
  * Module to provide interaction view model-specific dependencies for interactions that should be

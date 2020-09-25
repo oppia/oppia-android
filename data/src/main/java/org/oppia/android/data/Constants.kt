@@ -1,4 +1,4 @@
-package org.oppia.data
+package org.oppia.android.data
 
 /** An object that contains constants for data module */
 object Constants {

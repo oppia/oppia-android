@@ -1,4 +1,4 @@
-package org.oppia.domain.classify.rules.imageClickInput
+package org.oppia.android.domain.classify.rules.imageClickInput
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
@@ -9,10 +9,10 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.model.ClickOnImage
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.Point2d
-import org.oppia.domain.classify.RuleClassifier
+import org.oppia.android.app.model.ClickOnImage
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.Point2d
+import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject

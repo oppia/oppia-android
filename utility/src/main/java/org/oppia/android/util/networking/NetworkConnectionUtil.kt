@@ -1,4 +1,4 @@
-package org.oppia.util.networking
+package org.oppia.android.util.networking
 
 import android.content.Context
 import android.net.ConnectivityManager

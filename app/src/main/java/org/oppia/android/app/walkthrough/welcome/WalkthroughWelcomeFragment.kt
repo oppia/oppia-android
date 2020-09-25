@@ -1,11 +1,11 @@
-package org.oppia.app.walkthrough.welcome
+package org.oppia.android.app.walkthrough.welcome
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
+import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** The first slide for [WalkthroughActivity]. */

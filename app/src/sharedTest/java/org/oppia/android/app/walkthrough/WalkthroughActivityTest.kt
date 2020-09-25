@@ -1,4 +1,4 @@
-package org.oppia.app.walkthrough
+package org.oppia.android.app.walkthrough
 
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
@@ -15,9 +15,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.app.utility.ProgressMatcher.Companion.withProgress
+import org.oppia.android.R
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.app.utility.ProgressMatcher.Companion.withProgress
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [WalkthroughActivity]. */

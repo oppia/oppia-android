@@ -1,11 +1,11 @@
-package org.oppia.app.settings.profile
+package org.oppia.android.app.settings.profile
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.fragment.InjectableFragment
+import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 private const val IS_MULTIPANE_KEY = "IS_MULTIPANE_KEY"
