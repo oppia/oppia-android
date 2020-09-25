@@ -2,10 +2,15 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
+import android.view.View
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
@@ -21,6 +26,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -518,6 +524,31 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
+    }
+  }
+
+  // TODO(#1840): Introduce central utility file for appendText in Testing
+  /**
+   * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
+   * properly input digits for text views using 'android:digits'. See
+   * https://github.com/robolectric/robolectric/issues/5110 for specifics.
+   */
+  private fun appendText(text: String): ViewAction {
+    val typeTextViewAction = typeText(text)
+    return object : ViewAction {
+      override fun getDescription(): String = typeTextViewAction.description
+
+      override fun getConstraints(): Matcher<View> = typeTextViewAction.constraints
+
+      override fun perform(uiController: UiController?, view: View?) {
+        // Appending text only works on Robolectric, whereas Espresso needs to use typeText().
+        if (Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
+          (view as? EditText)?.append(text)
+          testCoroutineDispatchers.runCurrent()
+        } else {
+          typeTextViewAction.perform(uiController, view)
+        }
+      }
     }
   }
 
