@@ -6,11 +6,11 @@
 
     <import type="android.view.View" />
 
-    <import type="org.oppia.app.player.state.itemviewmodel.SelectionItemInputType" />
+    <import type="org.oppia.android.app.player.state.itemviewmodel.SelectionItemInputType" />
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionViewModel" />
   </data>
 
   <LinearLayout
@@ -42,7 +42,7 @@
       android:textStyle="italic"
       android:visibility="@{viewModel.getSelectionItemInputType() == SelectionItemInputType.RADIO_BUTTONS ? View.GONE : View. VISIBLE}" />
 
-    <org.oppia.app.player.state.SelectionInteractionView
+    <org.oppia.android.app.player.state.SelectionInteractionView
       android:id="@+id/selection_interaction_recyclerview"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

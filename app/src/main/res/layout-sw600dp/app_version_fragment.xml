@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.administratorcontrols.appversion.AppVersionViewModel" />
+      type="org.oppia.android.app.administratorcontrols.appversion.AppVersionViewModel" />
   </data>
 
   <FrameLayout

@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.NumericInputViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel" />
   </data>
 
   <LinearLayout
@@ -23,7 +23,7 @@
     app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/margin_112 : @dimen/margin_128}"
     app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/margin_144 : @dimen/margin_128}">
 
-    <org.oppia.app.customview.interaction.NumericInputInteractionView
+    <org.oppia.android.app.customview.interaction.NumericInputInteractionView
       android:id="@+id/numeric_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

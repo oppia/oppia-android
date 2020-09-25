@@ -8,11 +8,11 @@
 
     <variable
       name="presenter"
-      type="org.oppia.app.onboarding.OnboardingNavigationListener" />
+      type="org.oppia.android.app.onboarding.OnboardingNavigationListener" />
 
     <variable
       name="viewModel"
-      type="org.oppia.app.onboarding.OnboardingViewModel" />
+      type="org.oppia.android.app.onboarding.OnboardingViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
