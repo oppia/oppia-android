@@ -64,7 +64,7 @@ class VerticalDashedLine : View {
     val desiredWidth = 10
     val desiredHeight = 100
 
-    val widthMode = View.MeasureSpec.EXACTLY
+    val widthMode = View.MeasureSpec.getMode(heightMeasureSpec)
     val widthSize = View.MeasureSpec.getSize(widthMeasureSpec)
     val heightMode = View.MeasureSpec.getMode(heightMeasureSpec)
     val heightSize = View.MeasureSpec.getSize(heightMeasureSpec)
@@ -74,7 +74,7 @@ class VerticalDashedLine : View {
 
     //Measure Width
 
-    //Measure Width
+
     width = if (widthMode == View.MeasureSpec.EXACTLY) {
       //Must be this size
       widthSize
@@ -83,12 +83,11 @@ class VerticalDashedLine : View {
       Math.min(desiredWidth, widthSize)
     } else {
       //Be whatever you want
-      widthSize
+      desiredWidth
     }
 
     //Measure Height
 
-    //Measure Height
     height = if (heightMode == View.MeasureSpec.EXACTLY) {
       //Must be this size
       heightSize
@@ -97,17 +96,10 @@ class VerticalDashedLine : View {
       heightSize
     } else {
       //Be whatever you want
-      heightSize
+      desiredHeight
     }
 
-    //MUST CALL THIS
-
-    //MUST CALL THIS
     setMeasuredDimension(width, height)
   }
 
-//  fun setOrientation(orientation: Orientation) {
-//    this.orientation = orientation
-//    invalidate()
-//  }
 }
