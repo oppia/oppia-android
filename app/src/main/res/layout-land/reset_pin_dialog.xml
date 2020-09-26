@@ -5,7 +5,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.profile.ResetPinViewModel" />
+      type="org.oppia.android.app.profile.ResetPinViewModel" />
   </data>
 
   <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -14,7 +14,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <org.oppia.app.profile.ProfileInputView
+    <org.oppia.android.app.profile.ProfileInputView
       android:id="@+id/input_pin"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

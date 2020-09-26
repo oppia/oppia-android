@@ -6,11 +6,11 @@
 
     <variable
       name="commonViewModel"
-      type="org.oppia.app.options.OptionControlsViewModel" />
+      type="org.oppia.android.app.options.OptionControlsViewModel" />
 
     <variable
       name="viewModel"
-      type="org.oppia.app.options.OptionsAudioLanguageViewModel" />
+      type="org.oppia.android.app.options.OptionsAudioLanguageViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

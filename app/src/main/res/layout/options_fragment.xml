@@ -5,7 +5,7 @@
 
       <variable
         name="viewModel"
-        type="org.oppia.app.options.OptionControlsViewModel" />
+        type="org.oppia.android.app.options.OptionControlsViewModel" />
     </data>
 
   <androidx.recyclerview.widget.RecyclerView

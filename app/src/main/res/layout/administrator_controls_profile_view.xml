@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel" />
+      type="org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

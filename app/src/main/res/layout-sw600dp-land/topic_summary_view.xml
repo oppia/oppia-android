@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.home.topiclist.TopicSummaryViewModel" />
+      type="org.oppia.android.app.home.topiclist.TopicSummaryViewModel" />
   </data>
 
   <com.google.android.material.card.MaterialCardView
@@ -22,7 +22,7 @@
       android:focusable="true"
       android:onClick="@{(v) -> viewModel.clickOnSummaryTile()}">
 
-      <org.oppia.app.customview.LessonThumbnailImageView
+      <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/topic_thumbnail_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"

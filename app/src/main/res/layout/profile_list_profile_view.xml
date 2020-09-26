@@ -9,7 +9,7 @@
 
     <variable
       name="profile"
-      type="org.oppia.app.model.Profile" />
+      type="org.oppia.android.app.model.Profile" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
