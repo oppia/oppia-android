@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.testing.BindableAdapterTestViewModel" />
+      type="org.oppia.android.app.testing.BindableAdapterTestViewModel" />
   </data>
 
   <FrameLayout

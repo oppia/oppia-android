@@ -16,7 +16,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.lessons.StorySummaryViewModel" />
+      type="org.oppia.android.app.topic.lessons.StorySummaryViewModel" />
   </data>
 
   <FrameLayout
@@ -60,7 +60,7 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content">
 
-              <org.oppia.app.customview.SegmentedCircularProgressView
+              <org.oppia.android.app.customview.SegmentedCircularProgressView
                 android:id="@+id/story_progress_view"
                 android:layout_width="48dp"
                 android:layout_height="48dp" />

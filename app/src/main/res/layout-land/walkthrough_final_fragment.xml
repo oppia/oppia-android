@@ -7,11 +7,11 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.walkthrough.end.WalkthroughFinalViewModel" />
+      type="org.oppia.android.app.walkthrough.end.WalkthroughFinalViewModel" />
 
     <variable
       name="presenter"
-      type="org.oppia.app.walkthrough.end.WalkthroughEndPageChanger" />
+      type="org.oppia.android.app.walkthrough.end.WalkthroughEndPageChanger" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

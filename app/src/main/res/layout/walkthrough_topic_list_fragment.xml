@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.walkthrough.topiclist.WalkthroughTopicViewModel" />
+      type="org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicViewModel" />
 
   </data>
 

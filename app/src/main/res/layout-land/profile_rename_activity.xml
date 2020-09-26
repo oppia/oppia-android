@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.settings.profile.ProfileRenameViewModel" />
+      type="org.oppia.android.app.settings.profile.ProfileRenameViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,7 +55,7 @@
         android:background="@drawable/general_item_background_border"
         app:layout_constraintTop_toTopOf="parent">
 
-        <org.oppia.app.profile.ProfileInputView
+        <org.oppia.android.app.profile.ProfileInputView
           android:id="@+id/input_name"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"

@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.profile.ProfileChooserViewModel" />
+      type="org.oppia.android.app.profile.ProfileChooserViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

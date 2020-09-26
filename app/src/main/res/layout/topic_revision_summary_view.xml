@@ -6,11 +6,11 @@
 
     <import type="android.view.View" />
 
-    <import type="org.oppia.app.model.Subtopic" />
+    <import type="org.oppia.android.app.model.Subtopic" />
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel" />
+      type="org.oppia.android.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel" />
   </data>
 
   <com.google.android.material.card.MaterialCardView
@@ -31,7 +31,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-      <org.oppia.app.customview.LessonThumbnailImageView
+      <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/subtopic_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"

@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.help.HelpListViewModel" />
+      type="org.oppia.android.app.help.HelpListViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
