@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.onboarding.OnboardingSlideFinalViewModel" />
+      type="org.oppia.android.app.onboarding.OnboardingSlideFinalViewModel" />
   </data>
 
   <ScrollView

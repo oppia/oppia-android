@@ -9,7 +9,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.FeedbackViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.FeedbackViewModel" />
   </data>
 
   <FrameLayout

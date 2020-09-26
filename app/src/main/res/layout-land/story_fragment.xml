@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.story.StoryViewModel" />
+      type="org.oppia.android.app.story.StoryViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

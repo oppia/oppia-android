@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.profileprogress.ProfileProgressViewModel" />
+      type="org.oppia.android.app.profileprogress.ProfileProgressViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

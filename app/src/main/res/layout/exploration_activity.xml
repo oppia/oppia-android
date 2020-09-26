@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.exploration.ExplorationViewModel" />
+      type="org.oppia.android.app.player.exploration.ExplorationViewModel" />
   </data>
 
   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

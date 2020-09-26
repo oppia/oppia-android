@@ -5,7 +5,7 @@
   <data>
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.revision.TopicRevisionViewModel" />
+      type="org.oppia.android.app.topic.revision.TopicRevisionViewModel" />
   </data>
 
   <FrameLayout

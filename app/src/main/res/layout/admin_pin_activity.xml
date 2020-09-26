@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.profile.AdminPinViewModel" />
+      type="org.oppia.android.app.profile.AdminPinViewModel" />
   </data>
 
   <FrameLayout
@@ -59,7 +59,7 @@
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/admin_pin_main_text" />
 
-        <org.oppia.app.profile.ProfileInputView
+        <org.oppia.android.app.profile.ProfileInputView
           android:id="@+id/input_pin"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
           app:layout_constraintTop_toBottomOf="@+id/admin_pin_warning_text"
           profile:error="@{viewModel.pinErrorMsg}" />
 
-        <org.oppia.app.profile.ProfileInputView
+        <org.oppia.android.app.profile.ProfileInputView
           android:id="@+id/input_confirm_pin"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"

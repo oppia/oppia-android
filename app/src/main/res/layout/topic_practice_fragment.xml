@@ -4,7 +4,7 @@
   <data>
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.practice.TopicPracticeViewModel"/>
+      type="org.oppia.android.app.topic.practice.TopicPracticeViewModel"/>
   </data>
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/topic_practice_skill_list"

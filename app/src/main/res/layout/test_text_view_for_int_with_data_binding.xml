@@ -5,7 +5,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.model.TestModel" />
+      type="org.oppia.android.app.model.TestModel" />
   </data>
 
   <TextView

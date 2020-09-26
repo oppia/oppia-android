@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel" />
   </data>
 
   <FrameLayout
@@ -28,7 +28,7 @@
     android:paddingEnd="8dp"
     android:paddingBottom="8dp">
 
-    <org.oppia.app.player.state.ImageRegionSelectionInteractionView
+    <org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
       android:id="@+id/image_click_interaction_image_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

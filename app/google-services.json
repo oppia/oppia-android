@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:215533462679:android:a25a70347460cd014035d2",
+        "mobilesdk_app_id": "1:215533462679:android:41398480f14f22c24035d2",
         "android_client_info": {
-          "package_name": "org.oppia.app"
+          "package_name": "org.oppia.android"
         }
       },
       "oauth_client": [
