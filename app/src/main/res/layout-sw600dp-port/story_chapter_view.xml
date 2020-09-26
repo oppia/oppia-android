@@ -43,7 +43,8 @@
         android:contentDescription="@{viewModel.name}">
 
         <org.oppia.android.app.customview.VerticalDashedLine
-          android:layout_width="wrap_content"
+          android:layout_width="5dp"
+          android:id="@+id/line"
           android:layout_height="200dp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
@@ -51,14 +52,14 @@
 
         <org.oppia.android.app.customview.LessonThumbnailImageView
           android:id="@+id/chapter_thumbnail"
-          android:layout_width="match_parent"
+          android:layout_width="0dp"
           android:layout_height="0dp"
           android:scaleType="centerInside"
           app:entityId="@{viewModel.storyId}"
           app:entityType="@{viewModel.entityType}"
           app:layout_constraintDimensionRatio="16:9"
           app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintStart_toStartOf="@id/line"
           app:layout_constraintTop_toTopOf="parent"
           app:lessonThumbnail="@{viewModel.chapterThumbnail}" />
 
