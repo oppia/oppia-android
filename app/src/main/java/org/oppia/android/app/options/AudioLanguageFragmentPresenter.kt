@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.android.databinding.DefaultAudioFragmentBinding
+import org.oppia.android.databinding.AudioLanguageFragmentBinding
 import javax.inject.Inject
 
-/** The presenter for [DefaultAudioFragment]. */
-class DefaultAudioFragmentPresenter @Inject constructor(private val fragment: Fragment) {
+/** The presenter for [AudioLanguageFragment]. */
+class AudioLanguageFragmentPresenter @Inject constructor(private val fragment: Fragment) {
 
   private lateinit var prefSummaryValue: String
   private lateinit var languageSelectionAdapter: LanguageSelectionAdapter
@@ -20,7 +20,7 @@ class DefaultAudioFragmentPresenter @Inject constructor(private val fragment: Fr
     prefKey: String,
     prefValue: String
   ): View? {
-    val binding = DefaultAudioFragmentBinding.inflate(
+    val binding = AudioLanguageFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
@@ -37,8 +37,8 @@ class DefaultAudioFragmentPresenter @Inject constructor(private val fragment: Fr
       val message = languageSelectionAdapter.getSelectedLanguage()
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, message)
-      (fragment.activity as DefaultAudioActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
-      (fragment.activity as DefaultAudioActivity).finish()
+      (fragment.activity as AudioLanguageActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
+      (fragment.activity as AudioLanguageActivity).finish()
     }
     createAdapter()
     return binding.root
@@ -53,8 +53,8 @@ class DefaultAudioFragmentPresenter @Inject constructor(private val fragment: Fr
     when (val parentActivity = fragment.activity) {
       is OptionsActivity ->
         parentActivity.optionActivityPresenter.updateAudioLanguage(audioLanguage)
-      is DefaultAudioActivity ->
-        parentActivity.defaultAudioActivityPresenter.setLanguageSelected(audioLanguage)
+      is AudioLanguageActivity ->
+        parentActivity.audioLanguageActivityPresenter.setLanguageSelected(audioLanguage)
     }
   }
 

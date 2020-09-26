@@ -102,6 +102,7 @@ class OptionsFragmentTest {
     FirebaseApp.initializeApp(context)
   }
 
+
   @After
   fun tearDown() {
     Intents.release()
@@ -205,7 +206,7 @@ class OptionsFragmentTest {
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
 
       val activityMonitor = getInstrumentation().addMonitor(
-        DefaultAudioActivity::class.java.name,
+        AudioLanguageActivity::class.java.name,
         activityResult,
         true
       )
@@ -283,7 +284,7 @@ class OptionsFragmentTest {
   }
 
   private fun createDefaultAudioActivityIntent(summaryValue: String): Intent {
-    return DefaultAudioActivity.createDefaultAudioActivityIntent(
+    return AudioLanguageActivity.createAudioLanguageActivityIntent(
       ApplicationProvider.getApplicationContext(),
       AUDIO_LANGUAGE,
       summaryValue

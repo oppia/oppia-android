@@ -103,7 +103,7 @@ class OptionsActivity :
 
   override fun routeAudioLanguageList(audioLanguage: String?) {
     startActivityForResult(
-      DefaultAudioActivity.createDefaultAudioActivityIntent(
+      AudioLanguageActivity.createAudioLanguageActivityIntent(
         this,
         AUDIO_LANGUAGE,
         audioLanguage
