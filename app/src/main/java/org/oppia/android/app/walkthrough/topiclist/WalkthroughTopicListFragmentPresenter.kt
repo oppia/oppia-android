@@ -1,11 +1,10 @@
-package org.oppia.android.app.walkthrough.topiclist
+package org.oppia.app.walkthrough.topiclist
 
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,6 +20,19 @@ import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.Walkthroug
 import org.oppia.android.databinding.WalkthroughTopicHeaderViewBinding
 import org.oppia.android.databinding.WalkthroughTopicListFragmentBinding
 import org.oppia.android.databinding.WalkthroughTopicSummaryViewBinding
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.walkthrough_activity.*
+import org.oppia.app.databinding.WalkthroughTopicHeaderViewBinding
+import org.oppia.app.databinding.WalkthroughTopicListFragmentBinding
+import org.oppia.app.databinding.WalkthroughTopicSummaryViewBinding
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.TopicSummary
+import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.app.walkthrough.WalkthroughFragmentChangeListener
+import org.oppia.app.walkthrough.WalkthroughPages
+import org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
+import org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughTopicListFragment]. */
@@ -68,15 +80,14 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
       addOnScrollListener(object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
           super.onScrolled(recyclerView, dx, dy)
-          val pos = walkthroughLayoutManager.findFirstCompletelyVisibleItemPosition()
-          Toast.makeText(context, "$pos", Toast.LENGTH_SHORT).show()
-//          if (pos != 0) {
-//            activity.walkthrough_progress_bar.visibility = View.GONE
-//            activity.walkthrough_activity_topic_header_text_view.visibility = View.VISIBLE
-//          } else {
-//            activity.walkthrough_progress_bar.visibility = View.VISIBLE
-//            activity.walkthrough_activity_topic_header_text_view.visibility = View.GONE
-//          }
+          val pos = walkthroughLayoutManager.findFirstVisibleItemPosition()
+          if (pos != 0) {
+            activity.walkthrough_progress_bar.visibility = View.GONE
+            activity.walkthrough_activity_topic_header_text_view.visibility = View.VISIBLE
+          } else {
+            activity.walkthrough_progress_bar.visibility = View.VISIBLE
+            activity.walkthrough_activity_topic_header_text_view.visibility = View.GONE
+          }
         }
       })
     }
