@@ -408,7 +408,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       // For showing navigation drawer in AdministratorControlsActivity
       getFooterViewModel().isAdministratorControlsSelected.set(true)
       binding.fragmentDrawerNavView.menu.forEach {
-        it.isChecked = false
+        it.isCheckable = false
       }
       this.drawerLayout = drawerLayout
       drawerToggle = object : ActionBarDrawerToggle(
