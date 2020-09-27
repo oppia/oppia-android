@@ -14,7 +14,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="28dp"
     android:layout_marginEnd="28dp"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="24dp"
     android:fontFamily="sans-serif-medium"
     android:text="@string/what_do_you_want_to_learn"
     android:textColor="@color/oppiaPrimaryText"

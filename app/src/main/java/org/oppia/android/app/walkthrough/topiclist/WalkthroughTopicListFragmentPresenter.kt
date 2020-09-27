@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.walkthrough_activity.*
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -63,6 +65,19 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
     binding.walkthroughTopicRecyclerView.apply {
       layoutManager = walkthroughLayoutManager
       adapter = createRecyclerViewAdapter()
+      addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+          super.onScrolled(recyclerView, dx, dy)
+          val pos = walkthroughLayoutManager.findFirstVisibleItemPosition()
+          if (pos >= 1) {
+            activity.walkthrough_progress_bar.visibility = View.GONE
+            activity.walkthrough_activity_topic_header_text_view.visibility = View.VISIBLE
+          } else {
+            activity.walkthrough_progress_bar.visibility = View.VISIBLE
+            activity.walkthrough_activity_topic_header_text_view.visibility = View.GONE
+          }
+        }
+      })
     }
 
     binding.let {

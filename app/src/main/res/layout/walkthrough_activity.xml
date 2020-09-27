@@ -42,6 +42,21 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+      android:id="@+id/walkthrough_activity_topic_header_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginTop="16dp"
+      android:fontFamily="sans-serif-medium"
+      android:text="@string/what_do_you_want_to_learn"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="24sp"
+      android:visibility="invisible"
+      app:layout_constraintBottom_toBottomOf="@+id/walkthrough_progress_bar"
+      app:layout_constraintStart_toEndOf="@+id/back_button"
+      app:layout_constraintTop_toTopOf="parent" />
+
     <ProgressBar
       android:id="@+id/walkthrough_progress_bar"
       style="?android:attr/progressBarStyleHorizontal"
