@@ -14,17 +14,17 @@ private const val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
 private const val KEY_SELECTED_AUDIO_LANGUAGE = "SELECTED_AUDIO_LANGUAGE"
 
 /** The fragment to change the default audio language of the app. */
-class DefaultAudioFragment : InjectableFragment() {
+class AudioLanguageFragment : InjectableFragment() {
 
   @Inject
-  lateinit var defaultAudioFragmentPresenter: DefaultAudioFragmentPresenter
+  lateinit var audioLanguageFragmentPresenter: AudioLanguageFragmentPresenter
 
   companion object {
-    fun newInstance(prefsKey: String, prefsSummaryValue: String): DefaultAudioFragment {
+    fun newInstance(prefsKey: String, prefsSummaryValue: String): AudioLanguageFragment {
       val args = Bundle()
       args.putString(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE, prefsKey)
       args.putString(KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE, prefsSummaryValue)
-      val fragment = DefaultAudioFragment()
+      val fragment = AudioLanguageFragment()
       fragment.arguments = args
       return fragment
     }
@@ -41,7 +41,7 @@ class DefaultAudioFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     val args =
-      checkNotNull(arguments) { "Expected arguments to be passed to DefaultAudioFragment" }
+      checkNotNull(arguments) { "Expected arguments to be passed to AudioLanguageFragment" }
     val prefsKey = args.getString(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE)
     val audioLanguageDefaultSummary = checkNotNull(
       args.getString(KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
@@ -51,7 +51,7 @@ class DefaultAudioFragment : InjectableFragment() {
     } else {
       savedInstanceState.get(KEY_SELECTED_AUDIO_LANGUAGE) as? String ?: audioLanguageDefaultSummary
     }
-    return defaultAudioFragmentPresenter.handleOnCreateView(
+    return audioLanguageFragmentPresenter.handleOnCreateView(
       inflater,
       container,
       prefsKey!!,
@@ -63,7 +63,7 @@ class DefaultAudioFragment : InjectableFragment() {
     super.onSaveInstanceState(outState)
     outState.putString(
       KEY_SELECTED_AUDIO_LANGUAGE,
-      defaultAudioFragmentPresenter.getLanguageSelected()
+      audioLanguageFragmentPresenter.getLanguageSelected()
     )
   }
 }
