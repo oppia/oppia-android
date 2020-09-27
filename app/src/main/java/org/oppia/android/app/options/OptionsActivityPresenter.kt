@@ -115,7 +115,7 @@ class OptionsActivityPresenter @Inject constructor(
       .beginTransaction()
       .add(R.id.multipane_options_container, audioLanguageFragment)
       .commitNow()
-    getOptionFragment()?.setSelectedFragment(DEFAULT_AUDIO_FRAGMENT)
+    getOptionFragment()?.setSelectedFragment(AUDIO_LANGUAGE_FRAGMENT)
   }
 
   fun setExtraOptionTitle(title: String) {

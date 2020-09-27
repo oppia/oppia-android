@@ -233,18 +233,18 @@ class AudioLanguageFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(defaultAudioFragmentTest: AudioLanguageFragmentTest)
+    fun inject(audioLanguageFragmentTest: AudioLanguageFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerDefaultAudioFragmentTest_TestApplicationComponent.builder()
+      DaggerAudioLanguageFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(defaultAudioFragmentTest: AudioLanguageFragmentTest) {
-      component.inject(defaultAudioFragmentTest)
+    fun inject(audioLanguageFragmentTest: AudioLanguageFragmentTest) {
+      component.inject(audioLanguageFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

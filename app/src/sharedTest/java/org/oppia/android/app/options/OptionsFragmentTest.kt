@@ -102,7 +102,6 @@ class OptionsFragmentTest {
     FirebaseApp.initializeApp(context)
   }
 
-
   @After
   fun tearDown() {
     Intents.release()
@@ -213,7 +212,7 @@ class OptionsFragmentTest {
 
       it.onActivity { activity ->
         activity.startActivityForResult(
-          createDefaultAudioActivityIntent("Hindi"),
+          createAudioLanguageActivityIntent("Hindi"),
           REQUEST_CODE_AUDIO_LANGUAGE
         )
       }
@@ -283,7 +282,7 @@ class OptionsFragmentTest {
     )
   }
 
-  private fun createDefaultAudioActivityIntent(summaryValue: String): Intent {
+  private fun createAudioLanguageActivityIntent(summaryValue: String): Intent {
     return AudioLanguageActivity.createAudioLanguageActivityIntent(
       ApplicationProvider.getApplicationContext(),
       AUDIO_LANGUAGE,

@@ -17,7 +17,7 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
     if (getAudioLanguageFragment() == null) {
       val audioLanguageFragment = AudioLanguageFragment.newInstance(prefKey, prefValue)
       activity.supportFragmentManager.beginTransaction()
-        .add(R.id.default_audio_fragment_container, audioLanguageFragment).commitNow()
+        .add(R.id.audio_language_fragment_container, audioLanguageFragment).commitNow()
     }
   }
 
@@ -31,6 +31,6 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
 
   private fun getAudioLanguageFragment(): AudioLanguageFragment? {
     return activity.supportFragmentManager
-      .findFragmentById(R.id.default_audio_fragment_container) as AudioLanguageFragment?
+      .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment?
   }
 }
