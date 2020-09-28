@@ -59,7 +59,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
   private var previousMenuItemId: Int? = null
   private var internalProfileId: Int = -1
-  private var lastCheckedItem: MenuItem? = null
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = DrawerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -237,7 +236,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         NavigationDrawerItem.SWITCH_PROFILE -> {
           val isAdminSelected = getFooterViewModel().isAdministratorControlsSelected.get() ?: false
           val id: Int = if (!isAdminSelected) {
-            lastCheckedItem?.itemId ?: -1
+            previousMenuItemId ?: -1
+//            lastCheckedItem?.itemId ?: -1
           } else {
             -1
           }
@@ -272,21 +272,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   fun markLastCheckedItemCloseDrawer(lastCheckedItemId: Int, isAdminSelected: Boolean) {
     if (isAdminSelected) {
       getFooterViewModel().isAdministratorControlsSelected.set(true)
-      binding.fragmentDrawerNavView.menu.getItem(
-        NavigationDrawerItem.HOME.ordinal
-      ).isChecked = false
-      binding.fragmentDrawerNavView.menu.getItem(
-        NavigationDrawerItem.SWITCH_PROFILE.ordinal
-      ).isChecked = false
-      binding.fragmentDrawerNavView.menu.getItem(
-        NavigationDrawerItem.DOWNLOADS.ordinal
-      ).isChecked = false
-      binding.fragmentDrawerNavView.menu.getItem(
-        NavigationDrawerItem.HELP.ordinal
-      ).isChecked = false
-      binding.fragmentDrawerNavView.menu.getItem(
-        NavigationDrawerItem.OPTIONS.ordinal
-      ).isChecked = false
     } else {
       if (lastCheckedItemId == -1) {
         binding.fragmentDrawerNavView.menu.getItem(
@@ -315,11 +300,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             else -> 0
           }
         ).isChecked = true
-        if (lastCheckedItemId == NavigationDrawerItem.SWITCH_PROFILE.value) {
-          binding.fragmentDrawerNavView.menu.getItem(
-            NavigationDrawerItem.SWITCH_PROFILE.ordinal
-          ).isChecked = false
-        }
       }
     }
     drawerLayout.closeDrawers()
@@ -461,7 +441,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
-    lastCheckedItem = binding.fragmentDrawerNavView.checkedItem
     openActivityByMenuItemId(menuItem.itemId)
     return true
   }
