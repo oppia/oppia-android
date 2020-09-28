@@ -241,7 +241,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           val dialogFragment = ExitProfileDialogFragment
             .newInstance(
               isFromNavigationDrawer = true,
-              isAdministratorControlsSelected = getFooterViewModel().isAdministratorControlsSelected.get() ?: false,
+              isAdministratorControlsSelected =
+              getFooterViewModel().isAdministratorControlsSelected.get() ?: false,
               lastCheckedItemId = previousMenuItemId ?: -1
             )
           dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
