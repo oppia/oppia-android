@@ -24,7 +24,7 @@ For Example:
 ## assertThat() vs. assertEqual(), assertTrue() / assertFalse()
 Use `assertThat()` instead of `assertEqual()`, `assertTrue()` / `assertFalse()`
 
-The first benefit is that `assertThat()` is more readable than the other assert methods. For example take a look at the following `assertEquals()`:
+The first benefit is that `assertThat()` is more readable than the other assert methods. For example, take a look at the following `assertEquals()`:
 ```
 assertEquals(expected, actual)
 ```
@@ -44,7 +44,7 @@ Since there is no **assertNotEquals** (unless it’s custom coded) we have to us
 assertThat(actual).isNotEqualTo(expected)
 ```
 
-If we want to verify that two values are not equal, we have to write our assertion by invoking the isNotEqualTo() method .
+If we want to verify that two values are not equal, we have to write our assertion by invoking the isNotEqualTo() method.
 
 Some simple methods exist for truth testing:
 ```
@@ -55,7 +55,7 @@ Hence assertThat should be the preferred method over the other methods.
  
 ## Testing private methods/functions
 Tests should only be written to verify the behaviour of public methods/functions. Private functions should not be used in behavioural tests. Here are some suggestions for what to do in specific cases (if this doesn't help for your particular case and you're not sure what to do, please talk to @BenHenning):
-* If you want to test code execution of a private method/function, test it through public interface, or move it to a utility (if it's general-purpose) where it becomes public. Avoid testing private APIs since that may lead to brittle test in unexpected situations (such as when the implementation of the API changes, but the behaviour remains the same).
+* If you want to test code execution of a private method/function, test it through the public interface, or move it to a utility (if it's general-purpose) where it becomes public. Avoid testing private APIs since that may lead to brittle test in unexpected situations (such as when the implementation of the API changes, but the behaviour remains the same).
 * If you’re trying to access hidden information, consider getting that information from one level below instead (e.g. datastore).
 
 # Oppia project organization for tests
@@ -67,8 +67,8 @@ The following is the default directory structure for Oppia application and test 
 
 If you follow this conversion, the Android build system runs your tests on the correct target (JVM or Android device).
 
-## Roboelectric
-With [Roboelectric](https://github.com/robolectric/robolectric) you can write tests like this:
+## Robolectric
+With [Robolectric](https://github.com/robolectric/robolectric) you can write tests like this:
 ```
 @RunWith(AndroidJUnit4.class)
 public class MyActivityTest {
@@ -86,7 +86,7 @@ public class MyActivityTest {
 }
 ```
 
-### Running Roboelectric tests
+### Running Robolectric tests
 1. Go to **Edit Configuration** in Android Studio
 <img width="425" alt="Screenshot 2020-04-13 at 2 51 02 PM" src="https://user-images.githubusercontent.com/9396084/79109714-83525980-7d96-11ea-99d7-f83ea81a8a50.png">
 
@@ -97,7 +97,7 @@ public class MyActivityTest {
 <img width="1074" alt="Screenshot 2020-04-13 at 3 18 39 PM" src="https://user-images.githubusercontent.com/9396084/79111450-307aa100-7d9a-11ea-8b9d-81aac26e104d.png">
 
 
-4. Press `OK` to run the test cases in roboelectric.
+4. Press `OK` to run the test cases in robolectric.
 
 ## Espresso
 Use [Espresso](https://developer.android.com/training/testing/espresso) to write concise, beautiful, and reliable Android UI tests.
@@ -176,9 +176,9 @@ A test case can never be called complete without assertions and hence it is impo
 ### Using isCompletelyDisplayed and isDisplayed
 
 * **isCompletelyDisplayed** : Returns a matcher which only accepts a view whose height and width fit perfectly within the currently displayed region of this view. 
-* There exist views (such as ScrollViews) whose height and width are larger then the physical device screen by design. Such views will _never_ be completely displayed.
+* There exist views (such as ScrollViews) whose height and width are larger than the physical device screen by design. Such views will _never_ be completely displayed.
 * **isDisplayed** : Returns a matcher that matches {@link View}s that are currently displayed on the screen to the user.
-* Note: isDisplayed will select views that are partially displayed (eg: the full height/width of the view is greater then the height/width of the visible rectangle). If you wish to ensure the entire rectangle this view draws is displayed to the user use isCompletelyDisplayed
+* Note: isDisplayed will select views that are partially displayed (eg: the full height/width of the view is greater than the height/width of the visible rectangle). If you wish to ensure the entire rectangle this view draws is displayed to the user use isCompletelyDisplayed
 
 ### Using swipeLeft/Right and using scrollToPage:
 * Espresso release contains new left and right swiping actions: swipeLeft() and swipeRight(). They both are really useful when you'd like to swipe between activity fragments, tab layouts or any other UI elements.
@@ -231,17 +231,19 @@ fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
 
 Espresso test might execute some checks while the app is doing some operations in the background threads, due to which the test may have no much content to interact with, therefore it throws an exception.
 
-We can solve this by adding an artificial delay (solution illustrated in some of SO answers to this issue) either by adding code like `SystemClock.sleep(period)` or `Thread.sleep(period)` . Yet with this approach, we might end up having inflexible and slow tests
+We can solve this by adding an artificial delay (solution illustrated in some of SO answers to this issue) either by adding code like `SystemClock.sleep(period)` or `Thread.sleep(period)`. Yet with this approach, we might end up having inflexible and slow tests.
 
-In order to solve this in a clean and effective manner, we have integrated IdlingResources in the application, [CountingIdlingResource](https://android.jlelse.eu/integrate-espresso-idling-resources-in-your-app-to-build-flexible-ui-tests-c779e24f5057) is one of the easiest to understand resource that comes bundled within the framework.
+In order to solve this in a clean and effective manner, we have created a [TestCoroutineDispatchers](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/TestCoroutineDispatchers.kt) using which we can provide test cases required delay weather on robolectric or espresso, both has its own implementation.  
+1. [TestCoroutineDispatchersEspressoImpl](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/TestCoroutineDispatchersEspressoImpl.kt) - Here, we are using the real-time-clock and hooking the idling resources to monitor background coroutines. 
+2. [TestCoroutineDispatchersRobolectricImpl](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/TestCoroutineDispatchersRobolectricImpl.kt) - Here, we had implemented a way using which we can run test cases in a coordinated, deterministic, and thread-safe way. 
 
 
-# Tips to run testcases in both Expresso and Roboelectric
+# Tips to run testcases in both Espresso and Robolectric
 The project contains two kinds of tests, unit tests using Robolectric and instrumentation tests using Espresso.
 
 Both frameworks can create the same kinds of tests, the difference is how they’re executed. Robolectric tests are run on a standard JVM, which makes them very fast to run, but there are some limitations on what can be tested. Espresso tests are run on a device (either actual or virtual) so they more closely resemble the actual running system, but they are a lot slower to run. 
 
-Sometimes it may happen that testcases pass in Expresso but fail in Roboelectric. Direct dependencies on Robolectric causes build failures when trying to build the test with Espresso. 
+Sometimes it may happen that testcases pass in Espresso but fail in Robolectric. Direct dependencies on Robolectric causes build failures when trying to build the test with Espresso. 
 
 Following are the different ways you can try to pass the testcases.
 
@@ -262,12 +264,22 @@ at least 90 percent of the view's area is displayed to the user.
 
    Apply the `@Config(qualifiers = "port-xxhdpi")` annotation to your test package/class/method [reference](http://robolectric.org/device-configuration/).
 
+3. Along with the qualifiers, we are using our own application class rather than depending on the main application class which in our codebase is `OppiaApplication`. 
+
+   `@Config(application = ExplorationActivityTest.TestApplication::class)`
+
+4. We can inject `TestCoroutineDispatchers` and provide a delay as per the requirement. 
+```
+ @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+```
+
 ```
   @Test
-  @Config(qualifiers = "port-xxhdpi")
+  @Config(application = ProfileProgressActivityTest.TestApplication::class , qualifiers = "port-xxhdpi")
   fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText("Sean"))
+      testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.view_all_text_view)).check(
         matches(
           withText("View All")
