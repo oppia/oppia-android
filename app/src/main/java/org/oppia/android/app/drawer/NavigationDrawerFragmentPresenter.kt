@@ -1,6 +1,5 @@
 package org.oppia.android.app.drawer
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -234,12 +233,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.SWITCH_PROFILE -> {
-          val isAdminSelected = getFooterViewModel().isAdministratorControlsSelected.get() ?: false
-          val id: Int = if (!isAdminSelected) {
-            previousMenuItemId ?: -1
-          } else {
-            -1
-          }
           val previousFragment =
             fragment.childFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
           if (previousFragment != null) {
@@ -248,8 +241,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           val dialogFragment = ExitProfileDialogFragment
             .newInstance(
               isFromNavigationDrawer = true,
-              isAdministratorControlsSelected = isAdminSelected,
-              lastCheckedItemId = id
+              isAdministratorControlsSelected = getFooterViewModel().isAdministratorControlsSelected.get() ?: false,
+              lastCheckedItemId = previousMenuItemId ?: -1
             )
           dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
         }
@@ -269,44 +262,24 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   fun markLastCheckedItemCloseDrawer(lastCheckedItemId: Int, isAdminSelected: Boolean) {
-    logger.d("check2", "lastCheckedItemId = $lastCheckedItemId")
     if (isAdminSelected) {
       getFooterViewModel().isAdministratorControlsSelected.set(true)
-    } else {
-      if (lastCheckedItemId == -1) {
-        binding.fragmentDrawerNavView.menu.getItem(
-          NavigationDrawerItem.HOME.ordinal
-        ).isChecked = false
-        binding.fragmentDrawerNavView.menu.getItem(
-          NavigationDrawerItem.SWITCH_PROFILE.ordinal
-        ).isChecked = false
-        binding.fragmentDrawerNavView.menu.getItem(
-          NavigationDrawerItem.DOWNLOADS.ordinal
-        ).isChecked = false
-        binding.fragmentDrawerNavView.menu.getItem(
-          NavigationDrawerItem.HELP.ordinal
-        ).isChecked = false
-        binding.fragmentDrawerNavView.menu.getItem(
-          NavigationDrawerItem.OPTIONS.ordinal
-        ).isChecked = false
-      } else {
-        binding.fragmentDrawerNavView.menu.getItem(
-          when (lastCheckedItemId) {
-            NavigationDrawerItem.HOME.value -> 0
-            NavigationDrawerItem.OPTIONS.value -> 1
-            NavigationDrawerItem.HELP.value -> 2
-            NavigationDrawerItem.DOWNLOADS.value -> 3
-            NavigationDrawerItem.SWITCH_PROFILE.value -> 4
-            else -> 0
-          }
-        ).isChecked = true
-      }
+    } else if (lastCheckedItemId != -1) {
+      binding.fragmentDrawerNavView.menu.getItem(
+        when (lastCheckedItemId) {
+          NavigationDrawerItem.HOME.value -> 0
+          NavigationDrawerItem.OPTIONS.value -> 1
+          NavigationDrawerItem.HELP.value -> 2
+          NavigationDrawerItem.DOWNLOADS.value -> 3
+          NavigationDrawerItem.SWITCH_PROFILE.value -> 4
+          else -> 0
+        }
+      ).isChecked = true
     }
     drawerLayout.closeDrawers()
   }
 
   fun unmarkSwitchProfileItemCloseDrawer() {
-    Log.d("final", "unmarkSwitchProfileItemCloseDrawer: unmark done")
     binding.fragmentDrawerNavView.menu.getItem(
       NavigationDrawerItem.SWITCH_PROFILE.ordinal
     ).isChecked =
@@ -319,7 +292,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
    */
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
     previousMenuItemId = if (activity is TopicActivity) null else menuItemId
-    logger.d("check", "menuitemId = $previousMenuItemId")
     if (menuItemId != 0) {
       getFooterViewModel().isAdministratorControlsSelected.set(false)
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
@@ -388,9 +360,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     } else {
       // For showing navigation drawer in AdministratorControlsActivity
       getFooterViewModel().isAdministratorControlsSelected.set(true)
-//      binding.fragmentDrawerNavView.menu.forEach {
-//        it.isCheckable = false
-//      }
+      binding.fragmentDrawerNavView.menu.forEach {
+        it.isCheckable = false
+      }
       this.drawerLayout = drawerLayout
       drawerToggle = object : ActionBarDrawerToggle(
         fragment.activity,
