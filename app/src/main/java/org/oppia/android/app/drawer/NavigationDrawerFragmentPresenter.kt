@@ -242,7 +242,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             .newInstance(
               isFromNavigationDrawer = true,
               isAdministratorControlsSelected =
-              getFooterViewModel().isAdministratorControlsSelected.get() ?: false,
+                getFooterViewModel().isAdministratorControlsSelected.get() ?: false,
               lastCheckedItemId = previousMenuItemId ?: -1
             )
           dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
