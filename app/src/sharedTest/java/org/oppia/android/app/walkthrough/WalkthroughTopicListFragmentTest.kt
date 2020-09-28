@@ -12,7 +12,7 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -94,11 +94,12 @@ class WalkthroughTopicListFragmentTest {
     )
   }
 
+  // It tests if progressBar gets hidden on scrolling to second row of items
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicHeader_notOnTop_progressBarIsHidden() {
+  fun testWalkthroughWelcomeFragment_portrait_recyclerViewIndex4__progressBarIsHidden() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
-      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           4
@@ -107,15 +108,16 @@ class WalkthroughTopicListFragmentTest {
       onView(withId(R.id.walkthrough_progress_bar)).check(
         matches(
           withEffectiveVisibility(
-            ViewMatchers.Visibility.GONE
+            Visibility.GONE
           )
         )
       )
     }
   }
 
+  // It tests if headerText gets visible on scrolling to second row of items
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicHeader_notOnTop_activityHeaderIsVisible() { // ktlint-disable max-line-length
+  fun testWalkthroughWelcomeFragment_landscape_recyclerViewIndex4_activityHeaderIsVisible() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(isRoot()).perform(orientationLandscape())
@@ -127,7 +129,7 @@ class WalkthroughTopicListFragmentTest {
       onView(withId(R.id.walkthrough_activity_topic_header_text_view)).check(
         matches(
           withEffectiveVisibility(
-            ViewMatchers.Visibility.VISIBLE
+            Visibility.VISIBLE
           )
         )
       )

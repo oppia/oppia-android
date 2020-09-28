@@ -68,8 +68,8 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
       addOnScrollListener(object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
           super.onScrolled(recyclerView, dx, dy)
-          val pos = walkthroughLayoutManager.findFirstVisibleItemPosition()
-          if (pos >= 1) {
+          val firstVisibleItemPosition = walkthroughLayoutManager.findFirstVisibleItemPosition()
+          if (firstVisibleItemPosition >= 1) {
             activity.walkthrough_progress_bar.visibility = View.GONE
             activity.walkthrough_activity_topic_header_text_view.visibility = View.VISIBLE
           } else {
