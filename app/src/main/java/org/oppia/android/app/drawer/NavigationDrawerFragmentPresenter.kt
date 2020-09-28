@@ -269,6 +269,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   fun markLastCheckedItemCloseDrawer(lastCheckedItemId: Int, isAdminSelected: Boolean) {
+    logger.d("check2", "lastCheckedItemId = $lastCheckedItemId")
     if (isAdminSelected) {
       getFooterViewModel().isAdministratorControlsSelected.set(true)
     } else {
@@ -318,6 +319,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
    */
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
     previousMenuItemId = if (activity is TopicActivity) null else menuItemId
+    logger.d("check", "menuitemId = $previousMenuItemId")
     if (menuItemId != 0) {
       getFooterViewModel().isAdministratorControlsSelected.set(false)
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
@@ -386,9 +388,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     } else {
       // For showing navigation drawer in AdministratorControlsActivity
       getFooterViewModel().isAdministratorControlsSelected.set(true)
-      binding.fragmentDrawerNavView.menu.forEach {
-        it.isCheckable = false
-      }
+//      binding.fragmentDrawerNavView.menu.forEach {
+//        it.isCheckable = false
+//      }
       this.drawerLayout = drawerLayout
       drawerToggle = object : ActionBarDrawerToggle(
         fragment.activity,
