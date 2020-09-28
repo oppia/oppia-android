@@ -237,7 +237,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           val isAdminSelected = getFooterViewModel().isAdministratorControlsSelected.get() ?: false
           val id: Int = if (!isAdminSelected) {
             previousMenuItemId ?: -1
-//            lastCheckedItem?.itemId ?: -1
           } else {
             -1
           }
