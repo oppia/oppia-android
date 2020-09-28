@@ -227,25 +227,22 @@ fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
 }
 ```
 
-## Integrate Espresso Idling Resources in the app to build flexible UI tests
+# Tips to run test cases in both Espresso and Robolectric
+The project contains two kinds of tests, unit tests using Robolectric and instrumentation tests using Espresso.
+
+Both frameworks can create the same kinds of tests, the difference is how they’re executed. Robolectric tests are run on a standard JVM, which makes them very fast to run, but there are some limitations on what can be tested. Espresso tests are run on a device (either actual or virtual) so they more closely resemble the actual running system, but they are a lot slower to run. 
 
 Espresso test might execute some checks while the app is doing some operations in the background threads, due to which the test may have no much content to interact with, therefore it throws an exception.
 
-We can solve this by adding an artificial delay (solution illustrated in some of SO answers to this issue) either by adding code like `SystemClock.sleep(period)` or `Thread.sleep(period)`. Yet with this approach, we might end up having inflexible and slow tests.
+While writing espresso test cases we should never use `Thread.sleep(period)` as this approach, we might end up having inflexible and slow tests.
+
+Sometimes it may happen that test cases pass in Espresso but fail in Robolectric. Direct dependencies on Robolectric causes build failures when trying to build the test with Espresso. 
 
 In order to solve this in a clean and effective manner, we have created a [TestCoroutineDispatchers](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/TestCoroutineDispatchers.kt) using which we can provide test cases required delay weather on robolectric or espresso, both has its own implementation.  
 1. [TestCoroutineDispatchersEspressoImpl](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/TestCoroutineDispatchersEspressoImpl.kt) - Here, we are using the real-time-clock and hooking the idling resources to monitor background coroutines. 
 2. [TestCoroutineDispatchersRobolectricImpl](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/TestCoroutineDispatchersRobolectricImpl.kt) - Here, we had implemented a way using which we can run test cases in a coordinated, deterministic, and thread-safe way. 
 
-
-# Tips to run testcases in both Espresso and Robolectric
-The project contains two kinds of tests, unit tests using Robolectric and instrumentation tests using Espresso.
-
-Both frameworks can create the same kinds of tests, the difference is how they’re executed. Robolectric tests are run on a standard JVM, which makes them very fast to run, but there are some limitations on what can be tested. Espresso tests are run on a device (either actual or virtual) so they more closely resemble the actual running system, but they are a lot slower to run. 
-
-Sometimes it may happen that testcases pass in Espresso but fail in Robolectric. Direct dependencies on Robolectric causes build failures when trying to build the test with Espresso. 
-
-Following are the different ways you can try to pass the testcases.
+Following are the different ways you can try to pass the test cases.
 
 ### Performance Exception/Runtime Exception Failure:
 
@@ -260,7 +257,7 @@ at least 90 percent of the view's area is displayed to the user.
    **Example:** 
 `onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())`
 
-2. Sometimes test is rejected on small screen devices. Use Robolectric `qualifiers` property that sets up the Android simulation environment with a corresponding configuration. The system’s Configuration, Display and DisplayMetrics objects will all reflect the specified configuration, the locale will be set, and appropriate resources will be selected. 
+2. Sometimes the test is rejected on small screen devices. Use Robolectric `qualifiers` property that sets up the Android simulation environment with a corresponding configuration. The system’s Configuration, Display and DisplayMetrics objects will all reflect the specified configuration, the locale will be set, and appropriate resources will be selected. 
 
    Apply the `@Config(qualifiers = "port-xxhdpi")` annotation to your test package/class/method [reference](http://robolectric.org/device-configuration/).
 
