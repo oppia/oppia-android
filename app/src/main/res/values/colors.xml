@@ -73,7 +73,7 @@
   <color name="highlightedNavMenuItem">#BE563C</color>
   <color name="navBarHeaderBackground">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->
-  <color name="defaultAudioActivityRadioButton">#00A89F</color>
+  <color name="audioLanguageActivityRadioButton">#00A89F</color>
   <color name="submitButtonInactive">#61999999</color>
   <color name="submitButtonTextInactive">#61000000</color>
   <color name="submitButtonInactiveText">#61000000</color>

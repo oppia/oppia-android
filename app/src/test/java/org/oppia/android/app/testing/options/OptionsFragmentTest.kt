@@ -32,8 +32,8 @@ import org.oppia.android.app.options.APP_LANGUAGE
 import org.oppia.android.app.options.AUDIO_LANGUAGE
 import org.oppia.android.app.options.AppLanguageActivity
 import org.oppia.android.app.options.AppLanguageFragment
-import org.oppia.android.app.options.DefaultAudioActivity
-import org.oppia.android.app.options.DefaultAudioFragment
+import org.oppia.android.app.options.AudioLanguageActivity
+import org.oppia.android.app.options.AudioLanguageFragment
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.options.READING_TEXT_SIZE
 import org.oppia.android.app.options.ReadingTextSizeActivity
@@ -149,10 +149,10 @@ class OptionsFragmentTest {
       ).perform(
         click()
       )
-      intended(hasComponent(DefaultAudioActivity::class.java.name))
+      intended(hasComponent(AudioLanguageActivity::class.java.name))
       intended(
         hasExtra(
-          DefaultAudioActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE,
+          AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE,
           AUDIO_LANGUAGE
         )
       )
@@ -241,7 +241,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is DefaultAudioFragment).isTrue()
+        assertThat(loadedFragment is AudioLanguageFragment).isTrue()
       }
     }
   }
