@@ -53,9 +53,10 @@
 
     <TextView
       android:id="@+id/submitted_answer_text_view"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:background="@drawable/submitted_answer_background"
+      android:layout_weight="0.8"
       android:contentDescription="@{accessibleAnswer ?? submittedAnswer}"
       android:paddingStart="12dp"
       android:paddingTop="@{viewModel.hasConversationView ? @dimen/padding_16 : @dimen/padding_8}"
