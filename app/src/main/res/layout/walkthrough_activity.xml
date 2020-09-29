@@ -56,7 +56,7 @@
       android:text="@string/what_do_you_want_to_learn"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
-      android:visibility="@{fragmentViewModel._isHeaderTextViewVisible() ? View.VISIBLE : View.GONE}"
+      android:visibility="@{fragmentViewModel.isHeaderTextViewVisible != null ? fragmentViewModel.isHeaderTextViewVisible ? View.VISIBLE : View.GONE : View.GONE}"
       app:layout_constraintBottom_toBottomOf="@+id/walkthrough_progress_bar"
       app:layout_constraintStart_toEndOf="@+id/back_button"
       app:layout_constraintTop_toTopOf="parent" />
@@ -68,7 +68,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="32dp"
       android:layout_marginEnd="32dp"
-      android:visibility="@{fragmentViewModel._isProgressBarVisible() ? View.VISIBLE : View.GONE}"
+      android:visibility="@{fragmentViewModel.isProgressBarVisible != null ? fragmentViewModel.isProgressBarVisible ? View.VISIBLE : View.GONE : View.VISIBLE}"
       android:max="3"
       android:progress="@{viewModel.currentProgress}"
       android:progressDrawable="@drawable/rounded_corners_progress_bar"
