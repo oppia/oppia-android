@@ -177,55 +177,55 @@
     <item name="android:backgroundDimEnabled">true</item>
   </style>
 
-  <style name="H1Header" parent="Widget.AppCompat.TextView">
+  <style name="H1Header" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">24sp</item>
     <item name="fontFamily">sans-serif</item>
   </style>
 
-  <style name="H2Title" parent="Widget.AppCompat.TextView">
+  <style name="H2Title" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">20sp</item>
     <item name="fontFamily">sans-serif-medium</item>
   </style>
 
-  <style name="H3Subheader" parent="Widget.AppCompat.TextView">
+  <style name="H3Subheader" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">18sp</item>
     <item name="fontFamily">sans-serif-medium</item>
   </style>
 
-  <style name="H4" parent="Widget.AppCompat.TextView">
+  <style name="H4" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">18sp</item>
     <item name="fontFamily">sans-serif</item>
   </style>
 
-  <style name="H5" parent="Widget.AppCompat.TextView">
+  <style name="H5" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">14sp</item>
     <item name="fontFamily">sans-serif-medium</item>
   </style>
 
-  <style name="Subtitle1" parent="Widget.AppCompat.TextView">
+  <style name="Subtitle1" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">16sp</item>
     <item name="fontFamily">sans-serif</item>
   </style>
 
-  <style name="Subtitle2" parent="Widget.AppCompat.TextView">
+  <style name="Subtitle2" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">14sp</item>
     <item name="fontFamily">sans-serif</item>
   </style>
 
-  <style name="TextFieldLabel" parent="Widget.AppCompat.TextView">
+  <style name="TextFieldLabel" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">12sp</item>
     <item name="fontFamily">sans-serif</item>
   </style>
 
-  <style name="Body" parent="Widget.AppCompat.TextView">
+  <style name="Body" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">16sp</item>
     <item name="fontFamily">sans-serif</item>
