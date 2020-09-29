@@ -2,6 +2,7 @@ package org.oppia.android.app.walkthrough.topiclist
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.model.TopicList
@@ -29,6 +30,24 @@ class WalkthroughTopicViewModel @Inject constructor(
 
   private val topicListSummaryLiveData: LiveData<TopicList> by lazy {
     Transformations.map(topicListSummaryResultLiveData, ::processTopicListResult)
+  }
+
+  val _isHeaderTextViewVisible =  MutableLiveData<Boolean>()
+  val isHeaderTextViewVisible: LiveData<Boolean>
+    get() = _isHeaderTextViewVisible
+
+  val _isProgressBarVisible =  MutableLiveData<Boolean>()
+  val isProgressBarVisible: LiveData<Boolean>
+    get() = _isProgressBarVisible
+
+  fun hideProgressBarAndShowHeaderTextView() {
+    _isProgressBarVisible.value = false
+    _isHeaderTextViewVisible.value = true
+  }
+
+  fun hideHeaderTextViewAndShowProgressBar() {
+    _isHeaderTextViewVisible.value = true
+    _isHeaderTextViewVisible.value = false
   }
 
   private fun processTopicListResult(topicSummaryListResult: AsyncResult<TopicList>): TopicList {
