@@ -61,8 +61,8 @@ domain_test(
 
 domain_test(
     name = "NumericInputEqualsRuleClassifierProviderTest",
-    srcs = ["src/test/java/org/oppia/android/domain/classify/NumericInputEqualsRuleClassifierProviderTest.kt"],
-    test_class = "org.oppia.android.domain.classify.NumericInputEqualsRuleClassifierProviderTest",
+    srcs = ["src/test/java/org/oppia/android/domain/classify/rules/numericinput/NumericInputEqualsRuleClassifierProviderTest.kt"],
+    test_class = "org.oppia.android.domain.classify.rules.numericinput.NumericInputEqualsRuleClassifierProviderTest",
     deps = TEST_DEPS,
 )
 
