@@ -1,4 +1,4 @@
-package org.oppia.android.domain.classify.rules
+package org.oppia.android.domain.classify.rules.numericinput
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider

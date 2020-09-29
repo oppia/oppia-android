@@ -1,4 +1,4 @@
-package org.oppia.android.domain.classify.rules
+package org.oppia.android.domain.classify.rules.numericinput
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
@@ -10,7 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsLessThanRuleClassifierProvider
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsLessThanOrEqualToRuleClassifierProvider
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -19,11 +19,11 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.test.fail
 
-/** Tests for [NumericInputIsLessThanRuleClassifierProvider]. */
+/** Tests for [NumericInputIsLessThanOrEqualToRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class NumericInputIsLessThanRuleClassifierProviderTest {
+class NumericInputIsLessThanOrEqualToRuleClassifierProviderTest {
 
   private val POSITIVE_REAL_VALUE_1_5 = createReal(value = 1.5)
   private val POSITIVE_REAL_VALUE_3_5 = createReal(value = 3.5)
@@ -36,11 +36,11 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
   private val NEGATIVE_INT_VALUE_3 = createInt(value = -3)
 
   @Inject
-  internal lateinit var numericInputIsLessThanRuleClassifierProvider:
-    NumericInputIsLessThanRuleClassifierProvider
+  internal lateinit var numericInputIsLessThanOrEqualToRuleClassifierProvider:
+    NumericInputIsLessThanOrEqualToRuleClassifierProvider
 
-  private val inputIsLessThanRuleClassifier by lazy {
-    numericInputIsLessThanRuleClassifierProvider.createRuleClassifier()
+  private val inputIsLessThanOrEqualToRuleClassifier by lazy {
+    numericInputIsLessThanOrEqualToRuleClassifierProvider.createRuleClassifier()
   }
 
   @Before
@@ -49,110 +49,110 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
   }
 
   @Test
-  fun testPositiveRealAnswer_positiveRealInput_sameExactValues_answerNotLesser() {
+  fun testPositiveRealAnswer_positiveRealInput_sameExactValues_answerLesserOrEqual() {
     val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
-      inputIsLessThanRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testNegativeRealAnswer_negativeRealInput_sameExactValues_answerNotLesser() {
-    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
-
-    val matches =
-      inputIsLessThanRuleClassifier
-        .matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testPositiveRealAnswer_positiveRealInput_answerValueLesser_answerLesser() {
-    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_3_5)
-
-    val matches =
-      inputIsLessThanRuleClassifier
+      inputIsLessThanOrEqualToRuleClassifier
         .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
-  fun testPositiveRealAnswer_positiveRealInput_answerValueGreater_answerNotLesser() {
+  fun testNegativeRealAnswer_negativeRealInput_sameExactValues_answerLesserOrEqual() {
+    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
+
+    val matches =
+      inputIsLessThanOrEqualToRuleClassifier
+        .matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testPositiveRealAnswer_positiveRealInput_answerValueLesser_answerLesserOrEqual() {
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_3_5)
+
+    val matches =
+      inputIsLessThanOrEqualToRuleClassifier
+        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testPositiveRealAnswer_positiveRealInput_answerValueGreater_answerNotLesserOrEqual() {
     val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
-      inputIsLessThanRuleClassifier
+      inputIsLessThanOrEqualToRuleClassifier
         .matches(answer = POSITIVE_REAL_VALUE_3_5, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
 
   @Test
-  fun testNegativeRealAnswer_negativeRealInput_answerValueLesser_answerLesser() {
+  fun testNegativeRealAnswer_negativeRealInput_answerValueLesser_answerLesserOrEqual() {
     val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
     val matches =
-      inputIsLessThanRuleClassifier
+      inputIsLessThanOrEqualToRuleClassifier
         .matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
-  fun testNegativeRealAnswer_negativeRealInput_answerValueGreater_answerNotLesser() {
+  fun testNegativeRealAnswer_negativeRealInput_answerValueGreater_answerNotLesserOrEqual() {
     val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_3_5)
 
     val matches =
-      inputIsLessThanRuleClassifier
+      inputIsLessThanOrEqualToRuleClassifier
         .matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
 
   @Test
-  fun testNegativeRealAnswer_positiveRealInput_answerValueLesser_answerLesser() {
+  fun testNegativeRealAnswer_positiveRealInput_answerValueLesser_answerLesserOrEqual() {
     val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
-      inputIsLessThanRuleClassifier
+      inputIsLessThanOrEqualToRuleClassifier
         .matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
-  fun testPositiveRealAnswer_negativeRealInput_answerValueGreater_answerNotLesser() {
+  fun testPositiveRealAnswer_negativeRealInput_answerValueGreater_answerNotLesserOrEqual() {
     val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
     val matches =
-      inputIsLessThanRuleClassifier
+      inputIsLessThanOrEqualToRuleClassifier
         .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
 
   @Test
-  fun testPositiveIntAnswer_negativeIntInput_answerValueGreater_answerNotLesser() {
+  fun testPositiveIntAnswer_negativeIntInput_answerValueGreater_answerNotLesserOrEqual() {
     val inputs = mapOf("x" to NEGATIVE_INT_VALUE_3)
 
     val matches =
-      inputIsLessThanRuleClassifier
+      inputIsLessThanOrEqualToRuleClassifier
         .matches(answer = POSITIVE_INT_VALUE_1, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
 
   @Test
-  fun testNegativeIntAnswer_positiveIntInput_answerValueLesser_answerLesser() {
+  fun testNegativeIntAnswer_positiveIntInput_answerValueLesser_answerLesserOrEqual() {
     val inputs = mapOf("x" to POSITIVE_INT_VALUE_3)
 
     val matches =
-      inputIsLessThanRuleClassifier
+      inputIsLessThanOrEqualToRuleClassifier
         .matches(answer = NEGATIVE_INT_VALUE_1, inputs = inputs)
 
     assertThat(matches).isTrue()
@@ -163,7 +163,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
     val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsLessThanRuleClassifier
+      inputIsLessThanOrEqualToRuleClassifier
         .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
     }
 
@@ -177,7 +177,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsLessThanRuleClassifier
+      inputIsLessThanOrEqualToRuleClassifier
         .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
     }
 
@@ -191,8 +191,8 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
     val inputs = mapOf("y" to POSITIVE_INT_VALUE_1)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsLessThanRuleClassifier
-        .matches(answer = POSITIVE_INT_VALUE_3, inputs = inputs)
+      inputIsLessThanOrEqualToRuleClassifier
+        .matches(answer = POSITIVE_INT_VALUE_1, inputs = inputs)
     }
 
     assertThat(exception)
@@ -205,8 +205,8 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsLessThanRuleClassifier
-        .matches(answer = NEGATIVE_INT_VALUE_1, inputs = inputs)
+      inputIsLessThanOrEqualToRuleClassifier
+        .matches(answer = POSITIVE_INT_VALUE_1, inputs = inputs)
     }
 
     assertThat(exception)
@@ -227,7 +227,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerNumericInputIsLessThanRuleClassifierProviderTest_TestApplicationComponent
+    DaggerNumericInputIsLessThanOrEqualToRuleClassifierProviderTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
@@ -260,6 +260,6 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: NumericInputIsLessThanRuleClassifierProviderTest)
+    fun inject(test: NumericInputIsLessThanOrEqualToRuleClassifierProviderTest)
   }
 }
