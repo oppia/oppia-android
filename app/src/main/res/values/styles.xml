@@ -28,6 +28,7 @@
     <item name="windowNoTitle">true</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
+  
   <!-- Base style for animations.  This style specifies no animations. -->
   <style name="Animation" />
   <!-- Standard animations for a full-screen window or activity. -->
