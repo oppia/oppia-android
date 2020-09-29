@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Resources
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -21,6 +22,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -142,15 +144,14 @@ class StoryFragmentTest {
   }
 
   @Test
-  @Ignore("Test wasn't correct originally") // TODO(#1804): Fix this test & re-enable.
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
     launch<StoryActivity>(createStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.story_toolbar)).perform(click())
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      it.onActivity { activity -> assertThat(activity.isFinishing).isTrue() }
+      assertThat(it.state == Lifecycle.State.DESTROYED)
     }
   }
 
