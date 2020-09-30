@@ -74,7 +74,6 @@
       android:background="@drawable/submitted_answer_background"
       android:paddingStart="8dp"
       android:paddingEnd="8dp"
-      android:layout_weight="0.8"
       android:visibility="gone"
       app:itemDecorator="@{@drawable/divider}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
