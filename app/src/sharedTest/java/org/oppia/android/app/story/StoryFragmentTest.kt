@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.res.Resources
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -150,7 +149,7 @@ class StoryFragmentTest {
       onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      assertThat(it.state == Lifecycle.State.DESTROYED)
+      it.onActivity { activity -> assertThat(activity.isFinishing).isTrue() }
     }
   }
 
