@@ -60,6 +60,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -93,6 +94,9 @@ class OptionsFragmentTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -146,10 +150,9 @@ class OptionsFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix OptionsFragmentTest
-  @Ignore
   fun testOptionFragment_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
       ).perform(click())

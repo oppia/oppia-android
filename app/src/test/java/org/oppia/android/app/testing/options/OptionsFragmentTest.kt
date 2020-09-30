@@ -59,6 +59,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -70,28 +71,38 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @Config(application = OptionsFragmentTest.TestApplication::class)
 class OptionsFragmentTest {
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     Intents.init()
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
   @Test
-  // TODO(#973): Fix OptionsFragmentTest
-  @Ignore
   fun testOptionsFragment_clickReadingTextSize_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
