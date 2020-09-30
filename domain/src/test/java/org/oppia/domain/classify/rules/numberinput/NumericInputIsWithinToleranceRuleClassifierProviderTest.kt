@@ -33,7 +33,6 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   private val NEGATIVE_REAL_VALUE_2_5 = createReal(value = -2.5)
   private val NEGATIVE_REAL_VALUE_3_5 = createReal(value = -3.5)
   private val STRING_VALUE_1 = createString(value = "test1")
-  private val STRING_VALUE_2 = createString(value = "test2")
   private val POSITIVE_INT_VALUE_1 = createInt(value = 1)
   private val POSITIVE_INT_VALUE_2 = createInt(value = 2)
   private val POSITIVE_INT_VALUE_3 = createInt(value = 3)
@@ -318,7 +317,6 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   @Test
   fun testRealAnswer_firstMissingInput_throwsException() {
     val inputs = mapOf(
-      "c" to NEGATIVE_REAL_VALUE_3_5,
       "tol" to POSITIVE_REAL_VALUE_3_5
     )
     val exception = assertThrows(IllegalStateException::class) {
@@ -328,14 +326,13 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
 
     assertThat(exception)
       .hasMessageThat()
-      .contains("Expected classifier inputs to contain parameter with name 'x' but had: [c, tol]")
+      .contains("Expected classifier inputs to contain parameter with name 'x' but had: [tol]")
   }
 
   @Test
   fun testRealAnswer_secondMissingInput_throwsException() {
     val inputs = mapOf(
-      "x" to NEGATIVE_REAL_VALUE_3_5,
-      "c" to POSITIVE_REAL_VALUE_1_5
+      "x" to NEGATIVE_REAL_VALUE_3_5
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsWithinToleranceRuleClassifier
@@ -344,7 +341,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
 
     assertThat(exception)
       .hasMessageThat()
-      .contains("Expected classifier inputs to contain parameter with name 'tol' but had: [x, c]")
+      .contains("Expected classifier inputs to contain parameter with name 'tol' but had: [x]")
   }
 
   @Test
@@ -364,25 +361,8 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   }
 
   @Test
-  fun testRealAnswer_secondStringInput_throwsException() {
-    val inputs = mapOf(
-      "x" to POSITIVE_REAL_VALUE_1_5,
-      "tol" to STRING_VALUE_2
-    )
-    val exception = assertThrows(IllegalStateException::class) {
-      inputIsWithinToleranceRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
-    }
-
-    assertThat(exception)
-      .hasMessageThat()
-      .contains("Expected input value to be of type REAL not NORMALIZED_STRING")
-  }
-
-  @Test
   fun testIntAnswer_missingFirstInput_throwsException() {
     val inputs = mapOf(
-      "c" to POSITIVE_INT_VALUE_1,
       "tol" to POSITIVE_INT_VALUE_3
     )
     val exception = assertThrows(IllegalStateException::class) {
@@ -392,14 +372,13 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
 
     assertThat(exception)
       .hasMessageThat()
-      .contains("Expected classifier inputs to contain parameter with name 'x' but had: [c, tol]")
+      .contains("Expected classifier inputs to contain parameter with name 'x' but had: [tol]")
   }
 
   @Test
   fun testIntAnswer_missingSecondInput_throwsException() {
     val inputs = mapOf(
-      "x" to POSITIVE_INT_VALUE_1,
-      "c" to POSITIVE_INT_VALUE_3
+      "x" to POSITIVE_INT_VALUE_1
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsWithinToleranceRuleClassifier
@@ -408,7 +387,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
 
     assertThat(exception)
       .hasMessageThat()
-      .contains("Expected classifier inputs to contain parameter with name 'tol' but had: [x, c]")
+      .contains("Expected classifier inputs to contain parameter with name 'tol' but had: [x]")
   }
 
   @Test
@@ -420,22 +399,6 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       inputIsWithinToleranceRuleClassifier
         .matches(answer = POSITIVE_INT_VALUE_1, inputs = inputs)
-    }
-
-    assertThat(exception)
-      .hasMessageThat()
-      .contains("Expected input value to be of type REAL not NORMALIZED_STRING")
-  }
-
-  @Test
-  fun testIntAnswer_secondStringInput_throwsException() {
-    val inputs = mapOf(
-      "x" to NEGATIVE_INT_VALUE_3,
-      "tol" to STRING_VALUE_2
-    )
-    val exception = assertThrows(IllegalStateException::class) {
-      inputIsWithinToleranceRuleClassifier
-        .matches(answer = POSITIVE_INT_VALUE_2, inputs = inputs)
     }
 
     assertThat(exception)
