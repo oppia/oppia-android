@@ -56,6 +56,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@drawable/submitted_answer_background"
+      android:maxWidth="280dp"
       android:contentDescription="@{accessibleAnswer ?? submittedAnswer}"
       android:paddingStart="12dp"
       android:paddingTop="@{viewModel.hasConversationView ? @dimen/padding_16 : @dimen/padding_8}"
