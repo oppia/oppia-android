@@ -17,7 +17,6 @@ import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -123,10 +122,9 @@ class OptionsFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix OptionsFragmentTest
-  @Ignore
   fun testOptionsFragment_clickAppLanguage_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -147,10 +145,9 @@ class OptionsFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix OptionsFragmentTest
-  @Ignore
   fun testOptionsFragment_clickDefaultAudioLanguage_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -173,10 +170,9 @@ class OptionsFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
-  // TODO(#973): Fix OptionsFragmentTest
-  @Ignore
   fun testOptionsFragment_checkInitiallyLoadedFragmentIsReadingTextSizeFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
@@ -188,10 +184,9 @@ class OptionsFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
-  // TODO(#973): Fix OptionsFragmentTest
-  @Ignore
   fun testOptionsFragment_clickReadingTextSize_checkLoadingTheCorrectFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -212,10 +207,9 @@ class OptionsFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
-  // TODO(#973): Fix OptionsFragmentTest
-  @Ignore
   fun testOptionsFragment_clickAppLanguage_checkLoadingTheCorrectFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -236,10 +230,9 @@ class OptionsFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
-  // TODO(#973): Fix OptionsFragmentTest
-  @Ignore
   fun testOptionsFragment_clickDefaultAudio_checkLoadingTheCorrectFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
