@@ -446,14 +446,11 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
       "x" to POSITIVE_INT_VALUE_3,
       "tol" to POSITIVE_INT_VALUE_1
     )
-    val exception = assertThrows(IllegalStateException::class) {
+    val matches =
       inputIsWithinToleranceRuleClassifier
         .matches(answer = POSITIVE_INT_VALUE_2, inputs = inputs)
-    }
 
-    assertThat(exception)
-      .hasMessageThat()
-      .contains("Expected classifier inputs to contain parameter with name 'tol' but had: [x]")
+    assertThat(matches).isFalse()
   }
 
   @Test
