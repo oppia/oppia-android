@@ -315,8 +315,6 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
     assertThat(matches).isFalse()
   }
 
-
-
   @Test
   fun testRealAnswer_firstMissingInput_throwsException() {
     val inputs = mapOf(
