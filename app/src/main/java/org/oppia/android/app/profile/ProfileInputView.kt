@@ -61,7 +61,8 @@ class ProfileInputView @JvmOverloads constructor(
     if (
       attributes.getBoolean(
         R.styleable.ProfileInputView_isPasswordInput,
-        /** defVal= */ false
+        /** defVal= */
+        false
       )
     ) {
       input.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
