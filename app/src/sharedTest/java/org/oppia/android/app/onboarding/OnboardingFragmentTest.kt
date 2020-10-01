@@ -6,6 +6,7 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -27,7 +28,6 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -60,6 +60,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -71,6 +72,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [OnboardingFragment]. */
@@ -82,14 +84,19 @@ import javax.inject.Singleton
 )
 class OnboardingFragmentTest {
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -171,11 +178,11 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix OnboardingFragmentTest
-  @Ignore
   fun testOnboardingFragment_checkDefaultSlide_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -284,12 +291,12 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix OnboardingFragmentTest
-  @Ignore
   fun testOnboardingFragment_checkSlide1_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
       onView(withId(R.id.skip_text_view)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -400,12 +407,12 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix OnboardingFragmentTest
-  @Ignore
   fun testOnboardingFragment_checkSlide2_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
       onView(withId(R.id.skip_text_view)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -479,12 +486,10 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix OnboardingFragmentTest
-  @Ignore
   fun testOnboardingFragment_checkSlide3_clickGetStartedButton_opensProfileActivity() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
-      onView(withId(R.id.get_started_button)).perform(click())
+      onView(withId(R.id.get_started_button)).perform(scrollTo(), click())
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
@@ -531,16 +536,15 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix OnboardingFragmentTest
-  @Ignore
   fun testOnboardingFragment_clickOnSkip_changeOrientation_titleIsCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.skip_text_view)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isDisplayed()
+          isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }

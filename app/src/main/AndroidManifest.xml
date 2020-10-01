@@ -47,7 +47,12 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.onboarding.OnboardingActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar" >
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
     <activity
       android:name=".app.ongoingtopiclist.OngoingTopicListActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -105,10 +110,7 @@
       android:name=".app.splash.SplashActivity"
       android:screenOrientation="portrait"
       android:theme="@style/SplashScreenTheme">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
+
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
