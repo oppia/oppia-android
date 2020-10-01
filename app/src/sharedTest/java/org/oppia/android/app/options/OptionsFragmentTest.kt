@@ -164,7 +164,6 @@ class OptionsFragmentTest {
   @Test
   fun testOptionsFragment_readingTextSize_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.runCurrent()
       val resultDataIntent = Intent()
       resultDataIntent.putExtra(KEY_MESSAGE_READING_TEXT_SIZE, "Large")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
@@ -199,7 +198,6 @@ class OptionsFragmentTest {
   @Test
   fun testOptionsFragment_audioLanguage_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.runCurrent()
       val resultDataIntent = Intent()
       resultDataIntent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
@@ -234,7 +232,6 @@ class OptionsFragmentTest {
   @Test
   fun testOptionsFragment_appLanguage_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.runCurrent()
       val resultDataIntent = Intent()
       resultDataIntent.putExtra(KEY_MESSAGE_APP_LANGUAGE, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
