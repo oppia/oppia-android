@@ -70,7 +70,7 @@
         android:visibility="gone"
         app:layout_constrainedWidth="true"
         android:text="@{submittedAnswer}"
-        app:layout_constraintEnd_toStartOf="@+id/submitted_answer_guideline"
+        app:layout_constraintEnd_toStartOf="@={viewModel.isCorrectAnswer() ? @+id/submitted_answer_text_view : parent}"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
