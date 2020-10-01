@@ -55,7 +55,7 @@
       app:questionViewMarginStart="@{@dimen/margin_32}"
       app:questionViewMarginTop="@{@dimen/margin_24}">
 
-      <TextView
+    <TextView
         android:id="@+id/submitted_answer_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
