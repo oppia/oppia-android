@@ -12,7 +12,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.DrawerMatchers
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -59,6 +58,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -93,16 +93,21 @@ class OptionsFragmentTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.registerIdlingResource()
     Intents.release()
   }
 
@@ -152,13 +157,14 @@ class OptionsFragmentTest {
       ).perform(click())
       onView(withId(R.id.options_fragment_placeholder))
         .check(matches(isCompletelyDisplayed()))
-      onView(withId(R.id.options_activity_drawer_layout)).check(matches(DrawerMatchers.isOpen()))
+      onView(withId(R.id.options_activity_drawer_layout)).check(matches(isCompletelyDisplayed()))
     }
   }
 
   @Test
   fun testOptionsFragment_readingTextSize_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
       val resultDataIntent = Intent()
       resultDataIntent.putExtra(KEY_MESSAGE_READING_TEXT_SIZE, "Large")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
@@ -177,7 +183,7 @@ class OptionsFragmentTest {
       }
 
       getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
-
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -193,6 +199,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionsFragment_audioLanguage_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
       val resultDataIntent = Intent()
       resultDataIntent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
@@ -211,7 +218,7 @@ class OptionsFragmentTest {
       }
 
       getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
-
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -227,6 +234,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionsFragment_appLanguage_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
       val resultDataIntent = Intent()
       resultDataIntent.putExtra(KEY_MESSAGE_APP_LANGUAGE, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
@@ -245,7 +253,7 @@ class OptionsFragmentTest {
       }
 
       getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
-
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
