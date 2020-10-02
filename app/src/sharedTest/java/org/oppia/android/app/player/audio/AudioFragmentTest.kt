@@ -147,7 +147,7 @@ class AudioFragmentTest {
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
+      onView(withId(R.id.ivAudioLanguage)).check(matches(withContentDescription("en")))
     }
   }
 
@@ -160,7 +160,7 @@ class AudioFragmentTest {
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_HINDI
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("HI")))
+      onView(withId(R.id.ivAudioLanguage)).check(matches(withText("hi")))
     }
   }
 
@@ -171,7 +171,7 @@ class AudioFragmentTest {
         PROFILE_ID_INVALID_AUDIO_LANGUAGE
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
+      onView(withId(R.id.ivAudioLanguage)).check(matches(withContentDescription("en")))
     }
   }
 
@@ -270,7 +270,7 @@ class AudioFragmentTest {
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
-      onView(withId(R.id.tvAudioLanguage)).perform(click())
+      onView(withId(R.id.ivAudioLanguage)).perform(click())
       val locale = Locale("es")
       onView(withText(locale.getDisplayLanguage(locale))).inRoot(isDialog()).perform(click())
       onView(withText("OK")).inRoot(isDialog()).perform(click())
