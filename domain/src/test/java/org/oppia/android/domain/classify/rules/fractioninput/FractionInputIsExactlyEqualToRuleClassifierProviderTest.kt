@@ -25,26 +25,19 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
-  /**
-   * Store fractions in format:
-   *    <0 or 1 indicating whether it's negative>, <numerator>, <denominator>
-   *    e.g. -1/2 would be {1, 1, 2}
-   * Store whole numbers in format:
-   *    <0 or 1 indicating whether it's negative>, <whole number>
-   *    e.g. 1234 would be {0, 1234}
-   * Store mixed numbers in format:
-   *    <0 or 1 indicating whether it's negative>, <whole number>, <numerator>, <denominator>
-   *    e.g. -1234 1/2 would be {1, 1234, 1, 2}
-   */
   private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
-  private val WHOLE_POS_1 = listOf(0, 123)
-  private val WHOLE_POS_2 = listOf(0, 321)
-  private val FRAC_POS_1 = listOf(0, 2, 4)
-  private val FRAC_POS_2 = listOf(0, 1, 2)
-  private val FRAC_POS_3 = listOf(0, 123, 1)
-  private val MIXED_POS_1 = listOf(0, 123, 1, 2)
-  private val MIXED_POS_2 = listOf(0, 123, 1, 3)
-  private val MIXED_NEG_1 = listOf(1, 123, 1, 2)
+  private val WHOLE_NUMBER_123 = createWholeNumber(isNegative = false, value = 123)
+  private val WHOLE_NUMBER_321 = createWholeNumber(isNegative = false, value = 321)
+  private val FRACTION_2_OVER_4 = createFraction(isNegative = false, numerator = 2, denominator = 4)
+  private val FRACTION_1_OVER_2 = createFraction(isNegative = false, numerator = 1, denominator = 2)
+  private val FRACTION_123_OVER_1 =
+    createFraction(isNegative = false, numerator = 123, denominator = 1)
+  private val MIXED_NUMBER_123_1_OVER_2 =
+    createMixedNumber(isNegative = false, wholeNumber = 123, numerator = 1, denominator = 2)
+  private val MIXED_NUMBER_123_1_OVER_3 =
+    createMixedNumber(isNegative = false, wholeNumber = 123, numerator = 1, denominator = 3)
+  private val MIXED_NUMBER_NEGATIVE_123_1_OVER_2 =
+    createMixedNumber(isNegative = true, wholeNumber = 123, numerator = 1, denominator = 2)
 
   @Inject
   internal lateinit var fractionInputIsExactlyEqualToRuleClassifierProvider:
@@ -55,12 +48,12 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testFraction_bothWholeNumbers_bothValuesMatch() {
-    val inputs = mapOf("f" to createWholeNumberOnly(WHOLE_POS_1))
+  fun testEquals_wholeNumber123Answer_withWholeNumber123Input_bothValuesMatch() {
+    val inputs = mapOf("f" to WHOLE_NUMBER_123)
 
     val matches =
       isExactlyEqualClassifierProvider.matches(
-        answer = createWholeNumberOnly(WHOLE_POS_1),
+        answer = WHOLE_NUMBER_123,
         inputs = inputs
       )
 
@@ -68,12 +61,12 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testFraction_bothWholeNumbers_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to createWholeNumberOnly(WHOLE_POS_1))
+  fun testEquals_wholeNumber321Answer_withWholeNumber123Input_bothValuesDoNotMatch() {
+    val inputs = mapOf("f" to WHOLE_NUMBER_123)
 
     val matches =
       isExactlyEqualClassifierProvider.matches(
-        answer = createWholeNumberOnly(WHOLE_POS_2),
+        answer = WHOLE_NUMBER_321,
         inputs = inputs
       )
 
@@ -81,12 +74,12 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testFraction_bothFractions_bothValuesMatch() {
-    val inputs = mapOf("f" to createFractionOnly(FRAC_POS_1))
+  fun testEquals_fraction2Over4Answer_withFraction2Over4Input_bothValuesMatch() {
+    val inputs = mapOf("f" to FRACTION_2_OVER_4)
 
     val matches =
       isExactlyEqualClassifierProvider.matches(
-        answer = createFractionOnly(FRAC_POS_1),
+        answer = FRACTION_2_OVER_4,
         inputs = inputs
       )
 
@@ -94,12 +87,12 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testFraction_bothFractions_oneFractionReduced_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to createFractionOnly(FRAC_POS_1))
+  fun testEquals_bothAnswerAndInputFractions_oneFractionReduced_bothValuesDoNotMatch() {
+    val inputs = mapOf("f" to FRACTION_2_OVER_4)
 
     val matches =
       isExactlyEqualClassifierProvider.matches(
-        answer = createFractionOnly(FRAC_POS_2),
+        answer = FRACTION_1_OVER_2,
         inputs = inputs
       )
 
@@ -107,12 +100,12 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testFraction_bothMixed_bothValuesMatch() {
-    val inputs = mapOf("f" to createMixedNumber(MIXED_POS_1))
+  fun testEquals_mixedNumber123And1Over2Answer_withMixedNumber123And1Over2Input_bothValuesMatch() {
+    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
 
     val matches =
       isExactlyEqualClassifierProvider.matches(
-        answer = createMixedNumber(MIXED_POS_1),
+        answer = MIXED_NUMBER_123_1_OVER_2,
         inputs = inputs
       )
 
@@ -120,12 +113,12 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testFraction_bothMixed_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to createMixedNumber(MIXED_POS_1))
+  fun testEquals_mixedNum123And1Over3Answer_withMixedNum123And1Over2Input_bothValuesDoNotMatch() {
+    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
 
     val matches =
       isExactlyEqualClassifierProvider.matches(
-        answer = createMixedNumber(MIXED_POS_2),
+        answer = MIXED_NUMBER_123_1_OVER_3,
         inputs = inputs
       )
 
@@ -133,12 +126,12 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testFraction_bothMixedDiffSign_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to createMixedNumber(MIXED_POS_1))
+  fun testEquals_negativeMixedNumberAnswer_withPositiveMixedNumberInput_bothValuesDoNotMatch() {
+    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
 
     val matches =
       isExactlyEqualClassifierProvider.matches(
-        answer = createMixedNumber(MIXED_NEG_1),
+        answer = MIXED_NUMBER_NEGATIVE_123_1_OVER_2,
         inputs = inputs
       )
 
@@ -146,12 +139,12 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testFraction_wholeAndMixed_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to createMixedNumber(MIXED_POS_1))
+  fun testEquals_wholeNumberAnswer_withMixedNumberInput_bothValuesDoNotMatch() {
+    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
 
     val matches =
       isExactlyEqualClassifierProvider.matches(
-        answer = createWholeNumberOnly(WHOLE_POS_1),
+        answer = WHOLE_NUMBER_123,
         inputs = inputs
       )
 
@@ -159,12 +152,12 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testFraction_wholeAndFraction_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to createFractionOnly(FRAC_POS_3))
+  fun testEquals_wholeNumber123Answer_withFraction123Over1Input_bothValuesDoNotMatch() {
+    val inputs = mapOf("f" to FRACTION_123_OVER_1)
 
     val matches =
       isExactlyEqualClassifierProvider.matches(
-        answer = createWholeNumberOnly(WHOLE_POS_1),
+        answer = WHOLE_NUMBER_123,
         inputs = inputs
       )
 
@@ -172,12 +165,12 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testFraction_fractionAndMixed_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to createFractionOnly(FRAC_POS_2))
+  fun testEquals_mixedNumberAnswer_withFractionInput_bothValuesDoNotMatch() {
+    val inputs = mapOf("f" to FRACTION_1_OVER_2)
 
     val matches =
       isExactlyEqualClassifierProvider.matches(
-        answer = createMixedNumber(MIXED_POS_1),
+        answer = MIXED_NUMBER_123_1_OVER_2,
         inputs = inputs
       )
 
@@ -185,12 +178,12 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
+  fun testEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("f" to NON_NEGATIVE_VALUE_0)
 
     val exception = assertThrows(IllegalStateException::class) {
       isExactlyEqualClassifierProvider.matches(
-        answer = createFractionOnly(FRAC_POS_1),
+        answer = FRACTION_2_OVER_4,
         inputs = inputs
       )
     }
@@ -203,12 +196,12 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testRatio_missingInputF_throwsException() {
-    val inputs = mapOf("y" to createFractionOnly(FRAC_POS_1))
+  fun testEquals_missingInputF_throwsException() {
+    val inputs = mapOf("y" to FRACTION_2_OVER_4)
 
     val exception = assertThrows(IllegalStateException::class) {
       isExactlyEqualClassifierProvider.matches(
-        answer = createFractionOnly(FRAC_POS_1),
+        answer = FRACTION_2_OVER_4,
         inputs = inputs
       )
     }
@@ -218,36 +211,45 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
       .contains("Expected classifier inputs to contain parameter with name 'f' but had: [y]")
   }
 
-  private fun createFractionOnly(value: List<Int>): InteractionObject {
+  private fun createFraction(
+    isNegative: Boolean,
+    numerator: Int,
+    denominator: Int
+  ): InteractionObject {
     // Fraction-only numbers imply no whole number.
     return InteractionObject.newBuilder().setFraction(
       Fraction.newBuilder()
-        .setIsNegative(value[0] == 1)
-        .setNumerator(value[1])
-        .setDenominator(value[2])
+        .setIsNegative(isNegative)
+        .setNumerator(numerator)
+        .setDenominator(denominator)
         .build()
     ).build()
   }
 
-  private fun createWholeNumberOnly(value: List<Int>): InteractionObject {
+  private fun createWholeNumber(isNegative: Boolean, value: Int): InteractionObject {
     // Whole number fractions imply '0/1' fractional parts.
     return InteractionObject.newBuilder().setFraction(
       Fraction.newBuilder()
-        .setIsNegative(value[0] == 1)
-        .setWholeNumber(value[1])
+        .setIsNegative(isNegative)
+        .setWholeNumber(value)
         .setNumerator(0)
         .setDenominator(1)
         .build()
     ).build()
   }
 
-  private fun createMixedNumber(value: List<Int>): InteractionObject {
+  private fun createMixedNumber(
+    isNegative: Boolean,
+    wholeNumber: Int,
+    numerator: Int,
+    denominator: Int
+  ): InteractionObject {
     return InteractionObject.newBuilder().setFraction(
       Fraction.newBuilder()
-        .setIsNegative(value[0] == 1)
-        .setWholeNumber(value[1])
-        .setNumerator(value[2])
-        .setDenominator(value[3])
+        .setIsNegative(isNegative)
+        .setWholeNumber(wholeNumber)
+        .setNumerator(numerator)
+        .setDenominator(denominator)
         .build()
     ).build()
   }
