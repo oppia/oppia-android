@@ -83,6 +83,8 @@ class ProfileEditActivityPresenter @Inject constructor(
         )
       }
     }
+
+    editViewModel.activityTitle.observe(activity, Observer { activity.title = it })
   }
 
   fun handleOnRestoreSavedInstanceState() {
