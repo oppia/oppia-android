@@ -3,11 +3,15 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+
     <import type="org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus" />
+
     <import type="android.view.View" />
+
     <variable
       name="audioFragment"
       type="org.oppia.android.app.player.audio.LanguageInterface" />
+
     <variable
       name="viewModel"
       type="org.oppia.android.app.player.audio.AudioViewModel" />
@@ -44,6 +48,7 @@
       style="@style/AudioSeekBar"
       android:layout_width="0dp"
       android:layout_height="26dp"
+      android:layout_marginStart="16dp"
       android:max="@{viewModel.durationLiveData}"
       android:maxHeight="4dp"
       android:minWidth="180dp"
@@ -52,18 +57,17 @@
       android:progressDrawable="@drawable/audio_seekbar_background"
       android:splitTrack="false"
       android:thumb="@drawable/seekbar_thumb"
-      android:layout_marginStart="16dp"
       android:thumbOffset="16dp"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/tvAudioLanguage"
+      app:layout_constraintEnd_toStartOf="@+id/ivAudioLanguage"
       app:layout_constraintStart_toEndOf="@+id/ivPlayPauseAudio"
       app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-      android:id="@+id/tvAudioLanguage"
+    <ImageView
+      android:id="@+id/ivAudioLanguage"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:fontFamily="sans-serif-medium"
+      android:contentDescription="@{viewModel.currentLanguageCode}"
       android:gravity="center"
       android:minWidth="48dp"
       android:minHeight="48dp"
@@ -72,10 +76,7 @@
       android:paddingTop="16dp"
       android:paddingEnd="16dp"
       android:paddingBottom="16dp"
-      android:text="@{viewModel.currentLanguageCode}"
-      android:textAllCaps="true"
-      android:textColor="@color/white"
-      android:textSize="14sp"
+      android:src="@drawable/ic_audio_lang_24px"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
