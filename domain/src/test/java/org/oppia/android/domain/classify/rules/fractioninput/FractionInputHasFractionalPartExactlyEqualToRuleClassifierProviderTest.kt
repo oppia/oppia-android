@@ -208,9 +208,11 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
   }
 
   private fun setUpTestApplicationComponent() {
+    /* ktlint-disable max-line-length */
     DaggerFractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+    /* ktlint-enable max-line-length */
   }
 
   // TODO(#89): Move to a common test library.
