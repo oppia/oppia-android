@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.test.fail
 
-/** Tests for [FractionInputIsGreaterThanRuleClassifier]. */
+/** Tests for [FractionInputIsGreaterThanRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
@@ -99,7 +99,6 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
     )
 
     assertThat(matches).isFalse()
-
   }
 
   @Test
@@ -172,7 +171,6 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
     )
 
     assertThat(matches).isFalse()
-
   }
 
   @Test
