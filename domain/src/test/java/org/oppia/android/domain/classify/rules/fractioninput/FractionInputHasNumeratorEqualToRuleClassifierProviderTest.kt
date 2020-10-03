@@ -28,9 +28,9 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
   private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
   private val WHOLE_NUMBER_123 = createWholeNumber(isNegative = false, value = 123)
   private val FRACTION_2_OVER_4 = createFraction(isNegative = false, numerator = 2, denominator = 4)
-  private val SIGNED_INT_1 = createSignedInt(1);
-  private val SIGNED_INT_2 = createSignedInt(2);
-  private val SIGNED_INT_NEGATIVE_2 = createSignedInt(-2);
+  private val SIGNED_INT_1 = createSignedInt(1)
+  private val SIGNED_INT_2 = createSignedInt(2)
+  private val SIGNED_INT_NEGATIVE_2 = createSignedInt(-2)
 
   @Inject
   internal lateinit var fractionInputHasNumeratorEqualToRuleClassifierProvider:
