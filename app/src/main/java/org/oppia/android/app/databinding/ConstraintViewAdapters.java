@@ -17,9 +17,6 @@ public class ConstraintViewAdapters {
       @NonNull View view, @IdRes int constraintToId
   ) {
     ConstraintLayout constraintLayout = (ConstraintLayout) view.getParent();
-    if (constraintLayout == null) {
-      return;
-    }
     ConstraintSet constraintSet = new ConstraintSet();
     constraintSet.clone(constraintLayout);
     constraintSet.connect(view.getId(), ConstraintSet.END, constraintToId, ConstraintSet.END);
