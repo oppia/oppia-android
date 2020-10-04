@@ -2,6 +2,8 @@ package org.oppia.android.app.databinding;
 
 import android.view.View;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.databinding.BindingAdapter;
@@ -12,7 +14,7 @@ public class ConstraintViewAdapters {
   /** Binding adapter for setting a [layout_constraintEndToEndOf] to a view */
   @BindingAdapter("app:layout_constraintEnd_toEndOf")
   public static void setConstraintEndToEndOf(
-      View view, int constraintToId
+      @NonNull View view, @IdRes int constraintToId
   ) {
     ConstraintLayout constraintLayout = (ConstraintLayout) view.getParent();
     if (constraintLayout == null) {
