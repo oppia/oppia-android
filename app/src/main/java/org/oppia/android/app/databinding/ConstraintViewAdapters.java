@@ -6,28 +6,23 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.databinding.BindingAdapter;
 
-public class ConstraintViewAdapters {
-  @BindingAdapter(
-      value = {
-          "app:layout_conditionalConstraint_startSide",
-          "app:layout_conditionalConstraint_toEndId",
-          "app:layout_conditionalConstraint_endSide",
-          "app:layout_conditionalConstraint_condition"
-      }
-  )
-  public static void setConditionalConstraint(
-      View view, int startSide, int endId, int endSide, boolean condition
-  ) {
-    ConstraintLayout layout = (ConstraintLayout) view.getParent();
-    if (layout == null) return;
-    ConstraintSet set = new ConstraintSet();
-    set.clone(layout);
-    if (condition)
-      set.connect(view.getId(), startSide, endId, endSide);
-    else
-      set.connect(view.getId(), startSide, layout.getId(), ConstraintSet.END);
-    set.applyTo(layout);
+/** Holds all custom binding adapters that set constraints to views. */
 
+public class ConstraintViewAdapters {
+
+  /** Binding adapter for setting a [layout_constraintEndToEndOf] to a view */
+  @BindingAdapter("app:layout_constraintEnd_toEndOf")
+  public static void setConstraintEndToEndOf(
+      View view, int constraintToId
+  ) {
+    ConstraintLayout constraintLayout = (ConstraintLayout) view.getParent();
+    if (constraintLayout == null) {
+      return;
+    }
+    ConstraintSet constraintSet = new ConstraintSet();
+    constraintSet.clone(constraintLayout);
+    constraintSet.connect(view.getId(), ConstraintSet.END, constraintToId, ConstraintSet.END);
+    constraintSet.applyTo(constraintLayout);
   }
 }
 

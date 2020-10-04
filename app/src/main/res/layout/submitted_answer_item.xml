@@ -74,10 +74,7 @@
         app:layout_constrainedWidth="true"
         android:text="@{submittedAnswer}"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_conditionalConstraint_startSide="@{ConstraintSet.END}"
-        app:layout_conditionalConstraint_toEndId="@{@id/submitted_answer_guideline}"
-        app:layout_conditionalConstraint_endSide="@{ConstraintSet.START}"
-        app:layout_conditionalConstraint_condition="@{viewModel.isCorrectAnswer == true}"
+        app:layout_constraintEnd_toEndOf="@{viewModel.isCorrectAnswer ? @id/submitted_answer_guideline : ConstraintSet.PARENT_ID}"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
