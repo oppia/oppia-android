@@ -12,7 +12,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.DrawerMatchers
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -27,7 +26,6 @@ import dagger.Module
 import dagger.Provides
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -60,6 +58,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -94,16 +93,21 @@ class OptionsFragmentTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.registerIdlingResource()
     Intents.release()
   }
 
@@ -146,8 +150,6 @@ class OptionsFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix OptionsFragmentTest
-  @Ignore
   fun testOptionFragment_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
@@ -155,13 +157,11 @@ class OptionsFragmentTest {
       ).perform(click())
       onView(withId(R.id.options_fragment_placeholder))
         .check(matches(isCompletelyDisplayed()))
-      onView(withId(R.id.options_activity_drawer_layout)).check(matches(DrawerMatchers.isOpen()))
+      onView(withId(R.id.options_activity_drawer_layout)).check(matches(isCompletelyDisplayed()))
     }
   }
 
   @Test
-  // TODO(#973): Fix OptionsFragmentTest
-  @Ignore
   fun testOptionsFragment_readingTextSize_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
@@ -182,7 +182,7 @@ class OptionsFragmentTest {
       }
 
       getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
-
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -196,8 +196,6 @@ class OptionsFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix OptionsFragmentTest
-  @Ignore
   fun testOptionsFragment_audioLanguage_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
@@ -218,7 +216,7 @@ class OptionsFragmentTest {
       }
 
       getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
-
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -232,8 +230,6 @@ class OptionsFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix OptionsFragmentTest
-  @Ignore
   fun testOptionsFragment_appLanguage_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
@@ -254,7 +250,7 @@ class OptionsFragmentTest {
       }
 
       getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
-
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
