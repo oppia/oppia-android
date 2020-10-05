@@ -47,6 +47,11 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
     fractionInputHasNoFractionalPartRuleClassifierProvider.createRuleClassifier()
   }
 
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+  }
+
   @Test
   fun testEquals_wholeNumber123Answer_withWholeNumber123Input_bothFractionValuesMatch() {
 //    val inputs = mapOf("f" to WHOLE_NUMBER_123)
@@ -58,157 +63,6 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       )
 
     assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testEquals_wholeNumber321Answer_withWholeNumber123Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to WHOLE_NUMBER_123)
-
-    val matches =
-      hasNoFractionalPartClassifierProvider.matches(
-        answer = WHOLE_NUMBER_321,
-        inputs = inputs
-      )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testEquals_fraction2Over4Answer_withFraction2Over4Input_bothValuesMatch() {
-    val inputs = mapOf("f" to FRACTION_2_OVER_4)
-
-    val matches =
-      hasNoFractionalPartClassifierProvider.matches(
-        answer = FRACTION_2_OVER_4,
-        inputs = inputs
-      )
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testEquals_bothAnswerAndInputFractions_oneFractionReduced_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to FRACTION_2_OVER_4)
-
-    val matches =
-      hasNoFractionalPartClassifierProvider.matches(
-        answer = FRACTION_1_OVER_2,
-        inputs = inputs
-      )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testEquals_mixedNumber123And1Over2Answer_withMixedNumber123And1Over2Input_bothValuesMatch() {
-    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
-
-    val matches =
-      hasNoFractionalPartClassifierProvider.matches(
-        answer = MIXED_NUMBER_123_1_OVER_2,
-        inputs = inputs
-      )
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testEquals_mixedNum123And1Over3Answer_withMixedNum123And1Over2Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
-
-    val matches =
-      hasNoFractionalPartClassifierProvider.matches(
-        answer = MIXED_NUMBER_123_1_OVER_3,
-        inputs = inputs
-      )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testEquals_negativeMixedNumberAnswer_withPositiveMixedNumberInput_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
-
-    val matches =
-      hasNoFractionalPartClassifierProvider.matches(
-        answer = MIXED_NUMBER_NEGATIVE_123_1_OVER_2,
-        inputs = inputs
-      )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testEquals_wholeNumberAnswer_withMixedNumberInput_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
-
-    val matches =
-      hasNoFractionalPartClassifierProvider.matches(
-        answer = WHOLE_NUMBER_123,
-        inputs = inputs
-      )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testEquals_wholeNumber123Answer_withFraction123Over1Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to FRACTION_123_OVER_1)
-
-    val matches =
-      hasNoFractionalPartClassifierProvider.matches(
-        answer = WHOLE_NUMBER_123,
-        inputs = inputs
-      )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testEquals_mixedNumberAnswer_withFractionInput_bothValuesDoNotMatch() {
-    val inputs = mapOf("f" to FRACTION_1_OVER_2)
-
-    val matches =
-      hasNoFractionalPartClassifierProvider.matches(
-        answer = MIXED_NUMBER_123_1_OVER_2,
-        inputs = inputs
-      )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
-    val inputs = mapOf("f" to NON_NEGATIVE_VALUE_0)
-
-    val exception = assertThrows(IllegalStateException::class) {
-      hasNoFractionalPartClassifierProvider.matches(
-        answer = FRACTION_2_OVER_4,
-        inputs = inputs
-      )
-    }
-
-    assertThat(exception)
-      .hasMessageThat()
-      .contains(
-        "Expected input value to be of type FRACTION not NON_NEGATIVE_INT"
-      )
-  }
-
-  @Test
-  fun testEquals_missingInputF_throwsException() {
-    val inputs = mapOf("y" to FRACTION_2_OVER_4)
-
-    val exception = assertThrows(IllegalStateException::class) {
-      hasNoFractionalPartClassifierProvider.matches(
-        answer = FRACTION_2_OVER_4,
-        inputs = inputs
-      )
-    }
-
-    assertThat(exception)
-      .hasMessageThat()
-      .contains("Expected classifier inputs to contain parameter with name 'f' but had: [y]")
   }
 
   private fun createFraction(
@@ -256,11 +110,6 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
 
   private fun createNonNegativeInt(value: Int): InteractionObject {
     return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
-  @Before
-  fun setUp() {
-    setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponent() {
