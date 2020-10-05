@@ -25,19 +25,14 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
-  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
+
   private val WHOLE_NUMBER_123 = createWholeNumber(isNegative = false, value = 123)
-  private val WHOLE_NUMBER_321 = createWholeNumber(isNegative = false, value = 321)
   private val FRACTION_2_OVER_4 = createFraction(isNegative = false, numerator = 2, denominator = 4)
   private val FRACTION_1_OVER_2 = createFraction(isNegative = false, numerator = 1, denominator = 2)
-  private val FRACTION_123_OVER_1 =
-    createFraction(isNegative = false, numerator = 123, denominator = 1)
   private val MIXED_NUMBER_123_1_OVER_2 =
     createMixedNumber(isNegative = false, wholeNumber = 123, numerator = 1, denominator = 2)
-  private val MIXED_NUMBER_123_1_OVER_3 =
-    createMixedNumber(isNegative = false, wholeNumber = 123, numerator = 1, denominator = 3)
-  private val MIXED_NUMBER_NEGATIVE_123_1_OVER_2 =
-    createMixedNumber(isNegative = true, wholeNumber = 123, numerator = 1, denominator = 2)
+  private val MIXED_NUMBER_123_0_OVER_3 =
+    createMixedNumber(isNegative = false, wholeNumber = 123, numerator = 0, denominator = 3)
 
   @Inject
   internal lateinit var fractionInputHasNoFractionalPartRuleClassifierProvider:
@@ -53,13 +48,91 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_wholeNumber123Answer_withWholeNumber123Input_bothFractionValuesMatch() {
-//    val inputs = mapOf("f" to WHOLE_NUMBER_123)
+  fun testNoFractionalPart_wholeNumber123Answer_hasNoFractionalPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
 
     val matches =
       hasNoFractionalPartClassifierProvider.matches(
-        answer = WHOLE_NUMBER_123
-//        inputs = inputs
+        answer = WHOLE_NUMBER_123,
+        inputs = inputs
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testNoFractionPart_fraction2Over4Answer_hasFractionalPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
+
+    val matches =
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = FRACTION_2_OVER_4,
+        inputs = inputs
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testNoFractionPart_mixedNumber123And1Over2Answer_hasFractionPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
+
+    val matches =
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = MIXED_NUMBER_123_1_OVER_2,
+        inputs = inputs
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testNoFractionPart_mixedNumber123And0Over3Answer_hasNoFractionPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
+
+    val matches =
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = MIXED_NUMBER_123_0_OVER_3,
+        inputs = inputs
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testNoFractionPart_mixedNumberNegative123And1Over2Answer_hasFractionPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
+
+    val matches =
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = MIXED_NUMBER_123_1_OVER_2,
+        inputs = inputs
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testNoFractionPart_mixedNumberNegative123And0Over3Answer_hasNoFractionPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
+
+    val matches =
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = MIXED_NUMBER_123_0_OVER_3,
+        inputs = inputs
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testNoFractionPart_fraction1Over2Answer_hasFractionPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
+
+    val matches =
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = FRACTION_1_OVER_2,
+        inputs = inputs
       )
 
     assertThat(matches).isFalse()
@@ -106,10 +179,6 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
         .setDenominator(denominator)
         .build()
     ).build()
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
   }
 
   private fun setUpTestApplicationComponent() {
