@@ -2,7 +2,6 @@ package org.oppia.android.app.walkthrough.topiclist
 
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,12 +70,13 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
           val firstVisibleItemPosition = walkthroughLayoutManager.findFirstVisibleItemPosition()
           if (firstVisibleItemPosition >= 1) {
             viewModel.hideProgressBarAndShowHeaderTextView()
-            Log.d("check", "onScrolled1: header =  ${viewModel.isHeaderTextViewVisible.value} bar = ${viewModel.isProgressBarVisible.value}")
+//            Log.d("check", "onScrolled1: header =  ${viewModel.isHeaderTextViewVisible.value} bar = ${viewModel.isProgressBarVisible.value}")
+
 //            activity.walkthrough_progress_bar.visibility = View.GONE
 //            activity.walkthrough_activity_topic_header_text_view.visibility = View.VISIBLE
           } else {
             viewModel.hideHeaderTextViewAndShowProgressBar()
-            Log.d("check", "onScrolled2: header =  ${viewModel.isHeaderTextViewVisible.value} bar = ${viewModel.isProgressBarVisible.value}")
+//            Log.d("check", "onScrolled2: header =  ${viewModel.isHeaderTextViewVisible.value} bar = ${viewModel.isProgressBarVisible.value}")
 //            activity.walkthrough_progress_bar.visibility = View.VISIBLE
 //            activity.walkthrough_activity_topic_header_text_view.visibility = View.GONE
           }

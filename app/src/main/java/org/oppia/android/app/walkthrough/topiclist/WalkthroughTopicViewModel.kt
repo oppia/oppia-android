@@ -2,7 +2,6 @@ package org.oppia.android.app.walkthrough.topiclist
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.model.TopicList
@@ -18,7 +17,8 @@ import javax.inject.Inject
 class WalkthroughTopicViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicListController: TopicListController,
-  private val logger: ConsoleLogger
+  private val logger: ConsoleLogger,
+  private val showHideProgressBar: ShowHideProgressBar
 ) : ObservableViewModel() {
   val walkthroughTopicViewModelLiveData: LiveData<List<WalkthroughTopicItemViewModel>> by lazy {
     Transformations.map(topicListSummaryLiveData, ::processCompletedTopicList)
@@ -32,22 +32,20 @@ class WalkthroughTopicViewModel @Inject constructor(
     Transformations.map(topicListSummaryResultLiveData, ::processTopicListResult)
   }
 
-  val _isHeaderTextViewVisible =  MutableLiveData<Boolean>()
-  val isHeaderTextViewVisible: LiveData<Boolean>
-    get() = _isHeaderTextViewVisible
-
-  val _isProgressBarVisible =  MutableLiveData<Boolean>()
-  val isProgressBarVisible: LiveData<Boolean>
-    get() = _isProgressBarVisible
+//  val _isHeaderTextViewVisible =  MutableLiveData<Boolean>()
+//  val isHeaderTextViewVisible: LiveData<Boolean>
+//    get() = _isHeaderTextViewVisible
+//
+//  val _isProgressBarVisible =  MutableLiveData<Boolean>()
+//  val isProgressBarVisible: LiveData<Boolean>
+//    get() = _isProgressBarVisible
 
   fun hideProgressBarAndShowHeaderTextView() {
-    _isProgressBarVisible.value = false
-    _isHeaderTextViewVisible.value = true
+    showHideProgressBar.hideProgressBarAndShowHeader()
   }
 
   fun hideHeaderTextViewAndShowProgressBar() {
-    _isHeaderTextViewVisible.value = true
-    _isHeaderTextViewVisible.value = false
+    showHideProgressBar.hideHeaderAndShowProgressBar()
   }
 
   private fun processTopicListResult(topicSummaryListResult: AsyncResult<TopicList>): TopicList {
