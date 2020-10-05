@@ -311,7 +311,7 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
   }
 
   @Test
-  fun testRealAnswer_stringInput_throwsException() {
+  fun testFractionalAnswer_stringInput_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE)
 
     val exception = assertThrows(IllegalStateException::class) {
