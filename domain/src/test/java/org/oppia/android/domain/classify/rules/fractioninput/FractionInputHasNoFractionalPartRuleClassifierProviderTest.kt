@@ -29,7 +29,8 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
   private val WHOLE_NUMBER_123 = createWholeNumber(isNegative = false, value = 123)
   private val FRACTION_2_OVER_4 = createFraction(isNegative = false, numerator = 2, denominator = 4)
   private val FRACTION_1_OVER_2 = createFraction(isNegative = false, numerator = 1, denominator = 2)
-  private val FRACTION_20_OVER_5 = createFraction(isNegative = false, numerator = 20, denominator = 5)
+  private val FRACTION_20_OVER_5 =
+    createFraction(isNegative = false, numerator = 20, denominator = 5)
   private val MIXED_NUMBER_123_1_OVER_2 =
     createMixedNumber(isNegative = false, wholeNumber = 123, numerator = 1, denominator = 2)
   private val MIXED_NUMBER_123_0_OVER_3 =
@@ -116,7 +117,6 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
 
     assertThat(matches).isFalse()
   }
-
 
   @Test
   fun testNoFractionPart_mixedNumberNegative123And0Over3Answer_hasNoFractionPart() {
