@@ -165,7 +165,7 @@ class AudioFragmentTest {
   }
 
   @Test
-  fun testAudioFragment_openFragment_showsEnglishAudioLanguageWhenDefaultAudioLanguageNotAvailable() { // ktlint-disable max-line-length
+  fun testAudioFragment_openFragment_showsEnglishAudioLanguageWhenDefaultAudioLanguageNotAvailable() {
     launch<AudioFragmentTestActivity>(
       createHomeActivityIntent(
         PROFILE_ID_INVALID_AUDIO_LANGUAGE
