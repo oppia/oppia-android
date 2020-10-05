@@ -99,7 +99,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdministratorControlsActivity_withAdminProfile_openAdministratorControlsActivityFromNavigationDrawer_onBackPressed_showsHomeActivity() { // ktlint-disable max-line-length
+  fun testAdministratorControlsActivity_withAdminProfile_openAdministratorControlsActivityFromNavigationDrawer_onBackPressed_showsHomeActivity() {
     ActivityScenario
       .launch<NavigationDrawerTestActivity>(
         createNavigationDrawerActivityIntent(0)
