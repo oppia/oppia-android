@@ -54,6 +54,18 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
   private val STRING_VALUE = createString(value = "test")
 
   @Test
+  fun testPositiveFractionalAnswer_positiveFractionalInput_exactSameValue_answerNotGreater() {
+    val inputs = mapOf("f" to FRACTION_1_OVER_3)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = FRACTION_1_OVER_3,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
   fun testPositiveFractionalAnswer_positiveFractionalInput_answerGreaterThan_answerGreater() {
     val inputs = mapOf("f" to FRACTION_1_OVER_3)
 
@@ -78,6 +90,18 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
   }
 
   @Test
+  fun testNegativeFractionalAnswer_negativeFractionalInput_exactSameValue_answerNotGreater() {
+    val inputs = mapOf("f" to NEGATIVE_FRACTION_1_OVER_3)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = NEGATIVE_FRACTION_1_OVER_3,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
   fun testNegativeFractionalAnswer_negativeFractionalInput_answerGreaterThan_answerGreater() {
     val inputs = mapOf("f" to NEGATIVE_FRACTION_1_OVER_2)
 
@@ -90,7 +114,7 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
   }
 
   @Test
-  fun testNegativeFractioalAnswer_negeativeFractioalInput_answerSmallerThan_answerNotGreater() {
+  fun testNegativeFractionalAnswer_negativeFractionalInput_answerSmallerThan_answerNotGreater() {
     val inputs = mapOf("f" to NEGATIVE_FRACTION_1_OVER_3)
 
     val matches = inputGreaterThanRuleClassifier.matches(
@@ -126,6 +150,18 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
   }
 
   @Test
+  fun testPositiveMixedAnswer_positiveMixedInput_exactSameValue_answerNotGreater() {
+    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = MIXED_NUMBER_123_1_OVER_2,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
   fun testPositiveMixedAnswer_positiveMixedInput_answerGreaterThan_answerGreater() {
     val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_3)
 
@@ -143,6 +179,18 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
 
     val matches = inputGreaterThanRuleClassifier.matches(
       answer = MIXED_NUMBER_123_1_OVER_3,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testNegativeMixedAnswer_negativeMixedInput_exactSameValue_answerNotGreater() {
+    val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_123_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = NEGATIVE_MIXED_NUMBER_123_1_OVER_2,
       inputs = inputs
     )
 
