@@ -538,9 +538,11 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_clickOnSkip_changeOrientation_titleIsCorrect() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
