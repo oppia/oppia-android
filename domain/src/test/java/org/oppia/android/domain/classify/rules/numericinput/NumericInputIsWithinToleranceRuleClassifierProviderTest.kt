@@ -301,7 +301,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswerNegativeInt2_inputNegativeInt3_tolerance0_answerNotWithinTolerance() {
+  fun testAnswerNegativeInt2_inputNegativeInt3_tolerance0_isNotWithinTolerance() {
     val inputs = mapOf(
       "x" to NEGATIVE_INT_VALUE_3,
       "tol" to ZERO_REAL_VALUE
