@@ -119,11 +119,11 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
     VIEW_TYPE_TOPIC
   }
 
-  private fun hideProgressBarAndShowHeader() {
+  fun hideProgressBarAndShowHeader() {
     showHideProgressBarAndHeaderTextview.hideProgressBarAndShowHeader()
   }
 
-  private fun hideHeaderAndShowProgressBar() {
+  fun hideHeaderAndShowProgressBar() {
     showHideProgressBarAndHeaderTextview.hideHeaderAndShowProgressBar()
   }
 
