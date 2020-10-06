@@ -10,8 +10,7 @@ import javax.inject.Inject
 class WalkthroughActivity :
   InjectableAppCompatActivity(),
   WalkthroughFragmentChangeListener,
-  ShowHideProgressBarAndHeaderTextview
-{
+  ShowHideProgressBarAndHeaderTextview {
   @Inject
   lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter
 

@@ -33,7 +33,8 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   private lateinit var binding: WalkthroughTopicListFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
   private val orientation = Resources.getSystem().configuration.orientation
-  private val showHideProgressBarAndHeaderTextview = activity as ShowHideProgressBarAndHeaderTextview
+  private val showHideProgressBarAndHeaderTextview =
+    activity as ShowHideProgressBarAndHeaderTextview
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val viewModel = getWalkthroughTopicViewModel()
