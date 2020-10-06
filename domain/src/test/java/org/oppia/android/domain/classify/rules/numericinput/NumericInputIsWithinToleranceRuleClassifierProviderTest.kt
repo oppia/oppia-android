@@ -223,19 +223,6 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswerInt2_inputInt3_toleranceInt1_isWithinTolerance() {
-    val inputs = mapOf(
-      "x" to POSITIVE_INT_VALUE_3,
-      "tol" to POSITIVE_INT_VALUE_1
-    )
-    val matches =
-      inputIsWithinToleranceRuleClassifier
-        .matches(answer = POSITIVE_INT_VALUE_2, inputs = inputs)
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
   fun testAnswerNegativeInt2_inputNegativeInt3_toleranceInt1_isWithinTolerance() {
     val inputs = mapOf(
       "x" to NEGATIVE_INT_VALUE_3,
