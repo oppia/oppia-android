@@ -54,7 +54,7 @@
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
       android:visibility="@{viewModel.isHeaderTextViewVisible ? View.VISIBLE : View.GONE}"
-      app:layout_constraintBottom_toBottomOf="@+id/walkthrough_progress_bar"
+      app:layout_constraintBottom_toBottomOf="@+id/back_button"
       app:layout_constraintStart_toEndOf="@+id/back_button"
       app:layout_constraintTop_toTopOf="parent" />
 
