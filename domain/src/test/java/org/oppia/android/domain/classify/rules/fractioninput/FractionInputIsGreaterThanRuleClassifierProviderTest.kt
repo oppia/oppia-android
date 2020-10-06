@@ -52,6 +52,7 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
   fun setUp() {
     setUpTestApplicationComponent()
   }
+
   @Test
   fun testPositiveFractionalAnswer_positiveFractionalInput_exactSameValue_verifyAnswerSmaller() {
     val inputs = mapOf("f" to FRACTION_1_OVER_3)
