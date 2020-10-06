@@ -80,6 +80,32 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   }
 
   @Test
+  fun testAnswer2pt5_input3pt5_tolerance1_isWithinTolerance() {
+    val inputs = mapOf(
+      "x" to POSITIVE_REAL_VALUE_3_5,
+      "tol" to POSITIVE_INT_VALUE_1
+    )
+    val matches =
+      inputIsWithinToleranceRuleClassifier
+        .matches(answer = POSITIVE_REAL_VALUE_2_5, inputs = inputs)
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testAnswerNegative2pt5_inputNegative3pt5_tolerance1_isWithinTolerance() {
+    val inputs = mapOf(
+      "x" to NEGATIVE_REAL_VALUE_3_5,
+      "tol" to POSITIVE_INT_VALUE_1
+    )
+    val matches =
+      inputIsWithinToleranceRuleClassifier
+        .matches(answer = NEGATIVE_REAL_VALUE_2_5, inputs = inputs)
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
   fun testAnswerNegative2pt5_inputNegative3pt5_tolerance1pt5_isWithinTolerance() {
     val inputs = mapOf(
       "x" to NEGATIVE_REAL_VALUE_3_5,
@@ -158,6 +184,19 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   }
 
   @Test
+  fun testAnswer2pt5_input3pt5_toleranceNegative1pt5_isNotWithinTolerance() {
+    val inputs = mapOf(
+      "x" to POSITIVE_REAL_VALUE_3_5,
+      "tol" to NEGATIVE_REAL_VALUE_1_5
+    )
+    val matches =
+      inputIsWithinToleranceRuleClassifier
+        .matches(answer = POSITIVE_REAL_VALUE_2_5, inputs = inputs)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
   fun testAnswerInt2_inputInt3_toleranceInt2_isWithinTolerance() {
     val inputs = mapOf(
       "x" to POSITIVE_INT_VALUE_3,
@@ -181,6 +220,19 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
         .matches(answer = POSITIVE_INT_VALUE_1, inputs = inputs)
 
     assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testAnswerInt2_inputInt3_toleranceInt1_isWithinTolerance() {
+    val inputs = mapOf(
+      "x" to POSITIVE_INT_VALUE_3,
+      "tol" to POSITIVE_INT_VALUE_1
+    )
+    val matches =
+      inputIsWithinToleranceRuleClassifier
+        .matches(answer = POSITIVE_INT_VALUE_2, inputs = inputs)
+
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -257,6 +309,19 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
     val matches =
       inputIsWithinToleranceRuleClassifier
         .matches(answer = NEGATIVE_INT_VALUE_2, inputs = inputs)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testAnswerInt2_inputInt3_toleranceNegativeInt1_isNotWithinTolerance() {
+    val inputs = mapOf(
+      "x" to POSITIVE_INT_VALUE_3,
+      "tol" to NEGATIVE_INT_VALUE_1
+    )
+    val matches =
+      inputIsWithinToleranceRuleClassifier
+        .matches(answer = POSITIVE_INT_VALUE_2, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
