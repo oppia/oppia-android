@@ -1,6 +1,6 @@
 package org.oppia.android.app.settings.profile
 
-import android.widget.Switch
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -17,16 +17,16 @@ import javax.inject.Inject
 /** The ViewModel for [ProfileEditActivity]. */
 @ActivityScope
 class ProfileEditViewModel @Inject constructor(
+  private val activity: AppCompatActivity,
   private val logger: ConsoleLogger,
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
-  private lateinit var switch: Switch
+
+  private val _isAllowedDownloadAccess = MutableLiveData<Boolean>()
+  val isAllowedDownloadAccess: LiveData<Boolean> = _isAllowedDownloadAccess
 
   lateinit var profileName: String
-
-  private val _activityTitle = MutableLiveData<String>()
-  val activityTitle: LiveData<String> = _activityTitle
 
   val profile: LiveData<Profile> by lazy {
     Transformations.map(
@@ -37,9 +37,8 @@ class ProfileEditViewModel @Inject constructor(
 
   var isAdmin = false
 
-  fun setProfileId(id: Int, switch: Switch) {
+  fun setProfileId(id: Int) {
     profileId = ProfileId.newBuilder().setInternalId(id).build()
-    this.switch = switch
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
@@ -51,8 +50,8 @@ class ProfileEditViewModel @Inject constructor(
       )
     }
     val profile = profileResult.getOrDefault(Profile.getDefaultInstance())
-    switch.isChecked = profile.allowDownloadAccess
-    _activityTitle.value = profile.name
+    _isAllowedDownloadAccess.value = profile.allowDownloadAccess
+    activity.title = profile.name
     profileName = profile.name
     isAdmin = profile.isAdmin
     return profile

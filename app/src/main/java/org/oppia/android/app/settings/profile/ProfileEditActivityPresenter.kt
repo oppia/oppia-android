@@ -1,7 +1,6 @@
 package org.oppia.android.app.settings.profile
 
 import android.content.Intent
-import android.widget.Switch
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -38,9 +37,9 @@ class ProfileEditActivityPresenter @Inject constructor(
     )
     val profileId = activity.intent.getIntExtra(KEY_PROFILE_EDIT_PROFILE_ID, 0)
     editViewModel.setProfileId(
-      profileId,
-      activity.findViewById<Switch>(R.id.profile_edit_allow_download_switch)
+      profileId
     )
+
     binding.apply {
       viewModel = editViewModel
       lifecycleOwner = activity
@@ -64,6 +63,10 @@ class ProfileEditActivityPresenter @Inject constructor(
       showDeletionDialog(profileId)
     }
 
+    editViewModel.isAllowedDownloadAccess.observe(activity, Observer {
+      binding.profileEditAllowDownloadSwitch.isChecked = it
+    })
+
     binding.profileEditAllowDownloadSwitch.setOnCheckedChangeListener { compoundButton, checked ->
       if (compoundButton.isPressed) {
         profileManagementController.updateAllowDownloadAccess(
@@ -83,8 +86,6 @@ class ProfileEditActivityPresenter @Inject constructor(
         )
       }
     }
-
-    editViewModel.activityTitle.observe(activity, Observer { activity.title = it })
   }
 
   fun handleOnRestoreSavedInstanceState() {
