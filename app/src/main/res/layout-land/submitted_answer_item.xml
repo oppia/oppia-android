@@ -66,7 +66,6 @@
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constrainedWidth="true"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintEnd_toEndOf="@{viewModel.isCorrectAnswer ? @id/submitted_answer_guideline : ConstraintSet.PARENT_ID}"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
