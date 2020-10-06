@@ -1,4 +1,4 @@
-package org.oppia.domain.classify.rules.numberinput
+package org.oppia.android.domain.classify.rules.numericinput
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
@@ -10,7 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsWithinToleranceRuleClassifierProvider
+import org.oppia.domain.classify.rules.numberinput.DaggerNumericInputIsWithinToleranceRuleClassifierProviderTest_TestApplicationComponent
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
