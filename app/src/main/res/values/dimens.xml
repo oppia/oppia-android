@@ -13,8 +13,6 @@
   <dimen name="elevation_4dp">4dp</dimen>
   <dimen name="elevation_0dp">0dp</dimen>
   <dimen name="padding_296dp">296dp</dimen>
-  <dimen name="space_72dpdp">72dp</dimen>
-  <dimen name="space_24dpdp">24dp</dimen>
   <dimen name="divider_margin_top">8dp</dimen>
   <dimen name="divider_margin_bottom">8dp</dimen>
   <dimen name="bottom_white_space">160dp</dimen>

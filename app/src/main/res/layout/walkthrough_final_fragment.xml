@@ -53,7 +53,7 @@
           android:background="?attr/selectableItemBackground"
           android:onClick="@{(v) -> presenter.goBack()}"
           app:cardCornerRadius="4dp"
-          app:contentPadding="@dimen/space_24dpdp">
+          app:contentPadding="@dimen/space_24dp">
 
           <TextView
             android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
           android:clickable="true"
           android:focusable="true"
           app:cardCornerRadius="4dp"
-          app:contentPadding="@dimen/space_24dpdp">
+          app:contentPadding="@dimen/space_24dp">
 
           <TextView
             android:layout_width="wrap_content"
