@@ -63,9 +63,12 @@ class ProfileEditActivityPresenter @Inject constructor(
       showDeletionDialog(profileId)
     }
 
-    editViewModel.isAllowedDownloadAccess.observe(activity, Observer {
-      binding.profileEditAllowDownloadSwitch.isChecked = it
-    })
+    editViewModel.isAllowedDownloadAccess.observe(
+      activity,
+      Observer {
+        binding.profileEditAllowDownloadSwitch.isChecked = it
+      }
+    )
 
     binding.profileEditAllowDownloadSwitch.setOnCheckedChangeListener { compoundButton, checked ->
       if (compoundButton.isPressed) {
