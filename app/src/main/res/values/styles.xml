@@ -28,7 +28,6 @@
     <item name="windowNoTitle">true</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
-
   <!-- Base style for animations.  This style specifies no animations. -->
   <style name="Animation" />
   <!-- Standard animations for a full-screen window or activity. -->
@@ -177,5 +176,73 @@
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowIsFloating">false</item>
     <item name="android:backgroundDimEnabled">true</item>
+  </style>
+
+  <style name="Heading1" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">24sp</item>
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="Heading2" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">20sp</item>
+    <item name="fontFamily">sans-serif-medium</item>
+  </style>
+
+  <style name="Heading3" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">18sp</item>
+    <item name="fontFamily">sans-serif-medium</item>
+  </style>
+
+  <style name="Heading4" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">18sp</item>
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="Heading5" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">14sp</item>
+    <item name="fontFamily">sans-serif-medium</item>
+  </style>
+
+  <style name="Subtitle1" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">16sp</item>
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="Subtitle2" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">14sp</item>
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="TextFieldLabel" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">12sp</item>
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="Body" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">16sp</item>
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="Caption" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">14sp</item>
+    <item name="fontFamily">sans-serif-medium</item>
+  </style>
+
+  <!-- This style should not be used in layout/*.xml files.-->
+  <style name="TextView.Common1" parent="Widget.AppCompat.TextView">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textColor">@color/oppiaPrimaryText</item>
   </style>
 </resources>
