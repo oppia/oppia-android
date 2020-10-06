@@ -66,7 +66,7 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
   }
 
   @Test
-  fun testPositiveFractionalAnswer_positiveFractionalInput_answerGreaterThan_verifyAnswerGreater() {
+  fun testPositiveFractionalAnswer_positiveFractionalInput_answerGreater_verifyAnswerGreater() {
     val inputs = mapOf("f" to FRACTION_1_OVER_3)
 
     val matches = inputGreaterThanRuleClassifier.matches(
@@ -78,7 +78,7 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
   }
 
   @Test
-  fun testPositiveFractionalAnswer_positiveFractionalInput_answerSmallerThan_verifyAnswerNotGreater() {
+  fun testPositiveFractionalAnswer_positiveFractionalInput_answerSmaller_verifyAnswerNotGreater() {
     val inputs = mapOf("f" to FRACTION_1_OVER_2)
 
     val matches = inputGreaterThanRuleClassifier.matches(
@@ -90,7 +90,7 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
   }
 
   @Test
-  fun testPositiveFractionalAnswer_negativeFractionalInput_answerGreaterThan_verifyAnswerGreater() {
+  fun testPositiveFractionalAnswer_negativeFractionalInput_answerGreater_verifyAnswerGreater() {
     val inputs = mapOf("f" to NEGATIVE_FRACTION_1_OVER_3)
 
     val matches = inputGreaterThanRuleClassifier.matches(
@@ -102,7 +102,7 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
   }
 
   @Test
-  fun testPositiveFractionalAnswer_positiveMixedInput_answerSmallerThan_verifyAnswerNotGreater() {
+  fun testPositiveFractionalAnswer_positiveMixedInput_answerSmaller_verifyAnswerNotGreater() {
     val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
 
     val matches = inputGreaterThanRuleClassifier.matches(
@@ -114,7 +114,7 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
   }
 
   @Test
-  fun testPositiveFractionalAnswer_negativeMixedInput_answerGreaterThan_verifyAnswerGreater() {
+  fun testPositiveFractionalAnswer_negativeMixedInput_answerGreater_verifyAnswerGreater() {
     val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_123_1_OVER_2)
 
     val matches = inputGreaterThanRuleClassifier.matches(
