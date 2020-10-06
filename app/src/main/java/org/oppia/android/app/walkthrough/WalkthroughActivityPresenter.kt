@@ -1,13 +1,11 @@
 package org.oppia.android.app.walkthrough
 
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
-import org.oppia.android.app.walkthrough.topiclist.ShowHideProgressBar
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
 import org.oppia.android.databinding.WalkthroughActivityBinding
@@ -19,7 +17,7 @@ import javax.inject.Inject
 class WalkthroughActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val viewModelProvider: ViewModelProvider<WalkthroughViewModel>
-) : WalkthroughActivityListener, ShowHideProgressBar {
+) : WalkthroughActivityListener {
   private lateinit var topicId: String
   private lateinit var binding: WalkthroughActivityBinding
 
@@ -141,13 +139,11 @@ class WalkthroughActivityPresenter @Inject constructor(
     this.topicId = topicId
   }
 
-  override fun hideProgressBarAndShowHeader() {
-    binding.walkthroughProgressBar.visibility = View.INVISIBLE
-    binding.walkthroughActivityTopicHeaderTextView.visibility = View.GONE
+  fun hideProgressBarAndShowHeader() {
+    binding.viewModel?.hideProgressBarAndShowHeader()
   }
 
-  override fun hideHeaderAndShowProgressBar() {
-    binding.walkthroughProgressBar.visibility = View.VISIBLE
-    binding.walkthroughActivityTopicHeaderTextView.visibility = View.GONE
+  fun hideHeaderAndShowProgressBar() {
+    binding.viewModel?.hideHeaderAndShowProgressBar()
   }
 }

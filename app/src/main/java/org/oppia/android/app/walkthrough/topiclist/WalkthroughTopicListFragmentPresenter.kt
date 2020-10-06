@@ -13,6 +13,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.app.walkthrough.ShowHideProgressBarAndHeaderTextview
 import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.android.app.walkthrough.WalkthroughPages
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
@@ -32,6 +33,7 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   private lateinit var binding: WalkthroughTopicListFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
   private val orientation = Resources.getSystem().configuration.orientation
+  private val showHideProgressBarAndHeaderTextview = activity as ShowHideProgressBarAndHeaderTextview
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val viewModel = getWalkthroughTopicViewModel()
@@ -69,16 +71,9 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
           super.onScrolled(recyclerView, dx, dy)
           val firstVisibleItemPosition = walkthroughLayoutManager.findFirstVisibleItemPosition()
           if (firstVisibleItemPosition >= 1) {
-            viewModel.hideProgressBarAndShowHeaderTextView()
-//            Log.d("check", "onScrolled1: header =  ${viewModel.isHeaderTextViewVisible.value} bar = ${viewModel.isProgressBarVisible.value}")
-
-//            activity.walkthrough_progress_bar.visibility = View.GONE
-//            activity.walkthrough_activity_topic_header_text_view.visibility = View.VISIBLE
+            hideProgressBarAndShowHeader()
           } else {
-            viewModel.hideHeaderTextViewAndShowProgressBar()
-//            Log.d("check", "onScrolled2: header =  ${viewModel.isHeaderTextViewVisible.value} bar = ${viewModel.isProgressBarVisible.value}")
-//            activity.walkthrough_progress_bar.visibility = View.VISIBLE
-//            activity.walkthrough_activity_topic_header_text_view.visibility = View.GONE
+            hideHeaderAndShowProgressBar()
           }
         }
       })
@@ -122,6 +117,14 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   private enum class ViewType {
     VIEW_TYPE_HEADER,
     VIEW_TYPE_TOPIC
+  }
+
+  private fun hideProgressBarAndShowHeader() {
+    showHideProgressBarAndHeaderTextview.hideProgressBarAndShowHeader()
+  }
+
+  private fun hideHeaderAndShowProgressBar() {
+    showHideProgressBarAndHeaderTextview.hideHeaderAndShowProgressBar()
   }
 
   fun changePage(topicSummary: TopicSummary) {

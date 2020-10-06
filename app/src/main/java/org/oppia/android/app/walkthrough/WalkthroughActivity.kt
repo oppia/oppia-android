@@ -7,7 +7,11 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** Activity that contains the walkthrough flow for users. */
-class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentChangeListener {
+class WalkthroughActivity :
+  InjectableAppCompatActivity(),
+  WalkthroughFragmentChangeListener,
+  ShowHideProgressBarAndHeaderTextview
+{
   @Inject
   lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter
 
@@ -39,5 +43,13 @@ class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentCh
       intent.putExtra(WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId)
       return intent
     }
+  }
+
+  override fun hideProgressBarAndShowHeader() {
+    walkthroughActivityPresenter.hideProgressBarAndShowHeader()
+  }
+
+  override fun hideHeaderAndShowProgressBar() {
+    walkthroughActivityPresenter.hideHeaderAndShowProgressBar()
   }
 }

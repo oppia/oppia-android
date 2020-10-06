@@ -17,8 +17,7 @@ import javax.inject.Inject
 class WalkthroughTopicViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicListController: TopicListController,
-  private val logger: ConsoleLogger,
-  private val showHideProgressBar: ShowHideProgressBar
+  private val logger: ConsoleLogger
 ) : ObservableViewModel() {
   val walkthroughTopicViewModelLiveData: LiveData<List<WalkthroughTopicItemViewModel>> by lazy {
     Transformations.map(topicListSummaryLiveData, ::processCompletedTopicList)
@@ -30,22 +29,6 @@ class WalkthroughTopicViewModel @Inject constructor(
 
   private val topicListSummaryLiveData: LiveData<TopicList> by lazy {
     Transformations.map(topicListSummaryResultLiveData, ::processTopicListResult)
-  }
-
-//  val _isHeaderTextViewVisible =  MutableLiveData<Boolean>()
-//  val isHeaderTextViewVisible: LiveData<Boolean>
-//    get() = _isHeaderTextViewVisible
-//
-//  val _isProgressBarVisible =  MutableLiveData<Boolean>()
-//  val isProgressBarVisible: LiveData<Boolean>
-//    get() = _isProgressBarVisible
-
-  fun hideProgressBarAndShowHeaderTextView() {
-    showHideProgressBar.hideProgressBarAndShowHeader()
-  }
-
-  fun hideHeaderTextViewAndShowProgressBar() {
-    showHideProgressBar.hideHeaderAndShowProgressBar()
   }
 
   private fun processTopicListResult(topicSummaryListResult: AsyncResult<TopicList>): TopicList {
