@@ -283,7 +283,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdminCtrlFragment_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsNotChecked() {
+  fun testAdminCtrl_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsNotChecked() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
