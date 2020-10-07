@@ -68,16 +68,16 @@ class OngoingListAdapter(
         val params =
           holder.binding.ongoingStoryCardView.layoutParams as (ViewGroup.MarginLayoutParams)
         val marginTop = if (activity.resources.getBoolean(R.bool.isTablet)) {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.space_28dp)
         } else {
           if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             if (storyGridPosition > 2) {
-              (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_16)
+              (activity as Context).resources.getDimensionPixelSize(R.dimen.space_16dp)
             } else {
-              (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+              (activity as Context).resources.getDimensionPixelSize(R.dimen.space_28dp)
             }
           } else {
-            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.space_28dp)
           }
         }
         val marginBottom = 0
