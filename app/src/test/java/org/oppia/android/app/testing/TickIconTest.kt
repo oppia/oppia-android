@@ -1,4 +1,4 @@
-package org.oppia.android.app.testing
+package org.oppia.android.app.topic.questionplayer
 
 import android.app.Application
 import android.content.Context
@@ -10,7 +10,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.bumptech.glide.Glide
@@ -18,6 +19,8 @@ import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.firebase.FirebaseApp
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
@@ -29,18 +32,15 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
-import org.oppia.android.app.application.ApplicationContext
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher
-import org.oppia.android.app.shim.IntentFactoryShimModule
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.android.app.utility.OrientationChangeAction
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -56,11 +56,11 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
-import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.question.QuestionCountPerTrainingSession
+import org.oppia.android.domain.question.QuestionTrainingSeed
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.CoroutineExecutorService
-import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -79,32 +79,28 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
+
+/** Tests for [QuestionPlayerActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(
-  application = TickIconTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
-)
+@Config(application = TickIconTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class TickIconTest {
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
+  // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
+  // TODO(#1273): add tests for Hints and Solution in Question Player.
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  @field:ApplicationContext
-  lateinit var context: Context
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
-  lateinit var editTextInputAction: EditTextInputAction
+  lateinit var context: Context
 
   @Inject
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
-
-  private val SKILL_ID_LIST = arrayListOf(FRACTIONS_SKILL_ID_0)
 
   @Before
   fun setUp() {
@@ -132,21 +128,34 @@ class TickIconTest {
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
+
   @Test
-  fun testQuestionPlayer_submitAnswer_increaseTextSize_checkTickDoesNotIconOverlap() {
+  fun testQuestionPlayer_showsLinkTextForConceptCard() {
     launchForSkillList(SKILL_ID_LIST).use {
-      testCoroutineDispatchers.runCurrent()
-      selectMultipleChoiceOption(optionPosition = 3)
+      // Option 3 is the wrong answer and should trigger showing a concept card.
+      selectMultipleChoiceOption(optionPosition = 2)
+//      onView(withId(R.id.submitted_answer_text_view)).check(
+//        matches(
+//          ViewMatchers.isCompletelyDisplayed()
+//        )
+//      )
+      onView(withId(R.id.answer_tick)).check(
+        matches(
+          isCompletelyDisplayed()
+        )
+      )
+//      scrollToViewType(FEEDBACK)
 
-
-      onView(withId(R.id.submitted_answer_text_view))
+//      onView(withId(R.id.feedback_text_view)).check(
+//        matches(
+//          withText(containsString("To refresh your memory, take a look at this refresher lesson"))
+//        )
+//      )
     }
   }
-  private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
-    onView(withId(R.id.question_recycler_view)).perform(
-      scrollToHolder(StateViewHolderTypeMatcher(viewType))
-    )
-    testCoroutineDispatchers.runCurrent()
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun launchForSkillList(
@@ -158,14 +167,11 @@ class TickIconTest {
       )
     )
     testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.question_recycler_view)).check(matches(ViewMatchers.isDisplayed()))
+    onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
     return scenario
   }
 
-  private fun rotateToLandscape() {
-    onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-    testCoroutineDispatchers.runCurrent()
-  }
+  // TODO(#1778): Share the following utilities with StateFragmentTest.
 
   @Suppress("SameParameterValue")
   private fun selectMultipleChoiceOption(optionPosition: Int) {
@@ -174,14 +180,21 @@ class TickIconTest {
 
   @Suppress("SameParameterValue")
   private fun clickSelection(optionPosition: Int, targetViewId: Int) {
-    scrollToViewType(StateItemViewModel.ViewType.SELECTION_INTERACTION)
+    scrollToViewType(SELECTION_INTERACTION)
     onView(
-      RecyclerViewMatcher.atPositionOnView(
+      atPositionOnView(
         recyclerViewId = R.id.selection_interaction_recyclerview,
         position = optionPosition,
         targetViewId = targetViewId
       )
     ).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
+    onView(withId(R.id.question_recycler_view)).perform(
+      scrollToHolder(StateViewHolderTypeMatcher(viewType))
+    )
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -201,8 +214,17 @@ class TickIconTest {
     }
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  @Module
+  class TestModule {
+    @Provides
+    @QuestionCountPerTrainingSession
+    fun provideQuestionCountPerTrainingSession(): Int = 3
+
+    // Ensure that the question seed is consistent for all runs of the tests to keep question order
+    // predictable.
+    @Provides
+    @QuestionTrainingSeed
+    fun provideQuestionTrainingSeed(): Long = 3
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -210,19 +232,19 @@ class TickIconTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class,
+      TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
-      ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, TestLogReportingModule::class,
+      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
+      RatioInputModule::class, HintsAndSolutionConfigFastShowTestModule::class,
+      WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
+      LogUploadWorkerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
