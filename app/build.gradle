@@ -54,6 +54,15 @@ android {
       includeAndroidResources = true
       all {
         maxHeapSize = "1024m"
+        // https://discuss.gradle.org/t/29495/2 & https://stackoverflow.com/a/34299238.
+        testLogging {
+          events "passed", "skipped", "failed"
+          showExceptions true
+          exceptionFormat "full"
+          showCauses true
+          showStackTraces true
+          showStandardStreams = false
+        }
       }
     }
     animationsDisabled = true
