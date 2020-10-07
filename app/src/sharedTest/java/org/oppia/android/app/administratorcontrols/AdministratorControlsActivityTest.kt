@@ -99,7 +99,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdminControlsActivity_withAdminProfile_openAdminCtrlsActivityFromNavDrawer_HomeOnBack() {
+  fun testAdminCtrl_withAdminProfile_openAdminControlsFromNavDrawer_onBackPressed_showsHome() {
     ActivityScenario
       .launch<NavigationDrawerTestActivity>(
         createNavigationDrawerActivityIntent(0)
