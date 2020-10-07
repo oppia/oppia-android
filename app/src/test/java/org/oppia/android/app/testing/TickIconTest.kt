@@ -50,8 +50,8 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -91,7 +91,7 @@ class TickIconTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
-  private val SKILL_ID_LIST = arrayListOf(TEST_SKILL_ID_1)
+  private val SKILL_ID_LIST = arrayListOf(FRACTIONS_SKILL_ID_0)
 
   @Before
   fun setUp() {
