@@ -258,6 +258,18 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
   }
 
   @Test
+  fun testAnswerNegative123_1Over3_inputNegative123_1Over2_verifyAnswerNotLesser() {
+    val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_123_1_OVER_2)
+
+    val matches = inputLessThanRuleClassifier.matches(
+      answer = NEGATIVE_MIXED_NUMBER_123_1_OVER_3,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
   fun testAnswer123_1Over2_input1Over2_verifyAnswerNotLesser() {
     val inputs = mapOf("f" to FRACTION_1_OVER_2)
 
@@ -282,18 +294,6 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswerNegative123_1Over3_inputNegative123_1Over2_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_123_1_OVER_2)
-
-    val matches = inputLessThanRuleClassifier.matches(
-      answer = NEGATIVE_MIXED_NUMBER_123_1_OVER_3,
-      inputs = inputs
-    )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
   fun testAnswerNegative123_1Over2_inputNegative123_1Over3_verifyAnswerLesser() {
     val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_123_1_OVER_3)
 
@@ -306,8 +306,8 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswerNegative123_1Over2_input123_1Over2_verifyAnswerLesser() {
-    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
+  fun testAnswerNegative123_1Over2_inputNegative1Over3_verifyAnswerLesser() {
+    val inputs = mapOf("f" to NEGATIVE_FRACTION_1_OVER_3)
 
     val matches = inputLessThanRuleClassifier.matches(
       answer = NEGATIVE_MIXED_NUMBER_123_1_OVER_2,
@@ -318,8 +318,8 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswerNegative123_1Over2_inputNegative1Over3_verifyAnswerLesser() {
-    val inputs = mapOf("f" to NEGATIVE_FRACTION_1_OVER_3)
+  fun testAnswerNegative123_1Over2_input123_1Over2_verifyAnswerLesser() {
+    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
       answer = NEGATIVE_MIXED_NUMBER_123_1_OVER_2,
