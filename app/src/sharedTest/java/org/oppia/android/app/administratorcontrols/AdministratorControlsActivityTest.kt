@@ -99,7 +99,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdminControlsActivity_withAdminProfile_openAdminControlsActivityFromNavDrawer_HomeOnBack {
+  fun testAdminControlsActivity_withAdminProfile_openAdminCtrlsActivityFromNavDrawer_HomeOnBack() {
     ActivityScenario
       .launch<NavigationDrawerTestActivity>(
         createNavigationDrawerActivityIntent(0)
@@ -283,7 +283,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdminControlsFragment_OnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsNotChecked() { 
+  fun testAdminControlsFragment_OnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsNotChecked() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -315,7 +315,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdminControlsFragment_OnWifiSwitchIsChecked_configurationChange_checkIfSwitchIsChecked() { 
+  fun testAdminControlsFragment_OnWifiSwitchIsChecked_configurationChange_checkIfSwitchIsChecked() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -392,7 +392,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdministratorControlsFragment_clickOnWifiSwitch_checkSwitchRemainsCheckedOnRecreate { 
+  fun testAdministratorControlsFragment_clickOnWifiSwitch_checkSwitchRemainsCheckedOnRecreate() {
     ActivityScenario
       .launch<NavigationDrawerTestActivity>(
         createNavigationDrawerActivityIntent(profileId = 0)
@@ -437,7 +437,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdministratorControlsFragment_clickEditProfile_checkOpensProfileListActivity() { 
+  fun testAdministratorControlsFragment_clickEditProfile_checkOpensProfileListActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
