@@ -32,8 +32,8 @@ class WalkthroughTopicListFragment : InjectableFragment(), TopicSummaryClickList
     walkthroughTopicListFragmentPresenter.changePage(topicSummary)
   }
 
-  override fun onStop() {
-    super.onStop()
-    walkthroughTopicListFragmentPresenter.hideHeaderAndShowProgressBar()
+  override fun onDestroyView() {
+    super.onDestroyView()
+    walkthroughTopicListFragmentPresenter.handleDestroyView()
   }
 }

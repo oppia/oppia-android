@@ -140,10 +140,10 @@ class WalkthroughActivityPresenter @Inject constructor(
   }
 
   fun hideProgressBarAndShowHeader() {
-    binding.viewModel?.hideProgressBarAndShowHeader()
+    getWalkthroughViewModel().hideProgressBarAndShowHeader()
   }
 
   fun hideHeaderAndShowProgressBar() {
-    binding.viewModel?.hideHeaderAndShowProgressBar()
+    getWalkthroughViewModel().hideHeaderAndShowProgressBar()
   }
 }

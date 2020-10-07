@@ -13,7 +13,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
-import org.oppia.android.app.walkthrough.ShowHideProgressBarAndHeaderTextview
+import org.oppia.android.app.walkthrough.WalkThroughVerticalScrollListener
 import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.android.app.walkthrough.WalkthroughPages
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
@@ -33,8 +33,8 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   private lateinit var binding: WalkthroughTopicListFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
   private val orientation = Resources.getSystem().configuration.orientation
-  private val showHideProgressBarAndHeaderTextview =
-    activity as ShowHideProgressBarAndHeaderTextview
+  private val walkThroughVerticalScrollListener =
+    activity as WalkThroughVerticalScrollListener
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val viewModel = getWalkthroughTopicViewModel()
@@ -87,6 +87,10 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
     return binding.root
   }
 
+  fun handleDestroyView() {
+    hideHeaderAndShowProgressBar()
+  }
+
   private fun createRecyclerViewAdapter(): BindableAdapter<WalkthroughTopicItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
@@ -121,11 +125,11 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   }
 
   fun hideProgressBarAndShowHeader() {
-    showHideProgressBarAndHeaderTextview.hideProgressBarAndShowHeader()
+    walkThroughVerticalScrollListener.hideProgressBarAndShowHeader()
   }
 
   fun hideHeaderAndShowProgressBar() {
-    showHideProgressBarAndHeaderTextview.hideHeaderAndShowProgressBar()
+    walkThroughVerticalScrollListener.hideHeaderAndShowProgressBar()
   }
 
   fun changePage(topicSummary: TopicSummary) {

@@ -95,6 +95,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/walkthrough/WalkthroughFragmentChangeListener.kt",
     "src/main/java/org/oppia/android/app/walkthrough/WalkthroughPageChanger.kt",
     "src/main/java/org/oppia/android/app/walkthrough/end/WalkthroughEndPageChanger.kt",
+    "src/main/java/org/oppia/android/app/walkthrough/WalkThroughVerticalScrollListener",
 ]
 
 """
