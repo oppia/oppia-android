@@ -9,7 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -21,6 +21,7 @@ import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,7 +40,6 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivityTest
 import org.oppia.android.app.utility.OrientationChangeAction
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -127,24 +127,24 @@ class TickIconTest {
     )
   }
 
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
   @Test
   fun testQuestionPlayer_submitAnswer_increaseTextSize_checkTickDoesNotIconOverlap() {
     launchForSkillList(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.question_recycler_view))
-        .check(matches(ViewMatchers.isDisplayed()))
+      selectMultipleChoiceOption(optionPosition = 3)
+
 
       onView(withId(R.id.submitted_answer_text_view))
     }
   }
-
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
     onView(withId(R.id.question_recycler_view)).perform(
-      RecyclerViewActions.scrollToHolder(
-        QuestionPlayerActivityTest.StateViewHolderTypeMatcher(
-          viewType
-        )
-      )
+      scrollToHolder(StateViewHolderTypeMatcher(viewType))
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -167,6 +167,10 @@ class TickIconTest {
     testCoroutineDispatchers.runCurrent()
   }
 
+  @Suppress("SameParameterValue")
+  private fun selectMultipleChoiceOption(optionPosition: Int) {
+    clickSelection(optionPosition, targetViewId = R.id.multiple_choice_radio_button)
+  }
 
   @Suppress("SameParameterValue")
   private fun clickSelection(optionPosition: Int, targetViewId: Int) {
@@ -185,7 +189,7 @@ class TickIconTest {
    * [BaseMatcher] that matches against the first occurrence of the specified view holder type in
    * StateFragment's RecyclerView.
    */
-  class StateViewHolderTypeMatcher(
+  private class StateViewHolderTypeMatcher(
     private val viewType: StateItemViewModel.ViewType
   ) : BaseMatcher<RecyclerView.ViewHolder>() {
     override fun describeTo(description: Description?) {
