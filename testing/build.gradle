@@ -26,13 +26,18 @@ android {
   testOptions {
     unitTests {
       all {
+        // Enable forking to ensure each test is properly run in isolation. For context, see:
+        // https://discuss.gradle.org/t/36066/2 & https://github.com/oppia/oppia-android/issues/1942
+        forkEvery = 1
+        maxParallelForks = Runtime.getRuntime().availableProcessors()
+
         // https://discuss.gradle.org/t/29495/2 & https://stackoverflow.com/a/34299238.
         testLogging {
           events "passed", "skipped", "failed"
-          showExceptions true
-          exceptionFormat "full"
-          showCauses true
-          showStackTraces true
+          showExceptions = true
+          exceptionFormat = "full"
+          showCauses = true
+          showStackTraces = true
           showStandardStreams = false
         }
       }
