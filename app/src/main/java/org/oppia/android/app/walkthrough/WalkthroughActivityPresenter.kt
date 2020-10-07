@@ -20,6 +20,9 @@ class WalkthroughActivityPresenter @Inject constructor(
 ) : WalkthroughActivityListener {
   private lateinit var topicId: String
   private lateinit var binding: WalkthroughActivityBinding
+  private val viewModel by lazy {
+    getWalkthroughViewModel()
+  }
 
   fun handleOnCreate() {
     binding = DataBindingUtil.setContentView(activity, R.layout.walkthrough_activity)
@@ -140,10 +143,10 @@ class WalkthroughActivityPresenter @Inject constructor(
   }
 
   fun hideProgressBarAndShowHeader() {
-    getWalkthroughViewModel().hideProgressBarAndShowHeader()
+    viewModel.hideProgressBarAndShowHeader()
   }
 
   fun hideHeaderAndShowProgressBar() {
-    getWalkthroughViewModel().hideHeaderAndShowProgressBar()
+    viewModel.hideHeaderAndShowProgressBar()
   }
 }

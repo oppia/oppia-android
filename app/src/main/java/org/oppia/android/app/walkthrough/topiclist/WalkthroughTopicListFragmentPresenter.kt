@@ -87,10 +87,6 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  fun handleDestroyView() {
-    hideHeaderAndShowProgressBar()
-  }
-
   private fun createRecyclerViewAdapter(): BindableAdapter<WalkthroughTopicItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
