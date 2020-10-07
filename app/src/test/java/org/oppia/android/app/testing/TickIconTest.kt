@@ -7,14 +7,18 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.bumptech.glide.Glide
+import com.bumptech.glide.GlideBuilder
+import com.bumptech.glide.load.engine.executor.MockGlideExecutor
+import com.google.firebase.FirebaseApp
 import dagger.Component
+import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.junit.Before
@@ -31,9 +35,12 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
+import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivityTest
+import org.oppia.android.app.utility.OrientationChangeAction
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -52,6 +59,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -65,6 +73,7 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -91,62 +100,92 @@ class TickIconTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
+  @Inject
+  @field:BackgroundDispatcher
+  lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
+
   private val SKILL_ID_LIST = arrayListOf(FRACTIONS_SKILL_ID_0)
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
+    FirebaseApp.initializeApp(context)
+
+    // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
+    // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
+    // dispatchers.
+    val executorService = MockGlideExecutor.newTestExecutor(
+      CoroutineExecutorService(backgroundCoroutineDispatcher)
+    )
+    Glide.init(
+      context,
+      GlideBuilder().setDiskCacheExecutor(executorService)
+        .setAnimationExecutor(executorService)
+        .setSourceExecutor(executorService)
+    )
   }
 
   @Test
   fun testQuestionPlayer_submitAnswer_increaseTextSize_checkTickDoesNotIconOverlap() {
-    launchForQuestionPlayer(SKILL_ID_LIST).use {
+    launchForSkillList(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view))
         .check(matches(ViewMatchers.isDisplayed()))
 
-      submitAnswerToQuestionPlayerFractionInput()
       onView(withId(R.id.submitted_answer_text_view))
     }
   }
 
-
-  private fun submitAnswerToQuestionPlayerFractionInput() {
-    onView(withId(R.id.question_recycler_view))
-      .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
-    onView(withId(R.id.text_input_interaction_view)).perform(editTextInputAction.appendText("1/2"))
-    testCoroutineDispatchers.runCurrent()
-
-    onView(withId(R.id.question_recycler_view))
-      .perform(scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON))
-    onView(withId(R.id.submit_answer_button)).perform(click())
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {
-    return RecyclerViewActions.scrollToHolder(
-      StateViewHolderTypeMatcher(
-        viewType
+  private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
+    onView(withId(R.id.question_recycler_view)).perform(
+      RecyclerViewActions.scrollToHolder(
+        QuestionPlayerActivityTest.StateViewHolderTypeMatcher(
+          viewType
+        )
       )
     )
+    testCoroutineDispatchers.runCurrent()
   }
 
-  private fun launchForQuestionPlayer(
-    skillIdList: ArrayList<String>
+  private fun launchForSkillList(
+    skillIdList: List<String>
   ): ActivityScenario<QuestionPlayerActivity> {
-    return ActivityScenario.launch(
+    val scenario = ActivityScenario.launch<QuestionPlayerActivity>(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        context, skillIdList
+        context, ArrayList(skillIdList)
       )
     )
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.question_recycler_view)).check(matches(ViewMatchers.isDisplayed()))
+    return scenario
+  }
+
+  private fun rotateToLandscape() {
+    onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+
+  @Suppress("SameParameterValue")
+  private fun clickSelection(optionPosition: Int, targetViewId: Int) {
+    scrollToViewType(StateItemViewModel.ViewType.SELECTION_INTERACTION)
+    onView(
+      RecyclerViewMatcher.atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = optionPosition,
+        targetViewId = targetViewId
+      )
+    ).perform(click())
+    testCoroutineDispatchers.runCurrent()
   }
 
   /**
    * [BaseMatcher] that matches against the first occurrence of the specified view holder type in
    * StateFragment's RecyclerView.
    */
-  private class StateViewHolderTypeMatcher(
+  class StateViewHolderTypeMatcher(
     private val viewType: StateItemViewModel.ViewType
   ) : BaseMatcher<RecyclerView.ViewHolder>() {
     override fun describeTo(description: Description?) {
