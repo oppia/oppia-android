@@ -45,7 +45,7 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TEST_UPPERCASE)
 
     val matches =
-      inputCaseSensitiveEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs)
+      inputCaseSensitiveEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs) // ktlint-disable max-line-length
 
     Truth.assertThat(matches).isTrue()
   }
@@ -55,7 +55,7 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE)
 
     val matches =
-      inputCaseSensitiveEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs)
+      inputCaseSensitiveEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs) // ktlint-disable max-line-length
 
     Truth.assertThat(matches).isFalse()
   }
@@ -65,7 +65,7 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE)
 
     val matches =
-      inputCaseSensitiveEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs)
+      inputCaseSensitiveEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs) // ktlint-disable max-line-length
 
     Truth.assertThat(matches).isFalse()
   }
@@ -75,7 +75,7 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
     val inputs = mapOf("y" to STRING_VALUE_TEST_LOWERCASE)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputCaseSensitiveEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_LOWERCASE, inputs = inputs)
+      inputCaseSensitiveEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_LOWERCASE, inputs = inputs) // ktlint-disable max-line-length
     }
 
     Truth.assertThat(exception)
