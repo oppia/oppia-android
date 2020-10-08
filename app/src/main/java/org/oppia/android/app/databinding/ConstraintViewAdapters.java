@@ -22,7 +22,7 @@ public final class ConstraintViewAdapters {
     constraintSet.applyTo(constraintLayout);
   }
 
-  @BindingAdapter("app:layout_constraintStart")
+  @BindingAdapter("app:layout_constraintStart_toStartOf")
   public static void setConstraintStartToStartOf(
       @NonNull View view, boolean cond
   ) {

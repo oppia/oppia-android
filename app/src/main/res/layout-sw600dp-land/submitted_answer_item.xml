@@ -74,69 +74,63 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="@{viewModel.hasConversationView ? Gravity.END : Gravity.START}"
-        android:orientation="horizontal">
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-          android:id="@+id/container"
+        <TextView
+          android:id="@+id/submitted_answer_text_view"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
+          android:layout_height="wrap_content"
+          android:background="@drawable/submitted_answer_background"
+          android:paddingStart="12dp"
+          android:paddingTop="8dp"
+          android:paddingEnd="12dp"
+          android:paddingBottom="8dp"
+          android:text="@{submittedAnswer}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="16sp"
+          android:visibility="gone"
+          app:layout_constrainedWidth="true"
+          app:layout_constraintEnd_toEndOf="@{viewModel.isCorrectAnswer ? @id/tick_guideline : ConstraintSet.PARENT_ID}"
+          app:layout_constraintHorizontal_bias="0.0"
+          app:layout_constraintStart_toStartOf="@{!viewModel.hasConversationView}"
+          app:layout_constraintTop_toTopOf="parent" />
 
-          <TextView
-            android:id="@+id/submitted_answer_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/submitted_answer_background"
-            android:paddingStart="12dp"
-            android:paddingTop="8dp"
-            android:paddingEnd="12dp"
-            android:paddingBottom="8dp"
-            android:text="@{submittedAnswer}"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textSize="16sp"
-            android:visibility="gone"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toEndOf="@{viewModel.isCorrectAnswer ? @id/tick_guideline : ConstraintSet.PARENT_ID}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/submitted_answer_recycler_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@drawable/submitted_answer_background"
+          android:paddingStart="8dp"
+          android:paddingEnd="8dp"
+          android:visibility="gone"
+          app:itemDecorator="@{@drawable/divider}"
+          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:list="@{submittedListAnswer.setOfHtmlStringsList}" />
 
-          <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/submitted_answer_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/submitted_answer_background"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:visibility="gone"
-            app:itemDecorator="@{@drawable/divider}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:list="@{submittedListAnswer.setOfHtmlStringsList}" />
+        <ImageView
+          android:id="@+id/answer_tick"
+          android:layout_width="24dp"
+          android:layout_height="24dp"
+          android:layout_gravity="center_vertical"
+          android:layout_marginStart="8dp"
+          android:src="@drawable/ic_check_primary"
+          android:visibility="@{viewModel.isCorrectAnswer &amp;&amp; !viewModel.hasConversationView ? View.VISIBLE : View.GONE}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toEndOf="@+id/submitted_answer_text_view"
+          app:layout_constraintTop_toTopOf="parent" />
 
-          <ImageView
-            android:id="@+id/answer_tick"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/ic_check_primary"
-            android:visibility="@{viewModel.isCorrectAnswer &amp;&amp; !viewModel.hasConversationView ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/submitted_answer_text_view"
-            app:layout_constraintTop_toTopOf="parent" />
-
-          <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/tick_guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_end="@dimen/space_36dp" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-      </LinearLayout>
+        <androidx.constraintlayout.widget.Guideline
+          android:id="@+id/tick_guideline"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          app:layout_constraintGuide_end="@dimen/space_36dp" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
