@@ -34,24 +34,33 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
   private val FRACTION_1_OVER_2 =
     createFraction(isNegative = false, numerator = 1, denominator = 2)
-  private val FRACTION_4_OVER_2 =
-    createFraction(isNegative = false, numerator = 4, denominator = 2)
   private val FRACTION_5_OVER_2 =
     createFraction(isNegative = false, numerator = 5, denominator = 2)
-  private val FRACTION_2_OVER_1 =
-    createFraction(isNegative = false, numerator = 2, denominator = 1)
+  private val FRACTION_3_OVER_2 =
+    createFraction(isNegative = false, numerator = 3, denominator = 2)
   private val NEGATIVE_FRACTION_1_OVER_2 =
     createFraction(isNegative = true, numerator = 1, denominator = 3)
-  private val NEGATIVE_FRACTION_4_OVER_2 =
-    createFraction(isNegative = true, numerator = 1, denominator = 2)
+  private val NEGATIVE_FRACTION_5_OVER_2 =
+    createFraction(isNegative = true, numerator = 5, denominator = 2)
+  private val NEGATIVE_FRACTION_3_OVER_2 =
+    createFraction(isNegative = true, numerator = 3, denominator = 2)
   private val MIXED_NUMBER_123_1_OVER_2 =
     createMixedNumber(isNegative = false, wholeNumber = 123, numerator = 1, denominator = 2)
+  private val MIXED_NUMBER_1_2_OVER_3 =
+    createMixedNumber(isNegative = false, wholeNumber = 1, numerator = 2, denominator = 3)
+  private val MIXED_NUMBER_0_2_OVER_3 =
+    createMixedNumber(isNegative = false, wholeNumber = 0, numerator = 2, denominator = 3)
   private val NEGATIVE_MIXED_NUMBER_123_1_OVER_2 =
     createMixedNumber(isNegative = true, wholeNumber = 123, numerator = 1, denominator = 2)
+  private val NEGATIVE_MIXED_NUMBER_1_2_OVER_3 =
+    createMixedNumber(isNegative = true, wholeNumber = 1, numerator = 2, denominator = 3)
+  private val NEGATIVE_MIXED_NUMBER_0_2_OVER_3 =
+    createMixedNumber(isNegative = true, wholeNumber = 0, numerator = 2, denominator = 3)
   private val STRING_VALUE = createString(value = "test")
   private val WHOLE_NUMBER_0 = createNonNegativeInt(value = 0)
   private val WHOLE_NUMBER_1 = createNonNegativeInt(value = 1)
   private val WHOLE_NUMBER_2 = createNonNegativeInt(value = 2)
+  private val WHOLE_NUMBER_3 = createNonNegativeInt(value = 3)
   private val WHOLE_NUMBER_123 = createNonNegativeInt(value = 123)
 
   @Before
@@ -72,8 +81,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer5Over2_input2_HasIntegerPartEqual() {
-    val inputs = mapOf("x" to WHOLE_NUMBER_2)
+  fun testAnswer5Over2_input0_HasIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_0)
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = FRACTION_5_OVER_2,
@@ -84,27 +93,51 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer4Over2_input2_HasIntegerPartEqual() {
+  fun testAnswer5Over2_input2_HasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_2)
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_4_OVER_2,
+      answer = FRACTION_5_OVER_2,
       inputs = inputs
     )
 
-    assertThat(matches).isTrue()
+    assertThat(matches).isFalse()
   }
 
   @Test
-  fun testAnswer2Over1_input2_HasIntegerPartEqual() {
+  fun testAnswer3Over2_input2_HasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_2)
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_2_OVER_1,
+      answer = FRACTION_3_OVER_2,
       inputs = inputs
     )
 
-    assertThat(matches).isTrue()
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testAnswer3Over2_input3_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_3)
+
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = FRACTION_3_OVER_2,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testAnswer1Over2_input1_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_1)
+
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = FRACTION_1_OVER_2,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -120,11 +153,59 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   }
 
   @Test
+  fun testAnswer0_2Over3_input0_HasIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_0)
+
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = MIXED_NUMBER_0_2_OVER_3,
+      inputs = inputs
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testAnswer1_2Over3_input2_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_2)
+
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = MIXED_NUMBER_1_2_OVER_3,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testAnswer1_2Over3_input3_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_3)
+
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = MIXED_NUMBER_1_2_OVER_3,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
   fun testAnswerNegative123_1Over2_input123_HasIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_123)
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = NEGATIVE_MIXED_NUMBER_123_1_OVER_2,
+      inputs = inputs
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testAnswerNegative0_2Over3_input0_HasIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_0)
+
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = NEGATIVE_MIXED_NUMBER_0_2_OVER_3,
       inputs = inputs
     )
 
@@ -144,11 +225,70 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer1Over2_input1_HasNotIntegerPartEqual() {
-    val inputs = mapOf("x" to WHOLE_NUMBER_1)
+  fun testAnswerNegative5Over2_input0_HasIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_0)
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_1_OVER_2,
+      answer = NEGATIVE_FRACTION_5_OVER_2,
+      inputs = inputs
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testAnswerNegative5Over2_input2_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_2)
+
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = NEGATIVE_FRACTION_5_OVER_2,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testAnswerNegative3Over2_input2_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_2)
+
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = NEGATIVE_FRACTION_3_OVER_2,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testAnswerNegative3Over2_input3_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_3)
+
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = NEGATIVE_FRACTION_3_OVER_2,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  fun testAnswerNegative1_2Over3_input2_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_2)
+
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = NEGATIVE_MIXED_NUMBER_1_2_OVER_3,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testAnswerNegative1_2Over3_input3_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_3)
+
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = NEGATIVE_MIXED_NUMBER_1_2_OVER_3,
       inputs = inputs
     )
 
@@ -222,18 +362,6 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
   private fun createNonNegativeInt(value: Int): InteractionObject {
     return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
-  private fun createWholeNumberFraction(isNegative: Boolean, value: Int): InteractionObject {
-    // Whole number fractions imply '0/1' fractional parts.
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setWholeNumber(value)
-        .setNumerator(0)
-        .setDenominator(1)
-        .build()
-    ).build()
   }
 
   private fun createString(value: String): InteractionObject {
