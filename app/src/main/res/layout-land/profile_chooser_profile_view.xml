@@ -35,8 +35,8 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_28}"
-      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_24}">
+      app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_28dp}"
+      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_24dp}">
 
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_avatar_img"
