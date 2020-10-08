@@ -181,7 +181,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkDefaultSlide_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.skip_text_view)).perform(click())
+      onView(withId(R.id.skip_text_view)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
@@ -295,7 +295,8 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
-      onView(withId(R.id.skip_text_view)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.skip_text_view)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
@@ -411,8 +412,8 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
-      onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.skip_text_view)).perform(scrollTo(), click())
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -539,10 +540,8 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_clickOnSkip_changeOrientation_titleIsCorrect() {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.skip_text_view)).perform(click())
-      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.skip_text_view)).perform(scrollTo(), click())
       onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
