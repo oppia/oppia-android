@@ -134,23 +134,11 @@ class TickIconTest {
     launchForSkillList(SKILL_ID_LIST).use {
       // Option 3 is the wrong answer and should trigger showing a concept card.
       selectMultipleChoiceOption(optionPosition = 2)
-//      onView(withId(R.id.submitted_answer_text_view)).check(
-//        matches(
-//          ViewMatchers.isCompletelyDisplayed()
-//        )
-//      )
       onView(withId(R.id.answer_tick)).check(
         matches(
           isCompletelyDisplayed()
         )
       )
-//      scrollToViewType(FEEDBACK)
-
-//      onView(withId(R.id.feedback_text_view)).check(
-//        matches(
-//          withText(containsString("To refresh your memory, take a look at this refresher lesson"))
-//        )
-//      )
     }
   }
 

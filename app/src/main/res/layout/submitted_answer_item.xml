@@ -31,13 +31,13 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="@{viewModel.hasConversationView ? Gravity.END : Gravity.START}">
+    android:orientation="horizontal">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:id="@+id/container"
+      android:gravity="@{viewModel.hasConversationView ? Gravity.END : Gravity.START}"
       app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
       app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
       app:explorationSplitViewMarginEnd="@{@dimen/margin_24}"
@@ -109,7 +109,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/margin_36" />
+        app:layout_constraintGuide_end="@dimen/space_36dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </LinearLayout>
 
