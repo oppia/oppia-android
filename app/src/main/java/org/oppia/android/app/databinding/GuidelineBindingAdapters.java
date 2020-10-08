@@ -16,4 +16,13 @@ public final class GuidelineBindingAdapters {
     params.guidePercent = percentage;
     guideline.setLayoutParams(params);
   }
+
+  /** Binding adapter for setting the `guideEnd` for a [Guideline]*/
+  @BindingAdapter("app:layout_constraintGuide_end")
+  public static void setConstraintGuidelineEnd(@NonNull Guideline guideline, float marginEnd) {
+    ConstraintLayout.LayoutParams params =
+        (ConstraintLayout.LayoutParams) guideline.getLayoutParams();
+    params.guideEnd = (int) marginEnd;
+    guideline.setLayoutParams(params);
+  }
 }

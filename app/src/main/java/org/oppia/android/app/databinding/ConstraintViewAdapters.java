@@ -22,14 +22,15 @@ public final class ConstraintViewAdapters {
     constraintSet.applyTo(constraintLayout);
   }
 
+  /** Binding adapter for setting a [layout_constraintStartToStartOf] to a view */
   @BindingAdapter("app:layout_constraintStart_toStartOf")
   public static void setConstraintStartToStartOf(
-      @NonNull View view, boolean cond
+      @NonNull View view, boolean setStartConstraint
   ) {
     ConstraintLayout constraintLayout = (ConstraintLayout) view.getParent();
     ConstraintSet constraintSet = new ConstraintSet();
     constraintSet.clone(constraintLayout);
-    if(cond) {
+    if(setStartConstraint) {
       constraintSet.connect(view.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START);
     } else {
       constraintSet.clear(view.getId(), ConstraintSet.START);

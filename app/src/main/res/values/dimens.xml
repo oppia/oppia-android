@@ -46,6 +46,7 @@
   <dimen name="space_40dp">40dp</dimen>
   <dimen name="space_4dp">4dp</dimen>
   <dimen name="space_0dp">0dp</dimen>
+  <dimen name="tick_icon_size_24dp">24dp</dimen>
   <dimen name="thickness_2">2dp</dimen>
   <dimen name="thickness_1">1dp</dimen>
   <dimen name="dot_width_height">12dp</dimen>

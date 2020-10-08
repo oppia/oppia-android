@@ -129,7 +129,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:orientation="vertical"
-          app:layout_constraintGuide_end="@dimen/space_36dp" />
+          app:layout_constraintGuide_end="@{@dimen/space_12dp + @dimen/tick_icon_size_24dp}" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>

@@ -142,9 +142,9 @@ class TickIconTest {
         )
       )
       onView(withId(R.id.answer_tick)).check(
-          isCompletelyRightOf(
-            withId(R.id.submitted_answer_text_view)
-          )
+        isCompletelyRightOf(
+          withId(R.id.submitted_answer_text_view)
+        )
       )
       onView(withId(R.id.answer_tick)).check(
         isRightAlignedWith(
