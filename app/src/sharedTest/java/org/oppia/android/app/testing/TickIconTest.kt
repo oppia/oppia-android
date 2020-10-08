@@ -9,6 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.PositionAssertions.isCompletelyRightOf
+import androidx.test.espresso.assertion.PositionAssertions.isRightAlignedWith
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -133,23 +134,26 @@ class TickIconTest {
   @Test
   fun testChooseCorrectAnswer_isTickVisibleCompletely() {
     launchForSkillList(SKILL_ID_LIST).use {
-      // Option 3 is the wrong answer and should trigger showing a concept card.
+      // Option 2 is the right answer and tick icon should be visible completely
+      testCoroutineDispatchers.runCurrent()
       selectMultipleChoiceOption(optionPosition = 2)
       onView(withId(R.id.answer_tick)).check(
         matches(
           isCompletelyDisplayed()
         )
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.answer_tick)).check(
           isCompletelyRightOf(
             withId(R.id.submitted_answer_text_view)
           )
       )
-//      onView(withId(R.id.answer_tick)).check(
-//        isRightAlignedWith(
-//          withId(R.id.container)
-//        )
-//      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.answer_tick)).check(
+        isRightAlignedWith(
+          withId(R.id.answer_tick)
+        )
+      )
     }
   }
 
