@@ -8,6 +8,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.PositionAssertions.isCompletelyRightOf
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -41,6 +42,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.DaggerTickIconTest_TestApplicationComponent
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -128,7 +130,6 @@ class TickIconTest {
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
-
   @Test
   fun testQuestionPlayer_showsLinkTextForConceptCard() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -138,6 +139,11 @@ class TickIconTest {
         matches(
           isCompletelyDisplayed()
         )
+      )
+      onView(withId(R.id.answer_tick)).check(
+          isCompletelyRightOf(
+            R.id.container
+          )
       )
     }
   }
