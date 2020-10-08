@@ -315,7 +315,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdminControlsFragment_OnWifiSwitchIsChecked_configurationChange_checkIfSwitchIsChecked() {
+  fun testAdminCtrl_topicUpdatOnWifiSwitchIsChecked_configurationChange_checkIfSwitchIsChecked() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
