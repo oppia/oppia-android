@@ -135,20 +135,17 @@ class TickIconTest {
   fun testChooseCorrectAnswer_isTickVisibleCompletely() {
     launchForSkillList(SKILL_ID_LIST).use {
       // Option 2 is the right answer and tick icon should be visible completely
-      testCoroutineDispatchers.runCurrent()
       selectMultipleChoiceOption(optionPosition = 2)
       onView(withId(R.id.answer_tick)).check(
         matches(
           isCompletelyDisplayed()
         )
       )
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.answer_tick)).check(
           isCompletelyRightOf(
             withId(R.id.submitted_answer_text_view)
           )
       )
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.answer_tick)).check(
         isRightAlignedWith(
           withId(R.id.answer_tick)
