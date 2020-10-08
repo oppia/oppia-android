@@ -47,7 +47,7 @@
       android:id="@+id/walkthrough_activity_topic_header_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/margin_16"
+      android:layout_marginStart="@dimen/space_16dp"
       android:fontFamily="sans-serif-medium"
       android:text="@string/what_do_you_want_to_learn"
       android:textColor="@color/oppiaPrimaryText"
