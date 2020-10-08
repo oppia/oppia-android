@@ -8,7 +8,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.PositionAssertions.isCompletelyLeftOf
+import androidx.test.espresso.assertion.PositionAssertions.isCompletelyRightOf
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -141,10 +141,15 @@ class TickIconTest {
         )
       )
       onView(withId(R.id.answer_tick)).check(
-          isCompletelyLeftOf(
-            withId(R.id.container)
+          isCompletelyRightOf(
+            withId(R.id.submitted_answer_text_view)
           )
       )
+//      onView(withId(R.id.answer_tick)).check(
+//        isRightAlignedWith(
+//          withId(R.id.container)
+//        )
+//      )
     }
   }
 
