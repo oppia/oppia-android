@@ -409,7 +409,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   // TODO(#973): Fix RecentlyPlayedFragmentTest
   @Ignore
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem0_doesNotShowSectionDivider() { // ktlint-disable max-line-length
+  fun testRecentlyPlayedTest_changeConfig_rvItem0_doesNotShowSectionDivider() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -431,7 +431,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   // TODO(#973): Fix RecentlyPlayedFragmentTest
   @Ignore
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem0_showsLastWeekSectionTitle() { // ktlint-disable max-line-length
+  fun testRecentlyPlayedTest_changeConfig_rvItem0_showsLastWeekSectionTitle() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -503,7 +503,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   // TODO(#973): Fix RecentlyPlayedFragmentTest
   @Ignore
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem1_lessonThumbnailIsCorrect() { // ktlint-disable max-line-length
+  fun testRecentlyPlayedTest_changeConfig_rvItem1_lessonThumbnailIsCorrect() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -527,7 +527,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   // TODO(#973): Fix RecentlyPlayedFragmentTest
   @Ignore
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem2_showsLastMonthSectionTitle() { // ktlint-disable max-line-length
+  fun testRecentlyPlayedTest_changeConfig_rvItem2_showsLastMonthSectionTitle() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
