@@ -25,8 +25,8 @@
     android:orientation="vertical"
     android:paddingTop="12dp"
     android:paddingBottom="12dp"
-    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/margin_24 : @dimen/margin_32}"
-    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/margin_40 : @dimen/margin_32}"
+    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/space_24dp : @dimen/space_32dp}"
+    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/space_40dp : @dimen/space_32dp}"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
