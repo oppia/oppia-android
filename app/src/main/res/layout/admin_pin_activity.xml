@@ -28,8 +28,8 @@
     <TextView
       android:id="@+id/admin_pin_main_text"
       style="@style/Subtitle1"
-      android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_width="match_parent"
       android:layout_marginStart="28dp"
       android:layout_marginTop="32dp"
       android:layout_marginEnd="28dp"
@@ -41,8 +41,8 @@
     <TextView
       android:id="@+id/admin_pin_warning_text"
       style="@style/Subtitle1"
-      android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_width="match_parent"
       android:layout_marginStart="28dp"
       android:layout_marginTop="16dp"
       android:layout_marginEnd="28dp"
@@ -86,7 +86,7 @@
       style="@style/StateButtonActive"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="24dp"
+      android:layout_marginTop="48dp"
       android:layout_marginEnd="28dp"
       android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
       android:clickable="@{viewModel.isButtonActive()}"
