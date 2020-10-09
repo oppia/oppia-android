@@ -20,12 +20,10 @@ import javax.inject.Inject
 class ProfileEditActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val logger: ConsoleLogger,
-  private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<ProfileEditViewModel>
+  private val profileManagementController: ProfileManagementController
 ) {
-  private val editViewModel: ProfileEditViewModel by lazy {
-    getProfileEditViewModel()
-  }
+  @Inject
+  lateinit var editViewModel: ProfileEditViewModel
 
   fun handleOnCreate() {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -63,6 +61,13 @@ class ProfileEditActivityPresenter @Inject constructor(
       showDeletionDialog(profileId)
     }
 
+    editViewModel.profile.observe(
+      activity,
+      Observer {
+        activity.title = it.name
+      }
+    )
+
     editViewModel.isAllowedDownloadAccess.observe(
       activity,
       Observer {
@@ -91,10 +96,6 @@ class ProfileEditActivityPresenter @Inject constructor(
     }
   }
 
-  fun handleOnRestoreSavedInstanceState() {
-    activity.title = editViewModel.profileName
-  }
-
   private fun showDeletionDialog(profileId: Int) {
     AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.profile_edit_delete_dialog_title)
@@ -116,9 +117,5 @@ class ProfileEditActivityPresenter @Inject constructor(
             }
           )
       }.create().show()
-  }
-
-  private fun getProfileEditViewModel(): ProfileEditViewModel {
-    return viewModelProvider.getForActivity(activity, ProfileEditViewModel::class.java)
   }
 }
