@@ -87,7 +87,7 @@ private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 /** Tests for [QuestionPlayerActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = TickIconTest.TestApplication::class, qualifiers = "port-xxhdpi")
+@Config(application = TickIconTest.TestApplication::class)
 class TickIconTest {
   // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
   // TODO(#1273): add tests for Hints and Solution in Question Player.
@@ -131,8 +131,9 @@ class TickIconTest {
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
+  @Config(qualifiers = "port-hdpi")
   @Test
-  fun testChooseCorrectAnswer_isTickVisibleCompletely() {
+  fun testChooseCorrectAnswer_answerLongerThanScreen_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       // Option 2 is the right answer and tick icon should be visible completely
       selectMultipleChoiceOption(optionPosition = 2)

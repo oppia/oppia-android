@@ -60,7 +60,7 @@
       android:textSize="16sp"
       android:visibility="gone"
       app:layout_constrainedWidth="true"
-      app:layout_constraintEnd_toEndOf="@{viewModel.isCorrectAnswer ? @id/tick_guideline : ConstraintSet.PARENT_ID}"
+      app:layout_constraintEnd_toEndOf="@{viewModel.isCorrectAnswer ? @id/@+id/answer_tick_guideline : ConstraintSet.PARENT_ID}"
       app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="@{!viewModel.hasConversationView}"
       app:layout_constraintTop_toTopOf="parent" />
@@ -92,7 +92,7 @@
       app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/tick_guideline"
+      android:id="@+id/answer_tick_guideline"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="vertical"
