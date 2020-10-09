@@ -3,7 +3,7 @@ package org.oppia.android.domain.classify.rules.textinput
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import org.junit.Before
@@ -25,7 +25,7 @@ import kotlin.test.fail
 class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
   private val STRING_VALUE_TEST_UPPERCASE = createString(value = "TEST")
   private val STRING_VALUE_TEST_LOWERCASE = createString(value = "test")
-  private val STRING_VALUE = createString(value = "string")
+  private val STRING_VALUE_RANDOM = createString(value = "random")
 
   @Inject
   internal lateinit var textInputCaseSensitiveEqualsRuleClassifierProvider:
@@ -45,9 +45,12 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TEST_UPPERCASE)
 
     val matches =
-      inputCaseSensitiveEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs) // ktlint-disable max-line-length
+      inputCaseSensitiveEqualsRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_UPPERCASE,
+        inputs = inputs
+      )
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -55,19 +58,25 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE)
 
     val matches =
-      inputCaseSensitiveEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs) // ktlint-disable max-line-length
+      inputCaseSensitiveEqualsRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_UPPERCASE,
+        inputs = inputs
+      )
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
-  fun testUppercaseStringAnswer_stringInput_differentString_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to STRING_VALUE)
+  fun testUppercaseStringAnswer_stringRandomInput_differentString_bothValuesDoNotMatch() {
+    val inputs = mapOf("x" to STRING_VALUE_RANDOM)
 
     val matches =
-      inputCaseSensitiveEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs) // ktlint-disable max-line-length
+      inputCaseSensitiveEqualsRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_UPPERCASE,
+        inputs = inputs
+      )
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -75,10 +84,13 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
     val inputs = mapOf("y" to STRING_VALUE_TEST_LOWERCASE)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputCaseSensitiveEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_LOWERCASE, inputs = inputs) // ktlint-disable max-line-length
+      inputCaseSensitiveEqualsRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_LOWERCASE,
+        inputs = inputs
+      )
     }
 
-    Truth.assertThat(exception)
+    assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'x'")
   }
@@ -94,7 +106,6 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
     return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
-  // TODO(#89): Move to a common test library.
   private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
     try {
       operation()
@@ -108,7 +119,6 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
     }
   }
 
-  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(modules = [])
   interface TestApplicationComponent {
