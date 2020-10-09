@@ -25,7 +25,6 @@ internal class NumericInputIsWithinToleranceRuleClassifierProvider @Inject const
     )
   }
 
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: Double, firstInput: Double, secondInput: Double): Boolean {
     return answer in (firstInput - secondInput)..(firstInput + secondInput)
   }
