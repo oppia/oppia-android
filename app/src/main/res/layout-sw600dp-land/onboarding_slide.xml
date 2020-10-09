@@ -9,80 +9,68 @@
       type="org.oppia.android.app.onboarding.OnboardingSlideViewModel" />
   </data>
 
-  <ScrollView
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:fillViewport="true"
-    android:overScrollMode="never"
-    android:scrollbars="none">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-      android:layout_width="match_parent"
+    <ImageView
+      android:id="@+id/slide_image_view"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:adjustViewBounds="true"
+      android:contentDescription="@{viewModel.contentDescription}"
+      android:src="@{viewModel.slideImage}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintDimensionRatio="40:39"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/slide_title_text_view"
+      style="@style/Heading2"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:orientation="horizontal">
+      android:layout_marginBottom="12dp"
+      android:gravity="center_horizontal"
+      android:text="@{viewModel.title}"
+      android:textSize="32sp"
+      app:layout_constraintBottom_toTopOf="@+id/guideline"
+      app:layout_constraintEnd_toStartOf="@+id/guideline5"
+      app:layout_constraintStart_toStartOf="@+id/guideline7" />
 
-      <ImageView
-        android:id="@+id/slide_image_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:adjustViewBounds="true"
-        android:contentDescription="@{viewModel.contentDescription}"
-        android:src="@{viewModel.slideImage}"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="40:39"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+      android:id="@+id/slide_description_text_view"
+      style="@style/Heading1"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="12dp"
+      android:gravity="center_horizontal"
+      android:text="@{viewModel.description}"
+      app:layout_constraintEnd_toEndOf="@+id/slide_title_text_view"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toStartOf="@+id/slide_title_text_view"
+      app:layout_constraintTop_toTopOf="@+id/guideline" />
 
-      <TextView
-        android:id="@+id/slide_title_text_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center_horizontal"
-        android:text="@{viewModel.title}"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="32sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="@+id/guideline7" />
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.5" />
 
-      <TextView
-        android:id="@+id/slide_description_text_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:fontFamily="sans-serif"
-        android:gravity="center_horizontal"
-        android:text="@{viewModel.description}"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="@+id/slide_title_text_view"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/slide_title_text_view"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline5"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.90625" />
 
-      <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
-
-      <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.90625" />
-
-      <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5546" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-  </ScrollView>
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline7"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.5546" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
