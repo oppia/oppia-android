@@ -106,6 +106,7 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
     return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
+  // TODO(#89): Move to a common test library.
   private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
     try {
       operation()
@@ -119,6 +120,7 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
     }
   }
 
+  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(modules = [])
   interface TestApplicationComponent {
