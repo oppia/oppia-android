@@ -40,10 +40,10 @@ class NavigationDrawerFragment :
     navigationDrawerFragmentPresenter.openProfileProgress(profileId)
   }
 
-  override fun markLastCheckedItemCloseDrawer(lastCheckedItemId: Int, isAdminSelected: Boolean) {
+  override fun markLastCheckedItemCloseDrawer(lastCheckedItemId: Int, isAdministratorControlsSelected: Boolean) {
     navigationDrawerFragmentPresenter.markLastCheckedItemCloseDrawer(
       lastCheckedItemId,
-      isAdminSelected
+      isAdministratorControlsSelected
     )
   }
 

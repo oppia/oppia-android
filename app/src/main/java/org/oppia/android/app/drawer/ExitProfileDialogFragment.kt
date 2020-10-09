@@ -53,7 +53,7 @@ class ExitProfileDialogFragment : DialogFragment() {
       false
     )
 
-    val isAdminSelected = args.getBoolean(
+    val isAdministratorControlsSelected = args.getBoolean(
       BOOL_IS_ADMINISTRATOR_CONTROLS_SELECTED_KEY,
       false
     )
@@ -74,7 +74,7 @@ class ExitProfileDialogFragment : DialogFragment() {
         if (isFromNavigationDrawer) {
           exitProfileDialogInterface.markLastCheckedItemCloseDrawer(
             lastCheckedItemId,
-            isAdminSelected
+            isAdministratorControlsSelected
           )
           exitProfileDialogInterface.unmarkSwitchProfileItemCloseDrawer()
         }

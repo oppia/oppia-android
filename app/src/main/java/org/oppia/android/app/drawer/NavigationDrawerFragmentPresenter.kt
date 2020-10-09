@@ -242,7 +242,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             .newInstance(
               isFromNavigationDrawer = true,
               isAdministratorControlsSelected =
-                getFooterViewModel().isAdministratorControlsSelected.get() ?: false,
+              getFooterViewModel().isAdministratorControlsSelected.get() ?: false,
               lastCheckedItemId = previousMenuItemId ?: -1
             )
           dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
@@ -266,16 +266,15 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     if (isAdminSelected) {
       getFooterViewModel().isAdministratorControlsSelected.set(true)
     } else if (lastCheckedItemId != -1) {
-      binding.fragmentDrawerNavView.menu.getItem(
+      val checkedItemPosition =
         when (lastCheckedItemId) {
           NavigationDrawerItem.HOME.value -> 0
           NavigationDrawerItem.OPTIONS.value -> 1
           NavigationDrawerItem.HELP.value -> 2
           NavigationDrawerItem.DOWNLOADS.value -> 3
-          NavigationDrawerItem.SWITCH_PROFILE.value -> 4
-          else -> 0
+          else -> 4
         }
-      ).isChecked = true
+      binding.fragmentDrawerNavView.menu.getItem(checkedItemPosition).isChecked = true
     }
     drawerLayout.closeDrawers()
   }
