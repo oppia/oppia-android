@@ -42,7 +42,7 @@ class ExitProfileDialogFragment : DialogFragment() {
     }
   }
 
-  lateinit var exitProfileDialogInterface: ExitProfileDialogInterface
+  private lateinit var exitProfileDialogInterface: ExitProfileDialogInterface
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val args =
@@ -58,9 +58,7 @@ class ExitProfileDialogFragment : DialogFragment() {
       false
     )
 
-    val lastCheckedItemId = args.getInt(
-      INT_LAST_CHECKED_ITEM_KEY
-    )
+    val lastCheckedItemId = args.getInt(INT_LAST_CHECKED_ITEM_KEY)
 
     if (isFromNavigationDrawer) {
       exitProfileDialogInterface =
