@@ -14,7 +14,8 @@
     android:id="@+id/admin_auth_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/addProfileBackground">
+    android:background="@color/addProfileBackground"
+    android:paddingBottom="92dp">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/admin_auth_app_bar_layout"
@@ -51,7 +52,6 @@
     <TextView
       android:id="@+id/admin_auth_heading_textview"
       style="@style/Heading2"
-      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="72dp"
       android:layout_marginTop="44dp"
@@ -66,9 +66,8 @@
     <TextView
       android:id="@+id/admin_auth_sub_text"
       style="@style/Subtitle1"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
       android:layout_marginTop="12dp"
+      app:layout_constraintHorizontal_bias="0.0"
       android:text="@string/admin_auth_sub"
       android:textColor="@color/oppiaAdminAuthSecondaryText"
       app:layout_constraintEnd_toEndOf="@id/admin_auth_heading_textview"
@@ -79,9 +78,10 @@
       android:id="@+id/admin_auth_input_pin"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginStart="72dp"
-      android:layout_marginTop="24dp"
-      android:layout_marginEnd="72dp"
+      android:layout_marginStart="168dp"
+      android:layout_marginTop="48dp"
+      android:layout_marginEnd="168dp"
+      android:layout_marginBottom="4dp"
       android:addTextChangedListener="@{viewModel.inputPinTextWatcher}"
       android:imeOptions="actionDone"
       app:inputLength="5"
@@ -101,7 +101,7 @@
       android:minHeight="48dp"
       android:text="@string/admin_auth_submit"
       android:textColor="@{viewModel.isSubmitButtonActive ? @color/white : @color/submitButtonInactiveText }"
-      android:layout_marginTop="16dp"
+      android:layout_marginTop="44dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="@id/admin_auth_input_pin"
       app:layout_constraintHorizontal_bias="1.0"

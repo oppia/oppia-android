@@ -14,7 +14,8 @@
     android:id="@+id/admin_auth_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/addProfileBackground">
+    android:background="@color/addProfileBackground"
+    android:paddingBottom="92dp">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/admin_auth_app_bar_layout"
@@ -52,11 +53,10 @@
     <TextView
       android:id="@+id/admin_auth_heading_textview"
       style="@style/Heading2"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       android:layout_marginStart="28dp"
-      android:layout_marginTop="12dp"
+      android:layout_marginTop="40dp"
       android:layout_marginEnd="28dp"
+      app:layout_constraintHorizontal_bias="0.0"
       android:maxLines="2"
       android:text="@string/admin_auth_heading"
       app:layout_constraintEnd_toEndOf="parent"
@@ -66,11 +66,10 @@
     <TextView
       android:id="@+id/admin_auth_sub_text"
       style="@style/Subtitle1"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
       android:layout_marginStart="28dp"
-      android:layout_marginTop="12dp"
+      android:layout_marginTop="48dp"
       android:layout_marginEnd="28dp"
+      app:layout_constraintHorizontal_bias="0.0"
       android:text="@string/admin_auth_sub"
       android:textColor="@color/oppiaAdminAuthSecondaryText"
       app:layout_constraintEnd_toEndOf="parent"
@@ -98,9 +97,9 @@
     <Button
       android:id="@+id/admin_auth_submit_button"
       style="@style/StateButtonActive"
-      android:layout_marginTop="16dp"
+      android:layout_marginTop="48dp"
       android:layout_marginEnd="28dp"
-      android:layout_marginBottom="16dp"
+      android:layout_marginBottom="44dp"
       android:background="@{viewModel.isSubmitButtonActive ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
       android:clickable="@{viewModel.isSubmitButtonActive}"
       android:minHeight="48dp"
