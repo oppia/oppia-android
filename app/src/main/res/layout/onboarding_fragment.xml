@@ -17,7 +17,7 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/oppiaBackgroundYellowIvory">
 
     <androidx.viewpager.widget.ViewPager
@@ -59,8 +59,8 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="32dp"
           android:layout_marginBottom="16dp"
-          android:gravity="center"
           android:minHeight="48dp"
+          android:gravity="center"
           android:orientation="horizontal"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
@@ -75,10 +75,10 @@
           android:minWidth="48dp"
           android:minHeight="48dp"
           android:onClick="@{(v) -> presenter.clickOnNext()}"
+          android:visibility="@{viewModel.slideNumber != 3 ? View.VISIBLE: View.GONE, default=visible}"
           android:paddingStart="12dp"
           android:paddingEnd="12dp"
           android:src="@drawable/ic_arrow_forward_black_24dp"
-          android:visibility="@{viewModel.slideNumber != 3 ? View.VISIBLE: View.GONE, default=visible}"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="@+id/slide_dots_container" />
 

@@ -60,7 +60,6 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -72,7 +71,6 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [OnboardingFragment]. */
@@ -84,19 +82,14 @@ import javax.inject.Singleton
 )
 class OnboardingFragmentTest {
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -180,7 +173,7 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkDefaultSlide_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.skip_text_view)).perform(scrollTo(), click())
+      onView(withId(R.id.skip_text_view)).perform(click())
       onView(withId(R.id.skip_text_view)).check(matches(not(isDisplayed())))
     }
   }
@@ -287,7 +280,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide1_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
-      onView(withId(R.id.skip_text_view)).perform(scrollTo(), click())
+      onView(withId(R.id.skip_text_view)).perform(click())
       onView(withId(R.id.skip_text_view)).check(matches(not(isDisplayed())))
     }
   }
@@ -396,7 +389,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide2_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
-      onView(withId(R.id.skip_text_view)).perform(scrollTo(), click())
+      onView(withId(R.id.skip_text_view)).perform(click())
       onView(withId(R.id.skip_text_view)).check(matches(not(isDisplayed())))
     }
   }
@@ -517,7 +510,7 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_clickOnSkip_changeOrientation_titleIsCorrect() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.skip_text_view)).perform(scrollTo(), click())
+      onView(withId(R.id.skip_text_view)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
