@@ -4,8 +4,6 @@
 
   <data>
 
-    <import type="android.view.Gravity" />
-
     <import type="android.view.View" />
 
     <import type="androidx.constraintlayout.widget.ConstraintSet" />
