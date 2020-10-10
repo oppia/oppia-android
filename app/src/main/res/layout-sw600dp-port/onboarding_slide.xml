@@ -35,12 +35,12 @@
 
       <TextView
         android:id="@+id/slide_title_text_view"
+        style="@style/Heading2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="160dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="160dp"
-        android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
         android:maxLines="1"
         android:text="@{viewModel.title}"
@@ -52,18 +52,17 @@
 
       <TextView
         android:id="@+id/slide_description_text_view"
+        style="@style/Heading1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="192dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="192dp"
-        android:fontFamily="sans-serif"
         android:gravity="center_horizontal"
         android:maxLines="2"
         android:minLines="2"
         android:text="@{viewModel.description}"
         android:textColor="@color/oppiaPrimaryText"
-        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/slide_title_text_view" />
