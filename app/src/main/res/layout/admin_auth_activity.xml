@@ -14,8 +14,7 @@
     android:id="@+id/admin_auth_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/addProfileBackground"
-    android:paddingBottom="92dp">
+    android:background="@color/addProfileBackground">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/admin_auth_app_bar_layout"
@@ -81,7 +80,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="28dp"
-      android:layout_marginTop="24dp"
+      android:layout_marginTop="48dp"
       android:layout_marginEnd="28dp"
       android:addTextChangedListener="@{viewModel.inputPinTextWatcher}"
       android:imeOptions="actionDone"
