@@ -181,12 +181,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkDefaultSlide_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.skip_text_view)).perform(scrollTo(), click())
-      onView(
-        allOf(
-          withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
-      ).check(matches(withText(R.string.onboarding_slide_3_title)))
+      onView(withId(R.id.skip_text_view)).check(matches(not(isDisplayed())))
     }
   }
 
@@ -293,12 +288,7 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
       onView(withId(R.id.skip_text_view)).perform(scrollTo(), click())
-      onView(
-        allOf(
-          withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
-      ).check(matches(withText(R.string.onboarding_slide_3_title)))
+      onView(withId(R.id.skip_text_view)).check(matches(not(isDisplayed())))
     }
   }
 
@@ -407,12 +397,7 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
       onView(withId(R.id.skip_text_view)).perform(scrollTo(), click())
-      onView(
-        allOf(
-          withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
-      ).check(matches(withText(R.string.onboarding_slide_3_title)))
+      onView(withId(R.id.skip_text_view)).check(matches(not(isDisplayed())))
     }
   }
 
