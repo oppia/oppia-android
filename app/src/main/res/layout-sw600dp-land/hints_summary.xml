@@ -36,9 +36,8 @@
         android:layout_gravity="center"
         android:layout_marginTop="44dp"
         android:paddingBottom="28dp"
-        android:fontFamily="sans-serif-medium"
         android:textColor="@color/oppiaPrimaryText"
-        android:textSize="20sp"
+        style="@style/Heading2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,7 +51,7 @@
         android:layout_marginBottom="28dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/reveal_hint_button_blue_background"
-        android:textSize="14sp"
+        style="@style/StateButtonActive"
         android:text="@string/reveal_hint"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -102,7 +101,7 @@
         android:layout_gravity="start"
         android:fontFamily="sans-serif"
         android:textColor="@color/oppiaPrimaryText"
-        android:textSize="16sp" />
+        style="@style/Body" />
     </LinearLayout>
   </LinearLayout>
 </layout>
