@@ -127,7 +127,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEditActivity_configurationChange_startActivityWithAdminProfile_checkAdminInfoIsDisplayed() { // ktlint-disable max-line-length
+  fun testProfileEdit_configChange_startActivityWithAdminProfile_checkAdminInfoIsDisplayed() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -162,7 +162,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_checkUserInfoIsDisplayed() { // ktlint-disable max-line-length
+  fun testProfileEdit_configChange_startActivityWithUserProfile_checkUserInfoIsDisplayed() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -187,7 +187,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEditActivity_startActivityWithUserProfile_clickRenameButton_checkOpensProfileRenameActivity() { // ktlint-disable max-line-length
+  fun testProfileEdit_startActivityWithUserProfile_clickRenameBtn_checkOpensProfileRename() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -200,7 +200,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickRenameButton_checkOpensProfileRenameActivity() { // ktlint-disable max-line-length
+  fun testProfileEdit_configChange_startWithUserProfile_clickRename_checkOpensProfileRename() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -214,7 +214,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEditActivity_startActivityWithUserProfile_clickResetPin_checkOpensProfileResetPinActivity() { // ktlint-disable max-line-length
+  fun testProfileEdit_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -229,7 +229,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickResetPin_checkOpensProfileResetPinActivity() { // ktlint-disable max-line-length
+  fun testProfileEdit_configChange_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -245,7 +245,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEditActivity_startActivityWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() { // ktlint-disable max-line-length
+  fun testProfileEdit_startActivityWithUserProfile_clickProfileDeletion_checkOpensDeletionDialog() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -265,7 +265,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() { // ktlint-disable max-line-length
+  fun testProfileEdit_configChange_startWithUserProfile_clickProfileDeletion_checkOpensDelDialog() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -286,7 +286,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEditActivity_startActivityWithUserProfile_clickProfileDeletionButton_clickDelete_checkReturnsToProfileListActivity() { // ktlint-disable max-line-length
+  fun testProfileEdit_startWithUserProfile_clickProfileDel_clickDel_checkReturnsToProfileList() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -302,7 +302,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton_clickDelete_checkReturnsToProfileListActivity() { // ktlint-disable max-line-length
+  fun testProfileEdit_configChange_withUserProfile_clickProfileDel_clickDel_returnsToProfileList() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -341,7 +341,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEditActivity_configurationChange_startActivityWithUserHasDownloadAccess_checkSwitchIsChecked() { // ktlint-disable max-line-length
+  fun testProfileEdit_configChange_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
     profileManagementController.addProfile(
       name = "James",
       pin = "123",

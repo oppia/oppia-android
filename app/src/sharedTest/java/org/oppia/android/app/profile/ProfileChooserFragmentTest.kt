@@ -244,7 +244,7 @@ class ProfileChooserFragmentTest {
   @Test
   // TODO(#973): Fix ProfileChooserFragmentTest
   @Ignore
-  fun testProfileChooserFragment_initializeProfiles_changeConfiguration_checkProfilesLastVisitedTimeIsShown() { // ktlint-disable max-length-line
+  fun testProfileChooser_initializeProfiles_changeConfig_checkProfilesLastVisitedTimeIsShown() {
     profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(
@@ -475,7 +475,7 @@ class ProfileChooserFragmentTest {
   @Test
   // TODO(#973): Fix ProfileChooserFragmentTest
   @Ignore
-  fun testProfileChooserFragment_clickAddProfile_checkOpensAdminAuthActivity_onBackButton_opensProfileChooserFragment() { // ktlint-disable max-line-length
+  fun testProfileChooser_clickAddProfile_checkOpensAdminAuth_onBackButton_opensProfileChooser() {
     profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(atPosition(R.id.profile_recycler_view, 3)).perform(click())
@@ -501,7 +501,7 @@ class ProfileChooserFragmentTest {
   @Test
   // TODO(#973): Fix ProfileChooserFragmentTest
   @Ignore
-  fun testProfileChooserFragment_clickAdminControls_checkOpensAdminAuthActivity_onBackButton_opensProfileChooserFragment() { // ktlint-disable max-line-length
+  fun testProfileChooser_clickAdminControls_checkOpensAdminAuth_onBackButton_opensProfileChooser() {
     profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())

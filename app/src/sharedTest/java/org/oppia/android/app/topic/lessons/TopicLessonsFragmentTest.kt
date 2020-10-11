@@ -413,7 +413,7 @@ class TopicLessonsFragmentTest {
   @Test
   // TODO(@973): Fix TopicLessonsFragmentTest
   @Ignore
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex2_chapterListForIndex1IsNotDisplayed() { // ktlint-disable max-line-length
+  fun testLessonsPlay_loadRatios_clickExpandListIconIndex1and2_chapterListForIndex1NotDisplayed() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
         allOf(
@@ -463,7 +463,7 @@ class TopicLessonsFragmentTest {
   @Test
   // TODO(@973): Fix TopicLessonsFragmentTest
   @Ignore
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex0_chapterListForIndex0IsNotDisplayed() { // ktlint-disable max-line-length
+  fun testLessonsPlay_loadRatios_clickExpandListIconIndex1and0_chapterListForIndex0NotDisplayed() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
         allOf(
@@ -513,7 +513,7 @@ class TopicLessonsFragmentTest {
   @Test
   // TODO(@973): Fix TopicLessonsFragmentTest
   @Ignore
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationChange_chapterListIsVisible() { // ktlint-disable max-line-length
+  fun testLessonsPlay_loadRatios_clickExpandListIconIndex1_configChange_chapterListIsVisible() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
         allOf(

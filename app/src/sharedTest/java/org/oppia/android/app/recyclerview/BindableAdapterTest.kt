@@ -382,20 +382,27 @@ class BindableAdapterTest {
     textView.text = "Value: " + data.intValue
   }
 
-  private fun getRecyclerViewListLiveData(activity: BindableAdapterTestActivity): MutableLiveData<List<TestModel>> { // ktlint-disable max-line-length
+  private fun getRecyclerViewListLiveData(
+    activity: BindableAdapterTestActivity
+  ): MutableLiveData<List<TestModel>> {
     return getTestViewModel(activity).dataListLiveData
   }
 
-  private fun getTestViewModel(activity: BindableAdapterTestActivity): BindableAdapterTestViewModel { // ktlint-disable max-line-length
+  private fun getTestViewModel(
+    activity: BindableAdapterTestActivity
+  ): BindableAdapterTestViewModel {
     return getTestFragmentPresenter(activity).viewModel
   }
 
-  private fun getTestFragmentPresenter(activity: BindableAdapterTestActivity): BindableAdapterTestFragmentPresenter { // ktlint-disable max-line-length
+  private fun getTestFragmentPresenter(
+    activity: BindableAdapterTestActivity
+  ): BindableAdapterTestFragmentPresenter {
     return getTestFragment(activity).bindableAdapterTestFragmentPresenter
   }
 
   private fun getTestFragment(activity: BindableAdapterTestActivity): BindableAdapterTestFragment {
-    return activity.supportFragmentManager.findFragmentByTag(BINDABLE_TEST_FRAGMENT_TAG) as BindableAdapterTestFragment // ktlint-disable max-line-length
+    return activity.supportFragmentManager.findFragmentByTag(BINDABLE_TEST_FRAGMENT_TAG)
+      as BindableAdapterTestFragment
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

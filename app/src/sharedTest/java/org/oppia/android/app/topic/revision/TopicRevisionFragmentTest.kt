@@ -137,7 +137,7 @@ class TopicRevisionFragmentTest {
   @Test
   // TODO(#973): Fix TopicRevisionFragmentTest
   @Ignore
-  fun testTopicRevisionFragment_loadFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() { // ktlint-disable max-line-length
+  fun testTopicRevisionFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(

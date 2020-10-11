@@ -178,7 +178,7 @@ class HomeActivityTest {
     "This test case is incorrect as it depends on internalProfileId " +
       "which is not guaranteed to be 0 for admin."
   )
-  fun testHomeActivity_recyclerViewIndex0_withProfileId0_displayProfileName_profileNameDisplayedSuccessfully() { // ktlint-disable max-line-length
+  fun testHome_rvIndex0_withProfileId0_displayProfileName_profileNameDisplayedSuccessfully() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(
         atPositionOnView(
@@ -193,7 +193,7 @@ class HomeActivityTest {
   @Test
   // TODO(#973): Fix HomeActivityTest
   @Ignore
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() { // ktlint-disable max-line-length
+  fun testHome_rvIndex0_displayGreetingMsgBasedOnTime_goodMorningMsgDisplaySuccessful() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -213,7 +213,7 @@ class HomeActivityTest {
   @Test
   // TODO (#973): Fix HomeActivityTest
   @Ignore
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() { // ktlint-disable max-line-length
+  fun testHome_rvIndex0_displayGreetingMsgBasedOnTime_goodAfternoonMsgDisplaySuccessful() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -233,7 +233,7 @@ class HomeActivityTest {
   @Test
   // TODO (#973): Fix HomeActivityTest
   @Ignore
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() { // ktlint-disable max-line-length
+  fun testHome_rvIndex0_displayGreetingMsgBasedOnTime_goodEveningMsgDisplaySuccessful() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {

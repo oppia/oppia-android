@@ -139,7 +139,7 @@ class ConceptCardFragmentTest {
   @Test
   // TODO(#973): Fix ConceptCardFragmentTest
   @Ignore
-  fun testConceptCardFragment_openDialogFragment0_checkSkillAndExplanationAreDisplayedWithoutRichText() { // ktlint-disable max-line-length
+  fun testConceptCard_openDialogFragment0_checkSkillAndExplanationDisplayedWithoutRichText() {
     onView(withId(R.id.open_dialog_0)).perform(click())
     onView(withId(R.id.concept_card_heading_text))
       .check(
@@ -163,7 +163,7 @@ class ConceptCardFragmentTest {
   @Test
   // TODO(#973): Fix ConceptCardFragmentTest
   @Ignore
-  fun testConceptCardFragment_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() { // ktlint-disable max-line-length
+  fun testConceptCard_openDialogFragment1_checkSkillAndExplanationDisplayedWithRichText() {
     onView(withId(R.id.open_dialog_1)).perform(click())
     onView(withId(R.id.concept_card_heading_text))
       .check(
@@ -187,7 +187,7 @@ class ConceptCardFragmentTest {
   @Test
   // TODO(#973): Fix ConceptCardFragmentTest
   @Ignore
-  fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() { // ktlint-disable max-line-length
+  fun testConceptCard_openDialogFragmentWithSkill2_configChange_workedExamplesAreDisplayed() {
     onView(withId(R.id.open_dialog_1)).perform(click())
     onView(isRoot()).perform(orientationLandscape())
     onView(withId(R.id.concept_card_heading_text))

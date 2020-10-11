@@ -177,7 +177,7 @@ class AdminAuthActivityTest {
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
-  fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddAdministratorControlsActivity() { // ktlint-disable max-line-length
+  fun testAdminAuth_inputCorrectPassword_clickImeActionButton_opensAddAdminControlsActivity() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
@@ -279,7 +279,7 @@ class AdminAuthActivityTest {
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
-  fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_clickImeActionButton_checkErrorIsGone() { // ktlint-disable max-line-length
+  fun testAdminAuth_inputIncorrectPassword_inputAgain_clickImeActionButton_checkErrorIsGone() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
@@ -327,7 +327,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_openedFromAdminControls_configurationChanged_checkHeadingSubHeadingIsPreserved() { // ktlint-disable max-line-length
+  fun testAdminAuth_openedFromAdminCtrls_configChanged_checkHeadingSubHeadingIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
@@ -378,7 +378,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_openedFromProfile_configurationChanged_checkHeadingSubHeadingIsPreserved() { // ktlint-disable max-line-length
+  fun testAdminAuthActivity_openedFromProfile_configChanged_checkHeadingSubHeadingIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,

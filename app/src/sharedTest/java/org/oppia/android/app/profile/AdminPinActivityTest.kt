@@ -150,7 +150,7 @@ class AdminPinActivityTest {
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
-  fun testAdminPinActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() { // ktlint-disable max-line-length
+  fun testAdminPin_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfile() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -173,7 +173,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputPin_inputConfirmPin_clickSubmit_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
+  fun testAdminAuth_inputPin_inputConfirmPin_clickSubmit_checkOpensAdminCtrlsActivity() {
     launch<AdminAuthActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -204,7 +204,7 @@ class AdminPinActivityTest {
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
-  fun testAdminAuthActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
+  fun testAdminAuth_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdminCtrlsActivity() {
     launch<AdminAuthActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -308,7 +308,7 @@ class AdminPinActivityTest {
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
-  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() { // ktlint-disable max-line-length
+  fun testAdminPin_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -336,7 +336,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAdminPin_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorCleared() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -370,7 +370,7 @@ class AdminPinActivityTest {
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
-  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAdminPin_inputPin_inputWrongConfirmPin_clickImeAction_inputConfirmPin_errorCleared() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -401,7 +401,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfileActivity() { // ktlint-disable max-line-length
+  fun testAdminPin_configChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfile() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -432,7 +432,7 @@ class AdminPinActivityTest {
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() { // ktlint-disable max-line-length
+  fun testAdminPin_configChange_inputPin_inputConfirmPin_clickImeActionBtn_checkOpensAddProfile() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -457,7 +457,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
+  fun testAdminPin_configChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAdminCtrls() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -489,7 +489,7 @@ class AdminPinActivityTest {
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
+  fun testAdminPin_configChange_inputPin_inputConfirmPin_clickImeActionBtn_checkOpensAdminCtrls() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -534,7 +534,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAdminPin_configChange_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -562,7 +562,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() { // ktlint-disable max-line-length
+  fun testAdminPin_configChange_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -600,7 +600,7 @@ class AdminPinActivityTest {
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() { // ktlint-disable max-line-length
+  fun testAdminPin_configChange_inputPin_inputWrongConfirmPin_clickImeAction_confirmWrongError() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -631,7 +631,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAdminPin_configChange_inputPin_inputWrongConfirmPin_submit_inputConfirmPin_errorClrd() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -669,7 +669,7 @@ class AdminPinActivityTest {
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAdminPin_configChange_inputPin_WrongConfirmPin_clickImeAction_ConfirmPin_ErrorClrd() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -704,7 +704,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_configurationChange_checkConfirmWrongError() { // ktlint-disable max-line-length
+  fun testAdminPin_inputPin_inputWrongConfirmPin_submit_configChange_checkConfirmWrongError() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
@@ -740,7 +740,7 @@ class AdminPinActivityTest {
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
-  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_configurationChange_checkConfirmWrongError() { // ktlint-disable max-line-length
+  fun testAdminPin_inputPin_inputWrongConfirmPin_clickImeAction_configChange_confirmWrongError() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context,
