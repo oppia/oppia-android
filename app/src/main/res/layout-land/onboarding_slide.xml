@@ -38,6 +38,7 @@
       <TextView
         android:id="@+id/slide_title_text_view"
         style="@style/Heading1"
+        android:layout_width="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="80dp"
         android:layout_marginEnd="28dp"
@@ -45,13 +46,14 @@
         android:gravity="center_horizontal"
         android:text="@{viewModel.title}"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/slide_image_view"
         app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
         android:id="@+id/slide_description_text_view"
         style="@style/Subtitle1"
+        android:layout_width="0dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="40dp"

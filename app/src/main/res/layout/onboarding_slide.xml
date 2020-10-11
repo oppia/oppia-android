@@ -36,6 +36,7 @@
       <TextView
         android:id="@+id/slide_title_text_view"
         style="@style/Heading1"
+        android:layout_width="0dp"
         android:layout_marginStart="28dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="28dp"
@@ -45,13 +46,13 @@
         android:maxLines="1"
         android:text="@{viewModel.title}"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/slide_image_view" />
 
       <TextView
         android:id="@+id/slide_description_text_view"
         style="@style/Subtitle1"
+        android:layout_width="0dp"
         android:layout_marginStart="48dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="48dp"
@@ -60,7 +61,6 @@
         android:minLines="2"
         android:text="@{viewModel.description}"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/slide_title_text_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
