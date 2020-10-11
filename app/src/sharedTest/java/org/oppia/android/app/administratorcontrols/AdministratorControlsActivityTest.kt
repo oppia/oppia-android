@@ -99,7 +99,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdministratorControlsActivity_withAdminProfile_openAdministratorControlsActivityFromNavigationDrawer_onBackPressed_showsHomeActivity() { // ktlint-disable max-line-length
+  fun testAdminCtrls_withAdminProfile_openAdminCtrlsFromNavDrawer_onBackPressed_showsHome() {
     ActivityScenario
       .launch<NavigationDrawerTestActivity>(
         createNavigationDrawerActivityIntent(0)
@@ -283,7 +283,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsNotChecked() { // ktlint-disable max-line-length
+  fun testAdminCtrls_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsNotChecked() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -315,7 +315,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdministratorControlsFragment_topicUpdateOnWifiSwitchIsChecked_configurationChange_checkIfSwitchIsChecked() { // ktlint-disable max-line-length
+  fun testAdminCtrls_topicUpdateOnWifiSwitchIsChecked_configChange_checkIfSwitchIsChecked() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -392,7 +392,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdministratorControlsFragment_loadFragment_onClickTopicUpdateOnWifiSwitch_checkSwitchRemainsChecked_onOpeningAdministratorControlsFragmentAgain() { // ktlint-disable max-line-length
+  fun testAdminCtrls_onClickTopicUpdateOnWifiSwitch_checkSwitchRemainsCheckedOnRecreate() {
     ActivityScenario
       .launch<NavigationDrawerTestActivity>(
         createNavigationDrawerActivityIntent(profileId = 0)
@@ -437,7 +437,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdministratorControlsFragment_loadFragment_clickEditProfile_checkOpensProfileListActivity() { // ktlint-disable max-line-length
+  fun testAdminCtrls_clickEditProfile_checkOpensProfileListActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0

@@ -138,7 +138,7 @@ class WalkthroughTopicListFragmentTest {
   @Test
   // TODO(#973): Fix WalkthroughTopicListFragmentTest
   @Ignore
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_configurationChanged_topicNameIsCorrect() { // ktlint-disable max-line-length
+  fun testWalkthroughWelcome_recyclerViewIndex1_topicCard_configChanged_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(

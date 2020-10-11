@@ -203,7 +203,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() { // ktlint-disable max-line-length
+  fun testRevisionCardTest_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -224,7 +224,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_configurationChange_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() { // ktlint-disable max-line-length
+  fun testRevisionCardTest_configChange_toolbarTitle_fractionSubtopicId1_displayedCorrectly() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -240,7 +240,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() { // ktlint-disable max-line-length
+  fun testRevisionCardTest_configChange_fractionSubtopicId2_explanationDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -270,7 +270,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() { // ktlint-disable max-line-length
+  fun testRevisionCardTest_configChange_fractionSubtopicId1_returnToTopicDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),

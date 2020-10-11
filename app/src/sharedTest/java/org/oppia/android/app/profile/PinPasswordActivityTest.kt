@@ -274,7 +274,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputShortPin_checkPinLengthError() { // ktlint-disable max-line-length
+  fun testPinPasswordWithUser_clickForgot_inputAdminPin_inputShortPin_checkPinLengthError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -319,7 +319,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputNewPin_inputOldPin_checkWrongPinError() { // ktlint-disable max-line-length
+  fun testPinPswdWithUser_clickForgot_inputAdminPin_inputNewPin_inputOldPin_checkWrongPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -358,7 +358,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputNewPin_inputNewPin_checkOpensHomeActivity() { // ktlint-disable max-line-length
+  fun testPinPswdWithUser_clickForgot_inputAdminPin_inputNewPin_inputNewPin_checkOpensHome() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -393,7 +393,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_changeConfiguration_checkInputPinIsPresent() { // ktlint-disable max-line-length
+  fun testPinPswdWithUser_clickForgot_inputAdminPin_changeConfig_checkInputPinIsPresent() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -414,7 +414,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_clickSubmit_changeConfiguration_restPinDialogIsDisplayed() { // ktlint-disable max-line-length
+  fun testPinPswdWithUser_clickForgot_inputAdminPin_clickSubmit_changeConfig_restPinDlgDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -438,7 +438,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_clickSubmit_inputNewPin_changeConfiguration_clickSubmit_pinChangeIsSuccessful() { // ktlint-disable max-line-length
+  fun testPinPswdWithUser_forgot_inputAdminPin_submit_inputNewPin_changeConfig_submit_Success() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -470,7 +470,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithAdmin_clickForgot_changeConfiguration_checkOpensAdminForgotDialog() { // ktlint-disable max-line-length
+  fun testPinPswdWithAdmin_clickForgot_changeConfig_checkOpensAdminForgotDialog() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -489,7 +489,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithUser_clickForgot_inputWrongAdminPin_changeConfiguration_checkWrongAdminPinError() { // ktlint-disable max-line-length
+  fun testPinPswdWithUser_clickForgot_inputWrongAdminPin_changeConfig_checkWrongAdminPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -524,7 +524,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputIncorrectPin_clickSubmit_changeConfiguration_errorIsDisplayed() { // ktlint-disable max-line-length
+  fun testPinPswdWithUser_forgot_inputAdminPin_inputWrongPin_submit_changeConfig_errorDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -618,7 +618,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_textChangesToHide() { // ktlint-disable max-line-length
+  fun testPinPswdWithAdmin_checkShowHidePassword_clickShowHidePassword_textChangesToHide() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -634,7 +634,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_imageChangesToHide() { // ktlint-disable max-line-length
+  fun testPinPswdWithAdmin_checkShowHidePassword_clickShowHidePassword_imageChangesToHide() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -657,7 +657,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_changeConfiguration_hideViewIsShown() { // ktlint-disable max-line-length
+  fun testPinPswdWithAdmin_checkShowHidePswd_clickShowHidePswd_changeConfig_hideViewIsShown() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,

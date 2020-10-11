@@ -115,7 +115,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithAdmin_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() { // ktlint-disable max-line-length
+  fun testProfileResetPin_startWithAdmin_inputPin_inputConfirm_save_checkReturnsToProfileEdit() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -139,7 +139,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithAdmin_changeConfiguration_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() { // ktlint-disable max-line-length
+  fun testProfileResetPin_withAdmin_changeConfig_inputPin_inputConfirm_save_returnsToProfileEdit() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -168,7 +168,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithUser_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() { // ktlint-disable max-line-length
+  fun testProfileResetPin_withUser_inputPin_inputConfirm_save_checkReturnsToProfileEdit() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -192,7 +192,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_checkPinLengthError() { // ktlint-disable max-line-length
+  fun testProfileResetPin_startActivityWithAdmin_inputShortPin_clickSave_checkPinLengthError() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -222,7 +222,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_changeConfiguration_checkPinLengthError() { // ktlint-disable max-line-length
+  fun testProfileResetPin_startWithAdmin_inputShortPin_save_changeConfig_checkPinLengthError() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -253,7 +253,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_inputPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testProfileResetPin_startWithAdmin_inputShortPin_clickSave_inputPin_checkErrorIsCleared() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -279,7 +279,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_inputPin_configurationChange_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testProfileResetPin_withAdmin_inputShortPin_save_inputPin_configChange_checkErrorIsCleared() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -306,7 +306,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithAdmin_inputWrongConfirmPin_clickSave_checkConfirmWrongError() { // ktlint-disable max-line-length
+  fun testProfileResetPin_startWithAdmin_inputWrongConfirmPin_clickSave_checkConfirmWrongError() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -335,7 +335,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithAdmin_inputWrongConfirmPin_clickSave_changeConfiguration_checkConfirmWrongError() { // ktlint-disable max-line-length
+  fun testProfileResetPin_withAdmin_inputWrongConfirm_save_changeConfig_checkConfirmWrongError() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -370,7 +370,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_inputPin_inputConfirmPin_changeConfiguration_inputPinExists_confirmInputPinExists_saveButtonIsClickable() { // ktlint-disable max-line-length
+  fun testProfileResetPin_inputPin_inputCnfrm_changeConfig_inputExists_cnfrmExists_saveClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -402,7 +402,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithAdmin_inputWrongConfirmPin_clickSave_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testProfileResetPin_startWithAdmin_inputWrongConfirmPin_save_inputConfirmPin_errorCleared() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -433,7 +433,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithUser_inputShortPin_clickSave_checkPinLengthError() { // ktlint-disable max-line-length
+  fun testProfileResetPin_startWithUser_inputShortPin_clickSave_checkPinLengthError() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -463,7 +463,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithUser_inputShortPin_clickSave_inputPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testProfileResetPin_startWithUser_inputShortPin_clickSave_inputPin_checkErrorIsCleared() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -489,7 +489,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithUser_inputWrongConfirmPin_clickSave_checkConfirmWrongError() { // ktlint-disable max-line-length
+  fun testProfileResetPin_startWithUser_inputWrongConfirmPin_clickSave_checkConfirmWrongError() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -518,7 +518,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithUser_inputWrongConfirmPin_clickSave_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testProfileResetPin_startWithUser_inputWrongConfirmPin_save_inputConfirmPin_errorIsCleared() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -635,7 +635,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable_clearInputPin_saveButtonIsNotClickable() { // ktlint-disable max-line-length
+  fun testProfileResetPin_inputPin_inputConfirmPin_saveClickable_clearInputPin_saveNotClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -662,7 +662,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable_clearConfirmInputPin_saveButtonIsNotClickable() { // ktlint-disable max-line-length
+  fun testProfileResetPin_inputPin_inputConfirmPin_saveClickable_clearConfirm_saveNotClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -689,7 +689,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable_clearConfirmInputPin_changeConfiguration_saveButtonIsNotClickable() { // ktlint-disable max-line-length
+  fun testProfileResetPin_inputPin_inputcnfrm_saveClkble_clearcnfrm_changeConfig_saveNotClkable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,

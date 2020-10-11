@@ -145,7 +145,7 @@ class WalkthroughFinalFragmentTest {
   @Test
   // TODO(#973): Fix WalkthroughFinalFragmentTest
   @Ignore
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex2_topicSelected_configurationChanged_topicTitleIsCorrect() { // ktlint-disable max-line-length
+  fun testWalkthroughWelcome_recyclerViewIndex2_topicSelected_configChanged_topicTitleIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(scrollTo(), click())
@@ -173,7 +173,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_yesNoButton_isDisplayedCorrectly() { // ktlint-disable max-line-length
+  fun testWalkthroughWelcome_recyclerViewIndex1_topicSelected_yesNoButton_isDisplayedCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(scrollTo(), click())
@@ -194,7 +194,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_clickNoButton_worksCorrectly() { // ktlint-disable max-line-length
+  fun testWalkthroughWelcome_recyclerViewIndex1_topicSelected_clickNoButton_worksCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(scrollTo(), click())

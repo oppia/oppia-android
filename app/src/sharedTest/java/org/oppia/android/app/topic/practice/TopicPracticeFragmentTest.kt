@@ -229,7 +229,7 @@ class TopicPracticeFragmentTest {
   @Test
   // TODO(#973): Fix TopicPracticeFragmentTest
   @Ignore
-  fun testTopicPracticeFragment_loadFragment_selectSubtopics_deselectsubtopics_startButtonIsInactive() { // ktlint-disable max-line-length
+  fun testTopicPracticeFragment_selectSubtopics_deselectsubtopics_startButtonIsInactive() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -265,7 +265,7 @@ class TopicPracticeFragmentTest {
   @Test
   // TODO(#973): Fix TopicPracticeFragmentTest
   @Ignore
-  fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() { // ktlint-disable max-line-length
+  fun testTopicPracticeFragment_selectSubtopics_clickStart_skillListTransferSuccessfully() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
     onView(
       allOf(
@@ -352,7 +352,7 @@ class TopicPracticeFragmentTest {
   @Test
   // TODO(#973): Fix TopicPracticeFragmentTest
   @Ignore
-  fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() { // ktlint-disable max-line-length
+  fun testTopicPracticeFragment_selectSkills_configChange_startButtonRemainsActive() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
