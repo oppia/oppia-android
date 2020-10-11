@@ -129,14 +129,13 @@ class TextInputEqualsRuleClassifierProviderTest {
       .contains("Expected input value to be of type NORMALIZED_STRING")
   }
 
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
   private fun createString(value: String): InteractionObject {
     return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
+  private fun createNonNegativeInt(value: Int): InteractionObject {
+    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
+  }
   private fun setUpTestApplicationComponent() {
     DaggerTextInputEqualsRuleClassifierProviderTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
