@@ -15,7 +15,7 @@
       type="org.oppia.android.app.hintsandsolution.HintsViewModel" />
   </data>
 
-  <LinearLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/hint_summary_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -24,41 +24,40 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:id="@+id/hint_constraint"
+      android:orientation="horizontal"
       android:layout_marginStart="128dp"
       android:layout_marginEnd="128dp"
-      android:paddingBottom="4dp"
-      android:orientation="horizontal">
+      android:paddingBottom="60dp"
+      app:layout_constraintBottom_toBottomOf="@id/hint_summary_container"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent">
 
       <TextView
         android:id="@+id/hint_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Heading2"
         android:layout_gravity="center"
         android:layout_marginTop="44dp"
         android:paddingBottom="28dp"
-        style="@style/Heading2"
         android:textColor="@color/oppiaPrimaryText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
       <Button
         android:id="@+id/reveal_hint_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/StateButtonActive"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/reveal_hint_button_blue_background"
         android:minWidth="160dp"
         android:minHeight="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="28dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/reveal_hint_button_blue_background"
-        style="@style/StateButtonActive"
         android:text="@string/reveal_hint"
-        android:textColor="@color/white"
+        android:visibility="@{viewModel.isHintRevealed? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hint_title"
-        android:visibility="@{viewModel.isHintRevealed? View.GONE : View.VISIBLE}" />
+        app:layout_constraintTop_toBottomOf="@+id/hint_title" />
 
       <FrameLayout
         android:id="@+id/expand_list_icon"
@@ -90,18 +89,16 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="128dp"
       android:layout_marginEnd="128dp"
+      app:layout_constraintBottom_toBottomOf="@id/hint_summary_container"
       android:layout_marginBottom="32dp"
       android:orientation="vertical"
       android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 
       <TextView
         android:id="@+id/hints_and_solution_summary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:fontFamily="sans-serif"
         style="@style/Body"
         android:textColor="@color/oppiaPrimaryText" />
     </LinearLayout>
-  </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
