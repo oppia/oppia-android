@@ -42,43 +42,30 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testUpperCaseAnswer_testUpperCaseInput_SameExactString_bothValuesMatch()
-  {
-     val inputs = mapOf("x" to STRING_INPUT_UPPERCASE)
+  fun testUpperCaseAnswer_testUpperCaseInput_SameExactString_bothValuesMatch() {
+    val inputs = mapOf("x" to STRING_INPUT_UPPERCASE)
 
-     val matches =
-       inputFuzzyEqualsRuleClassifier.matches(
-         answer = STRING_ANSWER_UPPERCASE,
-         inputs = inputs
-       )
+    val matches =
+      inputFuzzyEqualsRuleClassifier.matches(answer = STRING_ANSWER_UPPERCASE, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
-  fun testLowerCaseAnswer_testUpperCaseInput_sameString()
-  {
+  fun testLowerCaseAnswer_testUpperCaseInput_sameString() {
     val inputs = mapOf("x" to STRING_INPUT_UPPERCASE)
 
     val matches =
-      inputFuzzyEqualsRuleClassifier.matches(
-        answer = STRING_ANSWER_LOWERCASE,
-        inputs = inputs
-      )
+      inputFuzzyEqualsRuleClassifier.matches(answer = STRING_ANSWER_LOWERCASE, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
-  fun testLowerCaseAnswer_testLowerCaseInput_differentString()
-  {
+  fun testLowerCaseAnswer_testLowerCaseInput_differentString() {
     val inputs = mapOf("x" to STRING_INPUT_UPPERCASE)
 
-    val matches =
-      inputFuzzyEqualsRuleClassifier.matches(
-        answer = STRING_ANSWER,
-        inputs = inputs
-      )
+    val matches = inputFuzzyEqualsRuleClassifier.matches(answer = STRING_ANSWER, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
@@ -140,3 +127,5 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     fun inject(test: TextInputFuzzyEqualsRuleClassifierProviderTest)
   }
 }
+
+                
