@@ -3,8 +3,6 @@ package org.oppia.android.app.player.audio
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
-import android.net.Uri
 import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +19,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -46,7 +43,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.AudioFragmentTestActivity
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.audio.AudioPlayerController
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -65,11 +61,12 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.IsOnRobolectric
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestMediaPlayer
+import org.oppia.android.testing.TestMediaPlayerModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -113,7 +110,9 @@ class AudioFragmentTest {
 
   @Inject
   lateinit var audioPlayerController: AudioPlayerController
-  private lateinit var shadowMediaPlayer: Any
+
+  @Inject
+  lateinit var testMediaPlayer: TestMediaPlayer
 
   private val TEST_URL =
     "https://storage.googleapis.com/oppiaserver-resources/exploration/" +
@@ -185,7 +184,12 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
-    addMediaInfo()
+    testMediaPlayer.addMediaInfo(
+      context,
+      TEST_URL,
+      TEST_URL2,
+      audioPlayerController.getTestMediaPlayer()
+    )
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
@@ -201,7 +205,12 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
-    addMediaInfo()
+    testMediaPlayer.addMediaInfo(
+      context,
+      TEST_URL,
+      TEST_URL2,
+      audioPlayerController.getTestMediaPlayer()
+    )
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
@@ -219,7 +228,12 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_invokePrepared_touchSeekBar_checkStillPaused() {
-    addMediaInfo()
+    testMediaPlayer.addMediaInfo(
+      context,
+      TEST_URL,
+      TEST_URL2,
+      audioPlayerController.getTestMediaPlayer()
+    )
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
@@ -237,7 +251,12 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_invokePrepared_clickPlay_touchSeekBar_checkStillPlaying() {
-    addMediaInfo()
+    testMediaPlayer.addMediaInfo(
+      context,
+      TEST_URL,
+      TEST_URL2,
+      audioPlayerController.getTestMediaPlayer()
+    )
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
@@ -255,27 +274,32 @@ class AudioFragmentTest {
     }
   }
 
-  @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
-    launch<AudioFragmentTestActivity>(
-      createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
-      )
-    ).use {
-      invokePreparedListener(shadowMediaPlayer)
-      onView(withId(R.id.ivPlayPauseAudio)).perform(click())
-      onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.ivPlayPauseAudio))
-        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
-    }
-  }
+  /* @Test
+   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
+   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
+     launch<AudioFragmentTestActivity>(
+       createAudioFragmentTestIntent(
+         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+       )
+     ).use {
+       invokePreparedListener(shadowMediaPlayer)
+       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
+       onView(isRoot()).perform(orientationLandscape())
+       onView(withId(R.id.ivPlayPauseAudio))
+         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+     }
+   }*/
 
   // TODO(#1845): As updating tvAudioLanguage to image, we need to update this test
   @Test
   fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
-    addMediaInfo()
+    testMediaPlayer.addMediaInfo(
+      context,
+      TEST_URL,
+      TEST_URL2,
+      audioPlayerController.getTestMediaPlayer()
+    )
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
@@ -342,93 +366,12 @@ class AudioFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun addMediaInfo() {
-    if (isOnRobolectric()) {
-      val dataSource = toDataSource(context, Uri.parse(TEST_URL))
-      val dataSource2 = toDataSource(context, Uri.parse(TEST_URL2))
-      val mediaInfo = createMediaInfo(
-        /* duration= */ 1000,
-        /* preparationDelay= */ 0
-      )
-      addMediaInfo(dataSource, mediaInfo)
-      addMediaInfo(dataSource2, mediaInfo)
-
-      shadowMediaPlayer = shadowOf(audioPlayerController.getTestMediaPlayer())
-      setDataSource(shadowMediaPlayer, toDataSource(context, Uri.parse(TEST_URL)))
-
-      invokePreparedListener(shadowMediaPlayer)
-    }
-  }
-
-  // TODO(#59): Replace the reflection code below with direct calls to Robolectric once this test can be made to run
-  //  only on Robolectric (or properly on Espresso without relying on Robolectric shadows, e.g. by using compile-time
-  //  replaceable fakes).
-
-  // NOTE TO DEVELOPERS: DO NOT REPLICATE THE REFLECTION CODE BELOW ANYWHERE. THIS IS A STOP-GAP MEASURE UNTIL WE CAN
-  // USE BAZEL TO PROPERLY BUILD THIS TEST SPECIFICALLY FOR ROBOLECTRIC AND NOT FOR ESPRESSO.
-
-  /** Calls Robolectric's Shadows.shadowOf() using reflection. */
-  private fun shadowOf(mediaPlayer: MediaPlayer): Any {
-    val shadowsClass = Class.forName("org.robolectric.Shadows")
-    return shadowsClass.getMethod("shadowOf", MediaPlayer::class.java)
-      .invoke(/* obj= */ null, mediaPlayer)
-  }
-
-  /** Calls ShadowMediaPlayer.setDataSource() using reflection. */
-  private fun setDataSource(shadowMediaPlayer: Any, dataSource: Any) {
-    val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
-    shadowMediaPlayer.javaClass.getMethod("setDataSource", dataSourceClass)
-      .invoke(shadowMediaPlayer, dataSource)
-  }
-
-  /** Calls ShadowMediaPlayer.invokePreparedListener() using reflection. */
-  private fun invokePreparedListener(shadowMediaPlayer: Any) {
-    shadowMediaPlayer.javaClass.getMethod("invokePreparedListener").invoke(shadowMediaPlayer)
-  }
-
-  /** Returns a new ShadowMediaPlayer.MediaInfo using reflection. */
-  private fun createMediaInfo(duration: Int, preparationDelay: Int): Any {
-    val mediaInfoClass = Class.forName(
-      "org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo"
-    )
-    return mediaInfoClass.getConstructor(Int::class.java, Int::class.java)
-      .newInstance(duration, preparationDelay)
-  }
-
-  /** Calls ShadowMediaPlayer.addMediaInfo() using reflection. */
-  private fun addMediaInfo(dataSource: Any, mediaInfo: Any) {
-    val shadowMediaPlayerClass = Class.forName(
-      "org.robolectric.shadows.ShadowMediaPlayer"
-    )
-    val dataSourceClass = Class.forName(
-      "org.robolectric.shadows.util.DataSource"
-    )
-    val mediaInfoClass = Class.forName(
-      "org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo"
-    )
-    val addMediaInfoMethod =
-      shadowMediaPlayerClass.getMethod("addMediaInfo", dataSourceClass, mediaInfoClass)
-    addMediaInfoMethod.invoke(/* obj= */ null, dataSource, mediaInfo)
-  }
-
-  /** Calls DataSource.toDataSource() using reflection. */
-  private fun toDataSource(context: Context, uri: Uri): Any {
-    val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
-    val toDataSourceMethod =
-      dataSourceClass.getMethod("toDataSource", Context::class.java, Uri::class.java)
-    return toDataSourceMethod.invoke(/* obj= */ null, context, uri)
-  }
-
-  private fun isOnRobolectric(): Boolean {
-    return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class,
+      TestDispatcherModule::class, TestMediaPlayerModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -448,9 +391,6 @@ class AudioFragmentTest {
     interface Builder : ApplicationComponent.Builder
 
     fun inject(audioFragmentTest: AudioFragmentTest)
-
-    @IsOnRobolectric
-    fun isOnRobolectric(): Boolean
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -463,8 +403,6 @@ class AudioFragmentTest {
     fun inject(audioFragmentTest: AudioFragmentTest) {
       component.inject(audioFragmentTest)
     }
-
-    fun isOnRobolectric(): Boolean = component.isOnRobolectric()
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
