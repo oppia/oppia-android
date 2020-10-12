@@ -44,29 +44,23 @@
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:fontFamily="sans-serif"
+          style="@style/Subtitle1"
           android:gravity="center"
           android:minHeight="48dp"
           android:paddingTop="20dp"
           android:text="@string/profile_chooser_language"
           android:textColor="@color/profileChooserGreyTextColor"
-          android:textSize="16sp"
           android:visibility="gone"
           app:layout_constraintEnd_toStartOf="@+id/profile_chooser_language_icon"
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
           android:id="@+id/profile_select_text"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
           android:layout_marginStart="96dp"
           android:layout_marginTop="80dp"
-          android:fontFamily="sans-serif"
+          style="@style/Heading1"
           android:text="@string/profile_chooser_select"
           android:textColor="@color/white"
-          android:textSize="36sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
@@ -111,10 +105,8 @@
       app:layout_constraintEnd_toEndOf="parent">
 
       <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
-        android:fontFamily="sans-serif"
+        style="@style/Subtitle1"
         android:gravity="center"
         android:minHeight="48dp"
         android:text="@string/profile_chooser_administrator_controls"
