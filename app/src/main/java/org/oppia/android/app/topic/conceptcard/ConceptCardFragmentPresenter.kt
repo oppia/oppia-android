@@ -4,12 +4,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ConceptCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.parser.ConceptCardHtmlParserEntityType
+import org.oppia.android.util.parser.HtmlParser
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -19,6 +23,9 @@ class ConceptCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
+  private val htmlParserFactory: HtmlParser.Factory,
+  @ConceptCardHtmlParserEntityType private val entityType: String,
+  @DefaultResourceBucketName private val resourceBucketName: String,
   private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>
 ) {
   private lateinit var skillId: String
@@ -37,7 +44,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
     val viewModel = getConceptCardViewModel()
 
     skillId = id
-    viewModel.setSkillIdAndBinding(skillId, view)
+    viewModel.setSkillId(skillId)
     logConceptCardEvent(skillId)
 
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
@@ -52,6 +59,18 @@ class ConceptCardFragmentPresenter @Inject constructor(
       it.viewModel = viewModel
       it.lifecycleOwner = fragment
     }
+
+    viewModel.conceptCardLiveData.observe(
+      fragment,
+      Observer {
+        val explanation = htmlParserFactory
+          .create(resourceBucketName, entityType, skillId, /* imageCenterAlign= */true)
+          .parseOppiaHtml(it.explanation.html, view)
+
+        view.text = explanation
+      }
+    )
+
     return binding.root
   }
 
