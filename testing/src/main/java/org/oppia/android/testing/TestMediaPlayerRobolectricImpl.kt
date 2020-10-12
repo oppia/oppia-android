@@ -88,5 +88,4 @@ class TestMediaPlayerRobolectricImpl @Inject constructor() : TestMediaPlayer {
   private fun invokePreparedListener(shadowMediaPlayer: Any) {
     shadowMediaPlayer.javaClass.getMethod("invokePreparedListener").invoke(shadowMediaPlayer)
   }
-
 }
