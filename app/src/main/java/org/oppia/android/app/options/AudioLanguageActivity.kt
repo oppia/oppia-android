@@ -7,10 +7,10 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** The activity to change the Default Audio language of the app. */
-class DefaultAudioActivity : InjectableAppCompatActivity() {
+class AudioLanguageActivity : InjectableAppCompatActivity() {
 
   @Inject
-  lateinit var defaultAudioActivityPresenter: DefaultAudioActivityPresenter
+  lateinit var audioLanguageActivityPresenter: AudioLanguageActivityPresenter
   private lateinit var prefKey: String
   private lateinit var prefSummaryValue: String
 
@@ -23,20 +23,20 @@ class DefaultAudioActivity : InjectableAppCompatActivity() {
     } else {
       intent.getStringExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
     }
-    defaultAudioActivityPresenter.handleOnCreate(prefKey, prefSummaryValue)
+    audioLanguageActivityPresenter.handleOnCreate(prefKey, prefSummaryValue)
   }
 
   companion object {
     internal const val KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE = "AUDIO_LANGUAGE_PREFERENCE"
     internal const val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
       "AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
-    /** Returns a new [Intent] to route to [DefaultAudioActivity]. */
-    fun createDefaultAudioActivityIntent(
+    /** Returns a new [Intent] to route to [AudioLanguageActivity]. */
+    fun createAudioLanguageActivityIntent(
       context: Context,
       prefKey: String,
       summaryValue: String?
     ): Intent {
-      val intent = Intent(context, DefaultAudioActivity::class.java)
+      val intent = Intent(context, AudioLanguageActivity::class.java)
       intent.putExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE, prefKey)
       intent.putExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE, summaryValue)
       return intent
@@ -47,12 +47,12 @@ class DefaultAudioActivity : InjectableAppCompatActivity() {
     super.onSaveInstanceState(outState)
     outState.putString(
       KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
-      defaultAudioActivityPresenter.getLanguageSelected()
+      audioLanguageActivityPresenter.getLanguageSelected()
     )
   }
 
   override fun onBackPressed() {
-    val message = defaultAudioActivityPresenter.getLanguageSelected()
+    val message = audioLanguageActivityPresenter.getLanguageSelected()
     val intent = Intent()
     intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, message)
     setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)

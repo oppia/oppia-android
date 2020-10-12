@@ -5,19 +5,19 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
 
-/** The presenter for [DefaultAudioActivity]. */
+/** The presenter for [AudioLanguageActivity]. */
 @ActivityScope
-class DefaultAudioActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class AudioLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
 
   private lateinit var prefSummaryValue: String
 
   fun handleOnCreate(prefKey: String, prefValue: String) {
-    activity.setContentView(R.layout.default_audio_activity)
+    activity.setContentView(R.layout.audio_language_activity)
     setLanguageSelected(prefValue)
-    if (getDefaultAudioFragment() == null) {
-      val defaultAudioFragment = DefaultAudioFragment.newInstance(prefKey, prefValue)
+    if (getAudioLanguageFragment() == null) {
+      val audioLanguageFragment = AudioLanguageFragment.newInstance(prefKey, prefValue)
       activity.supportFragmentManager.beginTransaction()
-        .add(R.id.default_audio_fragment_container, defaultAudioFragment).commitNow()
+        .add(R.id.audio_language_fragment_container, audioLanguageFragment).commitNow()
     }
   }
 
@@ -29,8 +29,8 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
     return prefSummaryValue
   }
 
-  private fun getDefaultAudioFragment(): DefaultAudioFragment? {
+  private fun getAudioLanguageFragment(): AudioLanguageFragment? {
     return activity.supportFragmentManager
-      .findFragmentById(R.id.default_audio_fragment_container) as DefaultAudioFragment?
+      .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment?
   }
 }

@@ -13,7 +13,7 @@ private const val SELECTED_OPTIONS_TITLE_KEY = "SELECTED_OPTIONS_TITLE_KEY"
 private const val SELECTED_FRAGMENT_KEY = "SELECTED_FRAGMENT_KEY"
 const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
 const val APP_LANGUAGE_FRAGMENT = "APP_LANGUAGE_FRAGMENT"
-const val DEFAULT_AUDIO_FRAGMENT = "DEFAULT_AUDIO_FRAGMENT"
+const val AUDIO_LANGUAGE_FRAGMENT = "AUDIO_LANGUAGE_FRAGMENT"
 
 /** The activity for setting user preferences. */
 class OptionsActivity :
@@ -103,7 +103,7 @@ class OptionsActivity :
 
   override fun routeAudioLanguageList(audioLanguage: String?) {
     startActivityForResult(
-      DefaultAudioActivity.createDefaultAudioActivityIntent(
+      AudioLanguageActivity.createAudioLanguageActivityIntent(
         this,
         AUDIO_LANGUAGE,
         audioLanguage
@@ -136,7 +136,7 @@ class OptionsActivity :
   }
 
   override fun loadAudioLanguageFragment(audioLanguage: String) {
-    selectedFragment = DEFAULT_AUDIO_FRAGMENT
+    selectedFragment = AUDIO_LANGUAGE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(getString(R.string.audio_language))
     optionActivityPresenter.loadAudioLanguageFragment(audioLanguage)
   }

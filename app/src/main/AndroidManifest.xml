@@ -55,7 +55,7 @@
       android:name=".app.options.AppLanguageActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".app.options.DefaultAudioActivity"
+      android:name=".app.options.AudioLanguageActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.OptionsActivity"

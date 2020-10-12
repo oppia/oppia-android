@@ -31,7 +31,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.options.AUDIO_LANGUAGE
-import org.oppia.android.app.options.DefaultAudioActivity
+import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -80,8 +80,8 @@ private const val CHINESE = 4
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = DefaultAudioFragmentTest.TestApplication::class)
-class DefaultAudioFragmentTest {
+@Config(application = AudioLanguageFragmentTest.TestApplication::class)
+class AudioLanguageFragmentTest {
 
   @Inject
   lateinit var context: Context
@@ -107,7 +107,7 @@ class DefaultAudioFragmentTest {
 
   @Test
   fun testAudioLanguage_changeLanguageToHindi_changeConfiguration_checkHindiLanguageIsSelected() {
-    launch<DefaultAudioActivity>(createDefaultAudioActivityIntent("French")).use {
+    launch<AudioLanguageActivity>(createDefaultAudioActivityIntent("French")).use {
       selectLanguage(HINDI)
       rotateToLandscape()
       checkSelectedLanguage(HINDI)
@@ -126,7 +126,7 @@ class DefaultAudioFragmentTest {
   }
 
   private fun createDefaultAudioActivityIntent(summaryValue: String): Intent {
-    return DefaultAudioActivity.createDefaultAudioActivityIntent(
+    return AudioLanguageActivity.createAudioLanguageActivityIntent(
       ApplicationProvider.getApplicationContext(),
       AUDIO_LANGUAGE,
       summaryValue
@@ -233,18 +233,18 @@ class DefaultAudioFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(defaultAudioFragmentTest: DefaultAudioFragmentTest)
+    fun inject(audioLanguageFragmentTest: AudioLanguageFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerDefaultAudioFragmentTest_TestApplicationComponent.builder()
+      DaggerAudioLanguageFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(defaultAudioFragmentTest: DefaultAudioFragmentTest) {
-      component.inject(defaultAudioFragmentTest)
+    fun inject(audioLanguageFragmentTest: AudioLanguageFragmentTest) {
+      component.inject(audioLanguageFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

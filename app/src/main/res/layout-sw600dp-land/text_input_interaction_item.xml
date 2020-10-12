@@ -18,8 +18,8 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:padding="0dp"
-    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/margin_176 : @dimen/margin_192}"
-    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/margin_208 : @dimen/margin_192}">
+    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/space_176dp : @dimen/space_192dp}"
+    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/space_208dp : @dimen/space_192dp}">
 
     <org.oppia.android.app.customview.interaction.TextInputInteractionView
       android:id="@+id/text_input_interaction_view"
