@@ -127,5 +127,4 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     fun inject(test: TextInputFuzzyEqualsRuleClassifierProviderTest)
   }
 }
-
                 
