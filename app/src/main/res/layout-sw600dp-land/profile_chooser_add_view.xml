@@ -16,13 +16,12 @@
       type="androidx.databinding.ObservableField&lt;Boolean&gt;" />
   </data>
 
-  <LinearLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
     app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_298dp}"
     app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_298dp}"
-    android:orientation="vertical">
+    app:layout_constraintVertical_chainStyle="packed">
 
     <View
       android:id="@+id/add_profile_divider_view"
@@ -30,7 +29,11 @@
       android:layout_height="0.5dp"
       android:layout_marginBottom="40dp"
       android:background="@color/oppiaProfileChooserDivider"
-      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
+      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toTopOf="@+id/add_profile_item"/>
 
     <LinearLayout
       android:id="@+id/add_profile_item"
@@ -41,6 +44,10 @@
       android:orientation="@{hasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
       app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
       app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
+      app:layout_constraintTop_toBottomOf="@+id/add_profile_divider_view"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
       tools:ignore="RtlSymmetry">
 
       <de.hdodenhof.circleimageview.CircleImageView
@@ -62,27 +69,21 @@
 
         <TextView
           android:id="@+id/add_profile_text"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:fontFamily="sans-serif-medium"
+          style="@style/Heading2"
           android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
-          android:textColor="@color/white"
-          android:textSize="20sp" />
+          android:textColor="@color/white"/>
 
         <TextView
           android:id="@+id/add_profile_description_text"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          style="@style/Subtitle1"
           android:maxWidth="280dp"
           android:layout_gravity="left"
           android:layout_marginTop="4dp"
-          android:fontFamily="sans-serif"
           android:text="@string/set_up_multiple_profiles_description"
           android:textColor="@color/white"
-          android:textSize="16sp"
           android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
           tools:ignore="RtlHardcoded" />
       </LinearLayout>
     </LinearLayout>
-  </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

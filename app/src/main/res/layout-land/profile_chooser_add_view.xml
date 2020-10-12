@@ -11,17 +11,20 @@
       type="androidx.databinding.ObservableField&lt;Boolean&gt;" />
   </data>
 
-  <LinearLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    app:layout_constraintHorizontal_chainStyle="packed">
 
     <View
       android:id="@+id/add_profile_divider_view"
       android:layout_width="0.5dp"
       android:layout_height="match_parent"
       android:background="@color/oppiaProfileChooserDivider"
-      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
+      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
+      app:layout_constraintEnd_toStartOf="@+id/add_profile_item"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
       android:id="@+id/add_profile_item"
@@ -29,11 +32,13 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="16dp"
       android:layout_marginEnd="16dp"
-      android:layout_marginBottom="24dp"
       android:gravity="center_horizontal"
       android:orientation="vertical"
       app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_20dp : @dimen/space_28dp}"
-      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_24dp}">
+      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_24dp}"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/add_profile_divider_view"
+      app:layout_constraintTop_toTopOf="parent">
 
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_add_button"
@@ -46,26 +51,20 @@
 
       <TextView
         android:id="@+id/add_profile_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Caption"
         android:layout_gravity="center"
-        android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
-        android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textColor="@color/white" />
 
       <TextView
         android:id="@+id/add_profile_description_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextFieldLabel"
         android:layout_gravity="center"
-        android:fontFamily="sans-serif"
         android:gravity="center"
         android:text="@string/set_up_multiple_profiles_description"
         android:textColor="@color/white"
-        android:textSize="12sp"
         android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
     </LinearLayout>
-  </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
