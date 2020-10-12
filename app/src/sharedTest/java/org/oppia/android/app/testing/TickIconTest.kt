@@ -8,13 +8,10 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.PositionAssertions.isCompletelyRightOf
-import androidx.test.espresso.assertion.PositionAssertions.isPartiallyRightOf
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withChild
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.bumptech.glide.Glide
@@ -143,19 +140,6 @@ class TickIconTest {
           isCompletelyDisplayed()
         )
       )
-      onView(withId(R.id.answer_tick)).check(
-        isCompletelyRightOf(
-          withId(R.id.submitted_answer_text_view)
-        )
-      )
-      onView(withId(R.id.answer_tick)).check(
-        isPartiallyRightOf(
-          withChild(
-            (withId(R.id.submitted_answer_text_view))
-          )
-        )
-      )
-
     }
   }
 
