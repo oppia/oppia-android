@@ -92,7 +92,7 @@
           app:layout_constrainedWidth="true"
           app:layout_constraintEnd_toEndOf="@{viewModel.isCorrectAnswer ? @id/answer_tick_guideline : ConstraintSet.PARENT_ID}"
           app:layout_constraintHorizontal_bias="0.0"
-          app:layout_constraintStart_toStartOf="@{!viewModel.hasConversationView}"
+          app:layout_set_constraintStart="@{!viewModel.hasConversationView}"
           app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -111,10 +111,10 @@
 
         <ImageView
           android:id="@+id/answer_tick"
-          android:layout_width="24dp"
-          android:layout_height="24dp"
+          android:layout_width="@dimen/answer_tick_size"
+          android:layout_height="@dimen/answer_tick_size"
           android:layout_gravity="center_vertical"
-          android:layout_marginStart="8dp"
+          android:layout_marginStart="@dimen/answer_tick_margin"
           android:src="@drawable/ic_check_primary"
           android:visibility="@{viewModel.isCorrectAnswer &amp;&amp; !viewModel.hasConversationView ? View.VISIBLE : View.GONE}"
           app:layout_constraintBottom_toBottomOf="parent"
