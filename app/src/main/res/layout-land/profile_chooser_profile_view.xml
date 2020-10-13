@@ -64,7 +64,7 @@
         android:textColor="@color/white"
         android:textStyle="italic"
         android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
-        profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
+        profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}"/>
 
       <TextView
         android:id="@+id/profile_is_admin_text"

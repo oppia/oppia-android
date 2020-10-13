@@ -47,7 +47,7 @@
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_48dp : @dimen/space_0dp}"
         app:civ_border_color="@color/avatarBorder"
         app:civ_border_width="1dp"
-        profile:src="@{viewModel.profile.avatar}" />
+        profile:src="@{viewModel.profile.avatar}"/>
 
       <LinearLayout
         android:layout_width="wrap_content"
