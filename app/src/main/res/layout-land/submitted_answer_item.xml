@@ -57,9 +57,9 @@
       android:textSize="16sp"
       android:visibility="gone"
       app:layout_constrainedWidth="true"
-      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintEnd_toEndOf="@{viewModel.isCorrectAnswer ? @id/answer_tick_guideline : ConstraintSet.PARENT_ID}"
-      app:constraintStart_toStartOfParent="@{!viewModel.hasConversationView}"
+      app:layout_constraintHorizontal_bias="@{viewModel.hasConversationView ? 1 : 0}"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -94,6 +94,5 @@
       android:layout_height="wrap_content"
       android:orientation="vertical"
       app:layout_constraintGuide_end="@{@dimen/answer_tick_margin + @dimen/answer_tick_size}" />
-
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
