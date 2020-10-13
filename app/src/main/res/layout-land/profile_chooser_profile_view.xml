@@ -45,7 +45,7 @@
         android:layout_marginBottom="8dp"
         app:civ_border_color="@color/avatarBorder"
         app:civ_border_width="1dp"
-        profile:src="@{viewModel.profile.avatar}" />
+        profile:src="@{viewModel.profile.avatar}"/>
 
       <TextView
         android:id="@+id/profile_name_text"
@@ -87,6 +87,6 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toEndOf="@+id/profile_chooser_item"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"/>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -94,6 +94,6 @@
       android:layout_height="0.5dp"
       android:layout_marginTop="72dp"
       android:background="@color/oppiaProfileChooserDivider"
-      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
+      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"/>
   </LinearLayout>
 </layout>

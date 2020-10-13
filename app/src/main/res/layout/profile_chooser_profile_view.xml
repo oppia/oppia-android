@@ -46,7 +46,7 @@
         android:layout_height="72dp"
         app:civ_border_color="@color/avatarBorder"
         app:civ_border_width="1dp"
-        profile:src="@{viewModel.profile.avatar}" />
+        profile:src="@{viewModel.profile.avatar}"/>
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -93,6 +93,6 @@
       android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/profile_chooser_item" />
+      app:layout_constraintTop_toBottomOf="@+id/profile_chooser_item"/>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

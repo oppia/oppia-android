@@ -59,24 +59,18 @@
 
         <TextView
           android:id="@+id/profile_name_text"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          style="@style/Heading2"
           android:ellipsize="end"
-          android:fontFamily="sans-serif-medium"
           android:gravity="center"
           android:maxLines="2"
           android:singleLine="false"
           android:text="@{viewModel.profile.name}"
-          android:textColor="@color/white"
-          android:textSize="20sp" />
+          android:textColor="@color/white"/>
 
         <TextView
           android:id="@+id/profile_last_visited"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:fontFamily="sans-serif-light"
+          style="@style/Subtitle1"
           android:textColor="@color/white"
-          android:textSize="16sp"
           android:layout_marginTop="4dp"
           android:textStyle="italic"
           android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
@@ -84,13 +78,10 @@
 
         <TextView
           android:id="@+id/profile_is_admin_text"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:fontFamily="sans-serif-light"
+          style="@style/Subtitle1"
           android:gravity="center"
           android:text="@string/profile_chooser_admin"
           android:textColor="@color/white"
-          android:textSize="16sp"
           android:layout_marginTop="4dp"
           android:textStyle="italic"
           android:visibility="@{viewModel.profile.isAdmin &amp;&amp; hasProfileEverBeenAddedValue ? View.VISIBLE : View.GONE}" />
@@ -103,6 +94,6 @@
       android:layout_height="0.5dp"
       android:layout_marginTop="40dp"
       android:background="@color/oppiaProfileChooserDivider"
-      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
+      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"/>
   </LinearLayout>
 </layout>
