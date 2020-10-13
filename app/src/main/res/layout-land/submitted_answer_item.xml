@@ -59,7 +59,7 @@
       app:layout_constrainedWidth="true"
       app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintEnd_toEndOf="@{viewModel.isCorrectAnswer ? @id/answer_tick_guideline : ConstraintSet.PARENT_ID}"
-      app:layout_set_constraintStart="@{!viewModel.hasConversationView}"
+      app:constraintStart_toStartOfParent="@{!viewModel.hasConversationView}"
       app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -23,7 +23,7 @@ public final class ConstraintViewAdapters {
   }
 
   /** Binding adapter for setting/removing a [layout_constraintStartToStartOf] to a view */
-  @BindingAdapter("app:layout_set_constraintStart")
+  @BindingAdapter("app:constraintStart_toStartOfParent")
   public static void setConstraintStart(
       @NonNull View view, boolean setStartConstraint
   ) {

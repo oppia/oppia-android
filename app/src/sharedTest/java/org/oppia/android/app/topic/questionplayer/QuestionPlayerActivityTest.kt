@@ -207,7 +207,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Config(qualifiers = "port-xxhdpi")
+  @Config(qualifiers = "xxhdpi")
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_phonePort_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -221,7 +221,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Config(qualifiers = "port-xxhdpi")
+  @Config(qualifiers = "xxhdpi")
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_phoneLand_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -236,7 +236,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Config(qualifiers = "sw600dp-port")
+  @Config(qualifiers = "sw600dp")
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_tabletPort_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -250,7 +250,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Config(qualifiers = "sw600dp-port")
+  @Config(qualifiers = "sw600dp")
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_tabletLand_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
