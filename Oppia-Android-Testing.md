@@ -9,6 +9,9 @@ In Oppia we are considering:
 * LeakCanary
 * Hermetic end-to-end testing using Espresso + some way to run the Oppia developer backend (or maybe better: drive using UIAutomator using a real production Oppia backend set up for testing purposes)
 
+# Learning how to write good tests
+[This presentation](https://docs.google.com/presentation/d/1jPyrVafvlCCaT0qY2r1Z1PYKL6MaklXo2QaO5FiJSKo/edit?usp=sharing) provides an overview on testing as a whole, and explains what makes a good test. We suggest that you familiarize yourself with the concepts introduced in that presentation before writing any tests in Oppia Android.
+
 # Guidelines for testing
 ## Naming Convention
 Test names should read like a sentence, and be consistent with other nearby test names to facilitate easily coming up with new tests. Consider using a format similar to the following for naming test functions:
