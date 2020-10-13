@@ -49,38 +49,29 @@
 
       <TextView
         android:id="@+id/profile_name_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
+        style="@style/Caption"
         android:gravity="center"
         android:maxLines="2"
         android:singleLine="false"
         android:text="@{viewModel.profile.name}"
-        android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textColor="@color/white" />
 
       <TextView
         android:id="@+id/profile_last_visited"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-light"
+        style="@style/TextFieldLabel"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="12sp"
         android:textStyle="italic"
         android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
         profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
       <TextView
         android:id="@+id/profile_is_admin_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-light"
+        style="@style/TextFieldLabel"
         android:gravity="center"
         android:text="@string/profile_chooser_admin"
         android:textColor="@color/white"
-        android:textSize="12sp"
         android:textStyle="italic"
         android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
     </LinearLayout>
