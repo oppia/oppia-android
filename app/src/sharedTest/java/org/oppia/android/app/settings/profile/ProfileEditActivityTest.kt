@@ -108,8 +108,6 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
   fun testProfileEditActivity_startActivityWithAdminProfile_checkAdminInfoIsDisplayed() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
@@ -125,8 +123,6 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
   fun testProfileEditActivity_configurationChange_startActivityWithAdminProfile_checkAdminInfoIsDisplayed() { // ktlint-disable max-line-length
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
@@ -143,8 +139,6 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
   fun testProfileEditActivity_startActivityWithUserProfile_checkUserInfoIsDisplayed() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
@@ -160,8 +154,6 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
   fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_checkUserInfoIsDisplayed() { // ktlint-disable max-line-length
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(

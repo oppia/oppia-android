@@ -23,11 +23,7 @@ class ProfileEditViewModel @Inject constructor(
 
   private val _isAllowedDownloadAccess = MutableLiveData<Boolean>()
 
-  /**
-   * This variable is used to expose the switch state
-   * that determines whether the access to download is allowed or not
-   * to the presenter
-   **/
+  /** Specifies whether download access has been enabled by the user. */
   val isAllowedDownloadAccess: LiveData<Boolean> = _isAllowedDownloadAccess
 
   val profile: LiveData<Profile> by lazy {
