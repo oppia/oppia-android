@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.PictureDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import org.oppia.android.util.caching.AssetRepository
@@ -26,8 +27,29 @@ class GlideImageLoader @Inject constructor(
         override fun getImageIdentifier(): String = imageUrl
       }
     } else imageUrl
+    val im = Glide.with(context).
     Glide.with(context)
       .asBitmap()
+      .load(model)
+      .intoTarget(target)
+  }
+
+  override fun loadOppiaImage(imageUrl: String, target: ImageTarget<OppiaImage>) {
+    val model: Any = if (cacheAssetsLocally) {
+      object : ImageAssetFetcher {
+        override fun fetchImage(): ByteArray = assetRepository.loadRemoteBinaryAsset(imageUrl)()
+
+        override fun getImageIdentifier(): String = imageUrl
+      }
+    } else imageUrl
+
+    when(target) {
+      is CustomImageTarget -> {
+
+      }
+    }
+    Glide.with(context)
+      .asImage(target)
       .load(model)
       .intoTarget(target)
   }
@@ -54,6 +76,15 @@ class GlideImageLoader @Inject constructor(
     when (target) {
       is CustomImageTarget -> into(target.customTarget)
       is ImageViewTarget -> into(target.imageView)
+    }
+  }
+
+  private fun <T> RequestManager.asImage(target: ImageTarget<T>): RequestBuilder<T> {
+    return when(target) {
+      is CustomImageTarget -> asBitmap()
+      is ImageViewTarget -> `as`(PictureDrawable::class.java)
+        .fitCenter()
+        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
     }
   }
 }

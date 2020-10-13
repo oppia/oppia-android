@@ -12,6 +12,8 @@ interface ImageLoader {
    */
   fun loadBitmap(imageUrl: String, target: ImageTarget<Bitmap>)
 
+  fun loadOppiaImage(imageUrl: String, target: ImageTarget<OppiaImage>)
+
   /**
    * Loads a vector drawable at the specified [imageUrl] into the specified [target]. Note that this
    * is an asynchronous operation, and may take a while if the image needs to be downloaded from the
