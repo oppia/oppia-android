@@ -1,0 +1,20 @@
+#!/bin/sh
+
+echo "********************************"
+echo "Checking code formatting"
+echo "********************************"
+
+ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt
+
+status=$?
+
+if [ "$status" = 0 ] ; then
+  echo "Lint completed successfully."
+  exit 0
+else
+  echo "********************************"
+  echo "Ktlint issue found."
+  echo "Please fix the above issues."
+  echo "********************************"
+  exit 1
+fi
