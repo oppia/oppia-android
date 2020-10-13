@@ -42,7 +42,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testUpperCaseAnswer_testUpperCaseInput_SameExactString_bothValuesMatch() {
+  fun testUpperCaseAnswer_testUpperCaseInput_sameExactString_bothValuesMatch() {
     val inputs = mapOf("x" to STRING_INPUT_UPPERCASE)
 
     val matches =
@@ -52,7 +52,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowerCaseAnswer_testUpperCaseInput_sameString() {
+  fun testLowerCaseAnswer_testUpperCaseInput_sameString_bothValuesMatch() {
     val inputs = mapOf("x" to STRING_INPUT_UPPERCASE)
 
     val matches =
@@ -62,12 +62,36 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowerCaseAnswer_testLowerCaseInput_differentString() {
+  fun testLowerCaseAnswer_testLowerCaseInput_differentString_bothValuesDoNotMatch() {
     val inputs = mapOf("x" to STRING_INPUT_UPPERCASE)
 
     val matches = inputFuzzyEqualsRuleClassifier.matches(answer = STRING_ANSWER, inputs = inputs)
 
     assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testStringAnswer_stringFuzzyInput_answerFuzzyEqualsInput_valuesMatch() {
+    val inputs = mapOf("x" to createString(value = "This Is a TesT"))
+
+    val matches = inputFuzzyEqualsRuleClassifier.matches(
+      answer = createString(value = "this is a test"),
+      inputs = inputs
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testStringAnswer_stringWithWhitespacesInput_answerEqualsInput_valuesMatch() {
+    val inputs = mapOf("x" to createString(value = "Test"))
+
+    val matches = inputFuzzyEqualsRuleClassifier.matches(
+      answer = createString(value = "  Test   "),
+      inputs = inputs
+    )
+
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -98,7 +122,6 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     return InteractionObject.newBuilder().setNonNegativeInt(value).build()
   }
 
-  // TODO(#89): Move to a common test library.
   private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
     try {
       operation()
@@ -112,7 +135,6 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     }
   }
 
-  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(modules = [])
   interface TestApplicationComponent {
@@ -127,4 +149,3 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     fun inject(test: TextInputFuzzyEqualsRuleClassifierProviderTest)
   }
 }
-                
