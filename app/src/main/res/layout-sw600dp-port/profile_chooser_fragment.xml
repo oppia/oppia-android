@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
@@ -56,9 +55,11 @@
 
         <TextView
           android:id="@+id/profile_select_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           android:layout_marginStart="64dp"
           android:layout_marginTop="80dp"
-          style="@style/Heading1"
+          android:fontFamily="sans-serif"
           android:text="@string/profile_chooser_select"
           android:textColor="@color/white"
           android:textSize="36sp"
@@ -106,8 +107,8 @@
       app:layout_constraintEnd_toEndOf="parent">
 
       <TextView
-        android:layout_marginBottom="32dp"
         style="@style/Heading1"
+        android:layout_marginBottom="32dp"
         android:gravity="center"
         android:minHeight="48dp"
         android:text="@string/profile_chooser_administrator_controls"

@@ -56,11 +56,14 @@
 
         <TextView
           android:id="@+id/profile_select_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           android:layout_marginStart="96dp"
           android:layout_marginTop="80dp"
-          style="@style/Heading1"
+          android:fontFamily="sans-serif"
           android:text="@string/profile_chooser_select"
           android:textColor="@color/white"
+          android:textSize="36sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,13 +108,12 @@
       app:layout_constraintEnd_toEndOf="parent">
 
       <TextView
+        style="@style/Heading1"
         android:layout_marginBottom="28dp"
-        style="@style/Subtitle1"
         android:gravity="center"
         android:minHeight="48dp"
         android:text="@string/profile_chooser_administrator_controls"
-        android:textColor="@color/profileChooserGreyTextColor"
-        android:textSize="24sp" />
+        android:textColor="@color/profileChooserGreyTextColor" />
 
       <ImageView
         android:id="@+id/profile_chooser_setting_icon"
