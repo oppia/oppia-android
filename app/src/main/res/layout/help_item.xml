@@ -11,18 +11,15 @@
 
   <TextView
     android:id="@+id/help_item_text_view"
+    style="@style/Subtitle1"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:background="@drawable/general_item_background_border"
-    android:fontFamily="sans-serif"
     android:paddingStart="16dp"
     android:paddingTop="20dp"
     android:paddingEnd="16dp"
     android:paddingBottom="20dp"
     android:onClick="@{() -> viewModel.onClick(viewModel.title)}"
     android:text="@{viewModel.title}"
-    android:textColor="@color/oppiaPrimaryText"
-    android:textSize="16sp"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 </layout>
