@@ -17,7 +17,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.model.ProfileChooserUiModel"/>
+      type="org.oppia.android.app.model.ProfileChooserUiModel" />
   </data>
 
   <LinearLayout
@@ -65,11 +65,14 @@
           android:maxLines="2"
           android:singleLine="false"
           android:text="@{viewModel.profile.name}"
-          android:textColor="@color/white"/>
+          android:textColor="@color/white" />
 
         <TextView
           android:id="@+id/profile_last_visited"
-          style="@style/Subtitle1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif-light"
+          android:textSize="16sp"
           android:textColor="@color/white"
           android:layout_marginTop="4dp"
           android:textStyle="italic"
@@ -78,7 +81,10 @@
 
         <TextView
           android:id="@+id/profile_is_admin_text"
-          style="@style/Subtitle1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif-light"
+          android:textSize="16sp"
           android:gravity="center"
           android:text="@string/profile_chooser_admin"
           android:textColor="@color/white"
@@ -94,6 +100,6 @@
       android:layout_height="0.5dp"
       android:layout_marginTop="40dp"
       android:background="@color/oppiaProfileChooserDivider"
-      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"/>
+      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
   </LinearLayout>
 </layout>

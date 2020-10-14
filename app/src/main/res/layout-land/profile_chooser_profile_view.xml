@@ -45,7 +45,7 @@
         android:layout_marginBottom="8dp"
         app:civ_border_color="@color/avatarBorder"
         app:civ_border_width="1dp"
-        profile:src="@{viewModel.profile.avatar}"/>
+        profile:src="@{viewModel.profile.avatar}" />
 
       <TextView
         android:id="@+id/profile_name_text"
@@ -59,16 +59,22 @@
 
       <TextView
         android:id="@+id/profile_last_visited"
-        style="@style/TextFieldLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:textSize="12sp"
         android:gravity="center"
         android:textColor="@color/white"
         android:textStyle="italic"
         android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
-        profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}"/>
+        profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
       <TextView
         android:id="@+id/profile_is_admin_text"
-        style="@style/TextFieldLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:textSize="12sp"
         android:gravity="center"
         android:text="@string/profile_chooser_admin"
         android:textColor="@color/white"
@@ -87,6 +93,6 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toEndOf="@+id/profile_chooser_item"
-      app:layout_constraintTop_toTopOf="parent"/>
+      app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
