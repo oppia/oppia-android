@@ -15,7 +15,7 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:elevation="4dp"
-    android:layout_margin="@dimen/space_20dp"
+    android:layout_margin="@dimen/walkthrough_topic_summary_parent_margin"
     android:focusable="true"
     android:onClick="@{(v) -> viewModel.clickOnSummaryTile()}"
     app:roundedRectDrawableWithColor="@{viewModel.backgroundColor}">
