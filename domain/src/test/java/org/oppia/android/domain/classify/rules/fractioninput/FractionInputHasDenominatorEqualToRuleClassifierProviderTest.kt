@@ -40,7 +40,7 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_wholeNumber123Answer_withSignedInt2Input_bothValuesDoNotMatch() {
+  fun testDenominatorEquals_wholeNumber123Answer_withSignedInt2Input_bothValuesDoNotMatch() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_2)
 
     val matches =
@@ -53,7 +53,7 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_fraction2Over4Answer_withSignedInt1Input_bothValuesDoNotMatch() {
+  fun testDenominatorEquals_fraction2Over4Answer_withSignedInt1Input_bothValuesDoNotMatch() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1)
 
     val matches =
@@ -66,7 +66,7 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_fraction2Over4Answer_withSignedInt2Input_bothValuesMatch() {
+  fun testDenominatorEquals_fraction2Over4Answer_withSignedInt2Input_bothValuesMatch() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_2)
 
     val matches =
@@ -79,7 +79,7 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
+  fun testDenominatorEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to FRACTION_2_OVER_4)
 
     val exception = assertThrows(IllegalStateException::class) {
@@ -97,7 +97,7 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_missingInputF_throwsException() {
+  fun testDenominatorEquals_missingInputF_throwsException() {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1)
 
     val exception = assertThrows(IllegalStateException::class) {
