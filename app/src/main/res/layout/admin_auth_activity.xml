@@ -52,6 +52,7 @@
     <TextView
       android:id="@+id/admin_auth_heading_textview"
       style="@style/Heading2"
+      android:layout_width="0dp"
       android:layout_marginStart="28dp"
       android:layout_marginTop="40dp"
       android:layout_marginEnd="28dp"
@@ -65,8 +66,9 @@
     <TextView
       android:id="@+id/admin_auth_sub_text"
       style="@style/Subtitle1"
+      android:layout_width="0dp"
       android:layout_marginStart="28dp"
-      android:layout_marginTop="48dp"
+      android:layout_marginTop="12dp"
       android:layout_marginEnd="28dp"
       app:layout_constraintHorizontal_bias="0.0"
       android:text="@string/admin_auth_sub"
@@ -77,7 +79,7 @@
 
     <org.oppia.android.app.profile.ProfileInputView
       android:id="@+id/admin_auth_input_pin"
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="28dp"
       android:layout_marginTop="48dp"
