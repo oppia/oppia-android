@@ -130,6 +130,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     String, @JvmSuppressWildcards InteractionViewModelFactory>,
   backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val hasConversationView: Boolean,
+  private val gcsResourceName: String,
+  private val gcsEntityType: String,
   delayShowInitialHintMs: Long,
   delayShowAdditionalHintsMs: Long,
   delayShowAdditionalHintsFromWrongAnswerMs: Long
@@ -302,12 +304,16 @@ class StatePlayerRecyclerViewAssembler private constructor(
     gcsEntityId: String
   ) {
     val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
+
     pendingItemList += ContentViewModel(
       contentSubtitledHtml.html,
+      gcsResourceName,
+      gcsEntityType,
       gcsEntityId,
       hasConversationView,
       isSplitView.get()!!,
-      playerFeatureSet.conceptCardSupport
+      playerFeatureSet.conceptCardSupport,
+      this as HtmlParser.CustomOppiaTagActionListener
     )
   }
 
@@ -790,19 +796,19 @@ class StatePlayerRecyclerViewAssembler private constructor(
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
           val contentViewModel = viewModel as ContentViewModel
           binding.viewModel = contentViewModel
-          binding.htmlContent =
-            htmlParserFactory.create(
-              resourceBucketName,
-              entityType,
-              contentViewModel.gcsEntityId,
-              imageCenterAlign = true,
-              customOppiaTagActionListener = customTagListener
-            ).parseOppiaHtml(
-              contentViewModel.htmlContent.toString(),
-              binding.contentTextView,
-              supportsLinks = true,
-              supportsConceptCards = contentViewModel.supportsConceptCards
-            )
+//          binding.htmlContent =
+//            htmlParserFactory.create(
+//              resourceBucketName,
+//              entityType,
+//              contentViewModel.gcsEntityId,
+//              imageCenterAlign = true,
+//              customOppiaTagActionListener = customTagListener
+//            ).parseOppiaHtml(
+//              contentViewModel.htmlContent.toString(),
+//              binding.contentTextView,
+//              supportsLinks = true,
+//              supportsConceptCards = contentViewModel.supportsConceptCards
+//            )
         }
       )
       featureSets += PlayerFeatureSet(contentSupport = true)
@@ -1181,6 +1187,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         interactionViewModelFactoryMap,
         backgroundCoroutineDispatcher,
         hasConversationView,
+        resourceBucketName,
+        entityType,
         delayShowInitialHintMs,
         delayShowAdditionalHintsMs,
         delayShowAdditionalHintsFromWrongAnswerMs

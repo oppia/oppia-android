@@ -7,6 +7,7 @@ import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.player.state.DragDropSortInteractionView
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.player.state.SelectionInteractionView
+import org.oppia.android.app.richtext.RteTextView
 
 /** Root subcomponent for custom views. */
 @Subcomponent
@@ -24,4 +25,5 @@ interface ViewComponent {
   fun inject(dragDropSortInteractionView: DragDropSortInteractionView)
   fun inject(imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView)
   fun inject(lessonThumbnailImageView: LessonThumbnailImageView)
+  fun inject(rteTextView: RteTextView)
 }

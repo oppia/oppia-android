@@ -1,5 +1,6 @@
 package org.oppia.android.util.parser
 
+import android.content.Context
 import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -22,6 +23,7 @@ private const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
   private val urlImageParserFactory: UrlImageParser.Factory,
+  private val deferredUrlImageParserFactory: DeferredUrlImageParser.Factory,
   private val gcsResourceName: String,
   private val entityType: String,
   private val entityId: String,
@@ -99,6 +101,70 @@ class HtmlParser private constructor(
     return ensureNonEmpty(trimSpannable(spannableBuilder))
   }
 
+  /**
+   * Parses a raw HTML string with support for custom Oppia rich-text component tags.
+   *
+   * @param context context to be used to load resources. This should be as close to the view
+   *     rendering the returned [Spannable] as possible since setting changes in the corresponding
+   *     view should be reflected in the context (e.g. resizing text for a specific view vs. the
+   *     whole app).
+   * @param rawString raw HTML to parse
+   * @param supportsConceptCards whether the returned [Spannable] should include clickable spans for
+   *     concept cards
+   * @return a [Spanned] representing the styled text
+   */
+  fun parseOppiaRichText(
+    context: Context,
+    rawString: String,
+    supportsConceptCards: Boolean
+  ): Spanned {
+    // TODO: simplify & collapse to val since if-checks are mostly redundant.
+    var strippedHtml = rawString
+    if ("\n\t" in strippedHtml) {
+      strippedHtml = strippedHtml.replace("\n\t", "")
+    }
+    if ("\n\n" in strippedHtml) {
+      strippedHtml = strippedHtml.replace("\n\n", "")
+    }
+    if ("<li>" in strippedHtml) {
+      strippedHtml = strippedHtml.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
+        .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
+    }
+    if (CUSTOM_IMG_TAG in strippedHtml) {
+      strippedHtml = strippedHtml.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG)
+      strippedHtml =
+        strippedHtml.replace(CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
+      strippedHtml = strippedHtml.replace("&amp;quot;", "")
+    }
+
+    val imageGetter = deferredUrlImageParserFactory.create(
+      gcsResourceName, entityType, entityId
+    )
+    val htmlSpannable = CustomHtmlContentHandler.fromHtml(
+      strippedHtml, imageGetter, computeCustomTagHandlers(supportsConceptCards)
+    )
+
+    val spannableBuilder = SpannableStringBuilder(htmlSpannable)
+    val bulletSpans = spannableBuilder.getSpans(
+      /* queryStart= */ 0,
+      spannableBuilder.length,
+      BulletSpan::class.java
+    )
+    bulletSpans.forEach {
+      val start = spannableBuilder.getSpanStart(it)
+      val end = spannableBuilder.getSpanEnd(it)
+      spannableBuilder.removeSpan(it)
+      spannableBuilder.setSpan(
+        CustomBulletSpan(context),
+        start,
+        end,
+        Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+      )
+    }
+
+    return ensureNonEmpty(trimSpannable(spannableBuilder))
+  }
+
   private fun computeCustomTagHandlers(
     supportsConceptCards: Boolean
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
@@ -166,7 +232,10 @@ class HtmlParser private constructor(
   }
 
   /** Factory for creating new [HtmlParser]s. */
-  class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
+  class Factory @Inject constructor(
+    private val urlImageParserFactory: UrlImageParser.Factory,
+    private val deferredUrlImageParserFactory: DeferredUrlImageParser.Factory
+  ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
      * optionally specified [CustomOppiaTagActionListener] for handling custom Oppia tag events.
@@ -180,6 +249,7 @@ class HtmlParser private constructor(
     ): HtmlParser {
       return HtmlParser(
         urlImageParserFactory,
+        deferredUrlImageParserFactory,
         gcsResourceName,
         entityType,
         entityId,
