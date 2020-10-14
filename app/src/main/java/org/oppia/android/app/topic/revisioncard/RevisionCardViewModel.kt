@@ -33,8 +33,8 @@ class RevisionCardViewModel @Inject constructor(
     returnToTopicClickListener.onReturnToTopicClicked()
   }
 
-  /** Sets the value of topicId, subtopicId and binding before anything else. */
-  fun setSubtopicIdAndBinding(
+  /** Sets the value of topicId, subtopicId before anything else. */
+  fun setTopicAndSubtopicId(
     topicId: String,
     subtopicId: Int
   ) {

@@ -43,7 +43,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
     val view = binding.revisionCardExplanationText
     val viewModel = getReviewCardViewModel()
 
-    viewModel.setSubtopicIdAndBinding(topicId, subtopicId)
+    viewModel.setTopicAndSubtopicId(topicId, subtopicId)
     logRevisionCardEvent(topicId, subtopicId)
 
     binding.let {
@@ -54,12 +54,9 @@ class RevisionCardFragmentPresenter @Inject constructor(
     viewModel.revisionCardLiveData.observe(
       fragment,
       Observer {
-
-        val explanation = htmlParserFactory.create(
+        view.text = htmlParserFactory.create(
           resourceBucketName, entityType, topicId, /* imageCenterAlign= */ true
         ).parseOppiaHtml(it.pageContents.html, view)
-
-        view.text = explanation
       }
     )
 
