@@ -91,11 +91,12 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.IsOnRobolectric
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.media.TestMediaPlayer
+import org.oppia.android.testing.media.TestMediaPlayerModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -106,7 +107,6 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -132,7 +132,11 @@ class ExplorationActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var testMediaPlayer: TestMediaPlayer
+
   private val internalProfileId: Int = 0
+  private val audioFileName = "content-en-057j51i2es.mp3"
 
   @Before
   fun setUp() {
@@ -303,7 +307,10 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
-    setupAudio()
+    testMediaPlayer.setupAudio(
+      explorationId = RATIOS_EXPLORATION_ID_0,
+      audioFileName = audioFileName
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -325,7 +332,10 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_checkOpensCellularAudioDialog() {
-    setupAudio()
+    testMediaPlayer.setupAudio(
+      explorationId = RATIOS_EXPLORATION_ID_0,
+      audioFileName = audioFileName
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -348,7 +358,10 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_changeConfiguration_checkOpensCellularAudioDialog() { // ktlint-disable max-line-length
-    setupAudio()
+    testMediaPlayer.setupAudio(
+      explorationId = RATIOS_EXPLORATION_ID_0,
+      audioFileName = audioFileName
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -372,7 +385,10 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickNegative_checkAudioFragmentIsHidden() { // ktlint-disable max-line-length
-    setupAudio()
+    testMediaPlayer.setupAudio(
+      explorationId = RATIOS_EXPLORATION_ID_0,
+      audioFileName = audioFileName
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -405,7 +421,10 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickPositive_checkAudioFragmentIsVisible() { // ktlint-disable max-line-length
-    setupAudio()
+    testMediaPlayer.setupAudio(
+      explorationId = RATIOS_EXPLORATION_ID_0,
+      audioFileName = audioFileName
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -447,7 +466,10 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickCheckboxAndNegative_clickAudioIcon_checkAudioFragmentIsHiddenAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
-    setupAudio()
+    testMediaPlayer.setupAudio(
+      explorationId = RATIOS_EXPLORATION_ID_0,
+      audioFileName = audioFileName
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -484,7 +506,10 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickCheckboxAndPositive_clickAudioIconTwice_checkAudioFragmentIsVisibleAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
-    setupAudio()
+    testMediaPlayer.setupAudio(
+      explorationId = RATIOS_EXPLORATION_ID_0,
+      audioFileName = audioFileName
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -558,7 +583,12 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsHinglish() { // ktlint-disable max-line-length
-    setupAudioForFraction()
+    testMediaPlayer.setupAudioDualMedia(
+      explorationId1 = FRACTIONS_EXPLORATION_ID_0,
+      audioFileName1 = "content-en-nb3k4zuyir.mp3",
+      audioFileName2 = "content-hi-en-l8ik9pdxj2a.mp3",
+      explorationId2 = FRACTIONS_EXPLORATION_ID_0
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -736,63 +766,6 @@ class ExplorationActivityTest {
     )
   }
 
-  private fun setupAudio() {
-    // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
-    // Espresso can't load Robolectric into its classpath).
-    if (isOnRobolectric()) {
-      val dataSource = createAudioDataSource(
-        explorationId = RATIOS_EXPLORATION_ID_0, audioFileName = "content-en-057j51i2es.mp3"
-      )
-      addShadowMediaPlayerException(dataSource!!, IOException("Test does not have networking"))
-    }
-  }
-
-  private fun setupAudioForFraction() {
-    // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
-    // Espresso can't load Robolectric into its classpath).
-    if (isOnRobolectric()) {
-      val dataSource = createAudioDataSource(
-        explorationId = FRACTIONS_EXPLORATION_ID_0, audioFileName = "content-en-nb3k4zuyir.mp3"
-      )
-      val dataSource2 = createAudioDataSource(
-        explorationId = FRACTIONS_EXPLORATION_ID_0, audioFileName = "content-hi-en-l8ik9pdxj2a.mp3"
-      )
-      addShadowMediaPlayerException(dataSource!!, IOException("Test does not have networking"))
-      addShadowMediaPlayerException(dataSource2!!, IOException("Test does not have networking"))
-    }
-  }
-
-  private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
-    val classLoader = ExplorationActivityTest::class.java.classLoader!!
-    val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
-    val addException =
-      shadowMediaPlayerClass.getDeclaredMethod(
-        "addException", dataSource.javaClass, IOException::class.java
-      )
-    addException.invoke(/* obj= */ null, dataSource, exception)
-  }
-
-  private fun isOnRobolectric(): Boolean {
-    return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
-  }
-
-  @Suppress("SameParameterValue")
-  private fun createAudioDataSource(explorationId: String, audioFileName: String): Any? {
-    val audioUrl = createAudioUrl(explorationId, audioFileName)
-    val classLoader = ExplorationActivityTest::class.java.classLoader!!
-    val dataSourceClass = classLoader.loadClass("org.robolectric.shadows.util.DataSource")
-    val toDataSource =
-      dataSourceClass.getDeclaredMethod(
-        "toDataSource", String::class.java, Map::class.java
-      )
-    return toDataSource.invoke(/* obj= */ null, audioUrl, /* headers= */ null)
-  }
-
-  private fun createAudioUrl(explorationId: String, audioFileName: String): String {
-    return "https://storage.googleapis.com/oppiaserver-resources/" +
-      "exploration/$explorationId/assets/audio/$audioFileName"
-  }
-
   private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
     return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
@@ -845,7 +818,7 @@ class ExplorationActivityTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class,
+      TestDispatcherModule::class, TestMediaPlayerModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -865,9 +838,6 @@ class ExplorationActivityTest {
     interface Builder : ApplicationComponent.Builder
 
     fun inject(explorationActivityTest: ExplorationActivityTest)
-
-    @IsOnRobolectric
-    fun isOnRobolectric(): Boolean
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -880,8 +850,6 @@ class ExplorationActivityTest {
     fun inject(explorationActivityTest: ExplorationActivityTest) {
       component.inject(explorationActivityTest)
     }
-
-    fun isOnRobolectric(): Boolean = component.isOnRobolectric()
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()

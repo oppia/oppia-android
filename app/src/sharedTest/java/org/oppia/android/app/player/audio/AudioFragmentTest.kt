@@ -61,12 +61,13 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestMediaPlayer
-import org.oppia.android.testing.TestMediaPlayerModule
+import org.oppia.android.testing.media.TestMediaPlayer
+import org.oppia.android.testing.media.TestMediaPlayerModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -77,7 +78,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -114,12 +115,8 @@ class AudioFragmentTest {
   @Inject
   lateinit var testMediaPlayer: TestMediaPlayer
 
-  private val TEST_URL =
-    "https://storage.googleapis.com/oppiaserver-resources/exploration/" +
-      "2mzzFVDLuAj8/assets/audio/content-en-057j51i2es.mp3"
-  private val TEST_URL2 =
-    "https://storage.googleapis.com/oppiaserver-resources/exploration/" +
-      "2mzzFVDLuAj8/assets/audio/content-es-i0nhu49z0q.mp3"
+  private val audioFileName1 = "content-en-057j51i2es.mp3"
+  private val audioFileName2 = "content-es-i0nhu49z0q.mp3"
 
   @Before
   fun setUp() {
@@ -185,10 +182,12 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
     testMediaPlayer.addMediaInfo(
-      context,
-      TEST_URL,
-      TEST_URL2,
-      audioPlayerController.getTestMediaPlayer()
+      context = context,
+      explorationId1 = RATIOS_EXPLORATION_ID_0,
+      explorationId2 = RATIOS_EXPLORATION_ID_0,
+      audioFileName1 = audioFileName1,
+      audioFileName2 = audioFileName2,
+      mediaPlayer = audioPlayerController.getTestMediaPlayer()
     )
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
@@ -206,10 +205,12 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
     testMediaPlayer.addMediaInfo(
-      context,
-      TEST_URL,
-      TEST_URL2,
-      audioPlayerController.getTestMediaPlayer()
+      context = context,
+      explorationId1 = RATIOS_EXPLORATION_ID_0,
+      explorationId2 = RATIOS_EXPLORATION_ID_0,
+      audioFileName1 = audioFileName1,
+      audioFileName2 = audioFileName2,
+      mediaPlayer = audioPlayerController.getTestMediaPlayer()
     )
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
@@ -229,10 +230,12 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_touchSeekBar_checkStillPaused() {
     testMediaPlayer.addMediaInfo(
-      context,
-      TEST_URL,
-      TEST_URL2,
-      audioPlayerController.getTestMediaPlayer()
+      context = context,
+      explorationId1 = RATIOS_EXPLORATION_ID_0,
+      explorationId2 = RATIOS_EXPLORATION_ID_0,
+      audioFileName1 = audioFileName1,
+      audioFileName2 = audioFileName2,
+      mediaPlayer = audioPlayerController.getTestMediaPlayer()
     )
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
@@ -252,10 +255,12 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_clickPlay_touchSeekBar_checkStillPlaying() {
     testMediaPlayer.addMediaInfo(
-      context,
-      TEST_URL,
-      TEST_URL2,
-      audioPlayerController.getTestMediaPlayer()
+      context = context,
+      explorationId1 = RATIOS_EXPLORATION_ID_0,
+      explorationId2 = RATIOS_EXPLORATION_ID_0,
+      audioFileName1 = audioFileName1,
+      audioFileName2 = audioFileName2,
+      mediaPlayer = audioPlayerController.getTestMediaPlayer()
     )
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
@@ -274,6 +279,13 @@ class AudioFragmentTest {
     }
   }
 
+  /**
+   * TODO: Remove the comment when fixing this test case
+   * Commenting this test case as we are no loonger using below method:
+   * invokePreparedListener(shadowMediaPlayer)
+   *
+   * Try to use TestMediaPlayer
+   */
   /* @Test
    @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
    fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
@@ -295,10 +307,12 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
     testMediaPlayer.addMediaInfo(
-      context,
-      TEST_URL,
-      TEST_URL2,
-      audioPlayerController.getTestMediaPlayer()
+      context = context,
+      explorationId1 = RATIOS_EXPLORATION_ID_0,
+      explorationId2 = RATIOS_EXPLORATION_ID_0,
+      audioFileName1 = audioFileName1,
+      audioFileName2 = audioFileName2,
+      mediaPlayer = audioPlayerController.getTestMediaPlayer()
     )
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(

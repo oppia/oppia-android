@@ -115,7 +115,6 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
-import org.oppia.android.testing.IsOnRobolectric
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
@@ -123,6 +122,8 @@ import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.media.TestMediaPlayer
+import org.oppia.android.testing.media.TestMediaPlayerModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -134,7 +135,6 @@ import org.oppia.android.util.parser.ImageParsingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -163,6 +163,9 @@ class StateFragmentTest {
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
+  @Inject
+  lateinit var testMediaPlayer: TestMediaPlayer
+
   private val internalProfileId: Int = 1
 
   @Before
@@ -188,12 +191,9 @@ class StateFragmentTest {
 
     // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
     // Espresso can't load Robolectric into its classpath).
-    if (isOnRobolectric()) {
-      val dataSource = createAudioDataSource(
-        explorationId = FRACTIONS_EXPLORATION_ID_1, audioFileName = "content-en-ouqm7j21vt8.mp3"
-      )
-      addShadowMediaPlayerException(dataSource, IOException("Test does not have networking"))
-    }
+    testMediaPlayer.setupAudio(
+      explorationId = FRACTIONS_EXPLORATION_ID_1, audioFileName = "content-en-ouqm7j21vt8.mp3"
+    )
   }
 
   @After
@@ -999,33 +999,6 @@ class StateFragmentTest {
     }
   }
 
-  private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
-    val classLoader = StateFragmentTest::class.java.classLoader!!
-    val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
-    val addException =
-      shadowMediaPlayerClass.getDeclaredMethod(
-        "addException", dataSource.javaClass, IOException::class.java
-      )
-    addException.invoke(/* obj= */ null, dataSource, exception)
-  }
-
-  @Suppress("SameParameterValue")
-  private fun createAudioDataSource(explorationId: String, audioFileName: String): Any {
-    val audioUrl = createAudioUrl(explorationId, audioFileName)
-    val classLoader = StateFragmentTest::class.java.classLoader!!
-    val dataSourceClass = classLoader.loadClass("org.robolectric.shadows.util.DataSource")
-    val toDataSource =
-      dataSourceClass.getDeclaredMethod(
-        "toDataSource", String::class.java, Map::class.java
-      )
-    return toDataSource.invoke(/* obj= */ null, audioUrl, /* headers= */ null)
-  }
-
-  private fun createAudioUrl(explorationId: String, audioFileName: String): String {
-    return "https://storage.googleapis.com/oppiaserver-resources/" +
-      "exploration/$explorationId/assets/audio/$audioFileName"
-  }
-
   private fun launchForExploration(
     explorationId: String
   ): ActivityScenario<StateFragmentTestActivity> {
@@ -1271,10 +1244,6 @@ class StateFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun isOnRobolectric(): Boolean {
-    return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
-  }
-
   // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
   //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
   //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
@@ -1403,7 +1372,7 @@ class StateFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
+      TestDispatcherModule::class, TestMediaPlayerModule::class, ApplicationModule::class, LoggerModule::class,
       ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
       NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
@@ -1427,9 +1396,6 @@ class StateFragmentTest {
     }
 
     fun inject(stateFragmentTest: StateFragmentTest)
-
-    @IsOnRobolectric
-    fun isOnRobolectric(): Boolean
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -1440,8 +1406,6 @@ class StateFragmentTest {
     }
 
     fun inject(stateFragmentTest: StateFragmentTest) = component.inject(stateFragmentTest)
-
-    fun isOnRobolectric(): Boolean = component.isOnRobolectric()
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
