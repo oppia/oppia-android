@@ -30,8 +30,12 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
   private val WHOLE_NUMBER_321 = createWholeNumber(isNegative = false, value = 321)
   private val FRACTION_2_OVER_4 = createFraction(isNegative = false, numerator = 2, denominator = 4)
   private val FRACTION_1_OVER_2 = createFraction(isNegative = false, numerator = 1, denominator = 2)
+  private val FRACTION_NEGATIVE_1_OVER_2 =
+    createFraction(isNegative = true, numerator = -1, denominator = 2)
   private val MIXED_NUMBER_123_1_OVER_2 =
     createMixedNumber(isNegative = false, wholeNumber = 123, numerator = 1, denominator = 2)
+  private val MIXED_NUMBER_NEGATIVE_123_1_OVER_2 =
+    createMixedNumber(isNegative = true, wholeNumber = 123, numerator = 1, denominator = 2)
   private val MIXED_NUMBER_123_1_OVER_3 =
     createMixedNumber(isNegative = false, wholeNumber = 123, numerator = 1, denominator = 3)
 
@@ -44,7 +48,33 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_wholeNumber123Answer_withWholeNumber123Input_bothValuesMatch() {
+  fun testFractionalEquals_neg123And1Over2Answer_withNeg1Over2Input_bothValuesDoNotMatch() {
+    val inputs = mapOf("f" to FRACTION_NEGATIVE_1_OVER_2)
+
+    val matches =
+      fractionalPartIsExactlyEqualClassifierProvider.matches(
+        answer = MIXED_NUMBER_NEGATIVE_123_1_OVER_2,
+        inputs = inputs
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testFractionalEquals_negativeIdentityCheck_bothValuesMatch() {
+    val inputs = mapOf("f" to FRACTION_NEGATIVE_1_OVER_2)
+
+    val matches =
+      fractionalPartIsExactlyEqualClassifierProvider.matches(
+        answer = FRACTION_NEGATIVE_1_OVER_2,
+        inputs = inputs
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testFractionalEquals_wholeNumber123Answer_withWholeNumber123Input_bothValuesMatch() {
     val inputs = mapOf("f" to WHOLE_NUMBER_123)
 
     val matches =
@@ -57,7 +87,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_wholeNumber321Answer_withWholeNumber123Input_bothValuesMatch() {
+  fun testFractionalEquals_wholeNumber321Answer_withWholeNumber123Input_bothValuesMatch() {
     val inputs = mapOf("f" to WHOLE_NUMBER_123)
 
     val matches =
@@ -66,11 +96,12 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
         inputs = inputs
       )
 
+    // 123 and 321 match because they have the same fractional parts: 0/1.
     assertThat(matches).isTrue()
   }
 
   @Test
-  fun testEquals_fraction2Over4Answer_withFraction1Over2Input_bothValuesDoNotMatch() {
+  fun testFractionalEquals_fraction2Over4Answer_withFraction1Over2Input_bothValuesDoNotMatch() {
     val inputs = mapOf("f" to FRACTION_1_OVER_2)
 
     val matches =
@@ -83,7 +114,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_mixedNum123And1Over2Answer_withMixedNum123And1Over3Input_bothValuesDoNotMatch() {
+  fun testFractionalEquals_123And1Over2Answer_with123And1Over3Input_bothValuesDoNotMatch() {
     val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_3)
 
     val matches =
@@ -96,7 +127,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_mixedNum123And1Over2Answer_withFraction1Over2Input_bothValuesMatch() {
+  fun testFractionalEquals_mixedNum123And1Over2Answer_withFraction1Over2Input_bothValuesMatch() {
     val inputs = mapOf("f" to FRACTION_1_OVER_2)
 
     val matches =
@@ -109,7 +140,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_wholeNumberAnswer_withMixedNumberInput_bothValuesDoNotMatch() {
+  fun testFractionalEquals_wholeNumberAnswer_withMixedNumberInput_bothValuesDoNotMatch() {
     val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
 
     val matches =
@@ -122,7 +153,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
+  fun testFractionalEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("f" to NON_NEGATIVE_VALUE_0)
 
     val exception = assertThrows(IllegalStateException::class) {
@@ -140,7 +171,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_missingInputF_throwsException() {
+  fun testFractionalEquals_missingInputF_throwsException() {
     val inputs = mapOf("y" to FRACTION_2_OVER_4)
 
     val exception = assertThrows(IllegalStateException::class) {
