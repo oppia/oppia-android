@@ -19,7 +19,7 @@
     android:id="@+id/hint_summary_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -28,17 +28,14 @@
       android:orientation="horizontal"
       android:layout_marginStart="176dp"
       android:layout_marginEnd="176dp"
-      android:paddingBottom="4dp"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
       <TextView
         android:id="@+id/hint_title"
         style="@style/Heading2"
         android:layout_gravity="center"
-        android:layout_marginTop="44dp"
-        android:paddingBottom="28dp"
+        android:layout_marginTop="32dp"
         android:textColor="@color/oppiaPrimaryText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -63,8 +60,7 @@
         android:id="@+id/expand_list_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="30dp"
         android:visibility="@{viewModel.isHintRevealed? View.VISIBLE : View.GONE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,9 +85,8 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="176dp"
       android:layout_marginEnd="176dp"
-      android:layout_marginBottom="32dp"
-      app:layout_constraintBottom_toBottomOf="@id/hint_summary_container"
-      app:layout_constraintTop_toBottomOf="@+id/hint_constraint"
+      android:layout_marginTop="70dp"
+      app:layout_constraintTop_toTopOf="parent"
       android:orientation="vertical"
       android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 
