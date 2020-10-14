@@ -10,7 +10,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.scrollTo
-import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -314,7 +313,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-          editTextInputAction.appendText("1234"),
+        editTextInputAction.appendText("1234"),
         pressImeActionButton()
       )
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(
@@ -342,12 +341,12 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-          editTextInputAction.appendText("1234"),
+        editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-            editTextInputAction.appendText("5"),
+        editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
       onView(
@@ -376,11 +375,11 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-          editTextInputAction.appendText("1234"),
+        editTextInputAction.appendText("1234"),
         pressImeActionButton()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-            editTextInputAction.appendText("5"),
+        editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
       onView(
@@ -441,7 +440,7 @@ class AdminPinActivityTest {
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-          editTextInputAction.appendText("12345"),
+        editTextInputAction.appendText("12345"),
         pressImeActionButton()
       )
       intended(hasComponent(AddProfileActivity::class.java.name))
@@ -498,7 +497,7 @@ class AdminPinActivityTest {
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-          editTextInputAction.appendText("12345"),
+        editTextInputAction.appendText("12345"),
         pressImeActionButton()
       )
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
@@ -542,7 +541,7 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.submit_button)).perform(scrollTo(), click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-          editTextInputAction.appendText("45"),
+        editTextInputAction.appendText("45"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
@@ -609,7 +608,7 @@ class AdminPinActivityTest {
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-          editTextInputAction.appendText("1234"),
+        editTextInputAction.appendText("1234"),
         pressImeActionButton()
       )
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(
@@ -640,13 +639,13 @@ class AdminPinActivityTest {
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-          editTextInputAction.appendText("1234"),
+        editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(scrollTo(), click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-            editTextInputAction.appendText("5"),
+        editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
       onView(
@@ -678,12 +677,12 @@ class AdminPinActivityTest {
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-          editTextInputAction.appendText("1234"),
+        editTextInputAction.appendText("1234"),
         pressImeActionButton()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-            editTextInputAction.appendText("5"),
+        editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
       onView(
@@ -747,7 +746,7 @@ class AdminPinActivityTest {
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-          editTextInputAction.appendText("54321"),
+        editTextInputAction.appendText("54321"),
         pressImeActionButton()
       )
       onView(isRoot()).perform(orientationLandscape())
