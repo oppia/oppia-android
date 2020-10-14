@@ -207,7 +207,6 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Config(qualifiers = "xxhdpi")
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_phonePort_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -221,7 +220,6 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Config(qualifiers = "xxhdpi")
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_phoneLand_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
