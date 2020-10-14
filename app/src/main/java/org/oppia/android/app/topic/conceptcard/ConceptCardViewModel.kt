@@ -22,7 +22,7 @@ class ConceptCardViewModel @Inject constructor(
     processConceptCardLiveData()
   }
 
-  /** Sets the value of skillId and binding. Must be called before setting ViewModel to binding */
+  /** Sets the value of skillId */
   fun setSkillId(id: String) {
     skillId = id
   }
