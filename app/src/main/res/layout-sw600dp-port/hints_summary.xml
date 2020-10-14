@@ -26,19 +26,17 @@
       android:layout_height="wrap_content"
       android:id="@+id/hint_constraint"
       android:orientation="horizontal"
-      android:layout_marginStart="128dp"
-      android:layout_marginEnd="128dp"
-      android:paddingBottom="60dp"
-      app:layout_constraintBottom_toBottomOf="@id/hint_summary_container"
+      android:layout_marginStart="78dp"
+      android:layout_marginEnd="78dp"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent">
+      app:layout_constraintTop_toTopOf="parent">
 
       <TextView
         android:id="@+id/hint_title"
         style="@style/Heading2"
         android:layout_gravity="center"
         android:layout_marginTop="44dp"
-        android:paddingBottom="28dp"
+        android:paddingBottom="10dp"
         android:textColor="@color/oppiaPrimaryText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -64,9 +62,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:visibility="@{viewModel.isHintRevealed? View.VISIBLE : View.GONE}"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -87,12 +84,13 @@
       android:id="@+id/hint_list_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="128dp"
-      android:layout_marginEnd="128dp"
-      app:layout_constraintBottom_toBottomOf="@id/hint_summary_container"
-      android:layout_marginBottom="32dp"
+      android:layout_marginStart="78dp"
+      android:layout_marginTop="96dp"
+      android:layout_marginEnd="78dp"
+      android:layout_marginBottom="56dp"
       android:orientation="vertical"
-      android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+      android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}"
+      app:layout_constraintTop_toTopOf="parent">
 
       <TextView
         android:id="@+id/hints_and_solution_summary"
