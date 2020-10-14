@@ -28,6 +28,8 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
   private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
   private val WHOLE_NUMBER_123 = createWholeNumber(isNegative = false, value = 123)
   private val FRACTION_2_OVER_4 = createFraction(isNegative = false, numerator = 2, denominator = 4)
+  private val FRACTION_NEGATIVE_2_OVER_4 =
+    createFraction(isNegative = true, numerator = -2, denominator = 4)
   private val SIGNED_INT_1 = createSignedInt(1)
   private val SIGNED_INT_2 = createSignedInt(2)
   private val SIGNED_INT_NEGATIVE_2 = createSignedInt(-2)
@@ -41,7 +43,20 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_wholeNumber123Answer_withSignedInt1Input_bothValuesDoNotMatch() {
+  fun testNumeratorEquals_negativeNumerators_bothValuesMatch() {
+    val inputs = mapOf("x" to SIGNED_INT_NEGATIVE_2)
+
+    val matches =
+      numeratorIsEqualClassifierProvider.matches(
+        answer = FRACTION_NEGATIVE_2_OVER_4,
+        inputs = inputs
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testNumeratorEquals_wholeNumber123Answer_withSignedInt1Input_bothValuesDoNotMatch() {
     val inputs = mapOf("x" to SIGNED_INT_1)
 
     val matches =
@@ -54,7 +69,7 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_fraction2Over4Answer_withSignedInt1Input_bothValuesDoNotMatch() {
+  fun testNumeratorEquals_fraction2Over4Answer_withSignedInt1Input_bothValuesDoNotMatch() {
     val inputs = mapOf("x" to SIGNED_INT_1)
 
     val matches =
@@ -67,7 +82,7 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_fraction2Over4Answer_withSignedIntNegative2Input_bothValuesDoNotMatch() {
+  fun testNumeratorEquals_fraction2Over4Answer_withSignedIntNegative2Input_bothValuesDoNotMatch() {
     val inputs = mapOf("x" to SIGNED_INT_NEGATIVE_2)
 
     val matches =
@@ -80,7 +95,7 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_fraction2Over4Answer_withSignedInt2Input_bothValuesMatch() {
+  fun testNumeratorEquals_fraction2Over4Answer_withSignedInt2Input_bothValuesMatch() {
     val inputs = mapOf("x" to SIGNED_INT_2)
 
     val matches =
@@ -93,7 +108,7 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
+  fun testNumeratorEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
 
     val exception = assertThrows(IllegalStateException::class) {
@@ -111,7 +126,7 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_missingInputF_throwsException() {
+  fun testNumeratorEquals_missingInputF_throwsException() {
     val inputs = mapOf("y" to FRACTION_2_OVER_4)
 
     val exception = assertThrows(IllegalStateException::class) {
