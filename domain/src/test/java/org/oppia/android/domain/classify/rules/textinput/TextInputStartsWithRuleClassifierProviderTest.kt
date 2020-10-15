@@ -165,7 +165,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEmptyStringAnswer_testStringLowercaseInput_outputAsEmptyString_verifyAnswerDoesNotStartsWith() {
+  fun testEmptyStringAns_testStringLowercaseInput_outputAsEmptyString_verifyAnsDoesNotStartsWith() {
     val inputs = mapOf("x" to LOWERCASE_1)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -177,7 +177,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEmptyStringAnswer_emptyStringInput_verifyAnswerStartsWith() {
+  fun testEmptyStringAns_emptyStringInput_verifyAnsStartsWith() {
     val inputs = mapOf("x" to EMPTY_STRING)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -189,7 +189,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testStringAnswer_missingInput_throwsException() {
+  fun testStringAns_missingInput_throwsException() {
     val inputs = mapOf("y" to LOWERCASE_1)
 
     val exception = assertThrows(IllegalStateException::class) {
@@ -205,7 +205,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testStringAnswer_nonNegativeIntInput_throwsException() {
+  fun testStringAns_nonNegativeIntInput_throwsException() {
     val inputs = mapOf("x" to createNonNegativeInt(value = 1))
 
     val exception = assertThrows(IllegalStateException::class) {
