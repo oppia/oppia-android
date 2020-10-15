@@ -20,6 +20,7 @@
     android:id="@+id/hint_summary_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="42dp"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,6 +30,7 @@
       android:layout_marginStart="40dp"
       android:layout_marginEnd="40dp"
       android:orientation="horizontal"
+      android:layout_marginTop="16dp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
@@ -62,7 +64,7 @@
         android:id="@+id/expand_list_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="48dp"
+        android:layout_marginTop="4dp"
         android:visibility="@{viewModel.isHintRevealed? View.VISIBLE : View.GONE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -90,7 +92,8 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="40dp"
       android:layout_marginEnd="40dp"
-      android:layout_marginTop="56dp"
+      android:layout_marginTop="106dp"
+      android:layout_marginBottom="20dp"
       android:orientation="vertical"
       android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}"
       app:layout_constraintTop_toTopOf="parent">
