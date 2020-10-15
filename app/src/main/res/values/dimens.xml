@@ -63,5 +63,15 @@
   <dimen name="recently_played_margin_min">8dp</dimen>
   <dimen name="recently_played_tablet_land_outer_margin">96dp</dimen>
   <dimen name="recently_played_tablet_port_outer_margin">120dp</dimen>
+
+  <!-- Scalable Pixels for Text-->
   <dimen name="default_reading_text_size">18sp</dimen>
+  <dimen name="default_button_text_size">14sp</dimen>
+  <dimen name="heading1_text_size">24sp</dimen>
+  <dimen name="heading2_text_size">20sp</dimen>
+  <dimen name="heading3_text_size">18sp</dimen>
+  <dimen name="heading4_text_size">18sp</dimen>
+  <dimen name="heading5_text_size">14sp</dimen>
+  <dimen name="subtitle1_text_size">16sp</dimen>
+  <dimen name="subtitle2_text_size">14sp</dimen>
 </resources>
