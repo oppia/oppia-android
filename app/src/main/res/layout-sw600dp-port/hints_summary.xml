@@ -26,8 +26,8 @@
       android:layout_height="wrap_content"
       android:id="@+id/hint_constraint"
       android:orientation="horizontal"
-      android:layout_marginStart="78dp"
-      android:layout_marginEnd="78dp"
+      android:layout_marginStart="76dp"
+      android:layout_marginEnd="76dp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
@@ -84,10 +84,9 @@
       android:id="@+id/hint_list_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="78dp"
       android:layout_marginTop="96dp"
-      android:layout_marginEnd="78dp"
-      android:layout_marginBottom="56dp"
+      android:layout_marginStart="76dp"
+      android:layout_marginEnd="76dp"
       android:orientation="vertical"
       android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}"
       app:layout_constraintTop_toTopOf="parent">
