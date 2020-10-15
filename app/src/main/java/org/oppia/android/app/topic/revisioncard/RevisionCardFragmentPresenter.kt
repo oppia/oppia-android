@@ -55,7 +55,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
       fragment,
       Observer {
         view.text = htmlParserFactory.create(
-          resourceBucketName, entityType, topicId, /* imageCenterAlign= */ true
+          resourceBucketName, entityType, topicId, imageCenterAlign = true
         ).parseOppiaHtml(it.pageContents.html, view)
       }
     )
