@@ -41,18 +41,13 @@ class UrlImageParser private constructor(
   override fun getDrawable(urlString: String): Drawable {
     val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
-    // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
-    val tar: OppiaImage
-    if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      val target = SvgTarget(urlDrawable)
-      tar = OppiaImage.SvgImage(urlDrawable)
-      imageLoader.loadSvg("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(target))
+    val target: OppiaImage
+    target = if (imageUrl.endsWith("svg", ignoreCase = true)) {
+      OppiaImage.SvgImage(urlDrawable)
     } else {
-      val target = BitmapTarget(urlDrawable)
-      tar = OppiaImage.BitmapImage(urlDrawable)
-      imageLoader.loadBitmap("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(target))
+      OppiaImage.BitmapImage(urlDrawable)
     }
-    imageLoader.loadOppiaImage("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(tar))
+    imageLoader.loadOppiaImage("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(target))
     return urlDrawable
   }
 
@@ -64,9 +59,9 @@ class UrlImageParser private constructor(
     urlDrawable, { it }
   )
 
-  fun eval(oppiaImage: OppiaImage): UrlDrawable  = when(oppiaImage){
-    is BitmapDrawable -> oppia
-  }
+  private inner class OppiaImageTarget(urlDrawable: UrlDrawable) : CustomImageTarget<OppiaImage>(
+    urlDrawable, { }
+  )
 
   private open inner class CustomImageTarget<T>(
     private val urlDrawable: UrlDrawable,
