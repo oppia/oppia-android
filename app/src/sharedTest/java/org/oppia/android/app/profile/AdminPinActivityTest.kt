@@ -3,6 +3,8 @@ package org.oppia.android.app.profile
 import android.app.Application
 import android.content.Context
 import android.view.View
+import android.view.ViewParent
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.test.core.app.ActivityScenario.launch
@@ -845,6 +847,30 @@ class AdminPinActivityTest {
         uiController.loopMainThreadUntilIdle()
       }
     }
+  }
+
+  private fun findFirstParentLayoutOfClass(view: View, parentClass: Class<out View>): View {
+    var parent: ViewParent = FrameLayout(view.context)
+    lateinit var incrementView: ViewParent
+    var i = 0
+    while (!(parent.javaClass === parentClass)) {
+      if (i == 0) {
+        parent = findParent(view)
+      } else {
+        parent = findParent(incrementView)
+      }
+      incrementView = parent
+      i++
+    }
+    return parent as View
+  }
+
+  private fun findParent(view: View): ViewParent {
+    return view.parent
+  }
+
+  private fun findParent(view: ViewParent): ViewParent {
+    return view.parent
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
