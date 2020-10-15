@@ -64,7 +64,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
       fragment,
       Observer {
         view.text = htmlParserFactory
-          .create(resourceBucketName, entityType, skillId, /* imageCenterAlign= */true)
+          .create(resourceBucketName, entityType, skillId, imageCenterAlign = true)
           .parseOppiaHtml(it.explanation.html, view)
       }
     )

@@ -22,7 +22,6 @@ class ConceptCardViewModel @Inject constructor(
     processConceptCardLiveData()
   }
 
-  /** Sets the value of skillId */
   fun setSkillId(id: String) {
     skillId = id
   }
