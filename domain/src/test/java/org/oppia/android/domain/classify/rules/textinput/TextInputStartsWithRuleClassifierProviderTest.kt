@@ -45,7 +45,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseAnswer_testString_lowercaseInput_testString_verifyAnswerStartsWith() {
+  fun testLowercaseAns_testStringLowercaseInput_outputAsTestString_verifyAnsStartsWith() {
     val inputs = mapOf("x" to LOWERCASE_1)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -57,7 +57,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseAnswer_testString_lowercaseInput_test_verifyAnswerStartsWith() {
+  fun testLowercaseAns_testLowercaseInput_outputAsTestString_verifyAnsStartsWith() {
     val inputs = mapOf("x" to LOWERCASE_2)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -69,7 +69,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseAnswer_testString_lowercaseInput_string_verifyAnswerDoesNotStartsWith() {
+  fun testLowercaseAns_stringLowercaseInput_outputAsTestString_verifyAnsDoesNotStartsWith() {
     val inputs = mapOf("x" to LOWERCASE_3)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -81,7 +81,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseAnswer_test_lowercaseInput_testString_verifyAnswerDoesNotStartsWith() {
+  fun testLowercaseAns_testStringLowercaseInput_outputAsTest_verifyAnsDoesNotStartsWith() {
     val inputs = mapOf("x" to LOWERCASE_1)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -93,7 +93,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseAnswer_testString_uppercaseInput_testString_verifyAnswerDoesNotStartWith() {
+  fun testLowercaseAns_testStringUppercaseInput_outputAsTestString_verifyAnsDoesNotStartWith() {
     val inputs = mapOf("x" to UPPERCASE_1)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -105,7 +105,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseAnswer_testString_uppercaseInput_test_verifyAnswerDoesNotStartsWith() {
+  fun testLowercaseAns_testUppercaseInput_OutputAsTestString_verifyAnsDoesNotStartsWith() {
     val inputs = mapOf("x" to UPPERCASE_2)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -117,7 +117,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseAnswer_testString_EmptyStringInput_verifyAnswerStartsWith() {
+  fun testLowercaseAns_EmptyStringInput_outputAsTestString_verifyAnsStartsWith() {
     val inputs = mapOf("x" to EMPTY_STRING)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -129,7 +129,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testUppercaseAnswer_testString_uppercaseInput_testString_verifyAnswerStartsWith() {
+  fun testUppercaseAns_testStringUppercaseInput_outputAsTestString_verifyAnsStartsWith() {
     val inputs = mapOf("x" to UPPERCASE_1)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -141,7 +141,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testUppercaseAnswer_test_uppercaseInput_testString_verifyAnswerDoesNotStartsWith() {
+  fun testUppercaseAns_testStringUppercaseInput_outputAsTest_verifyAnsDoesNotStartsWith() {
     val inputs = mapOf("x" to UPPERCASE_1)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -153,7 +153,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testUppercaseAnswer_testString_emptyStringInput_verifyAnswerStartWith() {
+  fun testUppercaseAns_emptyStringInput_outputAsTestString_verifyAnsStartWith() {
     val inputs = mapOf("x" to EMPTY_STRING)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -165,7 +165,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEmptyStringAnswer_lowercaseInput_testString_verifyAnswerDoesNotStartsWith() {
+  fun testEmptyStringAnswer_testStringLowercaseInput_outputAsEmptyString_verifyAnswerDoesNotStartsWith() {
     val inputs = mapOf("x" to LOWERCASE_1)
 
     val matches = inputStartsWithRuleClassifier.matches(
