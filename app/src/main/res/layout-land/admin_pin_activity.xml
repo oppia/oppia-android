@@ -2,7 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:profile="http://schemas.android.com/tools">
+
   <data>
+
     <variable
       name="viewModel"
       type="org.oppia.android.app.profile.AdminPinViewModel" />
@@ -13,6 +15,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
+
     <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/admin_auth_container"
       android:layout_width="match_parent"
@@ -31,8 +34,8 @@
       <TextView
         android:id="@+id/admin_pin_main_text"
         style="@style/Subtitle1"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="72dp"
@@ -44,8 +47,8 @@
       <TextView
         android:id="@+id/admin_pin_warning_text"
         style="@style/Subtitle1"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="72dp"
