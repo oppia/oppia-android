@@ -47,52 +47,6 @@ interface ViewBindingShim {
   ): TextView
 
   /**
-   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
-   * returns the binding's root.
-   */
-  fun provideSelectionInteractionViewInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View
-
-  /**
-   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
-   * returns the binding's view model.
-   */
-  fun provideSelectionInteractionViewModel(
-    view: View,
-    viewModel: SelectionInteractionContentViewModel,
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String
-  )
-
-  /**
-   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
-   * returns the binding's view.
-   */
-  fun provideMultipleChoiceInteractionItemsInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View
-
-  /**
-   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
-   * returns the binding's view model.
-   */
-  fun provideMultipleChoiceInteractionItemsViewModel(
-    view: View,
-    viewModel: SelectionInteractionContentViewModel,
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String
-  )
-
-  /**
    * Handles binding inflation for [DragDropSortInteractionView]'s SortInteraction and returns the
    * binding's view.
    */
@@ -111,9 +65,6 @@ interface ViewBindingShim {
   fun setDragDropInteractionItemsBindingAdapter(
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   )
-
-  /** Returns [DragDropInteractionItemsBinding]'s RecyclerView. */
-  fun getDragDropInteractionItemsBindingRecyclerView(): RecyclerView
 
   /** Returns [DragDropInteractionItemsBinding]'s dragDropContentGroupItem. */
   fun getDragDropInteractionItemsBindingGroupItem(): ImageButton
@@ -138,20 +89,6 @@ interface ViewBindingShim {
     parent: ViewGroup,
     attachToParent: Boolean
   ): View
-
-  /** Handles setting [DragDropSingleItemBinding]. */
-  fun setDragDropSingleItemBinding(
-    view: View
-  )
-
-  /** Handles setting [DragDropSingleItemBinding]'s html content. */
-  fun setDragDropSingleItemBindingHtmlContent(
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String,
-    viewModel: String
-  )
 
   /** Returns [ClickableAreasImage]'s default region. */
   fun getDefaultRegion(parentView: FrameLayout): View

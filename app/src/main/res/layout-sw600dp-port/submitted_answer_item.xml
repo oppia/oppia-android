@@ -5,14 +5,7 @@
   <data>
 
     <import type="android.view.View" />
-
-    <variable
-      name="submittedAnswer"
-      type="CharSequence" />
-
-    <variable
-      name="submittedListAnswer"
-      type="org.oppia.android.app.model.ListOfSetsOfHtmlStrings" />
+    <import type="org.oppia.android.app.model.UserAnswer" />
 
     <variable
       name="viewModel"
@@ -78,33 +71,39 @@
         android:gravity="@{viewModel.hasConversationView ? Gravity.END : Gravity.START}"
         android:layout_height="wrap_content">
 
-        <TextView
+        <org.oppia.android.app.richtext.RteTextView
           android:id="@+id/submitted_answer_text_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:background="@drawable/submitted_answer_background"
+          android:contentDescription="@{viewModel.accessibleAnswerString}"
           android:paddingStart="12dp"
           android:paddingTop="8dp"
           android:paddingEnd="12dp"
-          android:visibility="gone"
+          android:visibility="@{viewModel.submittedUserAnswer.textualAnswerCase != UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS ? View.VISIBLE : View.GONE}"
           android:paddingBottom="8dp"
-          android:text="@{submittedAnswer}"
+          android:text="@{viewModel.singleAnswerString}"
           android:textColor="@color/oppiaPrimaryText"
-          android:textSize="16sp" />
+          android:textSize="16sp"
+          app:supportsConceptCards="@{viewModel.supportsConceptCards}"
+          app:customOppiaTagActionListener="@{viewModel.customOppiaTagActionListener}"
+          app:gcsResourceName="@{viewModel.gcsResourceName}"
+          app:entityType="@{viewModel.gcsEntityType}"
+          app:entityId="@{viewModel.gcsEntityId}" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <org.oppia.android.app.player.state.itemviewmodel.submittedanswers.SubmittedAnswerRecyclerView
           android:id="@+id/submitted_answer_recycler_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:background="@drawable/submitted_answer_background"
           android:paddingStart="8dp"
           android:paddingEnd="8dp"
-          android:visibility="gone"
+          android:visibility="@{viewModel.submittedUserAnswer.textualAnswerCase == UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS ? View.VISIBLE : View.GONE}"
           app:itemDecorator="@{@drawable/divider}"
           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
-          app:list="@{submittedListAnswer.setOfHtmlStringsList}" />
+          app:list="@{viewModel.answerRecyclerViewListItemViewModelList}" />
 
         <ImageView
           android:id="@+id/answer_tick"

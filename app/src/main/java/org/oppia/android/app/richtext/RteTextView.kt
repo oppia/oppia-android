@@ -53,6 +53,7 @@ class RteTextView @JvmOverloads constructor(
   private var supportsConceptCards: Boolean = false
   private var centerAlignImages: Boolean = false
   private var boundRawHtml: CharSequence? = null
+  private var textBoundBeforeInjection: Boolean = false
   private var drawablesRequireLayOut: Boolean = false
   private var lastViewWidthUsedForDrawables: Int = -1
   private var htmlParser: HtmlParser? = null
@@ -103,6 +104,8 @@ class RteTextView @JvmOverloads constructor(
     rebindHtmlIfGcsIsSetup()
   }
 
+  // TODO: support disabling images so that GCS properties don't need to passed (such as for FAQ).
+
   // TODO: doc
   fun setGcsResourceName(gcsResourceName: String) {
     this.gcsResourceName = gcsResourceName
@@ -136,11 +139,12 @@ class RteTextView @JvmOverloads constructor(
     }
   }
 
-  // TODO: doc
+  // TODO: doc & move to correct location; ditto for other helpers
   private fun isReadyForHtmlParsing(): Boolean {
     return this::gcsResourceName.isInitialized
       && this::entityType.isInitialized
       && this::entityId.isInitialized
+      && this::htmlParserFactory.isInitialized
   }
 
   // TODO: simplify
@@ -149,7 +153,17 @@ class RteTextView @JvmOverloads constructor(
     check(this::gcsResourceName.isInitialized) { "Expected GCS resource name to be set." }
     check(this::entityType.isInitialized) { "Expected GCS entity type to be set." }
     check(this::entityId.isInitialized) { "Expected GCS entity ID to be set." }
-    htmlParser = htmlParserFactory.create(gcsResourceName, entityType, entityId, imageCenterAlign = false, customOppiaTagActionListener = customOppiaTagActionListener)
+    if (this::htmlParserFactory.isInitialized) {
+      // Note that htmlParserFactory *might not* be initialized yet since data-binding executes
+      // bindings during onAttachToWindow which can race against this view's onAttachToWindow.
+      htmlParser = htmlParserFactory.create(
+        gcsResourceName,
+        entityType,
+        entityId,
+        imageCenterAlign = false,
+        customOppiaTagActionListener = customOppiaTagActionListener
+      )
+    }
   }
 
   override fun onAttachedToWindow() {
@@ -158,6 +172,11 @@ class RteTextView @JvmOverloads constructor(
       .createViewComponent(this)
       .inject(this)
     viewLifecycleOwner.setAttachedToWindow()
+    if (textBoundBeforeInjection) {
+      // If bindings were finished before injection then the HTML needs to be re-bound since it
+      // couldn't be parsed before.
+      reBindHtml()
+    }
   }
 
   override fun onDetachedFromWindow() {
@@ -166,6 +185,10 @@ class RteTextView @JvmOverloads constructor(
   }
 
   override fun setText(text: CharSequence?, type: BufferType?) {
+    if (!this::htmlParserFactory.isInitialized) {
+      textBoundBeforeInjection = true
+    }
+
     val currentText = getText()
     // Guard against 'text = text' scenarios stripping away rich-text by ensuring that text isn't
     // rebound if the text isn't actually different (otherwise the parsed text can override

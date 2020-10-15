@@ -12,6 +12,8 @@ import org.oppia.android.app.player.state.itemviewmodel.SelectionItemInputType
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
+import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.HtmlParser
@@ -32,6 +34,7 @@ class SelectionInteractionView @JvmOverloads constructor(
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
 
+  // TODO: make this work for questions.
   @Inject
   @field:ExplorationHtmlParserEntityType
   lateinit var entityType: String
@@ -71,47 +74,17 @@ class SelectionInteractionView @JvmOverloads constructor(
       SelectionItemInputType.CHECKBOXES ->
         BindableAdapter.SingleTypeBuilder
           .newBuilder<SelectionInteractionContentViewModel>()
-          .registerViewBinder(
-            inflateView = { parent ->
-              bindingInterface.provideSelectionInteractionViewInflatedView(
-                LayoutInflater.from(parent.context),
-                parent,
-                /* attachToParent= */ false
-              )
-            },
-            bindView = { view, viewModel ->
-              bindingInterface.provideSelectionInteractionViewModel(
-                view,
-                viewModel,
-                htmlParserFactory,
-                resourceBucketName,
-                entityType,
-                entityId
-              )
-            }
+          .registerViewDataBinderWithSameModelType(
+            inflateDataBinding = ItemSelectionInteractionItemsBinding::inflate,
+            setViewModel = ItemSelectionInteractionItemsBinding::setViewModel
           )
           .build()
       SelectionItemInputType.RADIO_BUTTONS ->
         BindableAdapter.SingleTypeBuilder
           .newBuilder<SelectionInteractionContentViewModel>()
-          .registerViewBinder(
-            inflateView = { parent ->
-              bindingInterface.provideMultipleChoiceInteractionItemsInflatedView(
-                LayoutInflater.from(parent.context),
-                parent,
-                /* attachToParent= */ false
-              )
-            },
-            bindView = { view, viewModel ->
-              bindingInterface.provideMultipleChoiceInteractionItemsViewModel(
-                view,
-                viewModel,
-                htmlParserFactory,
-                resourceBucketName,
-                entityType,
-                entityId
-              )
-            }
+          .registerViewDataBinderWithSameModelType(
+            inflateDataBinding = MultipleChoiceInteractionItemsBinding::inflate,
+            setViewModel = MultipleChoiceInteractionItemsBinding::setViewModel
           )
           .build()
     }

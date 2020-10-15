@@ -1,15 +1,14 @@
-package org.oppia.android.app.player.state.itemviewmodel
+package org.oppia.android.app.player.state.itemviewmodel.submittedanswers
 
+import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.parser.HtmlParser
 
-/** [StateItemViewModel] for feedback blurbs. */
-class FeedbackViewModel(
+// TODO: doc
+class SubmittedHtmlAnswerItemViewModel(
   val htmlContent: CharSequence,
   val gcsResourceName: String,
   val gcsEntityType: String,
   val gcsEntityId: String,
-  val hasConversationView: Boolean,
-  val isSplitView: Boolean,
   val supportsConceptCards: Boolean,
   val customOppiaTagActionListener: HtmlParser.CustomOppiaTagActionListener
-) : StateItemViewModel(ViewType.FEEDBACK)
+): ObservableViewModel()

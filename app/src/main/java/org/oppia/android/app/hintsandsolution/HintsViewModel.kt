@@ -5,15 +5,20 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.Solution
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
 import javax.inject.Inject
 
 /** [ViewModel] for Hints in [HintsAndSolutionDialogFragment]. */
 @FragmentScope
-class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
+class HintsViewModel @Inject constructor(
+  @DefaultResourceBucketName val gcsResourceName: String,
+  @ExplorationHtmlParserEntityType val gcsEntityType: String // TODO: fix for questions.
+) : HintsAndSolutionItemViewModel() {
 
   val newAvailableHintIndex = ObservableField<Int>(-1)
   val allHintsExhausted = ObservableField<Boolean>(false)
-  val explorationId = ObservableField<String>("")
+  val entityId = ObservableField<String>("")
 
   val title = ObservableField<String>("")
   val hintsAndSolutionSummary = ObservableField<String>("")
@@ -64,7 +69,9 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
   }
 
   private fun addHintToList(hint: Hint) {
-    val hintsViewModel = HintsViewModel()
+    // TODO: fix this. Should not be creating instances of itself, plus this class should be
+    //  injected.
+    val hintsViewModel = HintsViewModel(gcsResourceName, gcsEntityType)
     hintsViewModel.title.set(hint.hintContent.contentId)
     hintsViewModel.hintsAndSolutionSummary.set(hint.hintContent.html)
     hintsViewModel.isHintRevealed.set(hint.hintIsRevealed)
@@ -73,7 +80,7 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
   }
 
   private fun addSolutionToList(solution: Solution) {
-    val solutionViewModel = SolutionViewModel()
+    val solutionViewModel = SolutionViewModel(gcsResourceName, gcsEntityType, entityId)
     solutionViewModel.title.set(solution.explanation.contentId)
     solutionViewModel.correctAnswer.set(solution.correctAnswer.correctAnswer)
     solutionViewModel.numerator.set(solution.correctAnswer.numerator)

@@ -16,6 +16,8 @@ import org.oppia.android.app.recyclerview.OnItemDragListener
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
 class DragAndDropSortInteractionViewModel(
+  private val gcsResourceName: String,
+  private val gcsEntityType: String,
   val entityId: String,
   val hasConversationView: Boolean,
   interaction: Interaction,
@@ -37,7 +39,7 @@ class DragAndDropSortInteractionViewModel(
   }
 
   val choiceItems: ArrayList<DragDropInteractionContentViewModel> =
-    computeChoiceItems(choiceStrings, this)
+    computeChoiceItems(choiceStrings, this, gcsResourceName, gcsEntityType, entityId)
 
   var isAnswerAvailable = ObservableField<Boolean>(false)
 
@@ -149,6 +151,9 @@ class DragAndDropSortInteractionViewModel(
           StringList.newBuilder()
             .addHtml(it)
             .build(),
+          gcsResourceName,
+          gcsEntityType,
+          entityId,
           /* itemIndex= */ 0,
           /* listSize= */ 0,
           /* dragAndDropSortInteractionViewModel= */this
@@ -167,12 +172,18 @@ class DragAndDropSortInteractionViewModel(
   companion object {
     private fun computeChoiceItems(
       choiceStrings: List<String>,
-      dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel
+      dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
+      gcsResourceName: String,
+      gcsEntityType: String,
+      gcsEntityId: String
     ): ArrayList<DragDropInteractionContentViewModel> {
       val itemList = ArrayList<DragDropInteractionContentViewModel>()
       itemList += choiceStrings.mapIndexed { index, choiceString ->
         DragDropInteractionContentViewModel(
           htmlContent = StringList.newBuilder().addHtml(choiceString).build(),
+          gcsResourceName = gcsResourceName,
+          gcsEntityType = gcsEntityType,
+          gcsEntityId = gcsEntityId,
           itemIndex = index,
           listSize = choiceStrings.size,
           dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel

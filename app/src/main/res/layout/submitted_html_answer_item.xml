@@ -1,14 +1,14 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
     <variable
-      name="htmlContent"
-      type="CharSequence" />
+      name="viewModel"
+      type="org.oppia.android.app.player.state.itemviewmodel.submittedanswers.SubmittedHtmlAnswerItemViewModel" />
   </data>
 
-  <TextView
+  <org.oppia.android.app.richtext.RteTextView
     android:id="@+id/submitted_answer_content_text_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -16,7 +16,12 @@
     android:paddingBottom="8dp"
     android:paddingTop="8dp"
     android:gravity="center_vertical"
-    android:text="@{htmlContent}"
+    android:text="@{viewModel.htmlContent}"
     android:textColor="@color/oppiaPrimaryText"
-    android:textSize="16sp" />
+    android:textSize="16sp"
+    app:supportsConceptCards="@{viewModel.supportsConceptCards}"
+    app:customOppiaTagActionListener="@{viewModel.customOppiaTagActionListener}"
+    app:gcsResourceName="@{viewModel.gcsResourceName}"
+    app:entityType="@{viewModel.gcsEntityType}"
+    app:entityId="@{viewModel.gcsEntityId}" />
 </layout>

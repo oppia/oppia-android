@@ -9,10 +9,6 @@
     <import type="org.oppia.android.app.model.ChapterPlayState" />
 
     <variable
-      name="htmlContent"
-      type="CharSequence" />
-
-    <variable
       name="viewModel"
       type="org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
   </data>
@@ -46,7 +42,7 @@
           android:layout_height="0dp"
           android:scaleType="centerInside"
           app:entityId="@{viewModel.storyId}"
-          app:entityType="@{viewModel.entityType}"
+          app:entityType="@{viewModel.gcsStoryEntityType}"
           app:layout_constraintDimensionRatio="16:9"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
@@ -81,7 +77,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-          <TextView
+          <org.oppia.android.app.richtext.RteTextView
             android:id="@+id/chapter_summary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -92,14 +88,18 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:maxLines="4"
-            android:text="@{htmlContent}"
+            android:text="@{viewModel.summary}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/chapter_title"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            app:centerAlignImages="@{true}"
+            app:gcsResourceName="@{viewModel.gcsResourceName}"
+            app:entityType="@{viewModel.gcsTopicEntityType}"
+            app:entityId="@{viewModel.storyId}" />
 
           <ImageView
             android:id="@+id/chapter_completed_tick"

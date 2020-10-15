@@ -23,10 +23,6 @@ class HintsAndSolutionAdapter(
   private val itemList: List<HintsAndSolutionItemViewModel>,
   private val expandedHintListIndexListener: ExpandedHintListIndexListener,
   private var currentExpandedHintListIndex: Int?,
-  private val explorationId: String?,
-  private val htmlParserFactory: HtmlParser.Factory,
-  private val resourceBucketName: String,
-  private val entityType: String,
   private val hintIndex: Int?,
   private val isHintRevealed: Boolean?,
   private val solutionIndex: Int?,
@@ -126,14 +122,7 @@ class HintsAndSolutionAdapter(
       }
 
       binding.viewModel = hintsViewModel
-
       binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ").capitalize()
-      binding.hintsAndSolutionSummary.text =
-        htmlParserFactory.create(
-          resourceBucketName, entityType, explorationId!!, /* imageCenterAlign= */ true
-        ).parseOppiaHtml(
-          hintsViewModel.hintsAndSolutionSummary.get()!!, binding.hintsAndSolutionSummary
-        )
 
       if (hintsViewModel.hintCanBeRevealed.get()!!) {
         binding.root.visibility = View.VISIBLE
@@ -212,11 +201,6 @@ class HintsAndSolutionAdapter(
       } else {
         binding.solutionCorrectAnswer.text = solutionViewModel.correctAnswer.get()
       }
-      binding.solutionSummary.text = htmlParserFactory.create(
-        resourceBucketName, entityType, explorationId!!, /* imageCenterAlign= */ true
-      ).parseOppiaHtml(
-        solutionViewModel.solutionSummary.get()!!, binding.solutionSummary
-      )
 
       if (solutionViewModel.solutionCanBeRevealed.get()!!) {
         binding.root.visibility = View.VISIBLE

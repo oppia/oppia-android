@@ -96,7 +96,7 @@ class HintsAndSolutionDialogFragment :
       checkNotNull(
         arguments
       ) { "Expected arguments to be passed to HintsAndSolutionDialogFragment" }
-    val id =
+    val entityId =
       checkNotNull(
         args.getString(ID_ARGUMENT_KEY)
       ) { "Expected id to be passed to HintsAndSolutionDialogFragment" }
@@ -113,7 +113,7 @@ class HintsAndSolutionDialogFragment :
       inflater,
       container,
       state,
-      id,
+      entityId,
       currentExpandedHintListIndex,
       newAvailableHintIndex,
       allHintsExhausted,

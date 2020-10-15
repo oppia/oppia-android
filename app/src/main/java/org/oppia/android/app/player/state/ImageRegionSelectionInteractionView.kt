@@ -46,6 +46,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   @Inject
   lateinit var imageLoader: ImageLoader
 
+  // TODO: Make this work for questions.
   @Inject
   @field:ExplorationHtmlParserEntityType
   lateinit var entityType: String

@@ -23,13 +23,11 @@ class RevisionCardViewModel @Inject constructor(
   activity: AppCompatActivity,
   private val topicController: TopicController,
   private val logger: ConsoleLogger,
-  private val htmlParserFactory: HtmlParser.Factory,
-  @DefaultResourceBucketName private val resourceBucketName: String,
-  @TopicHtmlParserEntityType private val entityType: String
+  @DefaultResourceBucketName val gcsResourceName: String,
+  @TopicHtmlParserEntityType val gcsEntityType: String
 ) : ObservableViewModel() {
   private lateinit var topicId: String
   private var subtopicId: Int = 0
-  private lateinit var view: TextView
 
   private val returnToTopicClickListener: ReturnToTopicClickListener =
     activity as ReturnToTopicClickListener
@@ -45,13 +43,13 @@ class RevisionCardViewModel @Inject constructor(
   /** Sets the value of topicId, subtopicId and binding before anything else. */
   fun setSubtopicIdAndBinding(
     topicId: String,
-    subtopicId: Int,
-    view: TextView
+    subtopicId: Int
   ) {
     this.topicId = topicId
     this.subtopicId = subtopicId
-    this.view = view
   }
+
+  fun getTopicId(): String = topicId
 
   private val revisionCardResultLiveData: LiveData<AsyncResult<RevisionCard>> by lazy {
     topicController.getRevisionCard(topicId, subtopicId)
@@ -74,9 +72,6 @@ class RevisionCardViewModel @Inject constructor(
     val revisionCard = revisionCardResult.getOrDefault(
       RevisionCard.getDefaultInstance()
     )
-    return htmlParserFactory.create(
-
-      resourceBucketName, entityType, topicId, /* imageCenterAlign= */ true
-    ).parseOppiaHtml(revisionCard.pageContents.html, view)
+    return revisionCard.pageContents.html
   }
 }

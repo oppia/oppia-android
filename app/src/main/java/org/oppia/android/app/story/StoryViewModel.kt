@@ -15,8 +15,10 @@ import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
+import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
 /** The ViewModel for StoryFragment. */
@@ -26,7 +28,9 @@ class StoryViewModel @Inject constructor(
   private val topicController: TopicController,
   private val explorationDataController: ExplorationDataController,
   private val logger: ConsoleLogger,
-  @StoryHtmlParserEntityType val entityType: String
+  @DefaultResourceBucketName private val gcsResourceName: String,
+  @TopicHtmlParserEntityType private val gcsTopicEntityType: String,
+  @StoryHtmlParserEntityType val gcsStoryEntityType: String
 ) {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -109,7 +113,9 @@ class StoryViewModel @Inject constructor(
           topicId,
           storyId,
           chapter,
-          entityType
+          gcsResourceName,
+          gcsTopicEntityType,
+          gcsStoryEntityType
         )
       }
     )

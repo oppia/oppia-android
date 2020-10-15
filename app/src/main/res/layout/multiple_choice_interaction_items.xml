@@ -4,10 +4,6 @@
   <data>
 
     <variable
-      name="htmlContent"
-      type="CharSequence" />
-
-    <variable
       name="viewModel"
       type="org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel" />
   </data>
@@ -30,7 +26,7 @@
       android:checked="@{viewModel.answerSelected}"
       app:buttonTint="@color/oppiaDarkBlue" />
 
-    <TextView
+    <org.oppia.android.app.richtext.RteTextView
       android:id="@+id/multiple_choice_content_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -40,7 +36,10 @@
       android:fontFamily="sans-serif"
       android:paddingTop="4dp"
       android:paddingBottom="4dp"
-      android:text="@{htmlContent}"
-      android:textColor="@color/oppiaDarkBlue" />
+      android:text="@{viewModel.htmlContent}"
+      android:textColor="@color/oppiaDarkBlue"
+      app:gcsResourceName="@{viewModel.gcsResourceName}"
+      app:entityType="@{viewModel.gcsEntityType}"
+      app:entityId="@{viewModel.gcsEntityId}" />
   </RelativeLayout>
 </layout>

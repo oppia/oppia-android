@@ -118,24 +118,14 @@ class HtmlParser private constructor(
     rawString: String,
     supportsConceptCards: Boolean
   ): Spanned {
-    // TODO: simplify & collapse to val since if-checks are mostly redundant.
-    var strippedHtml = rawString
-    if ("\n\t" in strippedHtml) {
-      strippedHtml = strippedHtml.replace("\n\t", "")
-    }
-    if ("\n\n" in strippedHtml) {
-      strippedHtml = strippedHtml.replace("\n\n", "")
-    }
-    if ("<li>" in strippedHtml) {
-      strippedHtml = strippedHtml.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
+    val strippedHtml =
+      rawString.replace("\n\t", "")
+        .replace("\n\n", "")
+        .replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
         .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
-    }
-    if (CUSTOM_IMG_TAG in strippedHtml) {
-      strippedHtml = strippedHtml.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG)
-      strippedHtml =
-        strippedHtml.replace(CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
-      strippedHtml = strippedHtml.replace("&amp;quot;", "")
-    }
+        .replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG)
+        .replace(CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
+        .replace("&amp;quot;", "")
 
     val imageGetter = deferredUrlImageParserFactory.create(
       gcsResourceName, entityType, entityId

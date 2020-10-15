@@ -20,12 +20,10 @@ import javax.inject.Inject
 class ConceptCardViewModel @Inject constructor(
   private val topicController: TopicController,
   private val logger: ConsoleLogger,
-  private val htmlParserFactory: HtmlParser.Factory,
-  @ConceptCardHtmlParserEntityType private val entityType: String,
-  @DefaultResourceBucketName private val resourceBucketName: String
+  @DefaultResourceBucketName val gcsResourceName: String,
+  @ConceptCardHtmlParserEntityType val gcsEntityType: String
 ) : ObservableViewModel() {
   private lateinit var skillId: String
-  private lateinit var view: TextView
 
   val conceptCardLiveData: LiveData<ConceptCard> by lazy {
     processConceptCardLiveData()
@@ -36,10 +34,11 @@ class ConceptCardViewModel @Inject constructor(
   }
 
   /** Sets the value of skillId and binding. Must be called before setting ViewModel to binding */
-  fun setSkillIdAndBinding(id: String, view: TextView) {
+  fun setSkillIdAndBinding(id: String) {
     skillId = id
-    this.view = view
   }
+
+  fun getSkillId(): String = skillId
 
   private val conceptCardResultLiveData: LiveData<AsyncResult<ConceptCard>> by lazy {
     topicController.getConceptCard(skillId)
@@ -73,8 +72,6 @@ class ConceptCardViewModel @Inject constructor(
       )
     }
     val conceptCard = conceptCardResult.getOrDefault(ConceptCard.getDefaultInstance())
-    return htmlParserFactory
-      .create(resourceBucketName, entityType, skillId, /* imageCenterAlign= */true)
-      .parseOppiaHtml(conceptCard.explanation.html, view)
+    return conceptCard.explanation.html
   }
 }
