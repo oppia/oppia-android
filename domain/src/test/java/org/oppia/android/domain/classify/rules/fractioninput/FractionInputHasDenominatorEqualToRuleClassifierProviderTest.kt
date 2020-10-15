@@ -40,7 +40,21 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testDenominatorEquals_wholeNumber123Answer_withSignedInt2Input_bothValuesDoNotMatch() {
+  fun testDenominatorEquals_wholeNumber123Answer_withInt1Input_bothValuesMatch() {
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1)
+
+    val matches =
+      denominatorIsEqualClassifierProvider.matches(
+        answer = WHOLE_NUMBER_123,
+        inputs = inputs
+      )
+
+    // This should match because whole numbers have a denominator of 1 by default
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testDenominatorEquals_wholeNumber123Answer_withInt2Input_bothValuesDoNotMatch() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_2)
 
     val matches =
@@ -53,7 +67,7 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testDenominatorEquals_fraction2Over4Answer_withSignedInt1Input_bothValuesDoNotMatch() {
+  fun testDenominatorEquals_fraction2Over4Answer_withInt1Input_bothValuesDoNotMatch() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1)
 
     val matches =
@@ -66,7 +80,7 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testDenominatorEquals_fraction2Over4Answer_withSignedInt2Input_bothValuesMatch() {
+  fun testDenominatorEquals_fraction1Over2Answer_withInt2Input_bothValuesMatch() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_2)
 
     val matches =
