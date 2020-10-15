@@ -34,6 +34,7 @@
       <TextView
         android:id="@+id/hint_title"
         style="@style/Heading2"
+        android:text="Hint"
         android:layout_gravity="center"
         android:layout_marginTop="32dp"
         android:textColor="@color/oppiaPrimaryText"
@@ -60,7 +61,7 @@
         android:id="@+id/expand_list_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp"
         android:visibility="@{viewModel.isHintRevealed? View.VISIBLE : View.GONE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
