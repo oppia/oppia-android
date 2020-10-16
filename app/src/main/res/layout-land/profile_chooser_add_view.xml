@@ -32,7 +32,7 @@
       android:layout_marginBottom="24dp"
       android:gravity="center_horizontal"
       android:orientation="vertical"
-      app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_already_added_margin_land : @dimen/space_28dp}"
+      app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_margin : @dimen/space_28dp}"
       app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_24dp}">
 
       <de.hdodenhof.circleimageview.CircleImageView
