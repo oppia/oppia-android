@@ -6,10 +6,6 @@
     <import type="android.view.View" />
 
     <variable
-      name="htmlContent"
-      type="CharSequence" />
-
-    <variable
       name="viewModel"
       type="org.oppia.android.app.player.state.itemviewmodel.ContentViewModel" />
   </data>
@@ -59,15 +55,22 @@
     app:questionViewPaddingStart="@{@dimen/space_0dp}"
     app:questionViewPaddingTop="@{@dimen/space_0dp}">
 
-    <TextView
+    <org.oppia.android.app.richtext.RteTextView
       android:id="@+id/content_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:breakStrategy="simple"
       android:fontFamily="sans-serif"
-      android:text="@{htmlContent}"
+      android:text="@{viewModel.htmlContent}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
-      android:visibility="@{htmlContent.length() > 0 ? View.VISIBLE : View.GONE, default=gone}" />
+      android:visibility="@{viewModel.htmlContent.length() > 0 ? View.VISIBLE : View.GONE, default=gone}"
+      app:centerAlignImages="@{true}"
+      app:supportsLinks="@{true}"
+      app:supportsConceptCards="@{viewModel.supportsConceptCards}"
+      app:customOppiaTagActionListener="@{viewModel.customOppiaTagActionListener}"
+      app:gcsResourceName="@{viewModel.gcsResourceName}"
+      app:entityType="@{viewModel.gcsEntityType}"
+      app:entityId="@{viewModel.gcsEntityId}" />
   </FrameLayout>
 </layout>

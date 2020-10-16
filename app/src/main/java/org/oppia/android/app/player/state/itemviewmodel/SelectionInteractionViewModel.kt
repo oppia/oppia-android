@@ -20,6 +20,8 @@ enum class SelectionItemInputType {
 
 /** [StateItemViewModel] for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
+  val gcsResourceName: String,
+  val gcsEntityType: String,
   val entityId: String,
   val hasConversationView: Boolean,
   interaction: Interaction,
@@ -47,7 +49,7 @@ class SelectionInteractionViewModel(
   }
   private val selectedItems: MutableList<Int> = mutableListOf()
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
-    computeChoiceItems(choiceStrings, hasConversationView, this)
+    computeChoiceItems(choiceStrings, hasConversationView, this, gcsResourceName, gcsEntityType, entityId)
 
   private val isAnswerAvailable = ObservableField<Boolean>(false)
 
@@ -150,12 +152,18 @@ class SelectionInteractionViewModel(
     private fun computeChoiceItems(
       choiceStrings: List<String>,
       hasConversationView: Boolean,
-      selectionInteractionViewModel: SelectionInteractionViewModel
+      selectionInteractionViewModel: SelectionInteractionViewModel,
+      gcsResourceName: String,
+      gcsEntityType: String,
+      gcsEntityId: String
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
       observableList += choiceStrings.mapIndexed { index, choiceString ->
         SelectionInteractionContentViewModel(
           htmlContent = choiceString,
+          gcsResourceName = gcsResourceName,
+          gcsEntityType = gcsEntityType,
+          gcsEntityId = gcsEntityId,
           hasConversationView = hasConversationView,
           itemIndex = index,
           selectionInteractionViewModel = selectionInteractionViewModel

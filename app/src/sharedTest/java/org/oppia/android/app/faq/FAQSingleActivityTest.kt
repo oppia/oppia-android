@@ -122,23 +122,23 @@ class FAQSingleActivityTest {
     }
   }
 
-  @Test
-  fun openFAQSingleActivity_checkAnswer_isCorrectlyParsed() {
-    val answerTextView = activityTestRule.activity.findViewById(
-      R.id.faq_answer_text_view
-    ) as TextView
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = false
-    )
-    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      getResources().getString(R.string.faq_answer_1),
-      answerTextView
-    )
-    assertThat(answerTextView.text.toString()).isEqualTo(htmlResult.toString())
-  }
+//  @Test
+//  fun openFAQSingleActivity_checkAnswer_isCorrectlyParsed() {
+//    val answerTextView = activityTestRule.activity.findViewById(
+//      R.id.faq_answer_text_view
+//    ) as TextView
+//    val htmlParser = htmlParserFactory.create(
+//      resourceBucketName,
+//      entityType = "",
+//      entityId = "",
+//      imageCenterAlign = false
+//    )
+//    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+//      getResources().getString(R.string.faq_answer_1),
+//      answerTextView
+//    )
+//    assertThat(answerTextView.text.toString()).isEqualTo(htmlResult.toString())
+//  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

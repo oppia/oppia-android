@@ -1,4 +1,5 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -22,7 +23,7 @@
       android:orientation="vertical"
       android:paddingBottom="160dp">
 
-      <TextView
+      <org.oppia.android.app.richtext.RteTextView
         android:id="@+id/revision_card_explanation_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,7 +33,11 @@
         android:fontFamily="sans-serif"
         android:text="@{viewModel.explanationLiveData}"
         android:textColor="@color/oppiaPrimaryText"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:centerAlignImages="@{true}"
+        app:gcsResourceName="@{viewModel.gcsResourceName}"
+        app:entityType="@{viewModel.gcsEntityType}"
+        app:entityId="@{viewModel.getTopicId()}" />
 
       <Button
         android:id="@+id/revision_card_return_button"

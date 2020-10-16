@@ -10,12 +10,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
+import org.oppia.android.app.player.state.itemviewmodel.DragDropSingleItemViewModel
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.DragAndDropItemFacilitator
 import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.databinding.DragDropSingleItemBinding
 import org.oppia.android.util.accessibility.CustomAccessibilityManager
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
@@ -91,8 +93,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
         },
         bindView = { view, viewModel ->
           viewBindingShim.setDragDropInteractionItemsBinding(view)
-          viewBindingShim.getDragDropInteractionItemsBindingRecyclerView().adapter =
-            createNestedAdapter()
           adapter?.let { viewBindingShim.setDragDropInteractionItemsBindingAdapter(it) }
           viewBindingShim.getDragDropInteractionItemsBindingGroupItem().isVisible =
             isMultipleItemsInSamePositionAllowed
@@ -101,31 +101,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
           viewBindingShim.getDragDropInteractionItemsBindingAccessibleContainer().isVisible =
             isAccessibilityEnabled
           viewBindingShim.setDragDropInteractionItemsBindingViewModel(viewModel)
-        }
-      )
-      .build()
-  }
-
-  private fun createNestedAdapter(): BindableAdapter<String> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<String>()
-      .registerViewBinder(
-        inflateView = { parent ->
-          viewBindingShim.provideDragDropSingleItemInflatedView(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          )
-        },
-        bindView = { view, viewModel ->
-          viewBindingShim.setDragDropSingleItemBinding(view)
-          viewBindingShim.setDragDropSingleItemBindingHtmlContent(
-            htmlParserFactory,
-            resourceBucketName,
-            entityType,
-            entityId,
-            viewModel
-          )
         }
       )
       .build()

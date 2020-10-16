@@ -18,10 +18,7 @@ import javax.inject.Inject
 @FragmentScope
 class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<HintsViewModel>,
-  private val htmlParserFactory: HtmlParser.Factory,
-  @DefaultResourceBucketName private val resourceBucketName: String,
-  @ExplorationHtmlParserEntityType private val entityType: String
+  private val viewModelProvider: ViewModelProvider<HintsViewModel>
 ) {
 
   private var currentExpandedHintListIndex: Int? = null
@@ -46,7 +43,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     state: State,
-    id: String?,
+    entityId: String?,
     currentExpandedHintListIndex: Int?,
     newAvailableHintIndex: Int,
     allHintsExhausted: Boolean,
@@ -80,7 +77,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     // Therefore multiplying the original index by 2.
     viewModel.newAvailableHintIndex.set(newAvailableHintIndex * 2)
     viewModel.allHintsExhausted.set(allHintsExhausted)
-    viewModel.explorationId.set(id)
+    viewModel.entityId.set(entityId)
 
     loadHintsAndSolution(state)
 
@@ -99,10 +96,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
           viewModel.processHintList(),
           expandedHintListIndexListener,
           currentExpandedHintListIndex,
-          viewModel.explorationId.get(),
-          htmlParserFactory,
-          resourceBucketName,
-          entityType,
           index,
           isHintRevealed,
           solutionIndex,

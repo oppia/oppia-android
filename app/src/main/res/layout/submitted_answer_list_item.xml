@@ -5,17 +5,17 @@
   <data>
 
     <variable
-      name="answerItem"
-      type="org.oppia.android.app.model.StringList" />
+      name="viewModel"
+      type="org.oppia.android.app.player.state.itemviewmodel.submittedanswers.SubmittedHtmlAnswerListViewModel" />
   </data>
 
-  <androidx.recyclerview.widget.RecyclerView
+  <org.oppia.android.app.player.state.itemviewmodel.submittedanswers.SubmittedHtmlAnswerRecyclerView
     android:id="@+id/submitted_html_answer_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:itemDecorator="@{@drawable/divider_dotted}"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    app:list="@{answerItem.htmlList}"
+    app:list="@{viewModel.itemViewModelList}"
     tools:itemCount="1"
     tools:listitem="@layout/submitted_html_answer_item" />
 </layout>

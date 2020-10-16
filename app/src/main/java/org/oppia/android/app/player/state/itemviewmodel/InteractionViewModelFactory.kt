@@ -10,6 +10,8 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
  * there's a previous button enabled (only relevant for navigation-based interactions).
  */
 typealias InteractionViewModelFactory = (
+  gcsResourceName: String,
+  gcsEntityType: String,
   entityId: String,
   hasConversationView: Boolean,
   interaction: Interaction,

@@ -63,72 +63,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     return DataBindingUtil.findBinding<ProfileInputViewBinding>(profileInputView)!!.errorText
   }
 
-  override fun provideSelectionInteractionViewInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View {
-    return ItemSelectionInteractionItemsBinding.inflate(
-      LayoutInflater.from(parent.context),
-      parent,
-      /* attachToParent= */ false
-    ).root
-  }
-
-  override fun provideSelectionInteractionViewModel(
-    view: View,
-    viewModel: SelectionInteractionContentViewModel,
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String
-  ) {
-    val binding =
-      DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
-    binding.htmlContent =
-      htmlParserFactory.create(
-        resourceBucketName,
-        entityType,
-        entityId,
-        false
-      ).parseOppiaHtml(
-        viewModel.htmlContent,
-        binding.itemSelectionContentsTextView
-      )
-    binding.viewModel = viewModel
-  }
-
-  override fun provideMultipleChoiceInteractionItemsInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View {
-    return MultipleChoiceInteractionItemsBinding.inflate(
-      LayoutInflater.from(parent.context),
-      parent,
-      false
-    ).root
-  }
-
-  override fun provideMultipleChoiceInteractionItemsViewModel(
-    view: View,
-    viewModel: SelectionInteractionContentViewModel,
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String
-  ) {
-    val binding =
-      DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
-    binding.htmlContent =
-      htmlParserFactory.create(
-        resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
-      ).parseOppiaHtml(
-        viewModel.htmlContent, binding.multipleChoiceContentTextView
-      )
-    binding.viewModel = viewModel
-  }
-
   override fun provideDragDropSortInteractionInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -152,10 +86,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
     dragDropInteractionItemsBinding.adapter = adapter
-  }
-
-  override fun getDragDropInteractionItemsBindingRecyclerView(): RecyclerView {
-    return dragDropInteractionItemsBinding.dragDropItemRecyclerview
   }
 
   override fun getDragDropInteractionItemsBindingGroupItem(): ImageButton {
@@ -184,33 +114,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     return DragDropSingleItemBinding.inflate(
       LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
     ).root
-  }
-
-  // TODO(#1692): Fix implementation to not use cache binding.
-  private lateinit var dragDropSingleItemBinding: DragDropSingleItemBinding
-
-  override fun setDragDropSingleItemBinding(
-    view: View
-  ) {
-    dragDropSingleItemBinding =
-      DataBindingUtil.findBinding<DragDropSingleItemBinding>(view)!!
-  }
-
-  override fun setDragDropSingleItemBindingHtmlContent(
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String,
-    viewModel: String
-  ) {
-    dragDropSingleItemBinding.htmlContent = htmlParserFactory.create(
-      resourceBucketName,
-      entityType,
-      entityId,
-      /* imageCenterAlign= */ false
-    ).parseOppiaHtml(
-      viewModel, dragDropSingleItemBinding.dragDropContentTextView
-    )
   }
 
   override fun getDefaultRegion(parentView: FrameLayout): View {

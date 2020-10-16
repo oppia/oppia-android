@@ -102,14 +102,19 @@
         android:orientation="vertical"
         android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 
-        <TextView
+        <org.oppia.android.app.richtext.RteTextView
           android:id="@+id/hints_and_solution_summary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="start"
           android:fontFamily="sans-serif"
           android:textColor="@color/oppiaPrimaryText"
-          android:textSize="16sp" />
+          android:textSize="16sp"
+          android:text="@{viewModel.hintsAndSolutionSummary}"
+          app:centerAlignImages="@{true}"
+          app:gcsResourceName="@{viewModel.gcsResourceName}"
+          app:entityType="@{viewModel.gcsEntityType}"
+          app:entityId="@{viewModel.entityId}" />
       </LinearLayout>
     </LinearLayout>
 </layout>

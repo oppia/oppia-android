@@ -4,7 +4,11 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 
 /** [ViewModel] for Solution in [HintsAndSolutionDialogFragment]. */
-class SolutionViewModel : HintsAndSolutionItemViewModel() {
+class SolutionViewModel(
+  val gcsResourceName: String,
+  val gcsEntityType: String,
+  val gcsEntityId: ObservableField<String>
+): HintsAndSolutionItemViewModel() {
   val solutionSummary = ObservableField<String>("")
   val correctAnswer = ObservableField<String>("")
   val numerator = ObservableField<Int>()

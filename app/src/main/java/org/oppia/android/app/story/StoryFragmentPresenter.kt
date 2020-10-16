@@ -33,10 +33,7 @@ class StoryFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val oppiaClock: OppiaClock,
-  private val htmlParserFactory: HtmlParser.Factory,
-  @DefaultResourceBucketName private val resourceBucketName: String,
-  @TopicHtmlParserEntityType private val entityType: String
+  private val oppiaClock: OppiaClock
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
@@ -120,29 +117,11 @@ class StoryFragmentPresenter @Inject constructor(
         setViewModel = StoryHeaderViewBinding::setViewModel,
         transformViewModel = { it as StoryHeaderViewModel }
       )
-      .registerViewBinder(
+      .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_CHAPTER,
-        inflateView = { parent ->
-          StoryChapterViewBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<StoryChapterViewBinding>(view)!!
-          val storyItemViewModel = viewModel as StoryChapterSummaryViewModel
-          binding.viewModel = storyItemViewModel
-          binding.htmlContent =
-            htmlParserFactory.create(
-              resourceBucketName,
-              entityType,
-              storyItemViewModel.storyId,
-              imageCenterAlign = true
-            ).parseOppiaHtml(
-              storyItemViewModel.summary, binding.chapterSummary
-            )
-        }
+        inflateDataBinding = StoryChapterViewBinding::inflate,
+        setViewModel = StoryChapterViewBinding::setViewModel,
+        transformViewModel = { it as StoryChapterSummaryViewModel }
       )
       .build()
   }

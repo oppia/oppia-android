@@ -59,7 +59,7 @@
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="20sp" />
 
-          <TextView
+          <org.oppia.android.app.richtext.RteTextView
             android:id="@+id/concept_card_explanation_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +69,11 @@
             android:fontFamily="sans-serif"
             android:text="@{viewModel.explanationLiveData}"
             android:textColor="@color/oppiaPrimaryText"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            app:centerAlignImages="@{true}"
+            app:gcsResourceName="@{viewModel.gcsResourceName}"
+            app:entityType="@{viewModel.gcsEntityType}"
+            app:entityId="@{viewModel.getSkillId()}" />
         </LinearLayout>
         <!--TODO(#352): Show worked examples in Concept Card.-->
       </ScrollView>

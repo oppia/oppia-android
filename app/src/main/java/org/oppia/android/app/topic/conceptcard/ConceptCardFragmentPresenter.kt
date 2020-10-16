@@ -33,11 +33,10 @@ class ConceptCardFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    val view = binding.conceptCardExplanationText
     val viewModel = getConceptCardViewModel()
 
     skillId = id
-    viewModel.setSkillIdAndBinding(skillId, view)
+    viewModel.setSkillIdAndBinding(skillId)
     logConceptCardEvent(skillId)
 
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)

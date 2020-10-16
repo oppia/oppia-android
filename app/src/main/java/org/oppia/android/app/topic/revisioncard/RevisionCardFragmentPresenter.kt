@@ -33,10 +33,9 @@ class RevisionCardFragmentPresenter @Inject constructor(
         container,
         /* attachToRoot= */ false
       )
-    val view = binding.revisionCardExplanationText
     val viewModel = getReviewCardViewModel()
 
-    viewModel.setSubtopicIdAndBinding(topicId, subtopicId, view)
+    viewModel.setSubtopicIdAndBinding(topicId, subtopicId)
     logRevisionCardEvent(topicId, subtopicId)
 
     binding.let {

@@ -6,6 +6,9 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 /** [ObservableViewModel] for MultipleChoiceInput values or ItemSelectionInput values. */
 class SelectionInteractionContentViewModel(
   val htmlContent: String,
+  val gcsResourceName: String,
+  val gcsEntityType: String,
+  val gcsEntityId: String,
   val hasConversationView: Boolean,
   private val itemIndex: Int,
   private val selectionInteractionViewModel: SelectionInteractionViewModel

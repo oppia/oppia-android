@@ -14,6 +14,7 @@ import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListe
  */
 @Module
 class InteractionViewModelModule {
+  // TODO: move to Dagger graph rather than directly referencing modules.
   companion object {
     val splitScreenInteractionIdsPool = listOf("DragAndDropSortInput", "ImageClickInput")
   }
@@ -24,7 +25,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("Continue")
   fun provideContinueInteractionViewModelFactory(fragment: Fragment): InteractionViewModelFactory {
-    return { _, hasConversationView, _, interactionAnswerReceiver, _, hasPreviousButton, isSplitView -> // ktlint-disable max-line-length
+    return { _, _, _, hasConversationView, _, interactionAnswerReceiver, _, hasPreviousButton, isSplitView -> // ktlint-disable max-line-length
       ContinueInteractionViewModel(
         interactionAnswerReceiver,
         hasConversationView,
@@ -39,8 +40,10 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("MultipleChoiceInput")
   fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
+    return { gcsResourceName, gcsEntityType, entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
       SelectionInteractionViewModel(
+        gcsResourceName,
+        gcsEntityType,
         entityId,
         hasConversationView,
         interaction,
@@ -55,8 +58,10 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("ItemSelectionInput")
   fun provideItemSelectionInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
+    return { gcsResourceName, gcsEntityType, entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
       SelectionInteractionViewModel(
+        gcsResourceName,
+        gcsEntityType,
         entityId,
         hasConversationView,
         interaction,
@@ -71,7 +76,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("FractionInput")
   fun provideFractionInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
+    return { _, _, _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
       FractionInteractionViewModel(
         interaction,
         context,
@@ -86,7 +91,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("NumericInput")
   fun provideNumericInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, hasConversationView, _, _, interactionAnswerErrorReceiver, _, isSplitView ->
+    return { _, _, _, hasConversationView, _, _, interactionAnswerErrorReceiver, _, isSplitView ->
       NumericInputViewModel(
         context,
         hasConversationView,
@@ -100,7 +105,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
+    return { _, _, _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
       TextInputViewModel(
         interaction, hasConversationView, interactionAnswerErrorReceiver, isSplitView
       )
@@ -111,9 +116,9 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("DragAndDropSortInput")
   fun provideDragAndDropSortInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
+    return { gcsResourceName, gcsEntityType, entityId, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
       DragAndDropSortInteractionViewModel(
-        entityId, hasConversationView, interaction, interactionAnswerErrorReceiver, isSplitView
+        gcsResourceName, gcsEntityType, entityId, hasConversationView, interaction, interactionAnswerErrorReceiver, isSplitView
       )
     }
   }
@@ -122,7 +127,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("ImageClickInput")
   fun provideImageClickInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { entityId, _, interaction, _, interactionAnswerErrorReceiver, _, _ ->
+    return { _, _, entityId, _, interaction, _, interactionAnswerErrorReceiver, _, _ ->
       ImageRegionSelectionInteractionViewModel(
         entityId,
         interaction,
@@ -136,7 +141,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("RatioExpressionInput")
   fun provideRatioExpressionInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, hasConversationView, interaction, _, answerErrorReceiver, _, isSplitView ->
+    return { _, _, _, hasConversationView, interaction, _, answerErrorReceiver, _, isSplitView ->
       RatioExpressionInputInteractionViewModel(
         interaction,
         context,
