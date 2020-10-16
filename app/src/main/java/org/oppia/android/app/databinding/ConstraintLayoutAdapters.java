@@ -29,6 +29,5 @@ public final class ConstraintLayoutAdapters {
     constraintSet.setHorizontalBias(view.getId(), value);
     constraintSet.applyTo(constraintLayout);
   }
-
 }
 
