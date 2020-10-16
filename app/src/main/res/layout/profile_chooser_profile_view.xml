@@ -21,74 +21,73 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/profile_chooser_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_20dp : @dimen/space_0dp}">
+    app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_28dp}"
+    app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_28dp}"
+    app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+      android:id="@+id/profile_avatar_img"
+      android:layout_width="72dp"
+      android:layout_height="72dp"
+      app:civ_border_color="@color/avatarBorder"
+      app:civ_border_width="1dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      profile:src="@{viewModel.profile.avatar}" />
 
     <LinearLayout
-      android:id="@+id/profile_chooser_item"
-      android:layout_width="match_parent"
+      android:id="@+id/linearLayout3"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
-      android:orientation="@{hasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
-      app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_28dp}"
-      app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_28dp}"
-      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
+      android:orientation="vertical"
+      app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_20dp}"
+      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_8dp : @dimen/space_0dp}"
+      app:layout_constraintBottom_toBottomOf="@+id/profile_avatar_img"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/profile_avatar_img"
       app:layout_constraintTop_toTopOf="parent">
 
-      <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_avatar_img"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        app:civ_border_color="@color/avatarBorder"
-        app:civ_border_width="1dp"
-        profile:src="@{viewModel.profile.avatar}" />
+      <TextView
+        android:id="@+id/profile_name_text"
+        style="@style/Caption"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:singleLine="false"
+        android:text="@{viewModel.profile.name}"
+        android:textColor="@color/white" />
 
-      <LinearLayout
-        android:layout_width="match_parent"
+      <TextView
+        android:id="@+id/profile_last_visited"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
-        android:orientation="vertical"
-        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_20dp}"
-        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_8dp : @dimen/space_0dp}">
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
+        profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
-        <TextView
-          android:id="@+id/profile_name_text"
-          android:ellipsize="end"
-          style="@style/Caption"
-          android:gravity="center"
-          android:maxLines="2"
-          android:singleLine="false"
-          android:text="@{viewModel.profile.name}"
-          android:textColor="@color/white" />
-
-        <TextView
-          android:id="@+id/profile_last_visited"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:fontFamily="sans-serif-light"
-          android:textSize="12sp"
-          android:textColor="@color/white"
-          android:textStyle="italic"
-          android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
-          profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
-
-        <TextView
-          android:id="@+id/profile_is_admin_text"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:fontFamily="sans-serif-light"
-          android:textSize="12sp"
-          android:gravity="center"
-          android:text="@string/profile_chooser_admin"
-          android:textColor="@color/white"
-          android:textStyle="italic"
-          android:visibility="@{viewModel.profile.isAdmin &amp;&amp; hasProfileEverBeenAddedValue ? View.VISIBLE : View.GONE}" />
-      </LinearLayout>
+      <TextView
+        android:id="@+id/profile_is_admin_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:text="@string/profile_chooser_admin"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        android:visibility="@{viewModel.profile.isAdmin &amp;&amp; hasProfileEverBeenAddedValue ? View.VISIBLE : View.GONE}" />
     </LinearLayout>
 
     <View
@@ -99,7 +98,8 @@
       android:background="@color/oppiaProfileChooserDivider"
       android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/profile_chooser_item" />
+      app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
