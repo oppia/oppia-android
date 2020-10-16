@@ -21,9 +21,9 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/profile_chooser_item"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:id="@+id/profile_chooser_item"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
