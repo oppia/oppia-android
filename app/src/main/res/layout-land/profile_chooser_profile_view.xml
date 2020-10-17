@@ -38,7 +38,6 @@
       android:id="@+id/profile_avatar_img"
       android:layout_width="72dp"
       android:layout_height="72dp"
-      android:layout_marginBottom="8dp"
       app:civ_border_color="@color/avatarBorder"
       app:civ_border_width="1dp"
       app:layout_constraintStart_toStartOf="parent"
