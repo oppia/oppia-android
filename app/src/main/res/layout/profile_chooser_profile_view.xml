@@ -41,7 +41,8 @@
       app:civ_border_width="1dp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      profile:src="@{viewModel.profile.avatar}" />
+      profile:src="@{viewModel.profile.avatar}"
+      app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_margin : @dimen/space_0dp}"/>
 
     <LinearLayout
       android:id="@+id/linearLayout3"
