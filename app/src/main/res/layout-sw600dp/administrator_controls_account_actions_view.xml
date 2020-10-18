@@ -18,7 +18,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/oppiaGreyBackground"
-      style="@style/Subtitle2"
+      style="@style/Caption"
       android:paddingStart="16dp"
       android:paddingTop="28dp"
       android:paddingEnd="16dp"
