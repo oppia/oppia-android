@@ -21,6 +21,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -33,7 +34,6 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -142,12 +142,11 @@ class StoryFragmentTest {
   }
 
   @Test
-  @Ignore("Test wasn't correct originally") // TODO(#1804): Fix this test & re-enable.
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
     launch<StoryActivity>(createStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.story_toolbar)).perform(click())
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       it.onActivity { activity -> assertThat(activity.isFinishing).isTrue() }
