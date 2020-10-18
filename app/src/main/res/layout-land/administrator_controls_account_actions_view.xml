@@ -18,7 +18,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/mid_grey_30"
-      style="@style/Subtitle2"
+      style="@style/Caption"
       android:paddingStart="36dp"
       android:paddingTop="28dp"
       android:paddingEnd="36dp"
