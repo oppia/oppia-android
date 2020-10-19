@@ -6,8 +6,10 @@ import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.android.app.model.StringList
 import javax.inject.Inject
 
-/** Helper class which can provide with the [InteractionObject] of a particular ObjectTypeCase. */
-class InteractionObjectBuilder @Inject constructor() {
+/** Helper class for test cases which can provide with the [InteractionObject]
+ * of a particular ObjectTypeCase.
+ */
+class InteractionObjectTestBuilder @Inject constructor() {
 
   fun createNonNegativeInt(value: Int): InteractionObject {
     return InteractionObject.newBuilder().setNonNegativeInt(value).build()
