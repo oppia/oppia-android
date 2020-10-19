@@ -30,7 +30,6 @@
         android:layout_marginTop="36dp"
         android:layout_marginEnd="28dp"
         android:fontFamily="sans-serif"
-        android:text="@{viewModel.explanationLiveData}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp" />
 
