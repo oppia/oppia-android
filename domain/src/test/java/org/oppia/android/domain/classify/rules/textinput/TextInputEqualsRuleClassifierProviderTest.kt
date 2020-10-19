@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -24,17 +24,40 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class TextInputEqualsRuleClassifierProviderTest {
 
-  private val STRING_VALUE_TEST_UPPERCASE = createString(value = "TEST")
-  private val STRING_VALUE_TEST_LOWERCASE = createString(value = "test")
-  private val STRING_VALUE_TEST_DIFFERENT_VALUE = createString(value = "string")
-  private val STRING_VALUE_TEST_EXTRA_SPACES = createString(value = "test  a  lot  ")
-  private val STRING_VALUE_TEST_SINGLE_SPACES = createString(value = "test a lot")
-  private val STRING_VALUE_TEST_NO_SPACES = createString(value = "testalot")
-  private val INT_VALUE_TEST_NON_NEGATIVE = createNonNegativeInt(value = 1)
-
   @Inject
   internal lateinit var textInputEqualsRuleClassifierProvider:
     TextInputEqualsRuleClassifierProvider
+
+  @Inject
+  internal lateinit var interactionObjectTestBuilder: InteractionObjectTestBuilder
+
+  private val STRING_VALUE_TEST_UPPERCASE by lazy {
+    interactionObjectTestBuilder.createString(value = "TEST")
+  }
+
+  private val STRING_VALUE_TEST_LOWERCASE by lazy {
+    interactionObjectTestBuilder.createString(value = "test")
+  }
+
+  private val STRING_VALUE_TEST_DIFFERENT_VALUE by lazy {
+    interactionObjectTestBuilder.createString(value = "string")
+  }
+
+  private val STRING_VALUE_TEST_EXTRA_SPACES by lazy {
+    interactionObjectTestBuilder.createString(value = "test  a  lot  ")
+  }
+
+  private val STRING_VALUE_TEST_SINGLE_SPACES by lazy {
+    interactionObjectTestBuilder.createString(value = "test a lot")
+  }
+
+  private val STRING_VALUE_TEST_NO_SPACES by lazy {
+    interactionObjectTestBuilder.createString(value = "testalot")
+  }
+
+  private val INT_VALUE_TEST_NON_NEGATIVE by lazy {
+    interactionObjectTestBuilder.createNonNegativeInt(value = 1)
+  }
 
   private val inputEqualsRuleClassifier by lazy {
     textInputEqualsRuleClassifierProvider.createRuleClassifier()
@@ -131,14 +154,6 @@ class TextInputEqualsRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected input value to be of type NORMALIZED_STRING")
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
   private fun setUpTestApplicationComponent() {
