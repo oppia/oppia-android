@@ -4,7 +4,7 @@ echo "********************************"
 echo "Checking code formatting"
 echo "********************************"
 
-ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt
+ktlint -F --android app/src/**/*.kt data/src/**/*.kt domain/src/**/*.kt testing/src/**/*.kt utility/src/**/*.kt
 
 status=$?
 
