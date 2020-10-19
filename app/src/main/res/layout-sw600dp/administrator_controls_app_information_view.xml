@@ -20,7 +20,6 @@
     <TextView
       android:id="@+id/app_information_text_view"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       android:background="@color/oppiaGreyBackground"
       style="@style/Caption"
       android:paddingStart="16dp"
@@ -37,7 +36,6 @@
     <TextView
       android:id="@+id/app_version_text_view"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       android:background="@{commonViewModel.selectedFragmentIndex == viewModel.itemIndex? @color/adminHighlighted : @color/white}"
       style="@style/Subtitle1"
       android:paddingStart="16dp"
