@@ -25,13 +25,17 @@ import kotlin.test.fail
 class FractionInputIsEquivalentToRuleClassifierProviderTest {
   private val WHOLE_NUMBER_123 = createWholeNumber(isNegative = false, value = 123)
   private val WHOLE_NUMBER_254 = createWholeNumber(isNegative = false, value = 254)
-  private val FRACTION_2_OVER_8 = createFraction(isNegative = false, numerator = 2, denominator = 8)
-  private val FRACTION_1_OVER_5 = createFraction(isNegative = false, numerator = 1, denominator = 5)
-  private val FRACTION_133_OVER_2 = createFraction(isNegative = false, numerator = 133, denominator = 2)
-  private val FRACTION_242_OVER_1 = createFraction(isNegative = false, numerator = 242, denominator = 1)
-  private val MIXED_NUMBER_106_1_OVER_2=
+  private val FRACTION_2_OVER_8 =
+    createFraction(isNegative = false, numerator = 2, denominator = 8)
+  private val FRACTION_1_OVER_5 =
+    createFraction(isNegative = false, numerator = 1, denominator = 5)
+  private val FRACTION_133_OVER_2 =
+    createFraction(isNegative = false, numerator = 133, denominator = 2)
+  private val FRACTION_242_OVER_1 =
+    createFraction(isNegative = false, numerator = 242, denominator = 1)
+  private val MIXED_NUMBER_106_1_OVER_2 =
     createMixedNumber(isNegative = false, wholeNumber = 106, numerator = 1, denominator = 2)
-  private val MIXED_NUMBER_255_1_OVER_4=
+  private val MIXED_NUMBER_255_1_OVER_4 =
     createMixedNumber(isNegative = false, wholeNumber = 255, numerator = 1, denominator = 4)
 
   @Inject
