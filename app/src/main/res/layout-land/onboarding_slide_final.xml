@@ -38,7 +38,6 @@
       <TextView
         android:id="@+id/slide_title_text_view"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="80dp"
         android:layout_marginEnd="28dp"
@@ -54,7 +53,6 @@
       <TextView
         android:id="@+id/slide_description_text_view"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="40dp"
@@ -73,9 +71,13 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="52dp"
+        android:background="@drawable/primary_rounded_button"
+        android:fontFamily="sans-serif-medium"
+        android:minHeight="48dp"
         android:onClick="@{(v) -> viewModel.clickOnGetStarted()}"
         android:text="@string/get_started"
-        style="@style/DefaultButton"
+        android:textColor="@color/white"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/slide_image_view"
         app:layout_constraintTop_toBottomOf="@id/slide_description_text_view" />

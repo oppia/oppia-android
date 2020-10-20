@@ -6,8 +6,4 @@
   <dimen name="home_margin_min">64dp</dimen>
   <dimen name="recently_played_margin_max">96dp</dimen>
   <dimen name="recently_played_margin_min">64dp</dimen>
-
-  <dimen name="heading1_text_size">32sp</dimen>
-  <dimen name="subtitle1_text_size">24sp</dimen>
-  <dimen name="default_button_text_size">14sp</dimen>
 </resources>

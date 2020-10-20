@@ -37,7 +37,6 @@
       <TextView
         android:id="@+id/slide_title_text_view"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="28dp"
@@ -54,7 +53,6 @@
       <TextView
         android:id="@+id/slide_description_text_view"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="48dp"
@@ -69,13 +67,19 @@
 
       <Button
         android:id="@+id/get_started_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="56dp"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="56dp"
         android:layout_marginBottom="32dp"
+        android:background="@drawable/primary_rounded_button"
+        android:fontFamily="sans-serif-medium"
+        android:minHeight="48dp"
         android:onClick="@{(v) -> viewModel.clickOnGetStarted()}"
         android:text="@string/get_started"
-        style="@style/DefaultButton"
+        android:textColor="@color/white"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/slide_description_text_view" />
