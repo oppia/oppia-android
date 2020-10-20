@@ -75,7 +75,6 @@ import javax.inject.Singleton
 )
 class InputInteractionViewTestActivityTest {
 
-
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
@@ -852,7 +851,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputInteractionView_withFractionRatio_clickSubmitButton_numberFormatErrorIsDisplayed() {
+  fun testRatioInputInteractionView_withFractionRatio_clickSubmitButton_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
