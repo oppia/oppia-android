@@ -125,6 +125,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputs = inpus
 
     )
+
     assertThat(matches).isFalse()
   }
 
