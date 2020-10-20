@@ -67,7 +67,6 @@ val EXPLORATION_THUMBNAILS = mapOf(
   TEST_EXPLORATION_ID_6 to createChapterThumbnail0()
 )
 
-//getOngoingStoryList
 private const val GET_ONGOING_STORY_LIST_PROVIDER_ID =
   "get_ongoing_story_list_provider_id"
 

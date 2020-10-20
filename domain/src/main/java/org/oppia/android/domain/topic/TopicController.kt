@@ -66,7 +66,6 @@ private const val SUBTOPIC_BG_COLOR = "#FFFFFF"
 
 private const val RETRIEVED_QUESTIONS_FOR_SKILLS_ID_PROVIDER_ID =
   "retrieved_questions_for_skills_id_provider_id"
-
 private const val GET_COMPLETED_STORy_LIST_PROVIDER_ID =
   "get_completed_story_list_provider_id"
 private const val GET_ONGOING_TOPIC_LIST_PROVIDER_ID =

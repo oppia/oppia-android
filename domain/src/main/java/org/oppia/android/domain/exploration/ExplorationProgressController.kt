@@ -21,7 +21,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
-//beginExplorationAsync
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
 
 

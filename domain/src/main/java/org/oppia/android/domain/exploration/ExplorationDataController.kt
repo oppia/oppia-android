@@ -10,7 +10,6 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
-//xplorationDataController
 private const val EXPLORATION_DATA_CONTROLLER_PROVIDER_ID = "exploration_data_controller_provider_id"
 
 /**

@@ -44,8 +44,7 @@ private const val RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID =
   "retrieve_topic_progress_data_provider_id"
 private const val RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID =
   "retrieve_story_progress_data_provider_id"
-private const val RECORD_COMPLETED_CHAPTER_PROVIDER_ID =
-  "record_completed_chapter_provider_id"
+private const val RECORD_COMPLETED_CHAPTER_PROVIDER_ID = "record_completed_chapter_provider_id"
 private const val RECORD_RECENTLY_PLAYED_CHAPTER_PROVIDER_ID =
   "record_recently_played_chapter_provider_id"
 

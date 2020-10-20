@@ -33,7 +33,6 @@ import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
-//getProfiles
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "xget_profile_provider_id"
 private const val GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID =
