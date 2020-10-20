@@ -18,14 +18,22 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
-
 import kotlin.test.fail
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputIsEquivalentToRuleClassifierProviderTest {
-
+  private val WHOLE_NUMBER_123 = createWholeNumber(isNegative = false, value = 123)
+  private val WHOLE_NUMBER_254 = createWholeNumber(isNegative = false, value = 254)
+  private val FRACTION_2_OVER_8 = createFraction(isNegative = false, numerator = 2, denominator = 8)
+  private val FRACTION_1_OVER_5 = createFraction(isNegative = false, numerator = 1, denominator = 5)
+  private val FRACTION_133_OVER_2 = createFraction(isNegative = false, numerator = 133, denominator = 2)
+  private val FRACTION_242_OVER_1 = createFraction(isNegative = false, numerator = 242, denominator = 1)
+  private val MIXED_NUMBER_106_1_OVER_2 =
+    createMixedNumber(isNegative = false, wholeNumber = 106, numerator = 1, denominator = 2)
+  private val MIXED_NUMBER_255_1_OVER_4 =
+    createMixedNumber(isNegative = false, wholeNumber = 255, numerator = 1, denominator = 4)
 
   @Inject
   internal lateinit var fractionInputIsEquivalentToRuleClassifierProvider:
@@ -34,14 +42,6 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   private val inputIsEquivalentToRuleClassifier by lazy {
     fractionInputIsEquivalentToRuleClassifierProvider.createRuleClassifier()
   }
-  private val WHOLE_NUMBER_123 = createWholeNumber(isNegative = false, value = 123)
-  private val WHOLE_NUMBER_254 = createWholeNumber(isNegative = false, value = 254)
-  private val FRACTION_2_OVER_8 = createFraction(isNegative = false, numerator = 2, denominator = 8)
-  private val FRACTION_1_OVER_5 = createFraction(isNegative = false, numerator = 1, denominator = 5)
-  private val FRACTION_133_OVER_2 = createFraction(isNegative = false, numerator = 133, denominator = 2)
-  private val FRACTION_242_OVER_1 = createFraction(isNegative = false, numerator = 242, denominator = 1)
-  private val MIXED_NUMBER_106_1_OVER_2 = createMixedNumber(isNegative = false, wholeNumber = 106, numerator = 1, denominator = 2)
-  private val MIXED_NUMBER_255_1_OVER_4 = createMixedNumber(isNegative = false, wholeNumber = 255, numerator = 1, denominator = 4)
 
   @Test
   fun testEquality_wholeNumber123Answer_withWholeNumber123Input_bothValuesEquivalent() {
@@ -54,7 +54,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
         inputs = inputs
       )
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -68,11 +68,11 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
         inputs = inputs
       )
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
-  fun testEquality_fraction2Over4Answer_withFraction2Over4Input_bothValuesEquivalent(){
+  fun testEquality_fraction2Over4Answer_withFraction2Over4Input_bothValuesEquivalent() {
     val inputs = mapOf("f" to FRACTION_2_OVER_8)
     val answer = FRACTION_2_OVER_8
 
@@ -82,7 +82,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
         inputs = inputs
       )
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -96,11 +96,11 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
         inputs = inputs
       )
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
-  fun testEquality_fraction2Over133Answer_withFaction1Over242Input_bothValuesEquivalent(){
+  fun testEquality_fraction2Over133Answer_withFaction1Over242Input_bothValuesEquivalent() {
     val inputs = mapOf("f" to FRACTION_133_OVER_2)
     val answer = FRACTION_133_OVER_2
 
@@ -108,11 +108,12 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       answer = FRACTION_133_OVER_2,
       inputs = inputs
     )
-    Truth.assertThat(matches).isTrue()
+
+    assertThat(matches).isTrue()
   }
 
   @Test
-  fun testEquality_fraction2Over133Answer_withFaction1Over242Input_bothValuesNotEquivalent(){
+  fun testEquality_fraction2Over133Answer_withFaction1Over242Input_bothValuesNotEquivalent() {
     val inpus = mapOf("f" to FRACTION_242_OVER_1)
     val answer = FRACTION_133_OVER_2
 
@@ -121,28 +122,30 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputs = inpus
 
     )
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
-  fun testEquality_mixedNumbr106And1Over2Answer_withMixedNumber106And1Over2Input_bothValuesMatch(){
+  fun testEquality_mixedNumbr106And1Over2Answer_withMixedNumber106And1Over2Input_bothValuesMatch() {
     val inputs = mapOf("f" to MIXED_NUMBER_106_1_OVER_2)
 
     val matches = inputIsEquivalentToRuleClassifier.matches(
       answer = MIXED_NUMBER_106_1_OVER_2,
       inputs = inputs
     )
+
     assertThat(matches).isTrue()
   }
 
   @Test
-  fun testEquality_mixedNumber255And1Over4Answer_withMixedNum106And1Over2Input_bothValuesDoNotMatch(){
+  fun testEquality_mixedNumber255And1Over4Answer_withMixedNum106And1Over2Input_bothValuesDoNotMatch() {
     val inputs = mapOf("f" to MIXED_NUMBER_106_1_OVER_2)
 
     val matches = inputIsEquivalentToRuleClassifier.matches(
       answer = MIXED_NUMBER_255_1_OVER_4,
       inputs = inputs
     )
+
     assertThat(matches).isFalse()
   }
 
@@ -187,7 +190,6 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
 
     assertThat(matches).isFalse()
   }
-
 
   private fun createFraction(
     isNegative: Boolean,
@@ -235,7 +237,6 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   private fun createNonNegativeInt(value: Int): InteractionObject {
     return InteractionObject.newBuilder().setNonNegativeInt(value).build()
   }
-
 
   @Before
   fun setUp() {
