@@ -1,10 +1,12 @@
 package org.oppia.android.util.parser
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.PictureDrawable
 import android.text.Html
 import android.view.View
 import android.view.ViewGroup
@@ -49,12 +51,20 @@ class UrlImageParser private constructor(
     return urlDrawable
   }
 
+  private inner class BitmapTarget(urlDrawable: UrlDrawable) : CustomImageTarget<Bitmap>(
+    urlDrawable, { resource -> BitmapDrawable(context.resources, resource) }
+  )
+
+  private inner class SvgTarget(urlDrawable: UrlDrawable) : CustomImageTarget<PictureDrawable>(
+    urlDrawable, { it }
+  )
+
   private inner class OppiaImageTarget(urlDrawable: UrlDrawable) : CustomImageTarget<OppiaImage>(
-    urlDrawable,  {
-      when(it) {
-        is OppiaImage.BitmapImage -> (resource -> BitmapDrawable(context.resources, resource))
-        else -> it
-      }
+    urlDrawable,  { it
+//      when(it) {
+//        is OppiaImage.BitmapImage -> (resource -> BitmapDrawable(context.resources, resource))
+//        else -> it
+//      }
     }
   )
 
