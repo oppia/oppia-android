@@ -14,7 +14,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
 
-//etrieveQuestionsForSkillIds
 private const val RETRIEVE_QUESTION_FOR_SKILLS_ID_PROVIDER_ID =
   "retrieve_question_for_skills_id_provider_id"
 private const val START_QUESTION_TRAINING_SESSION_PROVIDER_ID = "" +
