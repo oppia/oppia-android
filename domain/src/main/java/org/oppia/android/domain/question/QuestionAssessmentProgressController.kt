@@ -24,8 +24,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
-private const val CURRENT_QUESTION_DATA_PROVIDER_ID = "CurrentQuestionDataProvider"
+private const val CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID =
+  "create_current_question_data_provider_id"
+private const val BEGIN_QUESTION_TRAINING_SESSION_PROVIDER_ID =
+  "begin_question_training_session_provider_id"
 private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID = "EmptyQuestionsListDataProvider"
+private const val SUBMIT_ANSWER_PROVIDER_ID = "submit_answer_provider_id"
 
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through a
@@ -68,7 +72,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         questionsListDataProvider,
         this::retrieveCurrentQuestionAsync
       )
-      asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+      asyncDataSubscriptionManager.notifyChangeAsync(BEGIN_QUESTION_TRAINING_SESSION_PROVIDER_ID)
     }
   }
 
@@ -128,7 +132,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
         // Notify observers that the submitted answer is currently pending.
         progress.advancePlayStageTo(TrainStage.SUBMITTING_ANSWER)
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(SUBMIT_ANSWER_PROVIDER_ID)
 
         lateinit var answeredQuestionOutcome: AnsweredQuestionOutcome
         try {
@@ -158,7 +162,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
         }
 
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
 
         return MutableLiveData(AsyncResult.success(answeredQuestionOutcome))
       }
@@ -199,7 +203,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           // exception.
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
         }
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
         return MutableLiveData(AsyncResult.success(hint))
       }
     } catch (e: Exception) {
@@ -233,7 +237,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
         }
 
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
         return MutableLiveData(AsyncResult.success(solution))
       }
     } catch (e: Exception) {
@@ -270,7 +274,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         if (progress.isViewingMostRecentQuestion()) {
           progress.processNavigationToNewQuestion()
         }
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
@@ -309,7 +313,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     questionsListDataProvider: DataProvider<List<Question>>
   ): NestedTransformedDataProvider<EphemeralQuestion> {
     return questionsListDataProvider.transformNested(
-      CURRENT_QUESTION_DATA_PROVIDER_ID,
+      CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID,
       this::retrieveCurrentQuestionAsync
     )
   }
