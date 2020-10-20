@@ -67,7 +67,7 @@ val EXPLORATION_THUMBNAILS = mapOf(
   TEST_EXPLORATION_ID_6 to createChapterThumbnail0()
 )
 
-private const val TRANSFORMED_GET_ONGOING_STORY_LIST_PROVIDER_ID =
+private const val GET_ONGOING_STORY_LIST_PROVIDER_ID =
   "transformed_get_ongoing_story_list_provider_id"
 
 private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
@@ -98,7 +98,7 @@ class TopicListController @Inject constructor(
    */
   fun getOngoingStoryList(profileId: ProfileId): DataProvider<OngoingStoryList> {
     return storyProgressController.retrieveTopicProgressListDataProvider(profileId)
-      .transformAsync(TRANSFORMED_GET_ONGOING_STORY_LIST_PROVIDER_ID) {
+      .transformAsync(GET_ONGOING_STORY_LIST_PROVIDER_ID) {
         val ongoingStoryList = createOngoingStoryListFromProgress(it)
         AsyncResult.success(ongoingStoryList)
       }

@@ -64,15 +64,16 @@ private const val FRACTIONS_SUBTOPIC_ID_3 = 3
 private const val FRACTIONS_SUBTOPIC_ID_4 = 4
 private const val SUBTOPIC_BG_COLOR = "#FFFFFF"
 
-private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
-private const val TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID =
-  "transformed_get_completed_stories_provider_id"
-private const val TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID =
-  "transformed_get_ongoing_topics_provider_id"
-private const val TRANSFORMED_GET_TOPIC_PROVIDER_ID = "transformed_get_topic_provider_id"
-private const val TRANSFORMED_GET_STORY_PROVIDER_ID = "transformed_get_story_provider_id"
-private const val COMBINED_TOPIC_PROVIDER_ID = "combined_topic_provider_id"
-private const val COMBINED_STORY_PROVIDER_ID = "combined_story_provider_id"
+private const val RETRIEVE_QUESTIONS_FOR_SKILL_IDS_PROVIDER_ID =
+  "retrieve_questions_for_skills_ids_provider_ud"
+private const val GET_COMPLETED_STORY_LIST_PROVIDER_ID =
+  "get_completed_story_list_provider_id"
+private const val GET_ONGOING_TOPIC_LIST_PROVIDER_ID =
+  "get_ongoing_topic_list_provider_id"
+private const val GET_TOPIC_PROVIDER_ID = "get_topic_provider_id"
+private const val GET_STORY_PROVIDER_ID = "get_story_provider_id"
+private const val GET_TOPIC_COMBINED_PROVIDER_ID = "get_topic_combined_provider_id"
+private const val GET_STORY_COMBINED_PROVIDER_ID = "get_story_combined_provider_id"
 
 /** Controller for retrieving all aspects of a topic. */
 @Singleton
@@ -96,7 +97,7 @@ class TopicController @Inject constructor(
    */
   fun getTopic(profileId: ProfileId, topicId: String): DataProvider<Topic> {
     val topicDataProvider =
-      dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_TOPIC_PROVIDER_ID) {
+      dataProviders.createInMemoryDataProviderAsync(GET_TOPIC_PROVIDER_ID) {
         return@createInMemoryDataProviderAsync AsyncResult.success(retrieveTopic(topicId))
       }
     val topicProgressDataProvider =
@@ -104,7 +105,7 @@ class TopicController @Inject constructor(
 
     return topicDataProvider.combineWith(
       topicProgressDataProvider,
-      COMBINED_TOPIC_PROVIDER_ID,
+      GET_TOPIC_COMBINED_PROVIDER_ID,
       ::combineTopicAndTopicProgress
     )
   }
@@ -123,7 +124,7 @@ class TopicController @Inject constructor(
     storyId: String
   ): DataProvider<StorySummary> {
     val storyDataProvider =
-      dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_STORY_PROVIDER_ID) {
+      dataProviders.createInMemoryDataProviderAsync(GET_STORY_PROVIDER_ID) {
         return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(topicId, storyId))
       }
     val storyProgressDataProvider =
@@ -131,7 +132,7 @@ class TopicController @Inject constructor(
 
     return storyDataProvider.combineWith(
       storyProgressDataProvider,
-      COMBINED_STORY_PROVIDER_ID,
+      GET_STORY_COMBINED_PROVIDER_ID,
       ::combineStorySummaryAndStoryProgress
     )
   }
@@ -173,7 +174,7 @@ class TopicController @Inject constructor(
   fun getCompletedStoryList(profileId: ProfileId): DataProvider<CompletedStoryList> {
     return storyProgressController.retrieveTopicProgressListDataProvider(
       profileId
-    ).transformAsync(TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID) {
+    ).transformAsync(GET_COMPLETED_STORY_LIST_PROVIDER_ID) {
       val completedStoryListBuilder = CompletedStoryList.newBuilder()
       it.forEach { topicProgress ->
         val topic = retrieveTopic(topicProgress.topicId)
@@ -199,14 +200,14 @@ class TopicController @Inject constructor(
   fun getOngoingTopicList(profileId: ProfileId): DataProvider<OngoingTopicList> {
     return storyProgressController.retrieveTopicProgressListDataProvider(
       profileId
-    ).transformAsync(TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID) {
+    ).transformAsync(GET_ONGOING_TOPIC_LIST_PROVIDER_ID) {
       val ongoingTopicList = createOngoingTopicListFromProgress(it)
       AsyncResult.success(ongoingTopicList)
     }
   }
 
   fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
-    return dataProviders.createInMemoryDataProvider(QUESTION_DATA_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProvider(RETRIEVE_QUESTIONS_FOR_SKILL_IDS_PROVIDER_ID) {
       loadQuestionsForSkillIds(skillIdsList)
     }
   }

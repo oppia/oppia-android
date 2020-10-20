@@ -24,8 +24,17 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
-private const val CURRENT_QUESTION_DATA_PROVIDER_ID = "CurrentQuestionDataProvider"
-private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID = "EmptyQuestionsListDataProvider"
+private const val CURRENT_QUESTION_DATA_PROVIDER_ID = "current_question_data_provider_id"
+private const val CREATE_EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID =
+  "create_empty_question_list_data_provider_id"
+private const val BEGIN_QUESTION_TRAINING_SESSION_PROVIDER_ID =
+  "begin_question_training_session_provider_id"
+private const val SUBMIT_ANSWER_PROVIDER_ID = "submit_answer_provider_id"
+private const val SUBMIT_ANSWER_PENDING_PROVIDER_ID = "submit_answer_pending_provider_id"
+private const val SUBMIT_HINT_IS_REVEALED_PROVIDER_ID = "submit_hint_is_revealed_provider_id"
+private const val SUBMIT_SOLUTION_IS_REVEALED_PROVIDER_ID =
+  "submit_solution_is_revealed_provider_id"
+private const val MOVE_TO_NEXT_QUESTION_PROVIDER_ID = "move_to_next_question_provider_id"
 
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through a
@@ -68,7 +77,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         questionsListDataProvider,
         this::retrieveCurrentQuestionAsync
       )
-      asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+      asyncDataSubscriptionManager.notifyChangeAsync(BEGIN_QUESTION_TRAINING_SESSION_PROVIDER_ID)
     }
   }
 
@@ -128,7 +137,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
         // Notify observers that the submitted answer is currently pending.
         progress.advancePlayStageTo(TrainStage.SUBMITTING_ANSWER)
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(SUBMIT_ANSWER_PENDING_PROVIDER_ID)
 
         lateinit var answeredQuestionOutcome: AnsweredQuestionOutcome
         try {
@@ -158,7 +167,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
         }
 
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(SUBMIT_ANSWER_PROVIDER_ID)
 
         return MutableLiveData(AsyncResult.success(answeredQuestionOutcome))
       }
@@ -199,7 +208,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           // exception.
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
         }
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(SUBMIT_HINT_IS_REVEALED_PROVIDER_ID)
         return MutableLiveData(AsyncResult.success(hint))
       }
     } catch (e: Exception) {
@@ -233,7 +242,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
         }
 
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(SUBMIT_SOLUTION_IS_REVEALED_PROVIDER_ID)
         return MutableLiveData(AsyncResult.success(solution))
       }
     } catch (e: Exception) {
@@ -270,7 +279,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         if (progress.isViewingMostRecentQuestion()) {
           progress.processNavigationToNewQuestion()
         }
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(MOVE_TO_NEXT_QUESTION_PROVIDER_ID)
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
@@ -364,7 +373,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   /** Returns a temporary [DataProvider] that always provides an empty list of [Question]s. */
   private fun createEmptyQuestionsListDataProvider(): DataProvider<List<Question>> {
-    return dataProviders.createInMemoryDataProvider(EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProvider(CREATE_EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) {
       listOf<Question>()
     }
   }

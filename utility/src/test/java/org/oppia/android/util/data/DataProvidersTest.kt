@@ -42,11 +42,11 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val BASE_PROVIDER_ID_0 = "base_id_0"
-private const val BASE_PROVIDER_ID_1 = "base_id_1"
-private const val OTHER_PROVIDER_ID = "other_id"
-private const val TRANSFORMED_PROVIDER_ID = "transformed_id"
-private const val COMBINED_PROVIDER_ID = "combined_id"
+private const val BASE_PROVIDER_ID_0 = "base_provider_id_0"
+private const val BASE_PROVIDER_ID_1 = "base_provider_id_1"
+private const val OTHER_PROVIDER_ID = "other_provider_id"
+private const val TRANSFORMED_PROVIDER_ID = "transformed_provider_id"
+private const val COMBINED_PROVIDER_ID = "combined_provider_id"
 private const val STR_VALUE_0 = "I used to be indecisive."
 private const val STR_VALUE_1 = "Now I'm not so sure."
 private const val STR_VALUE_2 = "At least I thought I was."

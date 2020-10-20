@@ -21,7 +21,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
-private const val CURRENT_STATE_DATA_PROVIDER_ID = "CurrentStateDataProvider"
+private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
+private const val BEGIN_EXPLORATION_ASYNC_PROVIDER_ID = "begin_exploration_async_provider_id"
+private const val SUBMIT_ANSWER_PROVIDER_ID = "submit_answer_provider_id"
+private const val SUBMIT_ANSWER_PENDING_PROVIDER_ID = "submit_answer_pending_provider_id"
+private const val SUBMIT_HINT_IS_REVEALED_PROVIDER_ID = "submit_hint_is_revealed_provider_id"
+private const val SUBMIT_SOLUTION_IS_REVEALED_PROVIDER_ID =
+  "submit_solution_is_revealed_provider_id"
+private const val MOVE_TO_PREVIOUS_STATE_PROVIDER_ID = "move_to_previous_state_provider_id"
+private const val MOVE_TO_NEXT_STATE_PROVIDER_ID = "move_to_next_state_provider_id"
 
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through an
@@ -68,7 +76,7 @@ class ExplorationProgressController @Inject constructor(
 
       explorationProgress.currentExplorationId = explorationId
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
-      asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+      asyncDataSubscriptionManager.notifyChangeAsync(BEGIN_EXPLORATION_ASYNC_PROVIDER_ID)
     }
   }
 
@@ -136,7 +144,7 @@ class ExplorationProgressController @Inject constructor(
 
         // Notify observers that the submitted answer is currently pending.
         explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.SUBMITTING_ANSWER)
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(SUBMIT_ANSWER_PENDING_PROVIDER_ID)
 
         lateinit var answerOutcome: AnswerOutcome
         try {
@@ -160,7 +168,7 @@ class ExplorationProgressController @Inject constructor(
           explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
         }
 
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(SUBMIT_ANSWER_PROVIDER_ID)
 
         return MutableLiveData(AsyncResult.success(answerOutcome))
       }
@@ -210,7 +218,7 @@ class ExplorationProgressController @Inject constructor(
           // exception.
           explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
         }
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(SUBMIT_HINT_IS_REVEALED_PROVIDER_ID)
         return MutableLiveData(AsyncResult.success(hint))
       }
     } catch (e: Exception) {
@@ -255,7 +263,7 @@ class ExplorationProgressController @Inject constructor(
           explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
         }
 
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(SUBMIT_SOLUTION_IS_REVEALED_PROVIDER_ID)
         return MutableLiveData(AsyncResult.success(solution))
       }
     } catch (e: Exception) {
@@ -297,7 +305,7 @@ class ExplorationProgressController @Inject constructor(
           "Cannot navigate to a previous state if an answer submission is pending."
         }
         explorationProgress.stateDeck.navigateToPreviousState()
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(MOVE_TO_PREVIOUS_STATE_PROVIDER_ID)
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
@@ -343,7 +351,7 @@ class ExplorationProgressController @Inject constructor(
           "Cannot navigate to a next state if an answer submission is pending."
         }
         explorationProgress.stateDeck.navigateToNextState()
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(MOVE_TO_NEXT_STATE_PROVIDER_ID)
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
