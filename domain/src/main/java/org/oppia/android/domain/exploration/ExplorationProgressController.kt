@@ -21,7 +21,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
-private const val CURRENT_STATE_DATA_PROVIDER_ID = "CurrentStateDataProvider"
+//beginExplorationAsync
+private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
+
 
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through an
