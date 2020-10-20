@@ -4,17 +4,21 @@ import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.junit.After
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -46,6 +50,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -58,6 +63,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [InputInteractionViewTestActivity]. */
@@ -68,6 +74,25 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class InputInteractionViewTestActivityTest {
+
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
+
+  @Before
+  fun setUp() {
+    Intents.init()
+    setUpTestApplicationComponent()
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
 
   @Test
   fun testFractionInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
@@ -194,7 +219,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        typeText(
+        editTextInputAction.appendText(
           "-55 59/9"
         )
       )
@@ -219,7 +244,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-        typeText(
+        editTextInputAction.appendText(
           "9/5"
         )
       )
@@ -508,7 +533,9 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
-    onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("9"))
+    onView(withId(R.id.test_number_input_interaction_view)).perform(
+      editTextInputAction.appendText("9")
+    )
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
@@ -720,8 +747,6 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -736,15 +761,13 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-        typeText(
+        editTextInputAction.appendText(
           "1:2:3"
         )
       )
@@ -760,15 +783,13 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-        typeText(
+        editTextInputAction.appendText(
           "1:2"
         )
       )
@@ -780,13 +801,11 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withInputtedTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-        typeText(
+        editTextInputAction.appendText(
           "1::2"
         )
       )
@@ -801,13 +820,11 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputInteractionView_withInputtedSpacesBetweenComponents_hasCorrectPendingAnswer() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-        typeText(
+        editTextInputAction.appendText(
           "1   : 2 : 3 : 4 "
         )
       )
@@ -816,13 +833,11 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputInteractionView_withInputtedNegativeRatio_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-        typeText(
+        editTextInputAction.appendText(
           "-1:2:3:4"
         )
       )
@@ -837,16 +852,16 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
-  fun testRatioInputInteractionView_withFractionRatio_numberFormatErrorIsDisplayed() {
+  fun testRatioInputInteractionView_withFractionRatio_clickSubmitButton_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-        typeText(
+        editTextInputAction.appendText(
           "1/2:3:4"
         )
       )
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
     onView(withId(R.id.ratio_input_error))
       .check(
         matches(
@@ -858,13 +873,11 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withZeroRatio_clickSubmitButton_numberWithZerosErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-        typeText(
+        editTextInputAction.appendText(
           "1:0:4"
         )
       )
@@ -881,13 +894,11 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withInvalidRatioFormat_clickSubmitButton_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-        typeText(
+        editTextInputAction.appendText(
           "1: 1 2 :4"
         )
       )
@@ -897,20 +908,18 @@ class InputInteractionViewTestActivityTest {
       .check(
         matches(
           withText(
-            R.string.fraction_error_invalid_format
+            R.string.ratio_error_invalid_format
           )
         )
       )
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withRatioHaving4Terms_clickSubmitButton_invalidSizeErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-        typeText(
+        editTextInputAction.appendText(
           "1:2:3:4"
         )
       )
@@ -927,13 +936,11 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withRatioHaving2Terms_clickSubmitButton_invalidSizeErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-        typeText(
+        editTextInputAction.appendText(
           "1:2"
         )
       )
@@ -950,13 +957,11 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withRatioHaving3Terms_clickSubmitButton_noErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-        typeText(
+        editTextInputAction.appendText(
           "1:2:3"
         )
       )
