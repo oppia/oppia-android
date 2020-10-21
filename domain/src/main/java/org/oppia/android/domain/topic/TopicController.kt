@@ -66,13 +66,13 @@ private const val SUBTOPIC_BG_COLOR = "#FFFFFF"
 
 private const val RETRIEVED_QUESTIONS_FOR_SKILLS_ID_PROVIDER_ID =
   "retrieved_questions_for_skills_id_provider_id"
-private const val GET_COMPLETED_STORy_LIST_PROVIDER_ID =
+private const val GET_COMPLETED_STORY_LIST_PROVIDER_ID =
   "get_completed_story_list_provider_id"
 private const val GET_ONGOING_TOPIC_LIST_PROVIDER_ID =
   "get_ongoing_topic_list_provider_id"
 private const val GET_TOPIC_PROVIDER_ID = "get_topic_provider_id"
 private const val GET_STORY_PROVIDER_ID = "get_story_provider_id"
-private const val GE_TOPIC_COMBINED_PROVIDER_ID = "get_topic_combined_provider_id"
+private const val GET_TOPIC_COMBINED_PROVIDER_ID = "get_topic_combined_provider_id"
 private const val GET_STORY_COMBINED_PROVIDER_ID = "get_story_combined_provider_id"
 
 /** Controller for retrieving all aspects of a topic. */
@@ -105,7 +105,7 @@ class TopicController @Inject constructor(
 
     return topicDataProvider.combineWith(
       topicProgressDataProvider,
-      GE_TOPIC_COMBINED_PROVIDER_ID,
+      GET_TOPIC_COMBINED_PROVIDER_ID,
       ::combineTopicAndTopicProgress
     )
   }
@@ -174,7 +174,7 @@ class TopicController @Inject constructor(
   fun getCompletedStoryList(profileId: ProfileId): DataProvider<CompletedStoryList> {
     return storyProgressController.retrieveTopicProgressListDataProvider(
       profileId
-    ).transformAsync(GET_COMPLETED_STORy_LIST_PROVIDER_ID) {
+    ).transformAsync(GET_COMPLETED_STORY_LIST_PROVIDER_ID) {
       val completedStoryListBuilder = CompletedStoryList.newBuilder()
       it.forEach { topicProgress ->
         val topic = retrieveTopic(topicProgress.topicId)

@@ -28,7 +28,8 @@ private const val CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID =
   "create_current_question_data_provider_id"
 private const val BEGIN_QUESTION_TRAINING_SESSION_PROVIDER_ID =
   "begin_question_training_session_provider_id"
-private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID = "EmptyQuestionsListDataProvider"
+private const val CREATE_EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID =
+  "create_empty_questions_list_data_provider_id"
 private const val SUBMIT_ANSWER_PROVIDER_ID = "submit_answer_provider_id"
 
 /**
@@ -368,7 +369,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   /** Returns a temporary [DataProvider] that always provides an empty list of [Question]s. */
   private fun createEmptyQuestionsListDataProvider(): DataProvider<List<Question>> {
-    return dataProviders.createInMemoryDataProvider(EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProvider(CREATE_EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) {
       listOf<Question>()
     }
   }

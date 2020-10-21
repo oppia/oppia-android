@@ -34,14 +34,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
-private const val GET_PROFILE_PROVIDER_ID = "xget_profile_provider_id"
+private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
 private const val GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID =
-  "was_profile_ever_added_provider_id"
+  "get_was_profile_ever_added_provider_id"
 private const val GET_DEVICE_SETTINGS_PROVIDER_ID =
-  "device_settings_provider_id"
+  "get_device_settings_provider_id"
 private const val ADD_PROFILE_PROVIDER_ID = "add_profile_provided_id"
 private const val UPDATE_NAME_PROVIDER_ID = "update_name_provider_id"
-private const val UPDATE_PIN_TRANSFORMED_PROVIDER_ID = "update_pin_transformed_id"
+private const val UPDATE_PIN_PROVIDER_ID = "update_pin_provider_id"
 private const val UPDATE_PROFILE_AVATAR_PROVIDER_ID =
   "update_profile_avatar_provider_id"
 private const val UPDATE_WIFI_PERMISSION_DEVICE_SETTINGS_PROVIDER_ID =
@@ -52,7 +52,7 @@ private const val UPDATE_ALL_DOWNLOAD_ACCESS_PROVIDER_ID =
   "update_all_download_provider_id"
 private const val LOGIN_TO_PROFILE_PROVIDER_ID = "login_to_profile_provider_id"
 private const val DELETE_PROFILE_PROVIDER_ID = "delete_profile_provider_id"
-private const val SET_CURRENT_PROFILE_ID_PROVIDER_ID = "set_profile_id_provider_id"
+private const val SET_CURRENT_PROFILE_ID_PROVIDER_ID = "set_current_profile_id_provider_id"
 private const val UPDATE_READING_TEXT_SIZE_PROVIDER_ID =
   "update_reading_text_size_provider_id"
 private const val UPDATE_APP_LANGUAGE_PROVIDER_ID = "update_app_language_provider_id"
@@ -344,7 +344,7 @@ class ProfileManagementController @Inject constructor(
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    return dataProviders.createInMemoryDataProviderAsync(UPDATE_PIN_TRANSFORMED_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_PIN_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
   }

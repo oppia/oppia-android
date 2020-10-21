@@ -37,9 +37,8 @@ const val RATIOS_EXPLORATION_ID_2 = "k2bQ7z5XHNbK"
 const val RATIOS_EXPLORATION_ID_3 = "tIoSb3HZFN6e"
 
 private const val CACHE_NAME = "topic_progress_database"
-
 private const val RETRIEVE_TOPIC_PROGRESS_LIST_DATA_PROVIDER_ID =
-  "retrieved_topic_progress_list_data_provider_id"
+  "retrieve_topic_progress_list_data_provider_id"
 private const val RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID =
   "retrieve_topic_progress_data_provider_id"
 private const val RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID =
