@@ -126,7 +126,6 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
     val matches = inputIsEquivalentToRuleClassifier.matches(
       answer = FRACTION_133_OVER_2,
       inputs = inpus
-
     )
 
     assertThat(matches).isFalse()
