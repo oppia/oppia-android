@@ -37,6 +37,9 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
     createMixedNumber(isNegative = false, wholeNumber = 106, numerator = 1, denominator = 2)
   private val MIXED_NUMBER_255_1_OVER_4 =
     createMixedNumber(isNegative = false, wholeNumber = 255, numerator = 1, denominator = 4)
+  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
+  private val MIXED_NUMBER_NEGATIVE_79_2_OVER_3 =
+    createMixedNumber(isNegative = true, wholeNumber = 79, numerator = 2, denominator = 3)
 
   @Inject
   internal lateinit var fractionInputIsEquivalentToRuleClassifierProvider:
@@ -142,8 +145,9 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquality_mixedNumber255And1Over4Answer_withMixedNum106And1Over2Input_bothValuesDoNotMatch(
-  ) {
+  fun
+    testEquality_mixedNumber255And1Over4Answer_withMixedNum106And1Over2Input_bothValuesDoNotMatch()
+  {
     val inputs = mapOf("f" to MIXED_NUMBER_106_1_OVER_2)
 
     val matches = inputIsEquivalentToRuleClassifier.matches(
@@ -194,6 +198,37 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       )
 
     assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testEquality_nonNegativeInput_inputWithIncorrectType_throwsException() {
+    val inputs = mapOf("f" to NON_NEGATIVE_VALUE_0)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = FRACTION_2_OVER_8,
+        inputs = inputs
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains(
+        "Expected input value to be of type FRACTION not NON_NEGATIVE_INT"
+      )
+  }
+
+  @Test
+  fun testEquality_negativeMixedNumberAnswer_withPositveMixedNumberInput_bothValuesDoNotMatche() {
+    val inputs = mapOf("f" to MIXED_NUMBER_NEGATIVE_79_2_OVER_3)
+
+    val matches =
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = MIXED_NUMBER_NEGATIVE_79_2_OVER_3,
+        inputs = inputs
+      )
+
+    assertThat(matches).isTrue()
   }
 
   private fun createFraction(
