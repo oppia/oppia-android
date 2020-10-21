@@ -4,13 +4,12 @@ import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.android.app.model.StringList
-import javax.inject.Inject
 
 /**
  * Helper class for test cases which can provide the [InteractionObject]
  * of a particular ObjectTypeCase.
  */
-class InteractionObjectTestBuilder @Inject constructor() {
+object InteractionObjectTestBuilder {
 
   fun createNonNegativeInt(value: Int): InteractionObject {
     return InteractionObject.newBuilder().setNonNegativeInt(value).build()
