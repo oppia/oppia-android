@@ -142,8 +142,6 @@ class UrlImageParser private constructor(
     }
   }
 
-  private open inner class CustomOppiaImageTarget
-
   class UrlDrawable : BitmapDrawable() {
     var drawable: Drawable? = null
     override fun draw(canvas: Canvas) {
