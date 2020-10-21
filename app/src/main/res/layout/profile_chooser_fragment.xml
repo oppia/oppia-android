@@ -29,16 +29,17 @@
           android:id="@+id/profile_chooser_language_icon"
           android:layout_width="48dp"
           android:layout_height="48dp"
-          android:layout_marginEnd="36dp"
           android:paddingStart="4dp"
           android:paddingTop="20dp"
           android:paddingEnd="20dp"
           android:src="@drawable/ic_language_icon_grey_24dp"
           android:visibility="gone"
           app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+          android:id="@+id/textView"
           style="@style/Subtitle1"
           android:gravity="center"
           android:minHeight="48dp"
@@ -58,7 +59,7 @@
           android:text="@string/profile_chooser_select"
           android:textColor="@color/white"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
+          app:layout_constraintTop_toTopOf="parent"/>
 
         <androidx.recyclerview.widget.RecyclerView
           android:id="@+id/profile_recycler_view"

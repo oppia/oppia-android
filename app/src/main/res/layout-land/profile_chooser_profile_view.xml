@@ -22,14 +22,10 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/profile_chooser_item"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_28dp}"
-    app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_24dp}"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
@@ -38,6 +34,7 @@
       android:id="@+id/profile_avatar_img"
       android:layout_width="72dp"
       android:layout_height="72dp"
+      android:layout_marginBottom="8dp"
       app:civ_border_color="@color/avatarBorder"
       app:civ_border_width="1dp"
       app:layout_constraintStart_toStartOf="parent"
@@ -47,8 +44,7 @@
     <TextView
       android:id="@+id/profile_name_text"
       style="@style/Caption"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/space_8dp"
       android:ellipsize="end"
       android:gravity="center"
       android:maxLines="2"
@@ -56,13 +52,12 @@
       android:text="@{viewModel.profile.name}"
       android:textColor="@color/white"
       app:layout_constraintStart_toEndOf="@+id/profile_avatar_img"
-      app:layout_constraintTop_toTopOf="@+id/profile_avatar_img" />
+      app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
       android:id="@+id/profile_last_visited"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="4dp"
       android:fontFamily="sans-serif-light"
       android:gravity="center"
       android:textColor="@color/white"
@@ -77,6 +72,7 @@
       android:id="@+id/profile_is_admin_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/space_16dp"
       android:fontFamily="sans-serif-light"
       android:gravity="center"
       android:text="@string/profile_chooser_admin"
@@ -92,6 +88,7 @@
       android:layout_width="0.5dp"
       android:layout_height="match_parent"
       android:layout_gravity="bottom"
+      android:layout_marginEnd="8dp"
       android:background="@color/oppiaProfileChooserDivider"
       android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
       app:layout_constraintBottom_toBottomOf="@+id/profile_chooser_item"
