@@ -35,11 +35,11 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
     createFraction(isNegative = false, numerator = 242, denominator = 1)
   private val MIXED_NUMBER_106_1_OVER_2 =
     createMixedNumber(isNegative = false, wholeNumber = 106, numerator = 1, denominator = 2)
-  private val MIXED_NUMBER_255_1_OVER_4 =
-    createMixedNumber(isNegative = false, wholeNumber = 255, numerator = 1, denominator = 4)
+  private val MIXED_NUMBER_55_1_OVER_4 =
+    createMixedNumber(isNegative = false, wholeNumber = 55, numerator = 1, denominator = 4)
   private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
-  private val MIXED_NUMBER_NEGATIVE_79_2_OVER_3 =
-    createMixedNumber(isNegative = true, wholeNumber = 79, numerator = 2, denominator = 3)
+  private val MIXED_NUMBER_NEGATIVE_679_2_OVER_3 =
+    createMixedNumber(isNegative = true, wholeNumber = 679, numerator = 2, denominator = 3)
 
   @Inject
   internal lateinit var fractionInputIsEquivalentToRuleClassifierProvider:
@@ -145,12 +145,11 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
 
   @Test
   fun
-    testEquality_mixedNumber255And1Over4Answer_withMixedNum106And1Over2Input_bothValuesDoNotMatch()
-  {
+    testEquality_mixedNumber55And1Over4Answer_withMixedNum106And1Over2Input_bothValuesDoNotMatch() {
     val inputs = mapOf("f" to MIXED_NUMBER_106_1_OVER_2)
 
     val matches = inputIsEquivalentToRuleClassifier.matches(
-      answer = MIXED_NUMBER_255_1_OVER_4,
+      answer = MIXED_NUMBER_55_1_OVER_4,
       inputs = inputs
     )
 
@@ -219,11 +218,11 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
 
   @Test
   fun testEquality_negativeMixedNumberAnswer_withPositveMixedNumberInput_bothValuesDoNotMatche() {
-    val inputs = mapOf("f" to MIXED_NUMBER_NEGATIVE_79_2_OVER_3)
+    val inputs = mapOf("f" to MIXED_NUMBER_NEGATIVE_679_2_OVER_3)
 
     val matches =
       inputIsEquivalentToRuleClassifier.matches(
-        answer = MIXED_NUMBER_NEGATIVE_79_2_OVER_3,
+        answer = MIXED_NUMBER_NEGATIVE_679_2_OVER_3,
         inputs = inputs
       )
 
