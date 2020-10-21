@@ -41,32 +41,29 @@ class UrlImageParser private constructor(
   override fun getDrawable(urlString: String): Drawable {
     val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
-    val target: OppiaImage
-    target = if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      OppiaImage.SvgImage(urlDrawable)
+
+    if (imageUrl.endsWith("svg", ignoreCase = true)) {
+      val oppiaImage = OppiaImage.SvgImage(urlDrawable)
+      imageLoader.loadOppiaImage("$gcsPrefix/$gcsResourceName/$imageUrl",
+        findImageType(urlDrawable, oppiaImage))
     } else {
-      OppiaImage.BitmapImage(urlDrawable)
+      val oppiaImage = OppiaImage.BitmapImage(urlDrawable)
+      imageLoader.loadOppiaImage("$gcsPrefix/$gcsResourceName/$imageUrl",
+        findImageType(urlDrawable, oppiaImage))
     }
-    imageLoader.loadOppiaImage("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(target))
     return urlDrawable
   }
 
-  private inner class BitmapTarget(urlDrawable: UrlDrawable) : CustomImageTarget<Bitmap>(
-    urlDrawable, { resource -> BitmapDrawable(context.resources, resource) }
-  )
-
-  private inner class SvgTarget(urlDrawable: UrlDrawable) : CustomImageTarget<PictureDrawable>(
-    urlDrawable, { it }
-  )
-
-  private inner class OppiaImageTarget(urlDrawable: UrlDrawable) : CustomImageTarget<OppiaImage>(
-    urlDrawable,  { it
-//      when(it) {
-//        is OppiaImage.BitmapImage -> (resource -> BitmapDrawable(context.resources, resource))
-//        else -> it
-//      }
+  private fun findImageType(urlDrawable: UrlDrawable, oppiaImage: OppiaImage): CustomImageTarget {
+    return  when(oppiaImage) {
+      is OppiaImage.BitmapImage -> {
+        CustomImageTarget<Bitmap>(urlDrawable) { resource -> BitmapDrawable(context.resources, resource)}
+      }
+      is OppiaImage.SvgImage -> {
+        CustomImageTarget<PictureDrawable>(urlDrawable) { it }
+      }
     }
-  )
+  }
 
   private open inner class CustomImageTarget<T>(
     private val urlDrawable: UrlDrawable,
