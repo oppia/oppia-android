@@ -9,35 +9,36 @@ import javax.inject.Inject
 // TODO(#59): Replace the reflection code below with direct calls to Robolectric once this test can be made to run
 //  only on Robolectric (or properly on Espresso without relying on Robolectric shadows, e.g. by using compile-time
 //  replaceable fakes).
-
-/** NOTE TO DEVELOPERS: DO NOT REPLICATE THE REFLECTION CODE BELOW ANYWHERE.
+/**
+ * NOTE TO DEVELOPERS: DO NOT REPLICATE THE REFLECTION CODE BELOW ANYWHERE.
  * THIS IS A STOP-GAP MEASURE UNTIL WE CAN USE BAZEL TO PROPERLY BUILD THIS TEST SPECIFICALLY
  * FOR ROBOLECTRIC AND NOT FOR ESPRESSO.
- *
- *
+ */
+
+/**
  * Robolectric-specific implementation of [TestMediaPlayer].
  *
  * This implementation uses Reflection.
  */
-class TestMediaPlayerRobolectricImpl @Inject constructor() : TestMediaPlayer {
+class TestMediaPlayerRobolectricImpl @Inject constructor(
+  val context: Context
+) : TestMediaPlayer {
 
   override fun addMediaInfo(
-    context: Context,
     explorationId1: String,
     explorationId2: String,
     audioFileName1: String,
     audioFileName2: String,
-    mediaPlayer: MediaPlayer
+    mediaPlayer: MediaPlayer,
+    duration: Int,
+    preparationDelay: Int
   ) {
     val mediaTestUrl1 = createAudioUrl(explorationId1, audioFileName1)
     val mediaTestUrl2 = createAudioUrl(explorationId2, audioFileName2)
 
     val dataSource = toDataSource(context, Uri.parse(mediaTestUrl1))!!
     val dataSource2 = toDataSource(context, Uri.parse(mediaTestUrl2))!!
-    val mediaInfo = createMediaInfo(
-      duration = 1000,
-      preparationDelay = 0
-    )
+    val mediaInfo = createMediaInfo(duration, preparationDelay)
     addMediaInfo(dataSource, mediaInfo)
     addMediaInfo(dataSource2, mediaInfo)
 
@@ -100,14 +101,14 @@ class TestMediaPlayerRobolectricImpl @Inject constructor() : TestMediaPlayer {
     shadowMediaPlayer.javaClass.getMethod("invokePreparedListener").invoke(shadowMediaPlayer)
   }
 
-  override fun setupAudio(explorationId: String, audioFileName: String) {
+  override fun setUpAudio(explorationId: String, audioFileName: String) {
     val dataSource = createAudioDataSource(
       explorationId = explorationId, audioFileName = audioFileName
     )
     addShadowMediaPlayerException(dataSource!!, IOException("Test does not have networking"))
   }
 
-  override fun setupAudioDualMedia(
+  override fun setUpAudioDualMedia(
     explorationId1: String,
     audioFileName1: String,
     explorationId2: String,
@@ -152,18 +153,18 @@ class TestMediaPlayerRobolectricImpl @Inject constructor() : TestMediaPlayer {
   }
 
   private fun getDataSourceClass(): Class<*> {
-    return Class.forName("org.robolectric.shadows.util.DataSource")
+    return context.classLoader.loadClass("org.robolectric.shadows.util.DataSource")
   }
 
   private fun getMediaInfoClass(): Class<*> {
-    return Class.forName("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo")
+    return context.classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo")
   }
 
   private fun getShadowMediaPlayerClass(): Class<*> {
-    return Class.forName("org.robolectric.shadows.ShadowMediaPlayer")
+    return context.classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
   }
 
   private fun getShadowsClass(): Class<*> {
-    return Class.forName("org.robolectric.Shadows")
+    return context.classLoader.loadClass("org.robolectric.Shadows")
   }
 }

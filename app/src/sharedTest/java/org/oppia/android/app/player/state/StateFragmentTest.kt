@@ -191,7 +191,7 @@ class StateFragmentTest {
 
     // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
     // Espresso can't load Robolectric into its classpath).
-    testMediaPlayer.setupAudio(
+    testMediaPlayer.setUpAudio(
       explorationId = FRACTIONS_EXPLORATION_ID_1, audioFileName = "content-en-ouqm7j21vt8.mp3"
     )
   }

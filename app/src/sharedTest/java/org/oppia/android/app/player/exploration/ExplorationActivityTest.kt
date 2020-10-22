@@ -307,7 +307,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
-    testMediaPlayer.setupAudio(
+    testMediaPlayer.setUpAudio(
       explorationId = RATIOS_EXPLORATION_ID_0,
       audioFileName = audioFileName
     )
@@ -332,7 +332,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_checkOpensCellularAudioDialog() {
-    testMediaPlayer.setupAudio(
+    testMediaPlayer.setUpAudio(
       explorationId = RATIOS_EXPLORATION_ID_0,
       audioFileName = audioFileName
     )
@@ -358,7 +358,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_changeConfiguration_checkOpensCellularAudioDialog() { // ktlint-disable max-line-length
-    testMediaPlayer.setupAudio(
+    testMediaPlayer.setUpAudio(
       explorationId = RATIOS_EXPLORATION_ID_0,
       audioFileName = audioFileName
     )
@@ -385,7 +385,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickNegative_checkAudioFragmentIsHidden() { // ktlint-disable max-line-length
-    testMediaPlayer.setupAudio(
+    testMediaPlayer.setUpAudio(
       explorationId = RATIOS_EXPLORATION_ID_0,
       audioFileName = audioFileName
     )
@@ -421,7 +421,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickPositive_checkAudioFragmentIsVisible() { // ktlint-disable max-line-length
-    testMediaPlayer.setupAudio(
+    testMediaPlayer.setUpAudio(
       explorationId = RATIOS_EXPLORATION_ID_0,
       audioFileName = audioFileName
     )
@@ -466,7 +466,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickCheckboxAndNegative_clickAudioIcon_checkAudioFragmentIsHiddenAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
-    testMediaPlayer.setupAudio(
+    testMediaPlayer.setUpAudio(
       explorationId = RATIOS_EXPLORATION_ID_0,
       audioFileName = audioFileName
     )
@@ -506,7 +506,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickCheckboxAndPositive_clickAudioIconTwice_checkAudioFragmentIsVisibleAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
-    testMediaPlayer.setupAudio(
+    testMediaPlayer.setUpAudio(
       explorationId = RATIOS_EXPLORATION_ID_0,
       audioFileName = audioFileName
     )
@@ -583,7 +583,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsHinglish() { // ktlint-disable max-line-length
-    testMediaPlayer.setupAudioDualMedia(
+    testMediaPlayer.setUpAudioDualMedia(
       explorationId1 = FRACTIONS_EXPLORATION_ID_0,
       audioFileName1 = "content-en-nb3k4zuyir.mp3",
       audioFileName2 = "content-hi-en-l8ik9pdxj2a.mp3",

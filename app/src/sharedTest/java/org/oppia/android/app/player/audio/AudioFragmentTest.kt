@@ -78,7 +78,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -182,7 +182,6 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
     testMediaPlayer.addMediaInfo(
-      context = context,
       explorationId1 = RATIOS_EXPLORATION_ID_0,
       explorationId2 = RATIOS_EXPLORATION_ID_0,
       audioFileName1 = audioFileName1,
@@ -205,7 +204,6 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
     testMediaPlayer.addMediaInfo(
-      context = context,
       explorationId1 = RATIOS_EXPLORATION_ID_0,
       explorationId2 = RATIOS_EXPLORATION_ID_0,
       audioFileName1 = audioFileName1,
@@ -230,7 +228,6 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_touchSeekBar_checkStillPaused() {
     testMediaPlayer.addMediaInfo(
-      context = context,
       explorationId1 = RATIOS_EXPLORATION_ID_0,
       explorationId2 = RATIOS_EXPLORATION_ID_0,
       audioFileName1 = audioFileName1,
@@ -255,7 +252,6 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_clickPlay_touchSeekBar_checkStillPlaying() {
     testMediaPlayer.addMediaInfo(
-      context = context,
       explorationId1 = RATIOS_EXPLORATION_ID_0,
       explorationId2 = RATIOS_EXPLORATION_ID_0,
       audioFileName1 = audioFileName1,
@@ -307,7 +303,6 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
     testMediaPlayer.addMediaInfo(
-      context = context,
       explorationId1 = RATIOS_EXPLORATION_ID_0,
       explorationId2 = RATIOS_EXPLORATION_ID_0,
       audioFileName1 = audioFileName1,

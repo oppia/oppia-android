@@ -5,9 +5,7 @@ import dagger.Provides
 import org.oppia.android.testing.IsOnRobolectric
 import javax.inject.Provider
 
-/**
- * Dagger [Module] that provides TestMediaPlayer.
- */
+/** Dagger [Module] that provides TestMediaPlayer.*/
 @Module
 class TestMediaPlayerModule {
 
