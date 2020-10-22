@@ -32,11 +32,11 @@ class TextInputStartsWithRuleClassifierProviderTest {
     textInputStartsWithRuleClassifierProvider.createRuleClassifier()
   }
 
-  private val LOWERCASE_1 = createString("test string")
-  private val LOWERCASE_2 = createString("test")
-  private val LOWERCASE_3 = createString("string")
-  private val UPPERCASE_1 = createString("TEST STRING")
-  private val UPPERCASE_2 = createString("TEST")
+  private val STRING_VALUE_TESTSTRING_LOWERCASE = createString("test string")
+  private val STRING_VALUE_TEST_LOWERCASE = createString("test")
+  private val STRING_VALUE_STRING_LOWERCASE = createString("string")
+  private val STRING_VALUE_TESTSTRING_UPPERCASE = createString("TEST STRING")
+  private val STRING_VALUE_TEST_UPPERCASE = createString("TEST")
   private val EMPTY_STRING = createString("")
 
   @Before
@@ -45,11 +45,11 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseAns_testStringLowercaseInput_outputAsTestString_verifyAnsStartsWith() {
-    val inputs = mapOf("x" to LOWERCASE_1)
+  fun testLowercaseStringAns_lowercaseStringInput_differentStrings_verifyAnsStartsWith() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = LOWERCASE_1,
+      answer = STRING_VALUE_TESTSTRING_LOWERCASE,
       inputs = inputs
     )
 
@@ -57,23 +57,11 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseAns_testLowercaseInput_outputAsTestString_verifyAnsStartsWith() {
-    val inputs = mapOf("x" to LOWERCASE_2)
+  fun testLowercaseStringAns_lowercaseStringInput_differentString_verifyAnsDoesNotStartsWith() {
+    val inputs = mapOf("x" to STRING_VALUE_STRING_LOWERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = LOWERCASE_1,
-      inputs = inputs
-    )
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testLowercaseAns_stringLowercaseInput_outputAsTestString_verifyAnsDoesNotStartsWith() {
-    val inputs = mapOf("x" to LOWERCASE_3)
-
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = LOWERCASE_1,
+      answer = STRING_VALUE_TESTSTRING_LOWERCASE,
       inputs = inputs
     )
 
@@ -81,11 +69,11 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseAns_testStringLowercaseInput_outputAsTest_verifyAnsDoesNotStartsWith() {
-    val inputs = mapOf("x" to LOWERCASE_1)
+  fun testLowercaseStringAns_lowercaseStringInput_inputStartsWithAns_verifyAnsDoesNotStartsWith() {
+    val inputs = mapOf("x" to STRING_VALUE_TESTSTRING_LOWERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = LOWERCASE_2,
+      answer = STRING_VALUE_TEST_LOWERCASE,
       inputs = inputs
     )
 
@@ -93,11 +81,11 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseAns_testStringUppercaseInput_outputAsTestString_verifyAnsDoesNotStartWith() {
-    val inputs = mapOf("x" to UPPERCASE_1)
+  fun testLowercaseStringAns_uppercaseStringInput_sameCaseInsensitive_verifyAnsDoesNotStartWith() {
+    val inputs = mapOf("x" to STRING_VALUE_TESTSTRING_UPPERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = LOWERCASE_1,
+      answer = STRING_VALUE_TESTSTRING_LOWERCASE,
       inputs = inputs
     )
 
@@ -105,11 +93,11 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseAns_testUppercaseInput_outputAsTestString_verifyAnsDoesNotStartsWith() {
-    val inputs = mapOf("x" to UPPERCASE_2)
+  fun testLowercaseStringAns_uppercaseStringInput_differentStrings_verifyAnsDoesNotStartsWith() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_UPPERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = LOWERCASE_1,
+      answer = STRING_VALUE_TESTSTRING_LOWERCASE,
       inputs = inputs
     )
 
@@ -117,11 +105,11 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseAns_emptyStringInput_outputAsTestString_verifyAnsStartsWith() {
+  fun testLowercaseStringAns_emptyStringInput_differentStrings_verifyAnsStartsWith() {
     val inputs = mapOf("x" to EMPTY_STRING)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = LOWERCASE_1,
+      answer = STRING_VALUE_TESTSTRING_LOWERCASE,
       inputs = inputs
     )
 
@@ -129,23 +117,11 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testUppercaseAns_testStringUppercaseInput_outputAsTestString_verifyAnsStartsWith() {
-    val inputs = mapOf("x" to UPPERCASE_1)
+  fun testUppercaseStringAns_uppercaseStringInput_inputStartWithAns_verifyAnsDoesNotStartsWith() {
+    val inputs = mapOf("x" to STRING_VALUE_TESTSTRING_UPPERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = UPPERCASE_1,
-      inputs = inputs
-    )
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testUppercaseAns_testStringUppercaseInput_outputAsTest_verifyAnsDoesNotStartsWith() {
-    val inputs = mapOf("x" to UPPERCASE_1)
-
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = UPPERCASE_2,
+      answer = STRING_VALUE_TEST_UPPERCASE,
       inputs = inputs
     )
 
@@ -153,11 +129,11 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testUppercaseAns_emptyStringInput_outputAsTestString_verifyAnsStartWith() {
+  fun testUppercaseStringAns_emptyStringInput_differentStrings_verifyAnsStartWith() {
     val inputs = mapOf("x" to EMPTY_STRING)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = UPPERCASE_1,
+      answer = STRING_VALUE_TESTSTRING_UPPERCASE,
       inputs = inputs
     )
 
@@ -165,8 +141,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEmptyStringAns_testStringLowercaseInput_outputAsEmptyString_verifyAnsDoesNotStartsWith() {
-    val inputs = mapOf("x" to LOWERCASE_1)
+  fun testEmptyStringAns_lowercaseStringInput_differentStrings_verifyAnsDoesNotStartsWith() {
+    val inputs = mapOf("x" to STRING_VALUE_TESTSTRING_LOWERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = EMPTY_STRING,
@@ -177,7 +153,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEmptyStringAns_emptyStringInput_verifyAnsStartsWith() {
+  fun testEmptyStringAns_emptyStringInput_exactSameStrings_verifyAnsStartsWith() {
     val inputs = mapOf("x" to EMPTY_STRING)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -190,11 +166,11 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testStringAns_missingInput_throwsException() {
-    val inputs = mapOf("y" to LOWERCASE_1)
+    val inputs = mapOf("y" to STRING_VALUE_TESTSTRING_LOWERCASE)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputStartsWithRuleClassifier.matches(
-        answer = LOWERCASE_1,
+        answer = STRING_VALUE_TESTSTRING_LOWERCASE,
         inputs = inputs
       )
     }
@@ -210,7 +186,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val exception = assertThrows(IllegalStateException::class) {
       inputStartsWithRuleClassifier.matches(
-        answer = LOWERCASE_1,
+        answer = STRING_VALUE_TESTSTRING_LOWERCASE,
         inputs = inputs
       )
     }
