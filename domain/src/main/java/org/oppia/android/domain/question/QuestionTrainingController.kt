@@ -14,8 +14,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
 
-private const val TRAINING_QUESTIONS_PROVIDER = "TrainingQuestionsProvider"
-private const val RETRIEVE_QUESTIONS_RESULT_DATA_PROVIDER = "RetrieveQuestionsResultsProvider"
+private const val RETRIEVE_QUESTION_FOR_SKILLS_ID_PROVIDER_ID =
+  "retrieve_question_for_skills_id_provider_id"
+private const val START_QUESTION_TRAINING_SESSION_PROVIDER_ID = "" +
+  "start_question_training_session_provider_id"
 
 /** Controller for retrieving a set of questions. */
 @Singleton
@@ -51,7 +53,7 @@ class QuestionTrainingController @Inject constructor(
       )
       // Convert the data provider type to 'Any' via a transformation.
       val erasedDataProvider: DataProvider<Any> = retrieveQuestionsDataProvider
-        .transform(RETRIEVE_QUESTIONS_RESULT_DATA_PROVIDER) { it }
+        .transform(START_QUESTION_TRAINING_SESSION_PROVIDER_ID) { it }
       erasedDataProvider.toLiveData()
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
@@ -68,7 +70,7 @@ class QuestionTrainingController @Inject constructor(
     // regenerate the session (unless the questions themselves change). This is necessary since the
     // underlying structure may be notified multiple times during a single submit answer operation.
     val seed = seedRandom.nextLong()
-    return questionsDataProvider.transform(TRAINING_QUESTIONS_PROVIDER) {
+    return questionsDataProvider.transform(RETRIEVE_QUESTION_FOR_SKILLS_ID_PROVIDER_ID) {
       val questionsList = if (skillIdsList.isEmpty()) {
         listOf()
       } else {
