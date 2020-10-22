@@ -37,6 +37,9 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
   private val STRING_ANSWER_DIFF_LOWERCASE = createString(value = "diff")
   private val STRING_INPUT_DIFF_LOWERCASE = createString(value = "diff")
   private val STRING_INPUT_DIFF_UPPERCASE = createString(value = "DIFF")
+  private val STRING_FUZZY_INPUT = createString(value = "This Is a TesT")
+  private val STRING_ANSWER = createString(value = "this is a test")
+  private val STRING_WITH_WHITESPACE = createString(value = "  test   ")
   private val NON_NEGATIVE_VALUE = createNonNegativeInt(value = 1)
 
   @Before
@@ -126,10 +129,10 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringFuzzyInput_answerFuzzyEqualsInput_verifyValuesMatch() {
-    val inputs = mapOf("x" to createString(value = "This Is a TesT"))
+    val inputs = mapOf("x" to STRING_FUZZY_INPUT)
 
     val matches = inputFuzzyEqualsRuleClassifier.matches(
-      answer = createString(value = "this is a test"),
+      answer = STRING_ANSWER,
       inputs = inputs
     )
 
@@ -138,10 +141,10 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringWithWhitespacesInput_answerEqualsInput_verifyValuesMatch() {
-    val inputs = mapOf("x" to createString(value = "Test"))
+    val inputs = mapOf("x" to STRING_INPUT_LOWERCASE)
 
     val matches = inputFuzzyEqualsRuleClassifier.matches(
-      answer = createString(value = "  Test   "),
+      answer = STRING_WITH_WHITESPACE,
       inputs = inputs
     )
 
