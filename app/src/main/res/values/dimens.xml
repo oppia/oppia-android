@@ -62,8 +62,8 @@
   <dimen name="recently_played_margin_min">8dp</dimen>
   <dimen name="recently_played_tablet_land_outer_margin">96dp</dimen>
   <dimen name="recently_played_tablet_port_outer_margin">120dp</dimen>
-  <dimen name="default_reading_text_size">18sp</dimen>
 
+  <dimen name="default_reading_text_size">18sp</dimen>
   <dimen name="font_scale_content_text_size">20dp</dimen>
   <dimen name="profile_view_already_added_margin">20dp</dimen>
   <dimen name="profile_view_not_added_margin">20dp</dimen>
