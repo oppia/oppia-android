@@ -44,17 +44,17 @@ class UrlImageParser private constructor(
 
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
       val oppiaImage = OppiaImage.SvgImage(urlDrawable)
-      imageLoader.loadOppiaImage("$gcsPrefix/$gcsResourceName/$imageUrl",
+      imageLoader.loadSvg("$gcsPrefix/$gcsResourceName/$imageUrl",
         findImageType(urlDrawable, oppiaImage))
     } else {
       val oppiaImage = OppiaImage.BitmapImage(urlDrawable)
-      imageLoader.loadOppiaImage("$gcsPrefix/$gcsResourceName/$imageUrl",
+      imageLoader.loadBitmap("$gcsPrefix/$gcsResourceName/$imageUrl",
         findImageType(urlDrawable, oppiaImage))
     }
     return urlDrawable
   }
 
-  private fun findImageType(urlDrawable: UrlDrawable, oppiaImage: OppiaImage): CustomImageTarget {
+  private fun findImageType(urlDrawable: UrlDrawable, oppiaImage: OppiaImage): CustomImageTarget<OppiaImage> {
     return  when(oppiaImage) {
       is OppiaImage.BitmapImage -> {
         CustomImageTarget<Bitmap>(urlDrawable) { resource -> BitmapDrawable(context.resources, resource)}
@@ -65,9 +65,10 @@ class UrlImageParser private constructor(
     }
   }
 
+
   private open inner class CustomImageTarget<T>(
     private val urlDrawable: UrlDrawable,
-    private val drawableFactory: (T) -> Drawable
+    private val drawableFactory: (OppiaImage) -> Drawable
   ) : CustomTarget<T>() {
     override fun onLoadCleared(placeholder: Drawable?) {
       // No resources to clear.
