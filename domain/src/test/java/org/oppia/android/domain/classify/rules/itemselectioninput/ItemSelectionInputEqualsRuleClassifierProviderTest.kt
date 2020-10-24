@@ -110,7 +110,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_mixedlowercaseAlphabetsAnswer_withmixeduppercaseAlphabetsAnswerInput_bothValuesNotMatch() {
+  fun testEquals_mixedlowercaseAnswer_withmixeduppercaseAnswerInput_bothValuesNotMatch() {
     val inputs = mapOf("x" to TEST_ITEM_SELECTION_SET_MIXEDLOWERCASE)
 
     val matches =
