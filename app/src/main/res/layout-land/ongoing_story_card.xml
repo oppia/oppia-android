@@ -62,7 +62,6 @@
           android:ellipsize="end"
           android:maxLines="1"
           android:text="@{viewModel.ongoingStory.storyName}"
-          android:textColor="@color/oppiaPrimaryText"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
@@ -80,7 +79,6 @@
           android:maxLines="1"
           android:text="@{viewModel.ongoingStory.topicName}"
           android:textAllCaps="true"
-          android:textColor="@color/oppiaPrimaryText"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
