@@ -23,7 +23,6 @@ class AdminPinActivity : InjectableAppCompatActivity() {
       adminPinEnum: Int
     ): Intent {
       val intent = Intent(context, AdminPinActivity::class.java)
-      intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
       intent.putExtra(KEY_ADMIN_PIN_PROFILE_ID, profileId)
       intent.putExtra(KEY_ADMIN_PIN_COLOR_RGB, colorRgb)
       intent.putExtra(KEY_ADMIN_PIN_ENUM, adminPinEnum)
