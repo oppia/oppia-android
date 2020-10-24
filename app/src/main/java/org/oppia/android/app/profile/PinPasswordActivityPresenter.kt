@@ -51,9 +51,8 @@ class PinPasswordActivityPresenter @Inject constructor(
       lifecycleOwner = activity
       viewModel = pinViewModel
     }
-    binding.inputPin.setPasswordHidden(!binding.viewModel!!.showPassword.get()!!)
+
     binding.showPin.setOnClickListener {
-      binding.inputPin.setPasswordHidden(binding.viewModel!!.showPassword.get()!!)
       pinViewModel.showPassword.set(!pinViewModel.showPassword.get()!!)
     }
     binding.inputPin.requestFocus()
