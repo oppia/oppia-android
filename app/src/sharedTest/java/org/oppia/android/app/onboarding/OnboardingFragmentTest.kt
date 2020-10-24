@@ -297,7 +297,7 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
-      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.advanceUntilIdle()
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
