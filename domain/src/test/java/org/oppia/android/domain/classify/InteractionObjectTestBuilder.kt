@@ -3,6 +3,8 @@ package org.oppia.android.domain.classify
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.NumberUnit
+import org.oppia.android.app.model.NumberWithUnits
 import org.oppia.android.app.model.StringList
 
 /**
@@ -74,6 +76,33 @@ object InteractionObjectTestBuilder {
         .setDenominator(denominator)
         .build()
     ).build()
+  }
+
+  fun createFractionForNumberWithUnits(
+    isNegative: Boolean,
+    numerator: Int,
+    denominator: Int
+  ): Fraction {
+    // Fraction-only numbers imply no whole number.
+    return Fraction.newBuilder()
+      .setIsNegative(isNegative)
+      .setNumerator(numerator)
+      .setDenominator(denominator)
+      .build()
+  }
+
+  fun createNumberWithUnits(number: Fraction, units: List<NumberUnit>):
+    InteractionObject {
+      val numberWithUnits = NumberWithUnits.newBuilder()
+        .addAllUnit(units)
+        .setFraction(number)
+        .build()
+
+      return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
+    }
+
+  fun createNumberUnit(unit: String, exponent: Int): NumberUnit {
+    return NumberUnit.newBuilder().setUnit(unit).setExponent(exponent).build()
   }
 
   fun createSignedInt(value: Int): InteractionObject {
