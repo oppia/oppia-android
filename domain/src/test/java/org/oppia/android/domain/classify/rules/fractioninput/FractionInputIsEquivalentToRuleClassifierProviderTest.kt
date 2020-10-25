@@ -156,10 +156,9 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
     val inputs = mapOf("f" to MIXED_NUMBER_NEGATIVE_679_2_OVER_3)
 
     val matches =
-      inputIsEquivalentToRuleClassifier.matches(answer = MIXED_NUMBER_NEGATIVE_679_2_OVER_3,
-        inputs = inputs)
+      inputIsEquivalentToRuleClassifier.matches(answer = MIXED_NUMBER_55_1_OVER_4, inputs = inputs)
 
-    assertThat(matches).isTrue()
+    assertThat(matches).isFalse()
   }
 
   @Test
