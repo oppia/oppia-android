@@ -9,10 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.NumberUnit
-import org.oppia.android.app.model.NumberWithUnits
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -21,10 +18,37 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.test.fail
 
+/** Tests for [NumberWithUnitsIsEquivalentToRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
+
+  private val FRACTION_1_OVER_2 =
+    InteractionObjectTestBuilder.createFractionForNumberWithUnits(
+      isNegative = false, numerator = 1, denominator = 2
+    )
+  private val DOUBLE_VALUE =
+    InteractionObjectTestBuilder.createReal(value = 2.5)
+  private val NUMBER_UNIT_STRING_TO_POWER_2 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "a", exponent = 2)
+  private val NUMBER_UNIT_STRING_TO_POWER_1 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "b", exponent = 1)
+  private val NUMBER_UNIT_STRING_TO_POWER_3 =
+    InteractionObjectTestBuilder.createNumberUnit(unit = "c", exponent = 3)
+  private val ANSWER_NUMBER_WITH_UNITS =
+    InteractionObjectTestBuilder.createNumberWithUnits(
+      FRACTION_1_OVER_2, listOf(NUMBER_UNIT_STRING_TO_POWER_1, NUMBER_UNIT_STRING_TO_POWER_2)
+    )
+  private val INPUT_NUMBER_WITH_UNITS =
+    InteractionObjectTestBuilder.createNumberWithUnits(
+      FRACTION_1_OVER_2, listOf(NUMBER_UNIT_STRING_TO_POWER_2, NUMBER_UNIT_STRING_TO_POWER_1)
+    )
+  private val DIFF_NUMBER_WITH_UNITS =
+    InteractionObjectTestBuilder.createNumberWithUnits(
+      FRACTION_1_OVER_2, listOf(NUMBER_UNIT_STRING_TO_POWER_3, NUMBER_UNIT_STRING_TO_POWER_2)
+    )
+
   @Inject
   internal lateinit var numberWithUnitsIsEquivalentToRuleClassifierProvider:
     NumberWithUnitsIsEquivalentToRuleClassifierProvider
@@ -32,21 +56,6 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   private val unitIsEquivalentRuleClassifier by lazy {
     numberWithUnitsIsEquivalentToRuleClassifierProvider.createRuleClassifier()
   }
-
-  private val FRACTION_1_OVER_2 = createFraction(isNegative = false, numerator = 1, denominator = 2)
-  private val DOUBLE_VALUE = createDouble(value = 2.5)
-  private val NUMBER_UNIT_STRING_TO_POWER_2 = createNumberUnit(unit = "a", exponent = 2)
-  private val NUMBER_UNIT_STRING_TO_POWER_1 = createNumberUnit(unit = "b", exponent = 1)
-  private val NUMBER_UNIT_STRING_TO_POWER_3 = createNumberUnit(unit = "c", exponent = 3)
-  private val ANSWER_NUMBER_WITH_UNITS = createNumberWithUnitsFraction(
-    FRACTION_1_OVER_2, listOf(NUMBER_UNIT_STRING_TO_POWER_1, NUMBER_UNIT_STRING_TO_POWER_2)
-  )
-  private val INPUT_NUMBER_WITH_UNITS = createNumberWithUnitsFraction(
-    FRACTION_1_OVER_2, listOf(NUMBER_UNIT_STRING_TO_POWER_2, NUMBER_UNIT_STRING_TO_POWER_1)
-  )
-  private val DIFF_NUMBER_WITH_UNITS = createNumberWithUnitsFraction(
-    FRACTION_1_OVER_2, listOf(NUMBER_UNIT_STRING_TO_POWER_3, NUMBER_UNIT_STRING_TO_POWER_2)
-  )
 
   @Before
   fun setUp() {
@@ -127,33 +136,6 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
         "Expected classifier inputs to contain parameter with name 'f' but had: [x]"
       )
   }
-
-  private fun createFraction(isNegative: Boolean, numerator: Int, denominator: Int): Fraction {
-    // Fraction-only numbers imply no whole number.
-    return Fraction.newBuilder()
-      .setIsNegative(isNegative)
-      .setNumerator(numerator)
-      .setDenominator(denominator)
-      .build()
-  }
-
-  private fun createNumberUnit(unit: String, exponent: Int): NumberUnit {
-    return NumberUnit.newBuilder().setUnit(unit).setExponent(exponent).build()
-  }
-
-  private fun createDouble(value: Double): InteractionObject {
-    return InteractionObject.newBuilder().setReal(value).build()
-  }
-
-  private fun createNumberWithUnitsFraction(number: Fraction, units: List<NumberUnit>):
-    InteractionObject {
-      val numberWithUnits = NumberWithUnits.newBuilder()
-        .addAllUnit(units)
-        .setFraction(number)
-        .build()
-
-      return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
-    }
 
   private fun setUpTestApplicationComponent() {
     DaggerNumberWithUnitsIsEquivalentToRuleClassifierProviderTest_TestApplicationComponent.builder()
