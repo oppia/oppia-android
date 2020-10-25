@@ -33,29 +33,31 @@ import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val TRANSFORMED_GET_PROFILES_PROVIDER_ID = "transformed_get_profiles_provider_id"
-private const val TRANSFORMED_GET_PROFILE_PROVIDER_ID = "transformed_get_profile_provider_id"
-private const val TRANSFORMED_GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID =
-  "transformed_was_profile_ever_added_provider_id"
-private const val TRANSFORMED_GET_DEVICE_SETTINGS_PROVIDER_ID =
-  "transformed_device_settings_provider_id"
-private const val ADD_PROFILE_TRANSFORMED_PROVIDER_ID = "add_profile_transformed_id"
-private const val UPDATE_NAME_TRANSFORMED_PROVIDER_ID = "update_name_transformed_id"
-private const val UPDATE_PIN_TRANSFORMED_PROVIDER_ID = "update_pin_transformed_id"
-private const val UPDATE_PROFILE_AVATER_TRANSFORMED_PROVIDER_ID =
-  "update_profile_avater_transformed_id"
-private const val UPDATE_DEVICE_SETTINGS_TRANSFORMED_PROVIDER_ID =
-  "update_device_settings_transformed_id"
-private const val UPDATE_DOWNLOAD_ACCESS_TRANSFORMED_PROVIDER_ID =
-  "update_download_access_transformed_id"
-private const val LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID = "login_profile_transformed_id"
-private const val DELETE_PROFILE_TRANSFORMED_PROVIDER_ID = "delete_profile_transformed_id"
-private const val SET_PROFILE_TRANSFORMED_PROVIDER_ID = "set_profile_transformed_id"
-private const val UPDATE_READING_TEXT_SIZE_TRANSFORMED_ID =
-  "update_reading_text_size_transformed_id"
-private const val UPDATE_APP_LANGUAGE_TRANSFORMED_PROVIDER_ID = "update_app_language_transformed_id"
-private const val UPDATE_AUDIO_LANGUAGE_TRANSFORMED_PROVIDER_ID =
-  "update_audio_language_transformed_id"
+private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
+private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
+private const val GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID =
+  "get_was_profile_ever_added_provider_id"
+private const val GET_DEVICE_SETTINGS_PROVIDER_ID =
+  "get_device_settings_provider_id"
+private const val ADD_PROFILE_PROVIDER_ID = "add_profile_provided_id"
+private const val UPDATE_NAME_PROVIDER_ID = "update_name_provider_id"
+private const val UPDATE_PIN_PROVIDER_ID = "update_pin_provider_id"
+private const val UPDATE_PROFILE_AVATAR_PROVIDER_ID =
+  "update_profile_avatar_provider_id"
+private const val UPDATE_WIFI_PERMISSION_DEVICE_SETTINGS_PROVIDER_ID =
+  "update_wifi_permission_device_settings_provider_id"
+private const val UPDATE_TOPIC_AUTOMATICALLY_PERMISSION_DEVICE_SETTINGS_PROVIDER_ID =
+  "update_topic_automatically_permission_device_settings_provider_id"
+private const val UPDATE_ALL_DOWNLOAD_ACCESS_PROVIDER_ID =
+  "update_all_download_provider_id"
+private const val LOGIN_TO_PROFILE_PROVIDER_ID = "login_to_profile_provider_id"
+private const val DELETE_PROFILE_PROVIDER_ID = "delete_profile_provider_id"
+private const val SET_CURRENT_PROFILE_ID_PROVIDER_ID = "set_current_profile_id_provider_id"
+private const val UPDATE_READING_TEXT_SIZE_PROVIDER_ID =
+  "update_reading_text_size_provider_id"
+private const val UPDATE_APP_LANGUAGE_PROVIDER_ID = "update_app_language_provider_id"
+private const val UPDATE_AUDIO_LANGUAGE_PROVIDER_ID =
+  "update_audio_language_provider_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -128,14 +130,14 @@ class ProfileManagementController @Inject constructor(
 
   /** Returns the list of created profiles. */
   fun getProfiles(): DataProvider<List<Profile>> {
-    return profileDataStore.transform(TRANSFORMED_GET_PROFILES_PROVIDER_ID) {
+    return profileDataStore.transform(GET_PROFILES_PROVIDER_ID) {
       it.profilesMap.values.toList()
     }
   }
 
   /** Returns a single profile, specified by profiledId. */
   fun getProfile(profileId: ProfileId): DataProvider<Profile> {
-    return profileDataStore.transformAsync(TRANSFORMED_GET_PROFILE_PROVIDER_ID) {
+    return profileDataStore.transformAsync(GET_PROFILE_PROVIDER_ID) {
       val profile = it.profilesMap[profileId.internalId]
       if (profile != null) {
         AsyncResult.success(profile)
@@ -152,7 +154,7 @@ class ProfileManagementController @Inject constructor(
 
   /** Returns a boolean determining whether the profile was ever added or not. */
   fun getWasProfileEverAdded(): DataProvider<Boolean> {
-    return profileDataStore.transformAsync(TRANSFORMED_GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID) {
+    return profileDataStore.transformAsync(GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID) {
       val wasProfileEverAdded = it.wasProfileEverAdded
       AsyncResult.success(wasProfileEverAdded)
     }
@@ -160,7 +162,7 @@ class ProfileManagementController @Inject constructor(
 
   /** Returns device settings for the app. */
   fun getDeviceSettings(): DataProvider<DeviceSettings> {
-    return profileDataStore.transformAsync(TRANSFORMED_GET_DEVICE_SETTINGS_PROVIDER_ID) {
+    return profileDataStore.transformAsync(GET_DEVICE_SETTINGS_PROVIDER_ID) {
       val deviceSettings = it.deviceSettings
       if (deviceSettings != null) {
         AsyncResult.success(deviceSettings)
@@ -232,7 +234,7 @@ class ProfileManagementController @Inject constructor(
           .setNextProfileId(nextProfileId + 1)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    return dataProviders.createInMemoryDataProviderAsync(ADD_PROFILE_TRANSFORMED_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProviderAsync(ADD_PROFILE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(null, name, deferred)
     }
   }
@@ -279,7 +281,7 @@ class ProfileManagementController @Inject constructor(
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(
-      UPDATE_PROFILE_AVATER_TRANSFORMED_PROVIDER_ID
+      UPDATE_PROFILE_AVATAR_PROVIDER_ID
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
@@ -314,7 +316,7 @@ class ProfileManagementController @Inject constructor(
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    return dataProviders.createInMemoryDataProviderAsync(UPDATE_NAME_TRANSFORMED_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_NAME_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, newName, deferred)
     }
   }
@@ -342,7 +344,7 @@ class ProfileManagementController @Inject constructor(
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    return dataProviders.createInMemoryDataProviderAsync(UPDATE_PIN_TRANSFORMED_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_PIN_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
   }
@@ -377,7 +379,7 @@ class ProfileManagementController @Inject constructor(
       }
     }
     return dataProviders.createInMemoryDataProviderAsync(
-      UPDATE_DEVICE_SETTINGS_TRANSFORMED_PROVIDER_ID
+      UPDATE_WIFI_PERMISSION_DEVICE_SETTINGS_PROVIDER_ID
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
@@ -413,7 +415,7 @@ class ProfileManagementController @Inject constructor(
       }
     }
     return dataProviders.createInMemoryDataProviderAsync(
-      UPDATE_DEVICE_SETTINGS_TRANSFORMED_PROVIDER_ID
+      UPDATE_TOPIC_AUTOMATICALLY_PERMISSION_DEVICE_SETTINGS_PROVIDER_ID
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
@@ -447,7 +449,7 @@ class ProfileManagementController @Inject constructor(
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(
-      UPDATE_DOWNLOAD_ACCESS_TRANSFORMED_PROVIDER_ID
+      UPDATE_ALL_DOWNLOAD_ACCESS_PROVIDER_ID
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
@@ -479,7 +481,7 @@ class ProfileManagementController @Inject constructor(
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    return dataProviders.createInMemoryDataProviderAsync(UPDATE_READING_TEXT_SIZE_TRANSFORMED_ID) {
+    return dataProviders.createInMemoryDataProviderAsync(UPDATE_READING_TEXT_SIZE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
   }
@@ -508,7 +510,7 @@ class ProfileManagementController @Inject constructor(
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(
-      UPDATE_APP_LANGUAGE_TRANSFORMED_PROVIDER_ID
+      UPDATE_APP_LANGUAGE_PROVIDER_ID
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
@@ -538,7 +540,7 @@ class ProfileManagementController @Inject constructor(
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(
-      UPDATE_AUDIO_LANGUAGE_TRANSFORMED_PROVIDER_ID
+      UPDATE_AUDIO_LANGUAGE_PROVIDER_ID
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
@@ -551,7 +553,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this login operation.
    */
   fun loginToProfile(profileId: ProfileId): DataProvider<Any?> {
-    return setCurrentProfileId(profileId).transformAsync(LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID) {
+    return setCurrentProfileId(profileId).transformAsync(LOGIN_TO_PROFILE_PROVIDER_ID) {
       return@transformAsync getDeferredResult(
         profileId,
         null,
@@ -561,7 +563,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   private fun setCurrentProfileId(profileId: ProfileId): DataProvider<Any?> {
-    return dataProviders.createInMemoryDataProviderAsync(SET_PROFILE_TRANSFORMED_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProviderAsync(SET_CURRENT_PROFILE_ID_PROVIDER_ID) {
       val profileDatabase = profileDataStore.readDataAsync().await()
       if (profileDatabase.profilesMap.containsKey(profileId.internalId)) {
         currentProfileId = profileId.internalId
@@ -611,7 +613,7 @@ class ProfileManagementController @Inject constructor(
       )
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_TRANSFORMED_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }
   }

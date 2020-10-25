@@ -14,7 +14,8 @@ import javax.inject.Inject
  *
  * This controller should only be interacted with via background threads.
  */
-class AnswerClassificationController @Inject constructor(
+class
+AnswerClassificationController @Inject constructor(
   private val interactionClassifiers: Map<String, @JvmSuppressWildcards InteractionClassifier>
 ) {
   /**
