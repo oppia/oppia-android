@@ -33,9 +33,11 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   private val STRING_VALUE_TESTSTRING_LOWERCASE = createString("test string")
+  private val STRING_VALUE_TESTSTRING_LOWERCASE_EXTRA_SPACES = createString("test  string")
   private val STRING_VALUE_TEST_LOWERCASE = createString("test")
   private val STRING_VALUE_STRING_LOWERCASE = createString("string")
   private val STRING_VALUE_TESTSTRING_UPPERCASE = createString("TEST STRING")
+  private val STRING_VALUE_TESTSTRING_UPPERCASE_NO_SPACES = createString("TESTSTRING")
   private val STRING_VALUE_TEST_UPPERCASE = createString("TEST")
   private val EMPTY_STRING = createString("")
 
@@ -93,6 +95,18 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
+  fun testLowercaseStringAns_lowercaseStringInput_extraSpaces_verifyAnsStartWith() {
+    val inputs = mapOf("x" to STRING_VALUE_TESTSTRING_LOWERCASE_EXTRA_SPACES)
+
+    val matches = inputStartsWithRuleClassifier.matches(
+      answer = STRING_VALUE_TESTSTRING_LOWERCASE,
+      inputs = inputs
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
   fun testLowercaseStringAns_uppercaseStringInput_differentStrings_verifyAnsDoesNotStartsWith() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_UPPERCASE)
 
@@ -127,6 +141,19 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     assertThat(matches).isFalse()
   }
+
+  @Test
+  fun testUppercaseStringAns_uppercaseStringInput_noSpaces_verifyAnsDoesNotStartsWith() {
+    val inputs = mapOf("x" to STRING_VALUE_TESTSTRING_UPPERCASE_NO_SPACES)
+
+    val matches = inputStartsWithRuleClassifier.matches(
+      answer = STRING_VALUE_TEST_UPPERCASE,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
 
   @Test
   fun testUppercaseStringAns_emptyStringInput_differentStrings_verifyAnsStartWith() {
