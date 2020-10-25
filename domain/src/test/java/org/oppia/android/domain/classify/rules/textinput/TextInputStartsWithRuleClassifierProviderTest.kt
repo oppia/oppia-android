@@ -154,7 +154,6 @@ class TextInputStartsWithRuleClassifierProviderTest {
     assertThat(matches).isFalse()
   }
 
-
   @Test
   fun testUppercaseStringAns_emptyStringInput_differentStrings_verifyAnsStartWith() {
     val inputs = mapOf("x" to EMPTY_STRING)
