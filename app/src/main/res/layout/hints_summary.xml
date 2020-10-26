@@ -21,7 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="32dp"
-    android:layout_marginBottom="32dp"
+    android:layout_marginBottom="36dp"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
