@@ -19,30 +19,27 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.test.fail
 
+/** Tests for [ItemSelectionInputEqualsRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ItemSelectionInputEqualsRuleClassifierProviderTest {
-  private val TEST_ITEM_SELECTION_SET_LOWERCASE = InteractionObject.newBuilder()
-    .setSetOfHtmlString(StringList.newBuilder().addHtml("YES").addHtml("NO"))
-    .build()
 
-  private val TEST_ITEM_SELECTION_SET_UPPERCASE = InteractionObject.newBuilder()
-    .setSetOfHtmlString(StringList.newBuilder().addHtml("YES").addHtml("NO"))
-    .build()
+  private val ITEM_SELECTION_SET_LOWERCASE = InteractionObject.newBuilder()
+    .setSetOfHtmlString(StringList.newBuilder().addHtml("YES").addHtml("NO")).build()
 
-  private val TEST_ITEM_SELECTION_SET_MIXEDLOWERCASE = InteractionObject.newBuilder()
-    .setSetOfHtmlString(StringList.newBuilder().addHtml("YES").addHtml("NO"))
-    .build()
+  private val ITEM_SELECTION_SET_UPPERCASE = InteractionObject.newBuilder()
+    .setSetOfHtmlString(StringList.newBuilder().addHtml("YES").addHtml("NO")).build()
 
-  private val TEST_ITEM_SELECTION_SET_MIXEDUPPERCASE = InteractionObject.newBuilder()
-    .setSetOfHtmlString(StringList.newBuilder().addHtml("YES").addHtml("NO"))
-    .build()
+  private val ITEM_SELECTION_SET_MIXEDLOWERCASE = InteractionObject.newBuilder()
+    .setSetOfHtmlString(StringList.newBuilder().addHtml("YES").addHtml("NO")).build()
 
-  private val TEST_ITEM_SELECTION_SET_NON_NEGATIVE_VALUE_3 =
+  private val ITEM_SELECTION_SET_MIXEDUPPERCASE = InteractionObject.newBuilder()
+    .setSetOfHtmlString(StringList.newBuilder().addHtml("YES").addHtml("NO")).build()
+
+  private val ITEM_SELECTION_SET_NON_NEGATIVE_VALUE_3 =
     InteractionObject.newBuilder()
-      .setSetOfHtmlString(StringList.newBuilder().addHtml("YES").addHtml("NO"))
-      .build()
+      .setSetOfHtmlString(StringList.newBuilder().addHtml("YES").addHtml("NO")).build()
 
   @Inject
   internal lateinit var itemSelectionInputEqualsRuleClassifierProvider:
@@ -59,102 +56,80 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testEquals_lowercaseAlphabetsAnswer_withlowercaseAlphabetsAnswerInput_bothValuesMatch() {
-    val inputs = mapOf("x" to TEST_ITEM_SELECTION_SET_LOWERCASE)
+    val inputs = mapOf("x" to ITEM_SELECTION_SET_LOWERCASE)
 
     val matches =
-      inputEqualsRuleClassifier.matches(
-        answer = TEST_ITEM_SELECTION_SET_LOWERCASE,
-        inputs = inputs
-      )
+      inputEqualsRuleClassifier.matches(answer = ITEM_SELECTION_SET_LOWERCASE, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testEquals_lowercaseAlphabetsAnswer_withuppercaseAlphabetsAnswerInput_bothValuesNotMatch() {
-    val inputs = mapOf("x" to TEST_ITEM_SELECTION_SET_UPPERCASE)
+    val inputs = mapOf("x" to ITEM_SELECTION_SET_UPPERCASE)
 
     val matches =
-      inputEqualsRuleClassifier.matches(
-        answer = TEST_ITEM_SELECTION_SET_LOWERCASE,
-        inputs = inputs
-      )
+      inputEqualsRuleClassifier.matches(answer = ITEM_SELECTION_SET_LOWERCASE, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testEquals_uppercaseAlphabetAnswer_withlowercaseAlphabetsAnswerInput_bothValuesNotMatch() {
-    val inputs = mapOf("x" to TEST_ITEM_SELECTION_SET_UPPERCASE)
+    val inputs = mapOf("x" to ITEM_SELECTION_SET_UPPERCASE)
 
     val matches =
-      inputEqualsRuleClassifier.matches(
-        answer = TEST_ITEM_SELECTION_SET_UPPERCASE,
-        inputs = inputs
-      )
+      inputEqualsRuleClassifier.matches(answer = ITEM_SELECTION_SET_UPPERCASE, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testEquals_uppercaseAlphabetsAnswer_withuppercaseAlphabetsAnswerInput_bothValuesMatch() {
-    val inputs = mapOf("x" to TEST_ITEM_SELECTION_SET_LOWERCASE)
+    val inputs = mapOf("x" to ITEM_SELECTION_SET_LOWERCASE)
 
     val matches =
-      inputEqualsRuleClassifier.matches(
-        answer = TEST_ITEM_SELECTION_SET_UPPERCASE,
-        inputs = inputs
-      )
+      inputEqualsRuleClassifier.matches(answer = ITEM_SELECTION_SET_UPPERCASE, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testEquals_mixedlowercaseAnswer_withmixeduppercaseAnswerInput_bothValuesNotMatch() {
-    val inputs = mapOf("x" to TEST_ITEM_SELECTION_SET_MIXEDLOWERCASE)
+    val inputs = mapOf("x" to ITEM_SELECTION_SET_MIXEDLOWERCASE)
 
     val matches =
-      inputEqualsRuleClassifier.matches(
-        answer = TEST_ITEM_SELECTION_SET_MIXEDUPPERCASE,
-        inputs = inputs
-      )
+      inputEqualsRuleClassifier.matches(answer = ITEM_SELECTION_SET_MIXEDUPPERCASE, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testEquals_nonNegativeAnswer_withuppercaseAlphabetsAnswerInput_bothValuesMatch() {
-    val inputs = mapOf("x" to TEST_ITEM_SELECTION_SET_NON_NEGATIVE_VALUE_3)
+    val inputs = mapOf("x" to ITEM_SELECTION_SET_NON_NEGATIVE_VALUE_3)
 
-    val matches = inputEqualsRuleClassifier.matches(
-      answer = TEST_ITEM_SELECTION_SET_UPPERCASE,
-      inputs = inputs
-    )
+    val matches =
+      inputEqualsRuleClassifier.matches(answer = ITEM_SELECTION_SET_UPPERCASE, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testEquals_nonNegativeAnswer_withlowercaseAlphabetsAnswerInput_bothValuesNotMatch() {
-    val inputs = mapOf("x" to TEST_ITEM_SELECTION_SET_NON_NEGATIVE_VALUE_3)
+    val inputs = mapOf("x" to ITEM_SELECTION_SET_NON_NEGATIVE_VALUE_3)
 
-    val matches = inputEqualsRuleClassifier.matches(
-      answer = TEST_ITEM_SELECTION_SET_LOWERCASE,
-      inputs = inputs
-    )
+    val matches =
+      inputEqualsRuleClassifier.matches(answer = ITEM_SELECTION_SET_LOWERCASE, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
-  fun testlowercaseAlphabetsAwswer_missingInput_throwsException() {
-    val inputs = mapOf("y" to TEST_ITEM_SELECTION_SET_LOWERCASE)
+  fun testlowercaseAlphabetsAnswer_missingInput_throwsException() {
+    val inputs = mapOf("y" to ITEM_SELECTION_SET_LOWERCASE)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputEqualsRuleClassifier.matches(
-        answer = TEST_ITEM_SELECTION_SET_LOWERCASE,
-        inputs = inputs
-      )
+      inputEqualsRuleClassifier.matches(answer = ITEM_SELECTION_SET_LOWERCASE, inputs = inputs)
     }
 
     assertThat(exception)
