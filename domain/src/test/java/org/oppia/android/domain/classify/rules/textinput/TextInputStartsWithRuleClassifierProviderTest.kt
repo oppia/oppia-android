@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -32,14 +32,24 @@ class TextInputStartsWithRuleClassifierProviderTest {
     textInputStartsWithRuleClassifierProvider.createRuleClassifier()
   }
 
-  private val STRING_VALUE_TESTSTRING_LOWERCASE = createString("test string")
-  private val STRING_VALUE_TESTSTRING_LOWERCASE_EXTRA_SPACES = createString("test  string")
-  private val STRING_VALUE_TEST_LOWERCASE = createString("test")
-  private val STRING_VALUE_STRING_LOWERCASE = createString("string")
-  private val STRING_VALUE_TESTSTRING_UPPERCASE = createString("TEST STRING")
-  private val STRING_VALUE_TESTSTRING_UPPERCASE_NO_SPACES = createString("TESTSTRING")
-  private val STRING_VALUE_TEST_UPPERCASE = createString("TEST")
-  private val EMPTY_STRING = createString("")
+  private val STRING_VALUE_TESTSTRING_LOWERCASE =
+    InteractionObjectTestBuilder.createString("test string")
+  private val STRING_VALUE_TESTSTRING_LOWERCASE_EXTRA_SPACES =
+    InteractionObjectTestBuilder.createString("test  string")
+  private val STRING_VALUE_TEST_LOWERCASE =
+    InteractionObjectTestBuilder.createString("test")
+  private val STRING_VALUE_STRING_LOWERCASE =
+    InteractionObjectTestBuilder.createString("string")
+  private val STRING_VALUE_TESTSTRING_UPPERCASE =
+    InteractionObjectTestBuilder.createString("TEST STRING")
+  private val STRING_VALUE_TESTSTRING_UPPERCASE_NO_SPACES =
+    InteractionObjectTestBuilder.createString("TESTSTRING")
+  private val STRING_VALUE_TEST_UPPERCASE =
+    InteractionObjectTestBuilder.createString("TEST")
+  private val EMPTY_STRING =
+    InteractionObjectTestBuilder.createString(value = "")
+  private val NON_NEGATIVE_INT =
+    InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
 
   @Before
   fun setUp() {
@@ -208,7 +218,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testStringAns_nonNegativeIntInput_throwsException() {
-    val inputs = mapOf("x" to createNonNegativeInt(value = 1))
+    val inputs = mapOf("x" to NON_NEGATIVE_INT)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputStartsWithRuleClassifier.matches(
@@ -220,14 +230,6 @@ class TextInputStartsWithRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected input value to be of type NORMALIZED_STRING")
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
   }
 
   private fun setUpTestApplicationComponent() {
