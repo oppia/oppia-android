@@ -24,14 +24,6 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class TextInputStartsWithRuleClassifierProviderTest {
 
-  @Inject
-  internal lateinit var textInputStartsWithRuleClassifierProvider:
-    TextInputStartsWithRuleClassifierProvider
-
-  private val inputStartsWithRuleClassifier by lazy {
-    textInputStartsWithRuleClassifierProvider.createRuleClassifier()
-  }
-
   private val STRING_VALUE_TESTSTRING_LOWERCASE =
     InteractionObjectTestBuilder.createString("test string")
   private val STRING_VALUE_TESTSTRING_LOWERCASE_EXTRA_SPACES =
@@ -50,6 +42,14 @@ class TextInputStartsWithRuleClassifierProviderTest {
     InteractionObjectTestBuilder.createString(value = "")
   private val NON_NEGATIVE_INT =
     InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
+
+  @Inject
+  internal lateinit var textInputStartsWithRuleClassifierProvider:
+    TextInputStartsWithRuleClassifierProvider
+
+  private val inputStartsWithRuleClassifier by lazy {
+    textInputStartsWithRuleClassifierProvider.createRuleClassifier()
+  }
 
   @Before
   fun setUp() {
