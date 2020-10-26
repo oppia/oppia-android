@@ -9,8 +9,10 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createFraction
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createMixedNumber
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createWholeNumber
 import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -25,11 +27,17 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
-  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
-  private val WHOLE_NUMBER_123 = createWholeNumber(isNegative = false, value = 123)
-  private val WHOLE_NUMBER_321 = createWholeNumber(isNegative = false, value = 321)
-  private val FRACTION_2_OVER_4 = createFraction(isNegative = false, numerator = 2, denominator = 4)
-  private val FRACTION_1_OVER_2 = createFraction(isNegative = false, numerator = 1, denominator = 2)
+
+  private val NON_NEGATIVE_VALUE_0 =
+    createNonNegativeInt(value = 0)
+  private val WHOLE_NUMBER_123 =
+    createWholeNumber(isNegative = false, value = 123)
+  private val WHOLE_NUMBER_321 =
+    createWholeNumber(isNegative = false, value = 321)
+  private val FRACTION_2_OVER_4 =
+    createFraction(isNegative = false, numerator = 2, denominator = 4)
+  private val FRACTION_1_OVER_2 =
+    createFraction(isNegative = false, numerator = 1, denominator = 2)
   private val FRACTION_NEGATIVE_1_OVER_2 =
     createFraction(isNegative = true, numerator = -1, denominator = 2)
   private val MIXED_NUMBER_123_1_OVER_2 =
@@ -45,6 +53,11 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
 
   private val fractionalPartIsExactlyEqualClassifierProvider: RuleClassifier by lazy {
     fractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider.createRuleClassifier()
+  }
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
   }
 
   @Test
@@ -184,58 +197,6 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'f' but had: [y]")
-  }
-
-  private fun createFraction(
-    isNegative: Boolean,
-    numerator: Int,
-    denominator: Int
-  ): InteractionObject {
-    // Fraction-only numbers imply no whole number.
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setNumerator(numerator)
-        .setDenominator(denominator)
-        .build()
-    ).build()
-  }
-
-  private fun createWholeNumber(isNegative: Boolean, value: Int): InteractionObject {
-    // Whole number fractions imply '0/1' fractional parts.
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setWholeNumber(value)
-        .setNumerator(0)
-        .setDenominator(1)
-        .build()
-    ).build()
-  }
-
-  private fun createMixedNumber(
-    isNegative: Boolean,
-    wholeNumber: Int,
-    numerator: Int,
-    denominator: Int
-  ): InteractionObject {
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setWholeNumber(wholeNumber)
-        .setNumerator(numerator)
-        .setDenominator(denominator)
-        .build()
-    ).build()
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
-  @Before
-  fun setUp() {
-    setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponent() {

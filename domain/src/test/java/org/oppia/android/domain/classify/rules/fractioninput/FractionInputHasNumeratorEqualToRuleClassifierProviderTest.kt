@@ -9,8 +9,10 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createFraction
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSignedInt
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createWholeNumber
 import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -30,9 +32,9 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
   private val FRACTION_2_OVER_4 = createFraction(isNegative = false, numerator = 2, denominator = 4)
   private val FRACTION_NEGATIVE_2_OVER_4 =
     createFraction(isNegative = true, numerator = -2, denominator = 4)
-  private val SIGNED_INT_1 = createSignedInt(1)
-  private val SIGNED_INT_2 = createSignedInt(2)
-  private val SIGNED_INT_NEGATIVE_2 = createSignedInt(-2)
+  private val SIGNED_INT_1 = createSignedInt(value = 1)
+  private val SIGNED_INT_2 = createSignedInt(value = 2)
+  private val SIGNED_INT_NEGATIVE_2 = createSignedInt(value = -2)
 
   @Inject
   internal lateinit var fractionInputHasNumeratorEqualToRuleClassifierProvider:
@@ -40,6 +42,11 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
 
   private val numeratorIsEqualClassifierProvider: RuleClassifier by lazy {
     fractionInputHasNumeratorEqualToRuleClassifierProvider.createRuleClassifier()
+  }
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
   }
 
   @Test
@@ -139,46 +146,6 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'x' but had: [y]")
-  }
-
-  private fun createFraction(
-    isNegative: Boolean,
-    numerator: Int,
-    denominator: Int
-  ): InteractionObject {
-    // Fraction-only numbers imply no whole number.
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setNumerator(numerator)
-        .setDenominator(denominator)
-        .build()
-    ).build()
-  }
-
-  private fun createWholeNumber(isNegative: Boolean, value: Int): InteractionObject {
-    // Whole number fractions imply '0/1' fractional parts.
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setWholeNumber(value)
-        .setNumerator(0)
-        .setDenominator(1)
-        .build()
-    ).build()
-  }
-
-  private fun createSignedInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setSignedInt(value).build()
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
-  @Before
-  fun setUp() {
-    setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponent() {

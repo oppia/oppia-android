@@ -9,8 +9,10 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createFraction
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createMixedNumber
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -24,13 +26,6 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
-  @Inject
-  internal lateinit var fractionInputHasIntegerPartEqualToRuleClassifier:
-    FractionInputHasIntegerPartEqualToRuleClassifierProvider
-
-  private val inputHasIntegerPartEqualToRuleClassifier by lazy {
-    fractionInputHasIntegerPartEqualToRuleClassifier.createRuleClassifier()
-  }
 
   private val FRACTION_1_OVER_2 =
     createFraction(isNegative = false, numerator = 1, denominator = 2)
@@ -56,12 +51,26 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
     createMixedNumber(isNegative = true, wholeNumber = 1, numerator = 2, denominator = 3)
   private val NEGATIVE_MIXED_NUMBER_0_2_OVER_3 =
     createMixedNumber(isNegative = true, wholeNumber = 0, numerator = 2, denominator = 3)
-  private val STRING_VALUE = createString(value = "test")
-  private val WHOLE_NUMBER_0 = createNonNegativeInt(value = 0)
-  private val WHOLE_NUMBER_1 = createNonNegativeInt(value = 1)
-  private val WHOLE_NUMBER_2 = createNonNegativeInt(value = 2)
-  private val WHOLE_NUMBER_3 = createNonNegativeInt(value = 3)
-  private val WHOLE_NUMBER_123 = createNonNegativeInt(value = 123)
+  private val STRING_VALUE =
+    createString(value = "test")
+  private val WHOLE_NUMBER_0 =
+    createNonNegativeInt(value = 0)
+  private val WHOLE_NUMBER_1 =
+    createNonNegativeInt(value = 1)
+  private val WHOLE_NUMBER_2 =
+    createNonNegativeInt(value = 2)
+  private val WHOLE_NUMBER_3 =
+    createNonNegativeInt(value = 3)
+  private val WHOLE_NUMBER_123 =
+    createNonNegativeInt(value = 123)
+
+  @Inject
+  internal lateinit var fractionInputHasIntegerPartEqualToRuleClassifier:
+    FractionInputHasIntegerPartEqualToRuleClassifierProvider
+
+  private val inputHasIntegerPartEqualToRuleClassifier by lazy {
+    fractionInputHasIntegerPartEqualToRuleClassifier.createRuleClassifier()
+  }
 
   @Before
   fun setUp() {
@@ -327,45 +336,6 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected input value to be of type NON_NEGATIVE_INT not NORMALIZED_STRING")
-  }
-
-  private fun createFraction(
-    isNegative: Boolean,
-    numerator: Int,
-    denominator: Int
-  ): InteractionObject {
-    // Fraction-only numbers imply no whole number.
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setNumerator(numerator)
-        .setDenominator(denominator)
-        .build()
-    ).build()
-  }
-
-  private fun createMixedNumber(
-    isNegative: Boolean,
-    wholeNumber: Int,
-    numerator: Int,
-    denominator: Int
-  ): InteractionObject {
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setWholeNumber(wholeNumber)
-        .setNumerator(numerator)
-        .setDenominator(denominator)
-        .build()
-    ).build()
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
   private fun setUpTestApplicationComponent() {

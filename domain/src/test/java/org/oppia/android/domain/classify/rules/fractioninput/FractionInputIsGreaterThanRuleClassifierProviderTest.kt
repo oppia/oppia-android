@@ -9,8 +9,9 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createFraction
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createMixedNumber
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -24,13 +25,6 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputIsGreaterThanRuleClassifierProviderTest {
-  @Inject
-  internal lateinit var fractionInputIsGreaterThanRuleClassifier:
-    FractionInputIsGreaterThanRuleClassifierProvider
-
-  private val inputGreaterThanRuleClassifier by lazy {
-    fractionInputIsGreaterThanRuleClassifier.createRuleClassifier()
-  }
 
   private val FRACTION_1_OVER_3 = createFraction(isNegative = false, numerator = 1, denominator = 3)
   private val FRACTION_1_OVER_2 = createFraction(isNegative = false, numerator = 1, denominator = 2)
@@ -47,6 +41,14 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
   private val NEGATIVE_MIXED_NUMBER_123_1_OVER_3 =
     createMixedNumber(isNegative = true, wholeNumber = 123, numerator = 1, denominator = 3)
   private val STRING_VALUE = createString(value = "test")
+
+  @Inject
+  internal lateinit var fractionInputIsGreaterThanRuleClassifier:
+    FractionInputIsGreaterThanRuleClassifierProvider
+
+  private val inputGreaterThanRuleClassifier by lazy {
+    fractionInputIsGreaterThanRuleClassifier.createRuleClassifier()
+  }
 
   @Before
   fun setUp() {
@@ -268,6 +270,7 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
 
     assertThat(matches).isTrue()
   }
+
   @Test
   fun testNegativeMixedAnswer_negativeMixedInput_exactSameValue_verifyAnswerNotGreater() {
     val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_123_1_OVER_2)
@@ -372,41 +375,6 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'f' but had: [x]")
-  }
-
-  private fun createFraction(
-    isNegative: Boolean,
-    numerator: Int,
-    denominator: Int
-  ): InteractionObject {
-    // Fraction-only numbers imply no whole number.
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setNumerator(numerator)
-        .setDenominator(denominator)
-        .build()
-    ).build()
-  }
-
-  private fun createMixedNumber(
-    isNegative: Boolean,
-    wholeNumber: Int,
-    numerator: Int,
-    denominator: Int
-  ): InteractionObject {
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setWholeNumber(wholeNumber)
-        .setNumerator(numerator)
-        .setDenominator(denominator)
-        .build()
-    ).build()
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
   private fun setUpTestApplicationComponent() {
