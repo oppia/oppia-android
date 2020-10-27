@@ -1,3 +1,5 @@
+load("@rules_android//android:rules.bzl", "android_binary")
+
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 # TODO(#1640): Move binary manifest to top-level package post-Gradle.
 android_binary(
@@ -7,10 +9,10 @@ android_binary(
     manifest = "//app:src/main/AndroidManifest.xml",
     manifest_values = {
         "applicationId": "org.oppia.android",
-        "versionCode": "0",
-        "versionName": "0.1-alpha",
         "minSdkVersion": "19",
         "targetSdkVersion": "29",
+        "versionCode": "0",
+        "versionName": "0.1-alpha",
     },
     multidex = "native",  # TODO(#1875): Re-enable legacy for optimized release builds.
     deps = [

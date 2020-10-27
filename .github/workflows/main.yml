@@ -38,12 +38,22 @@ jobs:
         echo Using Bufbuild version $BUFVERSION
         curl -sSL https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m) > buf
         chmod a+x buf
+
+    - name: Download Buildifier
+      run: |
+        BUILDIFIER="3.4.0"
+        echo Using Buildifier version $BUILDIFIER
+        curl -sSLO https://github.com/bazelbuild/buildtools/releases/download/$BUILDIFIER/buildifier > buildifier
+        chmod a+x buildifier
         
     - name: Kotlin lint check
       run: ./ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt && echo "Lint completed successfully"
     
     -  name: Protobuf lint check
        run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
+
+    - name: Bazel lint check
+      run: ./buildifier --lint=warn --mode=check --warnings=all -r app data domain model testing utility tools BUILD.bazel WORKSPACE oppia_android_test.bzl
      
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)

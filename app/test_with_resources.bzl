@@ -1,15 +1,17 @@
-def test_with_resources(file):
-    """
-    Genrule for test files.
+"""
+Macros for app module resources tests.
+"""
 
-    Because each databinding library must have a unique package name and manifest, resources must be
-    imported using the proper package name when building with Bazel. This genrule alters those imports
-    in order to keep Gradle building.
-    """
+def test_with_resources(name):
+    # Genrule for test files.
+    # Because each databinding library must have a unique package name and manifest, resources must be
+    # imported using the proper package name when building with Bazel. This genrule alters those imports
+    # in order to keep Gradle building.
+
     native.genrule(
-        name = "update_" + file[0:-3],
-        srcs = [file],
-        outs = [file[0:-3] + "_updated.kt"],
+        name = "update_" + name[0:-3],
+        srcs = [name],
+        outs = [name[0:-3] + "_updated.kt"],
         cmd = """
         cat $(SRCS) |
         sed 's/import org.oppia.android.R/import org.oppia.android.app.test.R/g' |
@@ -17,4 +19,4 @@ def test_with_resources(file):
     """,
     )
 
-    return "update_" + file[0:-3]
+    return "update_" + name[0:-3]
