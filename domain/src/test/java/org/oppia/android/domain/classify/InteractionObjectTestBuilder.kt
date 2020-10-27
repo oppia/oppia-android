@@ -78,19 +78,6 @@ object InteractionObjectTestBuilder {
     ).build()
   }
 
-  fun createFractionForNumberWithUnits(
-    isNegative: Boolean,
-    numerator: Int,
-    denominator: Int
-  ): Fraction {
-    // Fraction-only numbers imply no whole number.
-    return Fraction.newBuilder()
-      .setIsNegative(isNegative)
-      .setNumerator(numerator)
-      .setDenominator(denominator)
-      .build()
-  }
-
   fun createNumberWithUnits(number: Fraction, units: List<NumberUnit>):
     InteractionObject {
       val numberWithUnits = NumberWithUnits.newBuilder()
