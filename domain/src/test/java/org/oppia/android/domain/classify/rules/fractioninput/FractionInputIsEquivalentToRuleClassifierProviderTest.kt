@@ -35,7 +35,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
     InteractionObjectTestBuilder.createFraction(isNegative = false, numerator = 1, denominator = 5)
   private val FRACTION_VALUE_33_OVER_2 = InteractionObjectTestBuilder.createFraction(
     isNegative = false,
-    numerator = 133,
+    numerator = 33,
     denominator = 2
   )
   private val FRACTION_VALUE_242_OVER_1 =
@@ -196,7 +196,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_mixedNumberAnswer_withFractionInput_bothValuesDoNotMatch() {
+  fun testEqualityOf_mixedNumberAnswer_withFractionInput_bothValuesDoNotMatch() {
     val inputs = mapOf("f" to FRACTION_VALUE_1_OVER_5)
 
     val matches =
@@ -209,7 +209,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_missingInputF_throwsException() {
+  fun testEqualuality_missingInputF_throwsException() {
     val inputs = mapOf("y" to FRACTION_VALUE_2_OVER_8)
 
     val exception = assertThrows(IllegalStateException::class) {
