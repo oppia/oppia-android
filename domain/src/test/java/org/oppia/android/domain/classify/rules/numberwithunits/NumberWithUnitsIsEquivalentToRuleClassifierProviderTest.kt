@@ -25,9 +25,9 @@ import kotlin.test.fail
 class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
 
   private val FRACTION_VALUE_TEST_1_OVER_2 =
-    InteractionObjectTestBuilder.createFractionForNumberWithUnits(
+    InteractionObjectTestBuilder.createFraction(
       isNegative = false, numerator = 1, denominator = 2
-    )
+    ).fraction
   private val DOUBLE_VALUE_TEST_DIFFERENT_TYPE =
     InteractionObjectTestBuilder.createReal(value = 2.5)
   private val NUMBER_UNIT_TEST_STRING_TO_POWER_2 =
