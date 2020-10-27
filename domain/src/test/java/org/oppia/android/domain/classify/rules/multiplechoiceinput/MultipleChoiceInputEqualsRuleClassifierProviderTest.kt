@@ -23,9 +23,9 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class MultipleChoiceInputEqualsRuleClassifierProviderTest {
-  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
-  private val NON_NEGATIVE_VALUE_1 = createNonNegativeInt(value = 1)
-  private val STRING_VALUE_2 = createString(value = "test")
+  private val NON_NEGATIVE_VALUE_0 = InteractionObject.newBuilder().setNonNegativeInt(0).build()
+  private val NON_NEGATIVE_VALUE_1 = InteractionObject.newBuilder().setNonNegativeInt(1).build()
+  private val STRING_VALUE_2 = InteractionObject.newBuilder().setNormalizedString("test").build()
 
   @Inject
   internal lateinit var multipleChoiceInputEqualsRuleClassifierProvider:
@@ -110,14 +110,6 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected input value to be of type NON_NEGATIVE_INT")
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
   private fun setUpTestApplicationComponent() {
