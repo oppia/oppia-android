@@ -74,7 +74,6 @@ class TextInputEqualsRuleClassifierProviderTest {
 
     val matches =
       inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs)
-
     assertThat(matches).isTrue()
   }
 
