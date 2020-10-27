@@ -6,7 +6,7 @@
 #
 
 # this will run the ktlint check script
-bash ktlint-pre-commit
+bash kotlin-lint-check
 
 # TODO() Add Bazel Linter to the project #1736
 # TODO() Add Java Linter to the project #1735

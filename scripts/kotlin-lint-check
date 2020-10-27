@@ -4,7 +4,7 @@ echo "********************************"
 echo "Checking code formatting"
 echo "********************************"
 
-ktlint -F --android app/src/**/*.kt data/src/**/*.kt domain/src/**/*.kt testing/src/**/*.kt utility/src/**/*.kt
+ktlint --android app/src/**/*.kt data/src/**/*.kt domain/src/**/*.kt testing/src/**/*.kt utility/src/**/*.kt
 
 status=$?
 
@@ -16,8 +16,8 @@ else
   echo "Ktlint issue found."
   echo "Please fix the above issues. You could also use ktlint -F --android path/to/file.kt
   command to fix most of the issues."
-  echo "Please note, there might be possibility where the above command will not fix the issue,
-  you have to fix it yourself."
+  echo "Please note, there might be a possibility where the above commend will not fix the issue.
+  In that case, you will have to fix it yourself."
   echo "********************************"
   exit 1
 fi
