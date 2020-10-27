@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -23,9 +23,9 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class MultipleChoiceInputEqualsRuleClassifierProviderTest {
-  private val NON_NEGATIVE_VALUE_0 = InteractionObject.newBuilder().setNonNegativeInt(0).build()
-  private val NON_NEGATIVE_VALUE_1 = InteractionObject.newBuilder().setNonNegativeInt(1).build()
-  private val STRING_VALUE_2 = InteractionObject.newBuilder().setNormalizedString("test").build()
+  private val NON_NEGATIVE_VALUE_0 = InteractionObjectTestBuilder.createNonNegativeInt(value = 0)
+  private val NON_NEGATIVE_VALUE_1 = InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
+  private val STRING_VALUE_2 = InteractionObjectTestBuilder.createString(value = "test")
 
   @Inject
   internal lateinit var multipleChoiceInputEqualsRuleClassifierProvider:
