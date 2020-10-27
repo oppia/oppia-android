@@ -10,9 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createFraction
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createMixedNumber
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createWholeNumber
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -28,22 +26,57 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
 
-  private val WHOLE_NUMBER_123 =
-    createWholeNumber(isNegative = false, value = 123)
-  private val FRACTION_2_OVER_4 =
-    createFraction(isNegative = false, numerator = 2, denominator = 4)
-  private val FRACTION_1_OVER_2 =
-    createFraction(isNegative = false, numerator = 1, denominator = 2)
-  private val FRACTION_20_OVER_5 =
-    createFraction(isNegative = false, numerator = 20, denominator = 5)
-  private val MIXED_NUMBER_123_1_OVER_2 =
-    createMixedNumber(isNegative = false, wholeNumber = 123, numerator = 1, denominator = 2)
-  private val MIXED_NUMBER_123_0_OVER_3 =
-    createMixedNumber(isNegative = false, wholeNumber = 123, numerator = 0, denominator = 3)
-  private val MIXED_NUMBER_NEGATIVE_123_1_OVER_2 =
-    createMixedNumber(isNegative = true, wholeNumber = 123, numerator = 1, denominator = 2)
-  private val MIXED_NUMBER_NEGATIVE_123_0_OVER_3 =
-    createMixedNumber(isNegative = true, wholeNumber = 123, numerator = 0, denominator = 3)
+  private val WHOLE_NUMBER_VALUE_TEST_123 =
+    InteractionObjectTestBuilder.createWholeNumber(
+      isNegative = false,
+      value = 123
+    )
+  private val FRACTION_VALUE_TEST_2_OVER_4 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false,
+      numerator = 2,
+      denominator = 4
+    )
+  private val FRACTION_VALUE_TEST_1_OVER_2 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false,
+      numerator = 1,
+      denominator = 2
+    )
+  private val FRACTION_VALUE_TEST_20_OVER_5 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false,
+      numerator = 20,
+      denominator = 5
+    )
+  private val MIXED_NUMBER_VALUE_TEST_123_1_OVER_2 =
+    InteractionObjectTestBuilder.createMixedNumber(
+      isNegative = false,
+      wholeNumber = 123,
+      numerator = 1,
+      denominator = 2
+    )
+  private val MIXED_NUMBER_VALUE_TEST_123_0_OVER_3 =
+    InteractionObjectTestBuilder.createMixedNumber(
+      isNegative = false,
+      wholeNumber = 123,
+      numerator = 0,
+      denominator = 3
+    )
+  private val MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2 =
+    InteractionObjectTestBuilder.createMixedNumber(
+      isNegative = true,
+      wholeNumber = 123,
+      numerator = 1,
+      denominator = 2
+    )
+  private val MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_0_OVER_3 =
+    InteractionObjectTestBuilder.createMixedNumber(
+      isNegative = true,
+      wholeNumber = 123,
+      numerator = 0,
+      denominator = 3
+    )
 
   @Inject
   internal lateinit var fractionInputHasNoFractionalPartRuleClassifierProvider:
@@ -64,7 +97,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
 
     val matches =
       hasNoFractionalPartClassifierProvider.matches(
-        answer = WHOLE_NUMBER_123,
+        answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs
       )
 
@@ -77,7 +110,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
 
     val matches =
       hasNoFractionalPartClassifierProvider.matches(
-        answer = FRACTION_2_OVER_4,
+        answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs
       )
 
@@ -90,7 +123,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
 
     val matches =
       hasNoFractionalPartClassifierProvider.matches(
-        answer = MIXED_NUMBER_123_1_OVER_2,
+        answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
         inputs = inputs
       )
 
@@ -103,7 +136,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
 
     val matches =
       hasNoFractionalPartClassifierProvider.matches(
-        answer = MIXED_NUMBER_123_0_OVER_3,
+        answer = MIXED_NUMBER_VALUE_TEST_123_0_OVER_3,
         inputs = inputs
       )
 
@@ -116,7 +149,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
 
     val matches =
       hasNoFractionalPartClassifierProvider.matches(
-        answer = MIXED_NUMBER_NEGATIVE_123_1_OVER_2,
+        answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
         inputs = inputs
       )
 
@@ -129,7 +162,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
 
     val matches =
       hasNoFractionalPartClassifierProvider.matches(
-        answer = MIXED_NUMBER_NEGATIVE_123_0_OVER_3,
+        answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_0_OVER_3,
         inputs = inputs
       )
 
@@ -142,7 +175,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
 
     val matches =
       hasNoFractionalPartClassifierProvider.matches(
-        answer = FRACTION_1_OVER_2,
+        answer = FRACTION_VALUE_TEST_1_OVER_2,
         inputs = inputs
       )
 
@@ -155,7 +188,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
 
     val matches =
       hasNoFractionalPartClassifierProvider.matches(
-        answer = FRACTION_20_OVER_5,
+        answer = FRACTION_VALUE_TEST_20_OVER_5,
         inputs = inputs
       )
 

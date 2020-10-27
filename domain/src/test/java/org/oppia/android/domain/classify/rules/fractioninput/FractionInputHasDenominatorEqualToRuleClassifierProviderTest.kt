@@ -9,9 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createFraction
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createWholeNumber
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -27,16 +25,31 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
 
-  private val WHOLE_NUMBER_123 =
-    createWholeNumber(isNegative = false, value = 123)
-  private val FRACTION_1_OVER_2 =
-    createFraction(isNegative = false, numerator = 1, denominator = 2)
-  private val FRACTION_2_OVER_4 =
-    createFraction(isNegative = false, numerator = 2, denominator = 4)
-  private val NON_NEGATIVE_VALUE_1 =
-    createNonNegativeInt(value = 1)
-  private val NON_NEGATIVE_VALUE_2 =
-    createNonNegativeInt(value = 2)
+  private val WHOLE_NUMBER_VALUE_TEST_123 =
+    InteractionObjectTestBuilder.createWholeNumber(
+      isNegative = false,
+      value = 123
+    )
+  private val FRACTION_VALUE_TEST_1_OVER_2 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false,
+      numerator = 1,
+      denominator = 2
+    )
+  private val FRACTION_VALUE_TEST_2_OVER_4 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false,
+      numerator = 2,
+      denominator = 4
+    )
+  private val NON_NEGATIVE_VALUE_TEST_1 =
+    InteractionObjectTestBuilder.createNonNegativeInt(
+      value = 1
+    )
+  private val NON_NEGATIVE_VALUE_TEST_2 =
+    InteractionObjectTestBuilder.createNonNegativeInt(
+      value = 2
+    )
 
   @Inject
   internal lateinit var fractionInputHasDenominatorEqualToRuleClassifierProvider:
@@ -53,11 +66,11 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
 
   @Test
   fun testDenominatorEquals_wholeNumber123Answer_withInt1Input_bothValuesMatch() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1)
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_1)
 
     val matches =
       denominatorIsEqualClassifierProvider.matches(
-        answer = WHOLE_NUMBER_123,
+        answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs
       )
 
@@ -67,11 +80,11 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
 
   @Test
   fun testDenominatorEquals_wholeNumber123Answer_withInt2Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_2)
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_2)
 
     val matches =
       denominatorIsEqualClassifierProvider.matches(
-        answer = WHOLE_NUMBER_123,
+        answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs
       )
 
@@ -80,11 +93,11 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
 
   @Test
   fun testDenominatorEquals_fraction2Over4Answer_withInt1Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1)
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_1)
 
     val matches =
       denominatorIsEqualClassifierProvider.matches(
-        answer = FRACTION_2_OVER_4,
+        answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs
       )
 
@@ -93,11 +106,11 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
 
   @Test
   fun testDenominatorEquals_fraction1Over2Answer_withInt2Input_bothValuesMatch() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_2)
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_2)
 
     val matches =
       denominatorIsEqualClassifierProvider.matches(
-        answer = FRACTION_1_OVER_2,
+        answer = FRACTION_VALUE_TEST_1_OVER_2,
         inputs = inputs
       )
 
@@ -106,11 +119,11 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
 
   @Test
   fun testDenominatorEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
-    val inputs = mapOf("x" to FRACTION_2_OVER_4)
+    val inputs = mapOf("x" to FRACTION_VALUE_TEST_2_OVER_4)
 
     val exception = assertThrows(IllegalStateException::class) {
       denominatorIsEqualClassifierProvider.matches(
-        answer = FRACTION_2_OVER_4,
+        answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs
       )
     }
@@ -124,11 +137,11 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
 
   @Test
   fun testDenominatorEquals_missingInputF_throwsException() {
-    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1)
+    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_TEST_1)
 
     val exception = assertThrows(IllegalStateException::class) {
       denominatorIsEqualClassifierProvider.matches(
-        answer = FRACTION_2_OVER_4,
+        answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs
       )
     }
