@@ -9,8 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -24,6 +23,64 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputIsLessThanRuleClassifierProviderTest {
+
+  private val FRACTION_VALUE_TEST_1_OVER_3 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false,
+      numerator = 1,
+      denominator = 3
+    )
+  private val FRACTION_VALUE_TEST_1_OVER_2 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false,
+      numerator = 1,
+      denominator = 2
+    )
+  private val FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = true,
+      numerator = 1,
+      denominator = 3
+    )
+  private val FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = true,
+      numerator = 1,
+      denominator = 2
+    )
+  private val MIXED_NUMBER_VALUE_TEST_123_1_OVER_2 =
+    InteractionObjectTestBuilder.createMixedNumber(
+      isNegative = false,
+      wholeNumber = 123,
+      numerator = 1,
+      denominator = 2
+    )
+  private val MIXED_NUMBER_VALUE_TEST_123_1_OVER_3 =
+    InteractionObjectTestBuilder.createMixedNumber(
+      isNegative = false,
+      wholeNumber = 123,
+      numerator = 1,
+      denominator = 3
+    )
+  private val MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2 =
+    InteractionObjectTestBuilder.createMixedNumber(
+      isNegative = true,
+      wholeNumber = 123,
+      numerator = 1,
+      denominator = 2
+    )
+  private val MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_3 =
+    InteractionObjectTestBuilder.createMixedNumber(
+      isNegative = true,
+      wholeNumber = 123,
+      numerator = 1,
+      denominator = 3
+    )
+  private val STRING_VALUE_TEST_LOWERCASE =
+    InteractionObjectTestBuilder.createString(
+      value = "test"
+    )
+
   @Inject
   internal lateinit var fractionInputIsLessThanRuleClassifier:
     FractionInputIsLessThanRuleClassifierProvider
@@ -32,22 +89,6 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
     fractionInputIsLessThanRuleClassifier.createRuleClassifier()
   }
 
-  private val FRACTION_1_OVER_3 = createFraction(isNegative = false, numerator = 1, denominator = 3)
-  private val FRACTION_1_OVER_2 = createFraction(isNegative = false, numerator = 1, denominator = 2)
-  private val NEGATIVE_FRACTION_1_OVER_3 =
-    createFraction(isNegative = true, numerator = 1, denominator = 3)
-  private val NEGATIVE_FRACTION_1_OVER_2 =
-    createFraction(isNegative = true, numerator = 1, denominator = 2)
-  private val MIXED_NUMBER_123_1_OVER_2 =
-    createMixedNumber(isNegative = false, wholeNumber = 123, numerator = 1, denominator = 2)
-  private val MIXED_NUMBER_123_1_OVER_3 =
-    createMixedNumber(isNegative = false, wholeNumber = 123, numerator = 1, denominator = 3)
-  private val NEGATIVE_MIXED_NUMBER_123_1_OVER_2 =
-    createMixedNumber(isNegative = true, wholeNumber = 123, numerator = 1, denominator = 2)
-  private val NEGATIVE_MIXED_NUMBER_123_1_OVER_3 =
-    createMixedNumber(isNegative = true, wholeNumber = 123, numerator = 1, denominator = 3)
-  private val STRING_VALUE = createString(value = "test")
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -55,10 +96,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswer1Over3_input1Over2_verifyAnswerLesser() {
-    val inputs = mapOf("f" to FRACTION_1_OVER_2)
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = FRACTION_1_OVER_3,
+      answer = FRACTION_VALUE_TEST_1_OVER_3,
       inputs = inputs
     )
 
@@ -67,10 +108,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswer1Over3_input1Over3_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to FRACTION_1_OVER_3)
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_3)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = FRACTION_1_OVER_3,
+      answer = FRACTION_VALUE_TEST_1_OVER_3,
       inputs = inputs
     )
 
@@ -79,10 +120,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswer1Over2_input1Over3_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to FRACTION_1_OVER_3)
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_3)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = FRACTION_1_OVER_2,
+      answer = FRACTION_VALUE_TEST_1_OVER_2,
       inputs = inputs
     )
 
@@ -91,10 +132,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswer1Over3_inputNegative1Over3_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to NEGATIVE_FRACTION_1_OVER_3)
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = FRACTION_1_OVER_3,
+      answer = FRACTION_VALUE_TEST_1_OVER_3,
       inputs = inputs
     )
 
@@ -103,10 +144,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswer1Over2_input123_1Over2_verifyAnswerLesser() {
-    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = FRACTION_1_OVER_2,
+      answer = FRACTION_VALUE_TEST_1_OVER_2,
       inputs = inputs
     )
 
@@ -115,10 +156,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswer1Over2_inputNegative123_1Over2_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_123_1_OVER_2)
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = FRACTION_1_OVER_2,
+      answer = FRACTION_VALUE_TEST_1_OVER_2,
       inputs = inputs
     )
 
@@ -127,10 +168,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswerNegative1Over3_inputNegative1Over3_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to NEGATIVE_FRACTION_1_OVER_3)
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = NEGATIVE_FRACTION_1_OVER_3,
+      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3,
       inputs = inputs
     )
 
@@ -139,10 +180,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswerNegative1Over3_input1Over2_verifyAnswerLesser() {
-    val inputs = mapOf("f" to FRACTION_1_OVER_2)
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = NEGATIVE_FRACTION_1_OVER_3,
+      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3,
       inputs = inputs
     )
 
@@ -151,10 +192,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswerNegative1Over3_inputNegative1Over2_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to NEGATIVE_FRACTION_1_OVER_2)
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = NEGATIVE_FRACTION_1_OVER_3,
+      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3,
       inputs = inputs
     )
 
@@ -163,10 +204,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswerNegative1Over2_inputNegative1Over3_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to NEGATIVE_FRACTION_1_OVER_3)
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = NEGATIVE_FRACTION_1_OVER_2,
+      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
       inputs = inputs
     )
 
@@ -175,10 +216,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswerNegative1Over2_inputNegative123_1Over2_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_123_1_OVER_2)
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = NEGATIVE_FRACTION_1_OVER_2,
+      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
       inputs = inputs
     )
 
@@ -187,10 +228,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswerNegative1Over2_input123_1Over2_verifyAnswerLesser() {
-    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = NEGATIVE_FRACTION_1_OVER_2,
+      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
       inputs = inputs
     )
 
@@ -199,10 +240,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswer123_1Over2_input123_1Over2_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = MIXED_NUMBER_123_1_OVER_2,
+      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
       inputs = inputs
     )
 
@@ -211,10 +252,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswerNegative123_1Over2_input123_1Over3_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_3)
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_3)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = MIXED_NUMBER_123_1_OVER_2,
+      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
       inputs = inputs
     )
 
@@ -223,10 +264,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswer123_1Over3_input123_1Over2_verifyAnswerLesser() {
-    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = MIXED_NUMBER_123_1_OVER_3,
+      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_3,
       inputs = inputs
     )
 
@@ -235,10 +276,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswer123_1Over2_inputNegative123_1Over2_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_123_1_OVER_2)
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = MIXED_NUMBER_123_1_OVER_2,
+      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
       inputs = inputs
     )
 
@@ -247,10 +288,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswer123_1Over2_inputNegative1Over3_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to NEGATIVE_FRACTION_1_OVER_3)
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = MIXED_NUMBER_123_1_OVER_2,
+      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
       inputs = inputs
     )
 
@@ -259,10 +300,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswerNegative123_1Over3_inputNegative123_1Over2_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_123_1_OVER_2)
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = NEGATIVE_MIXED_NUMBER_123_1_OVER_3,
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_3,
       inputs = inputs
     )
 
@@ -271,10 +312,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswer123_1Over2_input1Over2_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to FRACTION_1_OVER_2)
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = MIXED_NUMBER_123_1_OVER_2,
+      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
       inputs = inputs
     )
 
@@ -283,10 +324,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswerNegative123_1Over2_inputNegative123_1Over2_verifyAnswerNotLesser() {
-    val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_123_1_OVER_2)
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = NEGATIVE_MIXED_NUMBER_123_1_OVER_2,
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
       inputs = inputs
     )
 
@@ -295,10 +336,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswerNegative123_1Over2_inputNegative123_1Over3_verifyAnswerLesser() {
-    val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_123_1_OVER_3)
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_3)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = NEGATIVE_MIXED_NUMBER_123_1_OVER_2,
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
       inputs = inputs
     )
 
@@ -307,10 +348,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswerNegative123_1Over2_inputNegative1Over3_verifyAnswerLesser() {
-    val inputs = mapOf("f" to NEGATIVE_FRACTION_1_OVER_3)
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = NEGATIVE_MIXED_NUMBER_123_1_OVER_2,
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
       inputs = inputs
     )
 
@@ -319,10 +360,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswerNegative123_1Over2_input123_1Over2_verifyAnswerLesser() {
-    val inputs = mapOf("f" to MIXED_NUMBER_123_1_OVER_2)
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = NEGATIVE_MIXED_NUMBER_123_1_OVER_2,
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
       inputs = inputs
     )
 
@@ -331,10 +372,10 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswerNegative123_1Over2_input1Over2_verifyAnswerLesser() {
-    val inputs = mapOf("f" to FRACTION_1_OVER_2)
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
 
     val matches = inputLessThanRuleClassifier.matches(
-      answer = NEGATIVE_MIXED_NUMBER_123_1_OVER_2,
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
       inputs = inputs
     )
 
@@ -343,12 +384,12 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswer1Over2_inputMissing_throwsException() {
-    val inputs = mapOf("y" to FRACTION_1_OVER_2)
+    val inputs = mapOf("y" to FRACTION_VALUE_TEST_1_OVER_2)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputLessThanRuleClassifier
         .matches(
-          answer = FRACTION_1_OVER_2,
+          answer = FRACTION_VALUE_TEST_1_OVER_2,
           inputs = inputs
         )
     }
@@ -360,12 +401,12 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testAnswer1Over2_inputString_throwsException() {
-    val inputs = mapOf("x" to STRING_VALUE)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputLessThanRuleClassifier
         .matches(
-          answer = FRACTION_1_OVER_2,
+          answer = FRACTION_VALUE_TEST_1_OVER_2,
           inputs = inputs
         )
     }
@@ -373,41 +414,6 @@ class FractionInputIsLessThanRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'f' but had: [x]")
-  }
-
-  private fun createFraction(
-    isNegative: Boolean,
-    numerator: Int,
-    denominator: Int
-  ): InteractionObject {
-    // Fraction-only numbers imply no whole number.
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setNumerator(numerator)
-        .setDenominator(denominator)
-        .build()
-    ).build()
-  }
-
-  private fun createMixedNumber(
-    isNegative: Boolean,
-    wholeNumber: Int,
-    numerator: Int,
-    denominator: Int
-  ): InteractionObject {
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setWholeNumber(wholeNumber)
-        .setNumerator(numerator)
-        .setDenominator(denominator)
-        .build()
-    ).build()
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
   private fun setUpTestApplicationComponent() {
