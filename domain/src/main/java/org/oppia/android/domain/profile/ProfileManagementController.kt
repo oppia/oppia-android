@@ -203,7 +203,7 @@ class ProfileManagementController @Inject constructor(
       if (!isNameUnique(name, it)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE)
       }
-      if (alreadyHasAdmin(it)) {
+      if (isAdmin && alreadyHasAdmin(it)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_ALREADY_HAS_ADMIN)
       }
 
