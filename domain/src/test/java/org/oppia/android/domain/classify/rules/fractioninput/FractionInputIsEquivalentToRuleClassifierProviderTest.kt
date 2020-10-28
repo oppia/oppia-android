@@ -91,7 +91,6 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   @Test
   fun testEquality_wholeNumber123Answer_withWholeNumber254Input_bothValuesNotEquivalent() {
     val inputs = mapOf("f" to WHOLE_NUMBER_VALUE_254)
-    val answer = WHOLE_NUMBER_VALUE_123
 
     val matches =
       inputIsEquivalentToRuleClassifier.matches(answer = WHOLE_NUMBER_VALUE_123, inputs = inputs)
@@ -102,7 +101,6 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   @Test
   fun testEquality_fraction2Over4Answer_withFraction2Over4Input_bothValuesEquivalent() {
     val inputs = mapOf("f" to FRACTION_VALUE_2_OVER_8)
-    val answer = FRACTION_VALUE_2_OVER_8
 
     val matches =
       inputIsEquivalentToRuleClassifier.matches(answer = FRACTION_VALUE_2_OVER_8, inputs = inputs)
@@ -113,7 +111,6 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   @Test
   fun testEquality_fraction2Over4Answer_withFraction1Over5Input_bothValuesNotEquivalent() {
     val inputs = mapOf("f" to FRACTION_VALUE_1_OVER_5)
-    val answer = FRACTION_VALUE_2_OVER_8
 
     val matches =
       inputIsEquivalentToRuleClassifier.matches(answer = FRACTION_VALUE_2_OVER_8, inputs = inputs)
@@ -124,7 +121,6 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   @Test
   fun testEquality_fraction2Over133Answer_withFaction1Over242Input_bothValuesEquivalent() {
     val inputs = mapOf("f" to FRACTION_VALUE_33_OVER_2)
-    val answer = FRACTION_VALUE_33_OVER_2
 
     val matches =
       inputIsEquivalentToRuleClassifier.matches(answer = FRACTION_VALUE_33_OVER_2, inputs = inputs)
@@ -135,7 +131,6 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   @Test
   fun testEquality_fraction2Over133Answer_withFaction1Over242Input_bothValuesNotEquivalent() {
     val inpus = mapOf("f" to FRACTION_VALUE_242_OVER_1)
-    val answer = FRACTION_VALUE_33_OVER_2
 
     val matches =
       inputIsEquivalentToRuleClassifier.matches(answer = FRACTION_VALUE_33_OVER_2, inputs = inpus)
@@ -218,7 +213,6 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       .contains("Expected classifier inputs to contain parameter with name 'f' but had: [y]")
   }
 
-
   private fun setUpTestApplicationComponent() {
     DaggerFractionInputIsEquivalentToRuleClassifierProviderTest_TestApplicationComponent
       .builder()
@@ -233,7 +227,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       if (type.isInstance(t)) {
         return type.cast(t)
       }
-      // Unexpected exception; throw it.
+
       throw t
     }
   }
