@@ -30,6 +30,8 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
     ).fraction
   private val DOUBLE_VALUE_TEST_DIFFERENT_TYPE =
     InteractionObjectTestBuilder.createReal(value = 2.5)
+  private val DOUBLE_VALUE_TEST =
+    InteractionObjectTestBuilder.createReal(value = 2.6).real
   private val NUMBER_UNIT_TEST_STRING_TO_POWER_2 =
     InteractionObjectTestBuilder.createNumberUnit(unit = "a", exponent = 2)
   private val NUMBER_UNIT_TEST_STRING_TO_POWER_1 =
@@ -37,7 +39,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   private val NUMBER_UNIT_TEST_STRING_TO_POWER_3 =
     InteractionObjectTestBuilder.createNumberUnit(unit = "c", exponent = 3)
   private val ANSWER_TEST_NUMBER_WITH_UNITS =
-    InteractionObjectTestBuilder.createNumberWithUnits(
+    InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
       FRACTION_VALUE_TEST_1_OVER_2,
       listOf(
         NUMBER_UNIT_TEST_STRING_TO_POWER_1,
@@ -45,7 +47,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
       )
     )
   private val INPUT_TEST_NUMBER_WITH_UNITS =
-    InteractionObjectTestBuilder.createNumberWithUnits(
+    InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
       FRACTION_VALUE_TEST_1_OVER_2,
       listOf(
         NUMBER_UNIT_TEST_STRING_TO_POWER_2,
@@ -53,11 +55,27 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
       )
     )
   private val DIFF_TEST_NUMBER_WITH_UNITS =
-    InteractionObjectTestBuilder.createNumberWithUnits(
+    InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
       FRACTION_VALUE_TEST_1_OVER_2,
       listOf(
         NUMBER_UNIT_TEST_STRING_TO_POWER_3,
         NUMBER_UNIT_TEST_STRING_TO_POWER_2
+      )
+    )
+  private val ANSWER_TEST_REAL_NUMBER_WITH_UNITS =
+    InteractionObjectTestBuilder.createNumberWithUnitsForReal(
+      DOUBLE_VALUE_TEST,
+      listOf(
+        NUMBER_UNIT_TEST_STRING_TO_POWER_1,
+        NUMBER_UNIT_TEST_STRING_TO_POWER_2
+      )
+    )
+  private val INPUT_TEST_REAL_NUMBER_WITH_UNITS =
+    InteractionObjectTestBuilder.createNumberWithUnitsForReal(
+      DOUBLE_VALUE_TEST,
+      listOf(
+        NUMBER_UNIT_TEST_STRING_TO_POWER_2,
+        NUMBER_UNIT_TEST_STRING_TO_POWER_1
       )
     )
 
@@ -75,7 +93,8 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testInputNumberWithUnits_testAnswerNumberWithUnits_withDiffUnits_verifyValuesDoNotMatch() {
+  fun forFraction_testInputNumberWithUnits_testAnswerNumberWithUnits_withDiffUnits_verifyDoNotMatch
+  () {
     val inputs = mapOf("f" to INPUT_TEST_NUMBER_WITH_UNITS)
 
     val matches =
@@ -88,7 +107,8 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testInputNumberWithUnits_testAnswerNumberWithUnits_inDiffOrder_verifyValuesMatch() {
+  fun forFraction_testInputNumberWithUnits_testAnswerNumberWithUnits_inDiffOrder_verifyValuesMatch
+  () {
     val inputs = mapOf("f" to INPUT_TEST_NUMBER_WITH_UNITS)
 
     val matches =
@@ -101,12 +121,52 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testInputNumberWithUnits_testAnswerNumberWithUnits_inSameOrder_verifyValuesMatch() {
+  fun forFraction_testInputNumberWithUnits_testAnswerNumberWithUnits_inSameOrder_verifyValuesMatch
+  () {
     val inputs = mapOf("f" to ANSWER_TEST_NUMBER_WITH_UNITS)
 
     val matches =
       unitIsEquivalentRuleClassifier.matches(
         answer = ANSWER_TEST_NUMBER_WITH_UNITS,
+        inputs = inputs
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun forReal_testInputNumberWithUnits_testAnswerNumberWithUnits_withDiffUnits_verifyDoNotMatch() {
+    val inputs = mapOf("f" to INPUT_TEST_REAL_NUMBER_WITH_UNITS)
+
+    val matches =
+      unitIsEquivalentRuleClassifier.matches(
+        answer = DIFF_TEST_NUMBER_WITH_UNITS,
+        inputs = inputs
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun forReal_testInputNumberWithUnits_testAnswerNumberWithUnits_inDiffOrder_verifyValuesMatch() {
+    val inputs = mapOf("f" to INPUT_TEST_REAL_NUMBER_WITH_UNITS)
+
+    val matches =
+      unitIsEquivalentRuleClassifier.matches(
+        answer = ANSWER_TEST_REAL_NUMBER_WITH_UNITS,
+        inputs = inputs
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun forReal_testInputNumberWithUnits_testAnswerNumberWithUnits_inSameOrder_verifyValuesMatch() {
+    val inputs = mapOf("f" to ANSWER_TEST_REAL_NUMBER_WITH_UNITS)
+
+    val matches =
+      unitIsEquivalentRuleClassifier.matches(
+        answer = ANSWER_TEST_REAL_NUMBER_WITH_UNITS,
         inputs = inputs
       )
 
