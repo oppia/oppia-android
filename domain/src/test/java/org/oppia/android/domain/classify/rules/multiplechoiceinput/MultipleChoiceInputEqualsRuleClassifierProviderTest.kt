@@ -23,9 +23,10 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class MultipleChoiceInputEqualsRuleClassifierProviderTest {
-  private val NON_NEGATIVE_VALUE_0 = InteractionObjectTestBuilder.createNonNegativeInt(value = 0)
-  private val NON_NEGATIVE_VALUE_1 = InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
-  private val STRING_VALUE_2 = InteractionObjectTestBuilder.createString(value = "test")
+
+  private val INT_VALUE_TEST_0 = InteractionObjectTestBuilder.createNonNegativeInt(value = 0)
+  private val INT_VALUE_TEST_1 = InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
+  private val STRING_VALUE_TEST = InteractionObjectTestBuilder.createString(value = "test")
 
   @Inject
   internal lateinit var multipleChoiceInputEqualsRuleClassifierProvider:
@@ -42,10 +43,10 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testNonNegativeAnswer_nonNegativeInput_sameValue_bothValuesMatch() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
+    val inputs = mapOf("x" to INT_VALUE_TEST_0)
 
     val matches = inputEqualsRuleClassifier.matches(
-      answer = NON_NEGATIVE_VALUE_0,
+      answer = INT_VALUE_TEST_0,
       inputs = inputs
     )
 
@@ -54,10 +55,10 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testNonNegativeAnswer_nonNegativeInput_differentValue_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
+    val inputs = mapOf("x" to INT_VALUE_TEST_0)
 
     val matches = inputEqualsRuleClassifier.matches(
-      answer = NON_NEGATIVE_VALUE_1,
+      answer = INT_VALUE_TEST_1,
       inputs = inputs
     )
 
@@ -66,11 +67,11 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testNonNegativeAnswer_missingInput_throwsException() {
-    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0)
+    val inputs = mapOf("y" to INT_VALUE_TEST_0)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputEqualsRuleClassifier.matches(
-        answer = NON_NEGATIVE_VALUE_0,
+        answer = INT_VALUE_TEST_0,
         inputs = inputs
       )
     }
@@ -82,11 +83,11 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testUnexpectedStringAnswer_nonNegativeIntInput_throwsException() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
+    val inputs = mapOf("x" to INT_VALUE_TEST_0)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputEqualsRuleClassifier.matches(
-        answer = STRING_VALUE_2,
+        answer = STRING_VALUE_TEST,
         inputs = inputs
       )
     }
@@ -98,11 +99,11 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testNonNegativeAnswer_stringInput_throwsException() {
-    val inputs = mapOf("x" to STRING_VALUE_2)
+    val inputs = mapOf("x" to STRING_VALUE_TEST)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputEqualsRuleClassifier.matches(
-        answer = NON_NEGATIVE_VALUE_0,
+        answer = INT_VALUE_TEST_0,
         inputs = inputs
       )
     }
