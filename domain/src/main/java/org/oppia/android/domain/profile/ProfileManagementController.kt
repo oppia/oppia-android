@@ -204,7 +204,10 @@ class ProfileManagementController @Inject constructor(
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE)
       }
       if (isAdmin && alreadyHasAdmin(it)) {
-        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_ALREADY_HAS_ADMIN)
+        return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_ALREADY_HAS_ADMIN
+        )
       }
 
       val nextProfileId = it.nextProfileId

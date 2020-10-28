@@ -730,6 +730,33 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  fun testAddAdminProfile_addAnotherAdminProfile_checkSecondAdminProfileWasAdded() {
+    profileManagementController.addProfile(
+      name = "Rohit",
+      pin = "12345",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = true
+    ).toLiveData().observeForever(mockUpdateResultObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    profileManagementController.addProfile(
+      name = "Ben",
+      pin = "12345",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = true
+    ).toLiveData().observeForever(mockUpdateResultObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyUpdateFailed()
+    assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat()
+      .contains("Profile cannot be an admin")
+  }
+
+  @Test
   fun testDeviceSettings_addAdminProfile_getDefaultDeviceSettings_isSuccessful() {
     profileManagementController.addProfile(
       name = "James",
