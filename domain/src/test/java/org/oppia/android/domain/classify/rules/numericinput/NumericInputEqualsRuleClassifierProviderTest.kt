@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.util.FLOAT_EQUALITY_INTERVAL
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -25,11 +26,20 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class NumericInputEqualsRuleClassifierProviderTest {
 
-  private val POSITIVE_REAL_VALUE_1_5 = createReal(value = 1.5)
-  private val POSITIVE_REAL_VALUE_3_5 = createReal(value = 3.5)
-  private val NEGATIVE_REAL_VALUE_1_5 = createReal(value = -1.5)
-  private val NEGATIVE_REAL_VALUE_3_5 = createReal(value = -3.5)
-  private val STRING_VALUE = createString(value = "test")
+  private val POSITIVE_REAL_VALUE_1_5 =
+    InteractionObjectTestBuilder.createReal(value = 1.5)
+
+  private val POSITIVE_REAL_VALUE_3_5 =
+    InteractionObjectTestBuilder.createReal(value = 3.5)
+
+  private val NEGATIVE_REAL_VALUE_1_5 =
+    InteractionObjectTestBuilder.createReal(value = -1.5)
+
+  private val NEGATIVE_REAL_VALUE_3_5 =
+    InteractionObjectTestBuilder.createReal(value = -3.5)
+
+  private val STRING_VALUE =
+    InteractionObjectTestBuilder.createString(value = "test")
 
   @Inject
   internal lateinit var numericInputEqualsRuleClassifierProvider:

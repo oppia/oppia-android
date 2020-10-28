@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -24,15 +25,32 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class NumericInputIsLessThanOrEqualToRuleClassifierProviderTest {
 
-  private val POSITIVE_REAL_VALUE_1_5 = createReal(value = 1.5)
-  private val POSITIVE_REAL_VALUE_3_5 = createReal(value = 3.5)
-  private val NEGATIVE_REAL_VALUE_1_5 = createReal(value = -1.5)
-  private val NEGATIVE_REAL_VALUE_3_5 = createReal(value = -3.5)
-  private val STRING_VALUE = createString(value = "test")
-  private val POSITIVE_INT_VALUE_3 = createInt(value = 3)
-  private val POSITIVE_INT_VALUE_1 = createInt(value = 1)
-  private val NEGATIVE_INT_VALUE_1 = createInt(value = -1)
-  private val NEGATIVE_INT_VALUE_3 = createInt(value = -3)
+  private val POSITIVE_REAL_VALUE_1_5 =
+    InteractionObjectTestBuilder.createReal(value = 1.5)
+
+  private val POSITIVE_REAL_VALUE_3_5 =
+    InteractionObjectTestBuilder.createReal(value = 3.5)
+
+  private val NEGATIVE_REAL_VALUE_1_5 =
+    InteractionObjectTestBuilder.createReal(value = -1.5)
+
+  private val NEGATIVE_REAL_VALUE_3_5 =
+    InteractionObjectTestBuilder.createReal(value = -3.5)
+
+  private val STRING_VALUE =
+    InteractionObjectTestBuilder.createString(value = "test")
+
+  private val POSITIVE_INT_VALUE_3 =
+    InteractionObjectTestBuilder.createInt(value = 3)
+
+  private val POSITIVE_INT_VALUE_1 =
+    InteractionObjectTestBuilder.createInt(value = 1)
+
+  private val NEGATIVE_INT_VALUE_1 =
+    InteractionObjectTestBuilder.createInt(value = -1)
+
+  private val NEGATIVE_INT_VALUE_3 =
+    InteractionObjectTestBuilder.createInt(value = -3)
 
   @Inject
   internal lateinit var numericInputIsLessThanOrEqualToRuleClassifierProvider:
