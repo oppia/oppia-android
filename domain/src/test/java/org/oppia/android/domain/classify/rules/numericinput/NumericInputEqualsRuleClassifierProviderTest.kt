@@ -77,13 +77,13 @@ class NumericInputEqualsRuleClassifierProviderTest {
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valuesInRange_bothValuesMatch() {
     val inputs = mapOf(
-      "x" to createReal(
+      "x" to InteractionObjectTestBuilder.createReal(
         value = 5 * FLOAT_EQUALITY_INTERVAL
       )
     )
 
     val matches = inputEqualsRuleClassifier.matches(
-      answer = createReal(value = 5 * FLOAT_EQUALITY_INTERVAL + FLOAT_EQUALITY_INTERVAL / 10),
+      answer = InteractionObjectTestBuilder.createReal(value = 5 * FLOAT_EQUALITY_INTERVAL + FLOAT_EQUALITY_INTERVAL / 10),
       inputs = inputs
     )
 
@@ -123,13 +123,13 @@ class NumericInputEqualsRuleClassifierProviderTest {
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valueAtRange_valuesDoNotMatch() {
     val inputs = mapOf(
-      "x" to createReal(
+      "x" to InteractionObjectTestBuilder.createReal(
         value = 5 * FLOAT_EQUALITY_INTERVAL
       )
     )
 
     val matches = inputEqualsRuleClassifier.matches(
-      answer = createReal(value = 6 * FLOAT_EQUALITY_INTERVAL),
+      answer = InteractionObjectTestBuilder.createReal(value = 6 * FLOAT_EQUALITY_INTERVAL),
       inputs = inputs
     )
 
@@ -160,14 +160,6 @@ class NumericInputEqualsRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected input value to be of type REAL not NORMALIZED_STRING")
-  }
-
-  private fun createReal(value: Double): InteractionObject {
-    return InteractionObject.newBuilder().setReal(value).build()
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
   private fun setUpTestApplicationComponent() {
