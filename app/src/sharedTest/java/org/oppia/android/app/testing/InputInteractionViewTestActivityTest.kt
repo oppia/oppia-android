@@ -231,7 +231,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputNegSymbolOtherThanAt0_numberFormatErrorDisplayed() {
+  fun testFractionInputView_withInputNegativeSymbolOtherThanAt0_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -250,7 +250,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputNegSymbolAt0MoreThanOnce_numFormatErrorDisplayed() {
+  fun testFractionInputView_withInputNegativeSymbolAt0MoreThanOnce_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -269,7 +269,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputDividerMoreThanOnce_numberFormatErrorDisplayed() {
+  fun testFractionInputInteractionView_withInputDividerMoreThanOnce_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -319,7 +319,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputPartialValue_clickSubmit_numFormatErrorDisplayed() {
+  fun testFractionInputView_withInputPartialValue_clickSubmitButton_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -366,7 +366,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputDivByZero_clickSubmit_divideByZeroErrorDisplayed() {
+  fun testFractionInputView_withInputDivideByZero_clickSubmit_divideByZeroErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -387,7 +387,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputInvalidCharacter_invalidCharacterErrorDisplayed() {
+  fun testFractionInputView_withInputInvalidCharacter_invalidCharacterErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
@@ -407,7 +407,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputLongNumber_clickSubmit_numTooLongErrorDisplayed() {
+  fun testFractionInputView_withInputLongNumber_clickSubmit_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
@@ -482,7 +482,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputNegDecimal_hasCorrectPendingAnsWithDecimalValues() {
+  fun testNumericInputView_withInputNegativeDecimal_hasCorrectPendingAnswerWithDecimalValues() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -517,7 +517,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputInvalidCharacter_invalidCharacterErrorDisplayed() {
+  fun testNumericInputInteractionView_withInputInvalidCharacter_invalidCharacterErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -537,7 +537,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputLongNumber_clickSubmit_numTooLongErrorIsDisplayed() {
+  fun testNumericInputView_withInputLongNumber_clickSubmitButton_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -559,7 +559,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputLongNonDecNum_submit_numTooLongErrorDisplayed() {
+  fun testNumericInputView_withInputLongNonDecimalNumber_clickSubmit_numTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -581,7 +581,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputMinusSymbol_clickSubmit_numFormatErrorDisplayed() {
+  fun testNumericInputView_withInputMinusSymbol_clickSubmitButton_numberFormatErrorDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -602,7 +602,7 @@ class InputInteractionViewTestActivityTest {
     }
   }
 
-  fun testNumericInputInteractionView_withInputNegSymbolOtherThanAt0_numFormatErrorDisplayed() {
+  fun testNumericInputView_withInputNegativeSymbolOtherThanAt0_numberFormatIsErrorDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("55-"))
     onView(withId(R.id.number_input_error))
@@ -616,7 +616,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputNegSymbolAt0MoreThanOnce_numFormatErrorDisplayed() {
+  fun testNumericInputView_withInputNegativeSymbolAt0MoreThanOnce_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
@@ -635,7 +635,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputFloatPointMoreThanOnce_numFormatErrorDisplayed() {
+  fun testNumericInputView_withInputFloatPointMoreThanOnce_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
@@ -654,7 +654,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputFloatPtAtStart_numStartsWithFloatPtErrorDisplayed() {
+  fun testNumericInputView_withInputFloatPointAtStart_numberStartsWithFloatPointErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view)).perform(typeText(".5"))
     onView(withId(R.id.number_input_error))

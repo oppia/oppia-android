@@ -165,7 +165,7 @@ class AudioFragmentTest {
   }
 
   @Test
-  fun testAudioFragment_openFragment_showsEnglishWhenDefaultAudioLanguageNotAvailable() {
+  fun testAudioFragment_openFragment_defaultAudioLanguageNotAvailable_showsEnglish() {
     launch<AudioFragmentTestActivity>(
       createHomeActivityIntent(
         PROFILE_ID_INVALID_AUDIO_LANGUAGE

@@ -173,7 +173,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
   @Ignore
-  fun testNavDrawerTest_clickNavDrawerHamburger_defaultProfileNameAtIndex0_nameDisplaySuccess() {
+  fun testActivity_clickNavDrawerHamburger_defaultProfileNameAtIndex0_nameDisplayedSuccessfully() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -190,7 +190,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
   @Ignore
-  fun testNavDrawerTest_clickNavDrawerHamburger_configChange_defaultProfileNameAt0_nameDisplayed() {
+  fun testActivity_clickNavDrawerHamburger_configChange_defaultProfileNameAtIndex0_nameDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -211,7 +211,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
   @Ignore
-  fun testNavDrawerTest_clickNavDrawerHamburger_checkProfileProgress_profileProgressDisplayed() {
+  fun testActivity_clickNavDrawerHamburger_checkProfileProgress_profileProgressIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -238,7 +238,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
   @Ignore
-  fun testNavDrawerTest_clickNavDrawerHamburger_defaultProfileNameAtIndex1_profileNameDisplayed() {
+  fun testActivity_clickNavDrawerHamburger_defaultProfileNameAtIndex1_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId1
@@ -258,7 +258,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
   @Ignore
-  fun testNavDrawerTest_clickNavDrawerHamburger_navDrawerIsOpenedSuccessfully() {
+  fun testNavDrawerTestActivity_clickNavDrawerHamburger_navDrawerIsOpenedSuccessfully() {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description))
         .check(
@@ -293,7 +293,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
   @Ignore
-  fun testNavDrawerTest_openNavDrawerAndRotate_navDrawerIsNotClosedAfterRotationVerified() {
+  fun testNavDrawerTest_openNavDrawerAndRotate_navDrawerIsNotClosedAfterRotationIsVerified() {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
@@ -315,7 +315,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
   @Ignore
-  fun testNavDrawerTest_withAdminProfile_openNavDrawer_checkAdminControlsDisplayed() {
+  fun testNavDrawerTest_withAdminProfile_openNavDrawer_adminControlsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
@@ -337,7 +337,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
   @Ignore
-  fun testNavDrawerTest_withAdminProfile_openNavDrawer_clickAdminCtrls_checkOpensAdminControls() {
+  fun testNavDrawerTest_withAdminProfile_openNavDrawer_clickAdminControls_opensAdminControls() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -354,7 +354,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
   @Ignore
-  fun testNavDrawerTest_withUserProfile_openNavDrawer_checkAdminControlsNotDisplayed() {
+  fun testNavDrawerTest_withUserProfile_openNavDrawer_adminControlsIsNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId1
@@ -413,7 +413,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
   @Ignore
-  fun testNavDrawerTest_openNavDrawer_selectSwitch_showsExitToProfileChooser_exit_opensChooser() {
+  fun testActivity_openNavDrawer_selectSwitchProfileMenu_clickExit_opensProfileChooserActivity() {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -426,7 +426,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
   @Ignore
-  fun testNavDrawerTest_openNavDrawer_selectSwitch_showsExitToProfileChooser_cancel_drawerClosed() {
+  fun testActivity_openNavDrawer_selectSwitchProfileMenu_clickCancel_drawerIsClosed() {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -459,7 +459,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
   @Ignore
-  fun testNavDrawerTest_openNavDrawer_selectHelp_clickNavDrawerHamburger_drawerOpenedAndVerified() {
+  fun testActivity_openNavDrawer_selectHelpMenu_clickNavDrawerHamburger_drawerOpensAndIsVerified() {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())

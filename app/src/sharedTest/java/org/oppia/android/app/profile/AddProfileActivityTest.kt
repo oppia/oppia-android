@@ -146,7 +146,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_changeConfig_inputName_clickCreate_checkOpensProfileChooserActivity() {
+  fun testAddProfileActivity_changeConfig_inputName_clickCreate_opensProfileChooserActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
@@ -269,7 +269,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_changeConfig_inputName_inputPin_clickCreate_checkOpensProfileActivity() {
+  fun testAddProfileActivity_changeConfig_inputName_inputPin_clickCreate_opensProfileActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
@@ -401,7 +401,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_changeConfig_inputNotUniqueName_clickCreate_checkNameNotUniqueError() {
+  fun testAddProfileActivity_changeConfig_inputNotUniqueName_clickCreate_nameNotUniqueError() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -461,7 +461,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_changeConfig_inputNotUniqueName_clickCreate_inputName_checkErrorIsCleared() {
+  fun testActivity_changeConfig_inputNotUniqueName_clickCreate_inputName_errorIsCleared() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -528,7 +528,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_changeConfig_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() {
+  fun testAddProfileActivity_changeConfig_inputNameWithNumbers_clickCreate_nameOnlyLettersError() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -589,7 +589,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_changeConfig_inputNameWithNos_clickCreate_inputName_checkErrorIsCleared() {
+  fun testActivity_changeConfig_inputNameWithNumbers_clickCreate_inputName_errorIsCleared() {
     launch(AddProfileActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -666,7 +666,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_changeConfig_inputShortPin_clickCreate_checkPinLengthError() {
+  fun testAddProfileActivity_changeConfig_inputShortPin_clickCreate_pinLengthError() {
     launch(AddProfileActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -748,7 +748,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_changeConfig_inputShortPin_clickCreate_inputPin_checkErrorIsCleared() {
+  fun testAddProfileActivity_changeConfig_inputShortPin_clickCreate_inputPin_errorIsCleared() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
@@ -978,7 +978,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_changeConfig_inputWrongConfirmPin_inputConfirmPin_checkErrorIsCleared() {
+  fun testAddProfileActivity_changeConfig_inputWrongConfirmPin_inputConfirmPin_errorIsCleared() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
@@ -1119,7 +1119,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_changeConfig_inputPin_inputConfirmPin_checkAllowDownloadClickable() {
+  fun testAddProfileActivity_changeConfig_inputPin_inputConfirmPin_allowDownloadIsClickable() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
@@ -1292,7 +1292,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_inputName_Pin_ConfirmPin_changeConfig_checkName_Pin_ConfirmPin_Displayed() {
+  fun testActivity_inputNameAndPinAndConfirm_changeConfig_checkNameAndPinAndConfirm_isDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -1407,7 +1407,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_inputNotUniqueName_clickCreate_changeConfig_checkErrorMsgDisplayed() {
+  fun testAddProfileActivity_inputNotUniqueName_clickCreate_changeConfig_errorMessageDisplayed() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1446,7 +1446,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_inputPin_inputConfirmPin_changeConfig_checkPin_checkConfirmPin_Displayed() {
+  fun testActivity_inputPin_inputConfirmPin_changeConfig_checkPin_checkConfirmPin_Displayed() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
@@ -1500,7 +1500,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_inputPin_inputDfrntConfirmPin_clickCreate_changeConfig_ErrorMsgDisplayed() {
+  fun testActivity_inputPin_inputDifferentConfirm_clickCreate_changeConfig_errorMessageDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -1559,7 +1559,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfile_inputPin_ConfirmPin_OnDnldAccessSwitch_changeConfig_DnldAccessSwitchIsOn() {
+  fun testActivity_inputPin_inputConfirmPin_turnOnDownloadAccessSwitch_changeConfig_switchIsOn() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(

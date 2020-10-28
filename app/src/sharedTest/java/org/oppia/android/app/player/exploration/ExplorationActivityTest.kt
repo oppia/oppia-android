@@ -284,7 +284,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithNoVoiceover_openPrototypeExploration_configChange_checkAudioButtonIsHidden() {
+  fun testAudioWithNoVoiceover_openPrototypeExploration_configChange_audioButtonIsHidden() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -345,7 +345,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCell_openRatioExploration_clickAudio_changeConfig_opensCellAudioDialog() {
+  fun testAudioWithCellular_openRatioExp_clickAudioIcon_changeConfig_opensCellAudioDialog() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -368,7 +368,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCell_openRatioExploration_clickAudio_clickNeg_checkAudioFragmentIsHidden() {
+  fun testAudioWithCellular_openRatioExp_clickAudioIcon_clickNegative_audioFragmentIsHidden() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -400,7 +400,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCell_openRatioExploration_clickAudio_clickPos_checkAudioFragmentIsVisible() {
+  fun testAudioWithCellular_openRatioExp_clickAudioIcon_clickPositive_audioFragmentIsVisible() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -441,7 +441,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCell_openRatioExploration_clickBoxNeg_clickAudio_AudioHiddenDlgNotDisplayed() {
+  fun testAudioWithCell_ratioExp_clickBoxAndNegative_clickAudio_audioHiddenDialogNotDisplayed() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -477,7 +477,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCell_openRatioExploration_clickBoxPos_clickAudioTwice_AudioVisibleDlgNotDisp() {
+  fun testAudioWithCell_ratioExp_clickBoxPositive_clickAudioTwice_audioVisibleDialogNotDisplayed() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -516,7 +516,7 @@ class ExplorationActivityTest {
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testAudioWithWifi_openRatioExploration_clickAudio_AudioHasDefaultLangAndAutoPlays() {
+  fun testAudioWithWifi_openRatioExp_clickAudioIcon_audioHasDefaultLanguageAndAutoPlays() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -549,7 +549,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithWifi_openFractionsExploration_changeLang_clickNext_checkLangIsHinglish() {
+  fun testAudioWithWifi_openFractionsExp_changeLanguage_clickNext_languageIsHinglish() {
     setupAudioForFraction()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -597,7 +597,7 @@ class ExplorationActivityTest {
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testAudioWithWifi_openRatioExploration_ToInteraction_clickAudio_submit_FeedbackAudioPlays() {
+  fun testAudioWithWifi_openRatioExp_continueToInteraction_clickAudio_submit_feedbackAudioPlays() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -676,7 +676,7 @@ class ExplorationActivityTest {
 
   // TODO(#89): Check this test case too. It works in pair with below test case.
   @Test
-  fun testExplorationActivity_onBack_showsStopExplorationDialog_clickCancel_dismissesDialog() {
+  fun testActivity_onBackPressed_showsStopExplorationDialog_clickCancel_dismissesDialog() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -694,7 +694,7 @@ class ExplorationActivityTest {
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testExplorationActivity_onBack_showStopExplorationDlg_clickLeave_closeExplorationActivity() {
+  fun testActivity_onBackPressed_showStopExplorationDialog_clickLeave_closeExplorationActivity() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,

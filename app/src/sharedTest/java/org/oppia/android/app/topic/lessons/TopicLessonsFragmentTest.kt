@@ -413,7 +413,7 @@ class TopicLessonsFragmentTest {
   @Test
   // TODO(@973): Fix TopicLessonsFragmentTest
   @Ignore
-  fun testLessonsPlay_loadRatios_clickExpandListIconIndex1and2_chapterListForIndex1NotDisplayed() {
+  fun testFragment_loadRatios_clickExpandListIconIndex1And2_chapterListForIndex1IsNotDisplayed() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
         allOf(
@@ -463,7 +463,7 @@ class TopicLessonsFragmentTest {
   @Test
   // TODO(@973): Fix TopicLessonsFragmentTest
   @Ignore
-  fun testLessonsPlay_loadRatios_clickExpandListIconIndex1and0_chapterListForIndex0NotDisplayed() {
+  fun testFragment_loadRatios_clickExpandListIconIndex1And0_chapterListForIndex0IsNotDisplayed() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
         allOf(

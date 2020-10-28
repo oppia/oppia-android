@@ -139,7 +139,7 @@ class ConceptCardFragmentTest {
   @Test
   // TODO(#973): Fix ConceptCardFragmentTest
   @Ignore
-  fun testConceptCard_openDialogFragment0_checkSkillAndExplanationDisplayedWithoutRichText() {
+  fun testConceptCardFragment_openDialogFragment0_skillAndExplanationAreDisplayedWithoutRichText() {
     onView(withId(R.id.open_dialog_0)).perform(click())
     onView(withId(R.id.concept_card_heading_text))
       .check(
@@ -163,7 +163,7 @@ class ConceptCardFragmentTest {
   @Test
   // TODO(#973): Fix ConceptCardFragmentTest
   @Ignore
-  fun testConceptCard_openDialogFragment1_checkSkillAndExplanationDisplayedWithRichText() {
+  fun testConceptCardFragment_openDialogFragment1_skillAndExplanationAreDisplayedWithRichText() {
     onView(withId(R.id.open_dialog_1)).perform(click())
     onView(withId(R.id.concept_card_heading_text))
       .check(

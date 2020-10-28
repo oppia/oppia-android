@@ -265,7 +265,7 @@ class TopicPracticeFragmentTest {
   @Test
   // TODO(#973): Fix TopicPracticeFragmentTest
   @Ignore
-  fun testTopicPracticeFragment_selectSubtopics_clickStart_skillListTransferSuccessfully() {
+  fun testTopicPracticeFragment_selectSubtopics_clickStartButton_skillListTransferIsSuccessful() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
     onView(
       allOf(

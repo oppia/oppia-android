@@ -139,7 +139,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun openHelpActivity_configChanged_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() {
+  fun openHelpActivity_configChanged_scrollRecyclerViewToZeroPosition_showsFaqSuccessfully() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(

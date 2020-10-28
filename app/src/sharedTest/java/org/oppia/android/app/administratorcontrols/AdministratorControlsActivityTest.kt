@@ -99,7 +99,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdminCtrls_withAdminProfile_openAdminCtrlsFromNavDrawer_onBackPressed_showsHome() {
+  fun testAdminControls_withAdminProfile_openAdminControlsFromNavDrawer_onBackPressed_showsHome() {
     ActivityScenario
       .launch<NavigationDrawerTestActivity>(
         createNavigationDrawerActivityIntent(0)
@@ -283,7 +283,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdminCtrls_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsNotChecked() {
+  fun testAdminControls_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsNotChecked() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -315,7 +315,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdminCtrls_topicUpdateOnWifiSwitchIsChecked_configChange_checkIfSwitchIsChecked() {
+  fun testAdminControls_topicUpdateOnWifiSwitchIsChecked_configChange_checkIfSwitchIsChecked() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -392,7 +392,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdminCtrls_onClickTopicUpdateOnWifiSwitch_checkSwitchRemainsCheckedOnRecreate() {
+  fun testAdminControls_onClickTopicUpdateOnWifiSwitch_switchRemainsCheckedOnRecreate() {
     ActivityScenario
       .launch<NavigationDrawerTestActivity>(
         createNavigationDrawerActivityIntent(profileId = 0)
@@ -437,7 +437,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdminCtrls_clickEditProfile_checkOpensProfileListActivity() {
+  fun testAdminControls_clickEditProfile_opensProfileListActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0

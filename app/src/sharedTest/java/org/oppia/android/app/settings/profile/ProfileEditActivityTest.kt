@@ -187,7 +187,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_startActivityWithUserProfile_clickRenameBtn_checkOpensProfileRename() {
+  fun testProfileEdit_startActivityWithUserProfile_clickRenameButton_checkOpensProfileRename() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -200,7 +200,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_configChange_startWithUserProfile_clickRename_checkOpensProfileRename() {
+  fun testProfileEdit_configChange_startActivityWithUserProfile_clickRename_opensProfileRename() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -214,7 +214,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
+  fun testProfileEdit_startActivityWithUserProfile_clickResetPin_opensProfileResetPin() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -229,7 +229,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEdit_configChange_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
+  fun testActivity_configChange_startActivityWithUserProfile_clickResetPin_opensProfileResetPin() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -245,7 +245,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEdit_startActivityWithUserProfile_clickProfileDeletion_checkOpensDeletionDialog() {
+  fun testActivity_startActivityWithUserProfile_clickProfileDeletionButton_opensDeletionDialog() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -265,7 +265,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEdit_configChange_startWithUserProfile_clickProfileDeletion_checkOpensDelDialog() {
+  fun testActivity_configChange_startWithUserProfile_clickProfileDeletion_opensDeletionDialog() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -286,7 +286,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEdit_startWithUserProfile_clickProfileDel_clickDel_checkReturnsToProfileList() {
+  fun testActivity_startWithUserProfile_clickProfileDeletion_clickDelete_returnsToProfileList() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -302,7 +302,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEdit_configChange_withUserProfile_clickProfileDel_clickDel_returnsToProfileList() {
+  fun testActivityWithUserProfile_configChange_clickProfileDeletion_delete_returnsToProfileList() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -341,7 +341,7 @@ class ProfileEditActivityTest {
   @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
-  fun testProfileEdit_configChange_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
+  fun testProfileEdit_configChange_startActivityWithUserHasDownloadAccess_checkSwitchIsChecked() {
     profileManagementController.addProfile(
       name = "James",
       pin = "123",

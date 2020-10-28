@@ -409,7 +409,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   // TODO(#973): Fix RecentlyPlayedFragmentTest
   @Ignore
-  fun testRecentlyPlayedTest_changeConfig_rvItem0_doesNotShowSectionDivider() {
+  fun testActivity_changeConfig_litemItem0_doesNotShowSectionDivider() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -431,7 +431,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   // TODO(#973): Fix RecentlyPlayedFragmentTest
   @Ignore
-  fun testRecentlyPlayedTest_changeConfig_rvItem0_showsLastWeekSectionTitle() {
+  fun testActivity_changeConfig_litemItem0_showsLastWeekSectionTitle() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -503,7 +503,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   // TODO(#973): Fix RecentlyPlayedFragmentTest
   @Ignore
-  fun testRecentlyPlayedTest_changeConfig_rvItem1_lessonThumbnailIsCorrect() {
+  fun testActivity_changeConfig_litemItem1_lessonThumbnailIsCorrect() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -527,7 +527,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   // TODO(#973): Fix RecentlyPlayedFragmentTest
   @Ignore
-  fun testRecentlyPlayedTest_changeConfig_rvItem2_showsLastMonthSectionTitle() {
+  fun testActivity_changeConfig_litemItem2_showsLastMonthSectionTitle() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId

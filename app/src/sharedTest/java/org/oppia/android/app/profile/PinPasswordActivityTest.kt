@@ -319,7 +319,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPswdWithUser_clickForgot_inputAdminPin_inputNewPin_inputOldPin_checkWrongPinError() {
+  fun testActivityWithUser_clickForgot_inputAdminPin_inputNewPin_inputOldPin_wrongPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -358,7 +358,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPswdWithUser_clickForgot_inputAdminPin_inputNewPin_inputNewPin_checkOpensHome() {
+  fun testActivityWithUser_clickForgot_inputAdminPin_inputNewPin_inputNewPin_opensHome() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -393,7 +393,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPswdWithUser_clickForgot_inputAdminPin_changeConfig_checkInputPinIsPresent() {
+  fun testActivityWithUser_clickForgot_inputAdminPin_changeConfig_inputPinIsPresent() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -414,7 +414,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPswdWithUser_clickForgot_inputAdminPin_clickSubmit_changeConfig_restPinDlgDisplayed() {
+  fun testActivityWithUser_clickForgot_inputAdminPin_submit_changeConfig_restPinDialogDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -438,7 +438,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPswdWithUser_forgot_inputAdminPin_submit_inputNewPin_changeConfig_submit_Success() {
+  fun testActivityWithUser_forgot_inputAdminPin_submit_inputNewPin_changeConfig_submit_success() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -470,7 +470,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPswdWithAdmin_clickForgot_changeConfig_checkOpensAdminForgotDialog() {
+  fun testActivityWithAdmin_clickForgot_changeConfig_opensAdminForgotDialog() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -489,7 +489,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPswdWithUser_clickForgot_inputWrongAdminPin_changeConfig_checkWrongAdminPinError() {
+  fun testActivityWithUser_clickForgot_inputWrongAdminPin_changeConfig_wrongAdminPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -524,7 +524,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPswdWithUser_forgot_inputAdminPin_inputWrongPin_submit_changeConfig_errorDisplayed() {
+  fun testActivityWithUser_forgot_inputAdminPin_inputWrongPin_submit_changeConfig_errorDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -618,7 +618,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPswdWithAdmin_checkShowHidePassword_clickShowHidePassword_textChangesToHide() {
+  fun testActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_textChangesToHide() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -634,7 +634,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPswdWithAdmin_checkShowHidePassword_clickShowHidePassword_imageChangesToHide() {
+  fun testActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_imageChangesToHide() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -657,7 +657,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPswdWithAdmin_checkShowHidePswd_clickShowHidePswd_changeConfig_hideViewIsShown() {
+  fun testActivityWithAdmin_checkAndClickShowHidePassword_changeConfig_hideViewIsShown() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,

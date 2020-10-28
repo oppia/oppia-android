@@ -202,7 +202,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgress_openProfilePictureEditDialog_configChange_dialogStillOpen() {
+  fun testProfileProgress_openProfilePictureEditDialog_configChange_dialogIsStillOpen() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Admin"))
@@ -291,7 +291,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressNoProgress_rvItem0_checkOngoingTopicsCount_countIsZero() {
+  fun testProfileProgressFragmentNoProgress_litemItem0_ongoingTopicsCountIsZero() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("0"))
@@ -304,7 +304,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressWithProgress_rvItem0_checkOngoingTopicsCount_countIsTwo() {
+  fun testProfileProgressFragmentWithProgress_litemItem0_ongoingTopicsCountIsTwo() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -326,7 +326,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressWithProgress_changeConfig_rvItem0_checkOngoingTopicsCount_countIsTwo() {
+  fun testProfileProgressFragmentWithProgress_changeConfig_litemItem0_ongoingTopicsCountIsTwo() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -350,7 +350,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressNoProgress_rvItem0_checkOngoingTopicsString_descriptionIsCorrect() {
+  fun testProfileProgressFragmentNoProgress_litemItem0_ongoingTopicsDescriptionIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.topics_in_progress))
@@ -366,7 +366,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressWithProgress_rvItem0_checkOngoingTopicsString_descriptionIsCorrect() {
+  fun testProfileProgressFragmentWithProgress_litemItem0_ongoingTopicsDescriptionIsCorrect() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -391,7 +391,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressWithProgress_changeConfig_rvItem0_checkOngoingTopicsString_descCorrect() {
+  fun testFragmentWithProgress_changeConfig_litemItem0_ongoingTopicsDescriptionIsCorrect() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -418,7 +418,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressNoProgress_rvItem0_checkCompletedStoriesCount_countIsZero() {
+  fun testProfileProgressFragmentNoProgress_litemItem0_completedStoriesCountIsZero() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("0"))
@@ -431,7 +431,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressWithProgress_rvItem0_checkCompletedStoriesCount_countIsTwo() {
+  fun testProfileProgressFragmentWithProgress_litemItem0_completedStoriesCountIsTwo() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false
@@ -453,7 +453,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressNoProgress_rvItem0_checkCompletedStoriesString_descriptionIsCorrect() {
+  fun testProfileProgressFragmentNoProgress_litemItem0_completedStoriesDescriptionIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.stories_completed))
@@ -470,7 +470,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressWithProgress_rvItem0_checkCompletedStoriesString_descriptionIsCorrect() {
+  fun testProfileProgressFragmentWithProgress_litemItem0_completedStoriesDescriptionIsCorrect() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false
@@ -632,7 +632,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivityNoProgress_rvIndex0_changeConfig_clickStoryCount_isNotClickable() {
+  fun testProfileProgressActivityNoProgress_litemItem0_changeConfig_storyCountIsNotClickable() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -650,7 +650,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivityWithProgress_rvIndex0_clickTopicCount_opensOngoingTopicList() {
+  fun testProfileProgressActivityWithProgress_litemItem0_clickTopicCount_opensOngoingTopicList() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -682,7 +682,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivityWithProgress_rvIndex0_clickStoryCount_opensCompletedStoryList() {
+  fun testProfileProgressActivityWithProgress_litemItem0_clickStoryCount_opensCompletedStoryList() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false

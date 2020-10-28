@@ -279,7 +279,7 @@ class AdminAuthActivityTest {
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
-  fun testAdminAuth_inputIncorrectPassword_inputAgain_clickImeActionButton_checkErrorIsGone() {
+  fun testAdminAuth_inputIncorrectPassword_inputAgain_clickImeActionButton_errorIsGone() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
@@ -327,7 +327,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuth_openedFromAdminCtrls_configChanged_checkHeadingSubHeadingIsPreserved() {
+  fun testAdminAuth_openedFromAdminControls_configChanged_headingSubHeadingIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
@@ -378,7 +378,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_openedFromProfile_configChanged_checkHeadingSubHeadingIsPreserved() {
+  fun testAdminAuthActivity_openedFromProfile_configChanged_headingSubHeadingIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,

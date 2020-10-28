@@ -203,7 +203,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTest_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() {
+  fun testRevisionCardTest_fractionSubtopicId1_returnToTopicButtonIsDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -224,7 +224,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTest_configChange_toolbarTitle_fractionSubtopicId1_displayedCorrectly() {
+  fun testRevisionCardTest_configChange_toolbarTitle_fractionSubtopicId1_IsDisplayedCorrectly() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -240,7 +240,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTest_configChange_fractionSubtopicId2_explanationDisplayedSuccessfully() {
+  fun testRevisionCardTest_configChange_fractionSubtopicId2_explanationIsDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -270,7 +270,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTest_configChange_fractionSubtopicId1_returnToTopicDisplayedSuccessfully() {
+  fun testRevisionCardTest_configChange_fractionSubtopicId1_returnToTopicIsDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
