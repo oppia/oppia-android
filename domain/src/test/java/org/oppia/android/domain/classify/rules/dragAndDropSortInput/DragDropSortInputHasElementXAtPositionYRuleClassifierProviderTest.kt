@@ -9,9 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
-import org.oppia.android.app.model.StringList
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -26,11 +24,21 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
-  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 1)
-  private val NON_NEGATIVE_VALUE_1 = createNonNegativeInt(value = 2)
-  private val STRING_VALUE_2 = createString(value = "test item 2")
-  private val STRING_VALUE_3 = createString(value = "test item invalid")
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE = createListOfSetsOfHtmlStrings()
+
+  private val NON_NEGATIVE_VALUE_TEST_1 =
+    InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
+
+  private val NON_NEGATIVE_VALUE_TEST_2 =
+    InteractionObjectTestBuilder.createNonNegativeInt(value = 2)
+
+  private val STRING_VALUE_TEST_1 =
+    InteractionObjectTestBuilder.createString(value = "test item 2")
+
+  private val STRING_VALUE_TEST_2 =
+    InteractionObjectTestBuilder.createString(value = "test item invalid")
+
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE =
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings()
 
   @Inject
   internal lateinit var dragDropSortInputHasElementXAtPositionYClassifierProvider:
@@ -48,7 +56,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   @Test
   fun testAnswer_nonNegativeInput_testString_bothInputsWithIncorrectTypes_throwsException() {
     // Reverse the x and y parameters to ensure both have the incorrect type.
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1, "y" to STRING_VALUE_2)
+    val inputs = mapOf(
+      "x" to NON_NEGATIVE_VALUE_TEST_2,
+      "y" to STRING_VALUE_TEST_1
+    )
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
@@ -65,8 +76,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   @Test
   fun testAnswer_nonNegativeInput_testString_xInputWithIncorrectType_throwsException() {
     val inputs = mapOf(
-      "x" to NON_NEGATIVE_VALUE_1,
-      "y" to NON_NEGATIVE_VALUE_1
+      "x" to NON_NEGATIVE_VALUE_TEST_2,
+      "y" to NON_NEGATIVE_VALUE_TEST_2
     )
 
     val exception = assertThrows(IllegalStateException::class) {
@@ -83,7 +94,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_nonNegativeInput_testString_yInputWithIncorrectType_throwsException() {
-    val inputs = mapOf("x" to STRING_VALUE_2, "y" to STRING_VALUE_2)
+    val inputs = mapOf(
+      "x" to STRING_VALUE_TEST_1,
+      "y" to STRING_VALUE_TEST_1
+    )
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
@@ -99,7 +113,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_testString_missingInputX_throwsException() {
-    val inputs = mapOf("y" to STRING_VALUE_2)
+    val inputs = mapOf("y" to STRING_VALUE_TEST_1)
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
@@ -115,7 +129,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_nonNegativeInput_missingInputY_throwsException() {
-    val inputs = mapOf("x" to STRING_VALUE_2)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_1)
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
@@ -131,7 +145,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_bothInputsMissing_throwsException() {
-    val inputs = mapOf("z" to STRING_VALUE_2)
+    val inputs = mapOf("z" to STRING_VALUE_TEST_1)
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
@@ -147,7 +161,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_elementXWithPositionY_bothValueDoNotMatch() {
-    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0, "x" to STRING_VALUE_3)
+    val inputs = mapOf(
+      "y" to NON_NEGATIVE_VALUE_TEST_1,
+      "x" to STRING_VALUE_TEST_2
+    )
 
     val matches =
       hasElementXAtPositionYRuleClassifier.matches(
@@ -160,7 +177,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_elementXWithPositionY_xValueDoesNotMatch() {
-    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1, "x" to STRING_VALUE_3)
+    val inputs = mapOf(
+      "y" to NON_NEGATIVE_VALUE_TEST_2,
+      "x" to STRING_VALUE_TEST_2
+    )
 
     val matches =
       hasElementXAtPositionYRuleClassifier.matches(
@@ -173,7 +193,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_elementXWithPositionY_yValueDoesNotMatch() {
-    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0, "x" to STRING_VALUE_2)
+    val inputs = mapOf(
+      "y" to NON_NEGATIVE_VALUE_TEST_1,
+      "x" to STRING_VALUE_TEST_1
+    )
 
     val matches =
       hasElementXAtPositionYRuleClassifier.matches(
@@ -186,7 +209,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_elementXWithPositionY_bothMatchesCorrectly() {
-    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1, "x" to STRING_VALUE_2)
+    val inputs = mapOf(
+      "y" to NON_NEGATIVE_VALUE_TEST_2,
+      "x" to STRING_VALUE_TEST_1
+    )
 
     val matches =
       hasElementXAtPositionYRuleClassifier.matches(
@@ -195,31 +221,6 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
       )
 
     assertThat(matches).isTrue()
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
-  private fun createListOfSetsOfHtmlStrings(): InteractionObject {
-    val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
-      .addAllSetOfHtmlStrings(
-        listOf<StringList>(
-          createHtmlStringList("1", "2"),
-          createHtmlStringList("test item 1", "test item 2", "test item 3")
-        )
-      )
-      .build()
-
-    return InteractionObject.newBuilder().setListOfSetsOfHtmlString(listOfSetsOfHtmlStrings).build()
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
-  }
-
-  private fun createHtmlStringList(vararg items: String): StringList {
-    return StringList.newBuilder().addAllHtml(items.toList()).build()
   }
 
   private fun setUpTestApplicationComponent() {

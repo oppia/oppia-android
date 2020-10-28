@@ -19,17 +19,15 @@ object InteractionObjectTestBuilder {
     return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
-  fun createListOfSetsOfHtmlStrings(listOfStringList: List<StringList>): InteractionObject {
+  fun createListOfSetsOfHtmlStrings(vararg items: List<String>): InteractionObject {
     val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
-      .addAllSetOfHtmlStrings(
-        listOfStringList
-      )
+      .addAllSetOfHtmlStrings(items.map { createHtmlStringList(it) })
       .build()
 
     return InteractionObject.newBuilder().setListOfSetsOfHtmlString(listOfSetsOfHtmlStrings).build()
   }
 
-  fun createHtmlStringList(vararg items: String): StringList {
+  fun createHtmlStringList(vararg items: List<String>): StringList {
     return StringList.newBuilder().addAllHtml(items.toList()).build()
   }
 
@@ -87,4 +85,9 @@ object InteractionObjectTestBuilder {
   fun createInt(value: Int): InteractionObject {
     return InteractionObject.newBuilder().setReal(value.toDouble()).build()
   }
+
+  fun createListOf(vararg items: String): InteractionObject {
+    return InteractionObject.newBuilder().setListOf(items.toString()).build()
+  }
+
 }
