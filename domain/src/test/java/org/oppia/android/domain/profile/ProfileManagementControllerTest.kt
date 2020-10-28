@@ -730,7 +730,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testAddAdminProfile_addAnotherAdminProfile_checkSecondAdminProfileWasAdded() {
+  fun testAddAdminProfile_addAnotherAdminProfile_checkSecondAdminProfileWasNotAdded() {
     profileManagementController.addProfile(
       name = "Rohit",
       pin = "12345",
