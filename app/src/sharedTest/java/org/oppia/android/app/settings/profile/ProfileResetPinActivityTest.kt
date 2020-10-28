@@ -284,7 +284,7 @@ class ProfileResetPinActivityTest {
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
         0,
-        true; 
+        true
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
