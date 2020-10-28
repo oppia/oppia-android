@@ -78,11 +78,21 @@ object InteractionObjectTestBuilder {
     ).build()
   }
 
-  fun createNumberWithUnits(number: Fraction, units: List<NumberUnit>):
+  fun createNumberWithUnitsForFraction(number: Fraction, units: List<NumberUnit>):
     InteractionObject {
       val numberWithUnits = NumberWithUnits.newBuilder()
         .addAllUnit(units)
         .setFraction(number)
+        .build()
+
+      return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
+    }
+
+  fun createNumberWithUnitsForReal(number: Double, units: List<NumberUnit>):
+    InteractionObject {
+      val numberWithUnits = NumberWithUnits.newBuilder()
+        .addAllUnit(units)
+        .setReal(number)
         .build()
 
       return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
