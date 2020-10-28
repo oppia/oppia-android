@@ -162,6 +162,14 @@ class NumericInputEqualsRuleClassifierProviderTest {
       .contains("Expected input value to be of type REAL not NORMALIZED_STRING")
   }
 
+  private fun createReal(value: Double): InteractionObject {
+    return InteractionObject.newBuilder().setReal(value).build()
+  }
+
+  private fun createString(value: String): InteractionObject {
+    return InteractionObject.newBuilder().setNormalizedString(value).build()
+  }
+
   private fun setUpTestApplicationComponent() {
     DaggerNumericInputEqualsRuleClassifierProviderTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
