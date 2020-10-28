@@ -9,8 +9,6 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -58,7 +56,6 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       numerator = 1,
       denominator = 4
     )
-  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
   private val NON_NEGATIVE_VALUE_679_2_OVER_3 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = true,
@@ -221,67 +218,6 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       .contains("Expected classifier inputs to contain parameter with name 'f' but had: [y]")
   }
 
-  @Test
-  fun testEquality_nonNegativeInput_inputWithIncorrectType_throwsException() {
-    val inputs = mapOf("f" to NON_NEGATIVE_VALUE_0)
-
-    val exception = assertThrows(IllegalStateException::class) {
-      inputIsEquivalentToRuleClassifier.matches(answer = FRACTION_VALUE_2_OVER_8, inputs = inputs)
-    }
-
-    assertThat(exception)
-      .hasMessageThat()
-      .contains(
-        "Expected input value to be of type FRACTION not NON_NEGATIVE_INT"
-      )
-  }
-
-  private fun createFraction(
-    isNegative: Boolean,
-    numerator: Int,
-    denominator: Int
-  ): InteractionObject {
-    // Fraction-only numbers imply no whole number.
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setNumerator(numerator)
-        .setDenominator(denominator)
-        .build()
-    ).build()
-  }
-
-  private fun createWholeNumber(isNegative: Boolean, value: Int): InteractionObject {
-    // Whole number fractions imply '0/1' fractional parts.
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setWholeNumber(value)
-        .setNumerator(0)
-        .setDenominator(1)
-        .build()
-    ).build()
-  }
-
-  private fun createMixedNumber(
-    isNegative: Boolean,
-    wholeNumber: Int,
-    numerator: Int,
-    denominator: Int
-  ): InteractionObject {
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setWholeNumber(wholeNumber)
-        .setNumerator(numerator)
-        .setDenominator(denominator)
-        .build()
-    ).build()
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
 
   private fun setUpTestApplicationComponent() {
     DaggerFractionInputIsEquivalentToRuleClassifierProviderTest_TestApplicationComponent
