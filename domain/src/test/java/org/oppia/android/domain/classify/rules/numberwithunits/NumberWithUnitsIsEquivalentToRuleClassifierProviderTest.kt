@@ -93,7 +93,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun forFraction_testInputNumberWithUnits_testAnswerNumberWithUnits_withDiffUnits_verifyDoNotMatch
+  fun testInputNumberWithUnitsFraction_testAnsNumberWithUnitsFraction_withDiffUnits_bothDoNotMatch
   () {
     val inputs = mapOf("f" to INPUT_TEST_NUMBER_WITH_UNITS)
 
@@ -107,7 +107,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun forFraction_testInputNumberWithUnits_testAnswerNumberWithUnits_inDiffOrder_verifyValuesMatch
+  fun testInputNumberWithUnitsFraction_testAnsNumberWithUnitsFraction_inDiffOrder_bothValuesMatch
   () {
     val inputs = mapOf("f" to INPUT_TEST_NUMBER_WITH_UNITS)
 
@@ -121,7 +121,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun forFraction_testInputNumberWithUnits_testAnswerNumberWithUnits_inSameOrder_verifyValuesMatch
+  fun testInputNumberWithUnitsFraction_testAnsNumberWithUnitsFraction_inSameOrder_bothValuesMatch
   () {
     val inputs = mapOf("f" to ANSWER_TEST_NUMBER_WITH_UNITS)
 
@@ -135,7 +135,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun forReal_testInputNumberWithUnits_testAnswerNumberWithUnits_withDiffUnits_verifyDoNotMatch() {
+  fun testInputNumberWithUnitsForReal_testAnsNumberWithUnitsForReal_withDiffUnits_bothDoNotMatch() {
     val inputs = mapOf("f" to INPUT_TEST_REAL_NUMBER_WITH_UNITS)
 
     val matches =
@@ -148,7 +148,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun forReal_testInputNumberWithUnits_testAnswerNumberWithUnits_inDiffOrder_verifyValuesMatch() {
+  fun testInputNumberWithUnitsForReal_testAnsNumberWithUnitsForReal_inDiffOrder_bothValuesMatch() {
     val inputs = mapOf("f" to INPUT_TEST_REAL_NUMBER_WITH_UNITS)
 
     val matches =
@@ -161,7 +161,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun forReal_testInputNumberWithUnits_testAnswerNumberWithUnits_inSameOrder_verifyValuesMatch() {
+  fun testInputNumberWithUnitsForReal_testAnsNumberWithUnitsForReal_inSameOrder_bothValuesMatch() {
     val inputs = mapOf("f" to ANSWER_TEST_REAL_NUMBER_WITH_UNITS)
 
     val matches =
