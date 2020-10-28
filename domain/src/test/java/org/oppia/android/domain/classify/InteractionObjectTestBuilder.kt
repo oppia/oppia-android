@@ -89,7 +89,7 @@ object InteractionObjectTestBuilder {
     return InteractionObject.newBuilder().setReal(value.toDouble()).build()
   }
 
-  public fun createRatio(value: List<Int>): InteractionObject {
+  fun createRatio(value: List<Int>): InteractionObject {
     return InteractionObject.newBuilder().setRatioExpression(
       RatioExpression.newBuilder().addAllRatioComponent(value)
     ).build()
