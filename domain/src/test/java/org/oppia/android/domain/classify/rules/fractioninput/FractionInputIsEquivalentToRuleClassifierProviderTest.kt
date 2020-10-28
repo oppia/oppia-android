@@ -62,12 +62,12 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
     )
 
   @Inject
-  private lateinit var fractionInputIsEquivalentToRuleClassifierProvider:
+  internal lateinit var fractionInputIsEquivalentToRuleClassifierProvider:
     FractionInputIsEquivalentToRuleClassifierProvider
 
-  private val inputIsEquivalentToRuleClassifier by lazy({
+  private val inputIsEquivalentToRuleClassifier by lazy {
     fractionInputIsEquivalentToRuleClassifierProvider.createRuleClassifier()
-  })
+  }
 
   @Before
   fun setUp() {
@@ -164,8 +164,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquality_mixedNumber55And1Over4Answer_withMixedNumber6And1Over2Input_bothValuesDoNotMatch(
-  ) {
+  fun testEquality_mixedNumber55And1Over4Answer_withMixedNumber6And1Over2Input_bothValuesMatch() {
     val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_6_1_OVER_2)
 
     val matches =
