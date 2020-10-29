@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
+private const val TOPIC_ID_ARGUMENT_KEY = "WalkthroughFinalFragment.topic_id"
 
 /** The final slide for [WalkthroughActivity]. */
 class WalkthroughFinalFragment : InjectableFragment() {
@@ -17,7 +17,7 @@ class WalkthroughFinalFragment : InjectableFragment() {
     fun newInstance(topicId: String): WalkthroughFinalFragment {
       val storyFragment = WalkthroughFinalFragment()
       val args = Bundle()
-      args.putString(KEY_TOPIC_ID_ARGUMENT, topicId)
+      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
       storyFragment.arguments = args
       return storyFragment
     }
@@ -41,7 +41,7 @@ class WalkthroughFinalFragment : InjectableFragment() {
         "Expected arguments to be passed to WalkthroughFinalFragment"
       }
     val topicId =
-      checkNotNull(args.getString(KEY_TOPIC_ID_ARGUMENT)) {
+      checkNotNull(args.getString(TOPIC_ID_ARGUMENT_KEY)) {
         "Expected topicId to be passed to WalkthroughFinalFragment"
       }
     return walkthroughFinalFragmentPresenter.handleCreateView(inflater, container, topicId)

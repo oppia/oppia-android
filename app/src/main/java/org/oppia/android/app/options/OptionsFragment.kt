@@ -15,9 +15,9 @@ const val REQUEST_CODE_TEXT_SIZE = 1
 const val REQUEST_CODE_APP_LANGUAGE = 2
 const val REQUEST_CODE_AUDIO_LANGUAGE = 3
 
-private const val IS_MULTIPANE_EXTRA = "IS_MULTIPANE_EXTRA"
-private const val IS_FIRST_OPEN_EXTRA = "IS_FIRST_OPEN_EXTRA"
-private const val SELECTED_FRAGMENT_EXTRA = "SELECTED_FRAGMENT_EXTRA"
+private const val IS_MULTIPANE_ARGUMENT_KEY = "OptionsFragment.is_multipane"
+private const val IS_FIRST_OPEN_ARGUMENT_KEY = "OptionsFragment.is_first_open"
+private const val SELECTED_FRAGMENT_ARGUMENT_KEY = "OptionsFragment.selected_fragment"
 
 /** Fragment that contains an introduction to the app. */
 class OptionsFragment : InjectableFragment() {
@@ -31,9 +31,9 @@ class OptionsFragment : InjectableFragment() {
       selectedFragment: String
     ): OptionsFragment {
       val args = Bundle()
-      args.putBoolean(IS_MULTIPANE_EXTRA, isMultipane)
-      args.putBoolean(IS_FIRST_OPEN_EXTRA, isFirstOpen)
-      args.putString(SELECTED_FRAGMENT_EXTRA, selectedFragment)
+      args.putBoolean(IS_MULTIPANE_ARGUMENT_KEY, isMultipane)
+      args.putBoolean(IS_FIRST_OPEN_ARGUMENT_KEY, isFirstOpen)
+      args.putString(SELECTED_FRAGMENT_ARGUMENT_KEY, selectedFragment)
       val fragment = OptionsFragment()
       fragment.arguments = args
       return fragment
@@ -52,9 +52,9 @@ class OptionsFragment : InjectableFragment() {
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to OptionsFragment" }
-    val isMultipane = args.getBoolean(IS_MULTIPANE_EXTRA)
-    val isFirstOpen = args.getBoolean(IS_FIRST_OPEN_EXTRA)
-    val selectedFragment = checkNotNull(args.getString(SELECTED_FRAGMENT_EXTRA))
+    val isMultipane = args.getBoolean(IS_MULTIPANE_ARGUMENT_KEY)
+    val isFirstOpen = args.getBoolean(IS_FIRST_OPEN_ARGUMENT_KEY)
+    val selectedFragment = checkNotNull(args.getString(SELECTED_FRAGMENT_ARGUMENT_KEY))
     return optionsFragmentPresenter.handleCreateView(
       inflater,
       container,

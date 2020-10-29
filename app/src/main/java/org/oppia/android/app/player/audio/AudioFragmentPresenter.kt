@@ -33,7 +33,8 @@ import javax.inject.Inject
 
 const val LANGUAGE_DIALOG_ARGUMENT_KEY = "AudioFragmentPresenter.language_dialog"
 private const val CELLULAR_DATA_DIALOG_ARGUMENT_KEY = "AudioFragmentPresenter.cellular_data_dialog"
-const val AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
+const val AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
+  "AudioFragmentPresenter.audio_fragment_profile_id"
 
 /** The presenter for [AudioFragment]. */
 @FragmentScope

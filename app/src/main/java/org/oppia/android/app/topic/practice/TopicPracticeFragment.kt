@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
+import org.oppia.android.app.topic.PROFILE_ID_EXTRA_KEY
+import org.oppia.android.app.topic.TOPIC_ID_EXTRA_KEY
 import javax.inject.Inject
 
 /** Fragment that displays skills for topic practice mode. */
@@ -20,8 +20,8 @@ class TopicPracticeFragment : InjectableFragment() {
     fun newInstance(internalProfileId: Int, topicId: String): TopicPracticeFragment {
       val topicPracticeFragment = TopicPracticeFragment()
       val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+      args.putInt(PROFILE_ID_EXTRA_KEY, internalProfileId)
+      args.putString(TOPIC_ID_EXTRA_KEY, topicId)
       topicPracticeFragment.arguments = args
       return topicPracticeFragment
     }
@@ -47,8 +47,8 @@ class TopicPracticeFragment : InjectableFragment() {
       selectedSkillId = savedInstanceState
         .getSerializable(SKILL_ID_LIST_ARGUMENT_KEY)!! as HashMap<Int, MutableList<String>>
     }
-    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
-    val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
+    val internalProfileId = arguments?.getInt(PROFILE_ID_EXTRA_KEY, -1)!!
+    val topicId = checkNotNull(arguments?.getString(TOPIC_ID_EXTRA_KEY)) {
       "Expected topic ID to be included in arguments for TopicPracticeFragment."
     }
     return topicPracticeFragmentPresenter.handleCreateView(

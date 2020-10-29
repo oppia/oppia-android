@@ -8,9 +8,10 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE = "AUDIO_LANGUAGE_PREFERENCE"
-private const val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
-  "AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
+private const val AUDIO_LANGUAGE_PREFERENCE_TITLE_ARGUMENT_KEY =
+  "AudioLanguageFragment.audio_language_preference_title"
+private const val AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY =
+  "AudioLanguageFragment.audio_language_preference_summary_value"
 private const val SELECTED_AUDIO_LANGUAGE_SAVED_KEY =
   "AudioLanguageFragment.selected_audio_language"
 
@@ -23,8 +24,8 @@ class AudioLanguageFragment : InjectableFragment() {
   companion object {
     fun newInstance(prefsKey: String, prefsSummaryValue: String): AudioLanguageFragment {
       val args = Bundle()
-      args.putString(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE, prefsKey)
-      args.putString(KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE, prefsSummaryValue)
+      args.putString(AUDIO_LANGUAGE_PREFERENCE_TITLE_ARGUMENT_KEY, prefsKey)
+      args.putString(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY, prefsSummaryValue)
       val fragment = AudioLanguageFragment()
       fragment.arguments = args
       return fragment
@@ -43,9 +44,9 @@ class AudioLanguageFragment : InjectableFragment() {
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to AudioLanguageFragment" }
-    val prefsKey = args.getString(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE)
+    val prefsKey = args.getString(AUDIO_LANGUAGE_PREFERENCE_TITLE_ARGUMENT_KEY)
     val audioLanguageDefaultSummary = checkNotNull(
-      args.getString(KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
+      args.getString(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY)
     )
     val prefsSummaryValue = if (savedInstanceState == null) {
       audioLanguageDefaultSummary

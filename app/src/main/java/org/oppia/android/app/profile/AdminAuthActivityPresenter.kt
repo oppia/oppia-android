@@ -15,8 +15,10 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminAuthActivityBinding
 import javax.inject.Inject
 
-const val KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE = "ADMIN_AUTH_INPUT_ERROR_MESSAGE"
-const val KEY_ADMIN_AUTH_INPUT_PASSWORD = "ADMIN_AUTH_INPUT_PASSWORD"
+const val ADMIN_AUTH_INPUT_ERROR_MESSAGE_EXTRA_KEY =
+  "AdminAuthActivityPresenter.admin_auth_input_error_message"
+const val ADMIN_AUTH_INPUT_PASSWORD_EXTRA_KEY =
+  "AdminAuthActivityPresenter.admin_auth_input_password"
 
 /** The presenter for [AdminAuthActivity]. */
 @ActivityScope
@@ -117,13 +119,13 @@ class AdminAuthActivityPresenter @Inject constructor(
   }
 
   fun handleOnSavedInstanceState(bundle: Bundle) {
-    bundle.putString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE, authViewModel.errorMessage.get())
-    bundle.putString(KEY_ADMIN_AUTH_INPUT_PASSWORD, binding.adminAuthInputPin.getInput())
+    bundle.putString(ADMIN_AUTH_INPUT_ERROR_MESSAGE_EXTRA_KEY, authViewModel.errorMessage.get())
+    bundle.putString(ADMIN_AUTH_INPUT_PASSWORD_EXTRA_KEY, binding.adminAuthInputPin.getInput())
   }
 
   fun handleOnRestoreInstanceState(bundle: Bundle) {
-    val errorMessage = bundle.getString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE)
-    val password = bundle.getString(KEY_ADMIN_AUTH_INPUT_PASSWORD)
+    val errorMessage = bundle.getString(ADMIN_AUTH_INPUT_ERROR_MESSAGE_EXTRA_KEY)
+    val password = bundle.getString(ADMIN_AUTH_INPUT_PASSWORD_EXTRA_KEY)
     if (!password.isNullOrEmpty()) {
       binding.adminAuthInputPin.setInput(password)
       binding.adminAuthInputPin.setSelection(password.length)

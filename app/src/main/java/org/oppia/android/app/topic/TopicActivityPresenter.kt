@@ -7,10 +7,10 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
 import javax.inject.Inject
 
-const val TOPIC_FRAGMENT_TAG = "TopicFragment"
-const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
-const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
-const val STORY_ID_ARGUMENT_KEY = "story_id"
+const val TOPIC_FRAGMENT_EXTRA_KEY = "TopicActivityPresenter.topic_fragment"
+const val PROFILE_ID_EXTRA_KEY = "TopicActivityPresenter.profile_id"
+const val TOPIC_ID_EXTRA_KEY = "TopicActivityPresenter.topic_id"
+const val STORY_ID_EXTRA_KEY = "TopicActivityPresenter.story_id"
 
 /** The presenter for [TopicActivity]. */
 @ActivityScope
@@ -28,15 +28,15 @@ class TopicActivityPresenter @Inject constructor(
     if (getTopicFragment() == null) {
       val topicFragment = TopicFragment()
       val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+      args.putInt(PROFILE_ID_EXTRA_KEY, internalProfileId)
+      args.putString(TOPIC_ID_EXTRA_KEY, topicId)
       if (storyId != null) {
-        args.putString(STORY_ID_ARGUMENT_KEY, storyId)
+        args.putString(STORY_ID_EXTRA_KEY, storyId)
       }
       topicFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,
-        topicFragment, TOPIC_FRAGMENT_TAG
+        topicFragment, TOPIC_FRAGMENT_EXTRA_KEY
       ).commitNow()
     }
   }

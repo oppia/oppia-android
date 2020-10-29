@@ -10,8 +10,8 @@ import org.oppia.android.R
 import java.util.Locale
 import kotlin.collections.ArrayList
 
-private const val KEY_LANGUAGE_LIST = "LANGUAGE_LIST"
-private const val KEY_SELECTED_INDEX = "SELECTED_INDEX"
+private const val LANGUAGE_LIST_ARGUMENT_KEY = "LanguageDialogFragment.language_list"
+private const val SELECTED_INDEX_ARGUMENT_KEY = "LanguageDialogFragment.selected_index"
 
 /**
  * DialogFragment that controls language selection in audio and written translations.
@@ -32,8 +32,8 @@ class LanguageDialogFragment : DialogFragment() {
       val selectedIndex = languageArrayList.indexOf(currentLanguageCode)
       val languageDialogFragment = LanguageDialogFragment()
       val args = Bundle()
-      args.putStringArrayList(KEY_LANGUAGE_LIST, languageArrayList)
-      args.putInt(KEY_SELECTED_INDEX, selectedIndex)
+      args.putStringArrayList(LANGUAGE_LIST_ARGUMENT_KEY, languageArrayList)
+      args.putInt(SELECTED_INDEX_ARGUMENT_KEY, selectedIndex)
       languageDialogFragment.arguments = args
       return languageDialogFragment
     }
@@ -43,9 +43,9 @@ class LanguageDialogFragment : DialogFragment() {
 
     val args = checkNotNull(arguments) { "Expected arguments to be pass to LanguageDialogFragment" }
 
-    var selectedIndex = args.getInt(KEY_SELECTED_INDEX, 0)
+    var selectedIndex = args.getInt(SELECTED_INDEX_ARGUMENT_KEY, 0)
     val languageCodeArrayList: ArrayList<String> = checkNotNull(
-      args.getStringArrayList(KEY_LANGUAGE_LIST)
+      args.getStringArrayList(LANGUAGE_LIST_ARGUMENT_KEY)
     )
     val languageNameArrayList = ArrayList<String>()
 

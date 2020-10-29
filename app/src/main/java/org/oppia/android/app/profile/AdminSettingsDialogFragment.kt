@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
-const val KEY_ADMIN_SETTINGS_PIN = "ADMIN_SETTINGS_PIN"
+const val ADMIN_SETTINGS_PIN_ARGUMENT_KEY = "AdminSettingsDialogFragment.admin_settings_pin"
 
 /** DialogFragment that allows user to input admin PIN. */
 class AdminSettingsDialogFragment : InjectableDialogFragment() {
@@ -14,7 +14,7 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
     fun newInstance(adminPin: String): AdminSettingsDialogFragment {
       val adminSettingDialogFragment = AdminSettingsDialogFragment()
       val args = Bundle()
-      args.putString(KEY_ADMIN_SETTINGS_PIN, adminPin)
+      args.putString(ADMIN_SETTINGS_PIN_ARGUMENT_KEY, adminPin)
       adminSettingDialogFragment.arguments = args
       return adminSettingDialogFragment
     }
@@ -29,7 +29,7 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val adminPin = arguments?.getString(KEY_ADMIN_SETTINGS_PIN)
+    val adminPin = arguments?.getString(ADMIN_SETTINGS_PIN_ARGUMENT_KEY)
     checkNotNull(adminPin) { "Admin Pin must not be null" }
     return adminSettingsDialogFragmentPresenter.handleOnCreateDialog(
       activity as ProfileRouteDialogInterface,
