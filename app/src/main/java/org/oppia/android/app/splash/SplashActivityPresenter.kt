@@ -19,7 +19,8 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-private const val AUTO_DEPRECATION_NOTICE_DIALOG_EXTRA_KEY = "SplashActivityPresenter.auto_deprecation_notice_dialog"
+private const val AUTO_DEPRECATION_NOTICE_DIALOG_EXTRA_KEY =
+  "SplashActivityPresenter.auto_deprecation_notice_dialog"
 
 /** The presenter for [SplashActivity]. */
 @ActivityScope

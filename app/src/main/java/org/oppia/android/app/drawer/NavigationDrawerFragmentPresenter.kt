@@ -39,7 +39,8 @@ import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 const val KEY_NAVIGATION_PROFILE_ID = "KEY_NAVIGATION_PROFILE_ID"
-const val SWITCH_PROFILE_DIALOG_ARGUMENT_KEY = "NavigationDrawerFragmentPresenter.switch_profile_dialog"
+const val SWITCH_PROFILE_DIALOG_ARGUMENT_KEY =
+  "NavigationDrawerFragmentPresenter.switch_profile_dialog"
 
 /** The presenter for [NavigationDrawerFragment]. */
 @FragmentScope

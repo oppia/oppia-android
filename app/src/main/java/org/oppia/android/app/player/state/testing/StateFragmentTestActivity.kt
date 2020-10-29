@@ -33,7 +33,8 @@ class StateFragmentTestActivity :
   RevealHintListener,
   RevealSolutionInterface,
   HintsAndSolutionExplorationManagerListener {
-  @Inject lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
+  @Inject
+  lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
   private lateinit var state: State
 
   override fun onCreate(savedInstanceState: Bundle?) {

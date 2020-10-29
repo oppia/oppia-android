@@ -101,7 +101,8 @@ class ExplorationActivity :
   }
 
   private fun showStopExplorationDialogFragment() {
-    val previousFragment = supportFragmentManager.findFragmentByTag(STOP_EXPLORATION_DIALOG_EXTRA_KEY)
+    val previousFragment =
+      supportFragmentManager.findFragmentByTag(STOP_EXPLORATION_DIALOG_EXTRA_KEY)
     if (previousFragment != null) {
       supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
@@ -166,7 +167,10 @@ class ExplorationActivity :
         allHintsExhausted
       )
       hintsAndSolutionDialogFragment.loadState(state)
-      hintsAndSolutionDialogFragment.showNow(supportFragmentManager, HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY)
+      hintsAndSolutionDialogFragment.showNow(
+        supportFragmentManager,
+        HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY
+      )
     }
   }
 

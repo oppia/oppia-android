@@ -155,7 +155,8 @@ class AudioFragmentPresenter @Inject constructor(
 
   /** Shows language dialog fragment with language list from exploration */
   fun showLanguageDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(LANGUAGE_DIALOG_ARGUMENT_KEY)
+    val previousFragment =
+      fragment.childFragmentManager.findFragmentByTag(LANGUAGE_DIALOG_ARGUMENT_KEY)
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
@@ -271,7 +272,8 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun showCellularDataDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(CELLULAR_DATA_DIALOG_ARGUMENT_KEY)
+    val previousFragment =
+      fragment.childFragmentManager.findFragmentByTag(CELLULAR_DATA_DIALOG_ARGUMENT_KEY)
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
