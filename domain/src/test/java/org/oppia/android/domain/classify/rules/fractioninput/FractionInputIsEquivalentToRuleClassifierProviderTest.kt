@@ -24,15 +24,33 @@ import kotlin.test.fail
 class FractionInputIsEquivalentToRuleClassifierProviderTest {
 
   private val WHOLE_NUMBER_VALUE_TEST_123 =
-    InteractionObjectTestBuilder.createWholeNumber(isNegative = false, value = 123)
+    InteractionObjectTestBuilder.createWholeNumber(
+      isNegative = false,
+      value = 123
+    )
   private val WHOLE_NUMBER_VALUE_TEST_254 =
-    InteractionObjectTestBuilder.createWholeNumber(isNegative = false, value = 254)
+    InteractionObjectTestBuilder.createWholeNumber(
+      isNegative = false,
+      value = 254
+    )
   private val FRACTION_VALUE_TEST_2_OVER_8 =
-    InteractionObjectTestBuilder.createFraction(isNegative = false, numerator = 2, denominator = 8)
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false,
+      numerator = 2,
+      denominator = 8
+    )
   private val FRACTION_VALUE_TEST_1_OVER_5 =
-    InteractionObjectTestBuilder.createFraction(isNegative = false, numerator = 1, denominator = 5)
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false,
+      numerator = 1,
+      denominator = 5
+    )
   private val FRACTION_VALUE_TEST_33_OVER_2 =
-    InteractionObjectTestBuilder.createFraction(isNegative = false, numerator = 33, denominator = 2)
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false,
+      numerator = 33,
+      denominator = 2
+    )
   private val FRACTION_VALUE_TEST_242_OVER_1 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
@@ -216,7 +234,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquality_missingInputF_throwsException() {
+  fun testEquality_missingInput_throwsException() {
     val inputs = mapOf("y" to FRACTION_VALUE_TEST_2_OVER_8)
 
     val exception = assertThrows(IllegalStateException::class) {
