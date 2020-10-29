@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # INSTRUCTIONS:
-# This script will run the pre-commit checks in the given order
+# This script will run the pre-push checks in the given order
 # Ktlint
 #
 
