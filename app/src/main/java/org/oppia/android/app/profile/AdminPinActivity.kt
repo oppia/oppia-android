@@ -6,9 +6,9 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-const val KEY_ADMIN_PIN_PROFILE_ID = "ADMIN_PIN_PROFILE_ID"
-const val KEY_ADMIN_PIN_COLOR_RGB = "ADMIN_PIN_COLOR_RGB"
-const val KEY_ADMIN_PIN_ENUM = "ADMIN_PIN_ENUM"
+const val ADMIN_PIN_PROFILE_ID_EXTRA_KEY = "AdminPinActivity.admin_pin_profile_id"
+const val ADMIN_PIN_COLOR_RGB_EXTRA_KEY = "AdminPinActivity.admin_pin_color_rgb"
+const val ADMIN_PIN_ENUM_EXTRA_KEY = "AdminPinActivity.admin_pin_enum"
 
 /** Activity that sets the admin's PIN. */
 class AdminPinActivity : InjectableAppCompatActivity() {
@@ -23,9 +23,9 @@ class AdminPinActivity : InjectableAppCompatActivity() {
       adminPinEnum: Int
     ): Intent {
       val intent = Intent(context, AdminPinActivity::class.java)
-      intent.putExtra(KEY_ADMIN_PIN_PROFILE_ID, profileId)
-      intent.putExtra(KEY_ADMIN_PIN_COLOR_RGB, colorRgb)
-      intent.putExtra(KEY_ADMIN_PIN_ENUM, adminPinEnum)
+      intent.putExtra(ADMIN_PIN_PROFILE_ID_EXTRA_KEY, profileId)
+      intent.putExtra(ADMIN_PIN_COLOR_RGB_EXTRA_KEY, colorRgb)
+      intent.putExtra(ADMIN_PIN_ENUM_EXTRA_KEY, adminPinEnum)
       return intent
     }
   }

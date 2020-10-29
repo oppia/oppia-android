@@ -41,7 +41,7 @@ class AdminAuthActivityPresenter @Inject constructor(
     binding.adminAuthToolbar.setNavigationOnClickListener {
       (activity as AdminAuthActivity).finish()
     }
-    val adminPin = activity.intent.getStringExtra(KEY_ADMIN_AUTH_ADMIN_PIN)
+    val adminPin = activity.intent.getStringExtra(ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY)
     binding.apply {
       lifecycleOwner = activity
       viewModel = authViewModel
@@ -75,11 +75,11 @@ class AdminAuthActivityPresenter @Inject constructor(
         return@setOnClickListener
       }
       if (inputPin == adminPin) {
-        when (activity.intent.getIntExtra(KEY_ADMIN_AUTH_ENUM, 0)) {
+        when (activity.intent.getIntExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, 0)) {
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
             activity.startActivity(
               AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-                context, activity.intent.getIntExtra(KEY_ADMIN_AUTH_PROFILE_ID, -1)
+                context, activity.intent.getIntExtra(ADMIN_AUTH_PROFILE_ID_EXTRA_KEY, -1)
               )
             )
             activity.finish()
@@ -87,7 +87,7 @@ class AdminAuthActivityPresenter @Inject constructor(
           AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
             activity.startActivity(
               AddProfileActivity.createAddProfileActivityIntent(
-                context, activity.intent.getIntExtra(KEY_ADMIN_AUTH_COLOR_RGB, -10710042)
+                context, activity.intent.getIntExtra(ADMIN_AUTH_COLOR_RGB_EXTRA_KEY, -10710042)
               )
             )
             activity.finish()
@@ -100,7 +100,7 @@ class AdminAuthActivityPresenter @Inject constructor(
   }
 
   private fun setTitleAndSubTitle(binding: AdminAuthActivityBinding?) {
-    when (activity.intent.getIntExtra(KEY_ADMIN_AUTH_ENUM, 0)) {
+    when (activity.intent.getIntExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, 0)) {
       AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
         binding?.adminAuthToolbar?.title =
           context.resources.getString(R.string.administrator_controls)

@@ -88,7 +88,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
 
   private fun startTrainingSessionWithCallback(callback: () -> Unit) {
     val skillIds =
-      activity.intent.getStringArrayListExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY)
+      activity.intent.getStringArrayListExtra(SKILL_ID_LIST_EXTRA_KEY)
     questionTrainingController.startQuestionTrainingSession(skillIds).observe(
       activity,
       Observer {

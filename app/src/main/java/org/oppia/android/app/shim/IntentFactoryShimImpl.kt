@@ -3,7 +3,7 @@ package org.oppia.android.app.shim
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.topic.TopicActivity
@@ -39,7 +39,7 @@ class IntentFactoryShimImpl @Inject constructor() : IntentFactoryShim {
     storyId: String
   ): Intent {
     val intent = Intent(context, TopicActivity::class.java)
-    intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
+    intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
     intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
     intent.putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
     return intent
@@ -54,7 +54,7 @@ class IntentFactoryShimImpl @Inject constructor() : IntentFactoryShim {
     topicId: String
   ): Intent {
     val intent = Intent(context, TopicActivity::class.java)
-    intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
+    intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
     intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
     return intent
   }

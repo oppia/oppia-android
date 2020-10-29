@@ -38,7 +38,8 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
-const val KEY_NAVIGATION_PROFILE_ID = "KEY_NAVIGATION_PROFILE_ID"
+const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
+  "NavigationDrawerFragmentPresenter.navigation_profile_id"
 const val SWITCH_PROFILE_DIALOG_ARGUMENT_KEY =
   "NavigationDrawerFragmentPresenter.switch_profile_dialog"
 
@@ -66,7 +67,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
     fragment.setHasOptionsMenu(true)
 
-    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+    internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     val headerBinding =

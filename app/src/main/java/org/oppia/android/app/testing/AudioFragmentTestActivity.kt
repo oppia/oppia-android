@@ -6,7 +6,8 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-const val KEY_AUDIO_FRAGMENT_TEST_PROFILE_ID = "KEY_AUDIO_FRAGMENT_TEST_PROFILE_ID"
+const val AUDIO_FRAGMENT_TEST_PROFILE_ID_EXTRA_KEY =
+  "AudioFragmentTestActivity.audio_fragment_test_profile_id"
 
 /** Test Activity used for testing AudioFragment */
 class AudioFragmentTestActivity : InjectableAppCompatActivity() {
@@ -18,14 +19,14 @@ class AudioFragmentTestActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     val internalProfileId =
-      intent.getIntExtra(KEY_AUDIO_FRAGMENT_TEST_PROFILE_ID, /* defaultValue= */ -1)
+      intent.getIntExtra(AUDIO_FRAGMENT_TEST_PROFILE_ID_EXTRA_KEY, /* defaultValue= */ -1)
     audioFragmentTestActivityController.handleOnCreate(internalProfileId)
   }
 
   companion object {
     fun createAudioFragmentTestActivity(context: Context, internalProfileId: Int?): Intent {
       val intent = Intent(context, AudioFragmentTestActivity::class.java)
-      intent.putExtra(KEY_AUDIO_FRAGMENT_TEST_PROFILE_ID, internalProfileId)
+      intent.putExtra(AUDIO_FRAGMENT_TEST_PROFILE_ID_EXTRA_KEY, internalProfileId)
       return intent
     }
   }
