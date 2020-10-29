@@ -7,7 +7,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
-import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
+import org.oppia.android.app.drawer.SWITCH_PROFILE_DIALOG_ARGUMENT_KEY
 import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
@@ -39,12 +39,12 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
 
   override fun onBackPressed() {
     val previousFragment =
-      supportFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
+      supportFragmentManager.findFragmentByTag(SWITCH_PROFILE_DIALOG_ARGUMENT_KEY)
     if (previousFragment != null) {
       supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = ExitProfileDialogFragment
       .newInstance(isFromNavigationDrawer = false)
-    dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
+    dialogFragment.showNow(supportFragmentManager, SWITCH_PROFILE_DIALOG_ARGUMENT_KEY)
   }
 }

@@ -39,7 +39,7 @@ import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 const val KEY_NAVIGATION_PROFILE_ID = "KEY_NAVIGATION_PROFILE_ID"
-const val TAG_SWITCH_PROFILE_DIALOG = "SWITCH_PROFILE_DIALOG"
+const val SWITCH_PROFILE_DIALOG_ARGUMENT_KEY = "NavigationDrawerFragmentPresenter.switch_profile_dialog"
 
 /** The presenter for [NavigationDrawerFragment]. */
 @FragmentScope
@@ -235,13 +235,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
         NavigationDrawerItem.SWITCH_PROFILE -> {
           val previousFragment =
-            fragment.childFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
+            fragment.childFragmentManager.findFragmentByTag(SWITCH_PROFILE_DIALOG_ARGUMENT_KEY)
           if (previousFragment != null) {
             fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
           }
           val dialogFragment = ExitProfileDialogFragment
             .newInstance(isFromNavigationDrawer = true)
-          dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
+          dialogFragment.showNow(fragment.childFragmentManager, SWITCH_PROFILE_DIALOG_ARGUMENT_KEY)
         }
       }
     } else {

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-const val BINDABLE_TEST_FRAGMENT_TAG = "bindable_adapter_test_fragment"
+const val BINDABLE_TEST_ARGUMENT_KEY = "BindableAdapterTestFragment.bindable_test"
 
 // TODO(#59): Make this fragment only included in relevant tests instead of all prod builds.
 /** A test fragment for the bindable RecyclerView adapter. */

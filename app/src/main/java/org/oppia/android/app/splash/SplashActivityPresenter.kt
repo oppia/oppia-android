@@ -19,11 +19,12 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
+private const val AUTO_DEPRECATION_NOTICE_DIALOG_EXTRA_KEY = "SplashActivityPresenter.auto_deprecation_notice_dialog"
 
 /** The presenter for [SplashActivity]. */
 @ActivityScope
-class SplashActivityPresenter @Inject constructor(
+class
+SplashActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val logger: ConsoleLogger,
   private val appStartupStateController: AppStartupStateController,
@@ -61,7 +62,7 @@ class SplashActivityPresenter @Inject constructor(
               activity.supportFragmentManager.beginTransaction()
                 .add(
                   AutomaticAppDeprecationNoticeDialogFragment.newInstance(),
-                  AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG
+                  AUTO_DEPRECATION_NOTICE_DIALOG_EXTRA_KEY
                 ).commitNow()
             }
           }
@@ -99,7 +100,7 @@ class SplashActivityPresenter @Inject constructor(
 
   private fun getDeprecationNoticeDialogFragment(): AutomaticAppDeprecationNoticeDialogFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
-      AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG
+      AUTO_DEPRECATION_NOTICE_DIALOG_EXTRA_KEY
     ) as? AutomaticAppDeprecationNoticeDialogFragment
   }
 }

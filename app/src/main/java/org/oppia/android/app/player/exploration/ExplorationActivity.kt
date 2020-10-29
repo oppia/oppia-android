@@ -21,8 +21,8 @@ import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
-private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
-const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
+private const val STOP_EXPLORATION_DIALOG_EXTRA_KEY = "ExplorationActivity.stop_exploration_dialog"
+const val HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY = "ExplorationActivity.hints_and_solution_dialog"
 
 /** The starting point for exploration. */
 class ExplorationActivity :
@@ -101,12 +101,12 @@ class ExplorationActivity :
   }
 
   private fun showStopExplorationDialogFragment() {
-    val previousFragment = supportFragmentManager.findFragmentByTag(TAG_STOP_EXPLORATION_DIALOG)
+    val previousFragment = supportFragmentManager.findFragmentByTag(STOP_EXPLORATION_DIALOG_EXTRA_KEY)
     if (previousFragment != null) {
       supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = StopExplorationDialogFragment.newInstance()
-    dialogFragment.showNow(supportFragmentManager, TAG_STOP_EXPLORATION_DIALOG)
+    dialogFragment.showNow(supportFragmentManager, STOP_EXPLORATION_DIALOG_EXTRA_KEY)
   }
 
   override fun stopSession() {
@@ -150,7 +150,7 @@ class ExplorationActivity :
 
   private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
     return supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_DIALOG
+      HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY
     ) as HintsAndSolutionDialogFragment?
   }
 
@@ -166,7 +166,7 @@ class ExplorationActivity :
         allHintsExhausted
       )
       hintsAndSolutionDialogFragment.loadState(state)
-      hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
+      hintsAndSolutionDialogFragment.showNow(supportFragmentManager, HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY)
     }
   }
 

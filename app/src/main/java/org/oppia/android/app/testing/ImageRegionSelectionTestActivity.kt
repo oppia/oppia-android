@@ -16,7 +16,7 @@ class ImageRegionSelectionTestActivity : InjectableAppCompatActivity() {
       .add(
         R.id.test_fragment_placeholder,
         ImageRegionSelectionTestFragment(),
-        IMAGE_REGION_SELECTION_TEST_FRAGMENT_TAG
+        IMAGE_REGION_SELECTION_TEST_FRAGMENT_ARGUMENT_KEY
       )
       .commitNow()
   }

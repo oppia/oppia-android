@@ -31,8 +31,8 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
-const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
-private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
+const val LANGUAGE_DIALOG_ARGUMENT_KEY = "AudioFragmentPresenter.language_dialog"
+private const val CELLULAR_DATA_DIALOG_ARGUMENT_KEY = "AudioFragmentPresenter.cellular_data_dialog"
 const val AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
 
 /** The presenter for [AudioFragment]. */
@@ -155,7 +155,7 @@ class AudioFragmentPresenter @Inject constructor(
 
   /** Shows language dialog fragment with language list from exploration */
   fun showLanguageDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_LANGUAGE_DIALOG)
+    val previousFragment = fragment.childFragmentManager.findFragmentByTag(LANGUAGE_DIALOG_ARGUMENT_KEY)
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
@@ -163,7 +163,7 @@ class AudioFragmentPresenter @Inject constructor(
       ArrayList(viewModel.languages),
       viewModel.selectedLanguageCode
     )
-    dialogFragment.showNow(fragment.childFragmentManager, TAG_LANGUAGE_DIALOG)
+    dialogFragment.showNow(fragment.childFragmentManager, LANGUAGE_DIALOG_ARGUMENT_KEY)
   }
 
   /** Pauses audio if in prepared state */
@@ -271,12 +271,12 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun showCellularDataDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
+    val previousFragment = fragment.childFragmentManager.findFragmentByTag(CELLULAR_DATA_DIALOG_ARGUMENT_KEY)
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = CellularAudioDialogFragment.newInstance()
-    dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
+    dialogFragment.showNow(fragment.childFragmentManager, CELLULAR_DATA_DIALOG_ARGUMENT_KEY)
   }
 
   private fun showOfflineDialog() {

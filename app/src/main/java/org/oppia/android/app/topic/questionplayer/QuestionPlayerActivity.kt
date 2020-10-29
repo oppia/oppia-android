@@ -9,7 +9,7 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.State
-import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
+import org.oppia.android.app.player.exploration.HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY =
   "QuestionPlayerActivity.skill_id_list"
-private const val TAG_STOP_TRAINING_SESSION_DIALOG = "STOP_TRAINING_SESSION_DIALOG"
+private const val STOP_TRAINING_SESSION_DIALOG_EXTRA_KEY = "QuestionPlayerActivity.stop_training_session_dialog"
 
 /** Activity for QuestionPlayer in train mode. */
 class QuestionPlayerActivity :
@@ -59,12 +59,12 @@ class QuestionPlayerActivity :
 
   private fun showStopExplorationDialogFragment() {
     val previousFragment =
-      supportFragmentManager.findFragmentByTag(TAG_STOP_TRAINING_SESSION_DIALOG)
+      supportFragmentManager.findFragmentByTag(STOP_TRAINING_SESSION_DIALOG_EXTRA_KEY)
     if (previousFragment != null) {
       supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = StopExplorationDialogFragment.newInstance()
-    dialogFragment.showNow(supportFragmentManager, TAG_STOP_TRAINING_SESSION_DIALOG)
+    dialogFragment.showNow(supportFragmentManager, STOP_TRAINING_SESSION_DIALOG_EXTRA_KEY)
   }
 
   companion object {
@@ -93,7 +93,7 @@ class QuestionPlayerActivity :
 
   private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
     return supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_DIALOG
+      HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY
     ) as HintsAndSolutionDialogFragment?
   }
 
@@ -110,7 +110,7 @@ class QuestionPlayerActivity :
           allHintsExhausted
         )
       hintsAndSolutionDialogFragment.loadState(state)
-      hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
+      hintsAndSolutionDialogFragment.showNow(supportFragmentManager, HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY)
     }
   }
 

@@ -9,7 +9,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.utility.ClickableAreasImage
 import javax.inject.Inject
 
-const val IMAGE_REGION_SELECTION_TEST_FRAGMENT_TAG = "image_region_selection_test_fragment"
+const val IMAGE_REGION_SELECTION_TEST_FRAGMENT_ARGUMENT_KEY = "ImageRegionSelectionTestFragment.image_region_selection_test_fragment"
 
 // TODO(#59): Make this fragment only included in relevant tests instead of all prod builds.
 /** Test Fragment used for testing [ClickableAreasImage] functionality */

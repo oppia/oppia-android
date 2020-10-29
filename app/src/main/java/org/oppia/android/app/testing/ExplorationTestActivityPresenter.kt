@@ -18,7 +18,7 @@ private const val INTERNAL_PROFILE_ID = 0
 private const val TOPIC_ID = TEST_TOPIC_ID_0
 private const val STORY_ID = TEST_STORY_ID_0
 private const val EXPLORATION_ID = TEST_EXPLORATION_ID_2
-private const val TAG_EXPLORATION_TEST_ACTIVITY = "ExplorationTestActivity"
+private const val EXPLORATION_TEST_ACTIVITY_EXTRA_KEY = "ExplorationTestActivityPresenter.exploration_test_activity"
 
 /** The presenter for [ExplorationTestActivityPresenter]. */
 @ActivityScope
@@ -45,14 +45,14 @@ class ExplorationTestActivityPresenter @Inject constructor(
       activity,
       Observer<AsyncResult<Any?>> { result ->
         when {
-          result.isPending() -> logger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Loading exploration")
+          result.isPending() -> logger.d(EXPLORATION_TEST_ACTIVITY_EXTRA_KEY, "Loading exploration")
           result.isFailure() -> logger.e(
-            TAG_EXPLORATION_TEST_ACTIVITY,
+            EXPLORATION_TEST_ACTIVITY_EXTRA_KEY,
             "Failed to load exploration",
             result.getErrorOrNull()!!
           )
           else -> {
-            logger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
+            logger.d(EXPLORATION_TEST_ACTIVITY_EXTRA_KEY, "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
               INTERNAL_PROFILE_ID,
               TOPIC_ID,

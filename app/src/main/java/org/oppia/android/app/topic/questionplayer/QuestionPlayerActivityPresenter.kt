@@ -12,8 +12,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
-private const val TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER = "HINTS_AND_SOLUTION_QUESTION_MANAGER"
+const val QUESTION_PLAYER_FRAGMENT_EXTRA_KEY = "QuestionPlayerActivityPresenter_question_player_fragment"
+private const val HINTS_AND_SOLUTION_QUESTION_MANAGER_EXTRA_KEY = "QuestionPlayerActivityPresenter_hints_and_solution_question_manager"
 
 /** The presenter for [QuestionPlayerActivity]. */
 @ActivityScope
@@ -43,7 +43,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
           QuestionPlayerFragment(),
-          TAG_QUESTION_PLAYER_FRAGMENT
+          QUESTION_PLAYER_FRAGMENT_EXTRA_KEY
         ).commitNow()
       }
     }
@@ -58,7 +58,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
 
   private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionQuestionManagerFragment? { // ktlint-disable max-line-length
     return activity.supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER
+      HINTS_AND_SOLUTION_QUESTION_MANAGER_EXTRA_KEY
     ) as HintsAndSolutionQuestionManagerFragment?
   }
 
@@ -78,7 +78,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
           QuestionPlayerFragment(),
-          TAG_QUESTION_PLAYER_FRAGMENT
+          QUESTION_PLAYER_FRAGMENT_EXTRA_KEY
         ).commitNow()
       }
     }
@@ -143,7 +143,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
       val questionPlayerFragment = activity
         .supportFragmentManager
         .findFragmentByTag(
-          TAG_QUESTION_PLAYER_FRAGMENT
+          QUESTION_PLAYER_FRAGMENT_EXTRA_KEY
         ) as? QuestionPlayerFragment
       questionPlayerFragment?.handleKeyboardAction()
     }
@@ -151,14 +151,14 @@ class QuestionPlayerActivityPresenter @Inject constructor(
 
   private fun getQuestionPlayerFragment(): QuestionPlayerFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
-      TAG_QUESTION_PLAYER_FRAGMENT
+      QUESTION_PLAYER_FRAGMENT_EXTRA_KEY
     ) as QuestionPlayerFragment?
   }
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
     val questionPlayerFragment =
       activity.supportFragmentManager.findFragmentByTag(
-        TAG_QUESTION_PLAYER_FRAGMENT
+        QUESTION_PLAYER_FRAGMENT_EXTRA_KEY
       ) as QuestionPlayerFragment
     questionPlayerFragment.revealHint(saveUserChoice, hintIndex)
   }
@@ -166,7 +166,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   fun revealSolution() {
     val questionPlayerFragment =
       activity.supportFragmentManager.findFragmentByTag(
-        TAG_QUESTION_PLAYER_FRAGMENT
+        QUESTION_PLAYER_FRAGMENT_EXTRA_KEY
       ) as QuestionPlayerFragment
     questionPlayerFragment.revealSolution()
   }

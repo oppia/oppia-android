@@ -7,7 +7,7 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
-import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+import org.oppia.android.app.player.exploration.HINTS_AND_SOLUTION_EXPLORATION_MANAGER_EXTRA_KEY
 import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentTestActivityBinding
@@ -19,7 +19,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-private const val TEST_ACTIVITY_TAG = "TestActivity"
+private const val TEST_ACTIVITY_EXTRA_KEY = "StateFragmentTestActivityPresenter.test_activity"
 
 /** The presenter for [StateFragmentTestActivity] */
 @ActivityScope
@@ -52,7 +52,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
         HintsAndSolutionExplorationManagerFragment(),
-        TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+        HINTS_AND_SOLUTION_EXPLORATION_MANAGER_EXTRA_KEY
       ).commitNow()
     }
   }
@@ -80,14 +80,14 @@ class StateFragmentTestActivityPresenter @Inject constructor(
         activity,
         Observer<AsyncResult<Any?>> { result ->
           when {
-            result.isPending() -> logger.d(TEST_ACTIVITY_TAG, "Loading exploration")
+            result.isPending() -> logger.d(TEST_ACTIVITY_EXTRA_KEY, "Loading exploration")
             result.isFailure() -> logger.e(
-              TEST_ACTIVITY_TAG,
+              TEST_ACTIVITY_EXTRA_KEY,
               "Failed to load exploration",
               result.getErrorOrNull()!!
             )
             else -> {
-              logger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
+              logger.d(TEST_ACTIVITY_EXTRA_KEY, "Successfully loaded exploration")
               initializeExploration(profileId, topicId, storyId, explorationId)
             }
           }
@@ -126,7 +126,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   private fun getHintsAndSolutionManagerFragment(): HintsAndSolutionExplorationManagerFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+      HINTS_AND_SOLUTION_EXPLORATION_MANAGER_EXTRA_KEY
     ) as HintsAndSolutionExplorationManagerFragment?
   }
 

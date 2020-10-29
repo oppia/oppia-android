@@ -48,7 +48,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
-import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
+import org.oppia.android.app.player.exploration.HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
@@ -1210,7 +1210,7 @@ class StateFragmentLocalTest {
     // being called.
     activityScenario.onActivity { activity ->
       val hintAndSolutionDialogFragment = activity.supportFragmentManager.findFragmentByTag(
-        TAG_HINTS_AND_SOLUTION_DIALOG
+        HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY
       )
       val revealSolutionDialogFragment =
         hintAndSolutionDialogFragment?.childFragmentManager?.findFragmentByTag(
@@ -1232,7 +1232,7 @@ class StateFragmentLocalTest {
     // being called.
     activityScenario.onActivity { activity ->
       val hintAndSolutionDialogFragment = activity.supportFragmentManager.findFragmentByTag(
-        TAG_HINTS_AND_SOLUTION_DIALOG
+        HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY
       )
       val revealSolutionDialogFragment =
         hintAndSolutionDialogFragment?.childFragmentManager?.findFragmentByTag(

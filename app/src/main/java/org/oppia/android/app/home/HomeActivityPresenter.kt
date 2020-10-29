@@ -9,7 +9,7 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import javax.inject.Inject
 
-const val TAG_HOME_FRAGMENT = "HOME_FRAGMENT"
+const val HOME_FRAGMENT_EXTRA_KEY = "HomeActivityPresenter.home_fragment"
 
 /** The presenter for [HomeActivity]. */
 @ActivityScope
@@ -23,7 +23,7 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
       activity.supportFragmentManager.beginTransaction().add(
         R.id.home_fragment_placeholder,
         HomeFragment(),
-        TAG_HOME_FRAGMENT
+        HOME_FRAGMENT_EXTRA_KEY
       ).commitNow()
     }
   }

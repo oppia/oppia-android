@@ -15,7 +15,7 @@ class BindableAdapterTestActivity : InjectableAppCompatActivity() {
       .add(
         R.id.test_fragment_placeholder,
         BindableAdapterTestFragment(),
-        BINDABLE_TEST_FRAGMENT_TAG
+        BINDABLE_TEST_ARGUMENT_KEY
       )
       .commitNow()
   }

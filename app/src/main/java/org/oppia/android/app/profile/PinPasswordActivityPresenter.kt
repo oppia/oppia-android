@@ -22,8 +22,8 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
-private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
-private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
+private const val ADMIN_SETTINGS_DIALOG_EXTRA_KEY = "PinPasswordActivityPresenter.admin_settings_dialog"
+private const val RESET_PIN_DIALOG_EXTRA_KEY = "PinPasswordActivityPresenter.reset_pin_dialog"
 
 /** The presenter for [PinPasswordActivity]. */
 class PinPasswordActivityPresenter @Inject constructor(
@@ -102,13 +102,13 @@ class PinPasswordActivityPresenter @Inject constructor(
         showAdminForgotPin()
       } else {
         val previousFrag =
-          activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG)
+          activity.supportFragmentManager.findFragmentByTag(ADMIN_SETTINGS_DIALOG_EXTRA_KEY)
         if (previousFrag != null) {
           activity.supportFragmentManager.beginTransaction().remove(previousFrag).commitNow()
         }
         val dialogFragment = AdminSettingsDialogFragment
           .newInstance(adminPin)
-        dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_SETTINGS_DIALOG)
+        dialogFragment.showNow(activity.supportFragmentManager, ADMIN_SETTINGS_DIALOG_EXTRA_KEY)
       }
     }
 
@@ -122,14 +122,14 @@ class PinPasswordActivityPresenter @Inject constructor(
       activity
         .supportFragmentManager
         .findFragmentByTag(
-          TAG_ADMIN_SETTINGS_DIALOG
+          ADMIN_SETTINGS_DIALOG_EXTRA_KEY
         ) as DialogFragment
       ).dismiss()
     val dialogFragment = ResetPinDialogFragment.newInstance(
       profileId,
       pinViewModel.name.get()!!
     )
-    dialogFragment.showNow(activity.supportFragmentManager, TAG_RESET_PIN_DIALOG)
+    dialogFragment.showNow(activity.supportFragmentManager, RESET_PIN_DIALOG_EXTRA_KEY)
   }
 
   fun handleRouteToSuccessDialog() {
@@ -137,7 +137,7 @@ class PinPasswordActivityPresenter @Inject constructor(
       activity
         .supportFragmentManager
         .findFragmentByTag(
-          TAG_RESET_PIN_DIALOG
+          RESET_PIN_DIALOG_EXTRA_KEY
         ) as DialogFragment
       ).dismiss()
     showSuccessDialog()

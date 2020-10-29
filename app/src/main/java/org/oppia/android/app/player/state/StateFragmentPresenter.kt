@@ -45,7 +45,7 @@ const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_AR
 const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY"
 const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
-private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
+private const val AUDIO_FRAGMENT_ARGUMENT_KEY = "StateFragmentPresenter.audio_fragment"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
@@ -260,14 +260,14 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun getAudioFragment(): Fragment? {
-    return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
+    return fragment.childFragmentManager.findFragmentByTag(AUDIO_FRAGMENT_ARGUMENT_KEY)
   }
 
   private fun getAudioUiManager(): AudioUiManager? {
     if (getAudioFragment() == null) {
       val audioFragment: AudioFragment = AudioFragment.newInstance(profileId.internalId)
       fragment.childFragmentManager.beginTransaction()
-        .add(R.id.audio_fragment_placeholder, audioFragment, TAG_AUDIO_FRAGMENT).commitNow()
+        .add(R.id.audio_fragment_placeholder, audioFragment, AUDIO_FRAGMENT_ARGUMENT_KEY).commitNow()
     }
     return getAudioFragment() as? AudioUiManager
   }

@@ -33,7 +33,7 @@ import org.oppia.android.app.model.TestModel.ModelTypeCase
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.BINDABLE_TEST_FRAGMENT_TAG
+import org.oppia.android.app.testing.BINDABLE_TEST_ARGUMENT_KEY
 import org.oppia.android.app.testing.BindableAdapterTestActivity
 import org.oppia.android.app.testing.BindableAdapterTestFragment
 import org.oppia.android.app.testing.BindableAdapterTestFragmentPresenter
@@ -395,7 +395,7 @@ class BindableAdapterTest {
   }
 
   private fun getTestFragment(activity: BindableAdapterTestActivity): BindableAdapterTestFragment {
-    return activity.supportFragmentManager.findFragmentByTag(BINDABLE_TEST_FRAGMENT_TAG) as BindableAdapterTestFragment // ktlint-disable max-line-length
+    return activity.supportFragmentManager.findFragmentByTag(BINDABLE_TEST_ARGUMENT_KEY) as BindableAdapterTestFragment // ktlint-disable max-line-length
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

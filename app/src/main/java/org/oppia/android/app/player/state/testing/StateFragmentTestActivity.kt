@@ -11,7 +11,7 @@ import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerListener
-import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
+import org.oppia.android.app.player.exploration.HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
@@ -92,7 +92,7 @@ class StateFragmentTestActivity :
           allHintsExhausted
         )
       hintsAndSolutionFragment.loadState(state)
-      hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
+      hintsAndSolutionFragment.showNow(supportFragmentManager, HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY)
     }
   }
 
@@ -110,7 +110,7 @@ class StateFragmentTestActivity :
 
   private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
     return supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_DIALOG
+      HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY
     ) as HintsAndSolutionDialogFragment?
   }
 }

@@ -27,9 +27,9 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
-const val TAG_EXPLORATION_MANAGER_FRAGMENT = "TAG_EXPLORATION_MANAGER_FRAGMENT"
-const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER = "HINTS_AND_SOLUTION_EXPLORATION_MANAGER"
+const val EXPLORATION_FRAGMENT_EXTRA_KEY = "ExplorationActivityPresenter.exploration_fragment"
+const val EXPLORATION_MANAGER_FRAGMENT_EXTRA_KEY = "ExplorationActivityPresenter.exploration_manager_fragment"
+const val HINTS_AND_SOLUTION_EXPLORATION_MANAGER_EXTRA_KEY = "ExplorationActivityPresenter.hints_and_solution_exploration_manager"
 
 /** The Presenter for [ExplorationActivity]. */
 @ActivityScope
@@ -109,7 +109,7 @@ class ExplorationActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
         explorationManagerFragment,
-        TAG_EXPLORATION_MANAGER_FRAGMENT
+        EXPLORATION_MANAGER_FRAGMENT_EXTRA_KEY
       ).commitNow()
     }
   }
@@ -125,7 +125,7 @@ class ExplorationActivityPresenter @Inject constructor(
           readingTextSize = readingTextSize.name,
           explorationId = explorationId
         ),
-        TAG_EXPLORATION_FRAGMENT
+        EXPLORATION_FRAGMENT_EXTRA_KEY
       ).commitNow()
     }
 
@@ -133,7 +133,7 @@ class ExplorationActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
         HintsAndSolutionExplorationManagerFragment(),
-        TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+        HINTS_AND_SOLUTION_EXPLORATION_MANAGER_EXTRA_KEY
       ).commitNow()
     }
   }
@@ -177,19 +177,19 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private fun getExplorationManagerFragment(): ExplorationManagerFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
-      TAG_EXPLORATION_MANAGER_FRAGMENT
+      EXPLORATION_MANAGER_FRAGMENT_EXTRA_KEY
     ) as? ExplorationManagerFragment
   }
 
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
-      TAG_EXPLORATION_FRAGMENT
+      EXPLORATION_FRAGMENT_EXTRA_KEY
     ) as? ExplorationFragment
   }
 
   private fun getHintsAndSolutionManagerFragment(): HintsAndSolutionExplorationManagerFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+      HINTS_AND_SOLUTION_EXPLORATION_MANAGER_EXTRA_KEY
     ) as HintsAndSolutionExplorationManagerFragment?
   }
 
@@ -219,7 +219,7 @@ class ExplorationActivityPresenter @Inject constructor(
   fun onKeyboardAction(actionCode: Int) {
     if (actionCode == EditorInfo.IME_ACTION_DONE) {
       val explorationFragment = activity.supportFragmentManager.findFragmentByTag(
-        TAG_EXPLORATION_FRAGMENT
+        EXPLORATION_FRAGMENT_EXTRA_KEY
       ) as? ExplorationFragment
       explorationFragment?.onKeyboardAction()
     }
@@ -285,7 +285,7 @@ class ExplorationActivityPresenter @Inject constructor(
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
     val explorationFragment =
       activity.supportFragmentManager.findFragmentByTag(
-        TAG_EXPLORATION_FRAGMENT
+        EXPLORATION_FRAGMENT_EXTRA_KEY
       ) as ExplorationFragment
     explorationFragment.revealHint(saveUserChoice, hintIndex)
   }
@@ -293,7 +293,7 @@ class ExplorationActivityPresenter @Inject constructor(
   fun revealSolution() {
     val explorationFragment =
       activity.supportFragmentManager.findFragmentByTag(
-        TAG_EXPLORATION_FRAGMENT
+        EXPLORATION_FRAGMENT_EXTRA_KEY
       ) as ExplorationFragment
     explorationFragment.revealSolution()
   }
