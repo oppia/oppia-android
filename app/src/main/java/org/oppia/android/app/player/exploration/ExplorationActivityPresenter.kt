@@ -28,8 +28,10 @@ import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 const val EXPLORATION_FRAGMENT_EXTRA_KEY = "ExplorationActivityPresenter.exploration_fragment"
-const val EXPLORATION_MANAGER_FRAGMENT_EXTRA_KEY = "ExplorationActivityPresenter.exploration_manager_fragment"
-const val HINTS_AND_SOLUTION_EXPLORATION_MANAGER_EXTRA_KEY = "ExplorationActivityPresenter.hints_and_solution_exploration_manager"
+const val EXPLORATION_MANAGER_FRAGMENT_EXTRA_KEY =
+  "ExplorationActivityPresenter.exploration_manager_fragment"
+const val HINTS_AND_SOLUTION_EXPLORATION_MANAGER_EXTRA_KEY =
+  "ExplorationActivityPresenter.hints_and_solution_exploration_manager"
 
 /** The Presenter for [ExplorationActivity]. */
 @ActivityScope

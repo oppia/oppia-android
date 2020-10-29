@@ -14,7 +14,8 @@ import org.oppia.android.databinding.ProfileProgressHeaderBinding
 import org.oppia.android.databinding.ProfileProgressRecentlyPlayedStoryCardBinding
 import javax.inject.Inject
 
-private const val PROFILE_PICTURE_EDIT_DIALOG_ARGUMENT_KEY = "ProfileProgressFragmentPresenter.profile_picture_edit_dialog"
+private const val PROFILE_PICTURE_EDIT_DIALOG_ARGUMENT_KEY =
+  "ProfileProgressFragmentPresenter.profile_picture_edit_dialog"
 
 /** The presenter for [ProfileProgressFragment]. */
 @FragmentScope
@@ -105,6 +106,9 @@ class ProfileProgressFragmentPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = ProfilePictureEditDialogFragment.newInstance()
-    dialogFragment.showNow(activity.supportFragmentManager, PROFILE_PICTURE_EDIT_DIALOG_ARGUMENT_KEY)
+    dialogFragment.showNow(
+      activity.supportFragmentManager,
+      PROFILE_PICTURE_EDIT_DIALOG_ARGUMENT_KEY
+    )
   }
 }

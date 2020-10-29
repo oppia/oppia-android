@@ -12,8 +12,10 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-const val QUESTION_PLAYER_FRAGMENT_EXTRA_KEY = "QuestionPlayerActivityPresenter_question_player_fragment"
-private const val HINTS_AND_SOLUTION_QUESTION_MANAGER_EXTRA_KEY = "QuestionPlayerActivityPresenter_hints_and_solution_question_manager"
+const val QUESTION_PLAYER_FRAGMENT_EXTRA_KEY =
+  "QuestionPlayerActivityPresenter_question_player_fragment"
+private const val HINTS_AND_SOLUTION_QUESTION_MANAGER_EXTRA_KEY =
+  "QuestionPlayerActivityPresenter_hints_and_solution_question_manager"
 
 /** The presenter for [QuestionPlayerActivity]. */
 @ActivityScope

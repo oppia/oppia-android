@@ -22,7 +22,8 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
-private const val ADMIN_SETTINGS_DIALOG_EXTRA_KEY = "PinPasswordActivityPresenter.admin_settings_dialog"
+private const val ADMIN_SETTINGS_DIALOG_EXTRA_KEY =
+  "PinPasswordActivityPresenter.admin_settings_dialog"
 private const val RESET_PIN_DIALOG_EXTRA_KEY = "PinPasswordActivityPresenter.reset_pin_dialog"
 
 /** The presenter for [PinPasswordActivity]. */

@@ -20,7 +20,8 @@ import javax.inject.Inject
 
 const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY =
   "QuestionPlayerActivity.skill_id_list"
-private const val STOP_TRAINING_SESSION_DIALOG_EXTRA_KEY = "QuestionPlayerActivity.stop_training_session_dialog"
+private const val STOP_TRAINING_SESSION_DIALOG_EXTRA_KEY =
+  "QuestionPlayerActivity.stop_training_session_dialog"
 
 /** Activity for QuestionPlayer in train mode. */
 class QuestionPlayerActivity :
@@ -110,7 +111,10 @@ class QuestionPlayerActivity :
           allHintsExhausted
         )
       hintsAndSolutionDialogFragment.loadState(state)
-      hintsAndSolutionDialogFragment.showNow(supportFragmentManager, HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY)
+      hintsAndSolutionDialogFragment.showNow(
+        supportFragmentManager,
+        HINTS_AND_SOLUTION_DIALOG_EXTRA_KEY
+      )
     }
   }
 
