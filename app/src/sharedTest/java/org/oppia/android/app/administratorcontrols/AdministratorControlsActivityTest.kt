@@ -392,7 +392,7 @@ class AdministratorControlsActivityTest {
   @Test
   // TODO(#973): Fix AdministratorControlsActivityTest
   @Ignore
-  fun testAdminControls_onClickTopicUpdateOnWifiSwitch_switchRemainsCheckedOnRecreate() {
+  fun testAdminControls_onClickTopicUpdateOnWifiSwitch_reopen_switchRemainsChecked() {
     ActivityScenario
       .launch<NavigationDrawerTestActivity>(
         createNavigationDrawerActivityIntent(profileId = 0)
