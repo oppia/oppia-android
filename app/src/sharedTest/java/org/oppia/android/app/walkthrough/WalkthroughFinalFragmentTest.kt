@@ -106,8 +106,6 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix WalkthroughFinalFragmentTest
-
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_topicTitleIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -131,8 +129,6 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix WalkthroughFinalFragmentTest
-
   fun testWalkthroughWelcomeFragment_recyclerViewIndex2_topicSelected_topicTitleIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -156,8 +152,6 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix WalkthroughFinalFragmentTest
-
   fun testWalkthroughWelcomeFragment_recyclerViewIndex2_topicSelected_configurationChanged_topicTitleIsCorrect() { // ktlint-disable max-line-length
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
