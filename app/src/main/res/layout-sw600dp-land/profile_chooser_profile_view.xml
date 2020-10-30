@@ -105,4 +105,3 @@
       app:layout_constraintTop_toBottomOf="@+id/profile_chooser_item" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
-
