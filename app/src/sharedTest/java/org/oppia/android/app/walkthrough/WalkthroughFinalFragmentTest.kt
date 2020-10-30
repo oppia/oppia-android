@@ -1,6 +1,7 @@
 package org.oppia.android.app.walkthrough
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,6 @@ import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -55,6 +55,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -66,6 +67,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [WalkthroughFinalFragment]. */
@@ -77,26 +79,35 @@ import javax.inject.Singleton
 )
 class WalkthroughFinalFragmentTest {
 
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     Intents.init()
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
   private fun createWalkthroughActivityIntent(profileId: Int): Intent {
     return WalkthroughActivity.createWalkthroughActivityIntent(
-      ApplicationProvider.getApplicationContext(),
+      context,
       profileId
     )
   }
 
   @Test
   // TODO(#973): Fix WalkthroughFinalFragmentTest
-  @Ignore
+
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_topicTitleIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -110,6 +121,7 @@ class WalkthroughFinalFragmentTest {
           R.id.walkthrough_topic_name_text_view
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_final_topic_text_view)).check(
         matches(
           withText(containsString("First Test Topic"))
@@ -120,7 +132,7 @@ class WalkthroughFinalFragmentTest {
 
   @Test
   // TODO(#973): Fix WalkthroughFinalFragmentTest
-  @Ignore
+
   fun testWalkthroughWelcomeFragment_recyclerViewIndex2_topicSelected_topicTitleIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -134,6 +146,7 @@ class WalkthroughFinalFragmentTest {
           R.id.walkthrough_topic_name_text_view
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_final_topic_text_view)).check(
         matches(
           withText(containsString("Second Test Topic"))
@@ -144,7 +157,7 @@ class WalkthroughFinalFragmentTest {
 
   @Test
   // TODO(#973): Fix WalkthroughFinalFragmentTest
-  @Ignore
+
   fun testWalkthroughWelcomeFragment_recyclerViewIndex2_topicSelected_configurationChanged_topicTitleIsCorrect() { // ktlint-disable max-line-length
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -158,12 +171,14 @@ class WalkthroughFinalFragmentTest {
           R.id.walkthrough_topic_name_text_view
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_final_topic_text_view)).check(
         matches(
           withText(containsString("Second Test Topic"))
         )
       )
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_final_topic_text_view)).check(
         matches(
           withText(containsString("Second Test Topic"))
@@ -211,6 +226,10 @@ class WalkthroughFinalFragmentTest {
         .perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
     }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
