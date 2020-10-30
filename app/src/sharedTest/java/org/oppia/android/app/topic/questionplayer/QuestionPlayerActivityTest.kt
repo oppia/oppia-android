@@ -209,7 +209,8 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO)  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_phonePort_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -223,7 +224,8 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO)  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_phoneLand_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -238,7 +240,8 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO)  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO)
   @Config(qualifiers = "sw600dp")
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_tabletPort_tickIsCompletelyVisible() {
@@ -253,7 +256,8 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO)  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO)
   @Config(qualifiers = "sw600dp")
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_tabletLand_tickIsCompletelyVisible() {
