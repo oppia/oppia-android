@@ -80,6 +80,7 @@ class AdminAuthActivityPresenter @Inject constructor(
                 context, activity.intent.getIntExtra(KEY_ADMIN_AUTH_PROFILE_ID, -1)
               )
             )
+            activity.finish()
           }
           AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
             activity.startActivity(
@@ -87,6 +88,7 @@ class AdminAuthActivityPresenter @Inject constructor(
                 context, activity.intent.getIntExtra(KEY_ADMIN_AUTH_COLOR_RGB, -10710042)
               )
             )
+            activity.finish()
           }
         }
       } else {

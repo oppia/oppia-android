@@ -62,7 +62,7 @@
         android:text="@{viewModel.profile.name}"
         android:textColor="@color/white"
         app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_32dp}"
-        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_8dp : @dimen/space_0dp}" />
+        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}" />
 
       <TextView
         android:id="@+id/profile_last_visited"
