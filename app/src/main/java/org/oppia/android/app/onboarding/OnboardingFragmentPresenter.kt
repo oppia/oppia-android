@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -49,9 +49,9 @@ class OnboardingFragmentPresenter @Inject constructor(
     onboardingPagerAdapter =
       OnboardingPagerAdapter(fragment.requireContext(), getOnboardingSlideFinalViewModel())
     binding.onboardingSlideViewPager.adapter = onboardingPagerAdapter
-    binding.onboardingSlideViewPager.addOnPageChangeListener(
+    binding.onboardingSlideViewPager.registerOnPageChangeCallback(
       object :
-        ViewPager.OnPageChangeListener {
+        ViewPager2.OnPageChangeCallback() {
         override fun onPageScrollStateChanged(state: Int) {
         }
 
