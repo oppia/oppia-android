@@ -79,10 +79,7 @@ object InteractionObjectTestBuilder {
     ).build()
   }
 
-  /**
-   * function to create Number with units object
-   * for fraction part of [NumberWithUnits]
-   */
+  /** Creates fraction part for [NumberWithUnits]*/
   fun createNumberWithUnitsForFraction(number: Fraction, units: List<NumberUnit>):
     InteractionObject {
       val numberWithUnits = NumberWithUnits.newBuilder()
@@ -93,10 +90,7 @@ object InteractionObjectTestBuilder {
       return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
     }
 
-  /**
-   * function to create Number with units object
-   * for Real part of [NumberWithUnits]
-   */
+  /** Creates real part for [NumberWithUnits]*/
   fun createNumberWithUnitsForReal(number: Double, units: List<NumberUnit>):
     InteractionObject {
       val numberWithUnits = NumberWithUnits.newBuilder()
@@ -107,10 +101,7 @@ object InteractionObjectTestBuilder {
       return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
     }
 
-  /**
-   * function to create Number unit object
-   * for [NumberWithUnits]
-   */
+  /** Creates Number unit for [NumberWithUnits]*/
   fun createNumberUnit(unit: String, exponent: Int): NumberUnit {
     return NumberUnit.newBuilder().setUnit(unit).setExponent(exponent).build()
   }
