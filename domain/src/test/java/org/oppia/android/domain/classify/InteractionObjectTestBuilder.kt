@@ -5,6 +5,7 @@ import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.android.app.model.NumberUnit
 import org.oppia.android.app.model.NumberWithUnits
+import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.StringList
 
 /**
@@ -124,5 +125,11 @@ object InteractionObjectTestBuilder {
 
   fun createInt(value: Int): InteractionObject {
     return InteractionObject.newBuilder().setReal(value.toDouble()).build()
+  }
+
+  fun createRatio(value: List<Int>): InteractionObject {
+    return InteractionObject.newBuilder().setRatioExpression(
+      RatioExpression.newBuilder().addAllRatioComponent(value)
+    ).build()
   }
 }

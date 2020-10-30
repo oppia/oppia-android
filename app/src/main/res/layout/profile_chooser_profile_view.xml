@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:orientation="vertical"
-        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_8dp : @dimen/space_0dp}"
+        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}"
         app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_view_not_added_margin}">
 
         <TextView
