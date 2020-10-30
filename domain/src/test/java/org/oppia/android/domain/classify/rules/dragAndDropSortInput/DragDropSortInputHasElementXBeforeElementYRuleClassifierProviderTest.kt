@@ -25,10 +25,10 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
 
-  private val STRING_VALUE_TEST_1 =
+  private val STRING_VALUE_TEST_ORDER =
     InteractionObjectTestBuilder.createString(value = "test item 1")
 
-  private val STRING_VALUE_TEST_2 =
+  private val STRING_VALUE_TEST_TYPE =
     InteractionObjectTestBuilder.createString(value = "test item 2")
 
   private val STRING_VALUE_TEST_INVALID =
@@ -38,7 +38,9 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
     InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
 
   private val LIST_OF_SETS_OF_HTML_STRING_VALUE =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings()
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      InteractionObjectTestBuilder.createHtmlStringList()
+    )
 
   @Inject
   internal lateinit var dragDropSortInputHasElementXBeforeElementYClassifierProvider:
@@ -76,7 +78,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   fun testAnswer_nonNegativeInput_testString_xInputWithIncorrectType_throwsException() {
     val inputs = mapOf(
       "x" to NON_NEGATIVE_VALUE_TEST_1,
-      "y" to STRING_VALUE_TEST_2
+      "y" to STRING_VALUE_TEST_TYPE
     )
 
     val exception = assertThrows(IllegalStateException::class) {
@@ -94,7 +96,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   @Test
   fun testAnswer_nonNegativeInput_testString_yInputWithIncorrectType_throwsException() {
     val inputs = mapOf(
-      "x" to STRING_VALUE_TEST_2,
+      "x" to STRING_VALUE_TEST_TYPE,
       "y" to NON_NEGATIVE_VALUE_TEST_1
     )
 
@@ -112,7 +114,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_testString_missingInputX_throwsException() {
-    val inputs = mapOf("y" to STRING_VALUE_TEST_2)
+    val inputs = mapOf("y" to STRING_VALUE_TEST_TYPE)
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXBeforeElementYRuleClassifier.matches(
@@ -128,7 +130,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_nonNegativeInput_missingInputY_throwsException() {
-    val inputs = mapOf("x" to STRING_VALUE_TEST_2)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_TYPE)
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXBeforeElementYRuleClassifier.matches(
@@ -144,7 +146,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_bothInputsMissing_throwsException() {
-    val inputs = mapOf("z" to STRING_VALUE_TEST_2)
+    val inputs = mapOf("z" to STRING_VALUE_TEST_TYPE)
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXBeforeElementYRuleClassifier.matches(
@@ -161,8 +163,8 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   @Test
   fun testAnswer_elementXAfterElementY_orderedIncorrectly() {
     val inputs = mapOf(
-      "x" to STRING_VALUE_TEST_2,
-      "y" to STRING_VALUE_TEST_1
+      "x" to STRING_VALUE_TEST_TYPE,
+      "y" to STRING_VALUE_TEST_ORDER
     )
 
     val matches =
@@ -178,7 +180,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   fun testAnswer_elementX_invalidElementY_orderedIncorrectly() {
     val inputs = mapOf(
       "y" to STRING_VALUE_TEST_INVALID,
-      "x" to STRING_VALUE_TEST_2
+      "x" to STRING_VALUE_TEST_TYPE
     )
 
     val matches =
@@ -193,8 +195,8 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   @Test
   fun testAnswer_elementXBeforeElementY_orderedCorrectly() {
     val inputs = mapOf(
-      "x" to STRING_VALUE_TEST_1,
-      "y" to STRING_VALUE_TEST_2
+      "x" to STRING_VALUE_TEST_ORDER,
+      "y" to STRING_VALUE_TEST_TYPE
     )
 
     val matches =

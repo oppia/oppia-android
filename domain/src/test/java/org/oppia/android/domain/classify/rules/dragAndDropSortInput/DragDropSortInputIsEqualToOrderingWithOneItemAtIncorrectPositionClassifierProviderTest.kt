@@ -44,16 +44,26 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
     InteractionObjectTestBuilder.createListOf("item 3")
 
   private val LIST_OF_SETS_AB_2_3 =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(SET_ITEM_A_B, SET_ITEM_2, SET_ITEM_3)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_A_B, SET_ITEM_2, SET_ITEM_3)
+    )
 
   private val LIST_OF_SETS_ABC_2_3 =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(SET_ITEM_A_B_C, SET_ITEM_2, SET_ITEM_3)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_A_B_C, SET_ITEM_2, SET_ITEM_3)
+    )
 
   private val LIST_OF_SETS_2_3_AB =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(SET_ITEM_2, SET_ITEM_3, SET_ITEM_A_B)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      InteractionObjectTestBuilder.createHtmlStringList(
+        InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_2, SET_ITEM_3, SET_ITEM_A_B)
+      )
+    )
 
   private val LIST_OF_SETS_A_2_3 =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(SET_ITEM_A, SET_ITEM_2, SET_ITEM_3)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_A, SET_ITEM_2, SET_ITEM_3)
+    )
 
   @Inject
   internal lateinit var dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider: // ktlint-disable max-line-length

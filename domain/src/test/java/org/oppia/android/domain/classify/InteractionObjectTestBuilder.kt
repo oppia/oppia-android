@@ -3,6 +3,7 @@ package org.oppia.android.domain.classify
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.StringList
 
 /**
@@ -19,15 +20,17 @@ object InteractionObjectTestBuilder {
     return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
-  fun createListOfSetsOfHtmlStrings(vararg items: List<String>): InteractionObject {
+  fun createListOfSetsOfHtmlStrings(listOfStringList: List<StringList>): InteractionObject {
     val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
-      .addAllSetOfHtmlStrings(items.map { createHtmlStringList(it) })
+      .addAllSetOfHtmlStrings(
+        listOfStringList
+      )
       .build()
 
     return InteractionObject.newBuilder().setListOfSetsOfHtmlString(listOfSetsOfHtmlStrings).build()
   }
 
-  fun createHtmlStringList(vararg items: List<String>): StringList {
+  fun createHtmlStringList(vararg items: String): StringList {
     return StringList.newBuilder().addAllHtml(items.toList()).build()
   }
 
@@ -90,4 +93,9 @@ object InteractionObjectTestBuilder {
     return InteractionObject.newBuilder().setListOf(items.toString()).build()
   }
 
+  fun createRatio(value: List<Int>): InteractionObject {
+    return InteractionObject.newBuilder().setRatioExpression(
+      RatioExpression.newBuilder().addAllRatioComponent(value)
+    ).build()
+  }
 }

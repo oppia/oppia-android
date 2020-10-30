@@ -41,19 +41,33 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     InteractionObjectTestBuilder.createListOf("item invalid a", "item invalid b")
 
   private val LIST_OF_SETS_1_2_3 =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(SET_ITEM_A_B, SET_ITEM_2, SET_ITEM_3)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_A_B, SET_ITEM_2, SET_ITEM_3)
+    )
 
   private val LIST_OF_SETS_2_1_3 =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(SET_ITEM_2, SET_ITEM_A_B, SET_ITEM_3)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_2, SET_ITEM_A_B, SET_ITEM_3)
+    )
 
   private val LIST_OF_SETS_2_4_3 =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(SET_ITEM_2, SET_ITEM_INVALID_A_B, SET_ITEM_3)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      InteractionObjectTestBuilder.createHtmlStringList(
+        SET_ITEM_2,
+        SET_ITEM_INVALID_A_B,
+        SET_ITEM_3
+      )
+    )
 
   private val LIST_OF_SETS_2_1 =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(SET_ITEM_2, SET_ITEM_A_B)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_2, SET_ITEM_A_B)
+    )
 
   private val LIST_OF_SETS_A_2_3 =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(SET_ITEM_A, SET_ITEM_2, SET_ITEM_3)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_A, SET_ITEM_2, SET_ITEM_3)
+    )
 
   @Inject
   internal lateinit var dragDropSortInputIsEqualToOrderingClassifierProvider:
@@ -73,7 +87,10 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     val inputs = mapOf("x" to LIST_OF_SETS_1_2_3)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_1_2_3, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_1_2_3,
+        inputs = inputs
+      )
 
     assertThat(matches).isTrue()
   }
@@ -83,7 +100,10 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     val inputs = mapOf("x" to LIST_OF_SETS_2_1_3)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_1_2_3, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_1_2_3,
+        inputs = inputs
+      )
 
     assertThat(matches).isFalse()
   }
@@ -93,7 +113,10 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     val inputs = mapOf("x" to LIST_OF_SETS_2_4_3)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_1_2_3, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_1_2_3,
+        inputs = inputs
+      )
 
     assertThat(matches).isFalse()
   }
@@ -103,7 +126,10 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     val inputs = mapOf("x" to LIST_OF_SETS_2_1)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_1_2_3, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_1_2_3,
+        inputs = inputs
+      )
 
     assertThat(matches).isFalse()
   }
@@ -113,7 +139,10 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     val inputs = mapOf("x" to LIST_OF_SETS_A_2_3)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_1_2_3, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_1_2_3,
+        inputs = inputs
+      )
 
     assertThat(matches).isFalse()
   }
@@ -123,7 +152,10 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     val inputs = mapOf("y" to LIST_OF_SETS_1_2_3)
 
     val exception = assertThrows(IllegalStateException::class) {
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_1_2_3, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_1_2_3,
+        inputs = inputs
+      )
     }
 
     assertThat(exception)
