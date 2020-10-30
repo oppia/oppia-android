@@ -165,7 +165,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_readingTextSize_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
-      resultDataIntent.putExtra(KEY_MESSAGE_READING_TEXT_SIZE, "Large")
+      resultDataIntent.putExtra(MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY, "Large")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
 
       val activityMonitor = getInstrumentation().addMonitor(
@@ -199,7 +199,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_audioLanguage_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
-      resultDataIntent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, "French")
+      resultDataIntent.putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
 
       val activityMonitor = getInstrumentation().addMonitor(
@@ -233,7 +233,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_appLanguage_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
-      resultDataIntent.putExtra(KEY_MESSAGE_APP_LANGUAGE, "French")
+      resultDataIntent.putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
 
       val activityMonitor = getInstrumentation().addMonitor(

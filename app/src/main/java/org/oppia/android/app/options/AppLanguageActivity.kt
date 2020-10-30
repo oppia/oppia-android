@@ -16,9 +16,9 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    prefKey = intent.getStringExtra(KEY_APP_LANGUAGE_PREFERENCE_TITLE)
+    prefKey = intent.getStringExtra(APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY)
     prefSummaryValue = if (savedInstanceState == null) {
-      intent.getStringExtra(KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
+      intent.getStringExtra(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY)
     } else {
       savedInstanceState.get(KEY_SELECTED_LANGUAGE) as String
     }
@@ -26,10 +26,12 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    internal const val KEY_APP_LANGUAGE_PREFERENCE_TITLE = "APP_LANGUAGE_PREFERENCE"
-    internal const val KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
-      "APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
+    internal const val APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY =
+      "AppLanguageActivity.app_language_preference_title"
+    internal const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
+      "AppLanguageActivity.app_language_preference_summary_value"
     internal const val KEY_SELECTED_LANGUAGE = "SELECTED_LANGUAGE"
+
     /** Returns a new [Intent] to route to [AppLanguageActivity]. */
     fun createAppLanguageActivityIntent(
       context: Context,
@@ -37,8 +39,8 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
       summaryValue: String?
     ): Intent {
       val intent = Intent(context, AppLanguageActivity::class.java)
-      intent.putExtra(KEY_APP_LANGUAGE_PREFERENCE_TITLE, prefKey)
-      intent.putExtra(KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE, summaryValue)
+      intent.putExtra(APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY, prefKey)
+      intent.putExtra(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY, summaryValue)
       return intent
     }
   }
@@ -46,7 +48,7 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
   override fun onBackPressed() {
     val message = appLanguageActivityPresenter.getLanguageSelected()
     val intent = Intent()
-    intent.putExtra(KEY_MESSAGE_APP_LANGUAGE, message)
+    intent.putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, message)
     setResult(REQUEST_CODE_APP_LANGUAGE, intent)
     finish()
   }
