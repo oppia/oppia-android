@@ -30,6 +30,8 @@
     android:orientation="vertical"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
+    app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_margin : @dimen/space_28dp}"
+    app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_24dp}"
     app:layout_constraintTop_toTopOf="parent">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -76,7 +78,7 @@
       android:id="@+id/profile_is_admin_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/space_12dp"
+      android:layout_marginTop="@dimen/space_0dp"
       android:fontFamily="sans-serif-light"
       android:gravity="center"
       android:text="@string/profile_chooser_admin"
