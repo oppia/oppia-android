@@ -11,6 +11,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createReal
 import org.oppia.android.domain.util.FLOAT_EQUALITY_INTERVAL
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -77,13 +78,13 @@ class NumericInputEqualsRuleClassifierProviderTest {
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valuesInRange_bothValuesMatch() {
     val inputs = mapOf(
-      "x" to InteractionObjectTestBuilder.createReal(
+      "x" to createReal(
         value = 5 * FLOAT_EQUALITY_INTERVAL
       )
     )
 
     val matches = inputEqualsRuleClassifier.matches(
-      answer = InteractionObjectTestBuilder.createReal(value = 5 * FLOAT_EQUALITY_INTERVAL + FLOAT_EQUALITY_INTERVAL / 10),
+      answer = createReal(value = 5 * FLOAT_EQUALITY_INTERVAL + FLOAT_EQUALITY_INTERVAL / 10),
       inputs = inputs
     )
 
@@ -123,13 +124,13 @@ class NumericInputEqualsRuleClassifierProviderTest {
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valueAtRange_valuesDoNotMatch() {
     val inputs = mapOf(
-      "x" to InteractionObjectTestBuilder.createReal(
+      "x" to createReal(
         value = 5 * FLOAT_EQUALITY_INTERVAL
       )
     )
 
     val matches = inputEqualsRuleClassifier.matches(
-      answer = InteractionObjectTestBuilder.createReal(value = 6 * FLOAT_EQUALITY_INTERVAL),
+      answer = createReal(value = 6 * FLOAT_EQUALITY_INTERVAL),
       inputs = inputs
     )
 
