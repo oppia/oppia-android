@@ -93,8 +93,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testFractionInputNumberWithUnits_testFractionAnsNumberWithUnits_withDiffUnits_bothDoNotMatch
-  () {
+  fun testFractionInputNumWithUnits_testFractionAnsNumWithUnits_withDiffUnits_bothDoNotMatch() {
     val inputs = mapOf("f" to INPUT_TEST_NUMBER_WITH_UNITS)
 
     val matches =
@@ -107,8 +106,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testFractionInputNumberWithUnits_testFractionAnsNumberWithUnits_inDiffOrder_bothValuesMatch
-  () {
+  fun testFractionInputNumWithUnits_testFractionAnsNumWithUnits_inDiffOrder_bothValuesMatch() {
     val inputs = mapOf("f" to INPUT_TEST_NUMBER_WITH_UNITS)
 
     val matches =
@@ -121,8 +119,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testFractionInputNumberWithUnits_testFractionAnsNumberWithUnits_inSameOrder_bothValuesMatch
-  () {
+  fun testFractionInputNumWithUnits_testFractionAnsNumWithUnits_inSameOrder_bothValuesMatch() {
     val inputs = mapOf("f" to ANSWER_TEST_NUMBER_WITH_UNITS)
 
     val matches =
