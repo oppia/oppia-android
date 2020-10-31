@@ -35,6 +35,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -57,6 +58,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -85,6 +87,9 @@ class ProfileEditActivityTest {
   lateinit var context: Context
 
   @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
@@ -94,17 +99,37 @@ class ProfileEditActivityTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testProfileEditActivity_updateName_checkNewNameDisplayed() {
+    profileManagementController.updateName(
+      ProfileId.newBuilder().setInternalId(1).build(),
+      newName = "Akshay"
+    )
+    ActivityScenario.launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context,
+        1
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Akshay"))))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Akshay")))
+    }
   }
 
   @Test

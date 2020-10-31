@@ -26,7 +26,6 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -57,6 +56,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -91,6 +91,9 @@ class ProfileRenameActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
+
   @Before
   fun setUp() {
     Intents.init()
@@ -109,9 +112,7 @@ class ProfileRenameActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileRenameActivityTest
-  @Ignore
-  fun testProfileRenameActivity_inputNewName_clickSave_checkNameIsSaved() {
+  fun testProfileRenameActivity_inputNewName_clickSave_checkProfileEditActivityIsOpen() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context,
@@ -124,9 +125,10 @@ class ProfileRenameActivityTest {
           isDescendantOfA(withId(R.id.input_name))
         )
       ).perform(typeText("James"))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileEditActivity::class.java.name))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("James")))
     }
   }
 
@@ -177,8 +179,6 @@ class ProfileRenameActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileRenameActivityTest
-  @Ignore
   fun testProfileRenameActivity_inputOldName_clickSave_checkNameNotUniqueError() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
@@ -191,8 +191,9 @@ class ProfileRenameActivityTest {
           withId(R.id.input),
           isDescendantOfA(withId(R.id.input_name))
         )
-      ).perform(typeText("Admin"))
+      ).perform(editTextInputAction.appendText("Admin"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.error_text),
@@ -203,8 +204,6 @@ class ProfileRenameActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileRenameActivityTest
-  @Ignore
   fun testProfileRenameActivity_inputOldName_clickSave_inputName_checkErrorIsCleared() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
@@ -217,14 +216,15 @@ class ProfileRenameActivityTest {
           withId(R.id.input),
           isDescendantOfA(withId(R.id.input_name))
         )
-      ).perform(typeText("Admin"))
+      ).perform(editTextInputAction.appendText("Admin"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.input),
           isDescendantOfA(withId(R.id.input_name))
         )
-      ).perform(typeText(" "))
+      ).perform(editTextInputAction.appendText(" "))
       onView(
         allOf(
           withId(R.id.error_text),
@@ -261,8 +261,6 @@ class ProfileRenameActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileRenameActivityTest
-  @Ignore
   fun testProfileRenameActivity_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
@@ -284,7 +282,7 @@ class ProfileRenameActivityTest {
           withId(R.id.input),
           isDescendantOfA(withId(R.id.input_name))
         )
-      ).perform(typeText(" "))
+      ).perform(editTextInputAction.appendText(" "))
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
@@ -319,8 +317,6 @@ class ProfileRenameActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileRenameActivityTest
-  @Ignore
   fun testProfileRenameActivity_inputOldName_clickSave_changeConfiguration_errorIsVisible() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
