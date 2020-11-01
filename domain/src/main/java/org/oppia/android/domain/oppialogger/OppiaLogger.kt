@@ -2,12 +2,16 @@ package org.oppia.android.domain.oppialogger
 
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.EventAction
+import org.oppia.android.app.model.ExceptionLog
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
 /** Logger that handles event logging. */
 class OppiaLogger @Inject constructor(
-  private val analyticsController: AnalyticsController
+  private val analyticsController: AnalyticsController,
+  private val exceptionController: ExceptionsController
 ) {
   /** Logs transition events. See [AnalyticsController.logTransitionEvent] for more context. */
   fun logTransitionEvent(
@@ -113,5 +117,16 @@ class OppiaLogger @Inject constructor(
           .build()
       )
       .build()
+  }
+
+  //Exception Controller
+  /**Logs non-fatal exception. See [ExceptionsController.logNonFatalException] for more context.*/
+  fun logNonFatalException(exception: Exception, timestampInMillis: Long) {
+    exceptionController.logNonFatalException(exception, timestampInMillis)
+  }
+
+  /**Logs exception. See [ExceptionsController.logNonFatalException] for more context.*/
+  fun logFatalException(exception: Exception, timestampInMillis: Long) {
+    exceptionController.logFatalException(exception, timestampInMillis)
   }
 }

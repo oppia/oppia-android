@@ -3,6 +3,7 @@ package org.oppia.android.domain.exploration
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -23,7 +24,7 @@ class ExplorationDataController @Inject constructor(
   private val explorationProgressController: ExplorationProgressController,
   private val explorationRetriever: ExplorationRetriever,
   private val dataProviders: DataProviders,
-  private val exceptionsController: ExceptionsController,
+  private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock
 ) {
   /** Returns an [Exploration] given an ID. */
@@ -51,7 +52,7 @@ class ExplorationDataController @Inject constructor(
       explorationProgressController.beginExplorationAsync(explorationId)
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      oppiaLogger.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -65,7 +66,7 @@ class ExplorationDataController @Inject constructor(
       explorationProgressController.finishExplorationAsync()
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      oppiaLogger.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -76,7 +77,7 @@ class ExplorationDataController @Inject constructor(
     return try {
       AsyncResult.success(explorationRetriever.loadExploration(explorationId))
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      oppiaLogger.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       AsyncResult.failed(e)
     }
   }
