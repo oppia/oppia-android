@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -22,6 +22,30 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class TextInputFuzzyEqualsRuleClassifierProviderTest {
+
+  private val STRING_ANSWER_UPPERCASE =
+    InteractionObjectTestBuilder.createString(value = "TEST")
+  private val STRING_INPUT_UPPERCASE =
+    InteractionObjectTestBuilder.createString(value = "TEST")
+  private val STRING_INPUT_LOWERCASE =
+    InteractionObjectTestBuilder.createString(value = "test")
+  private val STRING_ANSWER_LOWERCASE =
+    InteractionObjectTestBuilder.createString(value = "test")
+  private val STRING_ANSWER_DIFF_LOWERCASE =
+    InteractionObjectTestBuilder.createString(value = "diff")
+  private val STRING_INPUT_DIFF_LOWERCASE =
+    InteractionObjectTestBuilder.createString(value = "diff")
+  private val STRING_INPUT_DIFF_UPPERCASE =
+    InteractionObjectTestBuilder.createString(value = "DIFF")
+  private val STRING_FUZZY_INPUT =
+    InteractionObjectTestBuilder.createString(value = "This Is a TesT")
+  private val STRING_ANSWER =
+    InteractionObjectTestBuilder.createString(value = "this is a test")
+  private val STRING_WITH_WHITESPACE =
+    InteractionObjectTestBuilder.createString(value = "  test   ")
+  private val NON_NEGATIVE_VALUE =
+    InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
+
   @Inject
   internal lateinit var textInputFuzzyEqualsRuleClassifierProvider:
     TextInputFuzzyEqualsRuleClassifierProvider
@@ -29,18 +53,6 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
   private val inputFuzzyEqualsRuleClassifier by lazy {
     textInputFuzzyEqualsRuleClassifierProvider.createRuleClassifier()
   }
-
-  private val STRING_ANSWER_UPPERCASE = createString(value = "TEST")
-  private val STRING_INPUT_UPPERCASE = createString(value = "TEST")
-  private val STRING_INPUT_LOWERCASE = createString(value = "test")
-  private val STRING_ANSWER_LOWERCASE = createString(value = "test")
-  private val STRING_ANSWER_DIFF_LOWERCASE = createString(value = "diff")
-  private val STRING_INPUT_DIFF_LOWERCASE = createString(value = "diff")
-  private val STRING_INPUT_DIFF_UPPERCASE = createString(value = "DIFF")
-  private val STRING_FUZZY_INPUT = createString(value = "This Is a TesT")
-  private val STRING_ANSWER = createString(value = "this is a test")
-  private val STRING_WITH_WHITESPACE = createString(value = "  test   ")
-  private val NON_NEGATIVE_VALUE = createNonNegativeInt(value = 1)
 
   @Before
   fun setUp() {
@@ -169,14 +181,6 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
   }
 
   private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
