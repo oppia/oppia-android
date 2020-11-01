@@ -2,10 +2,8 @@ package org.oppia.android.domain.oppialogger
 
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.EventAction
-import org.oppia.android.app.model.ExceptionLog
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
 /** Logger that handles event logging. */
@@ -119,7 +117,7 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  //Exception Controller
+  // Exception Controller
   /**Logs non-fatal exception. See [ExceptionsController.logNonFatalException] for more context.*/
   fun logNonFatalException(exception: Exception, timestampInMillis: Long) {
     exceptionController.logNonFatalException(exception, timestampInMillis)
