@@ -106,7 +106,6 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
       .inject(this)
   }
 
-
   // TODO(#89): Move to a common test library.
   private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
     try {
