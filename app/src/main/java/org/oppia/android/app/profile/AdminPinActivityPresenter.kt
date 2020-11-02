@@ -121,6 +121,7 @@ class AdminPinActivityPresenter @Inject constructor(
                     context, activity.intent.getIntExtra(KEY_ADMIN_PIN_PROFILE_ID, -1)
                   )
                 )
+                activity.finish()
               }
               AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
                 activity.startActivity(
@@ -131,6 +132,7 @@ class AdminPinActivityPresenter @Inject constructor(
                     )
                   )
                 )
+                activity.finish()
               }
             }
           }
