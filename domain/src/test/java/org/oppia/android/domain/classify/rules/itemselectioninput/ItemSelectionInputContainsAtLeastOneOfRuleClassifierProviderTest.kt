@@ -2,11 +2,7 @@ package org.oppia.android.domain.classify.rules.itemselectioninput
 
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.StringList
-import org.oppia.android.domain.classify.RuleClassifier
-import org.oppia.android.domain.classify.rules.GenericRuleClassifier
-import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import javax.inject.Inject
-
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -16,17 +12,9 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.domain.classify.RuleClassifier
-import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputEqualsRuleClassifierProviderTest
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 
 /** Tests for [ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
