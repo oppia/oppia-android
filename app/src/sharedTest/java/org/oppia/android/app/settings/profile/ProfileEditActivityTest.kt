@@ -162,8 +162,6 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
   fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_checkUserInfoIsDisplayed() { // ktlint-disable max-line-length
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
@@ -230,8 +228,6 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
   fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickResetPin_checkOpensProfileResetPinActivity() { // ktlint-disable max-line-length
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
@@ -239,8 +235,8 @@ class ProfileEditActivityTest {
         1
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_reset_button)).perform(scrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileResetPinActivity::class.java.name))
@@ -256,7 +252,7 @@ class ProfileEditActivityTest {
       )
     ).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
-      onView(withText(context.getString(R.string.profile_edit_delete_dialog_message)))
+      onView(withText(R.string.profile_edit_delete_dialog_message))
         .inRoot(isDialog())
         .check(
           matches(
@@ -267,8 +263,6 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
   fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() { // ktlint-disable max-line-length
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
@@ -280,7 +274,7 @@ class ProfileEditActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.profile_edit_delete_dialog_message)))
+      onView(withText(R.string.profile_edit_delete_dialog_message))
         .inRoot(isDialog())
         .check(
           matches(
@@ -299,7 +293,7 @@ class ProfileEditActivityTest {
       )
     ).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
-      onView(withText(context.getString(R.string.profile_edit_delete_dialog_positive)))
+      onView(withText(R.string.profile_edit_delete_dialog_positive))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -308,8 +302,6 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
   fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton_clickDelete_checkReturnsToProfileListActivity() { // ktlint-disable max-line-length
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
@@ -320,8 +312,11 @@ class ProfileEditActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
-      onView(withText(context.getString(R.string.profile_edit_delete_dialog_positive)))
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_positive))
+        .inRoot(isDialog())
         .perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileListActivity::class.java.name))
     }
   }
