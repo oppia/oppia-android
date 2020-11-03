@@ -45,13 +45,13 @@
       android:layout_height="wrap_content"
       android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
       android:orientation="@{hasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
-      app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_20dp}"
-      app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_20dp}"
+      app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/profile_view_not_added_margin}"
+      app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/profile_view_not_added_margin}"
       app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? + @dimen/space_0dp : @dimen/space_24dp}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/blank_space">
-
+    
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_add_button"
         android:layout_width="72dp"
@@ -65,8 +65,8 @@
         android:layout_height="wrap_content"
         android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:orientation="vertical"
-        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
-        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_8dp : @dimen/space_0dp}">
+        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}"
+        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}">
 
         <TextView
           android:id="@+id/add_profile_text"
