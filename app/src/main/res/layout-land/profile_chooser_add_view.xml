@@ -13,8 +13,7 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_constraintHorizontal_chainStyle="packed">
+    android:layout_height="wrap_content">
 
     <View
       android:id="@+id/add_profile_divider_view"
@@ -22,9 +21,7 @@
       android:layout_height="match_parent"
       android:background="@color/oppiaProfileChooserDivider"
       android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
-      app:layout_constraintEnd_toStartOf="@+id/add_profile_item"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
       android:id="@+id/add_profile_item"
