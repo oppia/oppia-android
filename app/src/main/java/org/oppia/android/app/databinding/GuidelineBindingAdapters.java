@@ -17,7 +17,7 @@ public final class GuidelineBindingAdapters {
     guideline.setLayoutParams(params);
   }
 
-  /** Binding adapter for setting the `guideEnd` for a [Guideline]*/
+  /** Binding adapter for setting the `guideEnd` for a [Guideline]. */
   @BindingAdapter("app:layout_constraintGuide_end")
   public static void setConstraintGuidelineEnd(@NonNull Guideline guideline, float guideEndPx) {
     ConstraintLayout.LayoutParams params =

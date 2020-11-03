@@ -30,4 +30,3 @@ public final class ConstraintLayoutAdapters {
     constraintSet.applyTo(constraintLayout);
   }
 }
-
