@@ -778,44 +778,40 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withInputtedTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_ratio_input_interaction_view))
-      .perform(
-        typeText(
-          "1::2"
-        )
-      )
-    onView(withId(R.id.ratio_input_error))
-      .check(
-        matches(
-          withText(
-            R.string.ratio_error_invalid_colons
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      onView(withId(R.id.test_ratio_input_interaction_view))
+        .perform(
+          typeText(
+            "1::2"
           )
         )
-      )
-  }
-
-  @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
-  fun testRatioInputInteractionView_withInputtedSpacesBetweenComponents_hasCorrectPendingAnswer() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_ratio_input_interaction_view))
-      .perform(
-        typeText(
-          "1   : 2 : 3 : 4 "
+      onView(withId(R.id.ratio_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.ratio_error_invalid_colons
+            )
+          )
         )
-      )
-    onView(withId(R.id.test_ratio_input_interaction_view)).check(matches(isDisplayed()))
-      .check(matches(withText("1:2:3:4")))
+    }
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
+  fun testRatioInputInteractionView_withInputtedSpacesBetweenComponents_hasCorrectPendingAnswer() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      onView(withId(R.id.test_ratio_input_interaction_view))
+        .perform(
+          typeText(
+            "1   : 2 : 3 : 4 "
+          )
+        )
+      onView(withId(R.id.test_ratio_input_interaction_view)).check(matches(isDisplayed()))
+        .check(matches(withText("1:2:3:4")))
+    }
+  }
+
+  @Test
   fun testRatioInputInteractionView_withInputtedNegativeRatio_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
