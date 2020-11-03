@@ -235,9 +235,7 @@ class ProfileEditActivityTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_reset_button)).perform(scrollTo()).perform(click())
-      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileResetPinActivity::class.java.name))
     }
   }
@@ -269,7 +267,6 @@ class ProfileEditActivityTest {
         1
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -308,10 +305,8 @@ class ProfileEditActivityTest {
         1
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
-      testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_dialog_positive))
         .inRoot(isDialog())
         .perform(click())

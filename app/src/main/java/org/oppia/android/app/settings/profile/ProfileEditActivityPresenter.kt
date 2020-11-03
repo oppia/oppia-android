@@ -21,8 +21,9 @@ class ProfileEditActivityPresenter @Inject constructor(
   private val logger: ConsoleLogger,
   private val profileManagementController: ProfileManagementController
 ) {
+
   @Inject
-  lateinit var editViewModel: ProfileEditViewModel
+  lateinit var profileEditViewModel: ProfileEditViewModel
 
   fun handleOnCreate() {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -33,12 +34,10 @@ class ProfileEditActivityPresenter @Inject constructor(
       R.layout.profile_edit_activity
     )
     val profileId = activity.intent.getIntExtra(KEY_PROFILE_EDIT_PROFILE_ID, 0)
-    editViewModel.setProfileId(
-      profileId
-    )
+    profileEditViewModel.setProfileId(profileId)
 
     binding.apply {
-      viewModel = editViewModel
+      viewModel = profileEditViewModel
       lifecycleOwner = activity
     }
 
@@ -51,7 +50,7 @@ class ProfileEditActivityPresenter @Inject constructor(
         ProfileResetPinActivity.createProfileResetPinActivity(
           activity,
           profileId,
-          editViewModel.isAdmin
+          profileEditViewModel.isAdmin
         )
       )
     }
@@ -60,16 +59,14 @@ class ProfileEditActivityPresenter @Inject constructor(
       showDeletionDialog(profileId)
     }
 
-    editViewModel.profile.observe(
-      activity,
-      Observer {
+    profileEditViewModel.profile.observe(
+      activity, Observer {
         activity.title = it.name
       }
     )
 
-    editViewModel.isAllowedDownloadAccess.observe(
-      activity,
-      Observer {
+    profileEditViewModel.isAllowedDownloadAccess.observe(
+      activity, Observer {
         binding.profileEditAllowDownloadSwitch.isChecked = it
       }
     )
