@@ -60,13 +60,15 @@ class ProfileEditActivityPresenter @Inject constructor(
     }
 
     profileEditViewModel.profile.observe(
-      activity, Observer {
+      activity,
+      Observer {
         activity.title = it.name
       }
     )
 
     profileEditViewModel.isAllowedDownloadAccess.observe(
-      activity, Observer {
+      activity,
+      Observer {
         binding.profileEditAllowDownloadSwitch.isChecked = it
       }
     )
