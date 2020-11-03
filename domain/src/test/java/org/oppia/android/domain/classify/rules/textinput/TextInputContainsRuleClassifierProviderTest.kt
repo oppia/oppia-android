@@ -24,7 +24,7 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class TextInputContainsRuleClassifierProviderTest {
 
-  private val STRING_VALUE_WILL_BREAK =
+  private val STRING_VALUE_CONTAINS_ANSWER_TEXT =
     InteractionObjectTestBuilder.createString(value = "this is a test i will break")
   private val STRING_VALUE_AN_ANSWER =
     InteractionObjectTestBuilder.createString(value = "an answer")
@@ -164,7 +164,7 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringInput_answerPartiallyContainsInput_valuesDoNotMatch() {
-    val inputs = mapOf("x" to STRING_VALUE_WILL_BREAK)
+    val inputs = mapOf("x" to STRING_VALUE_CONTAINS_ANSWER_TEXT)
 
     val matches = inputContainsRuleClassifier.matches(
       answer = STRING_ANSWER,
