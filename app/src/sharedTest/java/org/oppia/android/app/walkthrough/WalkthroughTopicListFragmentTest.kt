@@ -1,6 +1,7 @@
 package org.oppia.android.app.walkthrough
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +21,6 @@ import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -53,6 +53,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -64,6 +65,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [WalkthroughTopicListFragment]. */
@@ -75,19 +77,28 @@ import javax.inject.Singleton
 )
 class WalkthroughTopicListFragmentTest {
 
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     Intents.init()
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
   private fun createWalkthroughActivityIntent(profileId: Int): Intent {
     return WalkthroughActivity.createWalkthroughActivityIntent(
-      ApplicationProvider.getApplicationContext(),
+      context,
       profileId
     )
   }
@@ -111,8 +122,6 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix WalkthroughTopicListFragmentTest
-  @Ignore
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -121,6 +130,7 @@ class WalkthroughTopicListFragmentTest {
           1
         )
       )
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
@@ -129,15 +139,13 @@ class WalkthroughTopicListFragmentTest {
         )
       ).check(
         matches(
-          withText(containsString("First Topic"))
+          withText(containsString("First Test Topic"))
         )
       )
     }
   }
 
   @Test
-  // TODO(#973): Fix WalkthroughTopicListFragmentTest
-  @Ignore
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_configurationChanged_topicNameIsCorrect() { // ktlint-disable max-line-length
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -147,6 +155,7 @@ class WalkthroughTopicListFragmentTest {
         )
       )
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
@@ -155,10 +164,14 @@ class WalkthroughTopicListFragmentTest {
         )
       ).check(
         matches(
-          withText(containsString("First Topic"))
+          withText(containsString("First Test Topic"))
         )
       )
     }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
