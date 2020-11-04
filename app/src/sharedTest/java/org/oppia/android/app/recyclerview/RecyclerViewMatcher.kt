@@ -124,7 +124,7 @@ class RecyclerViewMatcher {
         val spanCount = gridLayoutManager.spanCount
         if (spanCount != expectedColumnCount) {
           val errorMessage =
-            ("expected column count " + expectedColumnCount + " but was " + spanCount)
+            ("expected column count $expectedColumnCount but was $spanCount")
           throw AssertionError(errorMessage)
         }
       } else {
