@@ -34,6 +34,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -73,6 +74,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Tests for [ProfileEditActivityTest]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -112,7 +114,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEditActivity_startActivityWithAdminProfile_checkAdminInfoIsDisplayed() {
+  fun testProfileEdit_startWithAdminProfile_checkAdminInfoIsDisplayed() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -128,7 +130,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_configChange_startActivityWithAdminProfile_checkAdminInfoIsDisplayed() {
+  fun testProfileEdit_configChange_startWithAdminProfile_checkAdminInfoIsDisplayed() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -145,7 +147,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEditActivity_startActivityWithUserProfile_checkUserInfoIsDisplayed() {
+  fun testProfileEdit_startWithUserProfile_checkUserInfoIsDisplayed() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -161,7 +163,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_configChange_startActivityWithUserProfile_checkUserInfoIsDisplayed() {
+  fun testProfileEdit_configChange_startWithUserProfile_checkUserInfoIsDisplayed() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -316,7 +318,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEditActivity_startActivityWithUserHasDownloadAccess_checkSwitchIsChecked() {
+  fun testProfileEdit_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -337,7 +339,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_configChange_startActivityWithUserHasDownloadAccess_checkSwitchIsChecked() {
+  fun testProfileEdit_configChange_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
