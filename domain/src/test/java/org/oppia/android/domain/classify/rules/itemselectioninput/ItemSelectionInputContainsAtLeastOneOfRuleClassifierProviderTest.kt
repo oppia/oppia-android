@@ -1,8 +1,5 @@
 package org.oppia.android.domain.classify.rules.itemselectioninput
 
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.StringList
-import javax.inject.Inject
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -12,8 +9,11 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.StringList
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider]. */
@@ -22,8 +22,30 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 
 class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
-  private val ITEM_SELECTION_SET_2_LOWERCASE = createStringList(StringList.newBuilder().addHtml("test1").addHtml("test2").build())
-  private val ITEM_SELECTION_SET_2_UPPERCASE = createStringList(StringList.newBuilder().addHtml("TEST1").addHtml("TEST2").build())
+  private val ITEM_SELECTION_SET_5 = createStringList(
+    StringList.newBuilder()
+      .addHtml("test1")
+      .addHtml("test2")
+      .addHtml("test3")
+      .addHtml("test4")
+      .addHtml("test5")
+      .build()
+  )
+
+  private val ITEM_SELECTION_SET_SUBSET = createStringList(
+    StringList.newBuilder().addHtml("test1")
+      .build()
+  )
+
+  private val ITEM_SELECTION_SET_ONE_ELEMENT_PRESENT = createStringList(
+    StringList.newBuilder().addHtml("test1").addHtml("test6")
+      .build()
+  )
+
+  private val ITEM_SELECTION_SET_EXCLUSIVE = createStringList(
+    StringList.newBuilder().addHtml("test6")
+      .build()
+  )
 
   @Inject
   internal lateinit var itemSelectionInputContainsAtLeastOneOfRuleClassifierProvider:
@@ -39,11 +61,11 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_lowerCaseAnswer_lowerCaseInput_bothValuesMatch() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_2_LOWERCASE)
+  fun testItemSet_setAnswer_inputIsASubset_answerContainsInput() {
+    val inputs = mapOf("x" to ITEM_SELECTION_SET_SUBSET)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_2_LOWERCASE,
+      answer = ITEM_SELECTION_SET_5,
       inputs = inputs
     )
 
@@ -51,23 +73,11 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_lowerCaseAnswer_upperCaseInput_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_2_UPPERCASE)
+  fun testItemSet_setAnswer_inputHasOneElementInSet_answerContainsInput() {
+    val inputs = mapOf("x" to ITEM_SELECTION_SET_ONE_ELEMENT_PRESENT)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_2_LOWERCASE,
-      inputs = inputs
-    )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testEquals_upperCaseAnswer_upperCaseInput_bothValuesMatch() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_2_UPPERCASE)
-
-    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_2_UPPERCASE,
+      answer = ITEM_SELECTION_SET_5,
       inputs = inputs
     )
 
@@ -75,11 +85,11 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_upperCaseAnswer_lowerCaseInput_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_2_LOWERCASE)
+  fun testItemSet_setAnswer_inputIsExclusiveOfSet_answerDoesNotContainInput() {
+    val inputs = mapOf("x" to ITEM_SELECTION_SET_EXCLUSIVE)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_2_UPPERCASE,
+      answer = ITEM_SELECTION_SET_5,
       inputs = inputs
     )
 
@@ -91,7 +101,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest_TestApplicationComponent.builder()
+    DaggerItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
