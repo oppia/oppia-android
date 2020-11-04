@@ -21,10 +21,10 @@ class ProfileEditViewModel @Inject constructor(
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
 
-  private val _isAllowedDownloadAccess = MutableLiveData<Boolean>()
+  private val isAllowedDownloadAccessMutableLiveData = MutableLiveData<Boolean>()
 
   /** Specifies whether download access has been enabled by the user. */
-  val isAllowedDownloadAccess: LiveData<Boolean> = _isAllowedDownloadAccess
+  val isAllowedDownloadAccess: LiveData<Boolean> = isAllowedDownloadAccessMutableLiveData
 
   val profile: LiveData<Profile> by lazy {
     Transformations.map(
@@ -48,7 +48,7 @@ class ProfileEditViewModel @Inject constructor(
       )
     }
     val profile = profileResult.getOrDefault(Profile.getDefaultInstance())
-    _isAllowedDownloadAccess.value = profile.allowDownloadAccess
+    isAllowedDownloadAccessMutableLiveData.value = profile.allowDownloadAccess
     isAdmin = profile.isAdmin
     return profile
   }
