@@ -24,25 +24,25 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class TextInputContainsRuleClassifierProviderTest {
 
-  private val STRING_INPUT_CONTAINS_ANSWER =
+  private val STRING_VALUE_TEST_CONTAINS_ANSWER =
     InteractionObjectTestBuilder.createString(value = "this is a test i will break")
-  private val STRING_INPUT_AN_ANSWER =
+  private val STRING_VALUE_TEST_AN_ANSWER =
     InteractionObjectTestBuilder.createString(value = "an answer")
-  private val STRING_INPUT_A_TEST =
+  private val STRING_VALUE_TEST_A_TEST =
     InteractionObjectTestBuilder.createString(value = "a test")
-  private val STRING_INPUT_IS_A =
+  private val STRING_VALUE_TEST_IS_A =
     InteractionObjectTestBuilder.createString(value = "is a")
-  private val STRING_INPUT_THIS_IS =
+  private val STRING_VALUE_TEST_THIS_IS =
     InteractionObjectTestBuilder.createString(value = "this is")
-  private val STRING_INPUT_NULL =
+  private val STRING_VALUE_TEST_NULL =
     InteractionObjectTestBuilder.createString(value = "")
-  private val STRING_ANSWER_NULL =
+  private val STRING_VALUE_TEST_ANSWER_NULL =
     InteractionObjectTestBuilder.createString(value = "")
-  private val STRING_ANSWER =
+  private val STRING_VALUE_TEST_ANSWER =
     InteractionObjectTestBuilder.createString(value = "this is a test")
-  private val STRING_ANSWER_EXTRA_SPACE =
+  private val STRING_VALUE_TEST_EXTRA_SPACE =
     InteractionObjectTestBuilder.createString(value = " this   is  a  test ")
-  private val STRING_ANSWER_NO_SPACE =
+  private val STRING_VALUE_TEST_NO_SPACE =
     InteractionObjectTestBuilder.createString(value = "thisisatest")
   private val NON_NEGATIVE_VALUE_TEST_1 =
     InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
@@ -62,10 +62,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringInput_sameString_bothValuesMatch() {
-    val inputs = mapOf("x" to STRING_ANSWER)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_ANSWER)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = STRING_ANSWER,
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -74,20 +74,20 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testEmptyStringAnswer_emptyStringInput_answerContainsInput_bothValuesMatch() {
-    val inputs = mapOf("x" to STRING_INPUT_NULL)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_NULL)
 
     val matches =
-      inputContainsRuleClassifier.matches(answer = STRING_ANSWER_NULL, inputs = inputs)
+      inputContainsRuleClassifier.matches(answer =STRING_VALUE_TEST_ANSWER_NULL, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testNonEmptyStringAnswer_emptyStringInput_answerContainsInput_bothValuesMatch() {
-    val inputs = mapOf("x" to STRING_INPUT_NULL)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_NULL)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = STRING_ANSWER,
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -96,10 +96,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringInput_answerContainsInputAtBeginning_bothValuesMatch() {
-    val inputs = mapOf("x" to STRING_INPUT_THIS_IS)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_THIS_IS)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = STRING_ANSWER,
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -108,10 +108,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringInput_answerContainsInputInMiddle_bothValuesMatch() {
-    val inputs = mapOf("x" to STRING_INPUT_IS_A)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_IS_A)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = STRING_ANSWER,
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -120,10 +120,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringInput_answerContainsInputAtEnd_bothValuesMatch() {
-    val inputs = mapOf("x" to STRING_INPUT_A_TEST)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_A_TEST)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = STRING_ANSWER,
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -132,10 +132,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringExtraSpacesInput_answerContainsInput_bothValuesMatch() {
-    val inputs = mapOf("x" to STRING_ANSWER_EXTRA_SPACE)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_EXTRA_SPACE)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = STRING_ANSWER,
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -144,10 +144,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringInput_inputNotInAnswer_valuesDoNotMatch() {
-    val inputs = mapOf("x" to STRING_INPUT_AN_ANSWER)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = STRING_ANSWER,
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -156,20 +156,20 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testEmptyStringAnswer_nonEmptyStringInput_answerDoesNotContainInput_valuesDoNotMatch() {
-    val inputs = mapOf("x" to STRING_ANSWER)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_ANSWER)
 
     val matches =
-      inputContainsRuleClassifier.matches(answer = STRING_ANSWER_NULL, inputs = inputs)
+      inputContainsRuleClassifier.matches(answer =STRING_VALUE_TEST_ANSWER_NULL, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
 
   @Test
   fun testStringAnswer_stringInput_answerPartiallyContainsInput_valuesDoNotMatch() {
-    val inputs = mapOf("x" to STRING_INPUT_CONTAINS_ANSWER)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_CONTAINS_ANSWER)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = STRING_ANSWER,
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -178,10 +178,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringNoSpacesInput_answerPartiallyContainsInput_valuesDoNotMatch() {
-    val inputs = mapOf("x" to STRING_ANSWER_NO_SPACE)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_NO_SPACE)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = STRING_ANSWER,
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -190,11 +190,11 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_missingInput_throwsException() {
-    val inputs = mapOf("y" to STRING_ANSWER)
+    val inputs = mapOf("y" to STRING_VALUE_TEST_ANSWER)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputContainsRuleClassifier.matches(
-        answer = STRING_ANSWER,
+        answer = STRING_VALUE_TEST_ANSWER,
         inputs = inputs
       )
     }
@@ -210,7 +210,7 @@ class TextInputContainsRuleClassifierProviderTest {
 
     val exception = assertThrows(IllegalStateException::class) {
       inputContainsRuleClassifier.matches(
-        answer = STRING_ANSWER,
+        answer = STRING_VALUE_TEST_ANSWER,
         inputs = inputs
       )
     }

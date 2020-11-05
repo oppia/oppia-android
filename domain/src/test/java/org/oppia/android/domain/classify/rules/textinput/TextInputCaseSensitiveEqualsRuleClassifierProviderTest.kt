@@ -28,7 +28,7 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
     InteractionObjectTestBuilder.createString(value = "TEST")
   private val STRING_VALUE_TEST_LOWERCASE =
     InteractionObjectTestBuilder.createString(value = "test")
-  private val STRING_VALUE_RANDOM =
+  private val STRING_VALUE_TEST_RANDOM =
     InteractionObjectTestBuilder.createString(value = "random")
 
   @Inject
@@ -72,7 +72,7 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
 
   @Test
   fun testUppercaseStringAnswer_stringRandomInput_differentString_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to STRING_VALUE_RANDOM)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_RANDOM)
 
     val matches =
       inputCaseSensitiveEqualsRuleClassifier.matches(
