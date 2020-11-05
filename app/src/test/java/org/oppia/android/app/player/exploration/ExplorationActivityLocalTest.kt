@@ -94,8 +94,6 @@ class ExplorationActivityLocalTest {
   }
 
   @Test
-  // TODO(#973): Fix ExplorationActivityLocalTest
-
   fun testExploration_onLaunch_logsEvent() {
     getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(
