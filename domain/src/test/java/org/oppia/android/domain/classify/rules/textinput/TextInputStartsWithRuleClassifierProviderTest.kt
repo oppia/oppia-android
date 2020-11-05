@@ -38,9 +38,9 @@ class TextInputStartsWithRuleClassifierProviderTest {
     InteractionObjectTestBuilder.createString("TESTSTRING")
   private val STRING_VALUE_TEST_UPPERCASE =
     InteractionObjectTestBuilder.createString("TEST")
-  private val EMPTY_STRING =
+  private val STRING_VALUE_TEST_NULL =
     InteractionObjectTestBuilder.createString(value = "")
-  private val NON_NEGATIVE_INT =
+  private val NON_NEGATIVE_TEST_VALUE_1 =
     InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
 
   @Inject
@@ -130,7 +130,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testLowercaseStringAns_emptyStringInput_differentStrings_verifyAnsStartsWith() {
-    val inputs = mapOf("x" to EMPTY_STRING)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_NULL)
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TESTSTRING_LOWERCASE,
@@ -166,7 +166,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testUppercaseStringAns_emptyStringInput_differentStrings_verifyAnsStartWith() {
-    val inputs = mapOf("x" to EMPTY_STRING)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_NULL)
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TESTSTRING_UPPERCASE,
@@ -181,7 +181,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TESTSTRING_LOWERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = EMPTY_STRING,
+      answer = STRING_VALUE_TEST_NULL,
       inputs = inputs
     )
 
@@ -190,10 +190,10 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testEmptyStringAns_emptyStringInput_exactSameStrings_verifyAnsStartsWith() {
-    val inputs = mapOf("x" to EMPTY_STRING)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_NULL)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = EMPTY_STRING,
+      answer = STRING_VALUE_TEST_NULL,
       inputs = inputs
     )
 
@@ -218,7 +218,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testStringAns_nonNegativeIntInput_throwsException() {
-    val inputs = mapOf("x" to NON_NEGATIVE_INT)
+    val inputs = mapOf("x" to NON_NEGATIVE_TEST_VALUE_1)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputStartsWithRuleClassifier.matches(

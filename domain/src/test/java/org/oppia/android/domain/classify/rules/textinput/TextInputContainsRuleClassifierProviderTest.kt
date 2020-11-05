@@ -77,7 +77,7 @@ class TextInputContainsRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TEST_NULL)
 
     val matches =
-      inputContainsRuleClassifier.matches(answer =STRING_VALUE_TEST_ANSWER_NULL, inputs = inputs)
+      inputContainsRuleClassifier.matches(answer = STRING_VALUE_TEST_ANSWER_NULL, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
@@ -159,7 +159,7 @@ class TextInputContainsRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TEST_ANSWER)
 
     val matches =
-      inputContainsRuleClassifier.matches(answer =STRING_VALUE_TEST_ANSWER_NULL, inputs = inputs)
+      inputContainsRuleClassifier.matches(answer = STRING_VALUE_TEST_ANSWER_NULL, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
