@@ -16,31 +16,28 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -103,6 +100,13 @@ import javax.inject.Singleton
 )
 class AdministratorControlsActivityTest {
 
+  @get:Rule
+  var activityTestRule: ActivityTestRule<AdministratorControlsActivity> = ActivityTestRule(
+    AdministratorControlsActivity::class.java, /* initialTouchMode= */
+    true, /* launchActivity= */
+    false
+  )
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
@@ -129,25 +133,6 @@ class AdministratorControlsActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  // TODO(): Implement `isFromNavigationDrawer` in AdministratorControlsActivity. Reference - HelpActivity
-  @Test
-  // TODO(#973): Fix AdministratorControlsActivityTest
-  @Ignore
-  fun testAdministratorControlsActivity_withAdminProfile_openAdministratorControlsActivityFromNavigationDrawer_onBackPressed_showsHomeActivity() { // ktlint-disable max-line-length
-    launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(0)
-    )
-      .use {
-        onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
-        onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
-          .perform(nestedScrollTo()).perform(click())
-        intended(hasComponent(AdministratorControlsActivity::class.java.name))
-        intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
-        onView(isRoot()).perform(pressBack())
-        onView(withId(R.id.home_recycler_view)).check(matches(isDisplayed()))
-      }
   }
 
   @Test
@@ -420,51 +405,6 @@ class AdministratorControlsActivityTest {
       )
         .check(matches(not(isChecked())))
     }
-  }
-
-  // TODO(): Implement `isFromNavigationDrawer` in AdministratorControlsActivity. Reference - HelpActivity
-  @Test
-  // TODO(#973): Fix AdministratorControlsActivityTest
-  @Ignore
-  fun testAdministratorControlsFragment_loadFragment_onClickTopicUpdateOnWifiSwitch_checkSwitchRemainsChecked_onOpeningAdministratorControlsFragmentAgain() { // ktlint-disable max-line-length
-    launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(profileId = 0)
-    )
-      .use {
-        onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
-        onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
-          .perform(nestedScrollTo())
-          .perform(click())
-        intended(hasComponent(AdministratorControlsActivity::class.java.name))
-        onView(
-          atPositionOnView(
-            R.id.administrator_controls_list,
-            2,
-            R.id.topic_update_on_wifi_switch
-          )
-        )
-          .check(matches(isNotChecked()))
-        onView(
-          atPositionOnView(
-            R.id.administrator_controls_list,
-            2,
-            R.id.topic_update_on_wifi_switch
-          )
-        )
-          .perform(click())
-        onView(isRoot()).perform(pressBack())
-        onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
-        onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
-          .perform(click())
-        onView(
-          atPositionOnView(
-            R.id.administrator_controls_list,
-            2,
-            R.id.topic_update_on_wifi_switch
-          )
-        )
-          .check(matches(isChecked()))
-      }
   }
 
   @Test
