@@ -23,12 +23,10 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_0dp}"
-    app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_170dp}"
+    android:orientation="vertical"
     app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_170dp}"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_0dp}"
+    app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_170dp}">
 
     <LinearLayout
       android:id="@+id/profile_chooser_item"
@@ -54,14 +52,17 @@
 
       <TextView
         android:id="@+id/profile_name_text"
-        style="@style/Heading2"
-        android:layout_marginTop="@dimen/space_16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:gravity="center"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:maxLines="2"
+        android:orientation="vertical"
         android:singleLine="false"
         android:text="@{viewModel.profile.name}"
         android:textColor="@color/white"
+        android:textSize="20sp"
         app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_32dp}"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}" />
 
@@ -71,6 +72,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:fontFamily="sans-serif-light"
+        android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
+        android:orientation="vertical"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="italic"
@@ -82,8 +85,10 @@
         android:id="@+id/profile_is_admin_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:fontFamily="sans-serif-light"
-        android:gravity="center"
+        android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
+        android:orientation="vertical"
         android:text="@string/profile_chooser_admin"
         android:textColor="@color/white"
         android:textSize="16sp"
