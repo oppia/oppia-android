@@ -80,20 +80,16 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HelpFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class HelpFragmentTest {
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
     Intents.init()
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 

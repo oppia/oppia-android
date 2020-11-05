@@ -81,9 +81,6 @@ class HtmlParserTest {
   private lateinit var launchedActivity: Activity
 
   @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
 
   @Inject
@@ -98,7 +95,6 @@ class HtmlParserTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
     Intents.init()
     val intent = Intent(Intent.ACTION_PICK)
     launchedActivity = activityTestRule.launchActivity(intent)
@@ -106,7 +102,6 @@ class HtmlParserTest {
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
