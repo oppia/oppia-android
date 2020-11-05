@@ -69,13 +69,11 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = MyDownloadsFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class MyDownloadsFragmentTest {
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
   }
-
-  @After
-  fun tearDown() {}
 
   @Test
   fun testMyDownloadsFragment_toolbarTitle_isDisplayedSuccessfully() {
