@@ -122,7 +122,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -136,7 +136,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        0
+        profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -152,7 +152,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        0
+        profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -169,7 +169,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -185,7 +185,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -211,7 +211,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(withId(R.id.profile_rename_button)).perform(click())
@@ -224,7 +224,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -238,7 +238,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(withId(R.id.profile_reset_button)).perform(click())
@@ -251,7 +251,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -265,7 +265,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
@@ -284,7 +284,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -305,7 +305,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
@@ -322,7 +322,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -348,7 +348,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        3
+        profileId = 3
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -369,7 +369,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        3
+        profileId = 3
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
