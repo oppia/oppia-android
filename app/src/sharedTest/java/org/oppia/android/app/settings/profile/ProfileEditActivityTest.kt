@@ -3,7 +3,7 @@ package org.oppia.android.app.settings.profile
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -119,7 +119,7 @@ class ProfileEditActivityTest {
       ProfileId.newBuilder().setInternalId(1).build(),
       newName = "Akshay"
     )
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         1
@@ -133,7 +133,7 @@ class ProfileEditActivityTest {
 
   @Test
   fun testProfileEdit_startWithAdminProfile_checkAdminInfoIsDisplayed() {
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         0
@@ -149,7 +149,7 @@ class ProfileEditActivityTest {
 
   @Test
   fun testProfileEdit_configChange_startWithAdminProfile_checkAdminInfoIsDisplayed() {
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         0
@@ -166,7 +166,7 @@ class ProfileEditActivityTest {
 
   @Test
   fun testProfileEdit_startWithUserProfile_checkUserInfoIsDisplayed() {
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         1
@@ -182,7 +182,7 @@ class ProfileEditActivityTest {
 
   @Test
   fun testProfileEdit_configChange_startWithUserProfile_checkUserInfoIsDisplayed() {
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         1
@@ -207,8 +207,8 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserProfile_clickRenameButton_checkOpensProfileRenameActivity() {
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_startWithUserProfile_clickRenameButton_checkOpensProfileRename() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         1
@@ -221,7 +221,7 @@ class ProfileEditActivityTest {
 
   @Test
   fun testProfileEdit_configChange_startWithUserProfile_clickRename_checkOpensProfileRename() {
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         1
@@ -234,8 +234,8 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserProfile_clickResetPin_checkOpensProfileResetPinActivity() {
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         1
@@ -248,7 +248,7 @@ class ProfileEditActivityTest {
 
   @Test
   fun testProfileEdit_configChange_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         1
@@ -262,7 +262,7 @@ class ProfileEditActivityTest {
 
   @Test
   fun testProfileEdit_startWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() {
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         1
@@ -281,7 +281,7 @@ class ProfileEditActivityTest {
 
   @Test
   fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog() {
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         1
@@ -302,7 +302,7 @@ class ProfileEditActivityTest {
 
   @Test
   fun testProfileEdit_startWithUserProfile_deleteProfile_checkReturnsToProfileList() {
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         1
@@ -319,7 +319,7 @@ class ProfileEditActivityTest {
 
   @Test
   fun testProfileEdit_configChange_startWithUserProfile_deleteProfile_checkReturnsToProfileList() {
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         1
@@ -345,7 +345,7 @@ class ProfileEditActivityTest {
       colorRgb = -10710042,
       isAdmin = false
     ).toLiveData()
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         3
@@ -366,7 +366,7 @@ class ProfileEditActivityTest {
       colorRgb = -10710042,
       isAdmin = false
     ).toLiveData()
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
         3
