@@ -24,9 +24,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_170dp}"
     app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_0dp}"
-    app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_170dp}">
+    app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_170dp}"
+    app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_170dp}">
 
     <LinearLayout
       android:id="@+id/profile_chooser_item"
@@ -52,17 +52,14 @@
 
       <TextView
         android:id="@+id/profile_name_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Heading2"
         android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
         android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:maxLines="2"
         android:orientation="vertical"
         android:singleLine="false"
         android:text="@{viewModel.profile.name}"
         android:textColor="@color/white"
-        android:textSize="20sp"
         app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_32dp}"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}" />
 
