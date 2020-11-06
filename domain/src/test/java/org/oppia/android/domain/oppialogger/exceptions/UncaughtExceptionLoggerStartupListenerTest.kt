@@ -22,6 +22,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.OppiaExceptionLogs
+import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -150,6 +151,10 @@ class UncaughtExceptionLoggerStartupListenerTest {
 
   @Module
   class TestLogStorageModule {
+
+    @Provides
+    @EventLogStorageCacheSize
+    fun provideEventLogStorageCacheSize(): Int = 2
 
     @Provides
     @ExceptionLogStorageCacheSize

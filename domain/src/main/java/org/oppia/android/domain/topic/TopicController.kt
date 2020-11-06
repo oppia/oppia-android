@@ -22,7 +22,7 @@ import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicProgress
-import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionRetriever
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.data.AsyncResult
@@ -84,7 +84,7 @@ class TopicController @Inject constructor(
   private val conceptCardRetriever: ConceptCardRetriever,
   private val revisionCardRetriever: RevisionCardRetriever,
   private val storyProgressController: StoryProgressController,
-  private val exceptionsController: ExceptionsController,
+  private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock
 ) {
 
@@ -146,7 +146,7 @@ class TopicController @Inject constructor(
       try {
         AsyncResult.success(conceptCardRetriever.loadConceptCard(skillId))
       } catch (e: Exception) {
-        exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+        oppiaLogger.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
         AsyncResult.failed<ConceptCard>(e)
       }
     )
@@ -161,7 +161,7 @@ class TopicController @Inject constructor(
       try {
         AsyncResult.success(retrieveReviewCard(topicId, subtopicId))
       } catch (e: Exception) {
-        exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+        oppiaLogger.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
         AsyncResult.failed<RevisionCard>(e)
       }
     )

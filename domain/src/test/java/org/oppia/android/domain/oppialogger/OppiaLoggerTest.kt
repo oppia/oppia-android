@@ -20,6 +20,7 @@ import org.oppia.android.domain.oppialogger.analytics.TEST_SKILL_LIST_ID
 import org.oppia.android.domain.oppialogger.analytics.TEST_STORY_ID
 import org.oppia.android.domain.oppialogger.analytics.TEST_SUB_TOPIC_ID
 import org.oppia.android.domain.oppialogger.analytics.TEST_TOPIC_ID
+import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.logging.EnableConsoleLog
@@ -31,10 +32,15 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094120000
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class OppiaLoggerTest {
+
+  @Inject
+  lateinit var fakeExceptionLogger: FakeExceptionLogger
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -120,6 +126,28 @@ class OppiaLoggerTest {
     assertThat(eventContext.revisionCardContext.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
   }
 
+  @Test
+  fun testController_logException_nonFatal_logsToRemoteService() {
+    val exceptionThrown = Exception("TEST MESSAGE", Throwable())
+    oppiaLogger.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
+
+    val exceptionLogged = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exceptionLogged).isEqualTo(exceptionThrown)
+  }
+
+  @Test
+  fun testController_logFatalException_logsToRemoteService() {
+    val exceptionThrown = Exception("TEST MESSAGE", Throwable())
+    oppiaLogger.logFatalException(
+      exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE
+    )
+
+    val exceptionLogged = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exceptionLogged).isEqualTo(exceptionThrown)
+  }
+
   private fun setUpTestApplicationComponent() {
     DaggerOppiaLoggerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
@@ -157,6 +185,10 @@ class OppiaLoggerTest {
     @Provides
     @EventLogStorageCacheSize
     fun provideEventLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @ExceptionLogStorageCacheSize
+    fun provideExceptionLogStorageCacheSize(): Int = 2
   }
 
   // TODO(#89): Move this to a common test application component.

@@ -32,6 +32,7 @@ import org.oppia.android.app.model.EventLog.EventAction
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -633,6 +634,10 @@ class AnalyticsControllerTest {
     @Provides
     @EventLogStorageCacheSize
     fun provideEventLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @ExceptionLogStorageCacheSize
+    fun provideExceptionLogStorageCacheSize(): Int = 2
   }
 
   // TODO(#89): Move this to a common test application component.

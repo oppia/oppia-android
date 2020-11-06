@@ -3,7 +3,7 @@ package org.oppia.android.domain.question
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.Question
-import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -24,7 +24,7 @@ private const val START_QUESTION_TRAINING_SESSION_PROVIDER_ID = "" +
 class QuestionTrainingController @Inject constructor(
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val topicController: TopicController,
-  private val exceptionsController: ExceptionsController,
+  private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
   @QuestionCountPerTrainingSession private val questionCountPerSession: Int,
   @QuestionTrainingSeed private val questionTrainingSeed: Long
@@ -56,7 +56,7 @@ class QuestionTrainingController @Inject constructor(
         .transform(START_QUESTION_TRAINING_SESSION_PROVIDER_ID) { it }
       erasedDataProvider.toLiveData()
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      oppiaLogger.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -115,7 +115,7 @@ class QuestionTrainingController @Inject constructor(
       questionAssessmentProgressController.finishQuestionTrainingSession()
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      oppiaLogger.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       MutableLiveData(AsyncResult.failed(e))
     }
   }

@@ -17,7 +17,7 @@ import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -67,7 +67,7 @@ class ProfileManagementController @Inject constructor(
   private val dataProviders: DataProviders,
   private val context: Context,
   private val directoryManagementUtil: DirectoryManagementUtil,
-  private val exceptionsController: ExceptionsController,
+  private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock
 ) {
   private var currentProfileId: Int = -1
@@ -709,7 +709,7 @@ class ProfileManagementController @Inject constructor(
           .compress(Bitmap.CompressFormat.PNG, /* quality= */ 100, fos)
       }
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      oppiaLogger.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       logger.e(
         "ProfileManagementController",
         "Failed to store user submitted avatar image",
