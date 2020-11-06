@@ -53,7 +53,6 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -81,9 +80,6 @@ class HtmlParserTest {
   private lateinit var launchedActivity: Activity
 
   @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
 
   @Inject
@@ -98,7 +94,6 @@ class HtmlParserTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
     Intents.init()
     val intent = Intent(Intent.ACTION_PICK)
     launchedActivity = activityTestRule.launchActivity(intent)
@@ -106,7 +101,6 @@ class HtmlParserTest {
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
