@@ -20,7 +20,7 @@ public final class ConstraintLayoutAdapters {
     constraintSet.applyTo(constraintLayout);
   }
 
-  /** Binding adapter for setting layout_constraintHorizontal_bias to a view.*/
+  /** Binding adapter for setting layout_constraintHorizontal_bias to a view. */
   @BindingAdapter("app:layout_constraintHorizontal_bias")
   public static void setHorizontalBias(@NonNull View view, float value) {
     ConstraintLayout constraintLayout = (ConstraintLayout) view.getParent();
