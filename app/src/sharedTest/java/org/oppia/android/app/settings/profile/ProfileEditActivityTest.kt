@@ -387,6 +387,20 @@ class ProfileEditActivityTest {
     }
   }
 
+  @Test
+  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton() {
+    ActivityScenario.launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context,
+        1
+      )
+    ).use {
+      onView(withId(R.id.profile_delete_button)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(R.string.profile_edit_delete_dialog_positive)).check(matches(isDisplayed()))
+    }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
