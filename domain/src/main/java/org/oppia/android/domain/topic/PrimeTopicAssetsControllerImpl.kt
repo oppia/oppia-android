@@ -41,13 +41,13 @@ import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.model.Topic
 import org.oppia.android.domain.exploration.ExplorationRetriever
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionRetriever
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.parser.DefaultGcsPrefix
 import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
@@ -73,7 +73,7 @@ private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 @Singleton
 class PrimeTopicAssetsControllerImpl @Inject constructor(
   private val context: Context,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val assetRepository: AssetRepository,
   private val topicController: TopicController,
   private val jsonAssetRetriever: JsonAssetRetriever,
@@ -158,7 +158,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
           conceptCardImageUrls +
           revisionCardImageUrls
         ).toSet()
-      logger.d("AssetRepo", "Downloading up to ${imageUrls.size} images")
+      oppiaLogger.d("AssetRepo", "Downloading up to ${imageUrls.size} images")
       val startTime = SystemClock.elapsedRealtime()
       val downloadUrls = imageUrls.filterNot(assetRepository::isRemoteBinarAssetDownloaded)
       val assetDownloadCount = downloadUrls.size
@@ -171,7 +171,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
             assetRepository.primeRemoteBinaryAsset(url)
           } catch (e: Exception) {
             failedDownloadCount.incrementAndGet()
-            logger.w("AssetRepo", "Failed to download $url because $e")
+            oppiaLogger.w("AssetRepo", "Failed to download $url because $e")
           }
           primeDownloadStatus.postValue(
             PrimeAssetsStatus(
@@ -181,7 +181,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
         }
       }.forEach { it.await() }
       val endTime = SystemClock.elapsedRealtime()
-      logger.d(
+      oppiaLogger.d(
         "AssetRepo",
         "Finished downloading voiceovers and images in ${endTime - startTime}ms"
       )

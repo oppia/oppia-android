@@ -2,8 +2,8 @@ package org.oppia.android.domain.audio
 
 import org.oppia.android.app.model.CellularDataPreference
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Singleton
 class CellularAudioDialogController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger
 ) {
   private val cellularDataStore = cacheStoreFactory.create(
     "cellular_data_preference",
@@ -34,7 +34,7 @@ class CellularAudioDialogController @Inject constructor(
       it.toBuilder().setHideDialog(hideDialog).build()
     }.invokeOnCompletion {
       it?.let {
-        logger.e(
+        oppiaLogger.e(
           "DOMAIN",
           "Failed when storing the user's preference to hide cellular data dialog.",
           it
@@ -49,7 +49,7 @@ class CellularAudioDialogController @Inject constructor(
       it.toBuilder().setUseCellularData(useData).build()
     }.invokeOnCompletion {
       it?.let {
-        logger.e(
+        oppiaLogger.e(
           "DOMAIN",
           "Failed when storing the user's preference to use cellular data.",
           it

@@ -8,11 +8,11 @@ import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicProgressDatabase
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -55,7 +55,7 @@ private const val RECORD_RECENTLY_PLAYED_CHAPTER_PROVIDER_ID =
 class StoryProgressController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger
 ) {
   // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype,
   //  or if that just indicates that they can't be started due to previous chapter not yet being
@@ -272,7 +272,7 @@ class StoryProgressController @Inject constructor(
 
     cacheStore.primeCacheAsync().invokeOnCompletion {
       it?.let { it ->
-        logger.e(
+        oppiaLogger.e(
           "StoryProgressController",
           "Failed to prime cache ahead of LiveData conversion for StoryProgressController.",
           it

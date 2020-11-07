@@ -4,9 +4,9 @@ import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
-import org.oppia.android.util.logging.ConsoleLogger
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -20,7 +20,7 @@ private const val APP_STARTUP_STATE_DATA_PROVIDER_ID = "app_startup_state_data_p
 @Singleton
 class AppStartupStateController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
-  private val consoleLogger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val expirationMetaDataRetriever: ExpirationMetaDataRetriever
 ) {
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
@@ -39,7 +39,7 @@ class AppStartupStateController @Inject constructor(
     // markOnboardingFlowCompleted().
     onboardingFlowStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
-        consoleLogger.e(
+        oppiaLogger.e(
           "DOMAIN",
           "Failed to prime cache ahead of LiveData conversion for user onboarding data.",
           it
@@ -58,7 +58,7 @@ class AppStartupStateController @Inject constructor(
       it.toBuilder().setAlreadyOnboardedApp(true).build()
     }.invokeOnCompletion {
       it?.let {
-        consoleLogger.e(
+        oppiaLogger.e(
           "DOMAIN", "Failed when storing that the user already onboarded the app.", it
         )
       }
@@ -97,7 +97,7 @@ class AppStartupStateController @Inject constructor(
     return try {
       expirationDateFormat.parse(dateString)
     } catch (e: ParseException) {
-      consoleLogger.e("DOMAIN", "Failed to parse date string: $dateString", e)
+      oppiaLogger.e("DOMAIN", "Failed to parse date string: $dateString", e)
       null
     }
   }

@@ -4,12 +4,14 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.EventAction
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** Logger that handles event logging. */
 class OppiaLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
-  private val exceptionController: ExceptionsController
+  private val exceptionController: ExceptionsController,
+  private val Logger: ConsoleLogger
 ) {
   /** Logs transition events. See [AnalyticsController.logTransitionEvent] for more context. */
   fun logTransitionEvent(
@@ -126,5 +128,52 @@ class OppiaLogger @Inject constructor(
   /**Logs exception. See [ExceptionsController.logNonFatalException] for more context.*/
   fun logFatalException(exception: Exception, timestampInMillis: Long) {
     exceptionController.logFatalException(exception, timestampInMillis)
+  }
+  fun v(tag: String, msg: String) {
+    Logger.v(tag, msg)
+  }
+  /** Logs a verbose message with the specified tag, message and exception.*/
+  fun v(tag: String, msg: String, tr: Throwable) {
+    Logger.v(tag, msg, tr)
+  }
+
+  /** Logs a debug message with the specified tag*/
+  fun d(tag: String, msg: String) {
+    Logger.d(tag, msg)
+  }
+
+  /** Logs a debug message with the specified tag, message and exception.*/
+  fun d(tag: String, msg: String, tr: Throwable) {
+    Logger.d(tag, msg, tr)
+  }
+
+  /** Logs a info message with the specified tag.*/
+  fun i(tag: String, msg: String) {
+    Logger.i(tag, msg)
+  }
+
+  /** Logs a info message with the specified tag, message and exception.*/
+  fun i(tag: String, msg: String, tr: Throwable) {
+    Logger.i(tag, msg, tr)
+  }
+
+  /** Logs a warn message with the specified tag.*/
+  fun w(tag: String, msg: String) {
+    Logger.w(tag, msg)
+  }
+
+  /** Logs a warn message with the specified tag, message and exception.*/
+  fun w(tag: String, msg: String, tr: Throwable) {
+    Logger.w(tag, msg, tr)
+  }
+
+  /** Logs a error message with the specified tag.*/
+  fun e(tag: String, msg: String) {
+    Logger.e(tag, msg)
+  }
+
+  /** Logs a error message with the specified tag, message and exception.*/
+  fun e(tag: String, msg: String, tr: Throwable?) {
+    Logger.e(tag, msg, tr)
   }
 }

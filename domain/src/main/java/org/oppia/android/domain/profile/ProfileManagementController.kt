@@ -23,7 +23,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
@@ -62,7 +61,6 @@ private const val UPDATE_AUDIO_LANGUAGE_PROVIDER_ID =
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
 class ProfileManagementController @Inject constructor(
-  private val logger: ConsoleLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val context: Context,
@@ -123,7 +121,7 @@ class ProfileManagementController @Inject constructor(
   init {
     profileDataStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
-        logger.e(
+        oppiaLogger.e(
           "DOMAIN",
           "Failed to prime cache ahead of LiveData conversion for ProfileManagementController.",
           it
@@ -710,7 +708,7 @@ class ProfileManagementController @Inject constructor(
       }
     } catch (e: Exception) {
       oppiaLogger.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
-      logger.e(
+      oppiaLogger.e(
         "ProfileManagementController",
         "Failed to store user submitted avatar image",
         e
