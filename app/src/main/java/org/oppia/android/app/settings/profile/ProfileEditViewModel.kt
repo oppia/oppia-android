@@ -35,6 +35,7 @@ class ProfileEditViewModel @Inject constructor(
   }
 
   var isAdmin = false
+  var isDeleteDialogShown = false
 
   fun setProfileId(id: Int, switch: Switch) {
     profileId = ProfileId.newBuilder().setInternalId(id).build()
