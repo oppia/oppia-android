@@ -388,7 +388,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton() {
+  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton() { // ktlint-disable max-line-length
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
