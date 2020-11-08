@@ -37,6 +37,7 @@
       app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/profile_view_not_added_margin}"
       app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/profile_view_not_added_margin}"
       app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
+      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       profile:ignore="RtlSymmetry">
@@ -75,7 +76,7 @@
         android:textSize="16sp"
         android:textStyle="italic"
         android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
-        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_32dp}"
+        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_28dp}"
         profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
       <TextView

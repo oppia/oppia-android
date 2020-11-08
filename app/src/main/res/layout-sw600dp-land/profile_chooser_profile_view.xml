@@ -36,6 +36,7 @@
       android:orientation="@{hasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
       app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
       app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
+      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       profile:ignore="RtlSymmetry">
@@ -53,7 +54,7 @@
         android:id="@+id/profile_name_text"
         style="@style/Heading2"
         android:ellipsize="end"
-        android:gravity="center"
+        android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:maxLines="2"
         android:orientation="vertical"
         android:singleLine="false"
