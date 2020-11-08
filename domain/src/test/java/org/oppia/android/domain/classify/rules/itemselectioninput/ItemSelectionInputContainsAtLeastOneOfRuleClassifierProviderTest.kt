@@ -42,6 +42,21 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
       .build()
   )
 
+  private val ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_NO_EXTRA_ELEMENT = createStringList(
+    StringList.newBuilder().addHtml("test1").addHtml("test2")
+      .build()
+  )
+
+  private val ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_WITH_EXTRA_ELEMENT = createStringList(
+    StringList.newBuilder().addHtml("test1").addHtml("test2").addHtml("test6")
+      .build()
+  )
+
+  private val ITEM_SELECTION_SET_EMPTY = createStringList(
+    StringList.newBuilder()
+      .build()
+  )
+
   private val ITEM_SELECTION_SET_EXCLUSIVE = createStringList(
     StringList.newBuilder().addHtml("test6")
       .build()
@@ -83,6 +98,43 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
     assertThat(matches).isTrue()
   }
+
+  @Test
+  fun testItemSet_setAnswer_inputHasTwoElementsInSetNoneExtra_answerContainsInput() {
+    val inputs = mapOf("x" to ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_NO_EXTRA_ELEMENT)
+
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_SET_5,
+      inputs = inputs
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testItemSet_setAnswer_inputHasTwoElementsInSetOneExtra_answerContainsInput() {
+    val inputs = mapOf("x" to ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_WITH_EXTRA_ELEMENT)
+
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_SET_5,
+      inputs = inputs
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testItemSet_setAnswer_inputIsEmptySet_answerDoesNotContainInput() {
+    val inputs = mapOf("x" to ITEM_SELECTION_SET_EMPTY)
+
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_SET_5,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
 
   @Test
   fun testItemSet_setAnswer_inputIsExclusiveOfSet_answerDoesNotContainInput() {
