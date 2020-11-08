@@ -392,13 +392,15 @@ class ProfileEditActivityTest {
   fun testProfileEditActivity_clickProfileDeletionButton_configurationChange_dialogPersists() {
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
-        1
+        context = context,
+        profileId = 1
       )
     ).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(R.string.profile_edit_delete_dialog_positive)).inRoot(isDialog())
+      onView(withText(R.string.profile_edit_delete_dialog_positive)).inRoot(isDialog()).check(
+        matches(isDisplayed())
+      )
     }
   }
 
