@@ -135,7 +135,6 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
     assertThat(matches).isFalse()
   }
 
-
   @Test
   fun testItemSet_setAnswer_inputIsExclusiveOfSet_answerDoesNotContainInput() {
     val inputs = mapOf("x" to ITEM_SELECTION_SET_EXCLUSIVE)
