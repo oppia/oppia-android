@@ -1,14 +1,12 @@
 #!/bin/sh
 
-# INSTRUCTIONS:
 # This script will run the pre-push checks in the given order
-# Ktlint
-#
+#  - ktlint
+#  - (others in the future)
 
-# this will run the ktlint check script
 bash kotlin-lint-check
 
-# TODO() Add Bazel Linter to the project #1736
-# TODO() Add Java Linter to the project #1735
-# TODO() Add an XML Linter to the project #970
-# TODO() Add Buf linter
+# TODO(#1736): Add Bazel Linter to the project
+# TODO(#1735): Add Java Linter to the project
+# TODO(#970): Add XML Linter to the project
+# TODO(#2097): Add Buf Linter to the project

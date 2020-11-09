@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 # INSTRUCTIONS:
 # This script will move the pre-push hook from script folder to

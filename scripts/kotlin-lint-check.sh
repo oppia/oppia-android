@@ -14,9 +14,10 @@ if [ "$status" = 0 ] ; then
 else
   echo "********************************"
   echo "Ktlint issue found."
-  echo "Please fix the above issues. You could also use ktlint -F --android path/to/file.kt
-  command to fix most of the issues."
-  echo "Please note, there might be a possibility where the above commend will not fix the issue.
+  echo "Please fix the above issues.
+  You can also use the ktlint -F --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt
+  command to fix the most common issues."
+  echo "Please note, there might be a possibility where the above command will not fix the issue.
   In that case, you will have to fix it yourself."
   echo "********************************"
   exit 1
