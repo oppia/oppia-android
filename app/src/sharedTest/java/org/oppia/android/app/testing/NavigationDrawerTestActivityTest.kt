@@ -63,6 +63,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.profile.ProfileChooserActivity
+import org.oppia.android.app.profileprogress.ProfileProgressActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HomeInjectionActivity
@@ -254,6 +255,29 @@ class NavigationDrawerTestActivityTest {
         )
         .perform(click())
       onView(withId(R.id.nav_header_profile_name)).check(matches(withText("Ben")))
+    }
+  }
+
+  @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
+  fun testNavigationDrawerTestActivity_clickOnHeader_opensProfileProgressActivity() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(
+        internalProfileId1
+      )
+    ).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(isCompletelyDisplayed())
+      ).perform(click())
+      onView(withId(R.id.nav_header_profile_name)).perform(click())
+      intended(hasComponent(ProfileProgressActivity::class.java.name))
+      intended(
+        hasExtra(
+          ProfileProgressActivity.PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY,
+          internalProfileId
+        )
+      )
     }
   }
 

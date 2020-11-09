@@ -10,7 +10,8 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
-private const val EXPLORATION_DATA_PROVIDER_ID = "ExplorationDataProvider"
+private const val GET_EXPLORATION_BY_ID_PROVIDER_ID =
+  "get_exploration_by_id_provider_id"
 
 /**
  * Controller for loading explorations by ID, or beginning to play an exploration.
@@ -28,7 +29,7 @@ class ExplorationDataController @Inject constructor(
   /** Returns an [Exploration] given an ID. */
   fun getExplorationById(id: String): DataProvider<Exploration> {
     return dataProviders.createInMemoryDataProviderAsync(
-      EXPLORATION_DATA_PROVIDER_ID
+      GET_EXPLORATION_BY_ID_PROVIDER_ID
     ) {
       retrieveExplorationById(id)
     }
