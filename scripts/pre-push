@@ -4,7 +4,7 @@
 #  - ktlint
 #  - (others in the future)
 
-bash kotlin-lint-check
+bash scripts/kotlin-lint-check.sh
 
 # TODO(#1736): Add Bazel Linter to the project
 # TODO(#1735): Add Java Linter to the project
