@@ -31,6 +31,8 @@ import org.oppia.android.app.model.AppStartupState.StartupMode.USER_IS_ONBOARDED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -421,11 +423,25 @@ class AppStartupStateControllerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
+  @Module
+  class TestLogStorageModule {
+
+    @Provides
+    @EventLogStorageCacheSize
+    fun provideEventLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @ExceptionLogStorageCacheSize
+    fun provideExceptionLogStorageCacheSize(): Int = 2
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, TestLogReportingModule::class,
+      TestModule::class, TestDispatcherModule::class,
+      TestLogStorageModule::class,
+      TestLogReportingModule::class,
       ExpirationMetaDataRetrieverModule::class // Use real implementation to test closer to prod.
     ]
   )

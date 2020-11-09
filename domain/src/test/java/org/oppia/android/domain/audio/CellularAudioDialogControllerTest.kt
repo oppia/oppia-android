@@ -22,6 +22,8 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.CellularDataPreference
+import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -168,12 +170,25 @@ class CellularAudioDialogControllerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
+  @Module
+  class TestLogStorageModule {
+
+    @Provides
+    @EventLogStorageCacheSize
+    fun provideEventLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @ExceptionLogStorageCacheSize
+    fun provideExceptionLogStorageCacheSize(): Int = 2
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
       TestDispatcherModule::class,
       TestModule::class,
+      TestLogStorageModule::class,
       TestLogReportingModule::class
     ]
   )

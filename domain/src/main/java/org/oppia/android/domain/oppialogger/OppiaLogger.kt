@@ -129,7 +129,7 @@ class OppiaLogger @Inject constructor(
     exceptionController.logFatalException(exception, timestampInMillis)
   }
 
-  /** Logs a verbose message with the specified tag, message and exception.*/
+  /** Logs a verbose message with the specified tag and message.*/
   fun v(tag: String, msg: String) {
     Logger.v(tag, msg)
   }

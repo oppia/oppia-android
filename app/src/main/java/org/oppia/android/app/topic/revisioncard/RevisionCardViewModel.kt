@@ -10,7 +10,6 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** [ObservableViewModel] for revision card, providing rich text and worked examples */
