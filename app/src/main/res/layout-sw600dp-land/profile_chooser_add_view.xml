@@ -26,11 +26,18 @@
       android:id="@+id/add_profile_divider_view"
       android:layout_width="match_parent"
       android:layout_height="0.5dp"
-      android:layout_marginBottom="40dp"
       android:background="@color/oppiaProfileChooserDivider"
       android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintBottom_toTopOf="@+id/add_profile_item"/>
+      app:layout_constraintTop_toTopOf="parent"/>
+
+    <Space
+      android:id="@+id/blank_space"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/add_profile_divider_view" />
 
     <LinearLayout
       android:id="@+id/add_profile_item"
@@ -43,6 +50,7 @@
       app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/blank_space"
       tools:ignore="RtlSymmetry">
 
       <de.hdodenhof.circleimageview.CircleImageView
