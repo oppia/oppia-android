@@ -24,9 +24,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_298dp}"
+    android:layout_margin="@dimen/space_16dp"
+    android:padding="@dimen/space_4dp"
+    app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_0dp}"
     app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_298dp}"
-    app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_0dp}">
+    app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_298dp}">
 
     <LinearLayout
       android:id="@+id/profile_chooser_item"
@@ -36,7 +38,6 @@
       android:orientation="@{hasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
       app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
       app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
-      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       profile:ignore="RtlSymmetry">
