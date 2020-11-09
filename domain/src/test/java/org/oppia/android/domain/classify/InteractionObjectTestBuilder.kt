@@ -118,10 +118,6 @@ object InteractionObjectTestBuilder {
     return InteractionObject.newBuilder().setReal(value.toDouble()).build()
   }
 
-  fun createListOf(vararg items: String): InteractionObject {
-    return InteractionObject.newBuilder().setListOf(items.toString()).build()
-  }
-
   fun createRatio(value: List<Int>): InteractionObject {
     return InteractionObject.newBuilder().setRatioExpression(
       RatioExpression.newBuilder().addAllRatioComponent(value)

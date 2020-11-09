@@ -38,9 +38,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     InteractionObjectTestBuilder.createString(value = "test item invalid")
 
   private val LIST_OF_SETS_OF_HTML_STRING_VALUE =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      InteractionObjectTestBuilder.createHtmlStringList()
-    )
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(listOf())
 
   @Inject
   internal lateinit var dragDropSortInputHasElementXAtPositionYClassifierProvider:

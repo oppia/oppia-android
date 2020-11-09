@@ -25,48 +25,43 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
 
-  private val SET_ITEM_A =
-    InteractionObjectTestBuilder.createListOf("item a")
+  private val SET_ITEM_A = InteractionObjectTestBuilder.createHtmlStringList("item a")
 
-  private val SET_ITEM_A_B =
-    InteractionObjectTestBuilder.createListOf("item a", "item b")
+  private val SET_ITEM_A_B = InteractionObjectTestBuilder.createHtmlStringList(
+    "item a", "item b"
+  )
 
-  private val SET_ITEM_2 =
-    InteractionObjectTestBuilder.createListOf("item 2")
+  private val SET_ITEM_2 = InteractionObjectTestBuilder.createHtmlStringList("item 2")
 
-  private val SET_ITEM_3 =
-    InteractionObjectTestBuilder.createListOf("item 3")
+  private val SET_ITEM_3 = InteractionObjectTestBuilder.createHtmlStringList("item 3")
 
-  private val SET_ITEM_INVALID_A_B =
-    InteractionObjectTestBuilder.createListOf("item invalid a", "item invalid b")
+  private val SET_ITEM_INVALID_A_B = InteractionObjectTestBuilder.createHtmlStringList(
+    "item invalid a", "item invalid b"
+  )
 
   private val LIST_OF_SETS_1_2_3 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_A_B, SET_ITEM_2, SET_ITEM_3)
+      listOf(SET_ITEM_A_B, SET_ITEM_2, SET_ITEM_3)
     )
 
   private val LIST_OF_SETS_2_1_3 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_2, SET_ITEM_A_B, SET_ITEM_3)
+      listOf(SET_ITEM_2, SET_ITEM_A_B, SET_ITEM_3)
     )
 
   private val LIST_OF_SETS_2_4_3 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      InteractionObjectTestBuilder.createHtmlStringList(
-        SET_ITEM_2,
-        SET_ITEM_INVALID_A_B,
-        SET_ITEM_3
-      )
+      listOf(SET_ITEM_2, SET_ITEM_INVALID_A_B, SET_ITEM_3)
     )
 
   private val LIST_OF_SETS_2_1 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_2, SET_ITEM_A_B)
+      listOf(SET_ITEM_2, SET_ITEM_A_B)
     )
 
   private val LIST_OF_SETS_A_2_3 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_A, SET_ITEM_2, SET_ITEM_3)
+      listOf(SET_ITEM_A, SET_ITEM_2, SET_ITEM_3)
     )
 
   @Inject

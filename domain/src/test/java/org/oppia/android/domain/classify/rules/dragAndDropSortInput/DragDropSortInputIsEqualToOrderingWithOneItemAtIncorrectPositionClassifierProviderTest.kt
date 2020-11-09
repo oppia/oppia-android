@@ -28,41 +28,38 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
   private val NON_NEGATIVE_VALUE_TEST_0 =
     InteractionObjectTestBuilder.createNonNegativeInt(value = 0)
 
-  private val SET_ITEM_A =
-    InteractionObjectTestBuilder.createListOf("item a")
+  private val SET_ITEM_A = InteractionObjectTestBuilder.createHtmlStringList("item a")
 
-  private val SET_ITEM_A_B =
-    InteractionObjectTestBuilder.createListOf("item a", "item b")
+  private val SET_ITEM_A_B = InteractionObjectTestBuilder.createHtmlStringList(
+    "item a", "item b"
+  )
 
-  private val SET_ITEM_A_B_C =
-    InteractionObjectTestBuilder.createListOf("item a", "item b", "item c")
+  private val SET_ITEM_A_B_C = InteractionObjectTestBuilder.createHtmlStringList(
+    "item a", "item b", "item c"
+  )
 
-  private val SET_ITEM_2 =
-    InteractionObjectTestBuilder.createListOf("item 2")
+  private val SET_ITEM_2 = InteractionObjectTestBuilder.createHtmlStringList("item 2")
 
-  private val SET_ITEM_3 =
-    InteractionObjectTestBuilder.createListOf("item 3")
+  private val SET_ITEM_3 = InteractionObjectTestBuilder.createHtmlStringList("item 3")
 
   private val LIST_OF_SETS_AB_2_3 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_A_B, SET_ITEM_2, SET_ITEM_3)
+      listOf(SET_ITEM_A_B, SET_ITEM_2, SET_ITEM_3)
     )
 
   private val LIST_OF_SETS_ABC_2_3 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_A_B_C, SET_ITEM_2, SET_ITEM_3)
+      listOf(SET_ITEM_A_B_C, SET_ITEM_2, SET_ITEM_3)
     )
 
   private val LIST_OF_SETS_2_3_AB =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      InteractionObjectTestBuilder.createHtmlStringList(
-        InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_2, SET_ITEM_3, SET_ITEM_A_B)
-      )
+      listOf(SET_ITEM_2, SET_ITEM_3, SET_ITEM_A_B)
     )
 
   private val LIST_OF_SETS_A_2_3 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      InteractionObjectTestBuilder.createHtmlStringList(SET_ITEM_A, SET_ITEM_2, SET_ITEM_3)
+      listOf(SET_ITEM_A, SET_ITEM_2, SET_ITEM_3)
     )
 
   @Inject
@@ -71,7 +68,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
 
   private val isEqualToOrderingWithOneItemIncorrectClassifier: RuleClassifier by lazy {
     dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
-      .createRuleClassifier() // ktlint-disable max-line-length
+      .createRuleClassifier()
   }
 
   @Before
