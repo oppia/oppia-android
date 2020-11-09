@@ -11,6 +11,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.StringList
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -20,47 +21,49 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-
 class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
-  private val ITEM_SELECTION_SET_5 = createStringList(
-    StringList.newBuilder()
-      .addHtml("test1")
-      .addHtml("test2")
-      .addHtml("test3")
-      .addHtml("test4")
-      .addHtml("test5")
-      .build()
-  )
 
-  private val ITEM_SELECTION_SET_SUBSET = createStringList(
-    StringList.newBuilder().addHtml("test1")
-      .build()
-  )
+  private val ITEM_SELECTION_SET_5 =
+    createStringListInteractionObject(
+      InteractionObjectTestBuilder
+        .createHtmlStringList("test1", "test2", "test3", "test4", "test5")
+    )
 
-  private val ITEM_SELECTION_SET_ONE_ELEMENT_PRESENT = createStringList(
-    StringList.newBuilder().addHtml("test1").addHtml("test6")
-      .build()
-  )
+  private val ITEM_SELECTION_SET_SUBSET =
+    createStringListInteractionObject(
+      InteractionObjectTestBuilder
+        .createHtmlStringList("test1")
+    )
 
-  private val ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_NO_EXTRA_ELEMENT = createStringList(
-    StringList.newBuilder().addHtml("test1").addHtml("test2")
-      .build()
-  )
+  private val ITEM_SELECTION_SET_ONE_ELEMENT_PRESENT =
+    createStringListInteractionObject(
+      InteractionObjectTestBuilder
+        .createHtmlStringList("test1", "test6")
+    )
 
-  private val ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_WITH_EXTRA_ELEMENT = createStringList(
-    StringList.newBuilder().addHtml("test1").addHtml("test2").addHtml("test6")
-      .build()
-  )
+  private val ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_NO_EXTRA_ELEMENT =
+    createStringListInteractionObject(
+      InteractionObjectTestBuilder
+        .createHtmlStringList("test1", "test2")
+    )
 
-  private val ITEM_SELECTION_SET_EMPTY = createStringList(
-    StringList.newBuilder()
-      .build()
-  )
+  private val ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_WITH_EXTRA_ELEMENT =
+    createStringListInteractionObject(
+      InteractionObjectTestBuilder
+        .createHtmlStringList("test1", "test2", "test6")
+    )
 
-  private val ITEM_SELECTION_SET_EXCLUSIVE = createStringList(
-    StringList.newBuilder().addHtml("test6")
-      .build()
-  )
+  private val ITEM_SELECTION_SET_EMPTY =
+    createStringListInteractionObject(
+      InteractionObjectTestBuilder
+        .createHtmlStringList()
+    )
+
+  private val ITEM_SELECTION_SET_EXCLUSIVE =
+    createStringListInteractionObject(
+      InteractionObjectTestBuilder
+        .createHtmlStringList("test6")
+    )
 
   @Inject
   internal lateinit var itemSelectionInputContainsAtLeastOneOfRuleClassifierProvider:
@@ -147,7 +150,7 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
     assertThat(matches).isFalse()
   }
 
-  private fun createStringList(value: StringList): InteractionObject {
+  private fun createStringListInteractionObject(value: StringList): InteractionObject {
     return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
   }
 
