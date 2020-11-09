@@ -26,7 +26,6 @@
   <dimen name="space_24dp">24dp</dimen>
   <dimen name="space_16dp">16dp</dimen>
   <dimen name="space_12dp">12dp</dimen>
-  <dimen name="space_8dp">8dp</dimen>
   <dimen name="space_28dp">28dp</dimen>
   <dimen name="space_96dp">96dp</dimen>
   <dimen name="space_298dp">298dp</dimen>
@@ -62,10 +61,33 @@
   <dimen name="recently_played_margin_min">8dp</dimen>
   <dimen name="recently_played_tablet_land_outer_margin">96dp</dimen>
   <dimen name="recently_played_tablet_port_outer_margin">120dp</dimen>
-  <dimen name="default_reading_text_size">18sp</dimen>
 
+  <dimen name="default_reading_text_size">18sp</dimen>
   <dimen name="font_scale_content_text_size">20dp</dimen>
   <dimen name="profile_view_already_added_margin">20dp</dimen>
   <dimen name="profile_view_not_added_margin">20dp</dimen>
   <dimen name="walkthrough_topic_summary_container_margin">20dp</dimen>
+
+  <dimen name="admin_auth_input_pin_label_margin">8dp</dimen>
+  <dimen name="content_item_exploration_view_padding_end">8dp</dimen>
+  <dimen name="content_item_exploration_view_padding_start">8dp</dimen>
+  <dimen name="drag_drop_grouping_hint_text_view_non_split_margin_top">8dp</dimen>
+  <dimen name="drag_drop_container_parent_non_split_margin_end">8dp</dimen>
+  <dimen name="drag_drop_container_parent_non_split_margin_start">8dp</dimen>
+  <dimen name="feedback_item_exploration_view_padding_end">8dp</dimen>
+  <dimen name="feedback_item_exploration_view_padding_start">8dp</dimen>
+  <dimen name="next_button_exploration_view_margin_bottom">8dp</dimen>
+  <dimen name="next_button_question_view_margin_bottom">8dp</dimen>
+  <dimen name="previous_button_exploration_view_margin_bottom">8dp</dimen>
+  <dimen name="previous_button_question_view_margin_bottom">8dp</dimen>
+  <dimen name="profile_view_already_added_description_parent_margin_top">8dp</dimen>
+  <dimen name="return_to_topic_button_exploration_view_margin_bottom">8dp</dimen>
+  <dimen name="return_to_topic_button_question_view_margin_bottom">8dp</dimen>
+  <dimen name="submit_button_question_view_margin_bottom">8dp</dimen>
+  <dimen name="submit_button_exploration_view_margin_bottom">8dp</dimen>
+  <dimen name="submitted_answer_text_non_conversation_view_padding_top">8dp</dimen>
+  <dimen name="submitted_answer_text_non_conversation_view_padding_bottom">8dp</dimen>
+  <dimen name="drag_drop_content_group_item_margin">8dp</dimen>
+  <dimen name="walkthrough_final_no_button_margin_end">8dp</dimen>
+  <dimen name="walkthrough_final_yes_button_margin_start">8dp</dimen>
 </resources>

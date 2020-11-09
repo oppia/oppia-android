@@ -3,14 +3,16 @@ package org.oppia.android.domain.classify
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.NumberUnit
+import org.oppia.android.app.model.NumberWithUnits
+import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.StringList
-import javax.inject.Inject
 
 /**
  * Helper class for test cases which can provide the [InteractionObject]
  * of a particular ObjectTypeCase.
  */
-class InteractionObjectTestBuilder @Inject constructor() {
+object InteractionObjectTestBuilder {
 
   fun createNonNegativeInt(value: Int): InteractionObject {
     return InteractionObject.newBuilder().setNonNegativeInt(value).build()
@@ -77,6 +79,33 @@ class InteractionObjectTestBuilder @Inject constructor() {
     ).build()
   }
 
+  /** Creates fraction part for [NumberWithUnits]. */
+  fun createNumberWithUnitsForFraction(number: Fraction, units: List<NumberUnit>):
+    InteractionObject {
+      val numberWithUnits = NumberWithUnits.newBuilder()
+        .addAllUnit(units)
+        .setFraction(number)
+        .build()
+
+      return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
+    }
+
+  /** Creates real part for [NumberWithUnits]. */
+  fun createNumberWithUnitsForReal(number: Double, units: List<NumberUnit>):
+    InteractionObject {
+      val numberWithUnits = NumberWithUnits.newBuilder()
+        .addAllUnit(units)
+        .setReal(number)
+        .build()
+
+      return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
+    }
+
+  /** Creates [NumberUnit] using the [unit] and [exponent] for [NumberWithUnits]. */
+  fun createNumberUnit(unit: String, exponent: Int): NumberUnit {
+    return NumberUnit.newBuilder().setUnit(unit).setExponent(exponent).build()
+  }
+
   fun createSignedInt(value: Int): InteractionObject {
     return InteractionObject.newBuilder().setSignedInt(value).build()
   }
@@ -87,5 +116,11 @@ class InteractionObjectTestBuilder @Inject constructor() {
 
   fun createInt(value: Int): InteractionObject {
     return InteractionObject.newBuilder().setReal(value.toDouble()).build()
+  }
+
+  fun createRatio(value: List<Int>): InteractionObject {
+    return InteractionObject.newBuilder().setRatioExpression(
+      RatioExpression.newBuilder().addAllRatioComponent(value)
+    ).build()
   }
 }

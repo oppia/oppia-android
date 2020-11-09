@@ -24,7 +24,6 @@ internal class TextInputFuzzyEqualsRuleClassifierProvider @Inject constructor(
     )
   }
 
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: String, input: String): Boolean {
     val lowerInput = input.normalizeWhitespace().toLowerCase()
     val lowerAnswer = answer.normalizeWhitespace().toLowerCase()
