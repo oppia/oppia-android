@@ -8,10 +8,10 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @FragmentScope
 class TopicRevisionViewModel @Inject constructor(
   private val topicController: TopicController,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   val fragment: Fragment,
   @TopicHtmlParserEntityType private val entityType: String
 ) : ObservableViewModel() {
@@ -55,7 +55,7 @@ class TopicRevisionViewModel @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "TopicRevisionFragment",
         "Failed to retrieve topic",
         topic.getErrorOrNull()!!

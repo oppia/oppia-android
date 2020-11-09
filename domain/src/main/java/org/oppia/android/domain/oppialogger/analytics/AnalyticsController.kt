@@ -8,6 +8,7 @@ import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
@@ -21,7 +22,7 @@ import javax.inject.Inject
 class AnalyticsController @Inject constructor(
   private val eventLogger: EventLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
-  private val oppiaLogger: OppiaLogger,
+  private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val exceptionLogger: ExceptionLogger,
   @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int
@@ -119,14 +120,14 @@ class AnalyticsController @Inject constructor(
           // TODO (#1433): Refactoring for logging exceptions to both console and exception loggers.
           val exception =
             NullPointerException("Least Recent Event index absent -- EventLogCacheStoreSize is 0")
-          oppiaLogger.e("Analytics Controller", exception.toString())
+          consoleLogger.e("Analytics Controller", exception.toString())
           exceptionLogger.logException(exception)
         }
       }
       return@storeDataAsync oppiaEventLogs.toBuilder().addEventLog(eventLog).build()
     }.invokeOnCompletion {
       it?.let {
-        oppiaLogger.e(
+        consoleLogger.e(
           "Analytics Controller",
           "Failed to store event log",
           it
@@ -171,7 +172,7 @@ class AnalyticsController @Inject constructor(
       return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLog(0).build()
     }.invokeOnCompletion {
       it?.let {
-        oppiaLogger.e(
+        consoleLogger.e(
           "Analytics Controller",
           "Failed to remove event log",
           it

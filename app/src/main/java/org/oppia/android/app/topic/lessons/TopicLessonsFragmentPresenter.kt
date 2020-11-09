@@ -17,10 +17,10 @@ import org.oppia.android.app.model.Topic
 import org.oppia.android.app.topic.RouteToStoryListener
 import org.oppia.android.databinding.TopicLessonsFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -28,7 +28,7 @@ import javax.inject.Inject
 class TopicLessonsFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
   private val topicController: TopicController
 ) : StorySummarySelector, ChapterSummarySelector {
@@ -122,7 +122,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "TopicLessonsFragment",
         "Failed to retrieve topic",
         topic.getErrorOrNull()!!
@@ -158,14 +158,14 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
         when {
-          result.isPending() -> logger.d("TopicLessonsFragment", "Loading exploration")
-          result.isFailure() -> logger.e(
+          result.isPending() -> oppiaLogger.d("TopicLessonsFragment", "Loading exploration")
+          result.isFailure() -> oppiaLogger.e(
             "TopicLessonsFragment",
             "Failed to load exploration",
             result.getErrorOrNull()!!
           )
           else -> {
-            logger.d("TopicLessonsFragment", "Successfully loaded exploration")
+            oppiaLogger.d("TopicLessonsFragment", "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
               internalProfileId,
               topicId,

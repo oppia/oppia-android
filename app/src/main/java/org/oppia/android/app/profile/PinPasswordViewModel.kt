@@ -7,17 +7,17 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The ViewModel for [PinPasswordActivity]. */
 @ActivityScope
 class PinPasswordViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
   val showError = ObservableField(false)
@@ -40,7 +40,7 @@ class PinPasswordViewModel @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "PinPasswordActivity",
         "Failed to retrieve profile",
         profileResult.getErrorOrNull()!!

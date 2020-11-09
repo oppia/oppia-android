@@ -19,9 +19,9 @@ import org.oppia.android.databinding.OptionAppLanguageBinding
 import org.oppia.android.databinding.OptionAudioLanguageBinding
 import org.oppia.android.databinding.OptionStoryTextSizeBinding
 import org.oppia.android.databinding.OptionsFragmentBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
@@ -45,7 +45,7 @@ class OptionsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<OptionControlsViewModel>,
-  private val consoleLogger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var binding: OptionsFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
@@ -194,7 +194,7 @@ class OptionsFragmentPresenter @Inject constructor(
             if (it.isSuccess()) {
               readingTextSize = ReadingTextSize.SMALL_TEXT_SIZE
             } else {
-              consoleLogger.e(
+              oppiaLogger.e(
                 READING_TEXT_SIZE_TAG,
                 "$READING_TEXT_SIZE_ERROR: small text size",
                 it.getErrorOrNull()
@@ -213,7 +213,7 @@ class OptionsFragmentPresenter @Inject constructor(
             if (it.isSuccess()) {
               readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
             } else {
-              consoleLogger.e(
+              oppiaLogger.e(
                 READING_TEXT_SIZE_TAG,
                 "$READING_TEXT_SIZE_ERROR: medium text size",
                 it.getErrorOrNull()
@@ -232,7 +232,7 @@ class OptionsFragmentPresenter @Inject constructor(
             if (it.isSuccess()) {
               readingTextSize = ReadingTextSize.LARGE_TEXT_SIZE
             } else {
-              consoleLogger.e(
+              oppiaLogger.e(
                 READING_TEXT_SIZE_TAG,
                 "$READING_TEXT_SIZE_ERROR: large text size",
                 it.getErrorOrNull()
@@ -252,7 +252,7 @@ class OptionsFragmentPresenter @Inject constructor(
             if (it.isSuccess()) {
               readingTextSize = ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
             } else {
-              consoleLogger.e(
+              oppiaLogger.e(
                 READING_TEXT_SIZE_TAG,
                 "$READING_TEXT_SIZE_ERROR: extra large text size",
                 it.getErrorOrNull()
@@ -277,7 +277,7 @@ class OptionsFragmentPresenter @Inject constructor(
             if (it.isSuccess()) {
               appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
             } else {
-              consoleLogger.e(
+              oppiaLogger.e(
                 APP_LANGUAGE_TAG,
                 "$APP_LANGUAGE_ERROR: English",
                 it.getErrorOrNull()
@@ -296,7 +296,7 @@ class OptionsFragmentPresenter @Inject constructor(
             if (it.isSuccess()) {
               appLanguage = AppLanguage.HINDI_APP_LANGUAGE
             } else {
-              consoleLogger.e(
+              oppiaLogger.e(
                 APP_LANGUAGE_TAG,
                 "$APP_LANGUAGE_ERROR: Hindi",
                 it.getErrorOrNull()
@@ -315,7 +315,7 @@ class OptionsFragmentPresenter @Inject constructor(
             if (it.isSuccess()) {
               appLanguage = AppLanguage.CHINESE_APP_LANGUAGE
             } else {
-              consoleLogger.e(
+              oppiaLogger.e(
                 APP_LANGUAGE_TAG,
                 "$APP_LANGUAGE_ERROR: Chinese",
                 it.getErrorOrNull()
@@ -334,7 +334,7 @@ class OptionsFragmentPresenter @Inject constructor(
             if (it.isSuccess()) {
               appLanguage = AppLanguage.FRENCH_APP_LANGUAGE
             } else {
-              consoleLogger.e(
+              oppiaLogger.e(
                 APP_LANGUAGE_TAG,
                 "$APP_LANGUAGE_ERROR: French",
                 it.getErrorOrNull()
@@ -360,7 +360,7 @@ class OptionsFragmentPresenter @Inject constructor(
             if (it.isSuccess()) {
               audioLanguage = AudioLanguage.NO_AUDIO
             } else {
-              consoleLogger.e(
+              oppiaLogger.e(
                 AUDIO_LANGUAGE_TAG,
                 "$AUDIO_LANGUAGE_ERROR: No Audio",
                 it.getErrorOrNull()
@@ -379,7 +379,7 @@ class OptionsFragmentPresenter @Inject constructor(
             if (it.isSuccess()) {
               audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
             } else {
-              consoleLogger.e(
+              oppiaLogger.e(
                 AUDIO_LANGUAGE_TAG,
                 "$AUDIO_LANGUAGE_ERROR: English",
                 it.getErrorOrNull()
@@ -398,7 +398,7 @@ class OptionsFragmentPresenter @Inject constructor(
             if (it.isSuccess()) {
               audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
             } else {
-              consoleLogger.e(
+              oppiaLogger.e(
                 AUDIO_LANGUAGE_TAG,
                 "$AUDIO_LANGUAGE_ERROR: Hindi",
                 it.getErrorOrNull()
@@ -417,7 +417,7 @@ class OptionsFragmentPresenter @Inject constructor(
             if (it.isSuccess()) {
               audioLanguage = AudioLanguage.CHINESE_AUDIO_LANGUAGE
             } else {
-              consoleLogger.e(
+              oppiaLogger.e(
                 AUDIO_LANGUAGE_TAG,
                 "$AUDIO_LANGUAGE_ERROR: Chinese",
                 it.getErrorOrNull()
@@ -436,7 +436,7 @@ class OptionsFragmentPresenter @Inject constructor(
             if (it.isSuccess()) {
               audioLanguage = AudioLanguage.FRENCH_AUDIO_LANGUAGE
             } else {
-              consoleLogger.e(
+              oppiaLogger.e(
                 AUDIO_LANGUAGE_TAG,
                 "$AUDIO_LANGUAGE_ERROR: French",
                 it.getErrorOrNull()

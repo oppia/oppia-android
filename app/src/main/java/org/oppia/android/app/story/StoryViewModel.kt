@@ -12,10 +12,10 @@ import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewMod
 import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ class StoryViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicController: TopicController,
   private val explorationDataController: ExplorationDataController,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   @StoryHtmlParserEntityType val entityType: String
 ) {
   private var internalProfileId: Int = -1
@@ -69,7 +69,7 @@ class StoryViewModel @Inject constructor(
 
   private fun processStoryResult(storyResult: AsyncResult<StorySummary>): StorySummary {
     if (storyResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "StoryFragment",
         "Failed to retrieve Story: ",
         storyResult.getErrorOrNull()!!
@@ -104,7 +104,7 @@ class StoryViewModel @Inject constructor(
           fragment,
           explorationSelectionListener,
           explorationDataController,
-          logger,
+          oppiaLogger,
           internalProfileId,
           topicId,
           storyId,

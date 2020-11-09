@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.RevisionCard
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
@@ -17,7 +18,7 @@ import javax.inject.Inject
 class RevisionCardViewModel @Inject constructor(
   activity: AppCompatActivity,
   private val topicController: TopicController,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger
 ) : ObservableViewModel() {
   private lateinit var topicId: String
   private var subtopicId: Int = 0
@@ -54,7 +55,7 @@ class RevisionCardViewModel @Inject constructor(
     revisionCardResult: AsyncResult<RevisionCard>
   ): RevisionCard {
     if (revisionCardResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "RevisionCardFragment",
         "Failed to retrieve Revision Card",
         revisionCardResult.getErrorOrNull()!!

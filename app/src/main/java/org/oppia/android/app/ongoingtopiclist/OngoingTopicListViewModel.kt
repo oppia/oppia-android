@@ -8,10 +8,10 @@ import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class OngoingTopicListViewModel @Inject constructor(
   private val activity: AppCompatActivity,
   private val topicController: TopicController,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val intentFactoryShim: IntentFactoryShim,
   @TopicHtmlParserEntityType private val entityType: String
 ) : ObservableViewModel() {
@@ -49,7 +49,7 @@ class OngoingTopicListViewModel @Inject constructor(
     ongoingTopicListResult: AsyncResult<OngoingTopicList>
   ): OngoingTopicList {
     if (ongoingTopicListResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "OngoingTopicListFragment",
         "Failed to retrieve OngoingTopicList: ",
         ongoingTopicListResult.getErrorOrNull()!!

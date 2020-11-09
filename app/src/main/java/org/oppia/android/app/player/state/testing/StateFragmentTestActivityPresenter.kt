@@ -12,11 +12,11 @@ import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentTestActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"
@@ -26,7 +26,7 @@ private const val TEST_ACTIVITY_TAG = "TestActivity"
 class StateFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val viewModelProvider: ViewModelProvider<StateFragmentTestViewModel>
 ) {
   fun handleOnCreate() {
@@ -80,14 +80,14 @@ class StateFragmentTestActivityPresenter @Inject constructor(
         activity,
         Observer<AsyncResult<Any?>> { result ->
           when {
-            result.isPending() -> logger.d(TEST_ACTIVITY_TAG, "Loading exploration")
-            result.isFailure() -> logger.e(
+            result.isPending() -> oppiaLogger.d(TEST_ACTIVITY_TAG, "Loading exploration")
+            result.isFailure() -> oppiaLogger.e(
               TEST_ACTIVITY_TAG,
               "Failed to load exploration",
               result.getErrorOrNull()!!
             )
             else -> {
-              logger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
+              oppiaLogger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
               initializeExploration(profileId, topicId, storyId, explorationId)
             }
           }

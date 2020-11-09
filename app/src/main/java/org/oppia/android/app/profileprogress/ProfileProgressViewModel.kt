@@ -15,12 +15,12 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
@@ -33,7 +33,7 @@ class ProfileProgressViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val topicController: TopicController,
   private val topicListController: TopicListController,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   @StoryHtmlParserEntityType private val entityType: String
 ) {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
@@ -73,7 +73,7 @@ class ProfileProgressViewModel @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "ProfileProgressFragment",
         "Failed to retrieve profile",
         profileResult.getErrorOrNull()!!
@@ -107,7 +107,7 @@ class ProfileProgressViewModel @Inject constructor(
     ongoingStoryListResult: AsyncResult<OngoingStoryList>
   ): OngoingStoryList {
     if (ongoingStoryListResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "ProfileProgressFragment",
         "Failed to retrieve ongoing story list: ",
         ongoingStoryListResult.getErrorOrNull()!!
@@ -157,7 +157,7 @@ class ProfileProgressViewModel @Inject constructor(
     completedStoryListResult: AsyncResult<CompletedStoryList>
   ): CompletedStoryList {
     if (completedStoryListResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "ProfileProgressFragment",
         "Failed to retrieve completed story list",
         completedStoryListResult.getErrorOrNull()!!
@@ -186,7 +186,7 @@ class ProfileProgressViewModel @Inject constructor(
     ongoingTopicListResult: AsyncResult<OngoingTopicList>
   ): OngoingTopicList {
     if (ongoingTopicListResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "ProfileProgressFragment",
         "Failed to retrieve ongoing topic list",
         ongoingTopicListResult.getErrorOrNull()!!

@@ -30,11 +30,11 @@ import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.DrawerFragmentBinding
 import org.oppia.android.databinding.NavHeaderNavigationDrawerBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -48,7 +48,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val topicController: TopicController,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val headerViewModelProvider: ViewModelProvider<NavigationDrawerHeaderViewModel>,
   private val footerViewModelProvider: ViewModelProvider<NavigationDrawerFooterViewModel>
 ) : NavigationView.OnNavigationItemSelectedListener {
@@ -126,7 +126,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "NavigationDrawerFragment",
         "Failed to retrieve profile",
         profileResult.getErrorOrNull()!!
@@ -155,7 +155,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     completedStoryListResult: AsyncResult<CompletedStoryList>
   ): CompletedStoryList {
     if (completedStoryListResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "NavigationDrawerFragment",
         "Failed to retrieve completed story list",
         completedStoryListResult.getErrorOrNull()!!
@@ -184,7 +184,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     ongoingTopicListResult: AsyncResult<OngoingTopicList>
   ): OngoingTopicList {
     if (ongoingTopicListResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "NavigationDrawerFragment",
         "Failed to retrieve ongoing topic list",
         ongoingTopicListResult.getErrorOrNull()!!

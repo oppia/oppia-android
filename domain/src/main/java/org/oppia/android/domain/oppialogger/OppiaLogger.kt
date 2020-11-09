@@ -119,7 +119,6 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  // Exception Controller
   /**Logs non-fatal exception. See [ExceptionsController.logNonFatalException] for more context.*/
   fun logNonFatalException(exception: Exception, timestampInMillis: Long) {
     exceptionController.logNonFatalException(exception, timestampInMillis)
@@ -129,9 +128,12 @@ class OppiaLogger @Inject constructor(
   fun logFatalException(exception: Exception, timestampInMillis: Long) {
     exceptionController.logFatalException(exception, timestampInMillis)
   }
+
+  /** Logs a verbose message with the specified tag, message and exception.*/
   fun v(tag: String, msg: String) {
     Logger.v(tag, msg)
   }
+
   /** Logs a verbose message with the specified tag, message and exception.*/
   fun v(tag: String, msg: String, tr: Throwable) {
     Logger.v(tag, msg, tr)

@@ -24,10 +24,10 @@ import org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioFragmentBinding
 import org.oppia.android.domain.audio.CellularAudioDialogController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
@@ -45,7 +45,7 @@ class AudioFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val viewModelProvider: ViewModelProvider<AudioViewModel>,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger
 ) {
   var userIsSeeking = false
   var userProgress = 0
@@ -141,7 +141,7 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): String {
     if (profileResult.isFailure()) {
-      logger.e("AudioFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      oppiaLogger.e("AudioFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
     return getAudioLanguage(profileResult.getOrDefault(Profile.getDefaultInstance()).audioLanguage)
   }

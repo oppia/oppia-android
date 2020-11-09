@@ -34,7 +34,6 @@ import org.oppia.android.domain.question.QuestionAssessmentProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -47,7 +46,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
-  private val logger: ConsoleLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager
@@ -208,7 +206,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun processEphemeralQuestionResult(result: AsyncResult<EphemeralQuestion>) {
     if (result.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "QuestionPlayerFragment",
         "Failed to retrieve ephemeral question",
         result.getErrorOrNull()!!
@@ -346,7 +344,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   /** Helper for [subscribeToHint]. */
   private fun processHint(hintResult: AsyncResult<Hint>): Hint {
     if (hintResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "QuestionPlayerFragment",
         "Failed to retrieve Hint",
         hintResult.getErrorOrNull()!!
@@ -358,7 +356,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   /** Helper for [subscribeToSolution]. */
   private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
     if (solutionResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "QuestionPlayerFragment",
         "Failed to retrieve Solution",
         solutionResult.getErrorOrNull()!!
@@ -372,7 +370,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     answeredQuestionOutcomeResult: AsyncResult<AnsweredQuestionOutcome>
   ): AnsweredQuestionOutcome {
     if (answeredQuestionOutcomeResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "QuestionPlayerFragment",
         "Failed to retrieve answer outcome",
         answeredQuestionOutcomeResult.getErrorOrNull()!!

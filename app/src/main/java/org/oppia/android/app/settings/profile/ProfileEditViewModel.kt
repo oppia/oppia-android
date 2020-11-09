@@ -8,10 +8,10 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 // TODO(#1633): Fix ViewModel to not depend on View
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @ActivityScope
 class ProfileEditViewModel @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
@@ -43,7 +43,7 @@ class ProfileEditViewModel @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "ProfileEditViewModel",
         "Failed to retrieve the profile with ID: ${profileId.internalId}",
         profileResult.getErrorOrNull()!!

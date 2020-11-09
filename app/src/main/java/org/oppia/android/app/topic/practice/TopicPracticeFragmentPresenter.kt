@@ -18,7 +18,7 @@ import org.oppia.android.databinding.TopicPracticeFooterViewBinding
 import org.oppia.android.databinding.TopicPracticeFragmentBinding
 import org.oppia.android.databinding.TopicPracticeHeaderViewBinding
 import org.oppia.android.databinding.TopicPracticeSubtopicBinding
-import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
 
 /** The presenter for [TopicPracticeFragment]. */
@@ -26,7 +26,7 @@ import javax.inject.Inject
 class TopicPracticeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val viewModelProvider: ViewModelProvider<TopicPracticeViewModel>
 ) : SubtopicSelector {
   private lateinit var binding: TopicPracticeFragmentBinding
@@ -127,7 +127,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     binding.isSubmitButtonActive = selectedSubtopicIdList.isNotEmpty()
     binding.topicPracticeStartButton.setOnClickListener {
       val skillIdList = ArrayList(skillIdHashMap.values)
-      logger.d("TopicPracticeFragmentPresenter", "Skill Ids = " + skillIdList.flatten())
+      oppiaLogger.d("TopicPracticeFragmentPresenter", "Skill Ids = " + skillIdList.flatten())
       routeToQuestionPlayerListener.routeToQuestionPlayer(
         skillIdList.flatten() as ArrayList<String>
       )

@@ -32,7 +32,6 @@ import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.datetime.DateTimeUtil
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
@@ -46,7 +45,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   private val oppiaClock: OppiaClock,
-  private val logger: ConsoleLogger,
   private val oppiaLogger: OppiaLogger,
   private val intentFactoryShim: IntentFactoryShim,
   @TopicHtmlParserEntityType private val topicEntityType: String,
@@ -137,7 +135,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e("HomeFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      oppiaLogger.e("HomeFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }

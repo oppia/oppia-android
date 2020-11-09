@@ -6,6 +6,7 @@ import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.story.ExplorationSelectionListener
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.ConsoleLogger
 
@@ -17,7 +18,7 @@ class StoryChapterSummaryViewModel(
   private val fragment: Fragment,
   private val explorationSelectionListener: ExplorationSelectionListener,
   private val explorationDataController: ExplorationDataController,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   val internalProfileId: Int,
   val topicId: String,
   val storyId: String,
@@ -37,14 +38,14 @@ class StoryChapterSummaryViewModel(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
         when {
-          result.isPending() -> logger.d(STORY_VIEWER_TAG, "Loading exploration")
-          result.isFailure() -> logger.e(
+          result.isPending() -> oppiaLogger.d(STORY_VIEWER_TAG, "Loading exploration")
+          result.isFailure() -> oppiaLogger.e(
             STORY_VIEWER_TAG,
             "Failed to load exploration",
             result.getErrorOrNull()!!
           )
           else -> {
-            logger.d(STORY_VIEWER_TAG, "Successfully loaded exploration: $explorationId")
+            oppiaLogger.d(STORY_VIEWER_TAG, "Successfully loaded exploration: $explorationId")
             explorationSelectionListener.selectExploration(
               internalProfileId,
               topicId,

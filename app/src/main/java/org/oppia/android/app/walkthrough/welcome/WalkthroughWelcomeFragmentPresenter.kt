@@ -17,6 +17,7 @@ import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.android.app.walkthrough.WalkthroughPageChanger
 import org.oppia.android.app.walkthrough.WalkthroughPages
 import org.oppia.android.databinding.WalkthroughWelcomeFragmentBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -29,7 +30,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger
 ) : WalkthroughPageChanger {
   private lateinit var binding: WalkthroughWelcomeFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
@@ -86,7 +87,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "WalkthroughWelcomeFragment",
         "Failed to retrieve profile",
         profileResult.getErrorOrNull()!!

@@ -6,17 +6,17 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The ObservableViewModel for [TopicFragment]. */
 @FragmentScope
 class TopicViewModel @Inject constructor(
   private val topicController: TopicController,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger
 ) : ObservableViewModel() {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -46,7 +46,7 @@ class TopicViewModel @Inject constructor(
 
   private fun processTopicResult(topicResult: AsyncResult<Topic>): Topic {
     if (topicResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "TopicFragment",
         "Failed to retrieve Topic: ",
         topicResult.getErrorOrNull()!!

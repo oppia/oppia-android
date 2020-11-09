@@ -22,6 +22,7 @@ import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
@@ -38,7 +39,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
@@ -200,14 +201,14 @@ class ExplorationActivityPresenter @Inject constructor(
         activity,
         Observer<AsyncResult<Any?>> {
           when {
-            it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
-            it.isFailure() -> logger.e(
+            it.isPending() -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
+            it.isFailure() -> oppiaLogger.e(
               "ExplorationActivity",
               "Failed to stop exploration",
               it.getErrorOrNull()!!
             )
             else -> {
-              logger.d("ExplorationActivity", "Successfully stopped exploration")
+              oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
               backPressActivitySelector(backflowScreen)
               (activity as ExplorationActivity).finish()
             }
@@ -259,7 +260,7 @@ class ExplorationActivityPresenter @Inject constructor(
   /** Helper for subscribeToExploration. */
   private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
     if (ephemeralStateResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "StateFragment",
         "Failed to retrieve answer outcome",
         ephemeralStateResult.getErrorOrNull()!!

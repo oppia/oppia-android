@@ -27,7 +27,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.statusbar.StatusBarColor
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
@@ -65,7 +64,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val context: Context,
-  private val logger: ConsoleLogger,
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
@@ -129,7 +127,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     wasProfileEverBeenAddedResult: AsyncResult<Boolean>
   ): Boolean {
     if (wasProfileEverBeenAddedResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "ProfileChooserFragment",
         "Failed to retrieve the information on wasProfileEverBeenAdded",
         wasProfileEverBeenAddedResult.getErrorOrNull()!!

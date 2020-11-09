@@ -5,10 +5,10 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.exceptions.toException
+import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -22,7 +22,7 @@ class LogUploadWorker private constructor(
   private val exceptionsController: ExceptionsController,
   private val exceptionLogger: ExceptionLogger,
   private val eventLogger: EventLogger,
-  private val oppiaLogger: OppiaLogger,
+  private val consoleLogger: ConsoleLogger,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : CoroutineWorker(context, params) {
 
@@ -57,7 +57,7 @@ class LogUploadWorker private constructor(
       }
       Result.success()
     } catch (e: Exception) {
-      oppiaLogger.e(TAG, e.toString(), e)
+      consoleLogger.e(TAG, e.toString(), e)
       Result.failure()
     }
   }
@@ -74,7 +74,7 @@ class LogUploadWorker private constructor(
       }
       Result.success()
     } catch (e: Exception) {
-      oppiaLogger.e(TAG, "Failed to upload events", e)
+      consoleLogger.e(TAG, "Failed to upload events", e)
       Result.failure()
     }
   }
@@ -85,7 +85,7 @@ class LogUploadWorker private constructor(
     private val exceptionsController: ExceptionsController,
     private val exceptionLogger: ExceptionLogger,
     private val eventLogger: EventLogger,
-    private val oppiaLogger: OppiaLogger,
+    private val consoleLogger: ConsoleLogger,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
 
@@ -97,7 +97,7 @@ class LogUploadWorker private constructor(
         exceptionsController,
         exceptionLogger,
         eventLogger,
-        oppiaLogger,
+        consoleLogger,
         backgroundDispatcher
       )
     }

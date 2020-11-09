@@ -13,11 +13,11 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicInfoFragmentBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.HtmlParser
 import javax.inject.Inject
 
@@ -26,7 +26,7 @@ import javax.inject.Inject
 class TopicInfoFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicInfoViewModel>,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val topicController: TopicController,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String
@@ -97,7 +97,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicInfoFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      oppiaLogger.e("TopicInfoFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }

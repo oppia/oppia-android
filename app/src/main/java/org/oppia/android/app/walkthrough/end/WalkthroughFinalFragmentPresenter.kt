@@ -14,10 +14,10 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.databinding.WalkthroughFinalFragmentBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughFinalFragment]. */
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class WalkthroughFinalFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val topicController: TopicController
 ) : WalkthroughEndPageChanger {
   private lateinit var binding: WalkthroughFinalFragmentBinding
@@ -92,7 +92,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "WalkthroughFinalFragment",
         "Failed to retrieve topic",
         topic.getErrorOrNull()!!

@@ -9,17 +9,17 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [ExplorationManagerFragment]. */
 @FragmentScope
 class ExplorationManagerFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val activity: AppCompatActivity,
   private val fragment: Fragment
 ) {
@@ -46,7 +46,7 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
     readingTextSizeResult: AsyncResult<Profile>
   ): ReadingTextSize {
     if (readingTextSizeResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "ExplorationManagerFragment",
         "Failed to retrieve profile",
         readingTextSizeResult.getErrorOrNull()!!

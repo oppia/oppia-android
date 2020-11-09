@@ -11,16 +11,16 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileEditActivityBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [ProfileEditActivity]. */
 @ActivityScope
 class ProfileEditActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<ProfileEditViewModel>
 ) {
@@ -73,7 +73,7 @@ class ProfileEditActivityPresenter @Inject constructor(
           activity,
           Observer {
             if (it.isFailure()) {
-              logger.e(
+              oppiaLogger.e(
                 "ProfileEditActivityPresenter",
                 "Failed to updated allow download access",
                 it.getErrorOrNull()!!

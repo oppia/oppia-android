@@ -9,10 +9,10 @@ import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import java.util.Locale
 import javax.inject.Inject
 
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @FragmentScope
 class ProfileChooserViewModel @Inject constructor(
   fragment: Fragment,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
 
@@ -42,7 +42,7 @@ class ProfileChooserViewModel @Inject constructor(
     profilesResult: AsyncResult<List<Profile>>
   ): List<ProfileChooserUiModel> {
     if (profilesResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "ProfileChooserViewModel",
         "Failed to retrieve the list of profiles",
         profilesResult.getErrorOrNull()!!
