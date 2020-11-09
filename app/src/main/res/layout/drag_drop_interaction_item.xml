@@ -54,7 +54,7 @@
       android:textStyle="italic"
       android:visibility="@{viewModel.getGroupingStatus()? View.VISIBLE : View.GONE}"
       app:layoutMarginStart="@{viewModel.isSplitView ? @dimen/space_16dp : @dimen/space_12dp}"
-      app:layoutMarginTop="@{viewModel.isSplitView ? @dimen/space_16dp : @dimen/space_8dp}" />
+      app:layoutMarginTop="@{viewModel.isSplitView ? @dimen/space_16dp : @dimen/drag_drop_grouping_hint_text_view_non_split_margin_top}" />
 
     <org.oppia.android.app.player.state.DragDropSortInteractionView
       android:id="@+id/drag_drop_interaction_recycler_view"
