@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,7 +12,6 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -21,18 +19,14 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.Component
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -465,58 +459,6 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
-    }
-  }
-
-  @Test
-  // TODO(#973): Fix ProfileChooserFragmentTest
-  @Ignore
-  fun testProfileChooserFragment_clickAddProfile_checkOpensAdminAuthActivity_onBackButton_opensProfileChooserFragment() { // ktlint-disable max-line-length
-    profileTestHelper.initializeProfiles()
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(atPosition(R.id.profile_recycler_view, 3)).perform(click())
-      intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasExtra(AdminAuthActivity.getIntentKey(), 1))
-      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.admin_auth_toolbar))))
-        .check(matches(withText(context.resources.getString(R.string.add_profile_title))))
-      onView(withText(context.resources.getString(R.string.admin_auth_heading))).check(
-        matches(
-          isDisplayed()
-        )
-      )
-      onView(withText(context.resources.getString(R.string.admin_auth_sub))).check(
-        matches(
-          isDisplayed()
-        )
-      )
-      onView(isRoot()).perform(closeSoftKeyboard(), pressBack())
-      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  // TODO(#973): Fix ProfileChooserFragmentTest
-  @Ignore
-  fun testProfileChooserFragment_clickAdminControls_checkOpensAdminAuthActivity_onBackButton_opensProfileChooserFragment() { // ktlint-disable max-line-length
-    profileTestHelper.initializeProfiles()
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
-      intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasExtra(AdminAuthActivity.getIntentKey(), 0))
-      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.admin_auth_toolbar))))
-        .check(matches(withText(context.resources.getString(R.string.administrator_controls))))
-      onView(withText(context.resources.getString(R.string.admin_auth_heading))).check(
-        matches(
-          isDisplayed()
-        )
-      )
-      onView(withText(context.resources.getString(R.string.admin_auth_admin_controls_sub))).check(
-        matches(isDisplayed())
-      )
-      onView(isRoot()).perform(closeSoftKeyboard(), pressBack())
-      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
     }
   }
 
