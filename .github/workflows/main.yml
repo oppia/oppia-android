@@ -58,7 +58,7 @@ jobs:
       run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
 
     - name: Java lint check
-      run: java -jar checkstyle-8.37-all.jar -Dcheckstyle.java.severity=error -c /google_checks.xml app/src/main/java/org/oppia/android/app/databinding/DrawableBindingAdapters.java && echo "Lint completed successfully"
+      run: java -jar checkstyle-8.37-all.jar -c=checkstyle.xml app/src/main/java/org/oppia/android/app/databinding/DrawableBindingAdapters.java && echo "Lint completed successfully"
 
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
