@@ -43,7 +43,7 @@ jobs:
       run: |
         CHECKSTYLE="8.37"
         echo Using Checkstyle version $CHECKSTYLE
-        curl -sSLO https://github.com/checkstyle/checkstyle/releases/download/checkstyle-$CHECKSTYLE/checkstyle-$CHECKSTYLE-all.jar
+        curl -sSLO https://github.com/checkstyle/checkstyle/releases/download/checkstyle-$CHECKSTYLE/checkstyle-$CHECKSTYLE-all.jar > checkstyle
         chmod a+x checkstyle
 
     - name: Kotlin lint check
