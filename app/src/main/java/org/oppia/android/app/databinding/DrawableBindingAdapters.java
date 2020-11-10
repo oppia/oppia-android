@@ -17,8 +17,8 @@ public final class DrawableBindingAdapters {
   public static void setBackgroundDrawable(@NonNull View view, @ColorInt int colorRgb) {
     view.setBackgroundResource(R.drawable.rounded_rect_background);
     // The input color needs to have alpha channel prepended to it.
-    GradientDrawable background = (GradientDrawable) view.getBackground();
-    background.setColor(0xff000000 | colorRgb);
+              GradientDrawable background = (GradientDrawable) view.getBackground();
+                background.setColor(0xff000000 | colorRgb);
   }
 
   @BindingAdapter("app:topRoundedRectDrawableWithColor")
