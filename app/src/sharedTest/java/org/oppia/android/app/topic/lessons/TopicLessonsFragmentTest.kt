@@ -3,23 +3,14 @@ package org.oppia.android.app.topic.lessons
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.PerformException
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -30,12 +21,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.espresso.util.HumanReadables
-import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
 import dagger.Component
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.not
@@ -85,6 +73,7 @@ import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -97,9 +86,6 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.AbstractExecutorService
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -116,6 +102,9 @@ class TopicLessonsFragmentTest {
   lateinit var context: Context
 
   @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
@@ -129,7 +118,7 @@ class TopicLessonsFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
+    testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     FirebaseApp.initializeApp(context)
@@ -137,7 +126,7 @@ class TopicLessonsFragmentTest {
 
   @After
   fun tearDown() {
-    IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -154,16 +143,16 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
   fun testLessonsPlayFragment_loadRatiosTopic_storyName_isCorrect() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPosition(
           R.id.story_summary_recycler_view,
@@ -174,16 +163,16 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
   fun testLessonsPlayFragment_loadRatiosTopic_chapterCountTextMultiple_isCorrect() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPosition(
           R.id.story_summary_recycler_view,
@@ -194,21 +183,20 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
   fun testLessonsPlayFragment_loadRatiosTopic_completeStoryProgress_isDisplayed() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
-      /* timestampOlderThanAWeek= */ false
+      timestampOlderThanAWeek = false
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      waitForTheView(withText("100%"))
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPosition(
           R.id.story_summary_recycler_view,
@@ -219,20 +207,20 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
   fun testLessonsPlayFragment_loadRatiosTopic_partialStoryProgress_isDisplayed() {
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
       profileId,
-      /* timestampOlderThanAWeek= */ false
+      timestampOlderThanAWeek = false
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPosition(
           R.id.story_summary_recycler_view,
@@ -243,16 +231,16 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
   fun testLessonsPlayFragment_loadRatiosTopic_configurationChange_storyName_isCorrect() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPosition(
@@ -264,16 +252,16 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
   fun testLessonsPlayFragment_loadRatiosTopic_clickStoryItem_opensStoryActivityWithCorrectIntent() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -288,7 +276,7 @@ class TopicLessonsFragmentTest {
 
   @Test
   // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
+  @Ignore("Failing due to ViewPager2")
   fun testLessonsPlayFragment_loadRatiosTopic_chapterListIsNotVisible() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
@@ -300,16 +288,16 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
   fun testLessonsPlayFragment_loadRatiosTopic_default_arrowDown() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -325,16 +313,16 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIcon_chapterListIsVisible() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -354,7 +342,7 @@ class TopicLessonsFragmentTest {
 
   @Test
   // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
+  @Ignore("Failing due to ViewPager2")
   fun testLessonsPlayFragment_loadRatiosTopic_clickChapter_opensExplorationActivity() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
@@ -412,7 +400,7 @@ class TopicLessonsFragmentTest {
 
   @Test
   // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
+  @Ignore("Failing due to ViewPager2")
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex2_chapterListForIndex1IsNotDisplayed() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
@@ -461,16 +449,16 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex0_chapterListForIndex0IsNotDisplayed() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.story_summary_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           2
@@ -511,16 +499,16 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationChange_chapterListIsVisible() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -541,97 +529,6 @@ class TopicLessonsFragmentTest {
           R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
-    }
-  }
-
-  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
-    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
-  }
-
-  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-  //  thread helps to counter that.
-
-  /**
-   * Perform action of waiting for a specific matcher to finish. Adapted from:
-   * https://stackoverflow.com/a/22563297/3689782.
-   */
-  private fun waitForMatch(viewMatcher: Matcher<View>, millis: Long): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String {
-        return "wait for a specific view with matcher <$viewMatcher> during $millis millis."
-      }
-
-      override fun getConstraints(): Matcher<View> {
-        return isRoot()
-      }
-
-      override fun perform(uiController: UiController?, view: View?) {
-        checkNotNull(uiController)
-        uiController.loopMainThreadUntilIdle()
-        val startTime = System.currentTimeMillis()
-        val endTime = startTime + millis
-
-        do {
-          if (TreeIterables.breadthFirstViewTraversal(view).any { viewMatcher.matches(it) }) {
-            return
-          }
-          uiController.loopMainThreadForAtLeast(50)
-        } while (System.currentTimeMillis() < endTime)
-
-        // Couldn't match in time.
-        throw PerformException.Builder()
-          .withActionDescription(description)
-          .withViewDescription(HumanReadables.describe(view))
-          .withCause(TimeoutException())
-          .build()
-      }
-    }
-  }
-
-  // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
-  //  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
-  //  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
-  //  and immediate.
-  //  NB: This also blocks on #59 to be able to actually create a test-only library.
-
-  /**
-   * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
-   * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
-   */
-  private object MainThreadExecutor : AbstractExecutorService() {
-    override fun isTerminated(): Boolean = false
-
-    private val handler = Handler(Looper.getMainLooper())
-    val countingResource =
-      CountingIdlingResource("main_thread_executor_counting_idling_resource")
-
-    override fun execute(command: Runnable?) {
-      countingResource.increment()
-      handler.post {
-        try {
-          command?.run()
-        } finally {
-          countingResource.decrement()
-        }
-      }
-    }
-
-    override fun shutdown() {
-      throw UnsupportedOperationException()
-    }
-
-    override fun shutdownNow(): MutableList<Runnable> {
-      throw UnsupportedOperationException()
-    }
-
-    override fun isShutdown(): Boolean = false
-
-    override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
-      throw UnsupportedOperationException()
     }
   }
 

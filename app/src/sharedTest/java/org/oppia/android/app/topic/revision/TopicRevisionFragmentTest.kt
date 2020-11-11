@@ -134,8 +134,6 @@ class TopicRevisionFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicRevisionFragmentTest
-  @Ignore
   fun testTopicRevisionFragment_loadFragment_selectRevisionTopics_opensRevisionCardActivity() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
@@ -236,7 +234,7 @@ class TopicRevisionFragmentTest {
 
   @Test
   // TODO(#973): Fix TopicRevisionFragmentTest
-  @Ignore
+  @Ignore("Failing due to Configuration or Timing in Robolectric")
   fun testTopicRevisionFragment_loadFragment_configurationChange_checkSpanCount_isThree() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()

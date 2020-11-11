@@ -311,6 +311,7 @@ class TopicPracticeFragmentTest {
     }
   }
 
+  // TODO(@973): Fix TopicLessonsFragmentTest
   @Test
   @Ignore("Error in Espresso - Wait for [TestCoroutineDispatcherIdlingResource] to become idle timed out") // ktlint-disable max-line-length
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() { // ktlint-disable max-line-length
