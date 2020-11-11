@@ -45,7 +45,7 @@ public final class ImageViewBindingAdapters {
 
   /**
    * Binds the specified [LessonThumbnailGraphic] as the source for the [ImageView].
-   *
+   * <p/>
    * The view should be specified to have no width/height (when sized in a constraint layout), and
    * use centerCrop for the image to appear correctly.
    */
@@ -58,42 +58,61 @@ public final class ImageViewBindingAdapters {
     switch (thumbnailGraphic) {
       case BAKER:
         drawableResourceId = R.drawable.lesson_thumbnail_graphic_baker;
+        break;
       case CHILD_WITH_BOOK:
         drawableResourceId = R.drawable.lesson_thumbnail_graphic_child_with_book;
+        break;
       case CHILD_WITH_CUPCAKES:
         drawableResourceId = R.drawable.lesson_thumbnail_graphic_child_with_cupcakes;
+        break;
       case CHILD_WITH_FRACTIONS_HOMEWORK:
         drawableResourceId = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework;
+        break;
       case DUCK_AND_CHICKEN:
         drawableResourceId = R.drawable.lesson_thumbnail_graphic_duck_and_chicken;
+        break;
       case PERSON_WITH_PIE_CHART:
         drawableResourceId = R.drawable.lesson_thumbnail_graphic_person_with_pie_chart;
+        break;
       case IDENTIFYING_THE_PARTS_OF_A_FRACTION:
         drawableResourceId = R.drawable.topic_fractions_01;
+        break;
       case WRITING_FRACTIONS:
         drawableResourceId = R.drawable.topic_fractions_02;
+        break;
       case EQUIVALENT_FRACTIONS:
         drawableResourceId = R.drawable.topic_fractions_03;
+        break;
       case MIXED_NUMBERS_AND_IMPROPER_FRACTIONS:
         drawableResourceId = R.drawable.topic_fractions_04;
+        break;
       case COMPARING_FRACTIONS:
         drawableResourceId = R.drawable.topic_fractions_05;
+        break;
       case ADDING_AND_SUBTRACTING_FRACTIONS:
         drawableResourceId = R.drawable.topic_fractions_06;
+        break;
       case MULTIPLYING_FRACTIONS:
         drawableResourceId = R.drawable.topic_fractions_07;
+        break;
       case DIVIDING_FRACTIONS:
         drawableResourceId = R.drawable.topic_fractions_08;
+        break;
       case DERIVE_A_RATIO:
         drawableResourceId = R.drawable.topic_ratios_01;
+        break;
       case WHAT_IS_A_FRACTION:
         drawableResourceId = R.drawable.topic_fractions_01;
+        break;
       case FRACTION_OF_A_GROUP:
         drawableResourceId = R.drawable.topic_fractions_02;
+        break;
       case ADDING_FRACTIONS:
         drawableResourceId = R.drawable.topic_fractions_03;
+        break;
       case MIXED_NUMBERS:
         drawableResourceId = R.drawable.topic_fractions_04;
+        break;
       default:
         drawableResourceId = R.drawable.topic_fractions_01;
     }

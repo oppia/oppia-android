@@ -21,6 +21,9 @@ public final class ViewBindingAdapters {
     view.setLayoutParams(layoutParams);
   }
 
+  /**
+   * BindingAdapter to set Rotation Animation and Rotation Angle.
+   */
   @BindingAdapter(
       value = {
           "app:isRotationAnimationClockwise",
