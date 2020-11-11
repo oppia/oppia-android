@@ -4,9 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
+
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EventLog
@@ -29,7 +32,7 @@ class TopicFragmentPresenter @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
-  private lateinit var viewPager: ViewPager
+  private lateinit var viewPager2: ViewPager2
   private val tabIcons =
     intArrayOf(
       R.drawable.ic_info_icon_24dp,
@@ -52,7 +55,7 @@ class TopicFragmentPresenter @Inject constructor(
     )
     binding.lifecycleOwner = fragment
     this.storyId = storyId
-    viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager
+    viewPager2 = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager2
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
     this.internalProfileId = internalProfileId
     this.topicId = topicId
@@ -70,24 +73,39 @@ class TopicFragmentPresenter @Inject constructor(
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
 
-    setUpViewPager(viewPager, topicId)
+    setUpViewPager(viewPager2, topicId)
     return binding.root
   }
 
   private fun setCurrentTab(tab: TopicTab) {
-    viewPager.setCurrentItem(tab.ordinal, true)
+    viewPager2.setCurrentItem(tab.ordinal, true)
     logTopicEvents(tab)
   }
 
-  private fun setUpViewPager(viewPager: ViewPager, topicId: String) {
+  private fun setUpViewPager(viewPager2: ViewPager2, topicId: String) {
     val adapter =
-      ViewPagerAdapter(fragment.childFragmentManager, internalProfileId, topicId, storyId)
-    viewPager.adapter = adapter
-    tabLayout.setupWithViewPager(viewPager)
-    tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.info)).setIcon(tabIcons[0])
-    tabLayout.getTabAt(1)!!.setText(fragment.getString(R.string.lessons)).setIcon(tabIcons[1])
-    tabLayout.getTabAt(2)!!.setText(fragment.getString(R.string.practice)).setIcon(tabIcons[2])
-    tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.revision)).setIcon(tabIcons[3])
+      ViewPagerAdapter(activity, internalProfileId, topicId, storyId)
+    viewPager2.adapter = adapter
+    TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+      when (position) {
+        0 -> {
+          tab.text = fragment.getString(R.string.info)
+          tab.icon = ContextCompat.getDrawable(fragment.context!!, tabIcons[0])
+        }
+        1 -> {
+          tab.text = fragment.getString(R.string.lessons)
+          tab.icon = ContextCompat.getDrawable(fragment.context!!, tabIcons[1])
+        }
+        2 -> {
+          tab.text = fragment.getString(R.string.practice)
+          tab.icon = ContextCompat.getDrawable(fragment.context!!, tabIcons[2])
+        }
+        3 -> {
+          tab.text = fragment.getString(R.string.revision)
+          tab.icon = ContextCompat.getDrawable(fragment.context!!, tabIcons[3])
+        }
+      }
+    }.attach()
     if (topicId.isNotEmpty() && storyId.isNotEmpty())
       setCurrentTab(TopicTab.LESSONS)
     else if (topicId.isNotEmpty() && storyId.isEmpty())

@@ -1,23 +1,26 @@
 package org.oppia.android.app.topic
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import org.oppia.android.app.topic.info.TopicInfoFragment
 import org.oppia.android.app.topic.lessons.TopicLessonsFragment
 import org.oppia.android.app.topic.practice.TopicPracticeFragment
 import org.oppia.android.app.topic.revision.TopicRevisionFragment
 
-/** Adapter to bind fragments to [FragmentStatePagerAdapter] inside [TopicFragment]. */
+/** Adapter to bind fragments to [FragmentStateAdapter] inside [TopicFragment]. */
 class ViewPagerAdapter(
-  fragmentManager: FragmentManager,
+  activity: AppCompatActivity,
   private val internalProfileId: Int,
   private val topicId: String,
   private val storyId: String
-) :
-  FragmentStatePagerAdapter(fragmentManager) {
+) : FragmentStateAdapter(activity) {
 
-  override fun getItem(position: Int): Fragment {
+  override fun getItemCount(): Int {
+    return TopicTab.values().size
+  }
+
+  override fun createFragment(position: Int): Fragment {
     return when (TopicTab.getTabForPosition(position)) {
       TopicTab.INFO -> {
         TopicInfoFragment.newInstance(internalProfileId, topicId)
@@ -32,9 +35,5 @@ class ViewPagerAdapter(
         TopicRevisionFragment.newInstance(internalProfileId, topicId)
       }
     }
-  }
-
-  override fun getCount(): Int {
-    return TopicTab.values().size
   }
 }
