@@ -1,6 +1,5 @@
 package org.oppia.android.app.topic
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import org.oppia.android.app.topic.info.TopicInfoFragment
