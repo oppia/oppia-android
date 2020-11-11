@@ -10,11 +10,11 @@ import org.oppia.android.app.topic.revision.TopicRevisionFragment
 
 /** Adapter to bind fragments to [FragmentStateAdapter] inside [TopicFragment]. */
 class ViewPagerAdapter(
-  activity: AppCompatActivity,
+  fragment: Fragment,
   private val internalProfileId: Int,
   private val topicId: String,
   private val storyId: String
-) : FragmentStateAdapter(activity) {
+) : FragmentStateAdapter(fragment) {
 
   override fun getItemCount(): Int {
     return TopicTab.values().size

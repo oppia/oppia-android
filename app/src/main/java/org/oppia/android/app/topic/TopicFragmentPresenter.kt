@@ -83,7 +83,7 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun setUpViewPager(viewPager2: ViewPager2, topicId: String) {
     val adapter =
-      ViewPagerAdapter(activity, internalProfileId, topicId, storyId)
+      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId)
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
       when (position) {

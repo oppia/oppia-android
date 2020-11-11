@@ -228,6 +228,7 @@ class TopicFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -369,12 +370,14 @@ class TopicFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(0).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
           withText(containsString(TOPIC_NAME))
@@ -393,6 +396,7 @@ class TopicFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
