@@ -1,6 +1,7 @@
 package org.oppia.android.app.topic.info
 
 import android.app.Application
+import android.content.Context
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +27,7 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.TypeSafeMatcher
+import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -62,6 +64,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -73,6 +76,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
@@ -100,29 +104,44 @@ private const val DUMMY_TOPIC_DESCRIPTION_LONG =
   qualifiers = "port-xxhdpi"
 )
 class TopicInfoFragmentTest {
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
   private val internalProfileId = 0
 
   @Before
   fun setUp() {
-    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+    setUpTestApplicationComponent()
+    FirebaseApp.initializeApp(context)
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
+  private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
-  // TODO(#973): Fix TopicInfoFragmentTest
-  @Ignore
   fun testTopicInfoFragment_loadFragment_checkTopicName_isCorrect() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(TOPIC_NAME))))
     }
   }
 
   @Test
-  // TODO(#973): Fix TopicInfoFragmentTest
-  @Ignore
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_description_text_view)).check(
         matches(
           withText(
@@ -136,19 +155,17 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicInfoFragmentTest
-  @Ignore
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_thumbnail_image_view)).check(matches(withDrawable(topicThumbnail)))
     }
   }
 
   @Test
-  // TODO(#973): Fix TopicInfoFragmentTest
-  @Ignore
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_name_text_view))
         .check(
@@ -166,6 +183,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_configurationLandscape_isCorrect() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_tabs_viewpager_container)).check(matches(isDisplayed()))
     }
