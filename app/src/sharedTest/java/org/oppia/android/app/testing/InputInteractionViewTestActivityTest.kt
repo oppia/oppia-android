@@ -4,17 +4,22 @@ import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.junit.After
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,6 +52,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -58,6 +64,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [InputInteractionViewTestActivity]. */
@@ -68,6 +75,26 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class InputInteractionViewTestActivityTest {
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Before
+  fun setUp() {
+    Intents.init()
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
+    testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
 
   @Test
   fun testFractionInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
@@ -721,15 +748,18 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   fun testRatioInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
-    val activityScenario = ActivityScenario.launch(
+    launch(
       InputInteractionViewTestActivity::class.java
     )
-    activityScenario.use {
-      activityScenario.onActivity { activity ->
+    .use {
+      testCoroutineDispatchers.advanceUntilIdle()
+      it.onActivity { activity ->
         val pendingAnswer = activity.ratioExpressionInputInteractionViewModel.getPendingAnswer()
+        testCoroutineDispatchers.advanceUntilIdle()
         assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
           InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
         )
+        testCoroutineDispatchers.advanceUntilIdle()
         assertThat(pendingAnswer.answer.ratioExpression.ratioComponentCount).isEqualTo(0)
       }
     }
@@ -737,26 +767,29 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   fun testRatioInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
+    launch(
       InputInteractionViewTestActivity::class.java
     )
-    activityScenario.use {
-      onView(withId(R.id.test_ratio_input_interaction_view))
-        .perform(
-          typeText(
-            "1:2:3"
+      .use {
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.test_ratio_input_interaction_view))
+          .perform(
+            typeText(
+              "1:2:3"
+            )
           )
-        )
-    }
-    activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.ratioExpressionInputInteractionViewModel.getPendingAnswer()
-      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
-      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-        InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
-      )
-      assertThat(pendingAnswer.answer.ratioExpression.ratioComponentList)
-        .isEqualTo(listOf(1, 2, 3))
-    }
+        testCoroutineDispatchers.runCurrent()
+        it.onActivity { activity ->
+          val pendingAnswer = activity.ratioExpressionInputInteractionViewModel.getPendingAnswer()
+          assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+          assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+            InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
+          )
+          testCoroutineDispatchers.runCurrent()
+          assertThat(pendingAnswer.answer.ratioExpression.ratioComponentList)
+            .isEqualTo(listOf(1, 2, 3))
+        }
+      }
   }
 
   @Test
