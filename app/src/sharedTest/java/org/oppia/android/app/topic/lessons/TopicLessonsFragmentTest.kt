@@ -276,7 +276,7 @@ class TopicLessonsFragmentTest {
 
   @Test
   // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore("Failing due to ViewPager2")
+  @Ignore
   fun testLessonsPlayFragment_loadRatiosTopic_chapterListIsNotVisible() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
@@ -341,16 +341,16 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore("Failing due to ViewPager2")
   fun testLessonsPlayFragment_loadRatiosTopic_clickChapter_opensExplorationActivity() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -400,7 +400,7 @@ class TopicLessonsFragmentTest {
 
   @Test
   // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore("Failing due to ViewPager2")
+  @Ignore("Failing due to Robolectric Timing")
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex2_chapterListForIndex1IsNotDisplayed() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(

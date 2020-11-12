@@ -147,6 +147,7 @@ class StorySummaryAdapter(
           }
         }
       }
+      binding.executePendingBindings()
     }
   }
 }
