@@ -751,18 +751,18 @@ class InputInteractionViewTestActivityTest {
     launch(
       InputInteractionViewTestActivity::class.java
     )
-    .use {
-      testCoroutineDispatchers.advanceUntilIdle()
-      it.onActivity { activity ->
-        val pendingAnswer = activity.ratioExpressionInputInteractionViewModel.getPendingAnswer()
+      .use {
         testCoroutineDispatchers.advanceUntilIdle()
-        assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-          InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
-        )
-        testCoroutineDispatchers.advanceUntilIdle()
-        assertThat(pendingAnswer.answer.ratioExpression.ratioComponentCount).isEqualTo(0)
+        it.onActivity { activity ->
+          val pendingAnswer = activity.ratioExpressionInputInteractionViewModel.getPendingAnswer()
+          testCoroutineDispatchers.advanceUntilIdle()
+          assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+            InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
+          )
+          testCoroutineDispatchers.advanceUntilIdle()
+          assertThat(pendingAnswer.answer.ratioExpression.ratioComponentCount).isEqualTo(0)
+        }
       }
-    }
   }
 
   @Test
