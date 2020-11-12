@@ -11,7 +11,7 @@ on:
       - develop
 
 # This workflow has the following jobs:
-# linters: Kotlin, Protobuf and Java Linting
+# linters: Java, Kotlin, Protobuf
 # robolectric_tests: Robolectric tests for all modules except the app module
 # app_tests: Non-flaky Robolectric tests for the app module
 jobs:
@@ -30,6 +30,13 @@ jobs:
       with:
         java-version: 1.11
 
+    - name: Download Checkstyle
+      run: |
+        CHECKSTYLE="8.37"
+        echo Using Checkstyle version $CHECKSTYLE
+        curl -sSLO https://github.com/checkstyle/checkstyle/releases/download/checkstyle-$CHECKSTYLE/checkstyle-$CHECKSTYLE-all.jar
+        chmod a+x checkstyle-$CHECKSTYLE-all.jar
+
     - name: Download Ktlint
       run: |
         KTLINT="0.37.0"
@@ -44,21 +51,14 @@ jobs:
         curl -sSL https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m) > buf
         chmod a+x buf
 
-    - name: Download Checkstyle
-      run: |
-        CHECKSTYLE="8.37"
-        echo Using Checkstyle version $CHECKSTYLE
-        curl -sSLO https://github.com/checkstyle/checkstyle/releases/download/checkstyle-$CHECKSTYLE/checkstyle-$CHECKSTYLE-all.jar
-        chmod a+x checkstyle-$CHECKSTYLE-all.jar
+    - name: Java lint check
+      run: java -jar checkstyle-8.37-all.jar -c=checkstyle.xml app/src/ data/src/ domain/src/ utility/src/ testing/src/ && echo "Lint completed successfully"
 
     - name: Kotlin lint check
       run: ./ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt && echo "Lint completed successfully"
 
     - name: Protobuf lint check
       run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
-
-    - name: Java lint check
-      run: java -jar checkstyle-8.37-all.jar -c=checkstyle.xml app/src/ data/src/ domain/src/ utility/src/ testing/src/ && echo "Lint completed successfully"
 
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)

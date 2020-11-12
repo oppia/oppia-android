@@ -6,14 +6,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
-/**
- * Holds all custom binding adapters that set miscellaneous values.
- */
+/** Holds all custom binding adapters that set miscellaneous values. */
 public final class ViewBindingAdapters {
 
-  /**
-   * BindingAdapter to set the height of a View.
-   */
+  /** BindingAdapter to set the height of a View. */
   @BindingAdapter("android:layout_height")
   public static void setLayoutHeight(@NonNull View view, float height) {
     ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
@@ -21,9 +17,7 @@ public final class ViewBindingAdapters {
     view.setLayoutParams(layoutParams);
   }
 
-  /**
-   * BindingAdapter to set Rotation Animation and Rotation Angle.
-   */
+  /** BindingAdapter to set Rotation Animation and Rotation Angle. */
   @BindingAdapter(
       value = {
           "app:isRotationAnimationClockwise",
