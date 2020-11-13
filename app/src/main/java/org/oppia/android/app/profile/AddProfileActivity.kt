@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-const val KEY_ADD_PROFILE_COLOR_RGB = "KEY_ADD_PROFILE_COLOR_RGB"
+const val ADD_PROFILE_COLOR_RGB_EXTRA_KEY = "AddProfileActivity.add_profile_color_rgb"
 
 /** Activity that allows users to create new profiles. */
 class AddProfileActivity : InjectableAppCompatActivity() {
@@ -16,7 +16,7 @@ class AddProfileActivity : InjectableAppCompatActivity() {
   companion object {
     fun createAddProfileActivityIntent(context: Context, colorRgb: Int): Intent {
       val intent = Intent(context, AddProfileActivity::class.java)
-      intent.putExtra(KEY_ADD_PROFILE_COLOR_RGB, colorRgb)
+      intent.putExtra(ADD_PROFILE_COLOR_RGB_EXTRA_KEY, colorRgb)
       return intent
     }
   }

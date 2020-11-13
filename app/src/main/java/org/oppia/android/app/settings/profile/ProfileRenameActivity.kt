@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-const val KEY_PROFILE_RENAME_PROFILE_ID = "KEY_PROFILE_RENAME_PROFILE_ID"
+const val PROFILE_RENAME_PROFILE_ID_EXTRA_KEY = "ProfileRenameActivity.profile_rename_profile_id"
 
 /** Activity that allows user to rename a profile. */
 class ProfileRenameActivity : InjectableAppCompatActivity() {
@@ -16,7 +16,7 @@ class ProfileRenameActivity : InjectableAppCompatActivity() {
   companion object {
     fun createProfileRenameActivity(context: Context, profileId: Int): Intent {
       val intent = Intent(context, ProfileRenameActivity::class.java)
-      intent.putExtra(KEY_PROFILE_RENAME_PROFILE_ID, profileId)
+      intent.putExtra(PROFILE_RENAME_PROFILE_ID_EXTRA_KEY, profileId)
       return intent
     }
   }

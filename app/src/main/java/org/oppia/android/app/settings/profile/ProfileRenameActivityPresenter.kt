@@ -40,7 +40,7 @@ class ProfileRenameActivityPresenter @Inject constructor(
         activity,
         R.layout.profile_rename_activity
       )
-    val profileId = activity.intent.getIntExtra(KEY_PROFILE_RENAME_PROFILE_ID, 0)
+    val profileId = activity.intent.getIntExtra(PROFILE_RENAME_PROFILE_ID_EXTRA_KEY, 0)
 
     binding.apply {
       viewModel = renameViewModel
