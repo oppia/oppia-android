@@ -1075,4 +1075,3 @@ class InputInteractionViewTestActivityTest {
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 }
-
