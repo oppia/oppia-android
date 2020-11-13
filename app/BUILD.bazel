@@ -19,7 +19,7 @@ load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//app:app_test.bzl", "app_test")
 load("//app:test_with_resources.bzl", "test_with_resources")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//oppia-android:__pkg__", "//utility:__subpackages__", ])
 
 # Source files for the annotations library. The files inside the annotations library are dependencies
 # for all other libraries in app module, except the listeners library.
@@ -433,7 +433,6 @@ android_library(
         ["src/main/res/**"],
         exclude = DATABINDING_LAYOUTS,
     ),
-    visibility = ["//visibility:private"],
     deps = [
         artifact("com.google.android.material:material"),
     ],
@@ -478,7 +477,6 @@ kt_android_library(
     name = "listeners",
     srcs = LISTENERS,
     custom_package = "org.oppia.android.app",
-    visibility = ["//visibility:private"],
     deps = [
         ":dagger",
         "//model",
@@ -492,7 +490,6 @@ kt_android_library(
     srcs = VIEWS,
     custom_package = "org.oppia.android.app.views",
     manifest = "src/main/ViewsManifest.xml",
-    visibility = ["//visibility:private"],
     deps = [
         ":annotations",
         ":listeners",
@@ -512,7 +509,6 @@ kt_android_library(
     name = "annotations",
     srcs = ANNOTATIONS,
     custom_package = "org.oppia.android.app",
-    visibility = ["//visibility:private"],
     deps = [
         ":dagger",
         "//model",
@@ -526,7 +522,6 @@ kt_android_library(
     custom_package = "org.oppia.android.app.view.models",
     enable_data_binding = True,
     manifest = "src/main/ViewModelsManifest.xml",
-    visibility = ["//visibility:private"],
     deps = [
         ":annotations",
         ":dagger",
@@ -548,7 +543,6 @@ android_library(
     custom_package = "org.oppia.android.app.databinding.adapters",
     enable_data_binding = True,
     manifest = "src/main/DatabindingAdaptersManifest.xml",
-    visibility = ["//visibility:private"],
     deps = [
         ":dagger",
         ":resources",
