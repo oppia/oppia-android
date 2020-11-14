@@ -43,8 +43,8 @@
     app:questionSplitViewMarginTop="@{@dimen/space_24dp}"
     app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:questionViewMarginBottom="@{@dimen/space_0dp}"
-    app:questionViewMarginEnd="@{@dimen/space_64dp}"
-    app:questionViewMarginStart="@{@dimen/space_64dp}"
+    app:questionViewMarginEnd="@{@dimen/submitted_answer_question_view_margin_end}"
+    app:questionViewMarginStart="@{@dimen/submitted_answer_question_view_margin_start}"
     app:questionViewMarginTop="@{@dimen/space_24dp}">
 
     <TextView
