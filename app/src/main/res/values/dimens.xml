@@ -10,12 +10,9 @@
   <dimen name="cellular_data_dialog_padding">24dp</dimen>
   <dimen name="state_previous_next_button_radius">4dp</dimen>
   <dimen name="train_checkbox_padding">18dp</dimen>
-  <dimen name="elevation_4dp">4dp</dimen>
-  <dimen name="elevation_0dp">0dp</dimen>
   <dimen name="divider_margin_top">8dp</dimen>
   <dimen name="divider_margin_bottom">8dp</dimen>
   <dimen name="bottom_white_space">160dp</dimen>
-  <dimen name="space_224dp">224dp</dimen>
   <dimen name="space_128dp">128dp</dimen>
   <dimen name="space_80dp">80dp</dimen>
   <dimen name="space_72dp">72dp</dimen>
@@ -90,4 +87,11 @@
   <dimen name="drag_drop_content_group_item_margin">8dp</dimen>
   <dimen name="walkthrough_final_no_button_margin_end">8dp</dimen>
   <dimen name="walkthrough_final_yes_button_margin_start">8dp</dimen>
+
+  <dimen name="story_chapter_card_playable_state_elevation">4dp</dimen>
+  <dimen name="ongoing_topic_card_elevation">4dp</dimen>
+  <dimen name="story_chapter_card_not_playable_state_elevation">0dp</dimen>
+  <dimen name="topic_info_fragment_scroll_view_width">0dp</dimen>
+  <dimen name="topic_info_fragment_topic_name_text_view_width">0dp</dimen>
+  <dimen name="profile_chooser_padding_bottom_profile_already_added">224dp</dimen>
 </resources>
