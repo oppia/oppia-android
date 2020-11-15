@@ -17,7 +17,6 @@
   <dimen name="bottom_white_space">160dp</dimen>
   <dimen name="space_224dp">224dp</dimen>
   <dimen name="space_128dp">128dp</dimen>
-  <dimen name="space_80dp">80dp</dimen>
   <dimen name="space_72dp">72dp</dimen>
   <dimen name="space_48dp">48dp</dimen>
   <dimen name="space_36dp">36dp</dimen>
@@ -121,4 +120,21 @@
   <dimen name="submitted_answer_question_split_view_margin_start_extra_interaction_answer">64dp</dimen>
   <dimen name="text_input_interaction_item_non_conversation_view_margin_end">64dp</dimen>
   <dimen name="text_input_interaction_item_non_conversation_view_margin_start">64dp</dimen>
+
+  <dimen name="previous_responses_item_exploration_split_view_margin_end">80dp</dimen>
+  <dimen name="previous_responses_item_exploration_split_view_margin_start">80dp</dimen>
+  <dimen name="previous_responses_item_question_split_view_margin_end">80dp</dimen>
+  <dimen name="previous_responses_item_question_split_view_margin_start">80dp</dimen>
+  <dimen name="content_item_exploration_view_margin_end">80dp</dimen>
+  <dimen name="content_item_exploration_view_margin_start">80dp</dimen>
+  <dimen name="feedback_item_exploration_view_margin_end">80dp</dimen>
+  <dimen name="fraction_interaction_item_conversation_view_margin_start">80dp</dimen>
+  <dimen name="numeric_input_interaction_item_conversation_view_margin_start">80dp</dimen>
+  <dimen name="previous_responses_item_exploration_view_margin_end">80dp</dimen>
+  <dimen name="previous_responses_item_exploration_view_margin_start">80dp</dimen>
+  <dimen name="previous_responses_item_question_view_margin_end">80dp</dimen>
+  <dimen name="previous_responses_item_question_view_margin_start">80dp</dimen>
+  <dimen name="selection_interaction_item_conversation_view_margin_start">80dp</dimen>
+  <dimen name="submitted_answer_item_exploration_view_margin_start">80dp</dimen>
+  <dimen name="text_input_interaction_item_margin_start">80dp</dimen>
 </resources>
