@@ -33,7 +33,7 @@
     app:explorationSplitViewMarginTop="@{@dimen/space_24dp}"
     app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:explorationViewMarginBottom="@{@dimen/space_0dp}"
-    app:explorationViewMarginEnd="@{@dimen/space_48dp}"
+    app:explorationViewMarginEnd="@{@dimen/submitted_answer_item_exploration_view_margin_end}"
     app:explorationViewMarginStart="@{@dimen/submitted_answer_item_exploration_view_margin_start}"
     app:explorationViewMarginTop="@{@dimen/space_24dp}"
     app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
