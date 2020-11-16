@@ -84,8 +84,8 @@
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_select_text"
           app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_24dp : @dimen/space_124dp}"
-          app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_72dp : @dimen/space_0dp}"
-          app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_72dp : @dimen/space_0dp}" />
+          app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_margin_end_profile_already_added : @dimen/space_0dp}"
+          app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_margin_start_profile_already_added : @dimen/space_0dp}" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
