@@ -20,8 +20,8 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:padding="0dp"
-    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/margin_48 : @dimen/margin_64}"
-    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/margin_80 : @dimen/margin_64}">
+    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/space_48dp : @dimen/space_64dp}"
+    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/numeric_input_interaction_item_conversation_view_margin_start : @dimen/space_64dp}">
 
     <org.oppia.android.app.customview.interaction.NumericInputInteractionView
       android:id="@+id/numeric_input_interaction_view"

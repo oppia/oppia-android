@@ -28,7 +28,6 @@ internal class NumberWithUnitsIsEquivalentToRuleClassifierProvider @Inject const
   }
 
   // TODO(#209): Determine whether additional normalization of the input is necessary here.
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: NumberWithUnits, input: NumberWithUnits): Boolean {
     // Units must match, but in different orders is fine.
     if (answer.unitList.toSet() != input.unitList.toSet()) {

@@ -21,7 +21,6 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
       profileId: Int
     ): Intent {
       val intent = Intent(context, PinPasswordActivity::class.java)
-      intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
       intent.putExtra(KEY_PIN_PASSWORD_PROFILE_ID, profileId)
       intent.putExtra(KEY_PIN_PASSWORD_ADMIN_PIN, adminPin)
       return intent

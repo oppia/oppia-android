@@ -9,8 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.RatioExpression
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -25,11 +24,27 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class RatioInputIsEquivalentRuleClassifierProviderTest {
-  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
-  private val ITEM_RATIO_1 = listOf(1, 2, 3)
-  private val ITEM_RATIO_2 = listOf(2, 4, 6)
-  private val ITEM_RATIO_3 = listOf(2, 4, 6, 8)
-  private val ITEM_RATIO_4 = listOf(2, 3, 5)
+
+  private val NON_NEGATIVE_VALUE_TEST_0 =
+    InteractionObjectTestBuilder.createNonNegativeInt(
+      value = 0
+    )
+  private val RATIO_VALUE_TEST_1_2_3 =
+    InteractionObjectTestBuilder.createRatio(
+      listOf(1, 2, 3)
+    )
+  private val RATIO_VALUE_TEST_2_4_6 =
+    InteractionObjectTestBuilder.createRatio(
+      listOf(2, 4, 6)
+    )
+  private val RATIO_VALUE_TEST_2_4_6_8 =
+    InteractionObjectTestBuilder.createRatio(
+      listOf(2, 4, 6, 8)
+    )
+  private val RATIO_VALUE_TEST_2_3_5 =
+    InteractionObjectTestBuilder.createRatio(
+      listOf(2, 3, 5)
+    )
 
   @Inject
   internal lateinit var ratioInputIsEquivalentRuleClassifierProvider:
@@ -39,73 +54,96 @@ class RatioInputIsEquivalentRuleClassifierProviderTest {
     ratioInputIsEquivalentRuleClassifierProvider.createRuleClassifier()
   }
 
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+  }
+
   @Test
   fun testAnswer_testRatio_ratioNonReduced_bothValuesMatch() {
-    val inputs = mapOf("x" to createRatio(ITEM_RATIO_2))
+    val inputs = mapOf("x" to RATIO_VALUE_TEST_2_4_6)
 
     val matches =
-      isEquivalentClassifierProvider.matches(answer = createRatio(ITEM_RATIO_2), inputs = inputs)
+      isEquivalentClassifierProvider.matches(
+        answer = RATIO_VALUE_TEST_2_4_6,
+        inputs = inputs
+      )
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testAnswer_testRatio_ratioNonReduced_ratioReduced_bothValuesMatch() {
-    val inputs = mapOf("x" to createRatio(ITEM_RATIO_2))
+    val inputs = mapOf("x" to RATIO_VALUE_TEST_2_4_6)
 
     val matches =
-      isEquivalentClassifierProvider.matches(answer = createRatio(ITEM_RATIO_1), inputs = inputs)
+      isEquivalentClassifierProvider.matches(
+        answer = RATIO_VALUE_TEST_1_2_3,
+        inputs = inputs
+      )
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testAnswer_testRatio_ratioReduced_bothValuesMatch() {
-    val inputs = mapOf("x" to createRatio(ITEM_RATIO_1))
+    val inputs = mapOf("x" to RATIO_VALUE_TEST_1_2_3)
 
     val matches =
-      isEquivalentClassifierProvider.matches(answer = createRatio(ITEM_RATIO_1), inputs = inputs)
+      isEquivalentClassifierProvider.matches(
+        answer = RATIO_VALUE_TEST_1_2_3,
+        inputs = inputs
+      )
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testAnswer_testRatio_ratio1_ratio3_differentLengths_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to createRatio(ITEM_RATIO_3))
+    val inputs = mapOf("x" to RATIO_VALUE_TEST_2_4_6_8)
 
     val matches =
-      isEquivalentClassifierProvider.matches(answer = createRatio(ITEM_RATIO_1), inputs = inputs)
+      isEquivalentClassifierProvider.matches(
+        answer = RATIO_VALUE_TEST_1_2_3,
+        inputs = inputs
+      )
 
     assertThat(matches).isFalse()
   }
 
   @Test
   fun testAnswer_testRatio_ratio1_ratio4_differentRatios_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to createRatio(ITEM_RATIO_4))
+    val inputs = mapOf("x" to RATIO_VALUE_TEST_2_3_5)
 
     val matches =
-      isEquivalentClassifierProvider.matches(answer = createRatio(ITEM_RATIO_1), inputs = inputs)
+      isEquivalentClassifierProvider.matches(
+        answer = RATIO_VALUE_TEST_1_2_3,
+        inputs = inputs
+      )
 
     assertThat(matches).isFalse()
   }
 
   @Test
   fun testAnswer_testRatio_ratio2NonReduced_ratio1Reduced_bothValuesMatch() {
-    val inputs = mapOf("x" to createRatio(ITEM_RATIO_2))
+    val inputs = mapOf("x" to RATIO_VALUE_TEST_2_4_6)
 
     val matches =
-      isEquivalentClassifierProvider.matches(answer = createRatio(ITEM_RATIO_1), inputs = inputs)
+      isEquivalentClassifierProvider.matches(
+        answer = RATIO_VALUE_TEST_1_2_3,
+        inputs = inputs
+      )
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
     val exception = assertThrows(IllegalStateException::class) {
       isEquivalentClassifierProvider.matches(
-        answer = createRatio(ITEM_RATIO_1),
+        answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs
       )
     }
@@ -119,11 +157,11 @@ class RatioInputIsEquivalentRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_testRatio_missingInputX_throwsException() {
-    val inputs = mapOf("y" to createRatio(ITEM_RATIO_1))
+    val inputs = mapOf("y" to RATIO_VALUE_TEST_1_2_3)
 
     val exception = assertThrows(IllegalStateException::class) {
       isEquivalentClassifierProvider.matches(
-        answer = createRatio(ITEM_RATIO_1),
+        answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs
       )
     }
@@ -131,21 +169,6 @@ class RatioInputIsEquivalentRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'x' but had: [y]")
-  }
-
-  private fun createRatio(value: List<Int>): InteractionObject {
-    return InteractionObject.newBuilder().setRatioExpression(
-      RatioExpression.newBuilder().addAllRatioComponent(value)
-    ).build()
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
-  @Before
-  fun setUp() {
-    setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponent() {

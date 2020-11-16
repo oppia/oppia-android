@@ -1,9 +1,9 @@
 package org.oppia.android.app.topic
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -11,8 +11,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -25,7 +24,8 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
-import org.junit.Ignore
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,7 +38,6 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
@@ -62,6 +61,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -73,9 +73,8 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val TOPIC_NAME = "Fractions"
 
 /** Tests for [TopicFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -86,18 +85,42 @@ private const val TOPIC_NAME = "Fractions"
 )
 class TopicFragmentTest {
 
-  private val internalProfileId = 0
-
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
     TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  private val internalProfileId = 0
+
+  private val TOPIC_NAME = "Fractions"
+
+  @Before
+  fun setUp() {
+    Intents.init()
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
   @Test
-  // TODO(#973): Fix TopicFragmentTest
-  @Ignore
   fun testTopicFragment_toolbarTitle_isDisplayedSuccessfully() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_toolbar_title)).check(matches(withText("Topic: Fractions")))
     }
   }
@@ -165,10 +188,9 @@ class TopicFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicFragmentTest
-  @Ignore
   fun testTopicFragment_defaultTabIsInfo_showsMatchingContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
           withText(containsString(TOPIC_NAME))
@@ -197,30 +219,26 @@ class TopicFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicFragmentTest
-  @Ignore
   fun testTopicFragment_clickOnLessonsTab_showsPlayTabWithContentMatched() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
       onView(
-        atPosition(R.id.story_summary_recycler_view, 1)
+        atPositionOnView(
+          R.id.story_summary_recycler_view,
+          1,
+          R.id.story_name_text_view
+        )
       ).check(
         matches(
-          hasDescendant(
-            withText(
-              containsString(
-                "Matthew Goes to the Bakery"
-              )
+          withText(
+            containsString(
+              "Matthew Goes to the Bakery"
             )
           )
         )
@@ -248,17 +266,31 @@ class TopicFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicFragmentTest
-  @Ignore
   fun testTopicFragment_clickOnPracticeTab_showsPracticeTabWithContentMatched() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withText("Master These Skills")).check(matches(isDisplayed()))
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          0,
+          R.id.master_skills_text_view
+        )
+      ).check(
+        matches(
+          withText(
+            containsString(
+              "Master These Skills"
+            )
+          )
+        )
+      )
     }
   }
 
@@ -282,16 +314,16 @@ class TopicFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicFragmentTest
-  @Ignore
   fun testTopicFragment_clickOnReviewTab_showsReviewTabWithContentMatched() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_title)).check(
         matches(
           withText(
@@ -328,10 +360,9 @@ class TopicFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicFragmentTest
-  @Ignore
   fun testTopicFragment_clickOnReviewTab_thenInfoTab_showsInfoTabWithContentMatched() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -353,10 +384,9 @@ class TopicFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicFragmentTest
-  @Ignore
   fun testTopicFragment_clickOnLessonsTab_configurationChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
@@ -371,23 +401,17 @@ class TopicFragmentTest {
           )
         )
       )
-      onView(withId(R.id.story_summary_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
       onView(
-        atPosition(
+        atPositionOnView(
           R.id.story_summary_recycler_view,
-          1
+          1,
+          R.id.story_name_text_view
         )
       ).check(
         matches(
-          hasDescendant(
-            withText(
-              containsString(
-                "Matthew Goes to the Bakery"
-              )
+          withText(
+            containsString(
+              "Matthew Goes to the Bakery"
             )
           )
         )
@@ -396,18 +420,33 @@ class TopicFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicFragmentTest
-  @Ignore
   fun testTopicFragment_clickOnPracticeTab_configurationChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withText("Master These Skills")).check(matches(isDisplayed()))
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          0,
+          R.id.master_skills_text_view
+        )
+      ).check(
+        matches(
+          withText(
+            containsString(
+              "Master These Skills"
+            )
+          )
+        )
+      )
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
@@ -415,15 +454,28 @@ class TopicFragmentTest {
           )
         )
       )
-      onView(withText("Master These Skills")).check(matches(isDisplayed()))
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          0,
+          R.id.master_skills_text_view
+        )
+      ).check(
+        matches(
+          withText(
+            containsString(
+              "Master These Skills"
+            )
+          )
+        )
+      )
     }
   }
 
   @Test
-  // TODO(#973): Fix TopicFragmentTest
-  @Ignore
   fun testTopicFragment_clickOnReviewTab_configurationChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -431,6 +483,7 @@ class TopicFragmentTest {
         )
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
@@ -453,10 +506,9 @@ class TopicFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicFragmentTest
-  @Ignore
   fun testTopicFragment_configurationChange_showsDefaultTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
