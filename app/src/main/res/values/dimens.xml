@@ -90,8 +90,6 @@
   <dimen name="story_chapter_card_playable_state_elevation">4dp</dimen>
   <dimen name="ongoing_topic_card_elevation">4dp</dimen>
   <dimen name="story_chapter_card_not_playable_state_elevation">0dp</dimen>
-  <dimen name="topic_info_fragment_scroll_view_width">0dp</dimen>
-  <dimen name="topic_info_fragment_topic_name_text_view_width">0dp</dimen>
   <dimen name="profile_chooser_padding_bottom_profile_already_added">224dp</dimen>
 
   <dimen name="previous_responses_item_exploration_split_view_margin_end">80dp</dimen>
