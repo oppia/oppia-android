@@ -42,13 +42,13 @@
     app:explorationViewMarginTop="@{@dimen/space_24dp}"
     app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:questionSplitViewMarginBottom="@{@dimen/space_0dp}"
-    app:questionSplitViewMarginEnd="@{@dimen/space_32dp}"
-    app:questionSplitViewMarginStart="@{@dimen/space_32dp}"
+    app:questionSplitViewMarginEnd="@{@dimen/submitted_answer_item_question_split_view_margin_end}"
+    app:questionSplitViewMarginStart="@{@dimen/submitted_answer_item_question_split_view_margin_start}"
     app:questionSplitViewMarginTop="@{@dimen/space_24dp}"
     app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:questionViewMarginBottom="@{@dimen/space_0dp}"
-    app:questionViewMarginEnd="@{@dimen/space_32dp}"
-    app:questionViewMarginStart="@{@dimen/space_32dp}"
+    app:questionViewMarginEnd="@{@dimen/submitted_answer_item_question_view_margin_end}"
+    app:questionViewMarginStart="@{@dimen/submitted_answer_item_question_view_margin_start}"
     app:questionViewMarginTop="@{@dimen/space_24dp}">
 
     <TextView
