@@ -29,7 +29,7 @@
     app:explorationViewMarginBottom="@{@dimen/space_0dp}"
     app:explorationViewMarginEnd="@{@dimen/return_to_topic_button_item_exploration_view_margin_end}"
     app:explorationViewMarginStart="@{@dimen/return_to_topic_button_item_exploration_view_margin_start}"
-    app:explorationViewMarginTop="@{@dimen/space_72dp}"
+    app:explorationViewMarginTop="@{@dimen/return_to_topic_item_exploration_view_margin_top}"
     app:explorationViewPaddingApplicable="@{buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
     app:explorationViewPaddingBottom="@{@dimen/space_0dp}"
     app:explorationViewPaddingEnd="@{@dimen/space_0dp}"
