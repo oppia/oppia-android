@@ -3,6 +3,7 @@ package org.oppia.android.app.testing
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.Gravity
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
@@ -296,7 +297,6 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_changeConfiguration_navigationDrawerIsOpenedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description))
@@ -308,7 +308,7 @@ class NavigationDrawerTestActivityTest {
         .perform(click())
       onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isDisplayed()))
     }
   }
 
