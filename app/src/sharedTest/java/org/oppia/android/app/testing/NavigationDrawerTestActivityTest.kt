@@ -8,6 +8,7 @@ import android.view.ViewParent
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -44,6 +45,7 @@ import dagger.Component
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
+import org.hamcrest.Matchers.isA
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -333,11 +335,17 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_checkAdministratorControlsDisplayed() { // ktlint-disable max-line-length
-    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
-      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
+    launch(NavigationDrawerTestActivity::class.java).use{
+      testCoroutineDispatchers.runCurrent()
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(isCompletelyDisplayed())
+      ).perform(click())
+      onView(
+        allOf(
+          withText(R.string.administrator_controls)
+        )
+      ).check(matches(isDescendantOfA(withId(R.id.administrator_controls_linear_layout))))
     }
   }
 
@@ -372,7 +380,6 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_withUserProfile_openNavigationDrawer_checkAdministratorControlsNotDisplayed() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
