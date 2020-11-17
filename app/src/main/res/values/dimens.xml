@@ -140,7 +140,6 @@
   <dimen name="content_item_question_split_view_margin_end">32dp</dimen>
   <dimen name="content_item_question_split_view_margin_start">32dp</dimen>
   <dimen name="content_item_question_view_margin_end">32dp</dimen>
-  <dimen name="content_item_question_view_margin_top">32dp</dimen>
   <dimen name="content_item_question_view_margin_start">32dp</dimen>
   <dimen name="drag_drop_item_exploration_split_view_margin_start">32dp</dimen>
   <dimen name="drag_drop_item_exploration_split_view_margin_end">32dp</dimen>
