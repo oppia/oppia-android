@@ -31,7 +31,7 @@
     app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:explorationViewMarginBottom="@{@dimen/space_0dp}"
     app:explorationViewMarginEnd="@{@dimen/feedback_item_exploration_view_margin_end}"
-    app:explorationViewMarginStart="@{@dimen/space_48dp}"
+    app:explorationViewMarginStart="@{@dimen/feedback_item_exploration_view_margin_start}"
     app:explorationViewMarginTop="@{@dimen/space_24dp}"
     app:explorationViewPaddingApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:explorationViewPaddingBottom="@{@dimen/space_16dp}"
