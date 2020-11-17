@@ -3,6 +3,8 @@
   <!-- Default screen margins, per the Android Design guidelines. -->
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
+  <dimen name="answer_tick_size">24dp</dimen>
+  <dimen name="answer_tick_margin">12dp</dimen>
   <integer name="fade_in_duration_ms">1000</integer>
   <integer name="fade_out_duration_ms">1000</integer>
   <dimen name="audio_fragment_corner_radius">8dp</dimen>
@@ -14,8 +16,6 @@
   <dimen name="divider_margin_bottom">8dp</dimen>
   <dimen name="bottom_white_space">160dp</dimen>
   <dimen name="space_128dp">128dp</dimen>
-  <dimen name="space_48dp">48dp</dimen>
-  <dimen name="space_36dp">36dp</dimen>
   <dimen name="space_32dp">32dp</dimen>
   <dimen name="space_24dp">24dp</dimen>
   <dimen name="space_16dp">16dp</dimen>
@@ -167,4 +167,21 @@
   <dimen name="selection_interaction_item_conversation_view_margin_start">80dp</dimen>
   <dimen name="submitted_answer_item_exploration_view_margin_start">80dp</dimen>
   <dimen name="text_input_interaction_item_margin_start">80dp</dimen>
+
+  <dimen name="content_item_question_view_margin_top">36dp</dimen>
+  <dimen name="content_item_exploration_view_margin_top">36dp</dimen>
+  <dimen name="previous_button_item_question_split_view_margin_start">48dp</dimen>
+  <dimen name="previous_button_item_exploration_split_view_margin_start">48dp</dimen>
+  <dimen name="previous_button_item_question_view_margin_start">48dp</dimen>
+  <dimen name="previous_button_item_exploration_view_margin_start">48dp</dimen>
+  <dimen name="drag_drop_item_exploration_view_margin_end">48dp</dimen>
+  <dimen name="feedback_item_exploration_view_margin_start">48dp</dimen>
+  <dimen name="fraction_interaction_item_conversation_view_margin_end">48dp</dimen>
+  <dimen name="numeric_input_interaction_item_conversation_view_margin_end">48dp</dimen>
+  <dimen name="selection_interaction_item_conversation_view_margin_end">48dp</dimen>
+  <dimen name="submitted_answer_item_exploration_view_margin_end">48dp</dimen>
+  <dimen name="text_input_interaction_item_conversation_view_margin_end">48dp</dimen>
+  <dimen name="profile_chooser_add_view_circular_image_margin_top_profile_already_added">48dp</dimen>
+  <dimen name="profile_chooser_profile_view_circular_image_margin_top_profile_already_added">48dp</dimen>
+  <dimen name="state_fragment_padding_top_audio_bar_visible">48dp</dimen>
 </resources>
