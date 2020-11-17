@@ -683,7 +683,7 @@ TEST_DEPS = [
     artifact("org.jetbrains.kotlin:kotlin-reflect"),
     artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2"),
     artifact("org.mockito:mockito-core"),
-    artifact("org.robolectric:annotations:4.3"),
+    artifact("org.robolectric:annotations:4.5-alpha-1"),
 ]
 
 # TODO(#973): Fix app module tests for Robolectric.

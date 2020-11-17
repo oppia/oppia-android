@@ -54,7 +54,7 @@ dependencies {
       'androidx.test:runner:1.2.0',
       'com.google.dagger:dagger:2.24',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
-      'org.robolectric:robolectric:4.3',
+      'org.robolectric:robolectric:4.5-alpha-1',
       project(":domain"),
       project(":utility"),
   )

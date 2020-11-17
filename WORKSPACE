@@ -182,8 +182,8 @@ maven_install(
         "org.jetbrains:annotations:jar:13.0",
         "org.mockito:mockito-core:2.19.0",
         "org.mockito:mockito-core:2.7.22",
-        "org.robolectric:annotations:4.3",
-        "org.robolectric:robolectric:4.3",
+        "org.robolectric:annotations:4.5-alpha-1",
+        "org.robolectric:robolectric:4.5-alpha-1",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://bintray.com/bintray/jcenter",
