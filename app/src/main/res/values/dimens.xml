@@ -101,7 +101,6 @@
   <dimen name="next_button_item_question_view_margin_start">128dp</dimen>
   <dimen name="numeric_input_interaction_item_non_conversation_view_margin_end">128dp</dimen>
   <dimen name="numeric_input_interaction_item_non_conversation_view_margin_start">128dp</dimen>
-  <dimen name="previous_button_item_question_view_margin_start">128dp</dimen>
   <dimen name="replay_button_item_exploration_view_margin_end">128dp</dimen>
   <dimen name="replay_button_item_exploration_view_margin_start">128dp</dimen>
   <dimen name="replay_button_item_question_view_margin_end">128dp</dimen>

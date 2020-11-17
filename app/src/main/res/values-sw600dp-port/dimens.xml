@@ -9,4 +9,5 @@
 
   <dimen name="previous_responses_item_question_split_view_margin_end">48dp</dimen>
   <dimen name="previous_responses_item_exploration_split_view_margin_end">48dp</dimen>
+  <dimen name="previous_button_item_question_view_margin_start">128dp</dimen>
 </resources>
