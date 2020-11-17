@@ -3,13 +3,11 @@ package org.oppia.android.app.testing
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.view.Gravity
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -46,7 +44,6 @@ import dagger.Component
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
-import org.hamcrest.Matchers.isA
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -336,7 +333,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
   fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_checkAdministratorControlsDisplayed() { // ktlint-disable max-line-length
-    launch(NavigationDrawerTestActivity::class.java).use{
+    launch(NavigationDrawerTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
