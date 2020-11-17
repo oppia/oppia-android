@@ -377,6 +377,7 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_withUserProfile_openNavigationDrawer_checkAdministratorControlsNotDisplayed() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
