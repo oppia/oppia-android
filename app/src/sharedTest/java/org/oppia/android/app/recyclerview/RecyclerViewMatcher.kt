@@ -74,6 +74,10 @@ class RecyclerViewMatcher {
     fun hasGridItemCount(spanCount: Int, position: Int): ViewAssertion {
       return RecyclerViewGridItemCountAssertion(spanCount, position)
     }
+
+    fun hasGridColumnCount(expectedColumnCount: Int): ViewAssertion {
+      return GridLayoutManagerColumnCountAssertion(expectedColumnCount)
+    }
   }
 
   private class RecyclerViewItemCountAssertion(private val count: Int) : ViewAssertion {
@@ -100,6 +104,32 @@ class RecyclerViewMatcher {
       check(view.layoutManager is GridLayoutManager) { "RecyclerView must use GridLayoutManager" }
       val spanCount = (view.layoutManager as GridLayoutManager).spanSizeLookup.getSpanSize(position)
       assertThat("RecyclerViewGrid span count", spanCount, equalTo(count))
+    }
+  }
+
+  private class GridLayoutManagerColumnCountAssertion(expectedColumnCount: Int) : ViewAssertion {
+    private var expectedColumnCount: Int = 0
+
+    init {
+      this.expectedColumnCount = expectedColumnCount
+    }
+
+    override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
+      if (noViewFoundException != null) {
+        throw noViewFoundException
+      }
+      val recyclerView = view as RecyclerView
+      if (recyclerView.layoutManager is GridLayoutManager) {
+        val gridLayoutManager = recyclerView.layoutManager as GridLayoutManager
+        val spanCount = gridLayoutManager.spanCount
+        if (spanCount != expectedColumnCount) {
+          val errorMessage =
+            ("expected column count $expectedColumnCount but was $spanCount")
+          throw AssertionError(errorMessage)
+        }
+      } else {
+        throw IllegalStateException("no grid layout manager")
+      }
     }
   }
 }

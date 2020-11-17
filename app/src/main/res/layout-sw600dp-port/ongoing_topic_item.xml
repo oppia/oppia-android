@@ -24,7 +24,7 @@
     android:focusable="true"
     android:onClick="@{(v) -> viewModel.onTopicItemClicked()}"
     app:cardCornerRadius="4dp"
-    app:cardElevation="@dimen/elevation_4dp">
+    app:cardElevation="@dimen/ongoing_topic_card_elevation">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"

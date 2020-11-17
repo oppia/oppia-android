@@ -1,14 +1,19 @@
 package org.oppia.android.app.topic.conceptcard
 
 import android.app.Application
+import android.content.Context
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -18,8 +23,8 @@ import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -64,6 +69,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [ConceptCardFragment]. */
@@ -75,138 +81,166 @@ import javax.inject.Singleton
 )
 class ConceptCardFragmentTest {
 
-  private lateinit var activityScenario: ActivityScenario<ConceptCardFragmentTestActivity>
+  @Inject
+  lateinit var context: Context
 
   @Before
   fun setUp() {
-    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+    Intents.init()
+    setUpTestApplicationComponent()
+    FirebaseApp.initializeApp(context)
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
+  }
+
+  private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-    activityScenario = ActivityScenario.launch(ConceptCardFragmentTestActivity::class.java)
   }
 
   @Test
-  // TODO(#973): Fix ConceptCardFragmentTest
-  @Ignore
   fun testConceptCardFragment_clickOnToolbarNavigationButton_closeActivity() {
-    onView(withId(R.id.open_dialog_0)).perform(click())
-    onView(withId(R.id.concept_card_toolbar)).perform(click())
+    launch(ConceptCardFragmentTestActivity::class.java).use {
+      onView(withId(R.id.open_dialog_0)).perform(click())
+      onView(withContentDescription(R.string.concept_card_close_icon_description))
+        .inRoot(isDialog())
+        .perform(click())
+      onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
+    }
   }
 
   @Test
-  // TODO(#973): Fix ConceptCardFragmentTest
-  @Ignore
   fun testConceptCardFragment_toolbarTitle_isDisplayedSuccessfully() {
-    onView(withId(R.id.open_dialog_0)).perform(click())
-    onView(
-      allOf(
-        instanceOf(TextView::class.java),
-        withParent(withId(R.id.concept_card_toolbar))
-      )
-    ).check(matches(withText(R.string.concept_card_toolbar_title)))
+    launch(ConceptCardFragmentTestActivity::class.java).use {
+      onView(withId(R.id.open_dialog_0)).perform(click())
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.concept_card_toolbar))
+        )
+      ).inRoot(isDialog()).check(matches(withText(R.string.concept_card_toolbar_title)))
+    }
   }
 
   @Test
-  // TODO(#973): Fix ConceptCardFragmentTest
-  @Ignore
   fun testConceptCardFragment_configurationChange_toolbarTitle_isDisplayedSuccessfully() {
-    onView(isRoot()).perform(orientationLandscape())
-    onView(withId(R.id.open_dialog_0)).perform(click())
-    onView(
-      allOf(
-        instanceOf(TextView::class.java),
-        withParent(withId(R.id.concept_card_toolbar))
-      )
-    ).check(matches(withText(R.string.concept_card_toolbar_title)))
+    launch(ConceptCardFragmentTestActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.open_dialog_0)).perform(click())
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.concept_card_toolbar))
+        )
+      ).inRoot(isDialog()).check(matches(withText(R.string.concept_card_toolbar_title)))
+    }
   }
 
   @Test
-  // TODO(#973): Fix ConceptCardFragmentTest
-  @Ignore
   fun testConceptCardFragment_configurationChange_conceptCardIsDisplayedCorrectly() {
-    onView(isRoot()).perform(orientationLandscape())
-    onView(withId(R.id.open_dialog_0)).perform(click())
-    onView(withId(R.id.concept_card_explanation_text))
-      .check(
-        matches(
-          withText(
-            "Hello. Welcome to Oppia."
+    launch(ConceptCardFragmentTestActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.open_dialog_0)).perform(click())
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            withText(
+              "Hello. Welcome to Oppia."
+            )
           )
         )
-      )
-    onView(withId(R.id.concept_card_explanation_text)).check(matches(not(containsRichText())))
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(not(containsRichText())))
+    }
   }
 
   @Test
-  // TODO(#973): Fix ConceptCardFragmentTest
-  @Ignore
   fun testConceptCardFragment_openDialogFragment0_checkSkillAndExplanationAreDisplayedWithoutRichText() { // ktlint-disable max-line-length
-    onView(withId(R.id.open_dialog_0)).perform(click())
-    onView(withId(R.id.concept_card_heading_text))
-      .check(
-        matches(
-          withText(
-            "An important skill"
+    launch(ConceptCardFragmentTestActivity::class.java).use {
+      onView(withId(R.id.open_dialog_0)).perform(click())
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            withText(
+              "An important skill"
+            )
           )
         )
-      )
-    onView(withId(R.id.concept_card_explanation_text))
-      .check(
-        matches(
-          withText(
-            "Hello. Welcome to Oppia."
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            withText(
+              "Hello. Welcome to Oppia."
+            )
           )
         )
-      )
-    onView(withId(R.id.concept_card_explanation_text)).check(matches(not(containsRichText())))
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(not(containsRichText())))
+    }
   }
 
   @Test
-  // TODO(#973): Fix ConceptCardFragmentTest
-  @Ignore
   fun testConceptCardFragment_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() { // ktlint-disable max-line-length
-    onView(withId(R.id.open_dialog_1)).perform(click())
-    onView(withId(R.id.concept_card_heading_text))
-      .check(
-        matches(
-          withText(
-            "Another important skill"
+    launch(ConceptCardFragmentTestActivity::class.java).use {
+      onView(withId(R.id.open_dialog_1)).perform(click())
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            withText(
+              "Another important skill"
+            )
           )
         )
-      )
-    onView(withId(R.id.concept_card_explanation_text))
-      .check(
-        matches(
-          withText(
-            "Explanation with rich text."
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            withText(
+              "Explanation with rich text."
+            )
           )
         )
-      )
-    onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(containsRichText()))
+    }
   }
 
   @Test
-  // TODO(#973): Fix ConceptCardFragmentTest
-  @Ignore
   fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() { // ktlint-disable max-line-length
-    onView(withId(R.id.open_dialog_1)).perform(click())
-    onView(isRoot()).perform(orientationLandscape())
-    onView(withId(R.id.concept_card_heading_text))
-      .check(
-        matches(
-          withText(
-            "Another important skill"
+    launch(ConceptCardFragmentTestActivity::class.java).use {
+      onView(withId(R.id.open_dialog_1)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            withText(
+              "Another important skill"
+            )
           )
         )
-      )
-    onView(withId(R.id.concept_card_explanation_text))
-      .check(
-        matches(
-          withText(
-            "Explanation with rich text."
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            withText(
+              "Explanation with rich text."
+            )
           )
         )
-      )
-    onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(containsRichText()))
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

@@ -36,7 +36,6 @@
       <TextView
         android:id="@+id/slide_title_text_view"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_marginStart="160dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="160dp"
@@ -44,8 +43,8 @@
         android:gravity="center_horizontal"
         android:maxLines="1"
         android:text="@string/onboarding_slide_3_title"
-        android:textColor="@color/oppiaPrimaryText"
         android:textSize="32sp"
+        style="@style/Heading1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/slide_image_view" />
@@ -53,17 +52,15 @@
       <TextView
         android:id="@+id/slide_description_text_view"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_marginStart="192dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="192dp"
-        android:fontFamily="sans-serif"
         android:gravity="center_horizontal"
         android:maxLines="2"
         android:minLines="2"
         android:text="@string/onboarding_slide_3_description"
-        android:textColor="@color/oppiaPrimaryText"
         android:textSize="24sp"
+        style="@style/Subtitle1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/slide_title_text_view" />

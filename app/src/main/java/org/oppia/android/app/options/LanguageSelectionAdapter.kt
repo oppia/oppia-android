@@ -9,7 +9,7 @@ import org.oppia.android.databinding.LanguageItemsBinding
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 
-/** Adapter to bind languages to [RecyclerView] inside [AppLanguageActivityPresenter] and [DefaultAudioActivityPresenter]. */
+/** Adapter to bind languages to [RecyclerView] inside [AppLanguageActivityPresenter] and [AudioLanguageActivityPresenter]. */
 class LanguageSelectionAdapter(
   private val prefKey: String,
   private val onLanguageClicked: (language: String) -> Unit = {}
