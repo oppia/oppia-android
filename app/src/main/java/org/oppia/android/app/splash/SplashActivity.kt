@@ -4,7 +4,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.deprecation.DeprecationNoticeExitAppListener
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 /** An activity that shows a temporary loading page until the app is fully loaded then navigates to [ProfileActivity]. */
