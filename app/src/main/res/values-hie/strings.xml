@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Oppia रजत</string>
+  <string name="nav_header_desc">Navigation header रजत</string>
+  <string name="menu_home">Home रजत</string>
+  <string name="menu_options">Options रजत</string>
+  <string name="menu_my_downloads">My Downloads रजत</string>
+  <string name="menu_help">Help रजत</string>
+  <string name="menu_switch_profile">Switch Profile रजत</string>
+  <string name="administrator_controls">Administrator Controls रजत</string>
+  <string name="drawer_open_content_description">Navigation Menu Open</string>
+  <string name="drawer_close_content_description">>Navigation Menu Close</string>
+  <string name="welcome_text">Welcome to Oppia! रजत</string>
+  <string name="welcome_back_text">Welcome back to Oppia! रजत</string>
+  <string name="audio_play_description">Play audio</string>
+  <string name="audio_pause_description">Pause audio</string>
+  <string name="audio_language_select_dialog_okay_button">OK</string>
+  <string name="audio_language_select_dialog_cancel_button">Cancel</string>
+  <string name="audio_language_select_dialog_title">Audio Language</string>
+  <string name="audio_dialog_offline_title">Currently Offline</string>
+  <string name="audio_dialog_offline_message">Make sure Wi-Fi or cellular data is turned on, then try again.</string>
+  <string name="audio_dialog_offline_positive">OK</string>
+  <string name="cellular_data_alert_dialog_okay_button">OK</string>
+  <string name="cellular_data_alert_dialog_cancel_button">Cancel</string>
+  <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>
+  <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
+  <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
+  <string name="concept_card_toolbar_title">Concept Card</string>
+  <string name="concept_card_close_icon_description">Clicking on this will close the concept card.</string>
+  <string name="revision_card_toolbar_title">Revision Card</string>
+  <string name="stop_exploration_dialog_title">Leave to Topic Page?</string>
+  <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
+  <string name="stop_exploration_dialog_cancel_button">Cancel</string>
+  <string name="stop_exploration_dialog_leave_button">Leave</string>
+  <string name="topic_practice_master_these_skills">Master These Skills</string>
+  <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
+  <string name="topic_practice_skills_description">Select skills that you would like to practice.</string>
+  <string name="topic_practice_start">Start</string>
+  <string name="state_continue_button">Continue</string>
+  <string name="state_continue_submit">Submit</string>
+  <string name="previous_state_description">Navigate to the previous card</string>
+  <string name="next_state_description">Navigate to the next card</string>
+  <string name="state_submit_button">Submit</string>
+  <string name="lesson_replay_button_text">Replay</string>
+  <string name="state_end_exploration_button">Return To Topic</string>
+  <string name="previous_responses_header">Previous Responses (%d)</string>
+  <string name="image_interaction_answer_text">Clicks on %s</string>
+  <string name="state_learn_again_button">Learn Again</string>
+  <string name="topic_download_text">(%s)</string>
+  <string name="see_more">See More</string>
+  <string name="see_less">See Less</string>
+  <string name="FAQs">FAQs</string>
+  <string name="featured_questions">Featured Questions</string>
+  <string name="frequently_asked_questions">Frequently Asked Questions</string>
+  <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
+  <string name="info">Info</string>
+  <string name="lessons">Lessons</string>
+  <string name="practice">Practice</string>
+  <string name="revision">Revision</string>
+  <string name="topic_name">Topic: %s</string>
+  <string name="topic">Topic</string>
+  <string name="topic_story_progress_percentage">%s\%%</string>
+  <string name="topic_play_chapter_index">%s.</string>
+  <string name="chapter_name">Chapter %s: %s</string>
+  <string name="chapter_completed">Chapter %s: %s is completed.</string>
+  <string name="text_input_default_content_description">Enter text.</string>
+  <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
+  <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
+  <string name="numeric_input_content_description">Enter a number.</string>
+  <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
+  <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
+  <string name="recently_played_stories">Recently-Played Stories</string>
+  <string name="view_all">View All</string>
+  <string name="ongoing_story_last_week">Played within the Last Week</string>
+  <string name="ongoing_story_last_month">Played within the Last Month</string>
+  <string name="lesson_thumbnail_content_description">Image for %s</string>
+  <string name="all_topics">All Topics</string>
+  <string name="stories_you_can_play">Stories You Can Play</string>
+  <string name="go_to_previous_page">Go to previous page.</string>
+  <string name="recently_played_activity">Recently-Played Stories</string>
+  <string name="topic_downloaded">Topic Downloaded</string>
+  <string name="downloaded">Downloaded</string>
+  <string name="question_player_title">Train Mode</string>
+  <string name="question_training_session_progress">Question %d of %d</string>
+  <string name="question_training_session_progress_finished">Complete</string>
+  <string name="question_training_session_finished_header">Finished</string>
+  <string name="question_training_session_finished_message">You have finished all of the questions! You can choose to play another set of questions, or return to the topic.</string>
+  <string name="status_in_progress">In Progress</string>
+  <string name="status_completed">Completed</string>
+  <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>
+  <string name="play_pause_audio">Play/Pause Audio</string>
+  <string name="help">Help</string>
+  <string name="preferences">Preferences</string>
+  <string name="search">Search</string>
+  <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
+  <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
+  <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
+  <string name="fraction_error_larger_than_seven_digits">None of the numbers in the fraction should have more than 7 digits.</string>
+  <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
+  <string name="number_error_invalid_format">Please enter a valid number.</string>
+  <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 digits (0–9) or symbols (. or -).</string>
+  <string
+    name="ratio_error_invalid_chars"
+    description="The error message for ratio when there is any other character used than 0123456789:. ">
+    Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).
+  </string>
+  <string
+    name="ratio_error_invalid_format"
+    description="The error message for ratio when the format is invalid. For e.g. 1:2:3: or 1:2 3:4 ">
+    Please enter a valid ratio (e.g. 1:2 or 1:2:3).
+  </string>
+  <string
+    name="ratio_error_invalid_colons"
+    description="The error message for ratio when there is colons next to each other.">
+    Your answer has two colons (:) next to each other.
+  </string>
+  <string
+    name="ratio_error_invalid_size"
+    description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">
+    Number of terms is not equal to the required terms.
+  </string>
+  <string
+    name="ratio_error_includes_zero"
+    description="The error message for ratio when there is 0 term in the ratio.">
+    Ratios cannot have 0 as an element.
+  </string>
+  <string name="unknown_size">Unknown size</string>
+  <string name="size_bytes">%d Bytes</string>
+  <string name="size_kb">%d KB</string>
+  <string name="size_mb">%d MB</string>
+  <string name="size_gb">%d GB</string>
+  <string name="correct">Correct!</string>
+  <string name="topic_prefix">Topic: %s</string>
+  <string name="welcome_profile_name">%s!</string>
+  <plurals name="chapter_count">
+    <item quantity="one">
+      1 Chapter
+    </item>
+    <item quantity="other">
+      %d Chapters
+    </item>
+  </plurals>
+  <plurals name="story_count">
+    <item quantity="one">
+      1 Story
+    </item>
+    <item quantity="other">
+      %d Stories
+    </item>
+  </plurals>
+  <plurals name="story_total_chapters">
+    <item quantity="one">%d of %d Chapter Completed</item>
+    <item quantity="other">%d of %d Chapters Completed</item>
+  </plurals>
+  <plurals name="lesson_count">
+    <item quantity="one">
+      1 Lesson
+    </item>
+    <item quantity="other">
+      %d Lessons
+    </item>
+  </plurals>
+  <plurals name="completed_story_count">
+    <item quantity="one">
+      1 Story Completed
+    </item>
+    <item quantity="other">
+      %d Stories Completed
+    </item>
+    <item quantity="zero">
+      %d Stories Completed
+    </item>
+  </plurals>
+  <plurals name="ongoing_topic_count">
+    <item quantity="one">
+      1 Topic in Progress
+    </item>
+    <item quantity="other">
+      %d Topics in Progress
+    </item>
+    <item quantity="zero">
+      %d Topics in Progress
+    </item>
+  </plurals>
+  <string name="bar_separator">\u0020|\u0020</string>
+  <!-- ProfileChooserFragment -->
+  <string name="profile_chooser_admin">Administrator रजत</string>
+  <string name="profile_chooser_select">Select your profile रजत</string>
+  <string name="profile_chooser_add">Add Profile रजत</string>
+  <string name="set_up_multiple_profiles">Set up Multiple Profiles रजत</string>
+  <string name="set_up_multiple_profiles_description">Add up to 10 users to your account. Perfect for families and classrooms.</string>
+  <string name="profile_chooser_administrator_controls">Administrator Controls रजत</string>
+  <string name="profile_chooser_language">Language</string>
+  <!-- AdminAuthActivity -->
+  <string name="admin_auth_toolbar">Administrator Controls</string>
+  <string name="admin_auth_heading">Administrator Authorization Required</string>
+  <string name="admin_auth_sub">Enter the Administrator PIN in order to create a new account.</string>
+  <string name="admin_auth_admin_controls_sub">Enter the Administrator PIN in order to access Administrator Controls.</string>
+  <string name="admin_auth_pin">Administrator\'s PIN</string>
+  <string name="admin_auth_incorrect">Incorrect Administrator PIN. Please try again.</string>
+  <string name="admin_auth_submit">Submit</string>
+  <string name="admin_auth_close">Close</string>
+  <!-- AdminPinActivity -->
+  <string name="admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize downloads and manage profiles on the device.</string>
+  <string name="admin_pin_pin_description">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
+  <string name="admin_pin_new_pin">New 5-Digit PIN</string>
+  <string name="admin_pin_new_confirm">Confirm 5-Digit PIN</string>
+  <string name="admin_pin_error_pin_length">Your PIN should be 5 digits long.</string>
+  <string name="admin_pin_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
+  <string name="save">Save</string>
+  <!-- AddProfileActivity -->
+  <string name="add_profile_title">Add Profile</string>
+  <string name="add_profile_input_name">Name*</string>
+  <string name="add_profile_input_pin">3-Digit PIN*</string>
+  <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN*</string>
+  <string name="add_profile_allow_download_heading">Allow Download Access</string>
+  <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator PIN.</string>
+  <string name="add_profile_create_btn">Create</string>
+  <string name="add_profile_close">Close</string>
+  <string name="add_profile_pin_info">With a PIN, nobody else can access a profile besides this assigned user.</string>
+  <string name="add_profile_error_image_failed_store">We failed to store your avatar image. Please try again.</string>
+  <string name="add_profile_error_name_not_unique">This name is already in use by another profile.</string>
+  <string name="add_profile_error_name_empty">Please enter a name for this profile.</string>
+  <string name="add_profile_error_name_only_letters">Names can only have letters. Try another name?</string>
+  <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
+  <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
+  <!-- OnboardingActivity -->
+  <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
+  <string name="onboarding_slide_0_description">Learn anything you want in an effective and enjoyable way.</string>
+  <string name="onboarding_slide_1_title">Add users to your account.</string>
+  <string name="onboarding_slide_1_description">Share the experience and create up to 10 profiles.</string>
+  <string name="onboarding_slide_2_title">Download for offline.</string>
+  <string name="onboarding_slide_2_description">Continue learning your lessons without internet connection.</string>
+  <string name="onboarding_slide_3_title">Have fun!</string>
+  <string name="onboarding_slide_3_description">Enjoy your learning adventures with our free, effective lessons.</string>
+  <string name="skip">Skip</string>
+  <string name="get_started">Get Started</string>
+  <!-- PinPasswordActivity -->
+  <string name="pin_password_hello">Hi, %s!</string>
+  <string name="pin_password_admin_enter">Please enter your Administrator PIN.</string>
+  <string name="pin_password_user_enter">Please enter your PIN.</string>
+  <string name="pin_password_forgot_pin">I forgot my pin.</string>
+  <string name="pin_password_incorrect_pin">Incorrect PIN.</string>
+  <string name="pin_password_show">show</string>
+  <string name="pin_password_hide">hide</string>
+  <string name="pin_password_close">Close</string>
+  <string name="pin_password_success">PIN change is successful</string>
+  <string name="pin_password_forgot_title">Forgot PIN?</string>
+  <string name="pin_password_forgot_message">To reset your PIN, please uninstall Oppia and then reinstall it.\n\nKeep in mind that if the device has not been online, you may lose user progress on multiple accounts. </string>
+  <string name="pin_password_play_store">Go to the play store</string>
+  <string name="show_hide_password_icon">Show/Hide password icon</string>
+  <!-- AdminSettingsDialogFragment -->
+  <string name="admin_settings_label">Administrator\'s PIN</string>
+  <string name="admin_settings_heading">Access to Administrator Settings</string>
+  <string name="admin_settings_sub">Administrator\'s PIN required to change user\'s PIN</string>
+  <string name="admin_settings_cancel">Cancel</string>
+  <string name="admin_settings_submit">Submit</string>
+  <string name="admin_settings_incorrect">Incorrect Administrator PIN. Please try again.</string>
+  <!-- ResetPinDialogFragment -->
+  <string name="reset_pin_enter">Enter a New Pin</string>
+  <!-- MyDownloadsActivity -->
+  <string name="my_downloads">My Downloads</string>
+  <string name="tab_downloads">Downloads</string>
+  <string name="tab_updates">Updates (2)</string>
+  <!-- HomeActivityBackDialog -->
+  <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
+  <string name="home_activity_back_dialog_cancel">Cancel</string>
+  <string name="home_activity_back_dialog_exit">Exit</string>
+  <!-- ProfileListActivity -->
+  <string name="profile_list_activity_title">Profiles</string>
+  <!-- ProfileEditActivity -->
+  <string name="profile_edit_created">Created on %s</string>
+  <string name="profile_last_used">Last used </string>
+  <string name="profile_edit_rename">Rename</string>
+  <string name="profile_edit_reset">Reset PIN</string>
+  <string name="profile_edit_delete">Profile Deletion</string>
+  <string name="profile_edit_delete_dialog_title">Permanently delete this profile?</string>
+  <string name="profile_edit_delete_dialog_message">All progress will be deleted and cannot be recovered.</string>
+  <string name="profile_edit_delete_dialog_positive">Delete</string>
+  <string name="profile_edit_delete_dialog_negative">Cancel</string>
+  <string name="profile_edit_allow_download_heading">Allow Download Access</string>
+  <string name="profile_edit_allow_download_sub">User is able to download and delete content without Administrator password</string>
+  <!-- ProfileProgressActivity -->
+  <string name="profile_progress_edit_dialog_title">Profile Picture</string>
+  <string name="profile_picture_edit_alert_dialog_cancel_button">Cancel</string>
+  <string name="profile_picture_edit_alert_dialog_view_profile_picture">View Profile Picture</string>
+  <string name="profile_picture_edit_alert_dialog_choose_from_library">Choose From Library</string>
+  <!-- ProfileRenameActivity -->
+  <string name="profile_rename_title">Rename Profile</string>
+  <string name="profile_rename_label">New Name</string>
+  <string name="profile_rename_save">save</string>
+  <!-- ProfileResetPinActivity -->
+  <string name="profile_reset_pin_title">Reset PIN</string>
+  <string name="profile_reset_pin_main">Enter a new PIN for the user to enter when accessing their profile.</string>
+  <string name="profile_reset_pin_user_pin_label">3-Digit PIN</string>
+  <string name="profile_reset_pin_admin_pin_label">5-Digit PIN</string>
+  <string name="profile_reset_pin_user_confirm_label">Confirm 3-Digit PIN</string>
+  <string name="profile_reset_pin_admin_confirm_label">Confirm 5-Digit PIN</string>
+  <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
+  <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
+  <string name="add_profile_create_a_3_digit_pin">Create a 3-Digit PIN</string>
+  <string name="add_profile_required">*Required</string>
+  <string name="back_button">Back Button</string>
+  <string name="next">Next</string>
+  <!-- AdministratorControlsFragment -->
+  <string name="administrator_controls_general_label">General</string>
+  <string name="administrator_controls_edit_account">Edit account</string>
+  <string name="administrator_controls_profile_management_label">Profile Management</string>
+  <string name="administrator_controls_edit_profiles">Edit profiles</string>
+  <string name="administrator_controls_download_permissions_label">Download Permissions</string>
+  <string name="administrator_controls_update_on_wifi_title">Download and update only on Wi-fi</string>
+  <string name="administrator_controls_update_on_wifi_message">Topics will be downloaded and updated only on Wi-fi. Any downloads or updates of cellular data will be queued.</string>
+  <string name="administrator_controls_auto_update_title">Automatically update topics</string>
+  <string name="administrator_controls_auto_update_message">Downloaded topics that have new content available will automatically update.</string>
+  <string name="administrator_controls_app_information_label">App Information</string>
+  <string name="administrator_controls_app_version">App Version</string>
+  <string name="administrator_controls_account_actions_label">Account Actions</string>
+  <string name="administrator_controls_log_out">Log Out</string>
+  <string name="log_out_dialog_cancel_button">Cancel</string>
+  <string name="log_out_dialog_okay_button">Ok</string>
+  <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
+  <!-- AppVersionFragment -->
+  <string name="app_version_name">App Version %s</string>
+  <string name="app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
+  <!-- OptionsActivity -->
+  <string name="title_reading_text_size">Reading Text Size</string>
+  <string name="title_app_language">App Language</string>
+  <string name="title_default_audio">Default Audio Language</string>
+  <string name="story_text_will_look_like_this">Story text will look like this.</string>
+  <string name="constant_string_for_text_size">A</string>
+  <string name="audio_language">Default Audio</string>
+  <string name="app_language">App Language</string>
+  <string name="reading_text_size">Reading Text Size</string>
+  <string name="slide_seekbar_to_control_text_size">Slide seekbar to control the text size.</string>
+  <string name="profile">Profile</string>
+  <string name="story_count_text_view">2 Stories</string>
+  <string name="topics_in_progress">Topics in Progress</string>
+  <string name="topic_in_progress">Topic in Progress</string>
+  <string name="stories_completed">Stories Completed</string>
+  <string name="story_completed">Story Completed</string>
+  <!-- WalkthroughActivity -->
+  <string name="walkthrough_welcome_description">Learn new math skills with stories that show you how to use them in your daily life</string>
+  <string name="welcome">"Welcome %s!"</string>
+  <!-- WalkthroughTopicListFragment -->
+  <string name="what_do_you_want_to_learn">What do you want to learn?</string>
+  <!-- WalkthroughEndFragment -->
+  <string name="great">Great</string>
+  <string name="lets_get_started">Let’s get \nstarted.</string>
+  <string name="yes">Yes</string>
+  <string name="no">No…</string>
+  <string name="pick_a_different_topic">Pick a \ndifferent topic.</string>
+  <string name="are_you_interested">Are you interested in:\n%s?</string>
+  <!-- HintsAndSolutionDialogFragment -->
+  <string name="hints_toolbar_title">Hints</string>
+  <string name="reveal_solution">Reveal Solution</string>
+  <string name="reveal_hint">Reveal Hint</string>
+  <string name="show_hide_hint_list">Show/Hide hint list of %s</string>
+  <string name="show_hide_solution_list">Show/Hide solution</string>
+  <string name="the_only_solution_is">The only solution is :  </string>
+  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you sure?</string>
+  <string name="reveal">Reveal</string>
+  <!-- TextViewBindingAdapters -->
+  <string name="just_now">just now</string>
+  <string name="time_ago">%s ago</string>
+  <string name="yesterday">yesterday</string>
+  <string name="return_to_topic">Return to topic</string>
+  <string name="explanation">Explanation:</string>
+  <string name="drag_and_drop_interaction_group_merge_hint">If two items are equal, merge them.</string>
+  <string name="link_to_item_below">Link to item below</string>
+  <string name="unlink_items">Unlink Items</string>
+  <string name="move_item_down">Move Item Down</string>
+  <string name="move_item_up">Move Item Up</string>
+  <string name="profile_last_visited">%s %s</string>
+  <plurals name="minutes">
+    <item quantity="one">a minute</item>
+    <item quantity="other">%d minutes</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="one">an hour</item>
+    <item quantity="other">%d hours</item>
+  </plurals>
+  <plurals name="days">
+    <item quantity="one">a day</item>
+    <item quantity="other">%d days</item>
+  </plurals>
+  <!-- ViewTags -->
+  <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
+  <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
+  <string name="completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
+  <string name="item_selection_text">Please select at least one choice.</string>
+  <!-- SplashActivity -->
+  <string
+    name="unsupported_app_version_dialog_title"
+    description="The title of the dialog shown when a user's pre-release app has expired.">
+    Unsupported app version
+  </string>
+  <string
+    name="unsupported_app_version_dialog_message"
+    description="The main message of the dialog shown when a user's pre-release app has expired.">
+    This version of the app is no longer supported. Please update it through the Play Store.
+  </string>
+  <string
+    name="unsupported_app_version_dialog_close_button_text"
+    description="The close button text of the dialog shown when a user's pre-release app has expired.">
+    Close app
+  </string>
+  <string
+    name="ratio_content_description_separator"
+    description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">
+    \u0020to\u0020
+  </string>
+  <string
+    name="ratio_default_hint_text"
+    description="The default hint text for the ratio interaction if the placeholder text is not available.">
+    Enter a ratio in the form x:y.
+  </string>
+
+
+</resources>
