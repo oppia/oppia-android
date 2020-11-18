@@ -17,6 +17,7 @@ on:
 jobs:
   linters:
     name: Lint Tests
+    if: false
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -47,6 +48,7 @@ jobs:
      
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
+    if: false
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -104,6 +106,7 @@ jobs:
   
   app_tests:
     name: Robolectric Tests - App Module (Non-Flaky)
+    if: false
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -169,8 +172,8 @@ jobs:
           cd $HOME
           # NOTE TO DEVELOPERS: Make sure to never print this key directly to stdout!
           echo $GIT_SECRET_GPG_PRIVATE_KEY > ./git_secret_private_key.gpg
-          gpg --import ./git_secret_private_key.gpg
           wc -c ./git_secret_private_key.gpg
+          gpg --import ./git_secret_private_key.gpg
           cd $GITHUB_WORKSPACE
           git secret reveal
       - name: Unzip Bazel binary and build all Oppia targets
