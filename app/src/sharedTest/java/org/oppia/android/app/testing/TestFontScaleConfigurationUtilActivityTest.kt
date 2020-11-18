@@ -110,7 +110,7 @@ class TestFontScaleConfigurationUtilActivityTest {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(
-            context.resources.getDimension(R.dimen.space_20dp)
+            context.resources.getDimension(R.dimen.font_scale_content_text_size)
           )
         )
       )

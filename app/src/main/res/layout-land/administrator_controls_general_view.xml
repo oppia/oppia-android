@@ -14,36 +14,32 @@
     android:layout_height="wrap_content">
 
     <TextView
+      style="@style/Heading5"
       android:id="@+id/general_text_view"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       android:background="@color/mid_grey_30"
-      android:fontFamily="sans-serif-medium"
       android:paddingStart="36dp"
       android:paddingTop="24dp"
       android:paddingEnd="36dp"
       android:paddingBottom="20dp"
       android:text="@string/administrator_controls_general_label"
       android:textColor="@color/colorPrimary"
-      android:textSize="14sp"
       app:layout_constraintBottom_toTopOf="@id/edit_account_text_view"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+      style="@style/Subtitle1"
       android:id="@+id/edit_account_text_view"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       android:background="@color/white"
-      android:fontFamily="sans-serif"
       android:paddingStart="36dp"
       android:paddingTop="20dp"
       android:paddingEnd="36dp"
       android:paddingBottom="20dp"
       android:text="@string/administrator_controls_edit_account"
       android:textColor="@color/oppiaPrimaryTextDark"
-      android:textSize="16sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

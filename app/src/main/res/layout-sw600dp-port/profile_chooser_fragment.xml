@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
@@ -44,15 +43,12 @@
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:fontFamily="sans-serif"
+          style="@style/Subtitle1"
           android:gravity="center"
           android:minHeight="48dp"
           android:paddingTop="20dp"
           android:text="@string/profile_chooser_language"
           android:textColor="@color/profileChooserGreyTextColor"
-          android:textSize="16sp"
           android:visibility="gone"
           app:layout_constraintEnd_toStartOf="@+id/profile_chooser_language_icon"
           app:layout_constraintTop_toTopOf="parent" />
@@ -79,7 +75,7 @@
           android:fadingEdgeLength="72dp"
           android:orientation="vertical"
           android:overScrollMode="never"
-          android:paddingBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_224dp : @dimen/bottom_white_space}"
+          android:paddingBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_padding_bottom_profile_already_added : @dimen/bottom_white_space}"
           android:requiresFadingEdge="vertical"
           android:scrollbars="none"
           app:data="@{viewModel.profiles}"
@@ -88,8 +84,8 @@
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_select_text"
           app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_24dp : @dimen/space_124dp}"
-          app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_72dp : @dimen/space_0dp}"
-          app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_72dp : @dimen/space_0dp}" />
+          app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_margin_end_profile_already_added : @dimen/space_0dp}"
+          app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_margin_start_profile_already_added : @dimen/space_0dp}" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -111,15 +107,12 @@
       app:layout_constraintEnd_toEndOf="parent">
 
       <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Heading1"
         android:layout_marginBottom="32dp"
-        android:fontFamily="sans-serif"
         android:gravity="center"
         android:minHeight="48dp"
         android:text="@string/profile_chooser_administrator_controls"
-        android:textColor="@color/profileChooserGreyTextColor"
-        android:textSize="24sp" />
+        android:textColor="@color/profileChooserGreyTextColor" />
 
       <ImageView
         android:id="@+id/profile_chooser_setting_icon"
