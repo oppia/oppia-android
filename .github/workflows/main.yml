@@ -173,6 +173,7 @@ jobs:
           # NOTE TO DEVELOPERS: Make sure to never print this key directly to stdout!
           echo $GIT_SECRET_GPG_PRIVATE_KEY > ./git_secret_private_key.gpg
           wc -c ./git_secret_private_key.gpg
+          sha1sum ./git_secret_private_key.gpg
           gpg --import ./git_secret_private_key.gpg
           cd $GITHUB_WORKSPACE
           git secret reveal
