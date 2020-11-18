@@ -31,8 +31,8 @@
     app:explorationSplitViewMarginTop="@{@dimen/space_40dp}"
     app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.splitView}"
     app:explorationViewMarginBottom="@{@dimen/space_0dp}"
-    app:explorationViewMarginEnd="@{@dimen/space_48dp}"
-    app:explorationViewMarginStart="@{@dimen/space_80dp}"
+    app:explorationViewMarginEnd="@{@dimen/drag_drop_item_exploration_view_margin_end}"
+    app:explorationViewMarginStart="@{@dimen/content_item_exploration_view_margin_start}"
     app:explorationViewMarginTop="@{@dimen/space_24dp}"
     app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
     app:questionSplitViewMarginBottom="@{@dimen/space_0dp}"
@@ -41,8 +41,8 @@
     app:questionSplitViewMarginTop="@{@dimen/space_40dp}"
     app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.splitView}"
     app:questionViewMarginBottom="@{@dimen/space_0dp}"
-    app:questionViewMarginEnd="@{@dimen/space_64dp}"
-    app:questionViewMarginStart="@{@dimen/space_64dp}"
+    app:questionViewMarginEnd="@{@dimen/drag_drop_item_question_view_margin_end}"
+    app:questionViewMarginStart="@{@dimen/drag_drop_item_question_view_margin_start}"
     app:questionViewMarginTop="@{@dimen/space_24dp}">
 
     <TextView
