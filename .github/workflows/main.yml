@@ -159,9 +159,14 @@ jobs:
           cd $HOME/oppia-bazel
           unzip bazel-tools.zip
           tar -xf $HOME/oppia-bazel/android_tools.tar.gz -C $GITHUB_WORKSPACE/tmp/android_tools
-      - name: Install git-secret (https://git-secret.io/installation)
+      # See https://git-secret.io/installation for details on installing git-secret. Note that the
+      # apt-get method isn't used since it's much slower to update & upgrade apt before installation
+      # versus just directly cloning & installing the project. Further, the specific version
+      # shouldn't matter since git-secret relies on a future-proof storage mechanism for secrets.
+      - name: Install git-secret
         run: |
           cd $HOME
+          echo $PATH
           git clone https://github.com/sobolevn/git-secret.git git-secret
           cd git-secret && make build
           make install
