@@ -164,7 +164,7 @@ jobs:
       # versus just directly cloning & installing the project. Further, the specific version
       # shouldn't matter since git-secret relies on a future-proof storage mechanism for secrets.
       # This also uses a different directory to install git-secret to avoid requiring root access
-      # when running the git secret command..
+      # when running the git secret command.
       - name: Install git-secret
         run: |
           cd $HOME
