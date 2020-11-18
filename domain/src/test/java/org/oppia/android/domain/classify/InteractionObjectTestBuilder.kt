@@ -36,6 +36,10 @@ object InteractionObjectTestBuilder {
     return StringList.newBuilder().addAllHtml(items.toList()).build()
   }
 
+  fun createHtmlStringListInteractionObject(vararg items: String): StringList {
+    return StringList.newBuilder().addAllHtml(items.toList()).build()
+  }
+
   fun createSetOfHtmlString(value: StringList): InteractionObject {
     return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
   }
