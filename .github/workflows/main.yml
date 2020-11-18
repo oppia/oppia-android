@@ -175,7 +175,7 @@ jobs:
           echo $TEST_GPG_KEY > ./git_secret_private_key.gpg
           wc -c ./git_secret_private_key.gpg
           sha1sum ./git_secret_private_key.gpg
-          echo $TEST_GPG_KEY
+          cat ./git_secret_private_key.gpg
           gpg --import ./git_secret_private_key.gpg
           cd $GITHUB_WORKSPACE
           git secret reveal
