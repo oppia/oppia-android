@@ -332,7 +332,7 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide2Title_isCorrect() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeRight())
       onView(
         allOf(
           withId(R.id.slide_title_text_view),

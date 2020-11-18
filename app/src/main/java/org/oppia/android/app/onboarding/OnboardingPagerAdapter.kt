@@ -1,29 +1,52 @@
+/**
+Fix the naming, format and if there is any tweak. Not working properly on landscape mode
+ */
+
 package org.oppia.android.app.onboarding
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.R
+import org.oppia.android.databinding.OnboardingSlideBinding
+import org.oppia.android.databinding.OnboardingSlideFinalBinding
 
-const val onBoardingSlide = 0
-const val onBoardingFinalSlide = 1
+private const val VIEW_TYPE_TITLE_TEXT = 1
+private const val VIEW_TYPE_STORY_ITEM = 2
 
-/** Adapter to control the slide details in onboarding flow. */
 class OnboardingPagerAdapter(
-  val context: Context,
-  val onboardingSlideFinalViewModel: OnboardingSlideFinalViewModel
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+  val context: Context
+) :
+  RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-    return if (viewType == onBoardingSlide) {
-      val onBoardingSlideView = LayoutInflater.from(context)
-        .inflate(R.layout.onboarding_slide, parent, false)
-      SlideViewHolder(onBoardingSlideView)
+    return when (viewType) {
+      VIEW_TYPE_TITLE_TEXT -> {
+        val binding = OnboardingSlideBinding.inflate(
+          LayoutInflater.from(context),
+          parent,
+          false
+        )
+        OnboardinSlideViewHolder(binding)
+      }
+      VIEW_TYPE_STORY_ITEM -> {
+        val binding =
+          OnboardingSlideFinalBinding.inflate(
+            LayoutInflater.from(context),
+            parent,
+            false
+          )
+        OnboardinSlideFinalViewHolder(binding)
+      }
+      else -> throw IllegalArgumentException("Invalid view type: $viewType")
+    }
+  }
+
+  override fun getItemViewType(position: Int): Int {
+    return if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
+      VIEW_TYPE_STORY_ITEM
     } else {
-      val onBoardingFinalSlideView = LayoutInflater.from(context)
-        .inflate(R.layout.onboarding_slide_final, parent, false)
-      FinalSlideViewHolder(onBoardingFinalSlideView)
+      VIEW_TYPE_TITLE_TEXT
     }
   }
 
@@ -32,17 +55,29 @@ class OnboardingPagerAdapter(
   }
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-  }
-
-  override fun getItemViewType(position: Int): Int {
-    return if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
-      onBoardingFinalSlide
-    } else {
-      onBoardingSlide
+    when (holder.itemViewType) {
+      VIEW_TYPE_TITLE_TEXT -> {
+        val onboardingSlideViewModel =
+          OnboardingSlideViewModel(context, ViewPagerSlide.getSlideForPosition(position))
+        (holder as OnboardinSlideViewHolder).bind(onboardingSlideViewModel)
+      }
+      VIEW_TYPE_STORY_ITEM -> {
+        (holder as OnboardinSlideFinalViewHolder).bind()
+      }
     }
   }
 
-  inner class SlideViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+  private class OnboardinSlideViewHolder(
+    private val binding: OnboardingSlideBinding
+  ) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(onboardingSlideViewModel: OnboardingSlideViewModel) {
+      binding.viewModel = onboardingSlideViewModel
+    }
+  }
 
-  inner class FinalSlideViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+  private class OnboardinSlideFinalViewHolder(
+    binding: OnboardingSlideFinalBinding
+  ) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind() {}
+  }
 }
