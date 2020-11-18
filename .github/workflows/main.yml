@@ -140,7 +140,7 @@ jobs:
         os: [ubuntu-18.04]
     steps:
       - uses: actions/checkout@v2
-      - name: Set up bazel
+      - name: Set up Bazel
         uses: jwlawson/actions-setup-bazel@v1
         with:
           bazel-version: '3.4.1'
@@ -156,13 +156,31 @@ jobs:
           cd $HOME/oppia-bazel
           unzip bazel-tools.zip
           tar -xf $HOME/oppia-bazel/android_tools.tar.gz -C $GITHUB_WORKSPACE/tmp/android_tools
+      - name: Install git-secret (https://git-secret.io/installation)
+        run: |
+          cd $HOME
+          git clone https://github.com/sobolevn/git-secret.git git-secret
+          cd git-secret && make build
+          PREFIX="$HOME/gitsecret" make install
+      - name: Decrypt secrets
+        env:
+          GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
+        run: |
+          cd $HOME
+          # NOTE TO DEVELOPERS: Make sure to never print this key directly to stdout!
+          echo $GIT_SECRET_GPG_PRIVATE_KEY > ./git_secret_private_key.gpg
+          gpg --import ./git_secret_private_key.gpg
+          cd $GITHUB_WORKSPACE
+          git secret reveal
       - name: Unzip Bazel binary and build all Oppia targets
+        env:
+          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
           cd $HOME/oppia-bazel
           unzip bazel-build.zip
           cd $GITHUB_WORKSPACE
           chmod a+x $HOME/oppia-bazel/bazel
-          $HOME/oppia-bazel/bazel build //... --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
+          $HOME/oppia-bazel/bazel build --keep_going --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //...
           cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
       - uses: actions/upload-artifact@v2
         with:

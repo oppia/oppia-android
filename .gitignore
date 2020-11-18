@@ -24,3 +24,6 @@ utility/build
 gradle
 gradlew
 gradlew.bat
+.gitsecret/keys/random_seed
+!*.secret
+config/oppia-dev-workflow-remote-cache-credentials.json
