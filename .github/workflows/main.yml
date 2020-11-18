@@ -164,7 +164,7 @@ jobs:
           cd $HOME
           git clone https://github.com/sobolevn/git-secret.git git-secret
           cd git-secret && make build
-          PREFIX="$HOME/gitsecret" make install
+          make install
       - name: Decrypt secrets
         env:
           GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
