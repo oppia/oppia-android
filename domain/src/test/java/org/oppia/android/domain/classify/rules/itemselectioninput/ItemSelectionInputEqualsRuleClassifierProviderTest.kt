@@ -10,7 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfHtmlString
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createStringListInteractionObject
 import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -27,23 +27,23 @@ import kotlin.test.fail
 class ItemSelectionInputEqualsRuleClassifierProviderTest {
 
   private val TEST_HTML_STRING_SET_LOWERCASE =
-    createSetOfHtmlString(
-      InteractionObjectTestBuilder.createHtmlStringList("item ab")
+    createStringListInteractionObject(
+      InteractionObjectTestBuilder.createHtmlStringList("ab")
     )
   private val TEST_HTML_STRING_SET_UPPERCASE =
-    createSetOfHtmlString(
+    createStringListInteractionObject(
       InteractionObjectTestBuilder.createHtmlStringList("item AB")
     )
   private val TEST_HTML_STRING_SET_MIXED_LOWERCASE =
-    createSetOfHtmlString(
+    createStringListInteractionObject(
       InteractionObjectTestBuilder.createHtmlStringList("item aA ")
     )
   private val TEST_HTML_STRING_SET_MIXED_UPPERCASE =
-    createSetOfHtmlString(
+    createStringListInteractionObject(
       InteractionObjectTestBuilder.createHtmlStringList("item bB")
     )
   private val NON_NEGATIVE_VALUE_3 =
-    createSetOfHtmlString(
+    createStringListInteractionObject(
       InteractionObjectTestBuilder.createHtmlStringList("3")
     )
 
