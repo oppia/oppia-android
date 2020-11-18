@@ -34,9 +34,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:paddingStart="332dp"
+          android:paddingStart="232dp"
           android:paddingTop="52dp"
-          android:paddingEnd="332dp"
+          android:paddingEnd="232dp"
           android:paddingBottom="224dp">
 
           <com.jackandphantom.circularimageview.CircleImage
