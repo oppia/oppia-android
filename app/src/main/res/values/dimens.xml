@@ -136,7 +136,6 @@
   <dimen name="submitted_answer_question_split_view_margin_start_extra_interaction_answer">64dp</dimen>
   <dimen name="text_input_interaction_item_non_conversation_view_margin_end">64dp</dimen>
   <dimen name="text_input_interaction_item_non_conversation_view_margin_start">64dp</dimen>
->>>>>>> develop
 
   <dimen name="story_chapter_card_playable_state_elevation">4dp</dimen>
   <dimen name="ongoing_topic_card_elevation">4dp</dimen>
