@@ -194,7 +194,6 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkDefaultSlide_getStartedButtonIsNotVisible() {
     launch(OnboardingActivity::class.java).use {
@@ -202,7 +201,6 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_swipeRight_doesNotWork() {
     launch(OnboardingActivity::class.java).use {
@@ -326,7 +324,6 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_swipeLeftThenSwipeRight_isWorking() {
     launch(OnboardingActivity::class.java).use {
@@ -536,7 +533,6 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_slide0Title_changeOrientation_titleIsCorrect() {
     launch(OnboardingActivity::class.java).use {
