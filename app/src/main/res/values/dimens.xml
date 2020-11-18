@@ -16,7 +16,6 @@
   <dimen name="divider_margin_bottom">8dp</dimen>
   <dimen name="bottom_white_space">160dp</dimen>
   <dimen name="space_128dp">128dp</dimen>
-  <dimen name="space_64dp">64dp</dimen>
   <dimen name="space_24dp">24dp</dimen>
   <dimen name="space_16dp">16dp</dimen>
   <dimen name="space_12dp">12dp</dimen>
@@ -85,6 +84,22 @@
   <dimen name="walkthrough_final_no_button_margin_end">8dp</dimen>
   <dimen name="walkthrough_final_yes_button_margin_start">8dp</dimen>
 
+  <dimen name="continue_item_exploration_split_view_margin_end">64dp</dimen>
+  <dimen name="continue_item_question_split_view_margin_end">64dp</dimen>
+  <dimen name="continue_navigation_item_exploration_split_view_margin_end">64dp</dimen>
+  <dimen name="continue_navigation_item_question_split_view_margin_end">64dp</dimen>
+  <dimen name="next_button_item_exploration_split_view_margin_end">64dp</dimen>
+  <dimen name="next_button_item_question_split_view_margin_end">64dp</dimen>
+  <dimen name="replay_button_item_question_split_view_margin_end">64dp</dimen>
+  <dimen name="submit_button_item_exploration_split_view_margin_end">64dp</dimen>
+  <dimen name="submit_button_item_question_split_view_margin_end">64dp</dimen>
+  <dimen name="submitted_answer_question_view_margin_end">64dp</dimen>
+  <dimen name="submitted_answer_question_view_margin_start">64dp</dimen>
+  <dimen name="submitted_answer_exploration_split_view_margin_end_extra_interaction_answer">64dp</dimen>
+  <dimen name="submitted_answer_exploration_split_view_margin_start_extra_interaction_answer">64dp</dimen>
+  <dimen name="submitted_answer_question_split_view_margin_end_extra_interaction_answer">64dp</dimen>
+  <dimen name="submitted_answer_question_split_view_margin_start_extra_interaction_answer">64dp</dimen>
+
   <dimen name="story_chapter_card_playable_state_elevation">4dp</dimen>
   <dimen name="ongoing_topic_card_elevation">4dp</dimen>
   <dimen name="story_chapter_card_not_playable_state_elevation">0dp</dimen>
@@ -141,14 +156,14 @@
   <dimen name="content_item_question_view_margin_end">32dp</dimen>
   <dimen name="content_item_question_view_margin_start">32dp</dimen>
   <dimen name="drag_drop_item_exploration_split_view_margin_start">32dp</dimen>
-  <dimen name="drag_drop_item_exploration_split_view_margin_end">32dp</dimen>                       //
+  <dimen name="drag_drop_item_exploration_split_view_margin_end">32dp</dimen>
   <dimen name="drag_drop_item_exploration_split_view_margin_top">32dp</dimen>
   <dimen name="drag_drop_item_question_split_view_margin_end">32dp</dimen>
   <dimen name="drag_drop_item_question_split_view_margin_start">32dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_end">32dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_start">32dp</dimen>
   <dimen name="feedback_item_question_split_view_margin_top">32dp</dimen>
-  <dimen name="feedback_item_question_split_view_margin_end">32dp</dimen>                           //
+  <dimen name="feedback_item_question_split_view_margin_end">32dp</dimen>
   <dimen name="feedback_item_question_split_view_margin_start">32dp</dimen>
   <dimen name="feedback_item_question_view_margin_end">32dp</dimen>
   <dimen name="feedback_item_question_view_margin_start">32dp</dimen>

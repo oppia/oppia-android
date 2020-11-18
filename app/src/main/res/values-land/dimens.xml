@@ -20,4 +20,20 @@
   <dimen name="submitted_answer_item_question_split_view_margin_start">32dp</dimen>
   <dimen name="feedback_item_question_split_view_margin_end">32dp</dimen>
 
+  <dimen name="state_fragment_split_view_margin_end">64dp</dimen>
+  <dimen name="state_fragment_split_view_margin_start">64dp</dimen>
+  <dimen name="content_item_question_view_margin_end">64dp</dimen>
+  <dimen name="content_item_question_view_margin_start">64dp</dimen>
+  <dimen name="drag_drop_item_question_view_margin_end">64dp</dimen>
+  <dimen name="drag_drop_item_question_view_margin_start">64dp</dimen>
+  <dimen name="feedback_item_question_view_margin_end">64dp</dimen>
+  <dimen name="feedback_item_question_view_margin_start">64dp</dimen>
+  <dimen name="fraction_interaction_item_non_conversation_view_margin_end">64dp</dimen>
+  <dimen name="fraction_interaction_item_non_conversation_view_margin_start">64dp</dimen>
+  <dimen name="numeric_input_interaction_item_non_conversation_view_margin_end">64dp</dimen>
+  <dimen name="numeric_input_interaction_item_non_conversation_view_margin_start">64dp</dimen>
+  <dimen name="selection_interaction_item_non_conversation_view_margin_end">64dp</dimen>
+  <dimen name="selection_interaction_item_non_conversation_view_margin_start">64dp</dimen>
+  <dimen name="text_input_interaction_item_non_conversation_view_margin_end">64dp</dimen>
+  <dimen name="text_input_interaction_item_non_conversation_view_margin_start">64dp</dimen>
 </resources>
