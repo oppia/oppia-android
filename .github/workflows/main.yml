@@ -167,13 +167,15 @@ jobs:
           PREFIX="$HOME/gitsecret" make install
       - name: Decrypt secrets
         env:
-          GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
+          TEST_GPG_KEY: ${{ secrets.TEST_GPG_KEY }}
+          #GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
         run: |
           cd $HOME
           # NOTE TO DEVELOPERS: Make sure to never print this key directly to stdout!
-          echo $GIT_SECRET_GPG_PRIVATE_KEY > ./git_secret_private_key.gpg
+          echo $TEST_GPG_KEY > ./git_secret_private_key.gpg
           wc -c ./git_secret_private_key.gpg
           sha1sum ./git_secret_private_key.gpg
+          echo $TEST_GPG_KEY
           gpg --import ./git_secret_private_key.gpg
           cd $GITHUB_WORKSPACE
           git secret reveal
