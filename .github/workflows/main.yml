@@ -163,13 +163,16 @@ jobs:
       # apt-get method isn't used since it's much slower to update & upgrade apt before installation
       # versus just directly cloning & installing the project. Further, the specific version
       # shouldn't matter since git-secret relies on a future-proof storage mechanism for secrets.
+      # This also uses a different directory to install git-secret to avoid requiring root access
+      # when running the git secret command.
       - name: Install git-secret
         run: |
           cd $HOME
-          echo $PATH
+          mkdir -p $HOME/gitsecret
+          echo "$HOME/gitsecret" >> $GITHUB_PATH
           git clone https://github.com/sobolevn/git-secret.git git-secret
           cd git-secret && make build
-          make install
+          PREFIX="$HOME/gitsecret" make install
       - name: Decrypt secrets
         env:
           GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
