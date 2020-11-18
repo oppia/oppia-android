@@ -9,9 +9,8 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.StringList
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfHtmlString
 import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -31,24 +30,21 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
     createSetOfHtmlString(
       InteractionObjectTestBuilder.createHtmlStringList("item ab")
     )
-
   private val TEST_HTML_STRING_SET_UPPERCASE =
     createSetOfHtmlString(
       InteractionObjectTestBuilder.createHtmlStringList("item AB")
     )
-
-  private val TEST_HTML_STRING_SET_MIXEDLOWERCASE =
+  private val TEST_HTML_STRING_SET_MIXED_LOWERCASE =
     createSetOfHtmlString(
       InteractionObjectTestBuilder.createHtmlStringList("item aA ")
     )
-  private val TEST_HTML_STRING_SET_MIXEDUPPERCASE =
+  private val TEST_HTML_STRING_SET_MIXED_UPPERCASE =
     createSetOfHtmlString(
       InteractionObjectTestBuilder.createHtmlStringList("item bB")
     )
-
-  private val TEST_NON_NEGATIVE_VALUE_3 =
+  private val NON_NEGATIVE_VALUE_3 =
     createSetOfHtmlString(
-      InteractionObjectTestBuilder.createHtmlStringList("item AB invalid")
+      InteractionObjectTestBuilder.createHtmlStringList("3")
     )
 
   @Inject
@@ -65,7 +61,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseStringAnswer_samevalue_bothValuesMatch() {
+  fun testLowercaseStringAnswer_sameValue_bothValuesMatch() {
     val inputs = mapOf("x" to TEST_HTML_STRING_SET_LOWERCASE)
 
     val matches =
@@ -78,7 +74,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_lowercaseAnswer_withlowercaseAnswerInput_bothValuesMatch() {
+  fun testEquals_lowercaseAnswer_withLowercaseAnswerInput_bothValuesMatch() {
     val inputs = mapOf("x" to TEST_HTML_STRING_SET_LOWERCASE)
 
     val matches =
@@ -91,7 +87,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_lowercaseAnswer_withuppercaseAnswerInput_bothValuesNotMatch() {
+  fun testEquals_lowercaseAnswer_withUppercaseAnswerInput_bothValuesNotMatch() {
     val inputs = mapOf("x" to TEST_HTML_STRING_SET_UPPERCASE)
 
     val matches =
@@ -104,7 +100,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_uppercaseAnswer_withlowercaseAnswerInput_bothValuesNotMatch() {
+  fun testEquals_uppercaseAnswer_withLowercaseAnswerInput_bothValuesNotMatch() {
     val inputs = mapOf("x" to TEST_HTML_STRING_SET_UPPERCASE)
 
     val matches =
@@ -117,7 +113,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_uppercaseAnswer_withuppercaseAnswerInput_bothValuesMatch() {
+  fun testEquals_uppercaseAnswer_withUppercaseAnswerInput_bothValuesMatch() {
     val inputs = mapOf("x" to TEST_HTML_STRING_SET_UPPERCASE)
 
     val matches =
@@ -130,12 +126,12 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_mixedlowercaseAnswer_withmixeduppercaseAnswerInput_bothValuesNotMatch() {
-    val inputs = mapOf("x" to TEST_HTML_STRING_SET_MIXEDLOWERCASE)
+  fun testEquals_mixedLowercaseAnswer_withMixedUppercaseAnswerInput_bothValuesNotMatch() {
+    val inputs = mapOf("x" to TEST_HTML_STRING_SET_MIXED_LOWERCASE)
 
     val matches =
       inputEqualsRuleClassifierProvider.matches(
-        answer = TEST_HTML_STRING_SET_MIXEDUPPERCASE,
+        answer = TEST_HTML_STRING_SET_MIXED_UPPERCASE,
         inputs = inputs
       )
 
@@ -143,8 +139,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_nonNegativeAnswer_withuppercaseAnswerInput_bothValuesMatch() {
-    val inputs = mapOf("x" to TEST_NON_NEGATIVE_VALUE_3)
+  fun testEquals_nonNegativeAnswer_withUppercaseAnswerInput_bothValuesMatch() {
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_3)
 
     val matches =
       inputEqualsRuleClassifierProvider.matches(
@@ -156,8 +152,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_nonNegativeAnswer_withlowercaseAnswerInput_bothValuesNotMatch() {
-    val inputs = mapOf("x" to TEST_NON_NEGATIVE_VALUE_3)
+  fun testEquals_nonNegativeAnswer_withLowercaseAnswerInput_bothValuesNotMatch() {
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_3)
 
     val matches =
       inputEqualsRuleClassifierProvider.matches(
@@ -169,7 +165,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testlowercaseAnswer_missingInput_throwsException() {
+  fun testStringAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to TEST_HTML_STRING_SET_LOWERCASE)
 
     val exception = assertThrows(IllegalStateException::class) {
@@ -182,10 +178,6 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'x'")
-  }
-
-  private fun createSetOfHtmlString(value: StringList): InteractionObject {
-    return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
   }
 
   private fun setUpTestApplicationComponent() {
