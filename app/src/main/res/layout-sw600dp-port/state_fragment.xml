@@ -32,7 +32,7 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:overScrollMode="never"
-        android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/state_fragment_padding_top_audio_bar_visible : @dimen/space_0dp}"
+        android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/space_48dp : @dimen/space_0dp}"
         android:paddingBottom="112dp"
         android:scrollbars="none"
         app:data="@{viewModel.itemList}"

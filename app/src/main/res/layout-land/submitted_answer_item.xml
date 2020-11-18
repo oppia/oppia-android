@@ -4,6 +4,8 @@
 
   <data>
 
+    <import type="android.view.Gravity" />
+
     <import type="android.view.View" />
 
     <variable
@@ -19,9 +21,11 @@
       type="org.oppia.android.app.player.state.itemviewmodel.SubmittedAnswerViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="@{viewModel.hasConversationView ? Gravity.END : Gravity.START}"
+    android:orientation="horizontal"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
     app:explorationSplitViewMarginEnd="@{@dimen/space_24dp}"
@@ -29,8 +33,8 @@
     app:explorationSplitViewMarginTop="@{@dimen/space_24dp}"
     app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:explorationViewMarginBottom="@{@dimen/space_0dp}"
-    app:explorationViewMarginEnd="@{@dimen/submitted_answer_item_exploration_view_margin_end}"
-    app:explorationViewMarginStart="@{@dimen/submitted_answer_item_exploration_view_margin_start}"
+    app:explorationViewMarginEnd="@{@dimen/space_48dp}"
+    app:explorationViewMarginStart="@{@dimen/space_80dp}"
     app:explorationViewMarginTop="@{@dimen/space_24dp}"
     app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:questionSplitViewMarginBottom="@{@dimen/space_0dp}"
@@ -39,8 +43,8 @@
     app:questionSplitViewMarginTop="@{@dimen/space_24dp}"
     app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:questionViewMarginBottom="@{@dimen/space_0dp}"
-    app:questionViewMarginEnd="@{@dimen/submitted_answer_question_view_margin_end}"
-    app:questionViewMarginStart="@{@dimen/submitted_answer_question_view_margin_start}"
+    app:questionViewMarginEnd="@{@dimen/space_64dp}"
+    app:questionViewMarginStart="@{@dimen/space_64dp}"
     app:questionViewMarginTop="@{@dimen/space_24dp}">
 
     <TextView
@@ -55,12 +59,7 @@
       android:text="@{submittedAnswer}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
-      android:visibility="gone"
-      app:layout_constrainedWidth="true"
-      app:layout_constraintEnd_toEndOf="@{viewModel.isCorrectAnswer ? @id/answer_tick_guideline : ConstraintSet.PARENT_ID}"
-      app:layout_constraintHorizontal_bias="@{viewModel.hasConversationView ? 1 : 0}"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/submitted_answer_recycler_view"
@@ -78,21 +77,16 @@
 
     <ImageView
       android:id="@+id/answer_tick"
-      android:layout_width="@dimen/answer_tick_size"
-      android:layout_height="@dimen/answer_tick_size"
+      android:layout_width="24dp"
+      android:layout_height="24dp"
       android:layout_gravity="center_vertical"
-      android:layout_marginStart="@dimen/answer_tick_margin"
+      android:layout_marginStart="12dp"
       android:src="@drawable/ic_check_primary"
       android:visibility="@{viewModel.isCorrectAnswer &amp;&amp; !viewModel.hasConversationView ? View.VISIBLE : View.GONE}"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintStart_toEndOf="@+id/submitted_answer_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toEndOf="@+id/submitted_answer_container"
       app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/answer_tick_guideline"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      app:layout_constraintGuide_end="@{@dimen/answer_tick_margin + @dimen/answer_tick_size}" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+  </LinearLayout>
 </layout>

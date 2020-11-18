@@ -25,6 +25,7 @@ internal class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider @Inj
     )
   }
 
+  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: StringList, input: StringList): Boolean {
     return answer.htmlList.toSet().intersect(input.htmlList).isNotEmpty()
   }
