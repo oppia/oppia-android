@@ -15,7 +15,6 @@
   <dimen name="divider_margin_top">8dp</dimen>
   <dimen name="divider_margin_bottom">8dp</dimen>
   <dimen name="bottom_white_space">160dp</dimen>
-  <dimen name="space_128dp">128dp</dimen>
   <dimen name="space_32dp">32dp</dimen>
   <dimen name="space_24dp">24dp</dimen>
   <dimen name="space_16dp">16dp</dimen>
@@ -84,6 +83,27 @@
   <dimen name="drag_drop_content_group_item_margin">8dp</dimen>
   <dimen name="walkthrough_final_no_button_margin_end">8dp</dimen>
   <dimen name="walkthrough_final_yes_button_margin_start">8dp</dimen>
+
+  <dimen name="continue_interaction_item_question_view_margin_end">128dp</dimen>
+  <dimen name="continue_interaction_item_question_view_margin_start">128dp</dimen>
+  <dimen name="continue_navigation_item_question_view_margin_end">128dp</dimen>
+  <dimen name="continue_navigation_item_question_view_margin_start">128dp</dimen>
+  <dimen name="next_button_item_question_view_margin_end">128dp</dimen>
+  <dimen name="next_button_item_question_view_margin_start">128dp</dimen>
+  <dimen name="replay_button_item_exploration_view_margin_end">128dp</dimen>
+  <dimen name="replay_button_item_exploration_view_margin_start">128dp</dimen>
+  <dimen name="replay_button_item_question_view_margin_end">128dp</dimen>
+  <dimen name="replay_button_item_question_view_margin_start">128dp</dimen>
+  <dimen name="return_to_topic_button_item_exploration_view_margin_end">128dp</dimen>
+  <dimen name="return_to_topic_button_item_exploration_view_margin_start">128dp</dimen>
+  <dimen name="return_to_topic_button_item_question_view_margin_end">128dp</dimen>
+  <dimen name="return_to_topic_button_item_question_view_margin_start">128dp</dimen>
+  <dimen name="state_fragment_non_split_view_margin_end">128dp</dimen>
+  <dimen name="state_fragment_non_split_view_margin_start">128dp</dimen>
+  <dimen name="submit_button_item_question_view_margin_end">128dp</dimen>
+  <dimen name="submit_button_item_question_view_margin_start">128dp</dimen>
+  <dimen name="submitted_answer_item_question_view_margin_end">128dp</dimen>
+  <dimen name="submitted_answer_item_question_view_margin_start">128dp</dimen>
 
   <dimen name="continue_item_exploration_split_view_margin_end">64dp</dimen>
   <dimen name="continue_item_question_split_view_margin_end">64dp</dimen>
