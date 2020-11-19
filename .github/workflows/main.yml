@@ -17,7 +17,6 @@ on:
 jobs:
   linters:
     name: Lint Tests
-    if: false
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -48,7 +47,6 @@ jobs:
      
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
-    if: false
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -106,7 +104,6 @@ jobs:
   
   app_tests:
     name: Robolectric Tests - App Module (Non-Flaky)
-    if: false
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -147,6 +144,42 @@ jobs:
         uses: jwlawson/actions-setup-bazel@v1
         with:
           bazel-version: '3.4.1'
+      - name: Clone Oppia Bazel
+        run: git clone https://github.com/oppia/bazel.git $HOME/oppia-bazel
+      - name: Set up JDK 9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 9
+      - name: Extract Android tools
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/tmp/android_tools
+          cd $HOME/oppia-bazel
+          unzip bazel-tools.zip
+          tar -xf $HOME/oppia-bazel/android_tools.tar.gz -C $GITHUB_WORKSPACE/tmp/android_tools
+      - name: Unzip Bazel binary and build all Oppia targets
+        run: |
+          cd $HOME/oppia-bazel
+          unzip bazel-build.zip
+          cd $GITHUB_WORKSPACE
+          chmod a+x $HOME/oppia-bazel/bazel
+          $HOME/oppia-bazel/bazel build --keep_going --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx -- //:oppia
+          cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
+      - uses: actions/upload-artifact@v2
+        with:
+          name: oppia-bazel-apk
+          path: /home/runner/work/oppia-android/oppia-android/oppia.apk
+      - uses: actions/checkout@v2
+
+  bazel_build_all_with_caching:
+    name: Build All Bazel Targets (with caching)
+    # Caching only works for workflows started on non-forks since it requires access to secrets.
+    if: github.repository == 'oppia/oppia-android'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+    steps:
+      - uses: actions/checkout@v2
       - name: Clone Oppia Bazel
         run: git clone https://github.com/oppia/bazel.git $HOME/oppia-bazel
       - name: Set up JDK 9
@@ -204,4 +237,3 @@ jobs:
           name: oppia-bazel-apk
           path: /home/runner/work/oppia-android/oppia-android/oppia.apk
       - uses: actions/checkout@v2
-      
