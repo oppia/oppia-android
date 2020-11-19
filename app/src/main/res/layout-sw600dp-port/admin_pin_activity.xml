@@ -23,13 +23,16 @@
       android:paddingStart="104dp"
       android:paddingEnd="104dp"
       android:background="@color/oppiaBackgroundYellowIvory"
-      android:paddingBottom="96dp">
+      android:paddingBottom="96dp"
+      android:clipToPadding="false">
 
       <View
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginLeft="-104dp"
+        android:layout_marginRight="-104dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
