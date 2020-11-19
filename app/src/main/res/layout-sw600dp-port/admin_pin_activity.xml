@@ -20,19 +20,19 @@
       android:id="@+id/admin_auth_container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:background="@color/oppiaBackgroundYellowIvory"
+      android:clipToPadding="false"
       android:paddingStart="104dp"
       android:paddingEnd="104dp"
-      android:background="@color/oppiaBackgroundYellowIvory"
-      android:paddingBottom="96dp"
-      android:clipToPadding="false">
+      android:paddingBottom="96dp">
 
       <View
         android:layout_width="match_parent"
         android:layout_height="6dp"
-        android:background="@drawable/toolbar_drop_shadow"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginLeft="-104dp"
         android:layout_marginRight="-104dp"
+        android:background="@drawable/toolbar_drop_shadow"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

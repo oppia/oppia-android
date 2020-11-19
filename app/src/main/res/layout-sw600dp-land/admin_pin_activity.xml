@@ -21,17 +21,17 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/oppiaBackgroundYellowIvory"
+      android:clipToPadding="false"
       android:paddingStart="232dp"
       android:paddingEnd="232dp"
-      android:clipToPadding="false"
       android:paddingBottom="108dp">
 
       <View
         android:layout_width="match_parent"
         android:layout_height="6dp"
-        android:background="@drawable/toolbar_drop_shadow"
         android:layout_marginStart="-232dp"
         android:layout_marginEnd="-232dp"
+        android:background="@drawable/toolbar_drop_shadow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
