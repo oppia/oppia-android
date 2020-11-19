@@ -208,8 +208,6 @@ jobs:
           PREFIX="$HOME/gitsecret" make install
           echo "$HOME/gitsecret" >> $GITHUB_PATH
           echo "$HOME/gitsecret/bin" >> $GITHUB_PATH
-          echo "Path:"
-          echo $PATH
       - name: Decrypt secrets
         env:
           GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
@@ -219,8 +217,6 @@ jobs:
           echo $GIT_SECRET_GPG_PRIVATE_KEY | base64 --decode > ./git_secret_private_key.gpg
           gpg --import ./git_secret_private_key.gpg
           cd $GITHUB_WORKSPACE
-          echo "Path:"
-          echo $PATH
           git secret reveal
       - name: Unzip Bazel binary and build all Oppia targets
         env:
