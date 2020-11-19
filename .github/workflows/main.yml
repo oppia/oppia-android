@@ -156,13 +156,13 @@ jobs:
           cd $HOME/oppia-bazel
           unzip bazel-tools.zip
           tar -xf $HOME/oppia-bazel/android_tools.tar.gz -C $GITHUB_WORKSPACE/tmp/android_tools
-      - name: Unzip Bazel binary and build all Oppia targets
+      - name: Unzip Bazel binary and build Oppia binary
         run: |
           cd $HOME/oppia-bazel
           unzip bazel-build.zip
           cd $GITHUB_WORKSPACE
           chmod a+x $HOME/oppia-bazel/bazel
-          $HOME/oppia-bazel/bazel build --keep_going --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx -- //:oppia
+          $HOME/oppia-bazel/bazel build --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx -- //:oppia
           cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
       - uses: actions/upload-artifact@v2
         with:
