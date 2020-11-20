@@ -40,6 +40,10 @@ object InteractionObjectTestBuilder {
     return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
   }
 
+  fun createSetOfHtmlString(value: StringList): InteractionObject {
+    return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
+  }
+
   fun createWholeNumber(isNegative: Boolean, value: Int): InteractionObject {
     // Whole number fractions imply '0/1' fractional parts.
     return InteractionObject.newBuilder().setFraction(
@@ -86,24 +90,24 @@ object InteractionObjectTestBuilder {
   /** Creates fraction part for [NumberWithUnits]. */
   fun createNumberWithUnitsForFraction(number: Fraction, units: List<NumberUnit>):
     InteractionObject {
-      val numberWithUnits = NumberWithUnits.newBuilder()
-        .addAllUnit(units)
-        .setFraction(number)
-        .build()
+    val numberWithUnits = NumberWithUnits.newBuilder()
+      .addAllUnit(units)
+      .setFraction(number)
+      .build()
 
-      return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
-    }
+    return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
+  }
 
   /** Creates real part for [NumberWithUnits]. */
   fun createNumberWithUnitsForReal(number: Double, units: List<NumberUnit>):
     InteractionObject {
-      val numberWithUnits = NumberWithUnits.newBuilder()
-        .addAllUnit(units)
-        .setReal(number)
-        .build()
+    val numberWithUnits = NumberWithUnits.newBuilder()
+      .addAllUnit(units)
+      .setReal(number)
+      .build()
 
-      return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
-    }
+    return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
+  }
 
   /** Creates [NumberUnit] using the [unit] and [exponent] for [NumberWithUnits]. */
   fun createNumberUnit(unit: String, exponent: Int): NumberUnit {
