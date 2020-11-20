@@ -42,7 +42,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
   )
 
   private val NON_NEGATIVE_VALUE_3 = createSetOfHtmlString(
-    InteractionObjectTestBuilder.createHtmlStringList("3")
+    InteractionObjectTestBuilder.createHtmlStringList("3AB")
   )
 
   @Inject
@@ -64,7 +64,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
 
     val matches =
       inputEqualsRuleClassifierProvider.matches(
-        answer = TEST_HTML_STRING_SET_LOWERCASE, inputs = inputs
+        answer = TEST_HTML_STRING_SET_LOWERCASE,
+        inputs = inputs
       )
 
     assertThat(matches).isTrue()
@@ -76,7 +77,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
 
     val matches =
       inputEqualsRuleClassifierProvider.matches(
-        answer = TEST_HTML_STRING_SET_LOWERCASE, inputs = inputs
+        answer = TEST_HTML_STRING_SET_LOWERCASE,
+        inputs = inputs
       )
 
     assertThat(matches).isTrue()
@@ -88,7 +90,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
 
     val matches =
       inputEqualsRuleClassifierProvider.matches(
-        answer = TEST_HTML_STRING_SET_LOWERCASE, inputs = inputs
+        answer = TEST_HTML_STRING_SET_LOWERCASE,
+        inputs = inputs
       )
 
     assertThat(matches).isFalse()
@@ -100,7 +103,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
 
     val matches =
       inputEqualsRuleClassifierProvider.matches(
-        answer = TEST_HTML_STRING_SET_LOWERCASE, inputs = inputs
+        answer = TEST_HTML_STRING_SET_LOWERCASE,
+        inputs = inputs
       )
 
     assertThat(matches).isFalse()
@@ -112,7 +116,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
 
     val matches =
       inputEqualsRuleClassifierProvider.matches(
-        answer = TEST_HTML_STRING_SET_UPPERCASE, inputs = inputs
+        answer = TEST_HTML_STRING_SET_UPPERCASE,
+        inputs = inputs
       )
 
     assertThat(matches).isTrue()
@@ -124,7 +129,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
 
     val matches =
       inputEqualsRuleClassifierProvider.matches(
-        answer = TEST_HTML_STRING_SET_MIXED_UPPERCASE, inputs = inputs
+        answer = TEST_HTML_STRING_SET_MIXED_UPPERCASE,
+        inputs = inputs
       )
 
     assertThat(matches).isFalse()
@@ -136,7 +142,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
 
     val matches =
       inputEqualsRuleClassifierProvider.matches(
-        answer = TEST_HTML_STRING_SET_UPPERCASE, inputs = inputs
+        answer = TEST_HTML_STRING_SET_UPPERCASE,
+        inputs = inputs
       )
 
     assertThat(matches).isFalse()
@@ -148,7 +155,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
 
     val matches =
       inputEqualsRuleClassifierProvider.matches(
-        answer = TEST_HTML_STRING_SET_LOWERCASE, inputs = inputs
+        answer = TEST_HTML_STRING_SET_LOWERCASE,
+        inputs = inputs
       )
 
     assertThat(matches).isFalse()
@@ -160,7 +168,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
 
     val exception = assertThrows(IllegalStateException::class) {
       inputEqualsRuleClassifierProvider.matches(
-        answer = TEST_HTML_STRING_SET_LOWERCASE, inputs = inputs
+        answer = TEST_HTML_STRING_SET_LOWERCASE,
+        inputs = inputs
       )
     }
 
