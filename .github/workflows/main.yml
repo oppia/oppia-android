@@ -200,7 +200,7 @@ jobs:
     name: Compute affected tests
     runs-on: ubuntu-18.04
     outputs:
-      matrix: ${{ steps.compute-test-matrix.outputs.matrix }}
+      matrix: ${{ join(steps.compute-test-matrix-from-affected.outputs.matrix, steps.compute-test-matrix-from-all.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -214,7 +214,7 @@ jobs:
           cd $GITHUB_WORKSPACE
           chmod a+x $HOME/oppia-bazel/bazel
       - name: Compute test matrix based on affected targets
-        id: compute-test-matrix
+        id: compute-test-matrix-from-affected
         if: "!contains(github.event.pull_request.title, '[RunAllTests]')"
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
         # comma-separated list of test targets for the matrix.
@@ -223,7 +223,7 @@ jobs:
           echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
           echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
       - name: Compute test matrix based on all tests
-        id: compute-test-matrix
+        id: compute-test-matrix-from-all
         if: "contains(github.event.pull_request.title, '[RunAllTests]')"
         run: |
           TEST_TARGET_LIST=$($HOME/oppia-bazel/bazel query "kind(test, //...)" | sed 's/^\|$/"/g' | paste -sd, -)
