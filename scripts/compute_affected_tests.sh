@@ -18,7 +18,8 @@ BAZEL_BINARY=$1
 current_branch=$(git branch --show-current)
 
 if [ "$current_branch" != "develop" ]; then
-  # https://stackoverflow.com/a/9294015 for constructing the arrays.
+  # Compute all files that have been changed on this branch. https://stackoverflow.com/a/9294015 for
+  # constructing the arrays.
   commit_range=HEAD..$(git merge-base origin/develop HEAD)
   changed_committed_files=($(git diff --name-only $commit_range))
   changed_staged_files=($(git diff --name-only --cached))
@@ -32,7 +33,8 @@ if [ "$current_branch" != "develop" ]; then
     "${changed_unstaged_files[@]}"
     "${changed_untracked_files[@]}"
   )
-  # De-duplicated files: https://unix.stackexchange.com/q/377812.
+
+  # De-duplicate files: https://unix.stackexchange.com/q/377812.
   changed_files=($(printf "%s\n" "${changed_files_with_potential_duplicates[@]}" | sort -u))
 
   # Filter all of the source files among those that are actually included in Bazel builds.
