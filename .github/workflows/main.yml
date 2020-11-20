@@ -17,10 +17,8 @@ on:
 jobs:
   linters:
     name: Lint Tests
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-18.04]
+    if: false
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v2
@@ -47,10 +45,8 @@ jobs:
      
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-18.04] 
+    if: false
+    runs-on: ubuntu-18.04
     steps:
      - uses: actions/checkout@v2
      - uses: actions/cache@v2
@@ -104,11 +100,9 @@ jobs:
   
   app_tests:
     name: Robolectric Tests - App Module (Non-Flaky)
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-18.04]
-    steps: 
+    if: false
+    runs-on: ubuntu-18.04
+    steps:
       - uses: actions/checkout@v2
       
       - uses: actions/cache@v2
@@ -220,13 +214,13 @@ jobs:
       - name: Unzip Bazel binary and build all Oppia targets
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
+          #$HOME/oppia-bazel/bazel build --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia
+          #cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
         run: |
           cd $HOME/oppia-bazel
           unzip bazel-build.zip
           cd $GITHUB_WORKSPACE
           chmod a+x $HOME/oppia-bazel/bazel
-          $HOME/oppia-bazel/bazel build --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia
-          cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
       - id: compute-test-matrix
         # TODO(#1861): update the query below to compute only affected targets (more useful after
         # the codebase is more split up).
@@ -249,7 +243,7 @@ jobs:
     needs: bazel_build_binary_with_caching
     runs-on: ubuntu-18.04
     strategy:
-      matrix: ${{fromJson(needs.bazel_build_binary_with_caching.outputs.matrix}}
+      matrix: ${{fromJson(needs.bazel_build_binary_with_caching.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v2
       - name: Clone Oppia Bazel
@@ -288,10 +282,11 @@ jobs:
       - name: Unzip Bazel binary and build all Oppia targets
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
+          #$HOME/oppia-bazel/bazel test --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- ${{ matrix.test-target }}
         run: |
           cd $HOME/oppia-bazel
           unzip bazel-build.zip
           cd $GITHUB_WORKSPACE
           chmod a+x $HOME/oppia-bazel/bazel
-          $HOME/oppia-bazel/bazel test --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:${{ matrix.test-target }}
+          echo ${{ matrix.test-target }}
       - uses: actions/checkout@v2
