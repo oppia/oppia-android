@@ -200,7 +200,7 @@ jobs:
     name: Compute affected tests
     runs-on: ubuntu-18.04
     outputs:
-      matrix: ${{ join(steps.compute-test-matrix-from-affected.outputs.matrix, steps.compute-test-matrix-from-all.outputs.matrix) }}
+      matrix: ${{ steps.compute-test-matrix-from-affected.outputs.matrix || steps.compute-test-matrix-from-all.outputs.matrix }}
     steps:
       - uses: actions/checkout@v2
         with:
