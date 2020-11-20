@@ -129,6 +129,7 @@ jobs:
   bazel_build_app:
     name: Build Bazel Binary
     runs-on: ubuntu-18.04
+    if: false
     steps:
       - uses: actions/checkout@v2
       - name: Clone Oppia Bazel
@@ -202,6 +203,8 @@ jobs:
       matrix: ${{ steps.compute-test-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Clone Oppia Bazel
         run: git clone https://github.com/oppia/bazel.git $HOME/oppia-bazel
       - name: Unzip Bazel binary
