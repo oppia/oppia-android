@@ -1,0 +1,19 @@
+name: Automatic Workflow Canceller
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      # Push events on develop branch
+      - develop
+
+jobs:
+  cancel:
+    name: Cancel Previous Runs
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          workflow_id: main.yml
+          access_token: ${{ github.token }}

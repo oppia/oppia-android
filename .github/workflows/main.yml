@@ -213,14 +213,20 @@ jobs:
           unzip bazel-build.zip
           cd $GITHUB_WORKSPACE
           chmod a+x $HOME/oppia-bazel/bazel
-      - name: Compute test matrix to parallelize in GitHub Actions
+      - name: Compute test matrix based on affected targets
         id: compute-test-matrix
-        # TODO(#1861): update the query below to compute only affected targets (more useful after
-        # the codebase is more split up).
+        if: "!contains(github.event.pull_request.title, '[RunAllTests]')"
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
         # comma-separated list of test targets for the matrix.
         run: |
           TEST_TARGET_LIST=$(bash ./scripts/compute_affected_tests.sh $HOME/oppia-bazel/bazel | sed 's/^\|$/"/g' | paste -sd, -)
+          echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
+          echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
+      - name: Compute test matrix based on all tests
+        id: compute-test-matrix
+        if: "contains(github.event.pull_request.title, '[RunAllTests]')"
+        run: |
+          TEST_TARGET_LIST=$($HOME/oppia-bazel/bazel query "kind(test, //...)" | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
           echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
 
