@@ -40,7 +40,6 @@ object InteractionObjectTestBuilder {
     return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
   }
 
-  //create of SET OF HTML STRING
   fun createSetOfHtmlString(value: StringList): InteractionObject {
     return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
   }
