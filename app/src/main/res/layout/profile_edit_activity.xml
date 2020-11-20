@@ -15,9 +15,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="0dp"
-    android:fillViewport="true"
-    android:padding="0dp">
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -26,7 +24,7 @@
       android:clipToPadding="false">
 
       <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/profile_edit_actions_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
@@ -155,7 +153,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/profile_edit_actions_container"
         app:layout_constraintVertical_bias="1.0">
 
         <View
