@@ -212,7 +212,7 @@ jobs:
           gpg --import ./git_secret_private_key.gpg
           cd $GITHUB_WORKSPACE
           git secret reveal
-      - name: Unzip Bazel binary and build all Oppia targets
+      - name: Unzip Bazel binary and build Oppia binary
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
@@ -245,6 +245,7 @@ jobs:
     needs: bazel_build_binary_with_caching
     runs-on: ubuntu-18.04
     strategy:
+      max-parallel: 25
       matrix: ${{fromJson(needs.bazel_build_binary_with_caching.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v2
@@ -281,7 +282,7 @@ jobs:
           gpg --import ./git_secret_private_key.gpg
           cd $GITHUB_WORKSPACE
           git secret reveal
-      - name: Unzip Bazel binary and build all Oppia targets
+      - name: Unzip Bazel binary and run Oppia test
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
