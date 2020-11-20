@@ -1,0 +1,6 @@
+# Configurations for arguments that should automatically be added to Bazel commands.
+build --android_databinding_use_v3_4_args \
+    --experimental_android_databinding_v2 \
+    --java_header_compilation=false \
+    --noincremental_dexing \
+    --define=android_standalone_dexing_tool=d8_compat_dx
