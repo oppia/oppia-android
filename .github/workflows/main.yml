@@ -245,7 +245,7 @@ jobs:
     needs: bazel_build_binary_with_caching
     runs-on: ubuntu-18.04
     strategy:
-      max-parallel: 15
+      fail-fast: false
       matrix: ${{fromJson(needs.bazel_build_binary_with_caching.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v2
