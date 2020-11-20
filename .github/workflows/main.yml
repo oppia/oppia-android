@@ -129,8 +129,6 @@ jobs:
   bazel_build_app:
     name: Build Bazel Binary
     runs-on: ubuntu-18.04
-    outputs:
-      matrix: ${{ steps.compute-test-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v2
       - name: Clone Oppia Bazel
@@ -192,6 +190,26 @@ jobs:
           $HOME/oppia-bazel/bazel build --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools -- //:oppia
       - name: Copy Oppia APK for uploading
         run: cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
+      - uses: actions/upload-artifact@v2
+        with:
+          name: oppia-bazel-apk
+          path: /home/runner/work/oppia-android/oppia-android/oppia.apk
+
+  bazel_compute_affected_targets:
+    name: Compute affected tests
+    runs-on: ubuntu-18.04
+    outputs:
+      matrix: ${{ steps.compute-test-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Clone Oppia Bazel
+        run: git clone https://github.com/oppia/bazel.git $HOME/oppia-bazel
+      - name: Unzip Bazel binary
+        run: |
+          cd $HOME/oppia-bazel
+          unzip bazel-build.zip
+          cd $GITHUB_WORKSPACE
+          chmod a+x $HOME/oppia-bazel/bazel
       - name: Compute test matrix to parallelize in GitHub Actions
         id: compute-test-matrix
         # TODO(#1861): update the query below to compute only affected targets (more useful after
@@ -202,19 +220,14 @@ jobs:
           TEST_TARGET_LIST=$(bash ./scripts/compute_affected_tests.sh $HOME/oppia-bazel/bazel | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
           echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
-      - uses: actions/upload-artifact@v2
-        with:
-          name: oppia-bazel-apk
-          path: /home/runner/work/oppia-android/oppia-android/oppia.apk
-      - uses: actions/checkout@v2
 
-  bazel_run_test_with_caching:
-    name: Run Bazel Test (with caching)
-    needs: bazel_build_app
+  bazel_run_test:
+    name: Run Bazel Test
+    needs: bazel_compute_affected_targets
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
-      matrix: ${{fromJson(needs.bazel_build_app.outputs.matrix)}}
+      matrix: ${{fromJson(needs.bazel_compute_affected_targets.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v2
       - name: Clone Oppia Bazel
@@ -268,4 +281,3 @@ jobs:
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: $HOME/oppia-bazel/bazel test --test_output=all --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools -- ${{ matrix.test-target }}
-      - uses: actions/checkout@v2
