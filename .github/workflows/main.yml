@@ -128,6 +128,7 @@ jobs:
 
   bazel_build_app:
     name: Build Binary with Bazel
+    if: false
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -214,14 +215,15 @@ jobs:
       - name: Unzip Bazel binary and build all Oppia targets
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
-          #$HOME/oppia-bazel/bazel build --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia
-          #cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
         run: |
           cd $HOME/oppia-bazel
           unzip bazel-build.zip
           cd $GITHUB_WORKSPACE
           chmod a+x $HOME/oppia-bazel/bazel
-      - id: compute-test-matrix
+          $HOME/oppia-bazel/bazel build --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia
+          cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
+      - name: Compute test matrix to parallelize in GitHub Actions
+        id: compute-test-matrix
         # TODO(#1861): update the query below to compute only affected targets (more useful after
         # the codebase is more split up).
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
@@ -282,11 +284,10 @@ jobs:
       - name: Unzip Bazel binary and build all Oppia targets
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
-          #$HOME/oppia-bazel/bazel test --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- ${{ matrix.test-target }}
         run: |
           cd $HOME/oppia-bazel
           unzip bazel-build.zip
           cd $GITHUB_WORKSPACE
           chmod a+x $HOME/oppia-bazel/bazel
-          echo ${{ matrix.test-target }}
+          $HOME/oppia-bazel/bazel test --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- ${{ matrix.test-target }}
       - uses: actions/checkout@v2
