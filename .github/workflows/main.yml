@@ -170,14 +170,13 @@ jobs:
           path: /home/runner/work/oppia-android/oppia-android/oppia.apk
       - uses: actions/checkout@v2
 
-  bazel_build_all_with_caching:
-    name: Build All Bazel Targets (with caching)
+  bazel_build_binary_with_caching:
+    name: Build Bazel Binary (with caching)
     # Caching only works for workflows started on non-forks since it requires access to secrets.
     if: github.repository == 'oppia/oppia-android'
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-18.04]
+    runs-on: ubuntu-18.04
+    outputs:
+      matrix: ${{ steps.compute-test-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v2
       - name: Clone Oppia Bazel
@@ -226,10 +225,73 @@ jobs:
           unzip bazel-build.zip
           cd $GITHUB_WORKSPACE
           chmod a+x $HOME/oppia-bazel/bazel
-          $HOME/oppia-bazel/bazel build --keep_going --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //...
+          $HOME/oppia-bazel/bazel build --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia
           cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
+      - id: compute-test-matrix
+        # TODO(#1861): update the query below to compute only affected targets (more useful after
+        # the codebase is more split up).
+        # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
+        # comma-separated list of test targets for the matrix.
+        run: |
+          TEST_TARGET_LIST=$($HOME/oppia-bazel/bazel query "tests(//...)" 2>/dev/null | sed 's/^\|$/"/g' | paste -sd, -)
+          echo "Test target list: $TEST_TARGET_LIST"
+          echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
       - uses: actions/upload-artifact@v2
         with:
           name: oppia-bazel-apk
           path: /home/runner/work/oppia-android/oppia-android/oppia.apk
+      - uses: actions/checkout@v2
+
+  bazel_run_test_with_caching:
+    name: Run Bazel Test (with caching)
+    # Caching only works for workflows started on non-forks since it requires access to secrets.
+    if: github.repository == 'oppia/oppia-android'
+    needs: bazel_build_binary_with_caching
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix: ${{fromJson(needs.bazel_build_binary_with_caching.outputs.matrix}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Clone Oppia Bazel
+        run: git clone https://github.com/oppia/bazel.git $HOME/oppia-bazel
+      - name: Set up JDK 9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 9
+      - name: Extract Android tools
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/tmp/android_tools
+          cd $HOME/oppia-bazel
+          unzip bazel-tools.zip
+          tar -xf $HOME/oppia-bazel/android_tools.tar.gz -C $GITHUB_WORKSPACE/tmp/android_tools
+      # See explanation in bazel_build_binary_with_caching for how this is installed.
+      - name: Install git-secret
+        shell: bash
+        run: |
+          cd $HOME
+          mkdir -p $HOME/gitsecret
+          git clone https://github.com/sobolevn/git-secret.git git-secret
+          cd git-secret && make build
+          PREFIX="$HOME/gitsecret" make install
+          echo "$HOME/gitsecret" >> $GITHUB_PATH
+          echo "$HOME/gitsecret/bin" >> $GITHUB_PATH
+      - name: Decrypt secrets
+        env:
+          GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
+        run: |
+          cd $HOME
+          # NOTE TO DEVELOPERS: Make sure to never print this key directly to stdout!
+          echo $GIT_SECRET_GPG_PRIVATE_KEY | base64 --decode > ./git_secret_private_key.gpg
+          gpg --import ./git_secret_private_key.gpg
+          cd $GITHUB_WORKSPACE
+          git secret reveal
+      - name: Unzip Bazel binary and build all Oppia targets
+        env:
+          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
+        run: |
+          cd $HOME/oppia-bazel
+          unzip bazel-build.zip
+          cd $GITHUB_WORKSPACE
+          chmod a+x $HOME/oppia-bazel/bazel
+          $HOME/oppia-bazel/bazel test --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:${{ matrix.test-target }}
       - uses: actions/checkout@v2
