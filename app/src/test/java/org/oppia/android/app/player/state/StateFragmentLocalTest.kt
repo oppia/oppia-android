@@ -136,6 +136,8 @@ class StateFragmentLocalTest {
   private val internalProfileId: Int = 1
   private val solutionIndex: Int = 4
 
+  // extra line to indicate the test changed
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
