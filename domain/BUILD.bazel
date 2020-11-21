@@ -23,9 +23,22 @@ kt_android_library(
     ],
 )
 
+# TODO(#2143): Move InteractionObjectTestBuilder to a testing package outside the test folder.
+kt_android_library(
+    name = "interaction_object_test_builder",
+    testonly = True,
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/InteractionObjectTestBuilder.kt",
+    ],
+    deps = [
+        "//model",
+    ],
+)
+
 TEST_DEPS = [
     ":dagger",
     ":domain",
+    ":interaction_object_test_builder",
     "//data:persistent_cache_store",
     "//model",
     "//testing",
