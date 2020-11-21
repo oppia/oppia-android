@@ -17,7 +17,6 @@ on:
 jobs:
   linters:
     name: Lint Tests
-    if: false
     runs-on: ubuntu-18.04
 
     steps:
@@ -45,7 +44,6 @@ jobs:
      
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
-    if: false
     runs-on: ubuntu-18.04
     steps:
      - uses: actions/checkout@v2
@@ -100,7 +98,6 @@ jobs:
   
   app_tests:
     name: Robolectric Tests - App Module (Non-Flaky)
-    if: false
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -129,7 +126,6 @@ jobs:
   bazel_build_app:
     name: Build Bazel Binary
     runs-on: ubuntu-18.04
-    if: false
     steps:
       - uses: actions/checkout@v2
       - name: Clone Oppia Bazel

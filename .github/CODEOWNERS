@@ -12,7 +12,7 @@
 #   the above date passes.
 
 # GitHub Actions & CI workflows.
-.github/main.yaml @BenHenning
+.github/*.yaml @BenHenning
 
 # Blanket codeowners
 # This is for the case when new files are created in any directories that aren't

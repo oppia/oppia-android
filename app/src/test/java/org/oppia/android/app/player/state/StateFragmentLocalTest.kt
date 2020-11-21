@@ -54,6 +54,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
@@ -135,8 +136,6 @@ class StateFragmentLocalTest {
 
   private val internalProfileId: Int = 1
   private val solutionIndex: Int = 4
-
-  // extra line to indicate the test changed
 
   @Before
   fun setUp() {
@@ -288,6 +287,8 @@ class StateFragmentLocalTest {
 
       submitTwoWrongAnswers()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
     }
   }
@@ -300,6 +301,8 @@ class StateFragmentLocalTest {
 
       submitTwoWrongAnswers()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
       onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
     }
@@ -314,7 +317,9 @@ class StateFragmentLocalTest {
       submitTwoWrongAnswers()
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.previous_response_header)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
     }
   }
@@ -328,13 +333,18 @@ class StateFragmentLocalTest {
       submitTwoWrongAnswers()
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
       onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
       onView(withSubstring("Previous Responses")).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
       onView(withSubstring("Previous Responses")).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
     }
   }
@@ -400,6 +410,9 @@ class StateFragmentLocalTest {
       playThroughState1()
       submitTwoWrongAnswers()
       onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
+      // The previous navigation button is next to a submit answer button in this state.
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.previous_state_navigation_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.hint_bulb)).check(matches(not(isDisplayed())))
@@ -413,7 +426,7 @@ class StateFragmentLocalTest {
       playThroughState1()
       submitTwoWrongAnswers()
       onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
-      moveToPreviousAndBackToCurrentState()
+      moveToPreviousAndBackToCurrentStateWithSubmitButton()
       onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
     }
   }
@@ -430,7 +443,7 @@ class StateFragmentLocalTest {
       onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
       closeHintsAndSolutionsDialog()
 
-      moveToPreviousAndBackToCurrentState()
+      moveToPreviousAndBackToCurrentStateWithSubmitButton()
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -449,6 +462,7 @@ class StateFragmentLocalTest {
       onView(withId(R.id.previous_state_navigation_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.next_state_navigation_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -456,6 +470,7 @@ class StateFragmentLocalTest {
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(0))
+      testCoroutineDispatchers.runCurrent()
       onView(
         RecyclerViewMatcher.atPositionOnView(
           R.id.hints_and_solution_recycler_view, 0, R.id.hint_summary_container
@@ -711,6 +726,7 @@ class StateFragmentLocalTest {
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -763,6 +779,7 @@ class StateFragmentLocalTest {
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -786,9 +803,11 @@ class StateFragmentLocalTest {
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .perform(click())
+      testCoroutineDispatchers.runCurrent()
 
       onView(withText("This will reveal the solution. Are you sure?"))
         .inRoot(isDialog())
@@ -1248,7 +1267,10 @@ class StateFragmentLocalTest {
   }
 
   // Go to previous state and then come back to current state
-  private fun moveToPreviousAndBackToCurrentState() {
+  private fun moveToPreviousAndBackToCurrentStateWithSubmitButton() {
+    // The previous navigation button is bundled with the submit button sometimes, and specifically
+    // for tests that are currently on a state with a submit button after the first state.
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
     onView(withId(R.id.previous_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))

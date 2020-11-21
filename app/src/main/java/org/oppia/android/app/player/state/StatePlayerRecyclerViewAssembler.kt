@@ -134,8 +134,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
   delayShowAdditionalHintsMs: Long,
   delayShowAdditionalHintsFromWrongAnswerMs: Long
 ) : HtmlParser.CustomOppiaTagActionListener {
-  // Test change to see what tests this affects.
-
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
    * intentionally not retained upon configuration changes since the user can just re-expand the
