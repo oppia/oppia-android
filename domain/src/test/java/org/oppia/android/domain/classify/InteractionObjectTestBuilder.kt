@@ -127,4 +127,8 @@ object InteractionObjectTestBuilder {
       RatioExpression.newBuilder().addAllRatioComponent(value)
     ).build()
   }
+
+  fun createSetOfHtmlString(value: StringList): InteractionObject {
+    return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
+  }
 }
