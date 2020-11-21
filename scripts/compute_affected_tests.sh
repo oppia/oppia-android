@@ -17,7 +17,7 @@ BAZEL_BINARY=$1
 # Reference: https://stackoverflow.com/a/6245587.
 current_branch=$(git branch --show-current)
 
-if [ "$current_branch" != "develop" ]; then
+if [[ "$current_branch" != "develop" ]]; then
   # Compute all files that have been changed on this branch. https://stackoverflow.com/a/9294015 for
   # constructing the arrays.
   commit_range=HEAD..$(git merge-base origin/develop HEAD)
@@ -43,8 +43,34 @@ if [ "$current_branch" != "develop" ]; then
     changed_bazel_files+=($($BAZEL_BINARY query --noshow_progress $changed_file 2> /dev/null))
   done
 
-  # Compute the list of affected tests.
-  $BAZEL_BINARY query --noshow_progress "kind(test, rdeps(//..., set(${changed_bazel_files[@]})))" 2>/dev/null
+  # Compute the list of affected tests based on source files.
+  source_affected_targets=$($BAZEL_BINARY query --noshow_progress --universe_scope=//... --order_output=no "kind(test, allrdeps(set(${changed_bazel_files[@]})))" 2>/dev/null)
+
+  # Compute the list of files to consider for BUILD-level changes (this uses the base file list as a
+  # reference since Bazel's query won't find matching targets for utility bzl files that can still
+  # affect the build). https://stackoverflow.com/a/44107086 for reference on changing case matching.
+  shopt -s nocasematch
+  changed_bazel_support_files=()
+  for changed_file in ${changed_files[@]}; do
+    if [[ "$changed_file" =~ ^.+?\.bazel$ ]] || [[ "$changed_file" =~ ^.+?\.bzl$ ]] || [[ "$changed_file" == "WORKSPACE" ]]; then
+      changed_bazel_support_files+=($changed_file)
+    fi
+  done
+  shopt -u nocasematch
+
+  # Compute the list of affected tests based on BUILD/Bazel/WORKSPACE files. These are generally
+  # framed as: if a BUILD file changes, run all tests transitively connected to it.
+  # Reference for joining an array to string: https://stackoverflow.com/a/53839433.
+  printf -v changed_bazel_support_files_list '%s,' "${changed_bazel_support_files[@]}"
+  build_affected_targets=$($BAZEL_BINARY query --noshow_progress --universe_scope=//... --order_output=no "filter('^[^@]', kind(test, allrdeps(siblings(rbuildfiles(${changed_bazel_support_files_list%,})))))" 2>/dev/null)
+
+  all_affected_targets_with_potential_duplicated=(
+    "${source_affected_targets[@]}"
+    "${build_affected_targets[@]}"
+  )
+
+  # Print all of the affected targets without duplicates.
+  printf "%s\n" "${all_affected_targets_with_potential_duplicated[@]}" | sort -u
 else
   # Print all test targets.
   $BAZEL_BINARY query --noshow_progress "kind(test, //...)" 2>/dev/null

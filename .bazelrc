@@ -4,3 +4,6 @@ build --android_databinding_use_v3_4_args \
     --java_header_compilation=false \
     --noincremental_dexing \
     --define=android_standalone_dexing_tool=d8_compat_dx
+
+# Show all test output by default (for better debugging).
+test --test_output=all

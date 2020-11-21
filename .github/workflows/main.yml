@@ -289,4 +289,4 @@ jobs:
         if: github.repository != 'oppia/oppia-android'
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
-        run: $HOME/oppia-bazel/bazel test --test_output=all --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools -- ${{ matrix.test-target }}
+        run: $HOME/oppia-bazel/bazel test --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools -- ${{ matrix.test-target }}
