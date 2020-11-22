@@ -33,7 +33,7 @@
     app:explorationViewMarginBottom="@{@dimen/space_0dp}"
     app:explorationViewMarginEnd="@{@dimen/space_176dp}"
     app:explorationViewMarginStart="@{@dimen/space_208dp}"
-    app:explorationViewMarginTop="@{@dimen/space_24dp}"
+    app:explorationViewMarginTop="@{@dimen/drag_drop_item_exploration_view_margin_top}"
     app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
     app:questionSplitViewMarginBottom="@{@dimen/space_0dp}"
     app:questionSplitViewMarginEnd="@{@dimen/drag_drop_item_question_split_view_margin_end}"
@@ -43,7 +43,7 @@
     app:questionViewMarginBottom="@{@dimen/space_0dp}"
     app:questionViewMarginEnd="@{@dimen/space_192dp}"
     app:questionViewMarginStart="@{@dimen/space_192dp}"
-    app:questionViewMarginTop="@{@dimen/space_24dp}">
+    app:questionViewMarginTop="@{@dimen/drag_drop_item_question_view_margin_top}">
 
     <TextView
       android:id="@+id/drag_drop_grouping_hint_text_view"

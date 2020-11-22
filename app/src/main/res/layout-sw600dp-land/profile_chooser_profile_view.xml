@@ -36,8 +36,8 @@
       android:layout_height="wrap_content"
       android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER}"
       android:orientation="@{hasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
-      app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
-      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_24dp}"
+      app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_profile_view_margin_start_profile_not_added}"
+      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_profile_view_margin_top_profile_not_added}"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       profile:ignore="RtlSymmetry">

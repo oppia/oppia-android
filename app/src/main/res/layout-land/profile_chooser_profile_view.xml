@@ -32,7 +32,7 @@
       android:gravity="center_horizontal"
       android:orientation="vertical"
       app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_28dp}"
-      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/space_24dp}"
+      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/profile_chooser_profile_view_margin_top_profile_not_added}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
