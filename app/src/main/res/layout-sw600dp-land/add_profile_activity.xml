@@ -37,7 +37,7 @@
           android:layout_gravity="center_horizontal"
           android:minWidth="360dp"
           android:paddingTop="52dp"
-          android:paddingBottom="224dp">
+          android:paddingBottom="148dp">
 
           <com.jackandphantom.circularimageview.CircleImage
             android:id="@+id/add_profile_activity_user_image_view"
