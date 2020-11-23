@@ -257,6 +257,11 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  fun testFailOnPurpose() {
+    throw AssertionError("Failed")
+  }
+
+  @Test
   fun testStateFragment_nextState_wait120seconds_canViewOneHint() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()

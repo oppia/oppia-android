@@ -17,7 +17,10 @@ on:
 jobs:
   linters:
     name: Lint Tests
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
 
     steps:
     - uses: actions/checkout@v2
@@ -44,7 +47,10 @@ jobs:
      
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
     steps:
      - uses: actions/checkout@v2
      - uses: actions/cache@v2
@@ -98,7 +104,10 @@ jobs:
   
   app_tests:
     name: Robolectric Tests - App Module (Non-Flaky)
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
     steps:
       - uses: actions/checkout@v2
       
@@ -124,8 +133,11 @@ jobs:
          path: app/build/reports
 
   bazel_build_app:
-    name: Build Bazel Binary
-    runs-on: ubuntu-18.04
+    name: Build Binary with Bazel
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
     steps:
       - uses: actions/checkout@v2
       - name: Clone Oppia Bazel
@@ -286,3 +298,14 @@ jobs:
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: $HOME/oppia-bazel/bazel test --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools -- ${{ matrix.test-target }}
+
+  # Reference: https://github.community/t/127354/7.
+  check_test_results:
+      name: Check Bazel Test Results
+      needs: bazel_run_test
+      if: ${{ always() }}
+      runs-on: ubuntu-18.04
+      steps:
+        - name: Check tests passed
+          if: ${{ needs.bazel_run_test.result != 'success' }}
+          run: exit 1
