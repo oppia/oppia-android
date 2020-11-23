@@ -28,7 +28,6 @@ import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -102,7 +101,7 @@ class TopicPracticeFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    // testCoroutineDispatchers.registerIdlingResource()
+    testCoroutineDispatchers.registerIdlingResource()
     FirebaseApp.initializeApp(context)
     skillIdList.add("5RM9KPfQxobH")
     skillIdList.add("B39yK4cbHZYI")
@@ -110,7 +109,7 @@ class TopicPracticeFragmentTest {
 
   @After
   fun tearDown() {
-    //testCoroutineDispatchers.unregisterIdlingResource()
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 

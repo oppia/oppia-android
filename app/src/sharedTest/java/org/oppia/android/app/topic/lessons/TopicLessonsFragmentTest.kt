@@ -9,6 +9,7 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -275,15 +276,9 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore
   fun testLessonsPlayFragment_loadRatiosTopic_chapterListIsNotVisible() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      onView(
-        atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.chapter_recycler_view)
-      ).check(
-        matches(not(isDisplayed()))
-      )
+      onView(withId(R.id.chapter_recycler_view)).check(doesNotExist())
     }
   }
 
