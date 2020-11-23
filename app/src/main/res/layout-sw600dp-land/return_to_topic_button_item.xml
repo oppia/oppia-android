@@ -49,7 +49,7 @@
     app:questionViewMarginBottom="@{@dimen/space_0dp}"
     app:questionViewMarginEnd="@{@dimen/space_192dp}"
     app:questionViewMarginStart="@{@dimen/space_192dp}"
-    app:questionViewMarginTop="@{@dimen/space_12dp}"
+    app:questionViewMarginTop="@{@dimen/return_to_topic_item_question_view_margin_top}"
     app:questionViewPaddingApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
     app:questionViewPaddingBottom="@{@dimen/space_0dp}"
     app:questionViewPaddingEnd="@{@dimen/space_0dp}"

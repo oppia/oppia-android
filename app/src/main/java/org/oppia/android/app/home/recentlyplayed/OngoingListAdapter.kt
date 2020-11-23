@@ -72,7 +72,8 @@ class OngoingListAdapter(
         } else {
           if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             if (storyGridPosition > 2) {
-              (activity as Context).resources.getDimensionPixelSize(R.dimen.space_16dp)
+              (activity as Context).resources
+                .getDimensionPixelSize(R.dimen.ongoing_story_card_view_margin_top_portrait)
             } else {
               (activity as Context).resources.getDimensionPixelSize(R.dimen.space_28dp)
             }

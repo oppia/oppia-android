@@ -29,7 +29,7 @@
     app:explorationViewMarginStart="@{@dimen/space_0dp}"
     app:explorationViewMarginTop="@{@dimen/space_56dp}"
     app:explorationViewPaddingApplicable="@{buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
-    app:explorationViewPaddingBottom="@{@dimen/space_12dp}"
+    app:explorationViewPaddingBottom="@{@dimen/replay_button_item_exploration_view_padding_bottom}"
     app:explorationViewPaddingEnd="@{@dimen/replay_button_item_exploration_view_padding_end}"
     app:explorationViewPaddingStart="@{@dimen/replay_button_item_exploration_view_padding_start}"
     app:explorationViewPaddingTop="@{@dimen/space_0dp}"
@@ -49,7 +49,7 @@
     app:questionViewMarginStart="@{@dimen/space_0dp}"
     app:questionViewMarginTop="@{@dimen/space_56dp}"
     app:questionViewPaddingApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
-    app:questionViewPaddingBottom="@{@dimen/space_12dp}"
+    app:questionViewPaddingBottom="@{@dimen/replay_button_item_question_view_padding_bottom}"
     app:questionViewPaddingEnd="@{@dimen/replay_button_item_question_view_padding_end}"
     app:questionViewPaddingStart="@{@dimen/replay_button_item_question_view_padding_start}"
     app:questionViewPaddingTop="@{@dimen/space_0dp}">
