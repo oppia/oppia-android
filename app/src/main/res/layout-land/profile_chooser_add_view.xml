@@ -33,7 +33,7 @@
       android:gravity="center_horizontal"
       android:orientation="vertical"
       app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_margin : @dimen/space_28dp}"
-      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_16dp : @dimen/profile_chooser_add_view_margin_top_profile_not_added}">
+      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_margin_top_profile_already_added : @dimen/profile_chooser_add_view_margin_top_profile_not_added}">
 
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_add_button"

@@ -84,4 +84,28 @@
   <dimen name="submitted_answer_question_split_view_margin_end_no_extra_interaction_answer">24dp</dimen>
   <dimen name="submitted_answer_question_split_view_margin_top_no_extra_interaction_answer">24dp</dimen>
   <dimen name="submitted_answer_question_view_margin_top">24dp</dimen>
+  <dimen name="continue_navigation_item_exploration_view_margin_top">72dp</dimen>
+  <dimen name="continue_navigation_item_question_view_margin_top">72dp</dimen>
+
+  <dimen name="content_item_exploration_split_view_padding_bottom">16dp</dimen>
+  <dimen name="content_item_exploration_split_view_padding_top">16dp</dimen>
+  <dimen name="content_item_exploration_view_padding_bottom">16dp</dimen>
+  <dimen name="content_item_exploration_view_padding_top">16dp</dimen>
+  <dimen name="feedback_item_exploration_split_view_padding_bottom">16dp</dimen>
+  <dimen name="feedback_item_exploration_split_view_padding_top">16dp</dimen>
+  <dimen name="feedback_item_exploration_view_padding_bottom">16dp</dimen>
+  <dimen name="feedback_item_exploration_view_padding_top">16dp</dimen>
+  <dimen name="profile_chooser_profile_view_margin_start_profile_already_added">16dp</dimen>
+  <dimen name="profile_chooser_profile_view_margin_end_profile_already_added">16dp</dimen>
+  <dimen name="profile_chooser_profile_view_margin">16dp</dimen>
+
+  <dimen name="feedback_item_exploration_split_view_padding_start">12dp</dimen>
+  <dimen name="feedback_item_exploration_split_view_padding_end">12dp</dimen>
+  <dimen name="content_item_exploration_split_view_padding_end">12dp</dimen>
+  <dimen name="content_item_exploration_split_view_padding_start">12dp</dimen>
+  <dimen name="content_item_exploration_view_padding_end">12dp</dimen>
+  <dimen name="content_item_exploration_view_padding_start">12dp</dimen>
+  <dimen name="feedback_item_exploration_view_padding_end">12dp</dimen>
+  <dimen name="feedback_item_exploration_view_padding_start">12dp</dimen>
+  <dimen name="return_to_topic_item_question_view_margin_top">12dp</dimen>
 </resources>
