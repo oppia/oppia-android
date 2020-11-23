@@ -25,7 +25,7 @@
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
     app:explorationSplitViewMarginEnd="@{@dimen/submitted_answer_exploration_split_view_margin_end}"
-    app:explorationSplitViewMarginStart="@{@dimen/space_40dp}"
+    app:explorationSplitViewMarginStart="@{@dimen/submitted_answer_exploration_split_view_margin_start}"
     app:explorationSplitViewMarginTop="@{@dimen/submitted_answer_exploration_split_view_margin_top}"
     app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:explorationViewMarginBottom="@{@dimen/space_0dp}"
