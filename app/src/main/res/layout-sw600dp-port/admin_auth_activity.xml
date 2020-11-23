@@ -54,49 +54,43 @@
 
         <TextView
           android:id="@+id/admin_auth_heading_textview"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginStart="204dp"
           android:layout_marginTop="48dp"
-          android:layout_marginEnd="204dp"
           android:fontFamily="sans-serif-medium"
           android:maxLines="2"
           android:text="@string/admin_auth_heading"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="20sp"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="@id/guideline_end"
+          app:layout_constraintStart_toStartOf="@id/guideline_start"
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
           android:id="@+id/admin_auth_sub_text"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_marginStart="204dp"
           android:layout_marginTop="12dp"
-          android:layout_marginEnd="204dp"
           android:fontFamily="sans-serif"
           android:text="@string/admin_auth_sub"
           android:textColor="@color/oppiaAdminAuthSecondaryText"
           android:textSize="16sp"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="@id/guideline_end"
+          app:layout_constraintStart_toStartOf="@id/guideline_start"
           app:layout_constraintTop_toBottomOf="@id/admin_auth_heading_textview" />
 
         <org.oppia.android.app.profile.ProfileInputView
           android:id="@+id/admin_auth_input_pin"
-          android:layout_width="match_parent"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_marginStart="204dp"
           android:layout_marginTop="40dp"
-          android:layout_marginEnd="204dp"
           android:addTextChangedListener="@{viewModel.inputPinTextWatcher}"
           android:imeOptions="actionDone"
           app:inputLength="5"
           app:isPasswordInput="true"
           app:label="@string/admin_auth_pin"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="@id/guideline_end"
+          app:layout_constraintStart_toStartOf="@id/guideline_start"
           app:layout_constraintTop_toBottomOf="@id/admin_auth_sub_text"
           profile:error="@{viewModel.errorMessage}"
           profile:labelMargin="@{@dimen/admin_auth_input_pin_label_margin}" />
@@ -115,6 +109,20 @@
           app:layout_constraintEnd_toEndOf="@+id/admin_auth_input_pin"
           app:layout_constraintTop_toBottomOf="@id/admin_auth_input_pin"
           app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.constraintlayout.widget.Guideline
+          android:id="@+id/guideline_start"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          app:layout_constraintGuide_percent="0.265625"  />
+
+        <androidx.constraintlayout.widget.Guideline
+          android:id="@+id/guideline_end"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          app:layout_constraintGuide_percent="0.734375"  />
       </androidx.constraintlayout.widget.ConstraintLayout>
 
       <View
