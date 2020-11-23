@@ -196,6 +196,9 @@
   <dimen name="previous_button_exploration_view_margin_bottom">8dp</dimen>
   <dimen name="previous_button_question_view_margin_bottom">8dp</dimen>
   <dimen name="profile_chooser_profile_view_name_margin_top_profile_already_added">8dp</dimen>
+  <dimen name="profile_chooser_profile_view_last_visited_margin_top_profile_already_added">8dp</dimen>
+  <dimen name="profile_chooser_profile_view_is_admin_margin_top_profile_already_added">8dp</dimen>
+  <dimen name="profile_view_already_added_description_parent_margin_top">8dp</dimen>
   <dimen name="return_to_topic_button_exploration_view_margin_bottom">8dp</dimen>
   <dimen name="return_to_topic_button_question_view_margin_bottom">8dp</dimen>
   <dimen name="submit_button_question_view_margin_bottom">8dp</dimen>

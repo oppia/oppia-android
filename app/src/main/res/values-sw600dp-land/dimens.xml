@@ -63,4 +63,8 @@
   <dimen name="feedback_item_exploration_view_padding_end">12dp</dimen>
   <dimen name="feedback_item_exploration_view_padding_start">12dp</dimen>
   <dimen name="return_to_topic_item_question_view_margin_top">12dp</dimen>
+
+  <dimen name="profile_chooser_profile_view_name_margin_top_profile_already_added">8dp</dimen>
+  <dimen name="profile_chooser_profile_view_last_visited_margin_top_profile_already_added">8dp</dimen>
+  <dimen name="profile_chooser_profile_view_is_admin_margin_top_profile_already_added">8dp</dimen>
 </resources>
