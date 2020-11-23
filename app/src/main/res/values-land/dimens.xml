@@ -36,6 +36,7 @@
   <dimen name="selection_interaction_item_non_conversation_view_margin_start">64dp</dimen>
   <dimen name="text_input_interaction_item_non_conversation_view_margin_end">64dp</dimen>
   <dimen name="text_input_interaction_item_non_conversation_view_margin_start">64dp</dimen>
+
   <dimen name="drag_drop_interaction_item_exploration_view_margin_start">80dp</dimen>
   <dimen name="drag_drop_item_exploration_view_margin_end">48dp</dimen>
   <dimen name="feedback_item_exploration_view_margin_start">48dp</dimen>
