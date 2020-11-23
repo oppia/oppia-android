@@ -93,4 +93,10 @@
   <dimen name="content_item_exploration_view_padding_start">12dp</dimen>
   <dimen name="feedback_item_exploration_view_padding_end">12dp</dimen>
   <dimen name="feedback_item_exploration_view_padding_start">12dp</dimen>
+
+  <dimen name="profile_chooser_add_view_margin_bottom_profile_not_added">28dp</dimen>
+  <dimen name="profile_chooser_profile_view_margin_bottom_profile_not_added">28dp</dimen>
+  <dimen name="state_fragment_non_split_view_with_audio_bar_visible_padding_top">72dp</dimen>
+  <dimen name="state_fragment_split_view_with_audio_bar_visible_padding_top">96dp</dimen>
+
 </resources>

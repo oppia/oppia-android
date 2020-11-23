@@ -27,8 +27,8 @@
     android:layout_margin="@dimen/profile_chooser_profile_view_margin"
     android:padding="@dimen/space_4dp"
     app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_0dp}"
-    app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_298dp}"
-    app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_298dp}">
+    app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_profile_view_parent_margin_end_profile_not_added}"
+    app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_profile_view_parent_margin_start_profile_not_added}">
 
     <LinearLayout
       android:id="@+id/profile_chooser_item"

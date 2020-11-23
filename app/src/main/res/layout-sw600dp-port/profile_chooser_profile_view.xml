@@ -77,7 +77,7 @@
         android:textSize="16sp"
         android:textStyle="italic"
         android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
-        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_28dp}"
+        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_profile_view_last_visited_margin_start_profile_not_added}"
         profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
       <TextView

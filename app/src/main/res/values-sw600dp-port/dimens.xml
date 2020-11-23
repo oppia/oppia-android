@@ -110,4 +110,5 @@
   <dimen name="return_to_topic_item_question_view_margin_top">12dp</dimen>
 
   <dimen name="profile_chooser_profile_view_name_margin_top_profile_already_added">8dp</dimen>
+  <dimen name="profile_chooser_profile_view_last_visited_margin_start_profile_not_added">28dp</dimen>
 </resources>

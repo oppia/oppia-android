@@ -48,7 +48,7 @@
     app:questionViewMarginApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
     app:questionViewMarginBottom="@{@dimen/space_0dp}"
     app:questionViewMarginEnd="@{@dimen/space_0dp}"
-    app:questionViewMarginStart="@{@dimen/space_192dp}"
+    app:questionViewMarginStart="@{@dimen/previous_button_item_question_view_margin_start}"
     app:questionViewMarginTop="@{@dimen/previous_button_item_question_view_margin_top}"
     app:questionViewPaddingApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
     app:questionViewPaddingBottom="@{@dimen/space_0dp}"
