@@ -26,8 +26,8 @@
     android:padding="0dp"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
-    app:explorationSplitViewMarginEnd="@{@dimen/space_32dp}"
-    app:explorationSplitViewMarginStart="@{@dimen/space_32dp}"
+    app:explorationSplitViewMarginEnd="@{@dimen/drag_drop_item_exploration_split_view_margin_end}"
+    app:explorationSplitViewMarginStart="@{@dimen/drag_drop_item_exploration_split_view_margin_start}"
     app:explorationSplitViewMarginTop="@{@dimen/space_40dp}"
     app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.splitView}"
     app:explorationViewMarginBottom="@{@dimen/space_0dp}"
@@ -36,13 +36,13 @@
     app:explorationViewMarginTop="@{@dimen/space_24dp}"
     app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
     app:questionSplitViewMarginBottom="@{@dimen/space_0dp}"
-    app:questionSplitViewMarginEnd="@{@dimen/space_32dp}"
-    app:questionSplitViewMarginStart="@{@dimen/space_32dp}"
+    app:questionSplitViewMarginEnd="@{@dimen/drag_drop_item_question_split_view_margin_end}"
+    app:questionSplitViewMarginStart="@{@dimen/drag_drop_item_question_split_view_margin_start}"
     app:questionSplitViewMarginTop="@{@dimen/space_40dp}"
     app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.splitView}"
     app:questionViewMarginBottom="@{@dimen/space_0dp}"
-    app:questionViewMarginEnd="@{@dimen/space_64dp}"
-    app:questionViewMarginStart="@{@dimen/space_64dp}"
+    app:questionViewMarginEnd="@{@dimen/drag_drop_item_question_view_margin_end}"
+    app:questionViewMarginStart="@{@dimen/drag_drop_item_question_view_margin_start}"
     app:questionViewMarginTop="@{@dimen/space_24dp}">
 
     <TextView

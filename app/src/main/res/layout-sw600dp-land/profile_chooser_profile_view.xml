@@ -61,7 +61,7 @@
         android:singleLine="false"
         android:text="@{viewModel.profile.name}"
         android:textColor="@color/white"
-        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_32dp}"
+        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_profile_view_textview_margin_start_profile_not_added}"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}" />
 
       <TextView
@@ -76,7 +76,7 @@
         android:textSize="16sp"
         android:textStyle="italic"
         android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
-        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_32dp}"
+        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_profile_view_textview_margin_start_profile_not_added}"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_4dp}"
         profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
@@ -93,7 +93,7 @@
         android:textSize="16sp"
         android:textStyle="italic"
         android:visibility="@{viewModel.profile.isAdmin &amp;&amp; hasProfileEverBeenAddedValue ? View.VISIBLE : View.GONE}"
-        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_32dp}"
+        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_profile_view_textview_margin_start_profile_not_added}"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}" />
     </LinearLayout>
 
