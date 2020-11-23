@@ -25,8 +25,8 @@
     android:orientation="vertical"
     android:paddingTop="12dp"
     android:paddingBottom="12dp"
-    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/space_112dp : @dimen/selection_interaction_item_non_conversation_view_margin_end}"
-    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/space_144dp : @dimen/selection_interaction_item_non_conversation_view_margin_start}">
+    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/selection_interaction_item_conversation_view_margin_end : @dimen/selection_interaction_item_non_conversation_view_margin_end}"
+    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/selection_interaction_item_conversation_view_margin_start : @dimen/selection_interaction_item_non_conversation_view_margin_start}">
 
     <TextView
       android:layout_width="wrap_content"

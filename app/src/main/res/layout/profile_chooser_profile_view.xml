@@ -76,7 +76,7 @@
         android:id="@+id/profile_is_admin_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_4dp"
+        android:layout_marginTop="@dimen/profile_chooser_profile_view_is_admin_margin_top"
         android:fontFamily="sans-serif-light"
         android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:text="@string/profile_chooser_admin"

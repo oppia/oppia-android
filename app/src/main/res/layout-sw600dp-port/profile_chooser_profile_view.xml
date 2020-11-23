@@ -25,10 +25,10 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_margin="@dimen/profile_chooser_profile_view_margin"
-    android:padding="@dimen/space_4dp"
+    android:padding="@dimen/profile_chooser_profile_view_parent_padding"
     app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_0dp}"
-    app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_170dp}"
-    app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_170dp}">
+    app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_profile_view_parent_margin_end_profile_not_added}"
+    app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_profile_view_parent_margin_start_profile_not_added}">
 
     <LinearLayout
       android:id="@+id/profile_chooser_item"
