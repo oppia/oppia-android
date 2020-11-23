@@ -174,87 +174,83 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
       ).perform(click())
-      onView(withId(R.id.nav_header_profile_name))
-        .check(matches(withText("Admin")))
+      onView(
+        allOf(
+          withId(R.id.nav_header_profile_name),
+          isDescendantOfA(withId(R.id.header_linear_layout))
+        )
+      ).check(matches(withText("Admin")))
     }
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_changeConfiguration_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
       )
     ).use {
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .check(
-          matches(
-            isCompletelyDisplayed()
-          )
-        )
-        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(isCompletelyDisplayed())
+      ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.nav_header_profile_name)).check(matches(withText("Admin")))
+      onView(
+        allOf(
+          withId(R.id.nav_header_profile_name),
+          isDescendantOfA(withId(R.id.header_linear_layout))
+        )
+      ).check(matches(withText("Admin")))
     }
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_checkProfileProgress_displayProfileProgressSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
       )
     ).use {
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .check(
-          matches(
-            isCompletelyDisplayed()
-          )
+      testCoroutineDispatchers.runCurrent()
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(isCompletelyDisplayed())
+      ).perform(click())
+      onView(
+        allOf(
+          withId(R.id.profile_progress_text_view),
+          isDescendantOfA(withId(R.id.header_linear_layout))
         )
-        .perform(click())
-      onView(withId(R.id.profile_progress_text_view))
-        .check(
-          matches(
-            withText(
-              "1 Story Completed | 1 Topic in Progress"
-            )
-          )
-        )
+      ).check(matches(withText("1 Story Completed | 1 Topic in Progress")))
     }
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex1_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId1
       )
     ).use {
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .check(
-          matches(
-            isCompletelyDisplayed()
-          )
+      testCoroutineDispatchers.runCurrent()
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(isCompletelyDisplayed())
+      ).perform(click())
+      onView(
+        allOf(
+          withId(R.id.nav_header_profile_name),
+          isDescendantOfA(withId(R.id.header_linear_layout))
         )
-        .perform(click())
-      onView(withId(R.id.nav_header_profile_name)).check(matches(withText("Ben")))
+      ).check(matches(withText("Ben")))
     }
   }
 
@@ -328,10 +324,9 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.home_activity_drawer_layout)).perform(close())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))

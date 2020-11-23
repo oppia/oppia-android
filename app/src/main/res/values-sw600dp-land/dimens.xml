@@ -6,4 +6,40 @@
   <dimen name="home_margin_min">64dp</dimen>
   <dimen name="recently_played_margin_max">96dp</dimen>
   <dimen name="recently_played_margin_min">64dp</dimen>
+  <dimen name="content_item_question_split_view_margin_end">32dp</dimen>
+  <dimen name="content_item_question_split_view_margin_start">32dp</dimen>
+  <dimen name="drag_drop_item_exploration_split_view_margin_start">32dp</dimen>
+  <dimen name="drag_drop_item_exploration_split_view_margin_end">32dp</dimen>
+  <dimen name="drag_drop_item_question_split_view_margin_end">32dp</dimen>
+  <dimen name="drag_drop_item_question_split_view_margin_start">32dp</dimen>
+  <dimen name="feedback_item_question_split_view_margin_top">32dp</dimen>
+  <dimen name="feedback_item_question_split_view_margin_start">32dp</dimen>
+
+  <dimen name="profile_chooser_profile_view_textview_margin_start_profile_not_added">32dp</dimen>
+  <dimen name="profile_chooser_add_view_description_margin_start_profile_not_added">32dp</dimen>
+
+  <dimen name="state_fragment_split_view_margin_end">64dp</dimen>
+  <dimen name="state_fragment_split_view_margin_start">64dp</dimen>
+  <dimen name="content_item_exploration_split_view_margin_start">24dp</dimen>
+  <dimen name="drag_drop_item_exploration_view_margin_top">24dp</dimen>
+  <dimen name="drag_drop_item_question_view_margin_top">24dp</dimen>
+  <dimen name="feedback_item_exploration_split_view_margin_start">24dp</dimen>
+  <dimen name="feedback_item_exploration_split_view_margin_top">24dp</dimen>
+  <dimen name="feedback_item_exploration_view_margin_top">24dp</dimen>
+  <dimen name="feedback_item_question_view_margin_top">24dp</dimen>
+  <dimen name="previous_responses_item_exploration_split_view_margin_top">24dp</dimen>
+  <dimen name="previous_responses_item_exploration_view_margin_top">24dp</dimen>
+  <dimen name="previous_responses_item_question_split_view_margin_top">24dp</dimen>
+  <dimen name="previous_responses_item_question_view_margin_top">24dp</dimen>
+  <dimen name="profile_chooser_add_view_margin_end_profile_not_added">24dp</dimen>
+  <dimen name="profile_chooser_add_view_margin_start_profile_not_added">24dp</dimen>
+  <dimen name="profile_chooser_profile_view_margin_start_profile_not_added">24dp</dimen>
+  <dimen name="profile_chooser_profile_view_margin_top_profile_not_added">24dp</dimen>
+  <dimen name="submitted_answer_exploration_split_view_margin_end_no_extra_interaction_answer">24dp</dimen>
+  <dimen name="submitted_answer_exploration_split_view_margin_top_no_extra_interaction_answer">24dp</dimen>
+  <dimen name="submitted_answer_exploration_view_margin_top">24dp</dimen>
+  <dimen name="submitted_answer_question_split_view_margin_end_no_extra_interaction_answer">24dp</dimen>
+  <dimen name="submitted_answer_question_split_view_margin_top_no_extra_interaction_answer">24dp</dimen>
+  <dimen name="submitted_answer_question_view_margin_top">24dp</dimen>
+
 </resources>
