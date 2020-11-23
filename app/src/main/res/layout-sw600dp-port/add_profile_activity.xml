@@ -32,11 +32,11 @@
         android:background="@color/addProfileBackground">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-          android:minWidth="360dp"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:paddingTop="48dp"
+          android:minWidth="360dp"
           android:paddingStart="104dp"
+          android:paddingTop="48dp"
           android:paddingEnd="104dp"
           android:paddingBottom="64dp">
 
