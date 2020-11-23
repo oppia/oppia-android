@@ -21,7 +21,7 @@
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
     app:explorationSplitViewMarginEnd="@{@dimen/space_40dp}"
-    app:explorationSplitViewMarginStart="@{@dimen/space_24dp}"
+    app:explorationSplitViewMarginStart="@{@dimen/content_item_exploration_split_view_margin_start}"
     app:explorationSplitViewMarginTop="@{@dimen/space_40dp}"
     app:explorationSplitViewPaddingApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:explorationSplitViewPaddingBottom="@{@dimen/space_16dp}"
