@@ -7,12 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,7 +23,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -63,7 +60,7 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = HomeSpanTest.TestApplication::class, manifest = Config.NONE)
+@Config(application = HomeSpanTest.TestApplication::class)
 class HomeSpanTest {
 
   @Inject
@@ -73,18 +70,25 @@ class HomeSpanTest {
 
   @Before
   fun setUp() {
-    Intents.init()
     setUpTestApplicationComponent()
-    FirebaseApp.initializeApp(context)
-  }
-
-  @After
-  fun tearDown() {
-    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Config(qualifiers = "port")
+  @Test
+  fun testHomeSpanTest_checkSpanForItem0_port_hasCorrectSpanCount() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view))
+        .check(
+          hasGridItemCount(
+            spanCount = 2,
+            position = 0
+          )
+        )
+    }
   }
 
   @Config(qualifiers = "land")
@@ -93,7 +97,21 @@ class HomeSpanTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withId(R.id.home_recycler_view))
         .check(
-          RecyclerViewMatcher.hasGridItemCount(
+          hasGridItemCount(
+            spanCount = 3,
+            position = 0
+          )
+        )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testHomeSpanTest_checkSpanForItem0_port_tablet_hasCorrectSpanCount() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view))
+        .check(
+          hasGridItemCount(
             spanCount = 3,
             position = 0
           )
@@ -107,7 +125,7 @@ class HomeSpanTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withId(R.id.home_recycler_view))
         .check(
-          RecyclerViewMatcher.hasGridItemCount(
+          hasGridItemCount(
             spanCount = 4,
             position = 0
           )
