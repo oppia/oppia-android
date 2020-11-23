@@ -32,13 +32,12 @@
         android:background="@color/addProfileBackground">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
           android:minWidth="360dp"
-          android:paddingStart="104dp"
-          android:paddingTop="48dp"
-          android:paddingEnd="104dp"
-          android:paddingBottom="64dp">
+          android:paddingTop="52dp"
+          android:paddingBottom="224dp">
 
           <com.jackandphantom.circularimageview.CircleImage
             android:id="@+id/add_profile_activity_user_image_view"
@@ -76,7 +75,7 @@
 
           <org.oppia.android.app.profile.ProfileInputView
             android:id="@+id/add_profile_activity_user_name_profile_input_view"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:inputLength="36"
@@ -108,10 +107,12 @@
 
           <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/add_profile_activity_pin_constraint_layout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:visibility="@{viewModel.createPin ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin_check_box">
 
             <org.oppia.android.app.profile.ProfileInputView
