@@ -26,6 +26,7 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/submitted_answer_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
