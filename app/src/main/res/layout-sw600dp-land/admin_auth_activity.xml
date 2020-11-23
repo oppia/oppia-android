@@ -55,17 +55,17 @@
         android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          android:minWidth="360dp"
           android:paddingBottom="92dp">
 
           <TextView
             android:id="@+id/admin_auth_heading_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="332dp"
             android:layout_marginTop="48dp"
-            android:layout_marginEnd="332dp"
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
             android:text="@string/admin_auth_heading"
@@ -93,10 +93,8 @@
             android:id="@+id/admin_auth_input_pin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="332dp"
             android:layout_marginTop="40dp"
             android:layout_marginBottom="4dp"
-            android:layout_marginEnd="332dp"
             android:addTextChangedListener="@{viewModel.inputPinTextWatcher}"
             android:imeOptions="actionDone"
             app:inputLength="5"
