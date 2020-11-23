@@ -81,9 +81,9 @@
   <dimen name="feedback_item_question_view_margin_top">24dp</dimen>
   <dimen name="fraction_interaction_item_conversation_view_margin_end">24dp</dimen>
   <dimen name="next_button_exploration_view_padding_end">24dp</dimen>
-  <dimen name="next_button_question_view_padding_end">24p</dimen>
+  <dimen name="next_button_question_view_padding_end">24dp</dimen>
   <dimen name="next_button_exploration_view_padding_start">24dp</dimen>
-  <dimen name="next_button_question_view_padding_start">24p</dimen>
+  <dimen name="next_button_question_view_padding_start">24dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_end">24dp</dimen>
   <dimen name="previous_button_exploration_view_padding_end">24dp</dimen>
   <dimen name="previous_button_question_view_padding_end">24dp</dimen>
