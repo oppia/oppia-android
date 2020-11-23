@@ -30,7 +30,6 @@ import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -509,35 +508,6 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_checkSpanForItem0_spanSizeIsTwoOrThree() {
-    ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
-      )
-      if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(
-          hasGridItemCount(
-            4, 0
-          )
-        )
-      } else {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(
-          hasGridItemCount(
-            2, 0
-          )
-        )
-      }
-    }
-  }
-
-  @Test
   fun testRecentlyPlayedTestActivity_checkSpanForItem1_spanSizeIsOne() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -555,35 +525,6 @@ class RecentlyPlayedFragmentTest {
           1, 1
         )
       )
-    }
-  }
-
-  @Test
-  fun testRecentlyPlayedTestActivity_checkSpanForItem2_spanSizeIsTwoOrThree() {
-    ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
-      )
-      if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(
-          hasGridItemCount(
-            4, 2
-          )
-        )
-      } else {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(
-          hasGridItemCount(
-            2, 2
-          )
-        )
-      }
     }
   }
 
@@ -609,38 +550,6 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix RecentlyPlayedFragmentTest
-  @Ignore
-  fun testRecentlyPlayedTestActivity_configurationChange_checkSpanForItem0_spanSizeIsThreeOrFour() {
-    ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
-      )
-      if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(
-          hasGridItemCount(
-            4, 0
-          )
-        )
-      } else {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(
-          hasGridItemCount(
-            3, 0
-          )
-        )
-      }
-    }
-  }
-
-  @Test
   fun testRecentlyPlayedTestActivity_configurationChange_checkSpanForItem1_spanSizeIsOne() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -659,38 +568,6 @@ class RecentlyPlayedFragmentTest {
           1, 1
         )
       )
-    }
-  }
-
-  @Test
-  // TODO(#973): Fix RecentlyPlayedFragmentTest
-  @Ignore
-  fun testRecentlyPlayedTestActivity_configurationChange_checkSpanForItem2_spanSizeIsThreeOrFour() {
-    ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
-      )
-      if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(
-          hasGridItemCount(
-            4, 2
-          )
-        )
-      } else {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(
-          hasGridItemCount(
-            3, 2
-          )
-        )
-      }
     }
   }
 
