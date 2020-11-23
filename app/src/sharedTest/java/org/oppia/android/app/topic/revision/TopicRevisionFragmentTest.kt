@@ -26,7 +26,6 @@ import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -229,28 +228,6 @@ class TopicRevisionFragmentTest {
           )
         )
       )
-    }
-  }
-
-  @Test
-  // TODO(#973): Fix TopicRevisionFragmentTest
-  @Ignore("Failing due to Configuration or Timing in Robolectric")
-  fun testTopicRevisionFragment_loadFragment_configurationChange_checkSpanCount_isThree() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(withId(R.id.revision_recycler_view))
-        .check(
-          hasGridColumnCount(
-            expectedColumnCount = 3
-          )
-        )
     }
   }
 
