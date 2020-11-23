@@ -102,7 +102,7 @@ class TopicPracticeFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
+    // testCoroutineDispatchers.registerIdlingResource()
     FirebaseApp.initializeApp(context)
     skillIdList.add("5RM9KPfQxobH")
     skillIdList.add("B39yK4cbHZYI")
@@ -110,7 +110,7 @@ class TopicPracticeFragmentTest {
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
+    //testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -311,41 +311,38 @@ class TopicPracticeFragmentTest {
     }
   }
 
-  // TODO(@973): Fix TopicLessonsFragmentTest
   @Test
-  @Ignore("Error in Espresso - Wait for [TestCoroutineDispatcherIdlingResource] to become idle timed out") // ktlint-disable max-line-length
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() { // ktlint-disable max-line-length
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          R.id.topic_practice_skill_list,
-          1,
-          R.id.subtopic_check_box
-        )
-      ).perform(click())
-      onView(withId(R.id.topic_practice_skill_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          5
-        )
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
+    testCoroutineDispatchers.runCurrent()
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(2).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
       )
-      onView(
-        atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
-        )
-      ).perform(click())
-      intended(hasComponent(QuestionPlayerActivity::class.java.name))
-      intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
-    }
+    ).perform(click())
+    testCoroutineDispatchers.runCurrent()
+    onView(
+      atPositionOnView(
+        R.id.topic_practice_skill_list,
+        1,
+        R.id.subtopic_check_box
+      )
+    ).perform(click())
+    onView(withId(R.id.topic_practice_skill_list)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        5
+      )
+    )
+    onView(
+      atPositionOnView(
+        R.id.topic_practice_skill_list,
+        5,
+        R.id.topic_practice_start_button
+      )
+    ).perform(click())
+    intended(hasComponent(QuestionPlayerActivity::class.java.name))
+    intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
   }
 
   @Test
