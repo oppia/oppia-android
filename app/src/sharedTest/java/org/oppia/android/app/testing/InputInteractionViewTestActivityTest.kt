@@ -832,18 +832,15 @@ class InputInteractionViewTestActivityTest {
   // TODO(#973): Fix InputInteractionViewTestActivityTest
   @Ignore("Test needs verification")
   fun testRatioInputInteractionView_withInputtedSpacesBetweenComponents_hasCorrectPendingAnswer() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.test_ratio_input_interaction_view))
-        .perform(
-          setTextToRatioInputInteractionView(
-            "1   : 2 : 3 : 4 "
-          )
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1   : 2 : 3 : 4 "
         )
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.test_ratio_input_interaction_view)).check(matches(isDisplayed()))
-        .check(matches(withText("1:2:3:4")))
-    }
+      )
+    onView(withId(R.id.test_ratio_input_interaction_view)).check(matches(isDisplayed()))
+      .check(matches(withText("1:2:3:4")))
   }
 
   @Test
@@ -872,24 +869,21 @@ class InputInteractionViewTestActivityTest {
   // TODO(#973): Fix InputInteractionViewTestActivityTest
   @Ignore("This is not happening in app too/needs verification")
   fun testRatioInputInteractionView_withFractionRatio_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.test_ratio_input_interaction_view))
-        .perform(
-          setTextToRatioInputInteractionView(
-            "1/2:3:4"
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1/2:3:4"
+        )
+      )
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_invalid_format
           )
         )
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ratio_input_error))
-        .check(
-          matches(
-            withText(
-              R.string.ratio_error_invalid_format
-            )
-          )
-        )
-    }
+      )
   }
 
   @Test
