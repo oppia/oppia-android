@@ -75,7 +75,7 @@
       android:id="@+id/continue_navigation_button"
       style="@style/StateButtonActive"
       android:layout_height="0dp"
-      app:layoutMargin="@{buttonViewModel.isSplitView ? @dimen/space_0dp : @dimen/space_4dp}"
+      app:layoutMargin="@{buttonViewModel.isSplitView ? @dimen/space_0dp : @dimen/continue_navigation_item_button_non_split_view_margin}"
       android:button="@drawable/state_button_primary_background"
       android:onClick="@{(v) -> buttonViewModel.continueNavigationButtonListener.onContinueButtonClicked()}"
       android:text="@string/state_continue_button"

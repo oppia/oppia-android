@@ -20,7 +20,7 @@
     android:background="@{viewModel.hasConversationView ? @drawable/content_blue_background : @drawable/transparent_background}"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
-    app:explorationSplitViewMarginEnd="@{@dimen/space_40dp}"
+    app:explorationSplitViewMarginEnd="@{@dimen/feedback_item_exploration_split_view_margin_end}"
     app:explorationSplitViewMarginStart="@{@dimen/feedback_item_exploration_split_view_margin_start}"
     app:explorationSplitViewMarginTop="@{@dimen/feedback_item_exploration_split_view_margin_top}"
     app:explorationSplitViewPaddingApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
