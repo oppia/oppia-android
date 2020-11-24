@@ -33,11 +33,6 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
     profileEditActivityPresenter.handleOnCreate()
   }
 
-  override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-    super.onRestoreInstanceState(savedInstanceState)
-    profileEditActivityPresenter.handleOnRestoreSavedInstanceState()
-  }
-
   override fun onSupportNavigateUp(): Boolean {
     val isMultipane = intent.extras!!.getBoolean(KEY_IS_MULTIPANE, false)
     if (isMultipane) {
