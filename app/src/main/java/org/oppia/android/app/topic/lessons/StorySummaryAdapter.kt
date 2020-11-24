@@ -3,10 +3,12 @@ package org.oppia.android.app.topic.lessons
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.BR
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.databinding.LessonsChapterViewBinding
 import org.oppia.android.databinding.TopicLessonsStorySummaryBinding
 import org.oppia.android.databinding.TopicLessonsTitleBinding
 
@@ -117,12 +119,9 @@ class StorySummaryAdapter(
         /* paint= */ null
       )
       val chapterList = storySummaryViewModel.storySummary.chapterList
-      val chapterSummaryAdapter = ChapterSummaryAdapter(
-        storySummaryViewModel.storySummary.storyId,
-        chapterList,
-        chapterSummarySelector
-      )
-      binding.setVariable(BR.adapter, chapterSummaryAdapter)
+      val storyId = storySummaryViewModel.storySummary.storyId
+      binding.chapterRecyclerView.adapter =
+        createRecyclerViewAdapter(storyId, chapterList)
 
       binding.root.setOnClickListener {
         val previousIndex: Int? = currentExpandedChapterListIndex
@@ -148,6 +147,31 @@ class StorySummaryAdapter(
           }
         }
       }
+    }
+
+    private fun createRecyclerViewAdapter(
+      storyId: String,
+      chapterList: MutableList<ChapterSummary>
+    ): BindableAdapter<ChapterSummary> {
+      return BindableAdapter.SingleTypeBuilder
+        .newBuilder<ChapterSummary>()
+        .registerViewBinder(
+          inflateView = { parent ->
+            LessonsChapterViewBinding.inflate(
+              LayoutInflater.from(parent.context),
+              parent,
+              /* attachToParent= */ false
+            ).root
+          },
+          bindView = { view, chapterSummary ->
+            val binding = DataBindingUtil.findBinding<LessonsChapterViewBinding>(view)!!
+            binding.chapterSummary = chapterSummary
+            binding.index = chapterList.indexOf(chapterSummary)
+            binding.chapterContainer.setOnClickListener {
+              chapterSummarySelector.selectChapterSummary(storyId, chapterSummary)
+            }
+          }
+        ).build()
     }
   }
 }
