@@ -25,6 +25,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: XML lint check
+      uses: docker://github/super-linter:v2.2.0
+      env:
+        VALIDATE_XML: true
+
     - name: Download Ktlint
       run: |
         KTLINT="0.37.0"
