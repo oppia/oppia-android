@@ -17,6 +17,10 @@
     <variable
       name="viewModel"
       type="org.oppia.android.app.topic.lessons.StorySummaryViewModel" />
+
+    <variable
+      name="adapter"
+      type="org.oppia.android.app.topic.lessons.ChapterSummaryAdapter" />
   </data>
 
   <com.google.android.material.card.MaterialCardView
@@ -163,6 +167,7 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
           android:layout_marginBottom="8dp"
+          app:adapter="@{adapter}"
           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
       </LinearLayout>
     </LinearLayout>

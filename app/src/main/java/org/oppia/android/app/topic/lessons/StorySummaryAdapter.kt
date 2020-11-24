@@ -116,12 +116,11 @@ class StorySummaryAdapter(
         /* paint= */ null
       )
       val chapterList = storySummaryViewModel.storySummary.chapterList
-      binding.chapterRecyclerView.adapter =
-        ChapterSummaryAdapter(
-          storySummaryViewModel.storySummary.storyId,
-          chapterList,
-          chapterSummarySelector
-        )
+      binding.adapter = ChapterSummaryAdapter(
+        storySummaryViewModel.storySummary.storyId,
+        chapterList,
+        chapterSummarySelector
+      )
 
       binding.root.setOnClickListener {
         val previousIndex: Int? = currentExpandedChapterListIndex
@@ -147,7 +146,6 @@ class StorySummaryAdapter(
           }
         }
       }
-      binding.executePendingBindings()
     }
   }
 }

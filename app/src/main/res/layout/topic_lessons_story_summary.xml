@@ -17,6 +17,10 @@
     <variable
       name="viewModel"
       type="org.oppia.android.app.topic.lessons.StorySummaryViewModel" />
+
+    <variable
+      name="adapter"
+      type="org.oppia.android.app.topic.lessons.ChapterSummaryAdapter" />
   </data>
 
   <com.google.android.material.card.MaterialCardView
@@ -27,10 +31,10 @@
     android:layout_marginTop="12dp"
     android:layout_marginEnd="20dp"
     android:layout_marginBottom="12dp"
-    app:rippleColor="@color/transparent"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:rippleColor="@color/transparent">
 
     <LinearLayout
       android:layout_width="match_parent"
@@ -48,8 +52,8 @@
         <LinearLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:gravity="center"
           android:layout_marginTop="24dp"
+          android:gravity="center"
           android:orientation="vertical">
 
           <FrameLayout
@@ -103,10 +107,10 @@
               android:id="@+id/story_name_text_view"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:paddingBottom="4dp"
-              android:paddingTop="24dp"
               android:fontFamily="sans-serif-medium"
               android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
+              android:paddingTop="24dp"
+              android:paddingBottom="4dp"
               android:text="@{viewModel.storySummary.storyName}"
               android:textColor="@color/oppiaPrimaryText"
               android:textSize="18sp" />
@@ -136,8 +140,8 @@
               android:layout_gravity="center_horizontal|bottom"
               android:contentDescription="@{@string/show_hide_chapter_list(viewModel.storySummary.storyName)}"
               android:src="@drawable/ic_arrow_drop_down_black_24dp"
-              app:rotationAnimationAngle="@{180f}"
-              app:isRotationAnimationClockwise="@{isListExpanded}" />
+              app:isRotationAnimationClockwise="@{isListExpanded}"
+              app:rotationAnimationAngle="@{180f}" />
           </FrameLayout>
         </LinearLayout>
       </LinearLayout>
@@ -163,6 +167,7 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
           android:layout_marginBottom="8dp"
+          app:adapter="@{adapter}"
           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
       </LinearLayout>
     </LinearLayout>
