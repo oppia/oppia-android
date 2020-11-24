@@ -1,0 +1,30 @@
+name: Lint Code Base
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      # Push events on develop branch
+      - develop
+
+jobs:
+  name: Lint Code Base
+  runs-on: ubuntu-latest
+
+  steps:
+  - name: Checkout Code
+    uses: actions/checkout@v2
+
+  - name: Lint Code Base
+  uses: github/super-linter@v3
+  env:
+    DEFAULT_BRANCH: develop
+    VALIDATE_ALL_CODEBASE: true
+    VALIDATE_MD: false
+    VALIDATE_XML: true
+    VALIDATE_KOTLIN: false
+    VALIDATE_JAVA: false
+    VALIDATE_PROTOBUF: false
+    VALIDATE_YAML: false
+    VALIDATE_BASH: false
