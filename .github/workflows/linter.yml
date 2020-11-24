@@ -1,4 +1,22 @@
-- name: XML lint check
-    uses: docker://github/super-linter:v2.2.0
-    env:
-      VALIDATE_XML: true
+name: XML lint check
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - develop
+
+jobs:
+  lint:
+    name: Lint Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+    - name: XML lint check
+        uses: docker://github/super-linter:v2.2.0
+        env:
+          VALIDATE_XML: true
