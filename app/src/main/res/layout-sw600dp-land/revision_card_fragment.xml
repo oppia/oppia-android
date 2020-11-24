@@ -27,15 +27,13 @@
         android:layout_height="wrap_content"
         android:minWidth="640dp"
         android:orientation="vertical"
-        android:paddingBottom="145dp">
+        android:paddingBottom="148dp">
 
         <TextView
           android:id="@+id/revision_card_explanation_text"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginStart="52dp"
-          android:layout_marginTop="24dp"
-          android:layout_marginEnd="52dp"
+          android:layout_marginTop="32dp"
           android:fontFamily="sans-serif"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />
@@ -46,9 +44,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="end"
-          android:layout_marginStart="52dp"
           android:layout_marginTop="24dp"
-          android:layout_marginEnd="52dp"
           android:background="@drawable/state_button_primary_background"
           android:onClick="@{viewModel::clickReturnToTopic}"
           android:paddingStart="32dp"
