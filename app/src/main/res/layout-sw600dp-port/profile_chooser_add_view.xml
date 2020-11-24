@@ -20,6 +20,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
+    android:layout_margin="@dimen/profile_chooser_profile_view_margin"
+    android:padding="@dimen/space_4dp"
     app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_170dp}"
     app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_170dp}"
     android:orientation="vertical">
