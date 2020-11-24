@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.BR
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.databinding.TopicLessonsStorySummaryBinding
@@ -116,11 +117,12 @@ class StorySummaryAdapter(
         /* paint= */ null
       )
       val chapterList = storySummaryViewModel.storySummary.chapterList
-      binding.adapter = ChapterSummaryAdapter(
+      val chapterSummaryAdapter = ChapterSummaryAdapter(
         storySummaryViewModel.storySummary.storyId,
         chapterList,
         chapterSummarySelector
       )
+      binding.setVariable(BR.adapter, chapterSummaryAdapter)
 
       binding.root.setOnClickListener {
         val previousIndex: Int? = currentExpandedChapterListIndex
