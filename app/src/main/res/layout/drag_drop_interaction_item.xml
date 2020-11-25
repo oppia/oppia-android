@@ -26,24 +26,24 @@
     android:padding="0dp"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
-    app:explorationSplitViewMarginEnd="@{@dimen/space_40dp}"
-    app:explorationSplitViewMarginStart="@{@dimen/space_32dp}"
-    app:explorationSplitViewMarginTop="@{@dimen/space_32dp}"
+    app:explorationSplitViewMarginEnd="@{@dimen/drag_drop_item_exploration_split_view_margin_end}"
+    app:explorationSplitViewMarginStart="@{@dimen/drag_drop_item_exploration_split_view_margin_start}"
+    app:explorationSplitViewMarginTop="@{@dimen/drag_drop_item_exploration_split_view_margin_top}"
     app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.splitView}"
     app:explorationViewMarginBottom="@{@dimen/space_0dp}"
-    app:explorationViewMarginEnd="@{@dimen/space_24dp}"
-    app:explorationViewMarginStart="@{@dimen/space_40dp}"
-    app:explorationViewMarginTop="@{@dimen/space_24dp}"
+    app:explorationViewMarginEnd="@{@dimen/drag_drop_item_exploration_view_margin_end}"
+    app:explorationViewMarginStart="@{@dimen/drag_drop_item_exploration_view_margin_start}"
+    app:explorationViewMarginTop="@{@dimen/drag_drop_item_exploration_view_margin_top}"
     app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
     app:questionSplitViewMarginBottom="@{@dimen/space_0dp}"
-    app:questionSplitViewMarginEnd="@{@dimen/space_32dp}"
-    app:questionSplitViewMarginStart="@{@dimen/space_32dp}"
-    app:questionSplitViewMarginTop="@{@dimen/space_40dp}"
+    app:questionSplitViewMarginEnd="@{@dimen/drag_drop_item_question_split_view_margin_end}"
+    app:questionSplitViewMarginStart="@{@dimen/drag_drop_item_question_split_view_margin_start}"
+    app:questionSplitViewMarginTop="@{@dimen/drag_drop_item_question_split_view_margin_top}"
     app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.splitView}"
     app:questionViewMarginBottom="@{@dimen/space_0dp}"
-    app:questionViewMarginEnd="@{@dimen/space_32dp}"
-    app:questionViewMarginStart="@{@dimen/space_32dp}"
-    app:questionViewMarginTop="@{@dimen/space_24dp}">
+    app:questionViewMarginEnd="@{@dimen/drag_drop_item_question_view_margin_end}"
+    app:questionViewMarginStart="@{@dimen/drag_drop_item_question_view_margin_start}"
+    app:questionViewMarginTop="@{@dimen/drag_drop_item_question_view_margin_top}">
 
     <TextView
       android:id="@+id/drag_drop_grouping_hint_text_view"
@@ -53,8 +53,8 @@
       android:textSize="14sp"
       android:textStyle="italic"
       android:visibility="@{viewModel.getGroupingStatus()? View.VISIBLE : View.GONE}"
-      app:layoutMarginStart="@{viewModel.isSplitView ? @dimen/space_16dp : @dimen/space_12dp}"
-      app:layoutMarginTop="@{viewModel.isSplitView ? @dimen/space_16dp : @dimen/drag_drop_grouping_hint_text_view_non_split_margin_top}" />
+      app:layoutMarginStart="@{viewModel.isSplitView ? @dimen/drag_drop_grouping_hint_split_text_view_margin_start : @dimen/drag_drop_grouping_hint_non_split_text_view_margin_start}"
+      app:layoutMarginTop="@{viewModel.isSplitView ? @dimen/drag_drop_grouping_hint_split_text_view_margin_top : @dimen/drag_drop_grouping_hint_non_split_text_view_margin_top}" />
 
     <org.oppia.android.app.player.state.DragDropSortInteractionView
       android:id="@+id/drag_drop_interaction_recycler_view"

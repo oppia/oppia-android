@@ -11,7 +11,8 @@ import javax.inject.Inject
 private const val KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE = "AUDIO_LANGUAGE_PREFERENCE"
 private const val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
   "AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
-private const val KEY_SELECTED_AUDIO_LANGUAGE = "SELECTED_AUDIO_LANGUAGE"
+private const val SELECTED_AUDIO_LANGUAGE_SAVED_KEY =
+  "AudioLanguageFragment.selected_audio_language"
 
 /** The fragment to change the default audio language of the app. */
 class AudioLanguageFragment : InjectableFragment() {
@@ -49,7 +50,8 @@ class AudioLanguageFragment : InjectableFragment() {
     val prefsSummaryValue = if (savedInstanceState == null) {
       audioLanguageDefaultSummary
     } else {
-      savedInstanceState.get(KEY_SELECTED_AUDIO_LANGUAGE) as? String ?: audioLanguageDefaultSummary
+      savedInstanceState.get(SELECTED_AUDIO_LANGUAGE_SAVED_KEY) as? String
+        ?: audioLanguageDefaultSummary
     }
     return audioLanguageFragmentPresenter.handleOnCreateView(
       inflater,
@@ -62,7 +64,7 @@ class AudioLanguageFragment : InjectableFragment() {
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     outState.putString(
-      KEY_SELECTED_AUDIO_LANGUAGE,
+      SELECTED_AUDIO_LANGUAGE_SAVED_KEY,
       audioLanguageFragmentPresenter.getLanguageSelected()
     )
   }
