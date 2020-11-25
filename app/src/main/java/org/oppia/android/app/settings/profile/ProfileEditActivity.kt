@@ -6,8 +6,8 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-const val KEY_PROFILE_EDIT_PROFILE_ID = "KEY_PROFILE_EDIT_PROFILE_ID"
-const val KEY_IS_MULTIPANE = "KEY_IS_MULTIPANE"
+const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY = "ProfileEditActivity.profile_edit_profile_id"
+const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.is_multipane"
 
 /** Activity that allows user to edit a profile. */
 class ProfileEditActivity : InjectableAppCompatActivity() {
@@ -21,8 +21,8 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
       isMultipane: Boolean = false
     ): Intent {
       val intent = Intent(context, ProfileEditActivity::class.java)
-      intent.putExtra(KEY_PROFILE_EDIT_PROFILE_ID, profileId)
-      intent.putExtra(KEY_IS_MULTIPANE, isMultipane)
+      intent.putExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, profileId)
+      intent.putExtra(IS_MULTIPANE_EXTRA_KEY, isMultipane)
       return intent
     }
   }
@@ -34,7 +34,7 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
   }
 
   override fun onSupportNavigateUp(): Boolean {
-    val isMultipane = intent.extras!!.getBoolean(KEY_IS_MULTIPANE, false)
+    val isMultipane = intent.extras!!.getBoolean(IS_MULTIPANE_EXTRA_KEY, false)
     if (isMultipane) {
       super.onBackPressed()
     } else {
@@ -46,7 +46,7 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
   }
 
   override fun onBackPressed() {
-    val isMultipane = intent.extras!!.getBoolean(KEY_IS_MULTIPANE, false)
+    val isMultipane = intent.extras!!.getBoolean(IS_MULTIPANE_EXTRA_KEY, false)
     if (isMultipane) {
       super.onBackPressed()
     } else {
