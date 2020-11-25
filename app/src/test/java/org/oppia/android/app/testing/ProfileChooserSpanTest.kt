@@ -1,17 +1,14 @@
 package org.oppia.android.app.testing
 
 import android.app.Application
-import android.content.Context
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -49,7 +46,6 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -70,30 +66,21 @@ private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW = "profile_recycler
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = ProfileChooserSpanTest.TestApplication::class, manifest = Config.NONE)
+@Config(application = ProfileChooserSpanTest.TestApplication::class)
 class ProfileChooserSpanTest {
-
-  @Inject
-  lateinit var context: Context
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
   @Before
   fun setUp() {
-    Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.runCurrent()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
-    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
