@@ -17,7 +17,7 @@
   </data>
 
   <LinearLayout
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:layout_margin="@dimen/profile_chooser_add_view_parent_margin"
@@ -36,7 +36,7 @@
 
     <LinearLayout
       android:id="@+id/add_profile_item"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/space_0dp"
       android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER}"
