@@ -31,7 +31,7 @@ class TopicFragmentPresenter @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
-  private lateinit var viewPager2: ViewPager2
+  private lateinit var viewPager: ViewPager2
   private val tabIcons =
     intArrayOf(
       R.drawable.ic_info_icon_24dp,
@@ -54,7 +54,7 @@ class TopicFragmentPresenter @Inject constructor(
     )
     binding.lifecycleOwner = fragment
     this.storyId = storyId
-    viewPager2 = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager2
+    viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager2
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
     this.internalProfileId = internalProfileId
     this.topicId = topicId
@@ -72,12 +72,12 @@ class TopicFragmentPresenter @Inject constructor(
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
 
-    setUpViewPager(viewPager2, topicId)
+    setUpViewPager(viewPager, topicId)
     return binding.root
   }
 
   private fun setCurrentTab(tab: TopicTab) {
-    viewPager2.setCurrentItem(tab.ordinal, true)
+    viewPager.setCurrentItem(tab.ordinal, true)
     logTopicEvents(tab)
   }
 
@@ -89,19 +89,19 @@ class TopicFragmentPresenter @Inject constructor(
       when (position) {
         0 -> {
           tab.text = fragment.getString(R.string.info)
-          tab.icon = ContextCompat.getDrawable(fragment.context!!, tabIcons[0])
+          tab.icon = ContextCompat.getDrawable(activity, tabIcons[0])
         }
         1 -> {
           tab.text = fragment.getString(R.string.lessons)
-          tab.icon = ContextCompat.getDrawable(fragment.context!!, tabIcons[1])
+          tab.icon = ContextCompat.getDrawable(activity, tabIcons[1])
         }
         2 -> {
           tab.text = fragment.getString(R.string.practice)
-          tab.icon = ContextCompat.getDrawable(fragment.context!!, tabIcons[2])
+          tab.icon = ContextCompat.getDrawable(activity, tabIcons[2])
         }
         3 -> {
           tab.text = fragment.getString(R.string.revision)
-          tab.icon = ContextCompat.getDrawable(fragment.context!!, tabIcons[3])
+          tab.icon = ContextCompat.getDrawable(activity, tabIcons[3])
         }
       }
     }.attach()

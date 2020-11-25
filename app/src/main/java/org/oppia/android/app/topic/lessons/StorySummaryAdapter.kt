@@ -151,7 +151,7 @@ class StorySummaryAdapter(
 
     private fun createRecyclerViewAdapter(
       storyId: String,
-      chapterList: MutableList<ChapterSummary>
+      chapterList: List<ChapterSummary>
     ): BindableAdapter<ChapterSummary> {
       return BindableAdapter.SingleTypeBuilder
         .newBuilder<ChapterSummary>()

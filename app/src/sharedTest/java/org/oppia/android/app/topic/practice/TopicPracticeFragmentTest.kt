@@ -239,7 +239,7 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  fun testTopicPracticeFragment_loadFragment_selectSubtopics_deselectSubtopics_isSuccessful() {
+  fun testTopicPracticeFragment_loadFragment_selectSubtopics_thenDeselect_selectsCorrectTopic() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       onView(
