@@ -21,7 +21,6 @@
     android:layout_marginBottom="12dp"
     android:clickable="true"
     android:focusable="true"
-    android:onClick="@{(v) -> viewModel.onCompletedStoryItemClicked()}"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
@@ -63,10 +62,11 @@
           android:layout_marginEnd="8dp"
           android:ellipsize="end"
           android:fontFamily="sans-serif"
-          android:gravity="top"
+          android:gravity="start"
           android:maxLines="2"
           android:minLines="2"
           android:text="@{viewModel.completedStory.storyName}"
+          android:textAlignment="viewStart"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="14sp"
           android:textStyle="bold"
@@ -86,6 +86,7 @@
           android:minLines="1"
           android:paddingBottom="12dp"
           android:text="@{viewModel.completedStory.topicName}"
+          android:textAlignment="viewStart"
           android:textAllCaps="true"
           android:textColor="@color/oppiaStrokeBlack"
           android:textSize="14sp"
