@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -499,25 +498,6 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
-    }
-  }
-
-  @Test
-  @Ignore
-  fun testProfileChooserFragment_changeConfiguration_checkSpanCount_hasSpanCount2() {
-    profileTestHelper.addOnlyAdminProfile()
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      it.onActivity { activity ->
-        val profileRecyclerView = activity.findViewById<RecyclerView>(
-          R.id.profile_recycler_view
-        )
-        val layoutManager = profileRecyclerView.layoutManager as GridLayoutManager
-        if (!activity.resources.getBoolean(R.bool.isTablet)) {
-          assertThat(layoutManager.spanCount).isEqualTo(2)
-        }
-      }
     }
   }
 
