@@ -9,8 +9,10 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -30,7 +32,6 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -394,16 +395,16 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  // TODO(@973): Fix TopicLessonsFragmentTest
-  @Ignore("Failing due to Robolectric Timing")
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex2_chapterListForIndex1IsNotDisplayed() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.story_summary_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -417,9 +418,7 @@ class TopicLessonsFragmentTest {
         )
       ).perform(click())
       onView(withId(R.id.story_summary_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(2, scrollTo())
       )
       onView(
         atPositionOnView(
@@ -444,7 +443,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex0_chapterListForIndex0IsNotDisplayed() { // ktlint-disable max-line-length
+  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex2_clickExpandListIconIndex1_chapterListForIndex2IsNotDisplayed() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
