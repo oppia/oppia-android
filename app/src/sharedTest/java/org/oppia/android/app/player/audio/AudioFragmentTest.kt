@@ -65,7 +65,9 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.IsOnRobolectric
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -78,7 +80,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -104,7 +106,7 @@ class AudioFragmentTest {
   lateinit var context: Context
 
   @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
   lateinit var audioPlayerController: AudioPlayerController
@@ -119,31 +121,28 @@ class AudioFragmentTest {
 
   @Before
   fun setUp() {
-    Intents.init()
     setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles()
-    addMediaInfo()
-    shadowMediaPlayer = shadowOf(audioPlayerController.getTestMediaPlayer())
-    setDataSource(shadowMediaPlayer, toDataSource(context, Uri.parse(TEST_URL)))
-    FirebaseApp.initializeApp(context)
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
-    Intents.release()
+    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
-  private fun createHomeActivityIntent(profileId: Int): Intent {
+  private fun createAudioFragmentTestIntent(profileId: Int): Intent {
     return AudioFragmentTestActivity.createAudioFragmentTestActivity(
-      ApplicationProvider.getApplicationContext(),
+      context,
       profileId
     )
   }
 
+  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
   @Test
+  @Ignore
   fun testAudioFragment_openFragment_profileWithEnglishAudioLanguage_showsEnglishAudioLanguage() {
     launch<AudioFragmentTestActivity>(
-      createHomeActivityIntent(
+      createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
       )
     ).use {
@@ -151,12 +150,12 @@ class AudioFragmentTest {
     }
   }
 
+  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
   @Test
-  // TODO(#973): Fix AudioFragmentTest
   @Ignore
   fun testAudioFragment_openFragment_showsDefaultAudioLanguageAsHindi() {
     launch<AudioFragmentTestActivity>(
-      createHomeActivityIntent(
+      createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_HINDI
       )
     ).use {
@@ -164,10 +163,12 @@ class AudioFragmentTest {
     }
   }
 
+  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
   @Test
+  @Ignore
   fun testAudioFragment_openFragment_showsEnglishAudioLanguageWhenDefaultAudioLanguageNotAvailable() { // ktlint-disable max-line-length
     launch<AudioFragmentTestActivity>(
-      createHomeActivityIntent(
+      createAudioFragmentTestIntent(
         PROFILE_ID_INVALID_AUDIO_LANGUAGE
       )
     ).use {
@@ -177,11 +178,13 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
+    addMediaInfo()
     launch<AudioFragmentTestActivity>(
-      createHomeActivityIntent(
+      createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ivPlayPauseAudio))
         .check(matches(isDisplayed()))
       onView(withId(R.id.ivPlayPauseAudio))
@@ -190,18 +193,18 @@ class AudioFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix AudioFragmentTest
-  @Ignore
   fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
+    addMediaInfo()
     launch<AudioFragmentTestActivity>(
-      createHomeActivityIntent(
+      createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
       )
     ).use {
-      invokePreparedListener(shadowMediaPlayer)
+      testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
 
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ivPlayPauseAudio))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
@@ -209,34 +212,37 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_invokePrepared_touchSeekBar_checkStillPaused() {
+    addMediaInfo()
     launch<AudioFragmentTestActivity>(
-      createHomeActivityIntent(
+      createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
       )
     ).use {
-      invokePreparedListener(shadowMediaPlayer)
+      testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ivPlayPauseAudio))
         .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
     }
   }
 
   @Test
-  // TODO(#973): Fix AudioFragmentTest
-  @Ignore
   fun testAudioFragment_invokePrepared_clickPlay_touchSeekBar_checkStillPlaying() {
+    addMediaInfo()
     launch<AudioFragmentTestActivity>(
-      createHomeActivityIntent(
+      createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
       )
     ).use {
-      invokePreparedListener(shadowMediaPlayer)
+      testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ivPlayPauseAudio))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
@@ -246,7 +252,7 @@ class AudioFragmentTest {
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
     launch<AudioFragmentTestActivity>(
-      createHomeActivityIntent(
+      createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
       )
     ).use {
@@ -259,22 +265,33 @@ class AudioFragmentTest {
     }
   }
 
+  // TODO(#1845): As updating tvAudioLanguage to image, we need to update this test
   @Test
   fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
+    addMediaInfo()
     launch<AudioFragmentTestActivity>(
-      createHomeActivityIntent(
+      createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
       )
     ).use {
-      invokePreparedListener(shadowMediaPlayer)
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.tvAudioLanguage)).perform(click())
+
       val locale = Locale("es")
+
+      testCoroutineDispatchers.runCurrent()
       onView(withText(locale.getDisplayLanguage(locale))).inRoot(isDialog()).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
       onView(withText("OK")).inRoot(isDialog()).perform(click())
 
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ivPlayPauseAudio))
         .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
       onView(withId(R.id.sbAudioProgress)).check(matches(withSeekBarPosition(0)))
@@ -319,14 +336,21 @@ class AudioFragmentTest {
   }
 
   private fun addMediaInfo() {
-    val dataSource = toDataSource(context, Uri.parse(TEST_URL))
-    val dataSource2 = toDataSource(context, Uri.parse(TEST_URL2))
-    val mediaInfo = createMediaInfo(
-      /* duration= */ 1000,
-      /* preparationDelay= */ 0
-    )
-    addMediaInfo(dataSource, mediaInfo)
-    addMediaInfo(dataSource2, mediaInfo)
+    if (isOnRobolectric()) {
+      val dataSource = toDataSource(context, Uri.parse(TEST_URL))
+      val dataSource2 = toDataSource(context, Uri.parse(TEST_URL2))
+      val mediaInfo = createMediaInfo(
+        /* duration= */ 1000,
+        /* preparationDelay= */ 0
+      )
+      addMediaInfo(dataSource, mediaInfo)
+      addMediaInfo(dataSource2, mediaInfo)
+
+      shadowMediaPlayer = shadowOf(audioPlayerController.getTestMediaPlayer())
+      setDataSource(shadowMediaPlayer, toDataSource(context, Uri.parse(TEST_URL)))
+
+      invokePreparedListener(shadowMediaPlayer)
+    }
   }
 
   // TODO(#59): Replace the reflection code below with direct calls to Robolectric once this test can be made to run
@@ -388,6 +412,10 @@ class AudioFragmentTest {
     return toDataSourceMethod.invoke(/* obj= */ null, context, uri)
   }
 
+  private fun isOnRobolectric(): Boolean {
+    return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
@@ -413,6 +441,9 @@ class AudioFragmentTest {
     interface Builder : ApplicationComponent.Builder
 
     fun inject(audioFragmentTest: AudioFragmentTest)
+
+    @IsOnRobolectric
+    fun isOnRobolectric(): Boolean
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -425,6 +456,8 @@ class AudioFragmentTest {
     fun inject(audioFragmentTest: AudioFragmentTest) {
       component.inject(audioFragmentTest)
     }
+
+    fun isOnRobolectric(): Boolean = component.isOnRobolectric()
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
