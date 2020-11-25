@@ -3,6 +3,8 @@ package org.oppia.android.domain.classify
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.NumberUnit
+import org.oppia.android.app.model.NumberWithUnits
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.StringList
 
@@ -32,6 +34,10 @@ object InteractionObjectTestBuilder {
 
   fun createHtmlStringList(vararg items: String): StringList {
     return StringList.newBuilder().addAllHtml(items.toList()).build()
+  }
+
+  fun createHtmlStringListInteractionObject(value: StringList): InteractionObject {
+    return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
   }
 
   fun createWholeNumber(isNegative: Boolean, value: Int): InteractionObject {
@@ -77,6 +83,33 @@ object InteractionObjectTestBuilder {
     ).build()
   }
 
+  /** Creates fraction part for [NumberWithUnits]. */
+  fun createNumberWithUnitsForFraction(number: Fraction, units: List<NumberUnit>):
+    InteractionObject {
+      val numberWithUnits = NumberWithUnits.newBuilder()
+        .addAllUnit(units)
+        .setFraction(number)
+        .build()
+
+      return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
+    }
+
+  /** Creates real part for [NumberWithUnits]. */
+  fun createNumberWithUnitsForReal(number: Double, units: List<NumberUnit>):
+    InteractionObject {
+      val numberWithUnits = NumberWithUnits.newBuilder()
+        .addAllUnit(units)
+        .setReal(number)
+        .build()
+
+      return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
+    }
+
+  /** Creates [NumberUnit] using the [unit] and [exponent] for [NumberWithUnits]. */
+  fun createNumberUnit(unit: String, exponent: Int): NumberUnit {
+    return NumberUnit.newBuilder().setUnit(unit).setExponent(exponent).build()
+  }
+
   fun createSignedInt(value: Int): InteractionObject {
     return InteractionObject.newBuilder().setSignedInt(value).build()
   }
@@ -93,5 +126,9 @@ object InteractionObjectTestBuilder {
     return InteractionObject.newBuilder().setRatioExpression(
       RatioExpression.newBuilder().addAllRatioComponent(value)
     ).build()
+  }
+
+  fun createSetOfHtmlString(value: StringList): InteractionObject {
+    return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
   }
 }

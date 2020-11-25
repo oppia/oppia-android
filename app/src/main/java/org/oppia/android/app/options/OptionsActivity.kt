@@ -9,8 +9,8 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
 
-private const val SELECTED_OPTIONS_TITLE_KEY = "SELECTED_OPTIONS_TITLE_KEY"
-private const val SELECTED_FRAGMENT_KEY = "SELECTED_FRAGMENT_KEY"
+private const val SELECTED_OPTIONS_TITLE_SAVED_KEY = "OptionsActivity.selected_options_title"
+private const val SELECTED_FRAGMENT_SAVED_KEY = "OptionsActivity.selected_fragment"
 const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
 const val APP_LANGUAGE_FRAGMENT = "APP_LANGUAGE_FRAGMENT"
 const val AUDIO_LANGUAGE_FRAGMENT = "AUDIO_LANGUAGE_FRAGMENT"
@@ -61,9 +61,9 @@ class OptionsActivity :
     selectedFragment = if (savedInstanceState == null) {
       READING_TEXT_SIZE_FRAGMENT
     } else {
-      savedInstanceState.get(SELECTED_FRAGMENT_KEY) as String
+      savedInstanceState.get(SELECTED_FRAGMENT_SAVED_KEY) as String
     }
-    val extraOptionsTitle = savedInstanceState?.getString(SELECTED_OPTIONS_TITLE_KEY)
+    val extraOptionsTitle = savedInstanceState?.getString(SELECTED_OPTIONS_TITLE_SAVED_KEY)
     optionActivityPresenter.handleOnCreate(
       isFromNavigationDrawer,
       extraOptionsTitle,
@@ -146,8 +146,8 @@ class OptionsActivity :
     super.onSaveInstanceState(outState)
     val titleTextView = findViewById<TextView>(R.id.options_activity_selected_options_title)
     if (titleTextView != null) {
-      outState.putString(SELECTED_OPTIONS_TITLE_KEY, titleTextView.text.toString())
+      outState.putString(SELECTED_OPTIONS_TITLE_SAVED_KEY, titleTextView.text.toString())
     }
-    outState.putString(SELECTED_FRAGMENT_KEY, selectedFragment)
+    outState.putString(SELECTED_FRAGMENT_SAVED_KEY, selectedFragment)
   }
 }
