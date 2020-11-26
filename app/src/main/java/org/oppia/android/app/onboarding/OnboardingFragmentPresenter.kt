@@ -54,7 +54,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       OnboardingPagerAdapter(fragment.requireContext(), getOnboardingSlideFinalViewModel())
     binding.onboardingSlideViewPager.adapter = onboardingPagerAdapter
     val isRTL = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL
-    if(isRTL) {
+    if (isRTL) {
       binding.onboardingSlideViewPager.rotationY = 180f
     }
     binding.onboardingSlideViewPager.addOnPageChangeListener(

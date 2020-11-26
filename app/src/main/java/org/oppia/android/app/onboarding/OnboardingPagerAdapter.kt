@@ -17,7 +17,8 @@ class OnboardingPagerAdapter(
   val context: Context,
   val onboardingSlideFinalViewModel: OnboardingSlideFinalViewModel
 ) : PagerAdapter() {
-  val isRTL = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL
+  val isRTL = TextUtilsCompat
+    .getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL
   override fun instantiateItem(container: ViewGroup, position: Int): Any {
     if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
       val binding =
@@ -40,7 +41,7 @@ class OnboardingPagerAdapter(
       container,
       false
     )
-    if(isRTL) {
+    if (isRTL) {
       binding.root.rotationY = 180f
     }
     val onboardingSlideViewModel =
