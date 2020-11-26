@@ -28,7 +28,7 @@ class OnboardingPagerAdapter(
           false
         )
       binding.viewModel = onboardingSlideFinalViewModel
-      if(isRTL) {
+      if (isRTL) {
         binding.finalLayout!!.rotationY = 180f
       }
 
