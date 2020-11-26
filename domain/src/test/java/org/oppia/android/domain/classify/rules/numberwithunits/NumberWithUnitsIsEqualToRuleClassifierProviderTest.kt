@@ -18,70 +18,70 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.test.fail
 
-/** Tests for [NumberWithUnitsIsEqualToRuleClassifierProviderTest]. */
+/** Tests for [NumberWithUnitsIsEqualToRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
 
-  private val TEST_WHOLE_NUMBER_VALUE_9 =
+  private val WHOLE_NUMBER_VALUE_9 =
     InteractionObjectTestBuilder.createWholeNumber(
       isNegative = false, value = 9
     )
-  private val TEST_NUMBER_FRACTION_VALUE_2_OVER_5 =
+  private val FRACTION_VALUE_TEST_2_OVER_5 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false, numerator = 2, denominator = 5
     ).fraction
-  private val TEST_NUMBER_FRACTION_VALUE_1_OVER_4 =
+  private val FRACTION_VALUE_TEST_1_OVER_4 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false, numerator = 1, denominator = 4
     ).fraction
-  private val TEST_REAL_VALUE_DIFFERENT_TYPE =
+  private val DOUBLE_VALUE_TEST_DIFFERENT_TYPE =
     InteractionObjectTestBuilder.createReal(value = 6.9)
-  private val TEST_REAL_VALUE =
+  private val DOUBLE_VALUE_TEST =
     InteractionObjectTestBuilder.createReal(value = 3.8).real
-  private val TEST_NUMBER_UNIT_WITH_STRING_TO_POWER_5 =
+  private val NUMBER_UNIT_TEST_STRING_TO_POWER_5 =
     InteractionObjectTestBuilder.createNumberUnit(unit = "p", exponent = 5)
-  private val TEST_NUMBER_UNIT_WITH_STRING_TO_POWER_3 =
+  private val NUMBER_UNIT_TEST_STRING_TO_POWER_3 =
     InteractionObjectTestBuilder.createNumberUnit(unit = "e", exponent = 3)
-  private val TEST_NUMBER_WITH_UNITS_ANSWER =
+  private val ANSWER_TEST_NUMBER_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
-      TEST_NUMBER_FRACTION_VALUE_2_OVER_5,
+      FRACTION_VALUE_TEST_2_OVER_5,
       listOf(
-        TEST_NUMBER_UNIT_WITH_STRING_TO_POWER_3,
-        TEST_NUMBER_UNIT_WITH_STRING_TO_POWER_5
+        NUMBER_UNIT_TEST_STRING_TO_POWER_3,
+        NUMBER_UNIT_TEST_STRING_TO_POWER_5
       )
     )
-  private val TEST_NUMBER_WITH_UNITS_INPUT =
+  private val INPUT_TEST_NUMBER_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
-      TEST_NUMBER_FRACTION_VALUE_2_OVER_5,
+      FRACTION_VALUE_TEST_2_OVER_5,
       listOf(
-        TEST_NUMBER_UNIT_WITH_STRING_TO_POWER_3,
-        TEST_NUMBER_UNIT_WITH_STRING_TO_POWER_5
+        NUMBER_UNIT_TEST_STRING_TO_POWER_3,
+        NUMBER_UNIT_TEST_STRING_TO_POWER_5
       )
     )
   private val TEST_DIFFERENT_NUMBERS_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
-      TEST_NUMBER_FRACTION_VALUE_1_OVER_4,
+      FRACTION_VALUE_TEST_1_OVER_4,
       listOf(
-        TEST_NUMBER_UNIT_WITH_STRING_TO_POWER_5,
-        TEST_NUMBER_UNIT_WITH_STRING_TO_POWER_3
+        NUMBER_UNIT_TEST_STRING_TO_POWER_3,
+        NUMBER_UNIT_TEST_STRING_TO_POWER_3
       )
     )
   private val TEST_REAL_INPUT_NUMBER_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForReal(
-      TEST_REAL_VALUE,
+      DOUBLE_VALUE_TEST,
       listOf(
-        TEST_NUMBER_UNIT_WITH_STRING_TO_POWER_3,
-        TEST_NUMBER_UNIT_WITH_STRING_TO_POWER_5
+        NUMBER_UNIT_TEST_STRING_TO_POWER_3,
+        NUMBER_UNIT_TEST_STRING_TO_POWER_5
       )
     )
   private val TEST_REAL_ANSWER_NUMBER_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForReal(
-      TEST_REAL_VALUE,
+      DOUBLE_VALUE_TEST,
       listOf(
-        TEST_NUMBER_UNIT_WITH_STRING_TO_POWER_5,
-        TEST_NUMBER_UNIT_WITH_STRING_TO_POWER_3
+        NUMBER_UNIT_TEST_STRING_TO_POWER_5,
+        NUMBER_UNIT_TEST_STRING_TO_POWER_3
       )
     )
 
@@ -99,12 +99,12 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_fractionInputNumberWithUnits_withFractionAnswerWithUnits_bothValuesMatches() {
-    val inputs = mapOf("f" to TEST_NUMBER_WITH_UNITS_INPUT)
+  fun testFractionInputNumberWithUnits_withFractionAnswerWithUnits_bothValuesMatches() {
+    val inputs = mapOf("f" to INPUT_TEST_NUMBER_WITH_UNITS)
 
     val matches =
       unitsIsEqualsRuleClassifier.matches(
-        answer = TEST_NUMBER_WITH_UNITS_ANSWER,
+        answer = ANSWER_TEST_NUMBER_WITH_UNITS,
         inputs = inputs
       )
 
@@ -112,7 +112,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_differentFractionWithUnits_withRealAnswerNumberWithUnits_bothDoNotMatch() {
+  fun testDifferentFractionWithUnits_withRealAnswerNumberWithUnits_bothDoNotMatch() {
     val inputs = mapOf("f" to TEST_DIFFERENT_NUMBERS_WITH_UNITS)
 
     val matches =
@@ -125,12 +125,12 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_fractionNumberWithUnits_withFractionNumberWithUnits_bothValuesMatches() {
-    val inputs = mapOf("f" to TEST_NUMBER_WITH_UNITS_INPUT)
+  fun testFractionNumberWithUnits_withFractionNumberWithUnits_bothValuesMatches() {
+    val inputs = mapOf("f" to INPUT_TEST_NUMBER_WITH_UNITS)
 
     val matches =
       unitsIsEqualsRuleClassifier.matches(
-        answer = TEST_NUMBER_WITH_UNITS_INPUT,
+        answer = INPUT_TEST_NUMBER_WITH_UNITS,
         inputs = inputs
       )
 
@@ -138,12 +138,12 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEqual_fractionInputNumberWithUnits_withSameFractionInputNumberWithUnits_bothValueMatch() {
-    val inputs = mapOf("f" to TEST_NUMBER_WITH_UNITS_ANSWER)
+  fun testFractionInputNumberWithUnits_withSameFractionInputNumberWithUnits_bothValueMatch() {
+    val inputs = mapOf("f" to ANSWER_TEST_NUMBER_WITH_UNITS)
 
     val matches =
       unitsIsEqualsRuleClassifier.matches(
-        answer = TEST_NUMBER_WITH_UNITS_ANSWER,
+        answer = ANSWER_TEST_NUMBER_WITH_UNITS,
         inputs = inputs
       )
 
@@ -151,12 +151,12 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_differentFractionWithUnitsInput_withFractionAnswerWithUnits_bothValueMatch() {
+  fun testDifferentFractionWithUnitsInput_withFractionAnswerWithUnits_bothValueMatch() {
     val inputs = mapOf("f" to TEST_DIFFERENT_NUMBERS_WITH_UNITS)
 
     val matches =
       unitsIsEqualsRuleClassifier.matches(
-        answer = TEST_NUMBER_WITH_UNITS_ANSWER,
+        answer = ANSWER_TEST_NUMBER_WITH_UNITS,
         inputs = inputs
       )
 
@@ -164,7 +164,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_inputRealNumbersWithUnits_withRealAnswerNumberWithUnits_bothValueMatch() {
+  fun testInputRealNumbersWithUnits_withRealAnswerNumberWithUnits_bothValueMatch() {
     val inputs = mapOf("f" to TEST_REAL_INPUT_NUMBER_WITH_UNITS)
 
     val matches =
@@ -177,13 +177,13 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquals_wholeNumberInputValue_withRealAnswerNumWithUnits_throwsException() {
-    val inputs = mapOf("f" to TEST_WHOLE_NUMBER_VALUE_9)
+  fun testWholeNumberInputValue_withRealAnswerNumWithUnits_throwsException() {
+    val inputs = mapOf("f" to WHOLE_NUMBER_VALUE_9)
 
     val exception = assertThrows(IllegalStateException::class) {
 
       unitsIsEqualsRuleClassifier.matches(
-        answer = TEST_REAL_VALUE_DIFFERENT_TYPE,
+        answer = DOUBLE_VALUE_TEST_DIFFERENT_TYPE,
         inputs = inputs
       )
     }
