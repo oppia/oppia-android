@@ -9,7 +9,7 @@ fun RatioExpression.toSimplestForm(): List<Int> {
   return if (this.ratioComponentList.contains(0)) {
     this.ratioComponentList
   } else {
-    val gcdComponentResult = this.ratioComponentList.reduce { x, y -> gcd(x, y) }
+    val gcdComponentResult = this.ratioComponentList.reduce { x, y -> org.oppia.android.util.math.gcd(x, y) }
     this.ratioComponentList.map { x -> x / gcdComponentResult }
   }
 }

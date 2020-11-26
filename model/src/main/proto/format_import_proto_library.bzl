@@ -25,7 +25,8 @@ def format_import_proto_library(name, src, deps):
     sed 's/import \"/import \"model\/src\/main\/proto\//g' |
     sed 's/\"model\/src\/main\/proto\/exploration/\"model\/processed_src\/main\/proto\/exploration/g' |
     sed 's/\"model\/src\/main\/proto\/topic/\"model\/processed_src\/main\/proto\/topic/g' |
-    sed 's/\"model\/src\/main\/proto\/question/\"model\/processed_src\/main\/proto\/question/g' > $@
+    sed 's/\"model\/src\/main\/proto\/question/\"model\/processed_src\/main\/proto\/question/g' |
+    sed 's/\"model\/src\/main\/proto\/interaction_object/\"model\/processed_src\/main\/proto\/interaction_object/g' > $@
     ''',
   )
 

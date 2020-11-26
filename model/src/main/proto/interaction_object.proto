@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package model;
 
+import "math.proto";
+
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
@@ -51,14 +53,6 @@ message NumberWithUnits {
 message NumberUnit {
   string unit = 1;
   int32 exponent = 2;
-}
-
-// Structure for a fraction object.
-message Fraction {
-  bool is_negative = 1;
-  int32 whole_number = 2;
-  int32 numerator = 3;
-  int32 denominator = 4;
 }
 
 // Structure for a ListOfString object.

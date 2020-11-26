@@ -1,0 +1,12 @@
+directories:
+  .
+
+derive_targets_from_directories: true
+
+additional_languages:
+  kotlin
+
+android_sdk_platform: android-29
+
+#bazel_binary: /usr/local/google/home/bhenning/bazel-dev2/bazel-bin/src/bazel
+bazel_binary: /usr/local/google/home/bhenning/patched-bazel/bazel

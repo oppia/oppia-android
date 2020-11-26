@@ -56,14 +56,27 @@ java_lite_proto_library(
     deps = [":example_proto"],
 )
 
-proto_library(
-    name = "interaction_object_proto",
-    srcs = ["src/main/proto/interaction_object.proto"],
+format_import_proto_library(
+    name = "interaction_object",
+    src = "src/main/proto/interaction_object.proto",
+    deps = [
+        ":math_proto",
+    ],
 )
 
 java_lite_proto_library(
     name = "interaction_object_java_proto_lite",
     deps = [":interaction_object_proto"],
+)
+
+proto_library(
+    name = "math_proto",
+    srcs = ["src/main/proto/math.proto"],
+)
+
+java_lite_proto_library(
+    name = "math_java_proto_lite",
+    deps = [":math_proto"],
 )
 
 proto_library(
@@ -191,6 +204,7 @@ android_library(
         ":event_logger_java_proto_lite",
         ":example_java_proto_lite",
         ":interaction_object_java_proto_lite",
+        ":math_java_proto_lite",
         ":onboarding_java_proto_lite",
         ":profile_java_proto_lite",
         ":subtitled_html_java_proto_lite",

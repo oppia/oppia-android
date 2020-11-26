@@ -19,6 +19,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//data:persistent_cache_store",
+        "//utility:math",
         artifact("androidx.work:work-runtime-ktx:2.4.0"),
     ],
 )

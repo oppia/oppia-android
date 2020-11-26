@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// Structure for a fraction object.
+message Fraction {
+  bool is_negative = 1;
+  int32 whole_number = 2;
+  int32 numerator = 3;
+  int32 denominator = 4;
+}
+
+// Represents a mathematical expression such as 1+2. The only expression currently supported is a
+// binary operation.
+message MathExpression {
+  oneof expression_type {
+    Real constant = 1;
+    string variable = 2;
+    MathBinaryOperation binary_operation = 3;
+    MathUnaryOperation unary_operation = 4;
+  }
+}
+
+message MathBinaryOperation {
+  enum Operator {
+    OPERATOR_UNKNOWN = 0;
+    // Represents adding two values, e.g.: 1 + x.
+    ADD = 1;
+    // Represents subtracting two values, e.g.: x - 2.
+    SUBTRACT = 2;
+    // Represents multiplying two values, e.g.: x * y.
+    MULTIPLY = 3;
+    // Represents dividing two values, e.g.: 1/x.
+    DIVIDE = 4;
+    // Represents taking the exponentiation of one value by another, e.g.: x^2.
+    EXPONENTIATE = 5;
+  }
+
+  Operator operator = 1;
+  MathExpression left_operand = 2;
+  MathExpression right_operand = 3;
+}
+
+message MathUnaryOperation {
+  enum Operator {
+    OPERATOR_UNKNOWN = 0;
+    // Represents negating a value, e.g.: -y.
+    NEGATION = 1;
+  }
+
+  Operator operator = 1;
+  MathExpression operand = 2;
+}
+
+message Real {
+  oneof real_type {
+    Fraction rational = 1;
+    // Represents a decimal value. Technically these can sometimes be rational, but given IEEE-754
+    // rounding errors we need to treat these values as irrational and non-factorable.
+    double irrational = 2;
+  }
+}
+
+message Polynomial {
+  repeated Term term = 1;
+
+  message Term {
+    Real coefficient = 1;
+    repeated Variable variable  = 2;
+
+    message Variable {
+      string name = 1;
+      int32 power = 2;
+    }
+  }
+}

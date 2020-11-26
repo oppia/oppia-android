@@ -12,7 +12,10 @@ load("//utility:utility_test.bzl", "utility_test")
 # Library for general-purpose utilities.
 kt_android_library(
     name = "utility",
-    srcs = glob(["src/main/java/org/oppia/android/util/**/*.kt"]),
+    srcs = glob(
+        include = ["src/main/java/org/oppia/android/util/**/*.kt"],
+        exclude = ["src/main/java/org/oppia/android/util/math/**/*.kt"],
+    ),
     custom_package = "org.oppia.android.util",
     manifest = "src/main/AndroidManifest.xml",
     resource_files = glob(["src/main/res/**/*.xml"]),
@@ -30,6 +33,23 @@ kt_android_library(
         artifact("com.github.bumptech.glide:glide"),
         artifact("com.google.guava:guava"),
         artifact("com.caverock:androidsvg-aar"),
+    ],
+)
+
+# Utilities specific to mathematics content.
+kt_android_library(
+    name = "math",
+    srcs = [
+        "src/main/java/org/oppia/android/util/math/FloatExtensions.kt",
+        "src/main/java/org/oppia/android/util/math/FractionExtensions.kt",
+        "src/main/java/org/oppia/android/util/math/MathExpressionExtensions.kt",
+        "src/main/java/org/oppia/android/util/math/MathExpressionParser.kt",
+        "src/main/java/org/oppia/android/util/math/MathTokenizer.kt",
+    ],
+    custom_package = "org.oppia.android.util.math",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//model",
     ],
 )
 
@@ -102,6 +122,24 @@ utility_test(
     srcs = ["src/test/java/org/oppia/android/util/system/OppiaDateTimeFormatterTest.kt"],
     test_class = "org.oppia.android.util.system.OppiaDateTimeFormatterTest",
     deps = TEST_DEPS,
+)
+
+utility_test(
+    name = "MathTokenizerTest",
+    srcs = ["src/test/java/org/oppia/android/util/math/MathTokenizerTest.kt"],
+    test_class = "org.oppia.android.util.math.MathTokenizerTest",
+    deps = TEST_DEPS + [
+        ":math",
+    ],
+)
+
+utility_test(
+    name = "MathExpressionParserTest",
+    srcs = ["src/test/java/org/oppia/android/util/math/MathExpressionParserTest.kt"],
+    test_class = "org.oppia.android.util.math.MathExpressionParserTest",
+    deps = TEST_DEPS + [
+        ":math",
+    ],
 )
 
 dagger_rules()
