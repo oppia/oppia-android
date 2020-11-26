@@ -23,6 +23,8 @@ class OnboardingPagerAdapter(
           false
         )
       binding.viewModel = onboardingSlideFinalViewModel
+      binding.finalLayout!!.rotationY = 180f
+
       container.addView(binding.root)
       return binding.root
     }
@@ -32,6 +34,7 @@ class OnboardingPagerAdapter(
       container,
       false
     )
+    binding.root.rotationY = 180f
     val onboardingSlideViewModel =
       OnboardingSlideViewModel(context, ViewPagerSlide.getSlideForPosition(position))
     binding.viewModel = onboardingSlideViewModel

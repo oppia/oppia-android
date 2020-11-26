@@ -49,6 +49,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     onboardingPagerAdapter =
       OnboardingPagerAdapter(fragment.requireContext(), getOnboardingSlideFinalViewModel())
     binding.onboardingSlideViewPager.adapter = onboardingPagerAdapter
+    binding.onboardingSlideViewPager.rotationY = 180f
     binding.onboardingSlideViewPager.addOnPageChangeListener(
       object :
         ViewPager.OnPageChangeListener {
