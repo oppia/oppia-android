@@ -29,7 +29,7 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -63,10 +63,13 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -104,6 +107,9 @@ private const val DUMMY_TOPIC_DESCRIPTION_LONG =
   qualifiers = "port-xxhdpi"
 )
 class TopicInfoFragmentTest {
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var context: Context
@@ -190,8 +196,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicInfoFragmentTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_configurationLandscape_imageViewNotDisplayed() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -200,8 +205,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicInfoFragmentTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_checkDefaultTopicDescriptionLines_fiveLinesVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.topic_description_text_view))
@@ -216,8 +220,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicInfoFragmentTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_moreThanFiveLines_seeMoreIsVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.topic_description_text_view)).perform(
@@ -232,8 +235,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicInfoFragmentTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible_and_fiveLinesVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.topic_description_text_view)).perform(
@@ -255,8 +257,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicInfoFragmentTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_clickSeeMore_seeLessVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.topic_description_text_view)).perform(
@@ -272,8 +273,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicInfoFragmentTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
@@ -283,8 +283,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix TopicInfoFragmentTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_clickSeeMore_textChangesToSeeLess() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())

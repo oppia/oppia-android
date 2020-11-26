@@ -1,7 +1,6 @@
 package org.oppia.android.app.topic.lessons
 
 import android.app.Application
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +24,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
@@ -78,7 +76,6 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -101,13 +98,7 @@ import javax.inject.Singleton
 class TopicLessonsFragmentTest {
 
   @Inject
-  lateinit var context: Context
-
-  @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper
@@ -121,9 +112,7 @@ class TopicLessonsFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -136,51 +125,19 @@ class TopicLessonsFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
-    return TopicActivity.createTopicActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      topicId
-    )
-  }
-
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_storyName_isCorrect() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPosition(
-          R.id.story_summary_recycler_view,
-          1
-        )
-      ).check(matches(hasDescendant(withText(containsString("Ratios: Part 1")))))
+      clickLessonTab()
+      matchStringOnStorySummaryListItem(position = 1, stringToMatch = "Ratios: Part 1")
     }
   }
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_chapterCountTextMultiple_isCorrect() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPosition(
-          R.id.story_summary_recycler_view,
-          2
-        )
-      ).check(matches(hasDescendant(withText(containsString("2 Chapters")))))
+      clickLessonTab()
+      matchStringOnStorySummaryListItem(position = 2, stringToMatch = "2 Chapters")
     }
   }
 
@@ -191,20 +148,8 @@ class TopicLessonsFragmentTest {
       timestampOlderThanAWeek = false
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPosition(
-          R.id.story_summary_recycler_view,
-          1
-        )
-      ).check(matches(hasDescendant(withText(containsString("100%")))))
+      clickLessonTab()
+      matchStringOnStorySummaryListItem(position = 1, stringToMatch = "100%")
     }
   }
 
@@ -215,62 +160,25 @@ class TopicLessonsFragmentTest {
       timestampOlderThanAWeek = false
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPosition(
-          R.id.story_summary_recycler_view,
-          2
-        )
-      ).check(matches(hasDescendant(withText(containsString("50%")))))
+      clickLessonTab()
+      matchStringOnStorySummaryListItem(position = 2, stringToMatch = "50%")
     }
   }
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_configurationChange_storyName_isCorrect() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
+      clickLessonTab()
       onView(isRoot()).perform(orientationLandscape())
-      onView(
-        atPosition(
-          R.id.story_summary_recycler_view,
-          1
-        )
-      ).check(matches(hasDescendant(withText(containsString("Ratios: Part 1")))))
+      matchStringOnStorySummaryListItem(position = 1, stringToMatch = "Ratios: Part 1")
     }
   }
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_clickStoryItem_opensStoryActivityWithCorrectIntent() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          R.id.story_summary_recycler_view,
-          1,
-          R.id.story_name_text_view
-        )
-      ).perform(click())
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.story_name_text_view)
       intended(hasComponent(StoryActivity::class.java.name))
       intended(hasExtra(StoryActivity.STORY_ACTIVITY_INTENT_EXTRA_STORY_ID, RATIOS_STORY_ID_0))
     }
@@ -286,14 +194,7 @@ class TopicLessonsFragmentTest {
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_default_arrowDown() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
+      clickLessonTab()
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -311,21 +212,8 @@ class TopicLessonsFragmentTest {
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIcon_chapterListIsVisible() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          R.id.story_summary_recycler_view,
-          1,
-          R.id.chapter_list_drop_down_icon
-        )
-      ).perform(click())
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -339,26 +227,9 @@ class TopicLessonsFragmentTest {
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_clickChapter_opensExplorationActivity() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          R.id.story_summary_recycler_view,
-          1,
-          R.id.chapter_list_drop_down_icon
-        )
-      ).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -397,41 +268,14 @@ class TopicLessonsFragmentTest {
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex2_chapterListForIndex1IsNotDisplayed() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.story_summary_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.story_summary_recycler_view,
-          1,
-          R.id.chapter_list_drop_down_icon
-        )
-      ).perform(click())
+      clickLessonTab()
+      scrollToPosition(position = 1)
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       onView(withId(R.id.story_summary_recycler_view)).perform(
         actionOnItemAtPosition<RecyclerView.ViewHolder>(2, scrollTo())
       )
-      onView(
-        atPositionOnView(
-          R.id.story_summary_recycler_view,
-          2,
-          R.id.chapter_list_drop_down_icon
-        )
-      ).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
+      clickStoryItem(position = 2, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -445,43 +289,12 @@ class TopicLessonsFragmentTest {
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex2_clickExpandListIconIndex1_chapterListForIndex2IsNotDisplayed() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.story_summary_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.story_summary_recycler_view,
-          2,
-          R.id.chapter_list_drop_down_icon
-        )
-      ).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.story_summary_recycler_view,
-          1,
-          R.id.chapter_list_drop_down_icon
-        )
-      ).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
-      )
+      clickLessonTab()
+      scrollToPosition(position = 2)
+      clickStoryItem(position = 2, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -495,26 +308,9 @@ class TopicLessonsFragmentTest {
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationChange_chapterListIsVisible() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          R.id.story_summary_recycler_view,
-          1,
-          R.id.chapter_list_drop_down_icon
-        )
-      ).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
@@ -524,6 +320,52 @@ class TopicLessonsFragmentTest {
         )
       ).check(matches(isDisplayed()))
     }
+  }
+
+  private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
+    return TopicActivity.createTopicActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      topicId
+    )
+  }
+
+  private fun clickLessonTab() {
+    testCoroutineDispatchers.runCurrent()
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(1).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickStoryItem(position: Int, targetViewId: Int) {
+    onView(
+      atPositionOnView(
+        R.id.story_summary_recycler_view,
+        position,
+        targetViewId
+      )
+    ).perform(click())
+  }
+
+  private fun scrollToPosition(position: Int) {
+    onView(withId(R.id.story_summary_recycler_view)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        position
+      )
+    )
+  }
+
+  private fun matchStringOnStorySummaryListItem(position: Int, stringToMatch: String) {
+    onView(
+      atPosition(
+        R.id.story_summary_recycler_view,
+        position
+      )
+    ).check(matches(hasDescendant(withText(containsString(stringToMatch)))))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
