@@ -230,10 +230,6 @@ class NumericInputIsLessThanOrEqualToRuleClassifierProviderTest {
       .contains("Expected input value to be of type REAL not NORMALIZED_STRING")
   }
 
-  private fun createInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setReal(value.toDouble()).build()
-  }
-
   private fun setUpTestApplicationComponent() {
     DaggerNumericInputIsLessThanOrEqualToRuleClassifierProviderTest_TestApplicationComponent
       .builder()
