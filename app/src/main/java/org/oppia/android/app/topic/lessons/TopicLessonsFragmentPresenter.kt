@@ -95,12 +95,17 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           itemList.clear()
           itemList.add(TopicLessonsTitleViewModel())
           for (storySummary in it.storyList) {
-            itemList.add(StorySummaryViewModel(storySummary, fragment as StorySummarySelector))
+            itemList.add(
+              StorySummaryViewModel(
+                storySummary,
+                fragment as StorySummarySelector,
+                this as ChapterSummarySelector
+              )
+            )
           }
           val storySummaryAdapter =
             StorySummaryAdapter(
               itemList,
-              this as ChapterSummarySelector,
               expandedChapterListIndexListener,
               currentExpandedChapterListIndex
             )

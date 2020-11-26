@@ -3,7 +3,6 @@ package org.oppia.android.app.topic.lessons
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
@@ -20,7 +19,6 @@ private const val VIEW_TYPE_STORY_ITEM = 2
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicLessonsFragment]. */
 class StorySummaryAdapter(
   private val itemList: MutableList<TopicLessonsItemViewModel>,
-  private val chapterSummarySelector: ChapterSummarySelector,
   private val expandedChapterListIndexListener: ExpandedChapterListIndexListener,
   private var currentExpandedChapterListIndex: Int?
 ) :
@@ -118,10 +116,7 @@ class StorySummaryAdapter(
         View.LAYER_TYPE_SOFTWARE,
         /* paint= */ null
       )
-      val chapterList = storySummaryViewModel.storySummary.chapterList
-      val storyId = storySummaryViewModel.storySummary.storyId
-      binding.chapterRecyclerView.adapter =
-        createRecyclerViewAdapter(storyId, chapterList)
+      binding.chapterRecyclerView.adapter = createRecyclerViewAdapter()
 
       binding.root.setOnClickListener {
         val previousIndex: Int? = currentExpandedChapterListIndex
@@ -149,28 +144,12 @@ class StorySummaryAdapter(
       }
     }
 
-    private fun createRecyclerViewAdapter(
-      storyId: String,
-      chapterList: List<ChapterSummary>
-    ): BindableAdapter<ChapterSummary> {
+    private fun createRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
       return BindableAdapter.SingleTypeBuilder
-        .newBuilder<ChapterSummary>()
-        .registerViewBinder(
-          inflateView = { parent ->
-            LessonsChapterViewBinding.inflate(
-              LayoutInflater.from(parent.context),
-              parent,
-              /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, chapterSummary ->
-            val binding = DataBindingUtil.findBinding<LessonsChapterViewBinding>(view)!!
-            binding.chapterSummary = chapterSummary
-            binding.index = chapterList.indexOf(chapterSummary)
-            binding.chapterContainer.setOnClickListener {
-              chapterSummarySelector.selectChapterSummary(storyId, chapterSummary)
-            }
-          }
+        .newBuilder<ChapterSummaryViewModel>()
+        .registerViewDataBinderWithSameModelType(
+          inflateDataBinding = LessonsChapterViewBinding::inflate,
+          setViewModel = LessonsChapterViewBinding::setViewModel
         ).build()
     }
   }

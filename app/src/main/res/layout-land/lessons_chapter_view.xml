@@ -8,20 +8,17 @@
     <import type="org.oppia.android.app.model.ChapterPlayState" />
 
     <variable
-      name="index"
-      type="Integer" />
-
-    <variable
-      name="chapterSummary"
-      type="org.oppia.android.app.model.ChapterSummary" />
+      name="viewModel"
+      type="org.oppia.android.app.topic.lessons.ChapterSummaryViewModel" />
   </data>
 
   <LinearLayout
     android:id="@+id/chapter_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="@{chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? true : false}"
+    android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? true : false}"
     android:minHeight="48dp"
+    android:onClick="@{() -> viewModel.onClick(viewModel.chapterSummary)}"
     android:orientation="horizontal"
     android:paddingStart="4dp"
     android:paddingTop="4dp"
@@ -33,9 +30,9 @@
       android:layout_height="16dp"
       android:layout_marginStart="16dp"
       android:layout_marginEnd="8dp"
-      android:contentDescription="@{String.format(@string/chapter_completed, (index + 1), chapterSummary.name)}"
+      android:contentDescription="@{String.format(@string/chapter_completed, (viewModel.index + 1), viewModel.chapterSummary.name)}"
       android:src="@drawable/ic_check_24dp"
-      android:visibility="@{(chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED)?View.INVISIBLE : View.VISIBLE}" />
+      android:visibility="@{(viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED)?View.INVISIBLE : View.VISIBLE}" />
 
     <TextView
       android:id="@+id/chapter_index"
@@ -43,20 +40,20 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
       android:fontFamily="sans-serif"
-      android:text="@{String.format(@string/topic_play_chapter_index, (index + 1))}"
-      android:textColor="@{chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText : @color/oppiaPrimaryText30}"
+      android:text="@{String.format(@string/topic_play_chapter_index, (viewModel.index + 1))}"
+      android:textColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText : @color/oppiaPrimaryText30}"
       android:textSize="14sp" />
 
     <TextView
       android:id="@+id/chapter_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="4dp"
       android:layout_marginStart="4dp"
-      android:fontFamily="sans-serif"
+      android:layout_marginEnd="4dp"
       android:layout_marginBottom="28dp"
-      android:text="@{chapterSummary.name}"
-      android:textColor="@{chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText : @color/oppiaPrimaryText30}"
+      android:fontFamily="sans-serif"
+      android:text="@{viewModel.chapterSummary.name}"
+      android:textColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText : @color/oppiaPrimaryText30}"
       android:textSize="14sp" />
   </LinearLayout>
 </layout>

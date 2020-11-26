@@ -164,7 +164,7 @@
           android:layout_marginTop="8dp"
           android:layout_marginBottom="8dp"
           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-          app:list="@{viewModel.storySummary.chapterList}" />
+          app:list="@{viewModel.chapterSummaryItemList}" />
       </LinearLayout>
     </LinearLayout>
   </com.google.android.material.card.MaterialCardView>
