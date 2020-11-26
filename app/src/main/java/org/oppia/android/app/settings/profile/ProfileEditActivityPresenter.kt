@@ -33,7 +33,7 @@ class ProfileEditActivityPresenter @Inject constructor(
       activity,
       R.layout.profile_edit_activity
     )
-    val profileId = activity.intent.getIntExtra(KEY_PROFILE_EDIT_PROFILE_ID, 0)
+    val profileId = activity.intent.getIntExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, 0)
     profileEditViewModel.setProfileId(profileId)
 
     binding.apply {

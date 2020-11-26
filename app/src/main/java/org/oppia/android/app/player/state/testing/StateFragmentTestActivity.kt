@@ -17,10 +17,14 @@ import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import javax.inject.Inject
 
-internal const val TEST_ACTIVITY_PROFILE_ID_EXTRA = "StateFragmentTestActivity.profile_id"
-internal const val TEST_ACTIVITY_TOPIC_ID_EXTRA = "StateFragmentTestActivity.topic_id"
-internal const val TEST_ACTIVITY_STORY_ID_EXTRA = "StateFragmentTestActivity.story_id"
-internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA = "StateFragmentTestActivity.exploration_id"
+internal const val TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY =
+  "StateFragmentTestActivity.test_activity_profile_id"
+internal const val TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY =
+  "StateFragmentTestActivity.test_activity_topic_id"
+internal const val TEST_ACTIVITY_STORY_ID_EXTRA_KEY =
+  "StateFragmentTestActivity.test_activity_story_id"
+internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY =
+  "StateFragmentTestActivity.test_activity_exploration_id"
 
 /** Test Activity used for testing StateFragment */
 class StateFragmentTestActivity :
@@ -33,7 +37,8 @@ class StateFragmentTestActivity :
   RevealHintListener,
   RevealSolutionInterface,
   HintsAndSolutionExplorationManagerListener {
-  @Inject lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
+  @Inject
+  lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
   private lateinit var state: State
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,10 +60,10 @@ class StateFragmentTestActivity :
       explorationId: String
     ): Intent {
       val intent = Intent(context, StateFragmentTestActivity::class.java)
-      intent.putExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA, profileId)
-      intent.putExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA, topicId)
-      intent.putExtra(TEST_ACTIVITY_STORY_ID_EXTRA, storyId)
-      intent.putExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA, explorationId)
+      intent.putExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, profileId)
+      intent.putExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY, topicId)
+      intent.putExtra(TEST_ACTIVITY_STORY_ID_EXTRA_KEY, storyId)
+      intent.putExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY, explorationId)
       return intent
     }
   }

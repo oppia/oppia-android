@@ -107,18 +107,18 @@ class AdminPinActivityPresenter @Inject constructor(
       }
       val profileId =
         ProfileId.newBuilder()
-          .setInternalId(activity.intent.getIntExtra(KEY_ADMIN_PIN_PROFILE_ID, -1))
+          .setInternalId(activity.intent.getIntExtra(ADMIN_PIN_PROFILE_ID_EXTRA_KEY, -1))
           .build()
 
       profileManagementController.updatePin(profileId, inputPin).toLiveData().observe(
         activity,
         Observer {
           if (it.isSuccess()) {
-            when (activity.intent.getIntExtra(KEY_ADMIN_PIN_ENUM, 0)) {
+            when (activity.intent.getIntExtra(ADMIN_PIN_ENUM_EXTRA_KEY, 0)) {
               AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
                 activity.startActivity(
                   AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-                    context, activity.intent.getIntExtra(KEY_ADMIN_PIN_PROFILE_ID, -1)
+                    context, activity.intent.getIntExtra(ADMIN_PIN_PROFILE_ID_EXTRA_KEY, -1)
                   )
                 )
                 activity.finish()
@@ -128,7 +128,7 @@ class AdminPinActivityPresenter @Inject constructor(
                   AddProfileActivity.createAddProfileActivityIntent(
                     context,
                     activity.intent.getIntExtra(
-                      KEY_ADMIN_PIN_COLOR_RGB, -10710042
+                      ADMIN_PIN_COLOR_RGB_EXTRA_KEY, -10710042
                     )
                   )
                 )
