@@ -5,15 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
+import androidx.core.text.TextUtilsCompat
+import androidx.core.view.ViewCompat
 import androidx.viewpager.widget.PagerAdapter
 import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
+import java.util.*
 
 /** Adapter to control the slide details in onboarding flow. */
 class OnboardingPagerAdapter(
   val context: Context,
   val onboardingSlideFinalViewModel: OnboardingSlideFinalViewModel
 ) : PagerAdapter() {
+  val isRTL = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL
   override fun instantiateItem(container: ViewGroup, position: Int): Any {
     if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
       val binding =
@@ -23,7 +27,9 @@ class OnboardingPagerAdapter(
           false
         )
       binding.viewModel = onboardingSlideFinalViewModel
-      binding.finalLayout!!.rotationY = 180f
+      if(isRTL) {
+        binding.finalLayout!!.rotationY = 180f
+      }
 
       container.addView(binding.root)
       return binding.root
@@ -34,7 +40,9 @@ class OnboardingPagerAdapter(
       container,
       false
     )
-    binding.root.rotationY = 180f
+    if(isRTL) {
+      binding.root.rotationY = 180f
+    }
     val onboardingSlideViewModel =
       OnboardingSlideViewModel(context, ViewPagerSlide.getSlideForPosition(position))
     binding.viewModel = onboardingSlideViewModel

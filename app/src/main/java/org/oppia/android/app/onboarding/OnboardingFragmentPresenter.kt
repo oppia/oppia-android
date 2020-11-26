@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.TextUtilsCompat
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import org.oppia.android.R
@@ -13,7 +15,9 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.util.statusbar.StatusBarColor
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
@@ -49,7 +53,10 @@ class OnboardingFragmentPresenter @Inject constructor(
     onboardingPagerAdapter =
       OnboardingPagerAdapter(fragment.requireContext(), getOnboardingSlideFinalViewModel())
     binding.onboardingSlideViewPager.adapter = onboardingPagerAdapter
-    binding.onboardingSlideViewPager.rotationY = 180f
+    val isRTL = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL
+    if(isRTL) {
+      binding.onboardingSlideViewPager.rotationY = 180f
+    }
     binding.onboardingSlideViewPager.addOnPageChangeListener(
       object :
         ViewPager.OnPageChangeListener {
