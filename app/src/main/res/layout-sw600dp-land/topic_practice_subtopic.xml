@@ -42,7 +42,7 @@
         android:drawableStart="@android:color/transparent"
         android:drawablePadding="20dp"
         android:fontFamily="sans-serif"
-        android:gravity="center_vertical"
+        android:gravity="top"
         android:minHeight="22dp"
         android:text="@{viewModel.subtopic.title}"
         android:textColor="@color/oppiaPrimaryText"
