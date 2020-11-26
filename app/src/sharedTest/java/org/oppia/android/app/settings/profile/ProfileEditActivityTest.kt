@@ -3,7 +3,7 @@ package org.oppia.android.app.settings.profile
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -12,6 +12,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -19,12 +20,10 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -75,7 +74,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Test for [ProfileEditActivity]. */
+/** Tests for [ProfileEditActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -88,13 +87,13 @@ class ProfileEditActivityTest {
   lateinit var context: Context
 
   @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
   lateinit var profileManagementController: ProfileManagementController
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -102,7 +101,6 @@ class ProfileEditActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -116,15 +114,15 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEditActivity_updateName_checkNewNameDisplayed() {
+  fun testProfileEdit_updateName_checkNewNameDisplayed() {
     profileManagementController.updateName(
       ProfileId.newBuilder().setInternalId(1).build(),
       newName = "Akshay"
     )
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -134,15 +132,14 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
-  fun testProfileEditActivity_startActivityWithAdminProfile_checkAdminInfoIsDisplayed() {
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_startWithAdminProfile_checkAdminInfoIsDisplayed() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        0
+        profileId = 0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Admin"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
@@ -151,15 +148,14 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
-  fun testProfileEditActivity_configurationChange_startActivityWithAdminProfile_checkAdminInfoIsDisplayed() { // ktlint-disable max-line-length
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_configChange_startWithAdminProfile_checkAdminInfoIsDisplayed() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        0
+        profileId = 0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Admin"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
@@ -169,15 +165,14 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
-  fun testProfileEditActivity_startActivityWithUserProfile_checkUserInfoIsDisplayed() {
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_startWithUserProfile_checkUserInfoIsDisplayed() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Ben"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches((isDisplayed())))
@@ -186,15 +181,14 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
-  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_checkUserInfoIsDisplayed() { // ktlint-disable max-line-length
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_configChange_startWithUserProfile_checkUserInfoIsDisplayed() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Ben"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
@@ -213,11 +207,11 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEditActivity_startActivityWithUserProfile_clickRenameButton_checkOpensProfileRenameActivity() { // ktlint-disable max-line-length
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_startWithUserProfile_clickRenameButton_checkOpensProfileRename() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(withId(R.id.profile_rename_button)).perform(click())
@@ -226,11 +220,11 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickRenameButton_checkOpensProfileRenameActivity() { // ktlint-disable max-line-length
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_configChange_startWithUserProfile_clickRename_checkOpensProfileRename() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -240,11 +234,11 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEditActivity_startActivityWithUserProfile_clickResetPin_checkOpensProfileResetPinActivity() { // ktlint-disable max-line-length
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(withId(R.id.profile_reset_button)).perform(click())
@@ -253,13 +247,11 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
-  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickResetPin_checkOpensProfileResetPinActivity() { // ktlint-disable max-line-length
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_configChange_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -269,17 +261,16 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
-  fun testProfileEditActivity_startActivityWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() { // ktlint-disable max-line-length
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_startWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_message))
+        .inRoot(isDialog())
         .check(
           matches(
             isDisplayed()
@@ -289,18 +280,18 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
-  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() { // ktlint-disable max-line-length
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_dialog_message))
+        .inRoot(isDialog())
         .check(
           matches(
             isDisplayed()
@@ -310,42 +301,42 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
-  fun testProfileEditActivity_startActivityWithUserProfile_clickProfileDeletionButton_clickDelete_checkReturnsToProfileListActivity() { // ktlint-disable max-line-length
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_startWithUserProfile_deleteProfile_checkReturnsToProfileList() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
-      onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
+      onView(withText(R.string.profile_edit_delete_dialog_positive))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileListActivity::class.java.name))
     }
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
-  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton_clickDelete_checkReturnsToProfileListActivity() { // ktlint-disable max-line-length
-    ActivityScenario.launch<ProfileEditActivity>(
+  fun testProfileEdit_configChange_startWithUserProfile_deleteProfile_checkReturnsToProfileList() {
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        1
+        profileId = 1
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
-      onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
+      onView(withText(R.string.profile_edit_delete_dialog_positive))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileListActivity::class.java.name))
     }
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
-  fun testProfileEditActivity_startActivityWithUserHasDownloadAccess_checkSwitchIsChecked() {
+  fun testProfileEdit_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -354,20 +345,19 @@ class ProfileEditActivityTest {
       colorRgb = -10710042,
       isAdmin = false
     ).toLiveData()
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        3
+        profileId = 3
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
     }
   }
 
   @Test
-  // TODO(#973): Fix ProfileEditActivityTest
-  @Ignore
-  fun testProfileEditActivity_configurationChange_startActivityWithUserHasDownloadAccess_checkSwitchIsChecked() { // ktlint-disable max-line-length
+  fun testProfileEdit_configChange_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -376,12 +366,13 @@ class ProfileEditActivityTest {
       colorRgb = -10710042,
       isAdmin = false
     ).toLiveData()
-    ActivityScenario.launch<ProfileEditActivity>(
+    launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        3
+        profileId = 3
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
     }

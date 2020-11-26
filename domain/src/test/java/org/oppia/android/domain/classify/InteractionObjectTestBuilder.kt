@@ -36,6 +36,10 @@ object InteractionObjectTestBuilder {
     return StringList.newBuilder().addAllHtml(items.toList()).build()
   }
 
+  fun createHtmlStringListInteractionObject(value: StringList): InteractionObject {
+    return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
+  }
+
   fun createWholeNumber(isNegative: Boolean, value: Int): InteractionObject {
     // Whole number fractions imply '0/1' fractional parts.
     return InteractionObject.newBuilder().setFraction(
@@ -122,5 +126,9 @@ object InteractionObjectTestBuilder {
     return InteractionObject.newBuilder().setRatioExpression(
       RatioExpression.newBuilder().addAllRatioComponent(value)
     ).build()
+  }
+
+  fun createSetOfHtmlString(value: StringList): InteractionObject {
+    return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
   }
 }

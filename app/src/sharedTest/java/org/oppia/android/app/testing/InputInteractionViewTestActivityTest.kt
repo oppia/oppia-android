@@ -2,19 +2,28 @@ package org.oppia.android.app.testing
 
 import android.app.Application
 import android.content.res.Configuration
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.Matcher
+import org.junit.After
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,6 +35,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.customview.interaction.RatioInputInteractionView
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -47,6 +57,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -58,6 +69,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [InputInteractionViewTestActivity]. */
@@ -68,6 +80,24 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class InputInteractionViewTestActivityTest {
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
 
   @Test
   fun testFractionInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
@@ -721,7 +751,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
+  @Ignore("Test needs verification")
   fun testRatioInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -736,15 +766,13 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-        typeText(
+        setTextToRatioInputInteractionView(
           "1:2:3"
         )
       )
@@ -760,8 +788,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testRatioInputView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -780,29 +807,30 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withInputtedTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_ratio_input_interaction_view))
-      .perform(
-        typeText(
-          "1::2"
-        )
-      )
-    onView(withId(R.id.ratio_input_error))
-      .check(
-        matches(
-          withText(
-            R.string.ratio_error_invalid_colons
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.test_ratio_input_interaction_view))
+        .perform(
+          setTextToRatioInputInteractionView(
+            "1::2"
           )
         )
-      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.ratio_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.ratio_error_invalid_colons
+            )
+          )
+        )
+    }
   }
 
   @Test
   // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
+  @Ignore("Test needs verification")
   fun testRatioInputInteractionView_withInputtedSpacesBetweenComponents_hasCorrectPendingAnswer() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
@@ -816,29 +844,30 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputInteractionView_withInputtedNegativeRatio_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_ratio_input_interaction_view))
-      .perform(
-        typeText(
-          "-1:2:3:4"
-        )
-      )
-    onView(withId(R.id.ratio_input_error))
-      .check(
-        matches(
-          withText(
-            R.string.ratio_error_invalid_format
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.test_ratio_input_interaction_view))
+        .perform(
+          setTextToRatioInputInteractionView(
+            "-1:2:3:4"
           )
         )
-      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.ratio_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.ratio_error_invalid_chars
+            )
+          )
+        )
+    }
   }
 
   @Test
   // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
+  @Ignore("This is not happening in app too/needs verification")
   fun testRatioInputInteractionView_withFractionRatio_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
@@ -858,111 +887,134 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withZeroRatio_clickSubmitButton_numberWithZerosErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_ratio_input_interaction_view))
-      .perform(
-        typeText(
-          "1:0:4"
-        )
-      )
-    closeSoftKeyboard()
-    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-    onView(withId(R.id.ratio_input_error))
-      .check(
-        matches(
-          withText(
-            R.string.ratio_error_includes_zero
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.test_ratio_input_interaction_view))
+        .perform(
+          setTextToRatioInputInteractionView(
+            "1:0:4"
           )
         )
-      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.ratio_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.ratio_error_includes_zero
+            )
+          )
+        )
+    }
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withInvalidRatioFormat_clickSubmitButton_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_ratio_input_interaction_view))
-      .perform(
-        typeText(
-          "1: 1 2 :4"
-        )
-      )
-    closeSoftKeyboard()
-    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-    onView(withId(R.id.ratio_input_error))
-      .check(
-        matches(
-          withText(
-            R.string.fraction_error_invalid_format
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.test_ratio_input_interaction_view))
+        .perform(
+          setTextToRatioInputInteractionView(
+            "1: 1 2 :4"
           )
         )
-      )
+      closeSoftKeyboard()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.ratio_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.ratio_error_invalid_format
+            )
+          )
+        )
+    }
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withRatioHaving4Terms_clickSubmitButton_invalidSizeErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_ratio_input_interaction_view))
-      .perform(
-        typeText(
-          "1:2:3:4"
-        )
-      )
-    closeSoftKeyboard()
-    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-    onView(withId(R.id.ratio_input_error))
-      .check(
-        matches(
-          withText(
-            R.string.ratio_error_invalid_size
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.test_ratio_input_interaction_view))
+        .perform(
+          setTextToRatioInputInteractionView(
+            "1:2:3:4"
           )
         )
-      )
+      closeSoftKeyboard()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.ratio_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.ratio_error_invalid_size
+            )
+          )
+        )
+    }
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withRatioHaving2Terms_clickSubmitButton_invalidSizeErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_ratio_input_interaction_view))
-      .perform(
-        typeText(
-          "1:2"
-        )
-      )
-    closeSoftKeyboard()
-    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-    onView(withId(R.id.ratio_input_error))
-      .check(
-        matches(
-          withText(
-            R.string.ratio_error_invalid_size
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.test_ratio_input_interaction_view))
+        .perform(
+          setTextToRatioInputInteractionView(
+            "1:2"
           )
         )
-      )
+      closeSoftKeyboard()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.ratio_input_error))
+        .check(
+          matches(
+            withText(
+              R.string.ratio_error_invalid_size
+            )
+          )
+        )
+    }
   }
 
   @Test
-  // TODO(#973): Fix InputInteractionViewTestActivityTest
-  @Ignore
   fun testRatioInputView_withRatioHaving3Terms_clickSubmitButton_noErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_ratio_input_interaction_view))
-      .perform(
-        typeText(
-          "1:2:3"
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.test_ratio_input_interaction_view))
+        .perform(
+          setTextToRatioInputInteractionView(
+            "1:2:3"
+          )
         )
-      )
-    closeSoftKeyboard()
-    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-    onView(withId(R.id.ratio_input_error)).check(matches(withText("")))
+      closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.ratio_input_error)).check(matches(withText("")))
+    }
+  }
+
+  private fun setTextToRatioInputInteractionView(
+    newText: String?
+  ): ViewAction? {
+    return object : ViewAction {
+      override fun getConstraints(): Matcher<View> {
+        return allOf(isDisplayed(), isAssignableFrom(RatioInputInteractionView::class.java))
+      }
+
+      override fun getDescription(): String {
+        return "Update the text from the custom EditText"
+      }
+
+      override fun perform(uiController: UiController?, view: View) {
+        (view as RatioInputInteractionView).setText(newText)
+        uiController?.loopMainThreadUntilIdle()
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

@@ -1,7 +1,6 @@
 package org.oppia.android.app.settings.profile
 
 import android.content.Intent
-import android.widget.Switch
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -9,7 +8,6 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileEditActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -21,12 +19,11 @@ import javax.inject.Inject
 class ProfileEditActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val logger: ConsoleLogger,
-  private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<ProfileEditViewModel>
+  private val profileManagementController: ProfileManagementController
 ) {
-  private val editViewModel: ProfileEditViewModel by lazy {
-    getProfileEditViewModel()
-  }
+
+  @Inject
+  lateinit var profileEditViewModel: ProfileEditViewModel
 
   fun handleOnCreate() {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -36,13 +33,11 @@ class ProfileEditActivityPresenter @Inject constructor(
       activity,
       R.layout.profile_edit_activity
     )
-    val profileId = activity.intent.getIntExtra(KEY_PROFILE_EDIT_PROFILE_ID, 0)
-    editViewModel.setProfileId(
-      profileId,
-      activity.findViewById<Switch>(R.id.profile_edit_allow_download_switch)
-    )
+    val profileId = activity.intent.getIntExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, 0)
+    profileEditViewModel.setProfileId(profileId)
+
     binding.apply {
-      viewModel = editViewModel
+      viewModel = profileEditViewModel
       lifecycleOwner = activity
     }
 
@@ -55,7 +50,7 @@ class ProfileEditActivityPresenter @Inject constructor(
         ProfileResetPinActivity.createProfileResetPinActivity(
           activity,
           profileId,
-          editViewModel.isAdmin
+          profileEditViewModel.isAdmin
         )
       )
     }
@@ -63,6 +58,20 @@ class ProfileEditActivityPresenter @Inject constructor(
     binding.profileDeleteButton.setOnClickListener {
       showDeletionDialog(profileId)
     }
+
+    profileEditViewModel.profile.observe(
+      activity,
+      Observer {
+        activity.title = it.name
+      }
+    )
+
+    profileEditViewModel.isAllowedDownloadAccess.observe(
+      activity,
+      Observer {
+        binding.profileEditAllowDownloadSwitch.isChecked = it
+      }
+    )
 
     binding.profileEditAllowDownloadSwitch.setOnCheckedChangeListener { compoundButton, checked ->
       if (compoundButton.isPressed) {
@@ -83,10 +92,6 @@ class ProfileEditActivityPresenter @Inject constructor(
         )
       }
     }
-  }
-
-  fun handleOnRestoreSavedInstanceState() {
-    activity.title = editViewModel.profileName
   }
 
   private fun showDeletionDialog(profileId: Int) {
@@ -110,9 +115,5 @@ class ProfileEditActivityPresenter @Inject constructor(
             }
           )
       }.create().show()
-  }
-
-  private fun getProfileEditViewModel(): ProfileEditViewModel {
-    return viewModelProvider.getForActivity(activity, ProfileEditViewModel::class.java)
   }
 }

@@ -6,8 +6,8 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-const val KEY_PIN_PASSWORD_PROFILE_ID = "PIN_PASSWORD_PROFILE_ID"
-const val KEY_PIN_PASSWORD_ADMIN_PIN = "PIN_PASSWORD_ADMIN_PIN"
+const val PIN_PASSWORD_PROFILE_ID_EXTRA_KEY = "PinPasswordActivity.pin_password_profile_id"
+const val PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY = "PinPasswordActivity.pin_password_admin_pin"
 
 /** Activity that allows user to input his or her PIN. */
 class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInterface {
@@ -21,8 +21,8 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
       profileId: Int
     ): Intent {
       val intent = Intent(context, PinPasswordActivity::class.java)
-      intent.putExtra(KEY_PIN_PASSWORD_PROFILE_ID, profileId)
-      intent.putExtra(KEY_PIN_PASSWORD_ADMIN_PIN, adminPin)
+      intent.putExtra(PIN_PASSWORD_PROFILE_ID_EXTRA_KEY, profileId)
+      intent.putExtra(PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY, adminPin)
       return intent
     }
   }
