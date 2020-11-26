@@ -140,12 +140,12 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
   }
 
-  override fun selectChapterSummary(storyId: String, chapterSummary: ChapterSummary) {
+  override fun selectChapterSummary(storyId: String, explorationId: String) {
     playExploration(
       internalProfileId,
       topicId,
       storyId,
-      chapterSummary.explorationId,
+      explorationId,
       /* backflowScreen= */ 0
     )
   }

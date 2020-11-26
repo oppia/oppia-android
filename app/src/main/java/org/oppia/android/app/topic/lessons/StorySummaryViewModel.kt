@@ -16,10 +16,12 @@ class StorySummaryViewModel(
   }
 
   private fun getRecyclerViewItemList(): ArrayList<ChapterSummaryViewModel> {
-    storySummary.chapterList.forEachIndexed { index, element ->
+    storySummary.chapterList.forEachIndexed { index, chapterSummary ->
       arrayList.add(
         ChapterSummaryViewModel(
-          chapterSummary = element,
+          chapterPlayState = chapterSummary.chapterPlayState,
+          explorationId = chapterSummary.explorationId,
+          chapterName = chapterSummary.name,
           storyId = storySummary.storyId,
           index = index,
           chapterSummarySelector = chapterSummarySelector

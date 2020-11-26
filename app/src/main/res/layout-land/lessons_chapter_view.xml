@@ -16,9 +16,9 @@
     android:id="@+id/chapter_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? true : false}"
+    android:clickable="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? true : false}"
     android:minHeight="48dp"
-    android:onClick="@{() -> viewModel.onClick(viewModel.chapterSummary)}"
+    android:onClick="@{() -> viewModel.onClick(viewModel.explorationId)}"
     android:orientation="horizontal"
     android:paddingStart="4dp"
     android:paddingTop="4dp"
@@ -30,9 +30,9 @@
       android:layout_height="16dp"
       android:layout_marginStart="16dp"
       android:layout_marginEnd="8dp"
-      android:contentDescription="@{String.format(@string/chapter_completed, (viewModel.index + 1), viewModel.chapterSummary.name)}"
+      android:contentDescription="@{String.format(@string/chapter_completed, (viewModel.index + 1), viewModel.chapterName)}"
       android:src="@drawable/ic_check_24dp"
-      android:visibility="@{(viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED)?View.INVISIBLE : View.VISIBLE}" />
+      android:visibility="@{(viewModel.chapterPlayState != ChapterPlayState.COMPLETED)?View.INVISIBLE : View.VISIBLE}" />
 
     <TextView
       android:id="@+id/chapter_index"
@@ -41,7 +41,7 @@
       android:layout_marginStart="4dp"
       android:fontFamily="sans-serif"
       android:text="@{String.format(@string/topic_play_chapter_index, (viewModel.index + 1))}"
-      android:textColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText : @color/oppiaPrimaryText30}"
+      android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText : @color/oppiaPrimaryText30}"
       android:textSize="14sp" />
 
     <TextView
@@ -52,8 +52,8 @@
       android:layout_marginEnd="4dp"
       android:layout_marginBottom="28dp"
       android:fontFamily="sans-serif"
-      android:text="@{viewModel.chapterSummary.name}"
-      android:textColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText : @color/oppiaPrimaryText30}"
+      android:text="@{viewModel.chapterName}"
+      android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText : @color/oppiaPrimaryText30}"
       android:textSize="14sp" />
   </LinearLayout>
 </layout>
