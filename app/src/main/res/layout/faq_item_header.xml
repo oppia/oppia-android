@@ -29,6 +29,7 @@
         android:paddingStart="24dp"
         android:paddingTop="24dp"
         android:paddingEnd="24dp"
+        android:textAlignment="viewStart"
         android:paddingBottom="8dp"
         android:text="@string/featured_questions"
         android:textColor="@color/oppiaPrimaryText"

@@ -28,6 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
+        android:textAlignment="viewStart"
         android:layout_marginEnd="28dp"
         android:fontFamily="sans-serif-medium"
         android:onClick="@{(v) -> viewModel.clickOnFAQQuestion()}"
