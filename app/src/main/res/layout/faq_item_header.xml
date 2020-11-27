@@ -29,9 +29,9 @@
         android:paddingStart="24dp"
         android:paddingTop="24dp"
         android:paddingEnd="24dp"
-        android:textAlignment="viewStart"
         android:paddingBottom="8dp"
         android:text="@string/featured_questions"
+        android:textAlignment="viewStart"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="18sp" />
     </LinearLayout>
