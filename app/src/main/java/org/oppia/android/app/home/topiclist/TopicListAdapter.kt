@@ -2,6 +2,8 @@ package org.oppia.android.app.home.topiclist
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -130,6 +132,14 @@ class TopicListAdapter(
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(welcomeViewModel: WelcomeViewModel) {
       binding.viewModel = welcomeViewModel
+      binding.profileNameTextview.post {
+        val isEllipsize: Boolean =
+          binding.profileNameTextview.layout.text.toString() != binding.profileNameTextview.text
+        if (isEllipsize) {
+          binding.profileNameTextview.visibility = GONE
+          binding.profileNameTextview2.visibility = VISIBLE
+        }
+      }
     }
   }
 
