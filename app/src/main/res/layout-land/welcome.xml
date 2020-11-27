@@ -42,6 +42,21 @@
       app:layout_constraintBottom_toBottomOf="@id/welcome_text_view"
       app:layout_constraintTop_toTopOf="@+id/welcome_text_view" />
 
+    <TextView
+      android:id="@+id/profile_name_textview2"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:fontFamily="sans-serif"
+      android:maxLines="1"
+      android:text="@{String.format(@string/welcome_profile_name, viewModel.profileName)}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="24sp"
+      android:visibility="gone"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@+id/welcome_text_view"
+      app:layout_constraintTop_toBottomOf="@+id/welcome_text_view" />
+
     <View
       android:layout_width="0dp"
       android:layout_height="6dp"
@@ -49,6 +64,6 @@
       android:background="@color/oppiaLightBrown"
       app:layout_constraintEnd_toEndOf="@+id/welcome_text_view"
       app:layout_constraintStart_toStartOf="@+id/welcome_text_view"
-      app:layout_constraintTop_toBottomOf="@+id/welcome_text_view" />
+      app:layout_constraintTop_toBottomOf="@+id/profile_name_textview2" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
