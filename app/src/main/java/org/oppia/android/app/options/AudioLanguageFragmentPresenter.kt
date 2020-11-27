@@ -36,7 +36,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(private val fragment: F
     binding.audioLanguageToolbar?.setNavigationOnClickListener {
       val message = languageSelectionAdapter.getSelectedLanguage()
       val intent = Intent()
-      intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, message)
+      intent.putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, message)
       (fragment.activity as AudioLanguageActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
       (fragment.activity as AudioLanguageActivity).finish()
     }

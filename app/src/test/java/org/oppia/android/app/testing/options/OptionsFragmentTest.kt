@@ -137,7 +137,7 @@ class OptionsFragmentTest {
       intended(hasComponent(AppLanguageActivity::class.java.name))
       intended(
         hasExtra(
-          AppLanguageActivity.KEY_APP_LANGUAGE_PREFERENCE_TITLE,
+          AppLanguageActivity.APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY,
           APP_LANGUAGE
         )
       )

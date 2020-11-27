@@ -9,8 +9,8 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
 
-private const val SELECTED_OPTIONS_TITLE_KEY = "SELECTED_OPTIONS_TITLE_KEY"
-private const val SELECTED_FRAGMENT_KEY = "SELECTED_FRAGMENT_KEY"
+private const val SELECTED_OPTIONS_TITLE_SAVED_KEY = "OptionsActivity.selected_options_title"
+private const val SELECTED_FRAGMENT_SAVED_KEY = "OptionsActivity.selected_fragment"
 const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
 const val APP_LANGUAGE_FRAGMENT = "APP_LANGUAGE_FRAGMENT"
 const val AUDIO_LANGUAGE_FRAGMENT = "AUDIO_LANGUAGE_FRAGMENT"
@@ -26,6 +26,7 @@ class OptionsActivity :
   LoadAudioLanguageListListener {
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
+
   // used to initially load the suitable fragment in the case of multipane.
   private var isFirstOpen = true
   private lateinit var selectedFragment: String
@@ -33,7 +34,7 @@ class OptionsActivity :
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
-      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
+      "OptionsActivity.bool_is_from_navigation_drawer_extra_key"
 
     fun createOptionsActivity(
       context: Context,
@@ -60,9 +61,9 @@ class OptionsActivity :
     selectedFragment = if (savedInstanceState == null) {
       READING_TEXT_SIZE_FRAGMENT
     } else {
-      savedInstanceState.get(SELECTED_FRAGMENT_KEY) as String
+      savedInstanceState.get(SELECTED_FRAGMENT_SAVED_KEY) as String
     }
-    val extraOptionsTitle = savedInstanceState?.getString(SELECTED_OPTIONS_TITLE_KEY)
+    val extraOptionsTitle = savedInstanceState?.getString(SELECTED_OPTIONS_TITLE_SAVED_KEY)
     optionActivityPresenter.handleOnCreate(
       isFromNavigationDrawer,
       extraOptionsTitle,
@@ -76,15 +77,15 @@ class OptionsActivity :
     super.onActivityResult(requestCode, resultCode, data)
     when (requestCode) {
       REQUEST_CODE_TEXT_SIZE -> {
-        val textSize = data!!.getStringExtra(KEY_MESSAGE_READING_TEXT_SIZE) as String
+        val textSize = data!!.getStringExtra(MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY) as String
         optionActivityPresenter.updateReadingTextSize(textSize)
       }
       REQUEST_CODE_APP_LANGUAGE -> {
-        val appLanguage = data!!.getStringExtra(KEY_MESSAGE_APP_LANGUAGE) as String
+        val appLanguage = data!!.getStringExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY) as String
         optionActivityPresenter.updateAppLanguage(appLanguage)
       }
       else -> {
-        val audioLanguage = data!!.getStringExtra(KEY_MESSAGE_AUDIO_LANGUAGE) as String
+        val audioLanguage = data!!.getStringExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY) as String
         optionActivityPresenter.updateAudioLanguage(audioLanguage)
       }
     }
@@ -145,8 +146,8 @@ class OptionsActivity :
     super.onSaveInstanceState(outState)
     val titleTextView = findViewById<TextView>(R.id.options_activity_selected_options_title)
     if (titleTextView != null) {
-      outState.putString(SELECTED_OPTIONS_TITLE_KEY, titleTextView.text.toString())
+      outState.putString(SELECTED_OPTIONS_TITLE_SAVED_KEY, titleTextView.text.toString())
     }
-    outState.putString(SELECTED_FRAGMENT_KEY, selectedFragment)
+    outState.putString(SELECTED_FRAGMENT_SAVED_KEY, selectedFragment)
   }
 }
