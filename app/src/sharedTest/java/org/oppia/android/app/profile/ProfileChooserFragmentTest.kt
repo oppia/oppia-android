@@ -3,7 +3,6 @@ package org.oppia.android.app.profile
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +10,6 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.pressBack
-import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -24,7 +21,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -40,7 +36,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -108,7 +103,6 @@ class ProfileChooserFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -126,168 +120,78 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+      scrollToPosition(position = 0)
+      matchStringOnProfileListItem(
+        position = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin"
+      )
+      matchStringOnProfileListItem(
+        position = 0,
+        targetView = R.id.profile_is_admin_text,
+        stringToMatch = context.getString(R.string.profile_chooser_admin)
+      )
+      scrollToPosition(position = 1)
+      matchStringOnProfileListItem(
+        position = 1,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Ben"
       )
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          0, R.id.profile_name_text
+          1,
+          R.id.profile_is_admin_text
         )
-      ).check(
-        matches(
-          withText("Admin")
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          0, R.id.profile_is_admin_text
-        )
-      ).check(
-        matches(withText(context.getString(R.string.profile_chooser_admin)))
-      )
-      onView(withId(R.id.profile_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          1, R.id.profile_name_text
-        )
-      ).check(
-        matches(
-          withText("Ben")
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          1, R.id.profile_is_admin_text
-        )
-      ).check(
-        matches(not(isDisplayed()))
-      )
-      onView(withId(R.id.profile_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          3
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          3, R.id.add_profile_text
-        )
-      ).check(
-        matches(
-          withText(context.getString(R.string.profile_chooser_add))
-        )
+      ).check(matches(not(isDisplayed())))
+      scrollToPosition(position = 3)
+      matchStringOnProfileListItem(
+        position = 3,
+        targetView = R.id.add_profile_text,
+        stringToMatch = context.getString(R.string.profile_chooser_add)
       )
     }
   }
 
-  @Test
   // TODO(#973): Fix ProfileChooserFragmentTest
   @Ignore
-  fun testProfileChooserFragment_initializeProfiles_checkProfilesLastVisitedTimeIsShown() {
-    profileTestHelper.initializeProfiles()
+  @Test
+  fun testProfileChooserFragment_afterVisitingHomeActivity_showsJustNowText() {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
-      intended(hasComponent(PinPasswordActivity::class.java.name))
-      onView(withId(R.id.input_pin)).perform(typeText("12345"))
-      intended(hasComponent(HomeActivity::class.java.name))
-      onView(isRoot()).perform(pressBack())
-      onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
-      intended(hasComponent(ProfileChooserActivity::class.java.name))
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          0, R.id.profile_last_visited
+          0,
+          R.id.profile_last_visited
         )
-      ).check(
-        matches(
-          isDisplayed()
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          0, R.id.profile_last_visited
-        )
-      ).check(
-        matches(
-          withText(
-            String.format(
-              getResources().getString(R.string.profile_last_used) + " just now"
-            )
-          )
-        )
+      ).check(matches(isDisplayed()))
+      matchStringOnProfileListItem(
+        position = 0,
+        targetView = R.id.profile_last_visited,
+        stringToMatch = "${context.getString(R.string.profile_last_used)} just now"
       )
     }
   }
 
-  @Test
   // TODO(#973): Fix ProfileChooserFragmentTest
   @Ignore
-  fun testProfileChooserFragment_initializeProfiles_changeConfiguration_checkProfilesLastVisitedTimeIsShown() { // ktlint-disable max-length-line
-    profileTestHelper.initializeProfiles()
+  @Test
+  fun testProfileChooserFragment_afterVisitingHomeActivity_changeConfiguration_showsJustNowText() {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        atPosition(
-          R.id.profile_recycler_view,
-          0
-        )
-      ).perform(click())
-      intended(hasComponent(PinPasswordActivity::class.java.name))
-      onView(withId(R.id.input_pin)).perform(typeText("12345"))
-      intended(hasComponent(HomeActivity::class.java.name))
-      onView(isRoot()).perform(pressBack())
-      onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
-      intended(hasComponent(ProfileChooserActivity::class.java.name))
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          0, R.id.profile_last_visited
-        )
-      ).check(
-        matches(
-          isDisplayed()
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          0, R.id.profile_last_visited
-        )
-      ).check(
-        matches(
-          withText(
-            String.format(
-              getResources().getString(R.string.profile_last_used) + " just now"
-            )
-          )
-        )
-      )
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          0, R.id.profile_last_visited
+          0,
+          R.id.profile_last_visited
         )
-      ).check(
-        matches(
-          withText(
-            String.format(
-              getResources().getString(R.string.profile_last_used) + " just now"
-            )
-          )
-        )
+      ).check(matches(isDisplayed()))
+      matchStringOnProfileListItem(
+        position = 0,
+        targetView = R.id.profile_last_visited,
+        stringToMatch = "${context.getString(R.string.profile_last_used)} just now"
       )
     }
   }
@@ -298,155 +202,65 @@ class ProfileChooserFragmentTest {
     profileTestHelper.addMoreProfiles(8)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+      scrollToPosition(position = 0)
+      matchStringOnProfileListItem(
+        position = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin"
       )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          0, R.id.profile_name_text
-        )
-      ).check(
-        matches(
-          withText("Admin")
-        )
+      scrollToPosition(position = 1)
+      matchStringOnProfileListItem(
+        position = 1,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "A"
       )
-      onView(withId(R.id.profile_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+      scrollToPosition(position = 2)
+      matchStringOnProfileListItem(
+        position = 2,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "B"
       )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          1, R.id.profile_name_text
-        )
-      ).check(
-        matches(
-          withText("A")
-        )
+      scrollToPosition(position = 3)
+      matchStringOnProfileListItem(
+        position = 3,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Ben"
       )
-      onView(withId(R.id.profile_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
+      scrollToPosition(position = 4)
+      matchStringOnProfileListItem(
+        position = 4,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "C"
       )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          2, R.id.profile_name_text
-        )
-      ).check(
-        matches(
-          withText("B")
-        )
+      scrollToPosition(position = 5)
+      matchStringOnProfileListItem(
+        position = 5,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "D"
       )
-      onView(withId(R.id.profile_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          3
-        )
+      scrollToPosition(position = 6)
+      matchStringOnProfileListItem(
+        position = 6,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "E"
       )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          3, R.id.profile_name_text
-        )
-      ).check(
-        matches(
-          withText("Ben")
-        )
+      scrollToPosition(position = 7)
+      matchStringOnProfileListItem(
+        position = 7,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "F"
       )
-      onView(withId(R.id.profile_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          4
-        )
+      scrollToPosition(position = 8)
+      matchStringOnProfileListItem(
+        position = 8,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "G"
       )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          4, R.id.profile_name_text
-        )
-      ).check(
-        matches(
-          withText("C")
-        )
-      )
-      onView(withId(R.id.profile_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          5
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          5, R.id.profile_name_text
-        )
-      ).check(
-        matches(
-          withText("D")
-        )
-      )
-      onView(withId(R.id.profile_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          6
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          6, R.id.profile_name_text
-        )
-      ).check(
-        matches(
-          withText("E")
-        )
-      )
-      onView(withId(R.id.profile_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          7
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          7, R.id.profile_name_text
-        )
-      ).check(
-        matches(
-          withText("F")
-        )
-      )
-      onView(withId(R.id.profile_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          8
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          8, R.id.profile_name_text
-        )
-      ).check(
-        matches(
-          withText("G")
-        )
-      )
-      onView(withId(R.id.profile_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          9
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          9, R.id.profile_name_text
-        )
-      ).check(
-        matches(
-          withText("H")
-        )
+      scrollToPosition(position = 9)
+      matchStringOnProfileListItem(
+        position = 9,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "H"
       )
     }
   }
@@ -522,8 +336,10 @@ class ProfileChooserFragmentTest {
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.add_profile_text)).check(
-        matches(withText(R.string.set_up_multiple_profiles))
+      matchStringOnProfileListItem(
+        position = 1,
+        targetView = R.id.add_profile_text,
+        stringToMatch = context.getString(R.string.set_up_multiple_profiles)
       )
     }
   }
@@ -536,10 +352,10 @@ class ProfileChooserFragmentTest {
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          1, R.id.add_profile_description_text
+          1,
+          R.id.add_profile_description_text
         )
-      )
-        .check(matches(isDisplayed()))
+      ).check(matches(isDisplayed()))
     }
   }
 
@@ -548,8 +364,11 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_recycler_view, 3, R.id.add_profile_text))
-        .check(matches(withText(R.string.profile_chooser_add)))
+      matchStringOnProfileListItem(
+        position = 3,
+        targetView = R.id.add_profile_text,
+        stringToMatch = context.getString(R.string.profile_chooser_add)
+      )
     }
   }
 
@@ -561,7 +380,8 @@ class ProfileChooserFragmentTest {
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          3, R.id.add_profile_description_text
+          3,
+          R.id.add_profile_description_text
         )
       ).check(matches(not(isDisplayed())))
     }
@@ -572,8 +392,22 @@ class ProfileChooserFragmentTest {
       .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
   }
 
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
+  private fun scrollToPosition(position: Int) {
+    onView(withId(R.id.profile_recycler_view)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        position
+      )
+    )
+  }
+
+  private fun matchStringOnProfileListItem(position: Int, targetView: Int, stringToMatch: String) {
+    onView(
+      atPositionOnView(
+        R.id.profile_recycler_view,
+        position,
+        targetView
+      )
+    ).check(matches(withText(stringToMatch)))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
