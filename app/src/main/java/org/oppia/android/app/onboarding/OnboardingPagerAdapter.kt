@@ -10,7 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.viewpager.widget.PagerAdapter
 import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
-import java.util.*
+import java.util.Locale
 
 /** Adapter to control the slide details in onboarding flow. */
 class OnboardingPagerAdapter(

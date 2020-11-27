@@ -15,7 +15,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.util.statusbar.StatusBarColor
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
