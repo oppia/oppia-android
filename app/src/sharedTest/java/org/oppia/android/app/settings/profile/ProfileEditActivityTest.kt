@@ -28,6 +28,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
@@ -313,7 +314,12 @@ class ProfileEditActivityTest {
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileListActivity::class.java.name))
+      val isTablet = context.resources.configuration.smallestScreenWidthDp >= 600
+      if(isTablet){
+        intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      } else {
+        intended(hasComponent(ProfileListActivity::class.java.name))
+      }
     }
   }
 

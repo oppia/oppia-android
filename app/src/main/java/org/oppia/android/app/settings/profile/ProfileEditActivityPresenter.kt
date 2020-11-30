@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.ProfileEditActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -108,9 +109,16 @@ class ProfileEditActivityPresenter @Inject constructor(
             activity,
             Observer {
               if (it.isSuccess()) {
-                val intent = Intent(activity, ProfileListActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                activity.startActivity(intent)
+                val isTablet = activity.resources.configuration.smallestScreenWidthDp >= 600
+                if(isTablet){
+                  val intent = Intent(activity, AdministratorControlsActivity::class.java)
+                  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                  activity.startActivity(intent)
+                } else {
+                  val intent = Intent(activity, ProfileListActivity::class.java)
+                  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                  activity.startActivity(intent)
+                }
               }
             }
           )
