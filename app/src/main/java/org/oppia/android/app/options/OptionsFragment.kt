@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-const val KEY_MESSAGE_READING_TEXT_SIZE = "TEXT_SIZE"
-const val KEY_MESSAGE_APP_LANGUAGE = "APP_LANGUAGE"
-const val KEY_MESSAGE_AUDIO_LANGUAGE = "AUDIO_LANGUAGE"
+const val MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY = "OptionsFragment.message_reading_text_size"
+const val MESSAGE_APP_LANGUAGE_ARGUMENT_KEY = "OptionsFragment.message_app_language"
+const val MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY = "OptionsFragment.message_audio_language"
 const val REQUEST_CODE_TEXT_SIZE = 1
 const val REQUEST_CODE_APP_LANGUAGE = 2
 const val REQUEST_CODE_AUDIO_LANGUAGE = 3
