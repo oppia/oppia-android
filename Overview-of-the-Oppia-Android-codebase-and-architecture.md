@@ -90,3 +90,7 @@ Here is an example of how to traverse the codebase. (Note that the examples belo
 7. So, we will create another function (`goToSplashActivity`) inside the `TopicInfoFragmentPresenter`. We can then call this function inside `clickDummyButton` which was present in `TopicInfoViewModel`.
 
 Following these steps would lead to the completion of the entire task, with all the code blocks in the correct files.
+
+## Dependency Injection
+
+Oppia Android uses Dagger 2 for dependency injection. For an overview on how DI works in general, and specifically how it's set up in Oppia Android, see [these presentation slides](https://docs.google.com/presentation/d/1lLLjWRJB-mqDuNlhX5LoL87yBj5Tes0UUlvsLsbwH30/edit?usp=sharing).
