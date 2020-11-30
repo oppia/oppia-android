@@ -45,9 +45,9 @@
       android:onClick="@{(v) -> viewModel.handleButtonClicked()}"
       android:text="@string/state_continue_button"
       android:textColor="@color/white"
-      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintBottom_toBottomOf="@+id/previous_state_navigation_button"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHeight_min="48dp"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="@+id/previous_state_navigation_button" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
