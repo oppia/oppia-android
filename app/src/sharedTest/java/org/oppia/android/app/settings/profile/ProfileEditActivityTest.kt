@@ -314,7 +314,6 @@ class ProfileEditActivityTest {
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
-      val isTablet = context.resources.configuration.smallestScreenWidthDp >= 600
       if (context.resources.getBoolean(R.bool.isTablet)) {
         intended(hasComponent(AdministratorControlsActivity::class.java.name))
       } else {
