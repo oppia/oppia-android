@@ -82,7 +82,7 @@
       android:textColor="@color/white"
       app:layout_constraintHeight_min="48dp"
       app:layout_constraintTop_toTopOf="@+id/previous_state_navigation_button"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="@+id/previous_state_navigation_button" />
+      app:layout_constraintBottom_toBottomOf="@+id/previous_state_navigation_button"
+      app:layout_constraintEnd_toEndOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
