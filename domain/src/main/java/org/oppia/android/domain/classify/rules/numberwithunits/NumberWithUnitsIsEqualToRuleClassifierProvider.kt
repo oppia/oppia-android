@@ -28,7 +28,6 @@ internal class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructo
   }
 
   // TODO(#209): Determine whether additional sanitation of the input is necessary here.
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: NumberWithUnits, input: NumberWithUnits): Boolean {
     // The number types must match.
     if (answer.numberTypeCase != input.numberTypeCase) {
