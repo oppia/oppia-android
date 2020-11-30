@@ -110,7 +110,7 @@ class ProfileEditActivityPresenter @Inject constructor(
             Observer {
               if (it.isSuccess()) {
                 val isTablet = activity.resources.configuration.smallestScreenWidthDp >= 600
-                if(isTablet){
+                if (isTablet) {
                   val intent = Intent(activity, AdministratorControlsActivity::class.java)
                   intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                   activity.startActivity(intent)
