@@ -94,6 +94,7 @@
 
   <dimen name="space_0dp">0dp</dimen>
 
+  <dimen name="story_chapter_stroke_width">2dp</dimen>
   <dimen name="dot_width_height">12dp</dimen>
   <dimen name="dot_gap">12dp</dimen>
   <dimen name="enter_text_view_padding_start">60dp</dimen>
