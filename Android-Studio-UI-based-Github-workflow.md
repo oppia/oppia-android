@@ -1,6 +1,6 @@
 # Clone Oppia-Android using Android Studio
-Go to https://github.com/oppia/oppia-android.
-Click on **Clone or download** and copy the link.
+Navigate to your fork, e.g. ``https://github.com/<your_username>/oppia-android``.
+Click on **Clone or download** and copy the link (the URL will look different since you should be using your fork, **not** https://github.com/oppia/oppia-android).
 
 <img width="966" alt="1" src="https://user-images.githubusercontent.com/54615666/72601739-fdac4280-393b-11ea-969d-34730dfd3c74.png">
 
