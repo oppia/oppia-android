@@ -32,6 +32,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -41,6 +42,7 @@ import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
 import dagger.Component
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
@@ -254,17 +256,20 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   // TODO (#973): Fix HomeActivityTest
-  @Ignore
+
   fun testNavigationDrawerTestActivity_clickOnHeader_opensProfileProgressActivity() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
-        internalProfileId1
+        internalProfileId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
       ).perform(click())
-      onView(withId(R.id.nav_header_profile_name)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.nav_header_profile_name)).perform(customClick())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileProgressActivity::class.java.name))
       intended(
         hasExtra(
@@ -565,6 +570,23 @@ class NavigationDrawerTestActivityTest {
           R.id.welcome_text_view
         )
       ).check(matches(withText("Good morning,")))
+    }
+  }
+
+  private fun customClick(): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String {
+        return "click performed"
+      }
+
+      override fun getConstraints(): Matcher<View> {
+        return isEnabled()
+      }
+
+      override fun perform(uiController: UiController, view: View) {
+        view.performClick()
+        uiController.loopMainThreadUntilIdle()
+      }
     }
   }
 
