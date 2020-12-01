@@ -41,8 +41,6 @@ import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
@@ -88,15 +86,12 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
-import org.oppia.android.util.logging.EnableConsoleLog
-import org.oppia.android.util.logging.EnableFileLog
-import org.oppia.android.util.logging.GlobalLogLevel
-import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.GlideImageLoaderModule
@@ -129,6 +124,9 @@ class NavigationDrawerTestActivityTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   private val internalProfileId = 0
   private val internalProfileId1 = 1
   private lateinit var oppiaClock: OppiaClock
@@ -139,6 +137,7 @@ class NavigationDrawerTestActivityTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
+    testCoroutineDispatchers.registerIdlingResource()
     storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
       ProfileId.newBuilder().setInternalId(
         internalProfileId
@@ -149,6 +148,7 @@ class NavigationDrawerTestActivityTest {
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -172,87 +172,83 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
       ).perform(click())
-      onView(withId(R.id.nav_header_profile_name))
-        .check(matches(withText("Admin")))
+      onView(
+        allOf(
+          withId(R.id.nav_header_profile_name),
+          isDescendantOfA(withId(R.id.header_linear_layout))
+        )
+      ).check(matches(withText("Admin")))
     }
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_changeConfiguration_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
       )
     ).use {
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .check(
-          matches(
-            isCompletelyDisplayed()
-          )
-        )
-        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(isCompletelyDisplayed())
+      ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.nav_header_profile_name)).check(matches(withText("Admin")))
+      onView(
+        allOf(
+          withId(R.id.nav_header_profile_name),
+          isDescendantOfA(withId(R.id.header_linear_layout))
+        )
+      ).check(matches(withText("Admin")))
     }
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_checkProfileProgress_displayProfileProgressSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
       )
     ).use {
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .check(
-          matches(
-            isCompletelyDisplayed()
-          )
+      testCoroutineDispatchers.runCurrent()
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(isCompletelyDisplayed())
+      ).perform(click())
+      onView(
+        allOf(
+          withId(R.id.profile_progress_text_view),
+          isDescendantOfA(withId(R.id.header_linear_layout))
         )
-        .perform(click())
-      onView(withId(R.id.profile_progress_text_view))
-        .check(
-          matches(
-            withText(
-              "1 Story Completed | 1 Topic in Progress"
-            )
-          )
-        )
+      ).check(matches(withText("1 Story Completed | 1 Topic in Progress")))
     }
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex1_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId1
       )
     ).use {
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .check(
-          matches(
-            isCompletelyDisplayed()
-          )
+      testCoroutineDispatchers.runCurrent()
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(isCompletelyDisplayed())
+      ).perform(click())
+      onView(
+        allOf(
+          withId(R.id.nav_header_profile_name),
+          isDescendantOfA(withId(R.id.header_linear_layout))
         )
-        .perform(click())
-      onView(withId(R.id.nav_header_profile_name)).check(matches(withText("Ben")))
+      ).check(matches(withText("Ben")))
     }
   }
 
@@ -326,10 +322,9 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.home_activity_drawer_layout)).perform(close())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
@@ -625,29 +620,6 @@ class NavigationDrawerTestActivityTest {
 
   private fun findParent(view: ViewParent): ViewParent {
     return view.getParent()
-  }
-
-  @Module
-  class TestModule {
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
-
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

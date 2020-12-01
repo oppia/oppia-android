@@ -63,6 +63,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/oppiaPrimaryText"
+            android:textAlignment="viewStart"
             android:textSize="18sp" />
 
           <TextView
@@ -72,6 +73,7 @@
             android:layout_marginTop="24dp"
             android:fontFamily="sans-serif"
             android:textColor="@color/oppiaPrimaryText"
+            android:textAlignment="viewStart"
             android:textSize="16sp" />
         </LinearLayout>
       </ScrollView>

@@ -35,7 +35,7 @@ class AppLanguageFragmentPresenter @Inject constructor(private val fragment: Fra
     binding.appLanguageToolbar?.setNavigationOnClickListener {
       val message = languageSelectionAdapter.getSelectedLanguage()
       val intent = Intent()
-      intent.putExtra(KEY_MESSAGE_APP_LANGUAGE, message)
+      intent.putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, message)
       (fragment.activity as AppLanguageActivity).setResult(REQUEST_CODE_APP_LANGUAGE, intent)
       (fragment.activity as AppLanguageActivity).finish()
     }

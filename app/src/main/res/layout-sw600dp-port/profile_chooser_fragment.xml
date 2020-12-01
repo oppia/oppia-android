@@ -75,7 +75,7 @@
           android:fadingEdgeLength="72dp"
           android:orientation="vertical"
           android:overScrollMode="never"
-          android:paddingBottom="@{hasProfileEverBeenAddedValue ? @dimen/space_224dp : @dimen/bottom_white_space}"
+          android:paddingBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_padding_bottom_profile_already_added : @dimen/bottom_white_space}"
           android:requiresFadingEdge="vertical"
           android:scrollbars="none"
           app:data="@{viewModel.profiles}"
@@ -83,9 +83,9 @@
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_select_text"
-          app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_24dp : @dimen/space_124dp}"
-          app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_72dp : @dimen/space_0dp}"
-          app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_72dp : @dimen/space_0dp}" />
+          app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_fragment_margin_top_profile_already_added : @dimen/profile_chooser_fragment_margin_top_profile_not_added}"
+          app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_margin_end_profile_already_added : @dimen/space_0dp}"
+          app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_margin_start_profile_already_added : @dimen/space_0dp}" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
