@@ -61,7 +61,8 @@ import kotlin.test.fail
 @Config(application = StringToRatioParserTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StringToRatioParserTest {
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
   private lateinit var stringToRatioParser: StringToRatioParser
 
@@ -127,6 +128,13 @@ class StringToRatioParserTest {
     val error =
       stringToRatioParser.getSubmitTimeError("1:2:3:", numberOfTerms = 3)
         .getErrorMessageFromStringRes(context)
+    assertThat(error).isEqualTo("Please enter a valid ratio (e.g. 1:2 or 1:2:3).")
+  }
+
+  @Test
+  fun testParser_realtimeError_answerWithMixedFrationRatio_returnInvalidFormatError() {
+    val error = stringToRatioParser.getSubmitTimeError("1/2:3:4", 0)
+      .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo("Please enter a valid ratio (e.g. 1:2 or 1:2:3).")
   }
 
