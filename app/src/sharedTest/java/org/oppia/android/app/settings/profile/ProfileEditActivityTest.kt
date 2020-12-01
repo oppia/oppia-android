@@ -323,7 +323,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_configChange_startWithUserProfile_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() { // ktlint-disable max-line-length
+  fun testProfileEdit_landscape_deleteProfile_checkReturnsProfileListOnTabletAdminControlOnPhone() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
