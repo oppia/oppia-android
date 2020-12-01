@@ -25,7 +25,7 @@ import dagger.Component
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -59,10 +59,13 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -85,6 +88,9 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileChooserFragmentTest {
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -115,6 +121,7 @@ class ProfileChooserFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testProfileChooserFragment_initializeProfiles_checkProfilesAreShown() {
     profileTestHelper.initializeProfiles()
@@ -153,10 +160,10 @@ class ProfileChooserFragmentTest {
     }
   }
 
-  // TODO(#973): Fix ProfileChooserFragmentTest
-  @Ignore
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testProfileChooserFragment_afterVisitingHomeActivity_showsJustNowText() {
+    profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -174,10 +181,10 @@ class ProfileChooserFragmentTest {
     }
   }
 
-  // TODO(#973): Fix ProfileChooserFragmentTest
-  @Ignore
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testProfileChooserFragment_afterVisitingHomeActivity_changeConfiguration_showsJustNowText() {
+    profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -196,6 +203,7 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testProfileChooserFragment_addManyProfiles_checkProfilesSortedAndNoAddProfile() {
     profileTestHelper.initializeProfiles()
@@ -265,6 +273,7 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testProfileChooserFragment_clickProfile_checkOpensPinPasswordActivity() {
     profileTestHelper.initializeProfiles()
@@ -315,6 +324,7 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testProfileChooserFragment_checkLayoutManager_isLinearLayoutManager() {
     profileTestHelper.addOnlyAdminProfile()
@@ -331,6 +341,7 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testProfileChooserFragment_onlyAdminProfile_checkText_setUpMultipleProfilesIsVisible() {
     profileTestHelper.addOnlyAdminProfile()
@@ -344,6 +355,7 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testProfileChooserFragment_onlyAdminProfile_checkDescriptionText_isDisplayed() {
     profileTestHelper.addOnlyAdminProfile()
@@ -359,6 +371,7 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testProfileChooserFragment_multipleProfiles_checkText_addProfileIsVisible() {
     profileTestHelper.initializeProfiles()
@@ -372,6 +385,7 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testProfileChooserFragment_multipleProfiles_checkDescriptionText_isDisplayed() {
     profileTestHelper.initializeProfiles()
