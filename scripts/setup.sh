@@ -11,4 +11,4 @@
 # NOTE: this script should be run once after the initial codebase setup
 
 # Move file from script folder to .git/hooks folder
-mv scripts/pre-push .git/hooks/
+cp scripts/pre-push.sh .git/hooks/
