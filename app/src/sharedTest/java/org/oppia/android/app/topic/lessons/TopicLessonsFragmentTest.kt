@@ -129,7 +129,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_storyName_isCorrect() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      matchStringOnStorySummaryListItem(position = 1, stringToMatch = "Ratios: Part 1")
+      verifyTextOnStorySummaryListItemAtPosition(position = 1, stringToMatch = "Ratios: Part 1")
     }
   }
 
@@ -137,7 +137,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_chapterCountTextMultiple_isCorrect() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      matchStringOnStorySummaryListItem(position = 2, stringToMatch = "2 Chapters")
+      verifyTextOnStorySummaryListItemAtPosition(position = 2, stringToMatch = "2 Chapters")
     }
   }
 
@@ -149,7 +149,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      matchStringOnStorySummaryListItem(position = 1, stringToMatch = "100%")
+      verifyTextOnStorySummaryListItemAtPosition(position = 1, stringToMatch = "100%")
     }
   }
 
@@ -161,7 +161,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      matchStringOnStorySummaryListItem(position = 2, stringToMatch = "50%")
+      verifyTextOnStorySummaryListItemAtPosition(position = 2, stringToMatch = "50%")
     }
   }
 
@@ -170,7 +170,7 @@ class TopicLessonsFragmentTest {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       onView(isRoot()).perform(orientationLandscape())
-      matchStringOnStorySummaryListItem(position = 1, stringToMatch = "Ratios: Part 1")
+      verifyTextOnStorySummaryListItemAtPosition(position = 1, stringToMatch = "Ratios: Part 1")
     }
   }
 
@@ -349,6 +349,7 @@ class TopicLessonsFragmentTest {
         targetViewId
       )
     ).perform(click())
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun scrollToPosition(position: Int) {
@@ -357,9 +358,10 @@ class TopicLessonsFragmentTest {
         position
       )
     )
+    testCoroutineDispatchers.runCurrent()
   }
 
-  private fun matchStringOnStorySummaryListItem(position: Int, stringToMatch: String) {
+  private fun verifyTextOnStorySummaryListItemAtPosition(position: Int, stringToMatch: String) {
     onView(
       atPosition(
         R.id.story_summary_recycler_view,

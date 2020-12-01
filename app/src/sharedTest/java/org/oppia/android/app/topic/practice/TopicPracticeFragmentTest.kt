@@ -204,7 +204,7 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  fun testTopicPracticeFragment_loadFragment_selectSubtopics_deselectSubtopics_startButtonIsInactive() { // ktlint-disable max-line-length
+  fun testTopicPracticeFragment_loadFragment_selectSubtopics_thenDeselect_startButtonIsInactive() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
@@ -275,7 +275,7 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() { // ktlint-disable max-line-length
+  fun testTopicPracticeFragment_loadFragment_selectSkills_configChange_startButtonRemainsActive() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
@@ -356,6 +356,7 @@ class TopicPracticeFragmentTest {
         position
       )
     )
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun clickPracticeItem(position: Int, targetViewId: Int) {
@@ -366,6 +367,7 @@ class TopicPracticeFragmentTest {
         targetViewId
       )
     ).perform(click())
+    testCoroutineDispatchers.runCurrent()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

@@ -196,7 +196,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_configurationLandscape_imageViewNotDisplayed() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -205,7 +205,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_checkDefaultTopicDescriptionLines_fiveLinesVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.topic_description_text_view))
@@ -220,7 +220,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_moreThanFiveLines_seeMoreIsVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.topic_description_text_view)).perform(
@@ -235,7 +235,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible_and_fiveLinesVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.topic_description_text_view)).perform(
@@ -257,7 +257,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_clickSeeMore_seeLessVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.topic_description_text_view)).perform(
@@ -273,7 +273,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
@@ -283,7 +283,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_clickSeeMore_textChangesToSeeLess() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
