@@ -24,17 +24,22 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
-  private val STRING_VALUE_1 = InteractionObjectTestBuilder.createString(value = "test item 1")
-  private val STRING_VALUE_2 = InteractionObjectTestBuilder.createString(value = "test item 2")
-  private val STRING_VALUE_3 = InteractionObjectTestBuilder.createString(value = "test item invalid")
-  private val NON_NEGATIVE_VALUE_4 = InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE = InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-    listOf(
-      InteractionObjectTestBuilder.createHtmlStringList("test item 1"),
-      InteractionObjectTestBuilder.createHtmlStringList("test item 2"),
-      InteractionObjectTestBuilder.createHtmlStringList("test item 3")
+  private val STRING_VALUE_1 =
+    InteractionObjectTestBuilder.createString(value = "test item 1")
+  private val STRING_VALUE_2 =
+    InteractionObjectTestBuilder.createString(value = "test item 2")
+  private val STRING_VALUE_3 =
+    InteractionObjectTestBuilder.createString(value = "test item invalid")
+  private val NON_NEGATIVE_VALUE_4 =
+    InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE =
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      listOf(
+        InteractionObjectTestBuilder.createHtmlStringList("test item 1"),
+        InteractionObjectTestBuilder.createHtmlStringList("test item 2"),
+        InteractionObjectTestBuilder.createHtmlStringList("test item 3")
+      )
     )
-  )
 
   @Inject
   internal lateinit var dragDropSortInputHasElementXBeforeElementYClassifierProvider:
