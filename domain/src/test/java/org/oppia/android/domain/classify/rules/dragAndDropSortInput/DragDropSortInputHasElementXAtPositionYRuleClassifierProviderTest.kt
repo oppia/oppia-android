@@ -36,7 +36,9 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
       listOf(
         InteractionObjectTestBuilder.createHtmlStringList("1", "2"),
-        InteractionObjectTestBuilder.createHtmlStringList("test item 1", "test item 2", "test item 3")
+        InteractionObjectTestBuilder.createHtmlStringList(
+          "test item 1", "test item 2", "test item 3"
+        )
       )
     )
 
