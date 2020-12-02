@@ -150,7 +150,7 @@ class TopicFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_tabs_viewpager)).check(matches(isDisplayed()))
       onView(withId(R.id.topic_tabs_viewpager)).perform(swipeLeft())
-      verifyTabTitleAtPosition(position = 1)
+      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
     }
   }
 
@@ -172,7 +172,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_defaultTabIsInfo_isSuccessful() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      verifyTabTitleAtPosition(position = 0)
+      verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
     }
   }
 
@@ -192,7 +192,7 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnLessonsTab_showsPlayTabSelected() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = LESSON_TAB_POSITION)
-      verifyTabTitleAtPosition(position = 1)
+      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
     }
   }
 
@@ -215,7 +215,7 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnPracticeTab_showsPracticeTabSelected() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
-      verifyTabTitleAtPosition(position = 2)
+      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
     }
   }
 
@@ -238,7 +238,7 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnReviewTab_showsReviewTabSelected() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = REVISION_TAB_POSITION)
-      verifyTabTitleAtPosition(position = 3)
+      verifyTabTitleAtPosition(position = REVISION_TAB_POSITION)
     }
   }
 
@@ -262,7 +262,7 @@ class TopicFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = REVISION_TAB_POSITION)
       clickTabAtPosition(position = INFO_TAB_POSITION)
-      verifyTabTitleAtPosition(position = 0)
+      verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
     }
   }
 
@@ -272,7 +272,7 @@ class TopicFragmentTest {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = REVISION_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
-      clickTabAtPosition(position = 0)
+      clickTabAtPosition(position = INFO_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
@@ -289,7 +289,7 @@ class TopicFragmentTest {
       clickTabAtPosition(position = LESSON_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      verifyTabTitleAtPosition(position = 1)
+      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
       matchStringOnListItem(
         recyclerView = R.id.story_summary_recycler_view,
         itemPosition = 1,
@@ -313,7 +313,7 @@ class TopicFragmentTest {
       )
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      verifyTabTitleAtPosition(position = 2)
+      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
       matchStringOnListItem(
         recyclerView = R.id.topic_practice_skill_list,
         itemPosition = 0,
@@ -330,7 +330,7 @@ class TopicFragmentTest {
       clickTabAtPosition(position = REVISION_TAB_POSITION)
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      verifyTabTitleAtPosition(position = 3)
+      verifyTabTitleAtPosition(position = REVISION_TAB_POSITION)
       matchStringOnListItem(
         recyclerView = R.id.revision_recycler_view,
         itemPosition = 0,
@@ -345,7 +345,7 @@ class TopicFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      verifyTabTitleAtPosition(position = 0)
+      verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
           withText(
@@ -388,6 +388,7 @@ class TopicFragmentTest {
     )
   }
 
+  // TODO(#2208): Create helper function in Test for RecyclerView
   private fun matchStringOnListItem(
     recyclerView: Int,
     itemPosition: Int,
