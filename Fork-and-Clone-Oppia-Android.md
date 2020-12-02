@@ -18,4 +18,4 @@ _For a detailed explanation of the fork-and-clone process, please see this [GitH
 
 ## Updating your local repository
 
-You can download the latest contents of the main Oppia Android repository using `git fetch upstream`, and you can also access your forked version using `git fetch origin`. (Usually, you'll want to do the former.)
+If you need to update your local branch with the latest changes in the main Oppia Android repository on develop (e.g. in cases when your PR is showing extra commits that you didn't create), follow the steps listed [here](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/syncing-a-fork).
