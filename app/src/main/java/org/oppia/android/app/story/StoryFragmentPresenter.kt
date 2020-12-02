@@ -147,8 +147,8 @@ class StoryFragmentPresenter @Inject constructor(
               storyItemViewModel.summary, binding.chapterSummary
             )
           val str =
-            if (storyItemViewModel.chapterSummary.chapterPlayState == ChapterPlayState
-                .NOT_PLAYABLE_MISSING_PREREQUISITES
+            if (storyItemViewModel.chapterSummary.chapterPlayState ==
+              ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
             ) {
               String.format(
                 HtmlCompat.toHtml(
@@ -165,14 +165,17 @@ class StoryFragmentPresenter @Inject constructor(
                   SpannedString.valueOf(
                     view.context
                       .getText(R.string.chapter_name)
-                  ), HtmlCompat.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE
+                  ),
+                  HtmlCompat.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE
                 ),
                 storyItemViewModel.index + 1,
                 storyItemViewModel.name
               )
             }
-          binding.storyChapterCard.strokeWidth = when (storyItemViewModel
-            .chapterSummary.chapterPlayState) {
+          binding.storyChapterCard.strokeWidth = when (
+            storyItemViewModel
+            .chapterSummary.chapterPlayState
+            ) {
             ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ->
               view.context.resources.getDimension(R.dimen.space_0dp).toInt()
             else ->
