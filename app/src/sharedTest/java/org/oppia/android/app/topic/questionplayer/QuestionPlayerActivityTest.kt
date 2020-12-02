@@ -215,7 +215,7 @@ class QuestionPlayerActivityTest {
   }
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
-  @RunOn(TestPlatform.ESPRESSO) // Incorrectly pass on Robolectric and shouldn't be re-enabled
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_phonePort_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -230,7 +230,7 @@ class QuestionPlayerActivityTest {
   }
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
-  @RunOn(TestPlatform.ESPRESSO) // Incorrectly pass on Robolectric and shouldn't be re-enabled
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_phoneLand_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -246,7 +246,7 @@ class QuestionPlayerActivityTest {
   }
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
-  @RunOn(TestPlatform.ESPRESSO) // Incorrectly pass on Robolectric and shouldn't be re-enabled
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "sw600dp")
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_tabletPort_tickIsCompletelyVisible() {
@@ -262,7 +262,7 @@ class QuestionPlayerActivityTest {
   }
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
-  @RunOn(TestPlatform.ESPRESSO) // Incorrectly pass on Robolectric and shouldn't be re-enabled
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "sw600dp")
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_tabletLand_tickIsCompletelyVisible() {
