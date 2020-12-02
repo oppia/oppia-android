@@ -18,4 +18,4 @@ _For a detailed explanation of the fork-and-clone process, please see this [GitH
 
 ## Updating your local repository
 
-If you need to update your local branch with the latest changes in the main Oppia Android repository on develop (e.g. in cases when your PR is showing extra commits that you didn't create), follow the steps listed [here](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/syncing-a-fork).
+If you need to update your local branch with the latest changes in the main Oppia Android repository on develop (e.g. in cases when your PR is showing extra commits that you didn't create), follow the steps listed [here](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/syncing-a-fork). Note that Oppia Android uses 'develop' not 'main' for its mainline branch.
