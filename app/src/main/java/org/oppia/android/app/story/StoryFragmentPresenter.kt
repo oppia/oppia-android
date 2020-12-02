@@ -172,9 +172,8 @@ class StoryFragmentPresenter @Inject constructor(
                 storyItemViewModel.name
               )
             }
-          binding.storyChapterCard.strokeWidth = when (
-            storyItemViewModel
-              .chapterSummary.chapterPlayState) {
+          binding.storyChapterCard.strokeWidth =
+            when (storyItemViewModel.chapterSummary.chapterPlayState) {
             ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ->
               view.context.resources.getDimension(R.dimen.space_0dp).toInt()
             else ->
@@ -187,7 +186,8 @@ class StoryFragmentPresenter @Inject constructor(
               storyItemViewModel.storyId,
               imageCenterAlign = true
             ).parseOppiaHtml(
-              str, binding.chapterTitle
+              str,
+              binding.chapterTitle
             )
         }
       )
