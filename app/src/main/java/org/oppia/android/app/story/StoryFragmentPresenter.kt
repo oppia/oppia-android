@@ -174,8 +174,7 @@ class StoryFragmentPresenter @Inject constructor(
             }
           binding.storyChapterCard.strokeWidth = when (
             storyItemViewModel
-            .chapterSummary.chapterPlayState
-            ) {
+              .chapterSummary.chapterPlayState) {
             ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ->
               view.context.resources.getDimension(R.dimen.space_0dp).toInt()
             else ->
