@@ -24,41 +24,53 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest {
+
   private val NON_NEGATIVE_VALUE_0 =
     InteractionObjectTestBuilder.createNonNegativeInt(value = 0)
+
   private val ITEM_SET_1_AB =
     InteractionObjectTestBuilder.createHtmlStringList("item a", "item b")
+
   private val ITEM_SET_1_ABC =
     InteractionObjectTestBuilder.createHtmlStringList("item a", "item b", "item c")
+
   private val ITEM_SET_1_A =
     InteractionObjectTestBuilder.createHtmlStringList("item a")
+
   private val ITEM_SET_2_ITEM_2 =
     InteractionObjectTestBuilder.createHtmlStringList("item 2")
+
   private val ITEM_SET_3_ITEM_3 =
     InteractionObjectTestBuilder.createHtmlStringList("item 3")
+
   private val SET_LIST_ITEMS_AB_ITEM_2_ITEM_3 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
       listOf(ITEM_SET_1_AB, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
     )
+
   private val SET_LIST_ITEMS_ABC_ITEM_2_ITEM_3 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
       listOf(ITEM_SET_1_ABC, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
     )
+
   private val SET_LIST_ITEM_2_ITEM_3_ITEMS_AB =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
       listOf(ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3, ITEM_SET_1_AB)
     )
+
   private val SET_LIST_ITEM_A_ITEM_2_ITEM_3 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
       listOf(ITEM_SET_1_A, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
     )
 
   @Inject
-  internal lateinit var dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider: // ktlint-disable max-line-length
+  internal lateinit var
+    dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider:
     DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
 
   private val isEqualToOrderingWithOneItemIncorrectClassifier: RuleClassifier by lazy {
-    dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider.createRuleClassifier() // ktlint-disable max-line-length
+    dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
+      .createRuleClassifier()
   }
 
   @Before

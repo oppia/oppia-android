@@ -24,14 +24,19 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
+
   private val NON_NEGATIVE_VALUE_0 =
     InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
+
   private val NON_NEGATIVE_VALUE_1 =
     InteractionObjectTestBuilder.createNonNegativeInt(value = 2)
+
   private val STRING_VALUE_2 =
     InteractionObjectTestBuilder.createString(value = "test item 2")
+
   private val STRING_VALUE_3 =
     InteractionObjectTestBuilder.createString(value = "test item invalid")
+
   private val LIST_OF_SETS_OF_HTML_STRING_VALUE =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
       listOf(

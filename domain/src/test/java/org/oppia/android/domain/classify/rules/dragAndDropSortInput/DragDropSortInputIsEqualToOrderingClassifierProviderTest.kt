@@ -24,32 +24,42 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
+
   private val ITEM_SET_1_A =
     InteractionObjectTestBuilder.createHtmlStringList("item a")
+
   private val ITEM_SET_1_AB =
     InteractionObjectTestBuilder.createHtmlStringList("item a", "item b")
+
   private val ITEM_SET_2_ITEM_2 =
     InteractionObjectTestBuilder.createHtmlStringList("item 2")
+
   private val ITEM_SET_3_ITEM_3 =
     InteractionObjectTestBuilder.createHtmlStringList("item 3")
+
   private val ITEM_SET_4_INVALID_AB =
     InteractionObjectTestBuilder.createHtmlStringList("item invalid a", "item invalid b")
+
   private val LIST_OF_SETS_123 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
       listOf(ITEM_SET_1_AB, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
     )
+
   private val LIST_OF_SETS_213 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
       listOf(ITEM_SET_2_ITEM_2, ITEM_SET_1_AB, ITEM_SET_3_ITEM_3)
     )
+
   private val LIST_OF_SETS_243 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
       listOf(ITEM_SET_2_ITEM_2, ITEM_SET_4_INVALID_AB, ITEM_SET_3_ITEM_3)
     )
+
   private val LIST_OF_SETS_21 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
       listOf(ITEM_SET_2_ITEM_2, ITEM_SET_1_AB)
     )
+
   private val LIST_OF_SETS_1A23 =
     InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
       listOf(ITEM_SET_1_A, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
