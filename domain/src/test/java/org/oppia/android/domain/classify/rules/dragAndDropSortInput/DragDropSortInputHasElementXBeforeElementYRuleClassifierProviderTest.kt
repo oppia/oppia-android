@@ -9,9 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
-import org.oppia.android.app.model.StringList
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -26,11 +24,17 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
-  private val STRING_VALUE_1 = createString(value = "test item 1")
-  private val STRING_VALUE_2 = createString(value = "test item 2")
-  private val STRING_VALUE_3 = createString(value = "test item invalid")
-  private val NON_NEGATIVE_VALUE_4 = createNonNegativeInt(value = 1)
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE = createListOfSetsOfHtmlStrings()
+  private val STRING_VALUE_1 = InteractionObjectTestBuilder.createString(value = "test item 1")
+  private val STRING_VALUE_2 = InteractionObjectTestBuilder.createString(value = "test item 2")
+  private val STRING_VALUE_3 = InteractionObjectTestBuilder.createString(value = "test item invalid")
+  private val NON_NEGATIVE_VALUE_4 = InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE = InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+    listOf(
+      InteractionObjectTestBuilder.createHtmlStringList("test item 1"),
+      InteractionObjectTestBuilder.createHtmlStringList("test item 2"),
+      InteractionObjectTestBuilder.createHtmlStringList("test item 3")
+    )
+  )
 
   @Inject
   internal lateinit var dragDropSortInputHasElementXBeforeElementYClassifierProvider:
@@ -181,32 +185,6 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       )
 
     assertThat(matches).isTrue()
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
-  private fun createListOfSetsOfHtmlStrings(): InteractionObject {
-    val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
-      .addAllSetOfHtmlStrings(
-        listOf<StringList>(
-          createHtmlStringList("test item 1"),
-          createHtmlStringList("test item 2"),
-          createHtmlStringList("test item 3")
-        )
-      )
-      .build()
-
-    return InteractionObject.newBuilder().setListOfSetsOfHtmlString(listOfSetsOfHtmlStrings).build()
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
-  }
-
-  private fun createHtmlStringList(vararg items: String): StringList {
-    return StringList.newBuilder().addAllHtml(items.toList()).build()
   }
 
   private fun setUpTestApplicationComponent() {
