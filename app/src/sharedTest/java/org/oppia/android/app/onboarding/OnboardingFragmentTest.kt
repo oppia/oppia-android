@@ -11,7 +11,6 @@ import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.ViewPagerActions.scrollToPage
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -28,7 +27,6 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -178,7 +176,6 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkDefaultSlide_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
@@ -214,11 +211,10 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide1Title_isCorrect() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -228,11 +224,10 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide1Description_isCorrect() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
@@ -242,11 +237,10 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide1Image_isCorrect() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(
         allOf(
           withId(R.id.slide_image_view),
@@ -256,11 +250,10 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide1_index1DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(
         allOf(
           withId(R.id.onboarding_dot_0),
@@ -288,21 +281,19 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide1_skipButtonIsVisible() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.skip_text_view)).check(matches(isDisplayed()))
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide1_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.advanceUntilIdle()
@@ -315,11 +306,10 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide1_getStartedButtonIsNotVisible() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.get_started_button)).check(doesNotExist())
     }
   }
@@ -338,11 +328,11 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide2Title_isCorrect() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeRight())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -352,11 +342,11 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide2Description_isCorrect() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
@@ -366,11 +356,11 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide2Image_isCorrect() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(
         allOf(
           withId(R.id.slide_image_view),
@@ -380,11 +370,11 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide2_index2DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(
         allOf(
           withId(R.id.onboarding_dot_0),
@@ -412,21 +402,21 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide2_skipButtonIsVisible() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.skip_text_view)).check(matches(isDisplayed()))
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide2_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -439,20 +429,21 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide2_getStartedButtonIsNotVisible() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.get_started_button)).check(matches(not(isDisplayed())))
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide3Title_isCorrect() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -462,11 +453,12 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide3Description_isCorrect() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
@@ -476,11 +468,12 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide3Image_isCorrect() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(
         allOf(
           withId(R.id.slide_image_view),
@@ -490,39 +483,43 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide3_skipButtonIsNotVisible() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.skip_text_view)).check(matches(not(isDisplayed())))
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide3_getStartedButtonIsVisible() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.get_started_button)).check(matches(isDisplayed()))
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_checkSlide3_clickGetStartedButton_opensProfileActivity() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.get_started_button)).perform(scrollTo(), click())
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_swipeLeftOnLastSlide_doesNotWork() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(
         allOf(
@@ -546,11 +543,10 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_moveToSlide1_changeOrientation_titleIsCorrect() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
@@ -561,7 +557,6 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Ignore
   @Test
   fun testOnboardingFragment_clickOnSkip_changeOrientation_titleIsCorrect() {
     launch(OnboardingActivity::class.java).use {
