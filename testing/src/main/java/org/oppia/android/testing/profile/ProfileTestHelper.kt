@@ -43,10 +43,6 @@ class ProfileTestHelper @Inject constructor(
       ProfileId.newBuilder().setInternalId(0)
         .build()
     ).toLiveData()
-    result.observeForever {
-      // Oppia's LiveData requires an observer to complete the action so it's needed in order for
-      // test helper to perform login
-    }
     testCoroutineDispatchers.runCurrent()
     return result
   }
@@ -64,10 +60,6 @@ class ProfileTestHelper @Inject constructor(
     val result = profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(0).build()
     ).toLiveData()
-    result.observeForever {
-      // Oppia's LiveData requires an observer to complete the action so it's needed in order for
-      // test helper to perform login
-    }
     testCoroutineDispatchers.runCurrent()
     return result
   }
@@ -97,10 +89,6 @@ class ProfileTestHelper @Inject constructor(
     val result = profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(internalProfileId).build()
     ).toLiveData()
-    result.observeForever {
-      // Oppia's LiveData requires an observer to complete the action so it's needed in order for
-      // test helper to perform login
-    }
     testCoroutineDispatchers.runCurrent()
     return result
   }
