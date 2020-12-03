@@ -11,7 +11,6 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,6 +25,7 @@ import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -113,117 +113,93 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_firstTopic_hasCorrectTopicInfo() {
-    val topicListLiveData = topicListController.getTopicList()
+    val firstTopic = retrieveTopicSummaryFromTopicList(index = 0)
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
     assertThat(firstTopic.name).isEqualTo("First Test Topic")
   }
 
   @Test
   fun testRetrieveTopicList_firstTopic_hasCorrectThumbnail() {
-    val topicListLiveData = topicListController.getTopicList()
+    val firstTopic = retrieveTopicSummaryFromTopicList(index = 0)
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.topicThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.ADDING_AND_SUBTRACTING_FRACTIONS)
   }
 
   @Test
   fun testRetrieveTopicList_firstTopic_hasCorrectLessonCount() {
-    val topicListLiveData = topicListController.getTopicList()
+    val firstTopic = retrieveTopicSummaryFromTopicList(index = 0)
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.totalChapterCount).isEqualTo(5)
   }
 
   @Test
   fun testRetrieveTopicList_secondTopic_hasCorrectTopicInfo() {
-    val topicListLiveData = topicListController.getTopicList()
+    val secondTopic = retrieveTopicSummaryFromTopicList(index = 1)
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.topicId).isEqualTo(TEST_TOPIC_ID_1)
     assertThat(secondTopic.name).isEqualTo("Second Test Topic")
   }
 
   @Test
   fun testRetrieveTopicList_secondTopic_hasCorrectThumbnail() {
-    val topicListLiveData = topicListController.getTopicList()
+    val secondTopic = retrieveTopicSummaryFromTopicList(index = 1)
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.topicThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.BAKER)
   }
 
   @Test
   fun testRetrieveTopicList_secondTopic_hasCorrectLessonCount() {
-    val topicListLiveData = topicListController.getTopicList()
+    val secondTopic = retrieveTopicSummaryFromTopicList(index = 1)
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.totalChapterCount).isEqualTo(1)
   }
 
   @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectTopicInfo() {
-    val topicListLiveData = topicListController.getTopicList()
+    val fractionsTopic = retrieveTopicSummaryFromTopicList(index = 2)
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val fractionsTopic = topicList.getTopicSummary(2)
     assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(fractionsTopic.name).isEqualTo("Fractions")
   }
 
   @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectThumbnail() {
-    val topicListLiveData = topicListController.getTopicList()
+    val fractionsTopic = retrieveTopicSummaryFromTopicList(index = 2)
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val fractionsTopic = topicList.getTopicSummary(2)
     assertThat(fractionsTopic.topicThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
   }
 
   @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectLessonCount() {
-    val topicListLiveData = topicListController.getTopicList()
+    val fractionsTopic = retrieveTopicSummaryFromTopicList(index = 2)
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val fractionsTopic = topicList.getTopicSummary(2)
     assertThat(fractionsTopic.totalChapterCount).isEqualTo(2)
   }
 
   @Test
   fun testRetrieveTopicList_ratiosTopic_hasCorrectTopicInfo() {
-    val topicListLiveData = topicListController.getTopicList()
+    val ratiosTopic = retrieveTopicSummaryFromTopicList(index = 3)
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(ratiosTopic.name).isEqualTo("Ratios and Proportional Reasoning")
   }
 
   @Test
   fun testRetrieveTopicList_ratiosTopic_hasCorrectThumbnail() {
-    val topicListLiveData = topicListController.getTopicList()
+    val ratiosTopic = retrieveTopicSummaryFromTopicList(index = 3)
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.topicThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
   }
 
   @Test
   fun testRetrieveTopicList_ratiosTopic_hasCorrectLessonCount() {
-    val topicListLiveData = topicListController.getTopicList()
+    val ratiosTopic = retrieveTopicSummaryFromTopicList(index = 3)
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.totalChapterCount).isEqualTo(4)
   }
 
@@ -238,7 +214,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  @Ignore("Failing on Circle CI.")
+
   fun testRetrieveOngoingStoryList_markRecentlyPlayedFracStory0Exp0_ongoingStoryListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
@@ -314,7 +290,6 @@ class TopicListControllerTest {
   }
 
   @Test
-  @Ignore("Failing on Circle CI.")
   fun testRetrieveOngoingStoryList_markAllChaptersCompletedInFractions_ongoingStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
@@ -341,7 +316,7 @@ class TopicListControllerTest {
     verifyGetOngoingStoryListSucceeded()
 
     val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
+    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(4)
     verifyDefaultOngoingStoryListSucceeded()
   }
 
@@ -614,6 +589,10 @@ class TopicListControllerTest {
   // Returns a timestamp which is atleast a week older than current timestamp.
   private fun getOldTimestamp(): Long {
     return Date().time - NINE_DAYS_IN_MS
+  }
+
+  private fun retrieveTopicSummaryFromTopicList(index: Int): TopicSummary {
+    return topicListController.getTopicList().value!!.getOrThrow().getTopicSummary(index)
   }
 
   // TODO(#89): Move this to a common test application component.
