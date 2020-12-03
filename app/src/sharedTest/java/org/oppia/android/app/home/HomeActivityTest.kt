@@ -518,21 +518,6 @@ class HomeActivityTest {
   }
 
   @Test
-  // TODO (#973): Fix HomeActivityTest
-  @Ignore
-  fun testHomeActivity_configurationChange_checkSpanForItem0_spanSizeIsThreeOrFour() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(4, 0))
-      } else {
-        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
-      }
-    }
-  }
-
-  @Test
   fun testHomeActivity_configurationChange_checkSpanForItem4_spanSizeIsOne() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
