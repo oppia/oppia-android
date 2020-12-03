@@ -17,10 +17,12 @@ class ProfileTestHelper @Inject constructor(
 
   private val observer = Observer<AsyncResult<Any?>> { }
 
-  /** Creates one admin profile and one user profile. Logs in to admin profile.
+  /**
+   * Creates one admin profile and one user profile. Logs in to admin profile.
    *
-   * The return type is LiveData and it requires a observer to observe it forever.
-   * */
+   * @returns a [LiveData] that indicates when the login is complete.
+   * Note that this if is not observed, the login will not be performed.
+   */
   fun initializeProfiles(): LiveData<AsyncResult<Any?>> {
     profileManagementController.addProfile(
       name = "Admin",
@@ -54,10 +56,12 @@ class ProfileTestHelper @Inject constructor(
     return result
   }
 
-  /** Creates one admin profile and logs in to admin profile.
+  /**
+   * Creates one admin profile and logs in to admin profile.
    *
-   * The return type is LiveData and it requires a observer to observe it forever.
-   * */
+   * @returns a [LiveData] that indicates when the login is complete.
+   * Note that this if is not observed, the login will not be performed.
+   */
   fun addOnlyAdminProfile(): LiveData<AsyncResult<Any?>> {
     profileManagementController.addProfile(
       name = "Admin",
@@ -103,16 +107,12 @@ class ProfileTestHelper @Inject constructor(
     return result
   }
 
-  /** ObserveForever is needed in order to complete the Action which returns the LiveData.
+  /**
+   * ObserveForever is needed in order to complete the Action which returns the LiveData.
    * Any Action which responds with the LiveData must need to observe it, to update the data
    * on screen while running espresso test cases.
-   * */
+   */
   fun waitForOperationToComplete(data: LiveData<AsyncResult<Any?>>) {
     data.observeForever(observer)
-  }
-
-  /** Need to remove the observer as it is observing forever. */
-  fun forceToCompleteOperation(data: LiveData<AsyncResult<Any?>>) {
-    data.removeObserver(observer)
   }
 }

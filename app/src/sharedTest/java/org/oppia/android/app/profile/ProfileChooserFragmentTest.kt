@@ -121,18 +121,18 @@ class ProfileChooserFragmentTest {
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_name_text,
         stringToMatch = "Admin"
       )
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_is_admin_text,
         stringToMatch = context.getString(R.string.profile_chooser_admin)
       )
       scrollToPosition(position = 1)
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 1,
         targetView = R.id.profile_name_text,
         stringToMatch = "Ben"
@@ -145,7 +145,7 @@ class ProfileChooserFragmentTest {
         )
       ).check(matches(not(isDisplayed())))
       scrollToPosition(position = 3)
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 3,
         targetView = R.id.add_profile_text,
         stringToMatch = context.getString(R.string.profile_chooser_add)
@@ -157,7 +157,8 @@ class ProfileChooserFragmentTest {
   fun testProfileChooserFragment_afterVisitingHomeActivity_showsJustNowText() {
     val data = profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      // Waiting for the simulation that HomeActivity is visited once.
+      // Note that this wait is needed to simulate HomeActivity being
+      // visited by ensuring a profile was previously logged in.
       it.onActivity {
         profileTestHelper.waitForOperationToComplete(data)
       }
@@ -169,15 +170,11 @@ class ProfileChooserFragmentTest {
           R.id.profile_last_visited
         )
       ).check(matches(isDisplayed()))
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_last_visited,
         stringToMatch = "${context.getString(R.string.profile_last_used)} just now"
       )
-      // Forcing to remove the LiveData Observer.
-      it.onActivity {
-        profileTestHelper.forceToCompleteOperation(data)
-      }
     }
   }
 
@@ -185,7 +182,8 @@ class ProfileChooserFragmentTest {
   fun testProfileChooserFragment_afterVisitingHomeActivity_changeConfiguration_showsJustNowText() {
     val data = profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      // Waiting for the simulation that HomeActivity is visited once.
+      // Note that this wait is needed to simulate HomeActivity being
+      // visited by ensuring a profile was previously logged in.
       it.onActivity {
         profileTestHelper.waitForOperationToComplete(data)
       }
@@ -198,15 +196,11 @@ class ProfileChooserFragmentTest {
           R.id.profile_last_visited
         )
       ).check(matches(isDisplayed()))
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_last_visited,
         stringToMatch = "${context.getString(R.string.profile_last_used)} just now"
       )
-      // Forcing to remove the LiveData Observer.
-      it.onActivity {
-        profileTestHelper.forceToCompleteOperation(data)
-      }
     }
   }
 
@@ -217,61 +211,61 @@ class ProfileChooserFragmentTest {
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_name_text,
         stringToMatch = "Admin"
       )
       scrollToPosition(position = 1)
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 1,
         targetView = R.id.profile_name_text,
         stringToMatch = "A"
       )
       scrollToPosition(position = 2)
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 2,
         targetView = R.id.profile_name_text,
         stringToMatch = "B"
       )
       scrollToPosition(position = 3)
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 3,
         targetView = R.id.profile_name_text,
         stringToMatch = "Ben"
       )
       scrollToPosition(position = 4)
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 4,
         targetView = R.id.profile_name_text,
         stringToMatch = "C"
       )
       scrollToPosition(position = 5)
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 5,
         targetView = R.id.profile_name_text,
         stringToMatch = "D"
       )
       scrollToPosition(position = 6)
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 6,
         targetView = R.id.profile_name_text,
         stringToMatch = "E"
       )
       scrollToPosition(position = 7)
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 7,
         targetView = R.id.profile_name_text,
         stringToMatch = "F"
       )
       scrollToPosition(position = 8)
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 8,
         targetView = R.id.profile_name_text,
         stringToMatch = "G"
       )
       scrollToPosition(position = 9)
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 9,
         targetView = R.id.profile_name_text,
         stringToMatch = "H"
@@ -350,7 +344,7 @@ class ProfileChooserFragmentTest {
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 1,
         targetView = R.id.add_profile_text,
         stringToMatch = context.getString(R.string.set_up_multiple_profiles)
@@ -378,7 +372,7 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      matchStringOnProfileListItem(
+      verifyTextOnProfileListItemAtPosition(
         itemPosition = 3,
         targetView = R.id.add_profile_text,
         stringToMatch = context.getString(R.string.profile_chooser_add)
@@ -402,7 +396,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserFragment_clickAdminControls_checkOpensAdminAuthActivity() {
+  fun testProfileChooserFragment_clickAdminControls_opensAdminAuthActivity() {
     profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -413,7 +407,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserFragment_clickAddProfile_checkOpensAdminAuthActivity() {
+  fun testProfileChooserFragment_clickAddProfile_opensAdminAuthActivity() {
     profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -436,8 +430,7 @@ class ProfileChooserFragmentTest {
     )
   }
 
-  // TODO(#2208): Create helper function in Test for RecyclerView
-  private fun matchStringOnProfileListItem(
+  private fun verifyTextOnProfileListItemAtPosition(
     itemPosition: Int,
     targetView: Int,
     stringToMatch: String
