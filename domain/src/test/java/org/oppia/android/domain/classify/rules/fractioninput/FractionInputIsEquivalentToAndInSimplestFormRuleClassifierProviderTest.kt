@@ -167,6 +167,17 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
   }
 
   @Test
+  fun testEquivalentAndSimplest_fraction4Over8Answer_fraction4Over8Input_doesNotMatch() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_4_OVER_8)
+    val answer = FRACTION_VALUE_TEST_4_OVER_8
+
+    val matches =
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
+
+    Truth.assertThat(matches).isFalse()
+  }
+
+  @Test
   fun testEquivalentAndSimplest_fraction1Over2Answer_negativeFraction1Over2Input_doesNotMatch() {
     val inputs = mapOf("f" to NEGATIVE_FRACTION_VALUE_TEST_1_OVER_2)
     val answer = FRACTION_VALUE_TEST_1_OVER_2
