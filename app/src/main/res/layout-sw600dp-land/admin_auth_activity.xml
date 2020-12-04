@@ -63,14 +63,12 @@
 
           <TextView
             android:id="@+id/admin_auth_heading_textview"
+            style="@style/Heading2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
-            android:fontFamily="sans-serif-medium"
             android:maxLines="2"
             android:text="@string/admin_auth_heading"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -78,13 +76,11 @@
 
           <TextView
             android:id="@+id/admin_auth_sub_text"
+            style="@style/Subtitle1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:fontFamily="sans-serif"
             android:text="@string/admin_auth_sub"
-            android:textColor="@color/oppiaAdminAuthSecondaryText"
-            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@+id/admin_auth_heading_textview"
             app:layout_constraintStart_toStartOf="@+id/admin_auth_heading_textview"
             app:layout_constraintTop_toBottomOf="@id/admin_auth_heading_textview" />
