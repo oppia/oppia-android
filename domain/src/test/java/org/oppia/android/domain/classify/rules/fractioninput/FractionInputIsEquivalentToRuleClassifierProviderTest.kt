@@ -51,17 +51,11 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       numerator = 1,
       denominator = 5
     )
-  private val FRACTION_VALUE_TEST_33_OVER_2 =
+  private val FRACTION_VALUE_TEST_13_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
-      numerator = 33,
+      numerator = 13,
       denominator = 2
-    )
-  private val FRACTION_VALUE_TEST_242_OVER_1 =
-    InteractionObjectTestBuilder.createFraction(
-      isNegative = false,
-      numerator = 242,
-      denominator = 1
     )
   private val MIXED_NUMBER_VALUE_TEST_6_1_OVER_2 =
     InteractionObjectTestBuilder.createMixedNumber(
@@ -99,7 +93,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquality_wholeNumber123Answer_withWholeNumber123Input_bothValuesEquivalent() {
+  fun testEquivalence_wholeNumber123Answer_withWholeNumber123Input_bothValuesEquivalent() {
     val inputs = mapOf("f" to WHOLE_NUMBER_VALUE_TEST_123)
     val answer = WHOLE_NUMBER_VALUE_TEST_123
 
@@ -110,7 +104,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquality_wholeNumber123Answer_withWholeNumber254Input_bothValuesNotEquivalent() {
+  fun testEquivalence_wholeNumber123Answer_withWholeNumber254Input_bothValuesNotEquivalent() {
     val inputs = mapOf("f" to WHOLE_NUMBER_VALUE_TEST_254)
 
     val matches =
@@ -123,7 +117,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquality_fraction2Over8Answer_withFraction2Over8Input_bothValuesEquivalent() {
+  fun testEquivalence_fraction2Over8Answer_withFraction2Over8Input_bothValuesEquivalent() {
     val inputs = mapOf("f" to FRACTION_VALUE_TEST_2_OVER_8)
 
     val matches =
@@ -136,7 +130,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquality_fraction2Over8Answer_withFraction1Over5Input_bothValuesNotEquivalent() {
+  fun testEquivalence_fraction2Over8Answer_withFraction1Over5Input_bothValuesNotEquivalent() {
     val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_5)
 
     val matches =
@@ -149,7 +143,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquality_fraction1Over4Answer_withFraction2Over8Input_bothValuesEquivalent() {
+  fun testEquivalence_fraction1Over4Answer_withFraction2Over8Input_bothValuesEquivalent() {
     val inputs = mapOf("f" to FRACTION_VALUE_TEST_2_OVER_8)
 
     val matches =
@@ -162,33 +156,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquality_fraction33Over2Answer_withFraction33Over2Input_bothValuesEquivalent() {
-    val inputs = mapOf("f" to FRACTION_VALUE_TEST_33_OVER_2)
-
-    val matches =
-      inputIsEquivalentToRuleClassifier.matches(
-        answer = FRACTION_VALUE_TEST_33_OVER_2,
-        inputs = inputs
-      )
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testEquality_fraction33Over2Answer_withFraction242Over1Input_bothValuesNotEquivalent() {
-    val input = mapOf("f" to FRACTION_VALUE_TEST_242_OVER_1)
-
-    val matches =
-      inputIsEquivalentToRuleClassifier.matches(
-        answer = FRACTION_VALUE_TEST_33_OVER_2,
-        inputs = input
-      )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testEquality_mixedNumber6And1Over2Answer_withMixedNumber6And1Over2Input_bothValuesMatch() {
+  fun testEquivalence_mixedNumber6And1Over2Answer_withMixedNumber6And1Over2Input_bothValuesMatch() {
     val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_6_1_OVER_2)
 
     val matches =
@@ -201,7 +169,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquality_mixedNum55And1Over4Answer_withMixedNum6And1Over2Input_bothValuesDoNotMatch() {
+  fun testEquivalence_mixedNum55And1Over4Answer_withMixedNum6And1Over2Input_bothValuesDoNotMatch() {
     val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_6_1_OVER_2)
 
     val matches =
@@ -214,7 +182,20 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquality_wholeNumberAnswer_withMixedNumberInput_bothValuesDoNotMatch() {
+  fun testEquivalence_mixedNum6And1Over2Answer_withFraction13Over2Input_bothValuesMatch() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_6_1_OVER_2)
+
+    val matches =
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_13_OVER_2,
+        inputs = inputs
+      )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testEquivalence_wholeNumberAnswer_withMixedNumberInput_bothValuesDoNotMatch() {
     val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_6_1_OVER_2)
 
     val matches =
@@ -227,7 +208,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquality_negativeMixedNumberAnswer_withPositiveMixedNumberInput_bothValuesDoNotMatch() {
+  fun testEquivalence_negativeMixedNumberAnswer_withPositiveMixedNumberInput_bothValuesDoNotMatch() {
     val inputs = mapOf("f" to NEGATIVE_VALUE_TEST_679_2_OVER_3)
 
     val matches =
@@ -240,7 +221,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEqualityOf_mixedNumberAnswer_withFractionInput_bothValuesDoNotMatch() {
+  fun testEquivalenceOf_mixedNumberAnswer_withFractionInput_bothValuesDoNotMatch() {
     val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_5)
 
     val matches =
@@ -253,7 +234,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquality_missingInput_throwsException() {
+  fun testEquivalence_missingInput_throwsException() {
     val inputs = mapOf("y" to FRACTION_VALUE_TEST_2_OVER_8)
 
     val exception = assertThrows(IllegalStateException::class) {
