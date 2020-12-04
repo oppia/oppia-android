@@ -3,7 +3,7 @@ package org.oppia.android.domain.classify.rules.fractioninput
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import org.junit.Before
@@ -107,7 +107,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val matches =
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -118,7 +118,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val matches =
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -129,7 +129,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val matches =
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -140,7 +140,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val matches =
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -151,7 +151,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val matches =
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   // Even if creator does not input simplest form, learner's answer must be in simplest form
@@ -163,7 +163,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val matches =
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -174,7 +174,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val matches =
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -185,7 +185,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val matches =
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -196,7 +196,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val matches =
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -207,7 +207,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val matches =
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -218,7 +218,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val matches =
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -229,7 +229,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val matches =
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -243,7 +243,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       )
     }
 
-    Truth.assertThat(exception)
+    assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'f' but had: [y]")
   }
