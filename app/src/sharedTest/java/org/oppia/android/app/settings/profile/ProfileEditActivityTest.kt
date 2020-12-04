@@ -28,6 +28,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
@@ -301,7 +302,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserProfile_deleteProfile_checkReturnsToProfileList() {
+  fun testProfileEdit_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -313,12 +314,16 @@ class ProfileEditActivityTest {
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileListActivity::class.java.name))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      } else {
+        intended(hasComponent(ProfileListActivity::class.java.name))
+      }
     }
   }
 
   @Test
-  fun testProfileEdit_configChange_startWithUserProfile_deleteProfile_checkReturnsToProfileList() {
+  fun testProfileEdit_landscape_deleteProfile_checkReturnsProfileListOnTabletAdminControlOnPhone() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
@@ -331,7 +336,11 @@ class ProfileEditActivityTest {
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileListActivity::class.java.name))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      } else {
+        intended(hasComponent(ProfileListActivity::class.java.name))
+      }
     }
   }
 

@@ -9,9 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
-import org.oppia.android.app.model.StringList
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -26,27 +24,53 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest {
-  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
-  private val ITEM_SET_1_AB = listOf("item a", "item b")
-  private val ITEM_SET_1_ABC = listOf("item a", "item b", "item c")
-  private val ITEM_SET_1_A = listOf("item a")
-  private val ITEM_SET_2_ITEM_2 = listOf("item 2")
-  private val ITEM_SET_3_ITEM_3 = listOf("item 3")
+
+  private val NON_NEGATIVE_VALUE_0 =
+    InteractionObjectTestBuilder.createNonNegativeInt(value = 0)
+
+  private val ITEM_SET_1_AB =
+    InteractionObjectTestBuilder.createHtmlStringList("item a", "item b")
+
+  private val ITEM_SET_1_ABC =
+    InteractionObjectTestBuilder.createHtmlStringList("item a", "item b", "item c")
+
+  private val ITEM_SET_1_A =
+    InteractionObjectTestBuilder.createHtmlStringList("item a")
+
+  private val ITEM_SET_2_ITEM_2 =
+    InteractionObjectTestBuilder.createHtmlStringList("item 2")
+
+  private val ITEM_SET_3_ITEM_3 =
+    InteractionObjectTestBuilder.createHtmlStringList("item 3")
+
   private val SET_LIST_ITEMS_AB_ITEM_2_ITEM_3 =
-    createListOfSetsOfHtmlStrings(ITEM_SET_1_AB, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      listOf(ITEM_SET_1_AB, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+    )
+
   private val SET_LIST_ITEMS_ABC_ITEM_2_ITEM_3 =
-    createListOfSetsOfHtmlStrings(ITEM_SET_1_ABC, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      listOf(ITEM_SET_1_ABC, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+    )
+
   private val SET_LIST_ITEM_2_ITEM_3_ITEMS_AB =
-    createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3, ITEM_SET_1_AB)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      listOf(ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3, ITEM_SET_1_AB)
+    )
+
   private val SET_LIST_ITEM_A_ITEM_2_ITEM_3 =
-    createListOfSetsOfHtmlStrings(ITEM_SET_1_A, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      listOf(ITEM_SET_1_A, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+    )
 
   @Inject
-  internal lateinit var dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider: // ktlint-disable max-line-length
+  internal lateinit var
+  dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider:
     DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
 
   private val isEqualToOrderingWithOneItemIncorrectClassifier: RuleClassifier by lazy {
-    dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider.createRuleClassifier() // ktlint-disable max-line-length
+    dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
+      .createRuleClassifier()
   }
 
   @Before
@@ -138,22 +162,6 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'x' but had: [y]")
-  }
-
-  private fun createListOfSetsOfHtmlStrings(vararg items: List<String>): InteractionObject {
-    val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
-      .addAllSetOfHtmlStrings(items.map { createHtmlStringList(it) })
-      .build()
-
-    return InteractionObject.newBuilder().setListOfSetsOfHtmlString(listOfSetsOfHtmlStrings).build()
-  }
-
-  private fun createHtmlStringList(items: List<String>): StringList {
-    return StringList.newBuilder().addAllHtml(items).build()
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
   }
 
   private fun setUpTestApplicationComponent() {
