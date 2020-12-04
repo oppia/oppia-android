@@ -208,7 +208,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquivalence_negativeMixedNumberAnswer_withPositiveMixedNumberInput_bothValuesDoNotMatch() {
+  fun testEquivalence_negativeMixedNumberAnswer_withPositiveMixedNumberInput_valuesDoNotMatch() {
     val inputs = mapOf("f" to NEGATIVE_VALUE_TEST_679_2_OVER_3)
 
     val matches =
