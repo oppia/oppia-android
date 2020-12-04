@@ -249,7 +249,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerFractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest_TestApplicationComponent
+    DaggerFractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest_TestApplicationComponent // ktlint-disable max-line-length
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
