@@ -108,9 +108,10 @@ class ProfileTestHelper @Inject constructor(
   }
 
   /**
-   * ObserveForever is needed in order to complete the Action which returns the LiveData.
-   * Any Action which responds with the LiveData must need to observe it, to update the data
-   * on screen while running espresso test cases.
+   * While performing any action based on the LiveData, this helper function should be used.
+   * Without this helper function the LiveData cannot be accessed.
+   *
+   * @param data is the LiveData which needs to accessed while performing action.
    */
   fun waitForOperationToComplete(data: LiveData<AsyncResult<Any?>>) {
     data.observeForever(observer)
