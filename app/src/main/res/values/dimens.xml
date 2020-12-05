@@ -155,6 +155,7 @@
   <dimen name="profile_chooser_profile_view_margin_end">16dp</dimen>
   <dimen name="submitted_answer_text_conversation_view_padding_bottom">16dp</dimen>
   <dimen name="submitted_answer_text_conversation_view_padding_top">16dp</dimen>
+  <dimen name="walkthrough_activity_header_text_view_margin_start">16dp</dimen>
 
   <dimen name="topic_list_item_margin_top_bottom">12dp</dimen>
   <dimen name="drag_drop_grouping_hint_non_split_text_view_margin_start">12dp</dimen>
