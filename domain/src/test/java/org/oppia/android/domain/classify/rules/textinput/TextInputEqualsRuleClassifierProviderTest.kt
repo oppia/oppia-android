@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -23,13 +23,27 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class TextInputEqualsRuleClassifierProviderTest {
-  private val STRING_VALUE_TEST_UPPERCASE = createString(value = "TEST")
-  private val STRING_VALUE_TEST_LOWERCASE = createString(value = "test")
-  private val STRING_VALUE = createString(value = "string")
-  private val STRING_VALUE_TEST_EXTRA_SPACES = createString(value = "test  a  lot  ")
-  private val STRING_VALUE_TEST_SINGLE_SPACES = createString(value = "test a lot")
-  private val STRING_VALUE_TEST_NO_SPACES = createString(value = "testalot")
-  private val NON_NEGATIVE_VALUE = createNonNegativeInt(value = 1)
+
+  private val STRING_VALUE_TEST_UPPERCASE =
+    InteractionObjectTestBuilder.createString(value = "TEST")
+
+  private val STRING_VALUE_TEST_LOWERCASE =
+    InteractionObjectTestBuilder.createString(value = "test")
+
+  private val STRING_VALUE_TEST_DIFFERENT_VALUE =
+    InteractionObjectTestBuilder.createString(value = "string")
+
+  private val STRING_VALUE_TEST_EXTRA_SPACES =
+    InteractionObjectTestBuilder.createString(value = "test  a  lot  ")
+
+  private val STRING_VALUE_TEST_SINGLE_SPACES =
+    InteractionObjectTestBuilder.createString(value = "test a lot")
+
+  private val STRING_VALUE_TEST_NO_SPACES =
+    InteractionObjectTestBuilder.createString(value = "testalot")
+
+  private val INT_VALUE_TEST_NON_NEGATIVE =
+    InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
 
   @Inject
   internal lateinit var textInputEqualsRuleClassifierProvider:
@@ -88,7 +102,10 @@ class TextInputEqualsRuleClassifierProviderTest {
   fun testStringAnswer_stringInput_differentStrings_bothValuesDoNotMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = STRING_VALUE, inputs = inputs)
+    val matches = inputEqualsRuleClassifier.matches(
+      answer = STRING_VALUE_TEST_DIFFERENT_VALUE,
+      inputs = inputs
+    )
 
     assertThat(matches).isFalse()
   }
@@ -118,7 +135,7 @@ class TextInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_nonNegativeIntInput_throwsException() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE)
+    val inputs = mapOf("x" to INT_VALUE_TEST_NON_NEGATIVE)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs)
@@ -127,14 +144,6 @@ class TextInputEqualsRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected input value to be of type NORMALIZED_STRING")
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
   private fun setUpTestApplicationComponent() {

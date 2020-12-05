@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -23,6 +23,29 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class TextInputContainsRuleClassifierProviderTest {
+
+  private val STRING_VALUE_TEST_CONTAINS_ANSWER =
+    InteractionObjectTestBuilder.createString(value = "this is a test i will break")
+  private val STRING_VALUE_TEST_AN_ANSWER =
+    InteractionObjectTestBuilder.createString(value = "an answer")
+  private val STRING_VALUE_TEST_A_TEST =
+    InteractionObjectTestBuilder.createString(value = "a test")
+  private val STRING_VALUE_TEST_IS_A =
+    InteractionObjectTestBuilder.createString(value = "is a")
+  private val STRING_VALUE_TEST_THIS_IS =
+    InteractionObjectTestBuilder.createString(value = "this is")
+  private val STRING_VALUE_TEST_NULL =
+    InteractionObjectTestBuilder.createString(value = "")
+  private val STRING_VALUE_TEST_ANSWER_NULL =
+    InteractionObjectTestBuilder.createString(value = "")
+  private val STRING_VALUE_TEST_ANSWER =
+    InteractionObjectTestBuilder.createString(value = "this is a test")
+  private val STRING_VALUE_TEST_EXTRA_SPACE =
+    InteractionObjectTestBuilder.createString(value = " this   is  a  test ")
+  private val STRING_VALUE_TEST_NO_SPACE =
+    InteractionObjectTestBuilder.createString(value = "thisisatest")
+  private val NON_NEGATIVE_VALUE_TEST_1 =
+    InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
 
   @Inject
   internal lateinit var textInputContainsRuleClassifierProvider:
@@ -39,10 +62,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringInput_sameString_bothValuesMatch() {
-    val inputs = mapOf("x" to createString(value = "this is a test"))
+    val inputs = mapOf("x" to STRING_VALUE_TEST_ANSWER)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = createString(value = "this is a test"),
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -51,20 +74,20 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testEmptyStringAnswer_emptyStringInput_answerContainsInput_bothValuesMatch() {
-    val inputs = mapOf("x" to createString(value = ""))
+    val inputs = mapOf("x" to STRING_VALUE_TEST_NULL)
 
     val matches =
-      inputContainsRuleClassifier.matches(answer = createString(value = ""), inputs = inputs)
+      inputContainsRuleClassifier.matches(answer = STRING_VALUE_TEST_ANSWER_NULL, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testNonEmptyStringAnswer_emptyStringInput_answerContainsInput_bothValuesMatch() {
-    val inputs = mapOf("x" to createString(value = ""))
+    val inputs = mapOf("x" to STRING_VALUE_TEST_NULL)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = createString(value = "this is a test"),
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -73,10 +96,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringInput_answerContainsInputAtBeginning_bothValuesMatch() {
-    val inputs = mapOf("x" to createString(value = "this is"))
+    val inputs = mapOf("x" to STRING_VALUE_TEST_THIS_IS)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = createString(value = "this is a test"),
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -85,10 +108,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringInput_answerContainsInputInMiddle_bothValuesMatch() {
-    val inputs = mapOf("x" to createString(value = "is a"))
+    val inputs = mapOf("x" to STRING_VALUE_TEST_IS_A)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = createString(value = "this is a test"),
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -97,10 +120,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringInput_answerContainsInputAtEnd_bothValuesMatch() {
-    val inputs = mapOf("x" to createString(value = "a test"))
+    val inputs = mapOf("x" to STRING_VALUE_TEST_A_TEST)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = createString(value = "this is a test"),
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -109,10 +132,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringExtraSpacesInput_answerContainsInput_bothValuesMatch() {
-    val inputs = mapOf("x" to createString(value = " this   is  a  test "))
+    val inputs = mapOf("x" to STRING_VALUE_TEST_EXTRA_SPACE)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = createString(value = "this is a test"),
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -121,10 +144,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringInput_inputNotInAnswer_valuesDoNotMatch() {
-    val inputs = mapOf("x" to createString(value = "an answer"))
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = createString(value = "this is a test"),
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -133,24 +156,20 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testEmptyStringAnswer_nonEmptyStringInput_answerDoesNotContainInput_valuesDoNotMatch() {
-    val inputs = mapOf("x" to createString(value = "this is a test"))
+    val inputs = mapOf("x" to STRING_VALUE_TEST_ANSWER)
 
     val matches =
-      inputContainsRuleClassifier.matches(answer = createString(value = ""), inputs = inputs)
+      inputContainsRuleClassifier.matches(answer = STRING_VALUE_TEST_ANSWER_NULL, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
 
   @Test
   fun testStringAnswer_stringInput_answerPartiallyContainsInput_valuesDoNotMatch() {
-    val inputs = mapOf(
-      "x" to createString(
-        value = "this is a test i will break"
-      )
-    )
+    val inputs = mapOf("x" to STRING_VALUE_TEST_CONTAINS_ANSWER)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = createString(value = "this is a test"),
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -159,10 +178,10 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_stringNoSpacesInput_answerPartiallyContainsInput_valuesDoNotMatch() {
-    val inputs = mapOf("x" to createString(value = "thisisatest"))
+    val inputs = mapOf("x" to STRING_VALUE_TEST_NO_SPACE)
 
     val matches = inputContainsRuleClassifier.matches(
-      answer = createString(value = "this is a test"),
+      answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs
     )
 
@@ -171,11 +190,11 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_missingInput_throwsException() {
-    val inputs = mapOf("y" to createString(value = "this is a test"))
+    val inputs = mapOf("y" to STRING_VALUE_TEST_ANSWER)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputContainsRuleClassifier.matches(
-        answer = createString(value = "this is a test"),
+        answer = STRING_VALUE_TEST_ANSWER,
         inputs = inputs
       )
     }
@@ -187,11 +206,11 @@ class TextInputContainsRuleClassifierProviderTest {
 
   @Test
   fun testStringAnswer_nonNegativeIntInput_throwsException() {
-    val inputs = mapOf("x" to createNonNegativeInt(value = 1))
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_1)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputContainsRuleClassifier.matches(
-        answer = createString(value = "this is a test"),
+        answer = STRING_VALUE_TEST_ANSWER,
         inputs = inputs
       )
     }
@@ -199,14 +218,6 @@ class TextInputContainsRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected input value to be of type NORMALIZED_STRING")
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
   private fun setUpTestApplicationComponent() {

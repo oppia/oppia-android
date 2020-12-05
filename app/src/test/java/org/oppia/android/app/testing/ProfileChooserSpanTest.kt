@@ -7,14 +7,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
@@ -46,6 +43,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -57,6 +55,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW = "profile_recycler_view"
@@ -67,18 +66,240 @@ private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW = "profile_recycler
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = ProfileChooserSpanTest.TestApplication::class, manifest = Config.NONE)
+@Config(application = ProfileChooserSpanTest.TestApplication::class)
 class ProfileChooserSpanTest {
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
-    Intents.init()
-    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.runCurrent()
   }
 
   @After
   fun tearDown() {
-    Intents.release()
+    testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testProfileChooserFragmentRecyclerView_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port-ldpi")
+  fun testProfileChooserFragmentRecyclerView_ldpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port-mdpi")
+  fun testProfileChooserFragmentRecyclerView_mdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port-hdpi")
+  fun testProfileChooserFragmentRecyclerView_hdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port-xhdpi")
+  fun testProfileChooserFragmentRecyclerView_xhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port-xxhdpi")
+  fun testProfileChooserFragmentRecyclerView_xxhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port-xxxhdpi")
+  fun testProfileChooserFragmentRecyclerView_xxxhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land-ldpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_ldpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(3)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land-mdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_mdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(3)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land-hdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_hdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(4)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land-xhdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_xhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land-xxhdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_xxhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land-xxxhdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_xxxhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp-land-mdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_tablet_mdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(4)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp-land-hdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_tablet_hdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp-land-xhdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_tablet_xhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp-land-xxhdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_tablet_xxhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp-land-xxxhdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_tablet_xxxhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
+      }
+    }
   }
 
   private fun getProfileRecyclerViewGridLayoutManager(
@@ -91,174 +312,6 @@ class ProfileChooserSpanTest {
     return getProfileChooserFragment(activity).view?.findViewWithTag<View>(
       TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW
     )!! as RecyclerView
-  }
-
-  @Test
-  // TODO(#973): Fix ProfileChooserSpanTest
-  @Ignore
-  fun testProfileChooserFragmentRecyclerView_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
-          .isEqualTo(2)
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "port-ldpi")
-  // TODO(#973): Fix ProfileChooserSpanTest
-  @Ignore
-  fun testProfileChooserFragmentRecyclerView_ldpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
-          .isEqualTo(2)
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "port-mdpi")
-  // TODO(#973): Fix ProfileChooserSpanTest
-  @Ignore
-  fun testProfileChooserFragmentRecyclerView_mdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
-          .isEqualTo(2)
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "port-hdpi")
-  // TODO(#973): Fix ProfileChooserSpanTest
-  @Ignore
-  fun testProfileChooserFragmentRecyclerView_hdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
-          .isEqualTo(2)
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "port-xhdpi")
-  // TODO(#973): Fix ProfileChooserSpanTest
-  @Ignore
-  fun testProfileChooserFragmentRecyclerView_xhdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
-          .isEqualTo(2)
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "port-xxhdpi")
-  // TODO(#973): Fix ProfileChooserSpanTest
-  @Ignore
-  fun testProfileChooserFragmentRecyclerView_xxhdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
-          .isEqualTo(2)
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "port-xxxhdpi")
-  // TODO(#973): Fix ProfileChooserSpanTest
-  @Ignore
-  fun testProfileChooserFragmentRecyclerView_xxxhdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
-          .isEqualTo(2)
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "land-ldpi")
-  // TODO(#973): Fix ProfileChooserSpanTest
-  @Ignore
-  fun testProfileChooserFragmentRecyclerView_landscape_ldpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
-          .isEqualTo(3)
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "land-mdpi")
-  // TODO(#973): Fix ProfileChooserSpanTest
-  @Ignore
-  fun testProfileChooserFragmentRecyclerView_landscape_mdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
-          .isEqualTo(3)
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "land-hdpi")
-  // TODO(#973): Fix ProfileChooserSpanTest
-  @Ignore
-  fun testProfileChooserFragmentRecyclerView_landscape_hdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
-          .isEqualTo(4)
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "land-xhdpi")
-  // TODO(#973): Fix ProfileChooserSpanTest
-  @Ignore
-  fun testProfileChooserFragmentRecyclerView_landscape_xhdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
-          .isEqualTo(5)
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "land-xxhdpi")
-  // TODO(#973): Fix ProfileChooserSpanTest
-  @Ignore
-  fun testProfileChooserFragmentRecyclerView_landscape_xxhdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
-          .isEqualTo(5)
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "land-xxxhdpi")
-  // TODO(#973): Fix ProfileChooserSpanTest
-  @Ignore
-  fun testProfileChooserFragmentRecyclerView_landscape_xxxhdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
-          .isEqualTo(5)
-      }
-    }
   }
 
   private fun getProfileChooserFragment(

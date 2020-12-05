@@ -25,7 +25,6 @@ internal class TextInputStartsWithRuleClassifierProvider @Inject constructor(
     )
   }
 
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: String, input: String): Boolean {
     return answer.normalizeWhitespace().startsWith(input.normalizeWhitespace())
   }

@@ -53,7 +53,6 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -79,9 +78,6 @@ class FAQSingleActivityTest {
   private lateinit var launchedActivity: Activity
 
   @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
 
   @Inject
@@ -96,7 +92,6 @@ class FAQSingleActivityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
     Intents.init()
     val intent = createFAQSingleActivity()
     launchedActivity = activityTestRule.launchActivity(intent)
@@ -104,7 +99,6 @@ class FAQSingleActivityTest {
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
