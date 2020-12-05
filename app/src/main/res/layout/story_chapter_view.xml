@@ -31,6 +31,7 @@
       android:layout_marginBottom="16dp"
       android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
       android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
+      android:alpha="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? 1.0f : 0.3f}"
       app:cardCornerRadius="4dp"
       app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/story_chapter_card_playable_state_elevation : @dimen/story_chapter_card_not_playable_state_elevation}">
 
@@ -91,8 +92,7 @@
             android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
-            android:maxLines="4"
-            android:text="@{htmlContent}"
+            android:text="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ?htmlContent : @string/empty_string}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
