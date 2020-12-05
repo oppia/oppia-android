@@ -20,7 +20,7 @@ class WalkthroughActivityPresenter @Inject constructor(
 ) : WalkthroughActivityListener {
   private lateinit var topicId: String
   private lateinit var binding: WalkthroughActivityBinding
-  private val mViewModel by lazy {
+  private val walkthroughActivityViewModel by lazy {
     getWalkthroughViewModel()
   }
 
@@ -28,19 +28,19 @@ class WalkthroughActivityPresenter @Inject constructor(
     binding = DataBindingUtil.setContentView(activity, R.layout.walkthrough_activity)
 
     binding.apply {
-      viewModel = mViewModel
+      viewModel = walkthroughActivityViewModel
       presenter = this@WalkthroughActivityPresenter
       lifecycleOwner = activity
     }
     StatusBarColor.statusBarColorUpdate(R.color.walkthroughStatusBar, activity, true)
-    val currentFragmentIndex = mViewModel.currentProgress.get()?.minus(1)
+    val currentFragmentIndex = walkthroughActivityViewModel.currentProgress.get()?.minus(1)
 
     if (currentFragmentIndex == -1 && getWalkthroughWelcomeFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.walkthrough_fragment_placeholder,
         WalkthroughWelcomeFragment()
       ).commitNow().also {
-        mViewModel.currentProgress.set(1)
+        walkthroughActivityViewModel.currentProgress.set(1)
       }
     } else if (currentFragmentIndex != null) {
       when (currentFragmentIndex) {
@@ -49,21 +49,21 @@ class WalkthroughActivityPresenter @Inject constructor(
             R.id.walkthrough_fragment_placeholder,
             getWalkthroughWelcomeFragment() ?: WalkthroughWelcomeFragment()
           ).commitNow().also {
-            mViewModel.currentProgress.set(1)
+            walkthroughActivityViewModel.currentProgress.set(1)
           }
         1 ->
           activity.supportFragmentManager.beginTransaction().replace(
             R.id.walkthrough_fragment_placeholder,
             getWalkthroughTopicListFragment() ?: WalkthroughTopicListFragment()
           ).commitNow().also {
-            mViewModel.currentProgress.set(2)
+            walkthroughActivityViewModel.currentProgress.set(2)
           }
         2 ->
           activity.supportFragmentManager.beginTransaction().replace(
             R.id.walkthrough_fragment_placeholder,
             getWalkthroughFinalFragment() ?: WalkthroughFinalFragment()
           ).commitNow().also {
-            mViewModel.currentProgress.set(3)
+            walkthroughActivityViewModel.currentProgress.set(3)
           }
       }
     }
@@ -112,7 +112,7 @@ class WalkthroughActivityPresenter @Inject constructor(
           R.id.walkthrough_fragment_placeholder,
           WalkthroughWelcomeFragment()
         ).commitNow().also {
-          mViewModel.currentProgress.set(1)
+          walkthroughActivityViewModel.currentProgress.set(1)
         }
       }
       WalkthroughPages.TOPIC_LIST.value -> {
@@ -120,7 +120,7 @@ class WalkthroughActivityPresenter @Inject constructor(
           R.id.walkthrough_fragment_placeholder,
           WalkthroughTopicListFragment()
         ).commitNow().also {
-          mViewModel.currentProgress.set(2)
+          walkthroughActivityViewModel.currentProgress.set(2)
         }
       }
       WalkthroughPages.FINAL.value -> {
@@ -128,14 +128,14 @@ class WalkthroughActivityPresenter @Inject constructor(
           R.id.walkthrough_fragment_placeholder,
           WalkthroughFinalFragment.newInstance(topicId)
         ).commitNow().also {
-          mViewModel.currentProgress.set(3)
+          walkthroughActivityViewModel.currentProgress.set(3)
         }
       }
     }
   }
 
   fun handleSystemBack() {
-    moveToPreviousPage(mViewModel.currentProgress.get() ?: 1)
+    moveToPreviousPage(walkthroughActivityViewModel.currentProgress.get() ?: 1)
   }
 
   fun setTopicId(topicId: String) {
@@ -143,10 +143,10 @@ class WalkthroughActivityPresenter @Inject constructor(
   }
 
   fun hideProgressBarAndShowHeader() {
-    mViewModel.hideProgressBarAndShowHeader()
+    walkthroughActivityViewModel.hideProgressBarAndShowHeader()
   }
 
   fun hideHeaderAndShowProgressBar() {
-    mViewModel.hideHeaderAndShowProgressBar()
+    walkthroughActivityViewModel.hideHeaderAndShowProgressBar()
   }
 }
