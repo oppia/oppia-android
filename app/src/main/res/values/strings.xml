@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Oppia</string>
-  <string name="empty_string"></string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_home">Home</string>
   <string name="menu_options">Options</string>
@@ -64,6 +63,7 @@
   <string name="topic_play_chapter_index">%s.</string>
   <string name="chapter_name">Chapter %s: %s</string>
   <string name="chapter_completed">Chapter %s: %s is completed.</string>
+  <string name="chapter_prerequisite">Complete Chapter %s to unlock this chapter.</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
