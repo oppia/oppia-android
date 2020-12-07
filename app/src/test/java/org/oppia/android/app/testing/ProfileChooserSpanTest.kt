@@ -243,6 +243,18 @@ class ProfileChooserSpanTest {
   }
 
   @Test
+  @Config(qualifiers = "sw600dp-port")
+  fun testProfileChooserFragmentRecyclerView_tablet_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(3)
+      }
+    }
+  }
+
+  @Test
   @Config(qualifiers = "sw600dp-land-mdpi")
   fun testProfileChooserFragmentRecyclerView_landscape_tablet_mdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
