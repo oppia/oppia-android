@@ -108,8 +108,9 @@ class ProfileTestHelper @Inject constructor(
   }
 
   /**
-   * While performing any action based on the LiveData, this helper function should be used.
-   * Without this helper function the LiveData cannot be accessed.
+   * While performing any action based on the LiveData (see other methods above),
+   * this helper function should be used to ensure the operation corresponding to the LiveData
+   * properly completes.
    *
    * @param data is the LiveData which needs to accessed while performing action.
    */
