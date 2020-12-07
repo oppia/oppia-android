@@ -277,7 +277,7 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  @Ignore
+  @Ignore("Navigation Drawer is not closing")
   fun testNavigationDrawerTestActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -375,6 +375,23 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  @Ignore("Navigation Drawer is not closing")
+  fun testNavigationDrawerTestActivity_selectSwitchProfileMenu_clickCancel_checkDrawerIsClosed() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_message))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
+    }
+  }
+
+  @Test
   fun testNavigationDrawerTestActivity_selectSwitchProfile_orientationChange_checkDialogVisible() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
@@ -397,9 +414,9 @@ class NavigationDrawerTestActivityTest {
   }
 
   private fun ActivityScenario<NavigationDrawerTestActivity>.openNavigationDrawer() {
-    onView(withContentDescription(R.string.drawer_open_content_description)).check(
-      matches(isCompletelyDisplayed())
-    ).perform(click())
+    onView(withContentDescription(R.string.drawer_open_content_description))
+      .check(matches(isCompletelyDisplayed()))
+      .perform(click())
 
     // Force the drawer animation to start. See https://github.com/oppia/oppia-android/pull/2204 for
     // background context.
