@@ -1,6 +1,7 @@
 package org.oppia.android.testing.profile
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -13,7 +14,15 @@ class ProfileTestHelper @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val testCoroutineDispatchers: TestCoroutineDispatchers
 ) {
-  /** Creates one admin profile and one user profile. Logs in to admin profile. */
+
+  private val observer = Observer<AsyncResult<Any?>> { }
+
+  /**
+   * Creates one admin profile and one user profile. Logs in to admin profile.
+   *
+   * @returns a [LiveData] that indicates when the login is complete.
+   * Note that this if is not observed, the login will not be performed.
+   */
   fun initializeProfiles(): LiveData<AsyncResult<Any?>> {
     profileManagementController.addProfile(
       name = "Admin",
@@ -47,7 +56,12 @@ class ProfileTestHelper @Inject constructor(
     return result
   }
 
-  /** Creates one admin profile and logs in to admin profile. */
+  /**
+   * Creates one admin profile and logs in to admin profile.
+   *
+   * @returns a [LiveData] that indicates when the login is complete.
+   * Note that this if is not observed, the login will not be performed.
+   */
   fun addOnlyAdminProfile(): LiveData<AsyncResult<Any?>> {
     profileManagementController.addProfile(
       name = "Admin",
@@ -91,5 +105,16 @@ class ProfileTestHelper @Inject constructor(
     ).toLiveData()
     testCoroutineDispatchers.runCurrent()
     return result
+  }
+
+  /**
+   * While performing any action based on the LiveData (see other methods above),
+   * this helper function should be used to ensure the operation corresponding to the LiveData
+   * properly completes.
+   *
+   * @param data is the LiveData which needs to accessed while performing action.
+   */
+  fun waitForOperationToComplete(data: LiveData<AsyncResult<Any?>>) {
+    data.observeForever(observer)
   }
 }
