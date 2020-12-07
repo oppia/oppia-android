@@ -85,6 +85,10 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       numerator = 1,
       denominator = 2
     )
+  private val STRING_VALUE_TEST =
+    InteractionObjectTestBuilder.createString(
+      value = "test string"
+    )
 
   @Inject
   internal lateinit var fractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider:
@@ -154,7 +158,6 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     assertThat(matches).isFalse()
   }
 
-  // Even if creator does not input simplest form, learner's answer must be in simplest form
   @Test
   fun testEquivalentAndSimplest_fraction1Over2Answer_fraction4Over8Input_matches() {
     val inputs = mapOf("f" to FRACTION_VALUE_TEST_4_OVER_8)
@@ -163,6 +166,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val matches =
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs)
 
+    // Even if creator does not input simplest form, learner's answer must still be in simplest form
     assertThat(matches).isTrue()
   }
 
@@ -235,10 +239,11 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
   @Test
   fun testEquivalentAndSimplest_missingInputF_throwsException() {
     val inputs = mapOf("y" to FRACTION_VALUE_TEST_1_OVER_2)
+    val answer = FRACTION_VALUE_TEST_1_OVER_2
 
     val exception = assertThrows(IllegalStateException::class) {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
-        answer = FRACTION_VALUE_TEST_1_OVER_2,
+        answer = answer,
         inputs = inputs
       )
     }
@@ -246,6 +251,40 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'f' but had: [y]")
+  }
+
+  @Test
+  fun testEquivalentAndSimplest_typeStringAnswer_fraction1Over2Input_throwsException() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
+    val answer = STRING_VALUE_TEST
+
+    val exception = assertThrows(IllegalStateException::class) {
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected answer to be of type FRACTION")
+  }
+
+  @Test
+  fun testEquivalentAndSimplest_fraction1Over2Answer_typeStringInput_throwsException() {
+    val inputs = mapOf("f" to STRING_VALUE_TEST)
+    val answer = FRACTION_VALUE_TEST_1_OVER_2
+
+    val exception = assertThrows(IllegalStateException::class) {
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected input value to be of type FRACTION")
   }
 
   private fun setUpTestApplicationComponent() {
