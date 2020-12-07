@@ -62,12 +62,12 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
       }
       yPosition += yOffset
 
-      val xPosition = (x + dir * bulletRadius).toFloat()
+      val xPosition = (x + dir * bulletRadius).toFloat() + 15f
 
       if (canvas.isHardwareAccelerated) {
         if (mBulletPath == null) {
           mBulletPath = Path()
-          mBulletPath!!.addCircle(0.0f, 0.0f, bulletRadius.toFloat(), Direction.CW)
+          mBulletPath!!.addCircle(15.0f, 0.0f, bulletRadius.toFloat(), Direction.CW)
         }
 
         canvas.save()
