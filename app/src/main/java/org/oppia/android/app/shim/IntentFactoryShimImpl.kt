@@ -20,8 +20,8 @@ import javax.inject.Inject
 // TODO(#1619): Remove file post-Gradle
 class IntentFactoryShimImpl @Inject constructor() : IntentFactoryShim {
 
-  private val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
-  private val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
+  private val TOPIC_ACTIVITY_TOPIC_ID_EXTRA_KEY = "TopicActivity.topic_activity_topic_id"
+  private val TOPIC_ACTIVITY_STORY_ID_EXTRA_KEY = "TopicActivity.topic_activity_story_id"
 
   /** Returns [ProfileChooserActivity] intent for [AdministratorControlsAccountActionsViewModel]. */
   override fun createProfileChooserActivityIntent(fragment: FragmentActivity): Intent {
@@ -40,8 +40,8 @@ class IntentFactoryShimImpl @Inject constructor() : IntentFactoryShim {
   ): Intent {
     val intent = Intent(context, TopicActivity::class.java)
     intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-    intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-    intent.putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+    intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_EXTRA_KEY, topicId)
+    intent.putExtra(TOPIC_ACTIVITY_STORY_ID_EXTRA_KEY, storyId)
     return intent
   }
 
@@ -55,7 +55,7 @@ class IntentFactoryShimImpl @Inject constructor() : IntentFactoryShim {
   ): Intent {
     val intent = Intent(context, TopicActivity::class.java)
     intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-    intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+    intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_EXTRA_KEY, topicId)
     return intent
   }
 
