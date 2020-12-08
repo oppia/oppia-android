@@ -22,6 +22,7 @@ class StoryChapterSummaryViewModel(
   val topicId: String,
   val storyId: String,
   val chapterSummary: ChapterSummary,
+  val previousChapterTitle: String,
   val entityType: String
 ) : StoryItemViewModel() {
   val explorationId: String = chapterSummary.explorationId

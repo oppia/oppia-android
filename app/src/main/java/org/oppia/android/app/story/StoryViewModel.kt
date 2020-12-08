@@ -109,6 +109,7 @@ class StoryViewModel @Inject constructor(
           topicId,
           storyId,
           chapter,
+          if (index > 0) chapterList.get(index - 1).name else "",
           entityType
         )
       }

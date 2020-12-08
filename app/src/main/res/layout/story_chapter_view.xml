@@ -13,6 +13,10 @@
       type="CharSequence" />
 
     <variable
+      name="vvv"
+      type="CharSequence" />
+
+    <variable
       name="viewModel"
       type="org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
   </data>
@@ -42,9 +46,9 @@
 
         <org.oppia.android.app.customview.LessonThumbnailImageView
           android:id="@+id/chapter_thumbnail"
-          android:alpha="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? 1.0f : 0.3f}"
           android:layout_width="match_parent"
           android:layout_height="0dp"
+          android:alpha="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? 1.0f : 0.3f}"
           android:scaleType="centerInside"
           app:entityId="@{viewModel.storyId}"
           app:entityType="@{viewModel.entityType}"
@@ -90,9 +94,8 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
-            android:ellipsize="end"
             android:fontFamily="sans-serif"
-            android:text="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? htmlContent : String.format(@string/chapter_prerequisite, viewModel.index)}"
+            android:text="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? htmlContent : String.format(@string/chapter_prerequisite, viewModel.index, viewModel.previousChapterTitle)}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
