@@ -9,24 +9,24 @@ import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
+import javax.inject.Inject
 
 /** [ViewModel] promoted story list in [HomeFragment]. */
-class PromotedStoryListViewModel(
+class PromotedStoryListViewModel @Inject constructor(
   private var activity: AppCompatActivity,
-  private var internalProfileId: Int,
   private var intentFactoryShim: IntentFactoryShim,
   private val topicListController: TopicListController,
   @StoryHtmlParserEntityType private val storyEntityType: String
 ) :
   HomeItemViewModel(),
   RouteToRecentlyPlayedListener {
-  val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
+
+  private var internalProfileId: Int = -1
 
   val promotedStoryListLiveData: LiveData<MutableList<PromotedStoryViewModel>> by lazy {
     Transformations.map(assumedSuccessfulOngoingStoryListLiveData, ::processList)
@@ -34,6 +34,7 @@ class PromotedStoryListViewModel(
 
   private fun processList(it: OngoingStoryList): MutableList<PromotedStoryViewModel> {
     var newPromotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
+    val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
     if (it.recentStoryCount != 0) {
       it.recentStoryList.take(limit)
         .forEach { promotedStory ->

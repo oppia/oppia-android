@@ -24,7 +24,7 @@ class WelcomeViewModel @Inject constructor(
   private lateinit var profileId: ProfileId
   lateinit var greeting: String
 
-  val profileNameLiveData: LiveData<String> by lazy {
+  val profileName: LiveData<String> by lazy {
     Transformations.map(profileLiveData, Profile::getName)
   }
 

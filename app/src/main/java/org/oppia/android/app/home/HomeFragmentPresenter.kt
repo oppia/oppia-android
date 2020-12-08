@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.fragment.FragmentScope
@@ -49,10 +50,9 @@ import javax.inject.Inject
 class HomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val WelcomeViewModelProvider: ViewModelProvider<WelcomeViewModel>,
-  private val HomeItemViewModelProvider: ViewModelProvider<HomeItemViewModel>,
-  private val PromotedStoryListViewModelProvider: ViewModelProvider<PromotedStoryListViewModel>,
-  private val AllTopicsViewModelProvider: ViewModelProvider<AllTopicsViewModel>,
+  private val welcomeViewModelProvider: ViewModelProvider<WelcomeViewModel>,
+  private val promotedStoryListViewModelProvider: ViewModelProvider<PromotedStoryListViewModel>,
+  private val allTopicsViewModelProvider: ViewModelProvider<AllTopicsViewModel>,
   private val topicListController: TopicListController,
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
@@ -62,12 +62,10 @@ class HomeFragmentPresenter @Inject constructor(
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
-//  private val promotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
-  private lateinit var profileId: ProfileId
-  private lateinit var topicListAdapter: TopicListAdapter
-
+//  private lateinit var topicListAdapter: TopicListAdapter
+  private var spanCount = 0
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -87,11 +85,7 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(welcomeViewModel)
     itemList.add(promotedStoryListViewModel)
     itemList.add(allTopicsViewModel)
-//    topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
-//    topicListAdapter = createRecyclerViewAdapter()
-
-    val spanCount = activity.resources.getInteger(R.integer.home_span_count)
-    topicListAdapter.setSpanCount(spanCount)
+    spanCount = activity.resources.getInteger(R.integer.home_span_count)
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -113,7 +107,7 @@ class HomeFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-//    subscribeToTopicList()
+    subscribeToTopicList()
     return binding.root
   }
 
@@ -153,6 +147,95 @@ class HomeFragmentPresenter @Inject constructor(
         transformViewModel = { it as TopicSummaryViewModel }
       )
       .build()
+  }
+
+  inner class TopicListViewHolder(val binding: TopicSummaryViewBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+
+    internal fun bind(topicSummaryViewModel: TopicSummaryViewModel, position: Int) {
+      binding.viewModel = topicSummaryViewModel
+
+      val marginLayoutParams = binding.topicContainer.layoutParams as ViewGroup.MarginLayoutParams
+
+      val marginMax = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_max)
+
+      val marginTopBottom =
+        (activity as Context).resources
+          .getDimensionPixelSize(R.dimen.topic_list_item_margin_top_bottom)
+
+      val marginMin = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_min)
+
+      when (spanCount) {
+        2 -> {
+          when {
+            position % spanCount == 0 -> marginLayoutParams.setMargins(
+              marginMin,
+              marginTopBottom,
+              marginMax,
+              marginTopBottom
+            )
+            else -> marginLayoutParams.setMargins(
+              marginMax,
+              marginTopBottom,
+              marginMin,
+              marginTopBottom
+            )
+          }
+        }
+        3 -> {
+          when {
+            position % spanCount == 0 -> marginLayoutParams.setMargins(
+              marginMax,
+              marginTopBottom,
+              /* right= */ 0,
+              marginTopBottom
+            )
+            position % spanCount == 1 -> marginLayoutParams.setMargins(
+              marginMin,
+              marginTopBottom,
+              marginMin,
+              marginTopBottom
+            )
+            position % spanCount == 2 -> marginLayoutParams.setMargins(
+              /* left= */ 0,
+              marginTopBottom,
+              marginMax,
+              marginTopBottom
+            )
+          }
+        }
+        4 -> {
+          when {
+            (position + 1) % spanCount == 0 -> marginLayoutParams.setMargins(
+              marginMax,
+              marginTopBottom,
+              /* right= */ 0,
+              marginTopBottom
+            )
+            (position + 1) % spanCount == 1 -> marginLayoutParams.setMargins(
+              marginMin,
+              marginTopBottom,
+              marginMin / 2,
+              marginTopBottom
+            )
+            (position + 1) % spanCount == 2 -> marginLayoutParams.setMargins(
+              marginMin / 2,
+              marginTopBottom,
+              marginMin,
+              marginTopBottom
+            )
+            (position + 1) % spanCount == 3 -> marginLayoutParams.setMargins(
+              /* left= */ 0,
+              marginTopBottom,
+              marginMax,
+              marginTopBottom
+            )
+          }
+        }
+      }
+      binding.topicContainer.layoutParams = marginLayoutParams
+    }
+
   }
 
   private fun bindPromotedStoryListView(
@@ -199,16 +282,16 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun getWelcomeViewModel(): WelcomeViewModel {
-    return WelcomeViewModelProvider.getForFragment(fragment, WelcomeViewModel::class.java)
+    return welcomeViewModelProvider.getForFragment(fragment, WelcomeViewModel::class.java)
   }
 
   private fun getPromotedStoryListViewModel(): PromotedStoryListViewModel {
-    return PromotedStoryListViewModelProvider
+    return promotedStoryListViewModelProvider
       .getForFragment(fragment, PromotedStoryListViewModel::class.java)
   }
 
   private fun getAllTopicsViewModel(): AllTopicsViewModel {
-    return AllTopicsViewModelProvider.getForFragment(fragment, AllTopicsViewModel::class.java)
+    return allTopicsViewModelProvider.getForFragment(fragment, AllTopicsViewModel::class.java)
   }
 
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
@@ -228,7 +311,7 @@ class HomeFragmentPresenter @Inject constructor(
             )
           itemList.add(topicSummaryViewModel)
         }
-        topicListAdapter.notifyDataSetChanged()
+//        topicListAdapter.notifyDataSetChanged()
       }
     )
   }

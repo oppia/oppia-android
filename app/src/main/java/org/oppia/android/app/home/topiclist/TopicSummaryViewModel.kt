@@ -2,8 +2,13 @@ package org.oppia.android.app.home.topiclist
 
 import android.graphics.Color
 import androidx.annotation.ColorInt
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import org.oppia.android.app.home.HomeItemViewModel
+import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicSummary
+import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.util.data.AsyncResult
 
 // TODO(#206): Remove the color darkening computation and properly set up the topic thumbnails.
 // These values were roughly computed based on the mocks. They won't produce the same colors since darker colors in the
