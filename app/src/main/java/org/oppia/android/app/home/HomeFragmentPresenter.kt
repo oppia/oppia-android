@@ -113,7 +113,6 @@ class HomeFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-//    subscribeToOngoingStoryList()
 //    subscribeToTopicList()
     return binding.root
   }
@@ -162,9 +161,9 @@ class HomeFragmentPresenter @Inject constructor(
   ) {
     binding.viewModel = model
     if (activity.resources.getBoolean(R.bool.isTablet)) {
-      binding.itemCount = model.promotedStoryList.size
+      binding.itemCount = model.promotedStoryListLiveData.value!!.size
     }
-    val promotedStoryAdapter = PromotedStoryListAdapter(activity, model.promotedStoryList)
+    val promotedStoryAdapter = PromotedStoryListAdapter(activity, model.promotedStoryListLiveData.value!!)
     val horizontalLayoutManager =
       LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, /* reverseLayout= */ false)
     binding.promotedStoryListRecyclerView.apply {
@@ -185,7 +184,7 @@ class HomeFragmentPresenter @Inject constructor(
       (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_end)
     val paddingStart =
       (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_start)
-    if (model.promotedStoryList.size > 1) {
+    if (model.promotedStoryListLiveData.value!!.size > 1) {
       binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingEnd, 0)
     } else {
       binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingStart, 0)
@@ -239,41 +238,6 @@ class HomeFragmentPresenter @Inject constructor(
     return Transformations.map(topicListSummaryResultLiveData) {
       it.getOrDefault(TopicList.getDefaultInstance())
     }
-  }
-
-  private fun subscribeToOngoingStoryList() {
-    val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
-    getAssumedSuccessfulOngoingStoryList().observe(
-      fragment,
-      Observer<OngoingStoryList> {
-        promotedStoryList.clear()
-        if (it.recentStoryCount != 0) {
-          it.recentStoryList.take(limit).forEach { promotedStory ->
-            val recentStory = PromotedStoryViewModel(
-              activity,
-              internalProfileId,
-              storyEntityType,
-              intentFactoryShim
-            )
-            recentStory.setPromotedStory(promotedStory)
-            promotedStoryList.add(recentStory)
-          }
-        } else {
-          // TODO(#936): Optimise this as part of recommended stories.
-          it.olderStoryList.take(limit).forEach { promotedStory ->
-            val oldStory = PromotedStoryViewModel(
-              activity,
-              internalProfileId,
-              storyEntityType,
-              intentFactoryShim
-            )
-            oldStory.setPromotedStory(promotedStory)
-            promotedStoryList.add(oldStory)
-          }
-        }
-        topicListAdapter.notifyItemChanged(1)
-      }
-    )
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {

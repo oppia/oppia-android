@@ -28,37 +28,43 @@ class PromotedStoryListViewModel(
   RouteToRecentlyPlayedListener {
   val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
 
-  var promotedStoryList: LiveData<MutableList<PromotedStoryViewModel>> by lazy {
-    promotedStoryList.clear()
-    if (assumedSuccessfulOngoingStoryListLiveData.recentStoryCount != 0) {
-      assumedSuccessfulOngoingStoryListLiveData.recentStoryList.take(limit)
+  val promotedStoryListLiveData: LiveData<MutableList<PromotedStoryViewModel>> by lazy {
+    Transformations.map(assumedSuccessfulOngoingStoryListLiveData, ::processList)
+  }
+
+  private fun processList(it: OngoingStoryList): MutableList<PromotedStoryViewModel> {
+    var newPromotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
+    if (it.recentStoryCount != 0) {
+      it.recentStoryList.take(limit)
         .forEach { promotedStory ->
-        val recentStory = PromotedStoryViewModel(
-          activity,
-          internalProfileId,
-          storyEntityType,
-          intentFactoryShim
-        )
-        recentStory.setPromotedStory(promotedStory)
-        promotedStoryList.add(recentStory)
+          val recentStory = PromotedStoryViewModel(
+            activity,
+            internalProfileId,
+            storyEntityType,
+            intentFactoryShim
+          )
+          recentStory.setPromotedStory(promotedStory)
+          newPromotedStoryList.add(recentStory)
       }
     } else {
       // TODO(#936): Optimise this as part of recommended stories.
-      assumedSuccessfulOngoingStoryListLiveData.olderStoryList.take(limit).forEach { promotedStory ->
-        val oldStory = PromotedStoryViewModel(
-          activity,
-          internalProfileId,
-          storyEntityType,
-          intentFactoryShim
-        )
-        oldStory.setPromotedStory(promotedStory)
-        promotedStoryList.add(oldStory)
+      it.olderStoryList.take(limit)
+        .forEach { promotedStory ->
+          val oldStory = PromotedStoryViewModel(
+            activity,
+            internalProfileId,
+            storyEntityType,
+            intentFactoryShim
+          )
+          oldStory.setPromotedStory(promotedStory)
+          newPromotedStoryList.add(oldStory)
+        }
       }
-    }
+    return newPromotedStoryList
   }
 
-  private val ongoingStoryListSummaryResultLiveData:
-    LiveData<AsyncResult<OngoingStoryList>> by lazy {
+  private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>>
+  by lazy {
       topicListController.getOngoingStoryList(
           ProfileId.newBuilder().setInternalId(internalProfileId).build()
         ).toLiveData()
@@ -71,7 +77,6 @@ class PromotedStoryListViewModel(
         OngoingStoryList.getDefaultInstance()
       )
     }
-//    processPromotedStoryList()
   }
 
   fun clickOnViewAll() {
