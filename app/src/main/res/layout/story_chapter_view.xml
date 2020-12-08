@@ -13,10 +13,6 @@
       type="CharSequence" />
 
     <variable
-      name="vvv"
-      type="CharSequence" />
-
-    <variable
       name="viewModel"
       type="org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
   </data>
