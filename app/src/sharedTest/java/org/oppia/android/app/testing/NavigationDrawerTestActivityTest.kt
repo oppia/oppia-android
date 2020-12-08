@@ -19,7 +19,6 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.DrawerActions.close
 import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.intent.Intents
@@ -43,6 +42,7 @@ import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -80,10 +80,13 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -106,6 +109,9 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class NavigationDrawerTestActivityTest {
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -277,17 +283,6 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  @Ignore("Navigation Drawer is not closing")
-  fun testNavigationDrawerTestActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
-    launch(NavigationDrawerTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      it.openNavigationDrawer()
-      onView(withId(R.id.home_activity_drawer_layout)).perform(close())
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
-    }
-  }
-
-  @Test
   fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_checkAdministratorControlsDisplayed() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
@@ -374,8 +369,8 @@ class NavigationDrawerTestActivityTest {
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO)
   @Test
-  @Ignore("Navigation Drawer is not closing")
   fun testNavigationDrawerTestActivity_selectSwitchProfileMenu_clickCancel_checkDrawerIsClosed() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
