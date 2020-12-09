@@ -108,26 +108,26 @@ domain_test(
     deps = TEST_DEPS,
 )
 
- domain_test(
+domain_test(
      name = "RatioInputEqualsRuleClassifierProviderTest",
      srcs = ["src/test/java/org/oppia/android/domain/classify/rules/ratioinput/RatioInputEqualsRuleClassifierProviderTest.kt"],
      test_class = "org.oppia.android.domain.classify.rules.ratioinput.RatioInputEqualsRuleClassifierProviderTest",
      deps = TEST_DEPS,
- )
+)
 
- domain_test(
+domain_test(
      name = "RatioInputHasNumberOfTermsEqualToClassifierProviderTest",
      srcs = ["src/test/java/org/oppia/android/domain/classify/rules/ratioinput/RatioInputHasNumberOfTermsEqualToClassifierProviderTest.kt"],
      test_class = "org.oppia.android.domain.classify.rules.ratioinput.RatioInputHasNumberOfTermsEqualToClassifierProviderTest",
      deps = TEST_DEPS,
- )
+)
 
- domain_test(
+domain_test(
      name = "RatioInputIsEquivalentRuleClassifierProviderTest",
      srcs = ["src/test/java/org/oppia/android/domain/classify/rules/ratioinput/RatioInputIsEquivalentRuleClassifierProviderTest.kt"],
      test_class = "org.oppia.android.domain.classify.rules.ratioinput.RatioInputIsEquivalentRuleClassifierProviderTest",
      deps = TEST_DEPS,
- )
+)
 
 domain_test(
     name = "DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest",
@@ -165,68 +165,68 @@ domain_test(
     deps = TEST_DEPS,
 )
 
- domain_test(
+domain_test(
      name = "FractionInputHasDenominatorEqualToRuleClassifierProviderTest",
      srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputHasDenominatorEqualToRuleClassifierProviderTest.kt"],
      test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasDenominatorEqualToRuleClassifierProviderTest",
      deps = TEST_DEPS,
- )
+)
 
- domain_test(
+domain_test(
      name = "FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest",
      srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest.kt"],
      test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest",
      deps = TEST_DEPS,
- )
+)
 
- domain_test(
+domain_test(
      name = "FractionInputHasIntegerPartEqualToRuleClassifierProviderTest",
      srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputHasIntegerPartEqualToRuleClassifierProviderTest.kt"],
      test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasIntegerPartEqualToRuleClassifierProviderTest",
      deps = TEST_DEPS,
- )
+)
 
- domain_test(
+domain_test(
      name = "FractionInputHasNoFractionalPartRuleClassifierProviderTest",
      srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputHasNoFractionalPartRuleClassifierProviderTest.kt"],
      test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasNoFractionalPartRuleClassifierProviderTest",
      deps = TEST_DEPS,
- )
+)
 
- domain_test(
+domain_test(
      name = "FractionInputHasNumeratorEqualToRuleClassifierProviderTest",
      srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputHasNumeratorEqualToRuleClassifierProviderTest.kt"],
      test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasNumeratorEqualToRuleClassifierProviderTest",
      deps = TEST_DEPS,
- )
+)
 
- domain_test(
+domain_test(
      name = "FractionInputIsEquivalentToRuleClassifierProviderTest",
      srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputIsEquivalentToRuleClassifierProviderTest.kt"],
      test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsEquivalentToRuleClassifierProviderTest",
      deps = TEST_DEPS,
- )
+)
 
- domain_test(
+domain_test(
      name = "FractionInputIsExactlyEqualToRuleClassifierProviderTest",
      srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputIsExactlyEqualToRuleClassifierProviderTest.kt"],
      test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsExactlyEqualToRuleClassifierProviderTest",
      deps = TEST_DEPS,
- )
+)
 
- domain_test(
+domain_test(
      name = "FractionInputIsGreaterThanRuleClassifierProviderTest",
      srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputIsGreaterThanRuleClassifierProviderTest.kt"],
      test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsGreaterThanRuleClassifierProviderTest",
      deps = TEST_DEPS,
- )
+)
 
- domain_test(
+domain_test(
      name = "FractionInputIsLessThanRuleClassifierProviderTest",
      srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputIsLessThanRuleClassifierProviderTest.kt"],
      test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsLessThanRuleClassifierProviderTest",
      deps = TEST_DEPS,
- )
+)
 
 domain_test(
     name = "ImageClickInputIsInRegionRuleClassifierProviderTest",
@@ -356,13 +356,6 @@ domain_test(
 )
 
 domain_test(
-    name = "ExceptionsControllerTest",
-    srcs = ["src\test\java\org\oppia\android\domain\oppialogger\exceptions\ExceptionsControllerTest.kt"],
-    test_class = "org.oppia.android.domain.oppialogger.exceptions.ExceptionsControllerTest",
-    deps = TEST_DEPS,
-)
-
-domain_test(
     name = "UncaughtExceptionLoggerStartupListenerTest",
     srcs = ["src/test/java/org/oppia/android/domain/oppialogger/exceptions/UncaughtExceptionLoggerStartupListenerTest.kt"],
     test_class = "org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerStartupListenerTest",
@@ -373,13 +366,6 @@ domain_test(
     name = "LogUploadWorkerTest",
     srcs = ["src/test/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorkerTest.kt"],
     test_class = "org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerTest",
-    deps = TEST_DEPS,
-)
-
-domain_test(
-    name = "LogUploadWorkManagerInitializerTest",
-    srcs = ["src\test\java\org\oppia\android\domain\oppialogger\loguploader\LogUploadWorkManagerInitializerTest.kt"],
-    test_class = "org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkManagerInitializerTest",
     deps = TEST_DEPS,
 )
 
