@@ -8,7 +8,6 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updateLayoutParams
 import androidx.databinding.BindingAdapter
-import dagger.Provides
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.TopicSummary
@@ -54,28 +53,28 @@ class TopicSummaryViewModel (
     this.position = newPosition
   }
 
-  @BindingAdapter("bind:layout_marginTop")
+  @BindingAdapter("android:layout_marginTop")
   fun setLayoutMarginTop(view: View, viewModel: TopicSummaryViewModel) {
     view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
       this.topMargin = computeTopMargin()
     }
   }
 
-  @BindingAdapter("bind:layout_marginBottom")
+  @BindingAdapter("android:layout_marginBottom")
   fun setLayoutMarginBottom(view: View, viewModel: TopicSummaryViewModel) {
     view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
       this.bottomMargin = computeBottomMargin()
     }
   }
 
-  @BindingAdapter("bind:layout_marginStart")
+  @BindingAdapter("android:layout_marginStart")
   fun setLayoutMarginStart(view: View, viewModel: TopicSummaryViewModel) {
     view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
       this.setMarginStart(computeStartMargin())
     }
   }
 
-  @BindingAdapter("bind:layout_marginEnd")
+  @BindingAdapter("android:layout_marginEnd")
   fun setLayoutMarginEnd(view: View, viewModel: TopicSummaryViewModel) {
     view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
       this.setMarginEnd(computeEndMargin())
