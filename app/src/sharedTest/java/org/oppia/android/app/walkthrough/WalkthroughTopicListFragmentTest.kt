@@ -105,7 +105,6 @@ class WalkthroughTopicListFragmentTest {
     )
   }
 
-  // Checks if progressBar is gets hidden on scrolling to the second row of items
   @Test
   fun testWalkthroughWelcomeFragment_portrait_recyclerViewIndex4__progressBarIsHidden() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
@@ -126,9 +125,8 @@ class WalkthroughTopicListFragmentTest {
     }
   }
 
-  // Checks if headerText gets visible on scrolling to the second row of items
   @Test
-  fun testWalkthroughWelcomeFragment_landscape_recyclerViewIndex4_activityHeaderIsVisible() {
+  fun testWalkthroughWelcomeFragment_changeConfig_recyclerViewIndex4_headerIsVisible() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(isRoot()).perform(orientationLandscape())

@@ -10,7 +10,7 @@ import javax.inject.Inject
 class WalkthroughActivity :
   InjectableAppCompatActivity(),
   WalkthroughFragmentChangeListener,
-  WalkThroughVerticalScrollListener {
+  WalkthroughVerticalScrollListener {
   @Inject
   lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter
 
@@ -44,11 +44,7 @@ class WalkthroughActivity :
     }
   }
 
-  override fun hideProgressBarAndShowHeader() {
-    walkthroughActivityPresenter.hideProgressBarAndShowHeader()
-  }
-
-  override fun hideHeaderAndShowProgressBar() {
-    walkthroughActivityPresenter.hideHeaderAndShowProgressBar()
+  override fun changeProgressBarVisibility(visibility: Boolean) {
+    walkthroughActivityPresenter.changeProgressBarVisibility(visibility)
   }
 }

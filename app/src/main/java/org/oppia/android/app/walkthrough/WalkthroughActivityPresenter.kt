@@ -142,11 +142,7 @@ class WalkthroughActivityPresenter @Inject constructor(
     this.topicId = topicId
   }
 
-  fun hideProgressBarAndShowHeader() {
-    walkthroughActivityViewModel.hideProgressBarAndShowHeader()
-  }
-
-  fun hideHeaderAndShowProgressBar() {
-    walkthroughActivityViewModel.hideHeaderAndShowProgressBar()
+  fun changeProgressBarVisibility(visibility: Boolean) {
+    walkthroughActivityViewModel.changeProgressBarVisibility(visibility)
   }
 }

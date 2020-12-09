@@ -13,7 +13,6 @@
     <variable
       name="viewModel"
       type="org.oppia.android.app.walkthrough.WalkthroughViewModel" />
-
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,13 +44,12 @@
 
     <TextView
       android:id="@+id/walkthrough_activity_topic_header_text_view"
+      style="@style/Heading1"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/walkthrough_activity_header_text_view_margin_start"
-      android:fontFamily="sans-serif-medium"
       android:text="@string/what_do_you_want_to_learn"
       android:textColor="@color/oppiaPrimaryText"
-      android:textSize="24sp"
       android:visibility="@{viewModel.isProgressBarVisible ? View.GONE : View.VISIBLE}"
       app:layout_constraintBottom_toBottomOf="@+id/back_button"
       app:layout_constraintStart_toEndOf="@+id/back_button"
@@ -64,10 +62,10 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="32dp"
       android:layout_marginEnd="32dp"
-      android:visibility="@{viewModel.isProgressBarVisible ? View.VISIBLE : View.GONE}"
       android:max="3"
       android:progress="@{viewModel.currentProgress}"
       android:progressDrawable="@drawable/rounded_corners_progress_bar"
+      android:visibility="@{viewModel.isProgressBarVisible ? View.VISIBLE : View.GONE}"
       app:layout_constraintBottom_toBottomOf="@+id/back_button"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/back_button"

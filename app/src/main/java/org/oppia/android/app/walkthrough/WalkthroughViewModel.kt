@@ -1,5 +1,6 @@
 package org.oppia.android.app.walkthrough
 
+import android.opengl.Visibility
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,11 +12,7 @@ class WalkthroughViewModel @Inject constructor() : ObservableViewModel() {
   val currentProgress = ObservableField(0)
   val isProgressBarVisible = MutableLiveData<Boolean>(true)
 
-  fun hideProgressBarAndShowHeader() {
-    isProgressBarVisible.value = false
-  }
-
-  fun hideHeaderAndShowProgressBar() {
-    isProgressBarVisible.value = true
+  fun changeProgressBarVisibility(visibility: Boolean) {
+    isProgressBarVisible.value = visibility
   }
 }
