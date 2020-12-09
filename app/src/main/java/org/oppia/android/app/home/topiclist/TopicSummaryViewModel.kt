@@ -2,17 +2,17 @@ package org.oppia.android.app.home.topiclist
 
 import android.content.Context
 import android.graphics.Color
+import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.annotation.ColorInt
+import androidx.annotation.Dimension
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.core.view.updateLayoutParams
+import androidx.databinding.BindingAdapter
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
-import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicSummary
-import org.oppia.android.domain.topic.TopicListController
-import org.oppia.android.util.data.AsyncResult
 
 // TODO(#206): Remove the color darkening computation and properly set up the topic thumbnails.
 // These values were roughly computed based on the mocks. They won't produce the same colors since darker colors in the
@@ -37,9 +37,7 @@ class TopicSummaryViewModel(
   private val marginTopBottom = (activity as Context).resources
       .getDimensionPixelSize(R.dimen.topic_list_item_margin_top_bottom)
   private val marginMax = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_max)
-
   private val marginMin = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_min)
-
   private var position = -1
   private var spanCount = 0
 
@@ -64,15 +62,43 @@ class TopicSummaryViewModel(
     this.position = newPosition
   }
 
-  fun computeTopMargin(): Int {
+  @BindingAdapter("layout_marginTop")
+  fun setLayoutMarginTop(view: View) {
+    view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+      this.topMargin = computeTopMargin()
+    }
+  }
+
+  @BindingAdapter("layout_marginBottom")
+  fun setLayoutMarginBottom(view: View) {
+    view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+      this.bottomMargin = computeBottomMargin()
+    }
+  }
+
+  @BindingAdapter("layout_marginStart")
+  fun setLayoutMarginStart(view: View) {
+    view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+      this.setMarginStart(computeStartMargin())
+    }
+  }
+
+  @BindingAdapter("layout_marginEnd")
+  fun setLayoutMarginEnd(view: View) {
+    view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+      this.setMarginEnd(computeEndMargin())
+    }
+  }
+
+  private fun computeTopMargin(): Int {
     return marginTopBottom
   }
 
-  fun computeBottomMargin(): Int {
+  private fun computeBottomMargin(): Int {
     return marginTopBottom
   }
 
-  fun computeStartMargin(): Int {
+  private fun computeStartMargin(): Int {
     when (spanCount) {
       2 -> {
         when (position % spanCount) {
@@ -91,7 +117,7 @@ class TopicSummaryViewModel(
         when ((position + 1) % spanCount) {
           0 -> return marginMax
           1 -> return marginMin
-          2 -> marginMin / 2
+          2 -> return marginMin / 2
           3 -> return 0
         }
       }
@@ -99,7 +125,7 @@ class TopicSummaryViewModel(
     return 0  // error here?
   }
 
-  fun computeEndMargin(): Int {
+  private fun computeEndMargin(): Int {
     when (spanCount) {
       2 -> {
         when (position % spanCount) {
@@ -119,7 +145,7 @@ class TopicSummaryViewModel(
           0 -> return 0
           1 -> return marginMin / 2
           2 -> return marginMin
-          3 ->return marginMax
+          3 -> return marginMax
         }
       }
     }

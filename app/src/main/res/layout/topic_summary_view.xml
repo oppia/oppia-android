@@ -13,10 +13,10 @@
     android:id="@+id/topic_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@{viewModel.computeTopMargin()}"
-    android:layout_marginBottom="@{viewModel.computeBottomMargin()"
-    android:layout_marginStart="@{viewModel.computeStartMargin()"
-    android:layout_marginEnd="@{viewModel.computeEndMargin()"
+    android:layout_marginTop="@{viewModel.setLayoutMarginTop()}"
+    android:layout_marginBottom="@{viewModel.setLayoutMarginBottom()"
+    android:layout_marginStart="@{viewModel.setLayoutMarginStart()}"
+    android:layout_marginEnd="@{viewModel.setLayoutMarginEnd()"
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
