@@ -1,9 +1,13 @@
 package org.oppia.android.app.home.topiclist
 
+import android.content.Context
 import android.graphics.Color
+import android.view.ViewGroup
 import androidx.annotation.ColorInt
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicSummary
@@ -17,8 +21,9 @@ import org.oppia.android.util.data.AsyncResult
 const val DARKEN_VALUE_MULTIPLIER: Float = 0.9f
 const val DARKEN_SATURATION_MULTIPLIER: Float = 1.2f
 
-/** The view model corresponding to topic summaries in the topic summary RecyclerView. */
+/** The view model corresponding to individual topic summaries in the topic summary RecyclerView. */
 class TopicSummaryViewModel(
+  private val activity: AppCompatActivity,
   val topicSummary: TopicSummary,
   val entityType: String,
   private val topicSummaryClickListener: TopicSummaryClickListener
@@ -29,10 +34,96 @@ class TopicSummaryViewModel(
   val backgroundColor: Int = retrieveBackgroundColor()
   @ColorInt
   val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
+  private val marginTopBottom = (activity as Context).resources
+      .getDimensionPixelSize(R.dimen.topic_list_item_margin_top_bottom)
+  private val marginMax = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_max)
+
+  private val marginMin = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_min)
+
+  private var position = -1
+  private var spanCount = 0
 
   /** Callback from data-binding for when the summary tile is clicked. */
   fun clickOnSummaryTile() {
     topicSummaryClickListener.onTopicSummaryClicked(topicSummary)
+  }
+
+// position is the order that it is displayed
+  // position is fixed based on itemList
+  // we know position of ViewModel
+  // new notion of position -- position of topic within topic list
+  // we know this when we make the ViewModels
+  // store position and span count and just recalculate the margins with four different function
+ // (start end, top bottom are four margins)
+  // compute each of thes eindividually and call for them in data binding
+  fun setSpanCount(newSpan: Int) {
+    this.spanCount = newSpan
+  }
+
+  fun setPosition(newPosition: Int) {
+    this.position = newPosition
+  }
+
+  fun computeTopMargin(): Int {
+    return marginTopBottom
+  }
+
+  fun computeBottomMargin(): Int {
+    return marginTopBottom
+  }
+
+  fun computeStartMargin(): Int {
+    when (spanCount) {
+      2 -> {
+        when (position % spanCount) {
+          0 -> return marginMin
+          else -> return marginMax
+        }
+      }
+      3 -> {
+        when (position % spanCount) {
+          0 -> return marginMax
+          1 -> return marginMin
+          2 -> return 0
+        }
+      }
+      4 -> {
+        when ((position + 1) % spanCount) {
+          0 -> return marginMax
+          1 -> return marginMin
+          2 -> marginMin / 2
+          3 -> return 0
+        }
+      }
+    }
+    return 0  // error here?
+  }
+
+  fun computeEndMargin(): Int {
+    when (spanCount) {
+      2 -> {
+        when (position % spanCount) {
+          0 -> return marginMax
+          else -> return marginMin
+        }
+      }
+      3 -> {
+        when (position % spanCount) {
+          0 -> return 0
+          1 -> return marginMin
+          2 -> return marginMax
+        }
+      }
+      4 -> {
+        when ((position + 1) % spanCount) {
+          0 -> return 0
+          1 -> return marginMin / 2
+          2 -> return marginMin
+          3 ->return marginMax
+        }
+      }
+    }
+    return 0 // error here?
   }
 
   @ColorInt

@@ -103,13 +103,13 @@ class TopicListAdapter(
       is WelcomeViewModel -> {
         VIEW_TYPE_WELCOME_MESSAGE
       }
-      is AllTopicsViewModel -> {
+      is AllTopicsViewModel -> { //
         VIEW_TYPE_ALL_TOPICS
       }
       is PromotedStoryListViewModel -> {
         VIEW_TYPE_PROMOTED_STORY_LIST
       }
-      is TopicSummaryViewModel -> {
+      is TopicSummaryViewModel -> { // topic tiles
         VIEW_TYPE_TOPIC_LIST
       }
       else -> throw IllegalArgumentException(

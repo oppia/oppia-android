@@ -53,19 +53,16 @@ class HomeFragmentPresenter @Inject constructor(
   private val welcomeViewModelProvider: ViewModelProvider<WelcomeViewModel>,
   private val promotedStoryListViewModelProvider: ViewModelProvider<PromotedStoryListViewModel>,
   private val allTopicsViewModelProvider: ViewModelProvider<AllTopicsViewModel>,
-  private val topicListController: TopicListController,
+  private val topicSummaryViewModelProvider: ViewModelProvider<TopicSummaryViewModel>,
+  private val homeViewModelProvider: ViewModelProvider<HomeViewModel>,
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
-  private val intentFactoryShim: IntentFactoryShim,
-  @TopicHtmlParserEntityType private val topicEntityType: String,
-  @StoryHtmlParserEntityType private val storyEntityType: String
+  private val intentFactoryShim: IntentFactoryShim
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
-  private val itemList: MutableList<HomeItemViewModel> = ArrayList()
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
-//  private lateinit var topicListAdapter: TopicListAdapter
-  private var spanCount = 0
+//  private var spanCount = 0
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -82,11 +79,16 @@ class HomeFragmentPresenter @Inject constructor(
     promotedStoryListViewModel.setActivity(activity)
     promotedStoryListViewModel.setIntentFactoryShim(intentFactoryShim)
     val allTopicsViewModel = getAllTopicsViewModel()
-    itemList.add(welcomeViewModel)
-    itemList.add(promotedStoryListViewModel)
-    itemList.add(allTopicsViewModel)
-    spanCount = activity.resources.getInteger(R.integer.home_span_count)
+    val topicSummaryViewModel = getTopicSummaryViewModel()
+    topicSummaryViewModel.setSpanCount(activity.resources.getInteger(R.integer.home_span_count))
+    val homeViewModel = getHomeViewModel()
+    homeViewModel.addHomeItem(welcomeViewModel)
+    homeViewModel.addHomeItem(promotedStoryListViewModel)
+    homeViewModel.addHomeItem(allTopicsViewModel)
 
+    // make item list a live data list
+    // live data is going to compute topic list (remove observe and turn it into transformation for list of viewmodels)
+    val spanCount = activity.resources.getInteger(R.integer.home_span_count)
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
@@ -107,7 +109,6 @@ class HomeFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-    subscribeToTopicList()
     return binding.root
   }
 
@@ -149,94 +150,11 @@ class HomeFragmentPresenter @Inject constructor(
       .build()
   }
 
-  inner class TopicListViewHolder(val binding: TopicSummaryViewBinding) :
-    RecyclerView.ViewHolder(binding.root) {
-
-    internal fun bind(topicSummaryViewModel: TopicSummaryViewModel, position: Int) {
-      binding.viewModel = topicSummaryViewModel
-
-      val marginLayoutParams = binding.topicContainer.layoutParams as ViewGroup.MarginLayoutParams
-
-      val marginMax = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_max)
-
-      val marginTopBottom =
-        (activity as Context).resources
-          .getDimensionPixelSize(R.dimen.topic_list_item_margin_top_bottom)
-
-      val marginMin = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_min)
-
-      when (spanCount) {
-        2 -> {
-          when {
-            position % spanCount == 0 -> marginLayoutParams.setMargins(
-              marginMin,
-              marginTopBottom,
-              marginMax,
-              marginTopBottom
-            )
-            else -> marginLayoutParams.setMargins(
-              marginMax,
-              marginTopBottom,
-              marginMin,
-              marginTopBottom
-            )
-          }
-        }
-        3 -> {
-          when {
-            position % spanCount == 0 -> marginLayoutParams.setMargins(
-              marginMax,
-              marginTopBottom,
-              /* right= */ 0,
-              marginTopBottom
-            )
-            position % spanCount == 1 -> marginLayoutParams.setMargins(
-              marginMin,
-              marginTopBottom,
-              marginMin,
-              marginTopBottom
-            )
-            position % spanCount == 2 -> marginLayoutParams.setMargins(
-              /* left= */ 0,
-              marginTopBottom,
-              marginMax,
-              marginTopBottom
-            )
-          }
-        }
-        4 -> {
-          when {
-            (position + 1) % spanCount == 0 -> marginLayoutParams.setMargins(
-              marginMax,
-              marginTopBottom,
-              /* right= */ 0,
-              marginTopBottom
-            )
-            (position + 1) % spanCount == 1 -> marginLayoutParams.setMargins(
-              marginMin,
-              marginTopBottom,
-              marginMin / 2,
-              marginTopBottom
-            )
-            (position + 1) % spanCount == 2 -> marginLayoutParams.setMargins(
-              marginMin / 2,
-              marginTopBottom,
-              marginMin,
-              marginTopBottom
-            )
-            (position + 1) % spanCount == 3 -> marginLayoutParams.setMargins(
-              /* left= */ 0,
-              marginTopBottom,
-              marginMax,
-              marginTopBottom
-            )
-          }
-        }
-      }
-      binding.topicContainer.layoutParams = marginLayoutParams
-    }
-
-  }
+  // two options
+  // 1. Could pipe a position to the BindableAdapter bindview and use different registering
+  // 2. better -- go all out with databinding
+  //   -- put this logic in viewmodel as a function to calculate the padding
+  //   -- could also do computation in layout itself but probably better to do it in kotlin
 
   private fun bindPromotedStoryListView(
     binding: PromotedStoryListBinding,
@@ -294,33 +212,12 @@ class HomeFragmentPresenter @Inject constructor(
     return allTopicsViewModelProvider.getForFragment(fragment, AllTopicsViewModel::class.java)
   }
 
-  private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
-    topicListController.getTopicList()
+  private fun getTopicSummaryViewModel(): TopicSummaryViewModel {
+    return topicSummaryViewModelProvider.getForFragment(fragment, TopicSummaryViewModel::class.java)
   }
 
-  private fun subscribeToTopicList() {
-    getAssumedSuccessfulTopicList().observe(
-      fragment,
-      Observer<TopicList> { result ->
-        for (topicSummary in result.topicSummaryList) {
-          val topicSummaryViewModel =
-            TopicSummaryViewModel(
-              topicSummary,
-              topicEntityType,
-              fragment as TopicSummaryClickListener
-            )
-          itemList.add(topicSummaryViewModel)
-        }
-//        topicListAdapter.notifyDataSetChanged()
-      }
-    )
-  }
-
-  private fun getAssumedSuccessfulTopicList(): LiveData<TopicList> {
-    // If there's an error loading the data, assume the default.
-    return Transformations.map(topicListSummaryResultLiveData) {
-      it.getOrDefault(TopicList.getDefaultInstance())
-    }
+  private fun getHomeViewModel(): HomeViewModel {
+    return homeViewModelProvider.getForFragment(fragment, HomeViewModel::class.java)
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {

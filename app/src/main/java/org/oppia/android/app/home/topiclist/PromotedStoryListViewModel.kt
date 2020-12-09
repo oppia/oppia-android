@@ -29,10 +29,10 @@ class PromotedStoryListViewModel @Inject constructor(
   private var internalProfileId: Int = -1
 
   val promotedStoryListLiveData: LiveData<MutableList<PromotedStoryViewModel>> by lazy {
-    Transformations.map(assumedSuccessfulOngoingStoryListLiveData, ::processList)
+    Transformations.map(assumedSuccessfulOngoingStoryListLiveData, ::processOngoingStoryList)
   }
 
-  private fun processList(it: OngoingStoryList): MutableList<PromotedStoryViewModel> {
+  private fun processOngoingStoryList(it: OngoingStoryList) : MutableList<PromotedStoryViewModel> {
     var newPromotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
     val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
     if (it.recentStoryCount != 0) {
