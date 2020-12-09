@@ -9,7 +9,7 @@
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="administrator_controls">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
-  <string name="drawer_close_content_description">>Navigation Menu Close</string>
+  <string name="drawer_close_content_description">Navigation Menu Close</string>
   <string name="welcome_text">Welcome to Oppia!</string>
   <string name="welcome_back_text">Welcome back to Oppia!</string>
   <string name="audio_play_description">Play audio</string>

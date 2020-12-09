@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.ProfileEditActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -33,7 +34,7 @@ class ProfileEditActivityPresenter @Inject constructor(
       activity,
       R.layout.profile_edit_activity
     )
-    val profileId = activity.intent.getIntExtra(KEY_PROFILE_EDIT_PROFILE_ID, 0)
+    val profileId = activity.intent.getIntExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, 0)
     profileEditViewModel.setProfileId(profileId)
 
     binding.apply {
@@ -108,9 +109,15 @@ class ProfileEditActivityPresenter @Inject constructor(
             activity,
             Observer {
               if (it.isSuccess()) {
-                val intent = Intent(activity, ProfileListActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                activity.startActivity(intent)
+                if (activity.resources.getBoolean(R.bool.isTablet)) {
+                  val intent = Intent(activity, AdministratorControlsActivity::class.java)
+                  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                  activity.startActivity(intent)
+                } else {
+                  val intent = Intent(activity, ProfileListActivity::class.java)
+                  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                  activity.startActivity(intent)
+                }
               }
             }
           )

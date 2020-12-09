@@ -25,3 +25,6 @@
 
 /WORKSPACE @BenHenning
 *.bazel @BenHenning
+
+# TODO(#2223): Remove this and replace with segmented ownership.
+* @BenHenning
