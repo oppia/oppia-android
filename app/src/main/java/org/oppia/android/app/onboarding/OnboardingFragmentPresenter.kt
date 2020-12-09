@@ -24,7 +24,6 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>
 ) : OnboardingNavigationListener {
   private val dotsList = ArrayList<ImageView>()
-  private lateinit var onboardingPagerAdapter: OnboardingPagerAdapter
   private lateinit var binding: OnboardingFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -51,6 +50,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     binding.onboardingSlideViewPager.registerOnPageChangeCallback(
       object : ViewPager2.OnPageChangeCallback() {
         override fun onPageScrollStateChanged(state: Int) {
+
         }
 
         override fun onPageScrolled(
