@@ -2,16 +2,11 @@ package org.oppia.android.app.home.topiclist
 
 import android.content.Context
 import android.graphics.Color
-import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.updateLayoutParams
-import androidx.databinding.BindingAdapter
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.TopicSummary
-import javax.inject.Inject
 
 // TODO(#206): Remove the color darkening computation and properly set up the topic thumbnails.
 // These values were roughly computed based on the mocks. They won't produce the same colors since darker colors in the
@@ -45,40 +40,8 @@ class TopicSummaryViewModel (
     topicSummaryClickListener.onTopicSummaryClicked(topicSummary)
   }
 
-  fun setSpanCount(newSpan: Int) {
-    this.spanCount = newSpan
-  }
-
   fun setPosition(newPosition: Int) {
     this.position = newPosition
-  }
-
-  @BindingAdapter("android:layout_marginTop")
-  fun setLayoutMarginTop(view: View, viewModel: TopicSummaryViewModel) {
-    view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-      this.topMargin = computeTopMargin()
-    }
-  }
-
-  @BindingAdapter("android:layout_marginBottom")
-  fun setLayoutMarginBottom(view: View, viewModel: TopicSummaryViewModel) {
-    view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-      this.bottomMargin = computeBottomMargin()
-    }
-  }
-
-  @BindingAdapter("android:layout_marginStart")
-  fun setLayoutMarginStart(view: View, viewModel: TopicSummaryViewModel) {
-    view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-      this.setMarginStart(computeStartMargin())
-    }
-  }
-
-  @BindingAdapter("android:layout_marginEnd")
-  fun setLayoutMarginEnd(view: View, viewModel: TopicSummaryViewModel) {
-    view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-      this.setMarginEnd(computeEndMargin())
-    }
   }
 
   fun computeTopMargin(): Int {
