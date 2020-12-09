@@ -39,21 +39,21 @@ if [[ "$current_branch" != "develop" ]]; then
 
   # Filter all of the source files among those that are actually included in Bazel builds.
   changed_bazel_files=()
-  for changed_file in ${changed_files[@]}; do
+  for changed_file in "${changed_files[@]}"; do
     changed_bazel_files+=($($BAZEL_BINARY query --noshow_progress $changed_file 2> /dev/null))
   done
 
   # Compute the list of affected tests based on source files.
-  source_affected_targets=$($BAZEL_BINARY query --noshow_progress --universe_scope=//... --order_output=no "kind(test, allrdeps(set(${changed_bazel_files[@]})))" 2>/dev/null)
+  source_affected_targets="$($BAZEL_BINARY query --noshow_progress --universe_scope=//... --order_output=no "kind(test, allrdeps(set(${changed_bazel_files[@]})))" 2>/dev/null)"
 
   # Compute the list of files to consider for BUILD-level changes (this uses the base file list as a
   # reference since Bazel's query won't find matching targets for utility bzl files that can still
   # affect the build). https://stackoverflow.com/a/44107086 for reference on changing case matching.
   shopt -s nocasematch
   changed_bazel_support_files=()
-  for changed_file in ${changed_files[@]}; do
+  for changed_file in "${changed_files[@]}"; do
     if [[ "$changed_file" =~ ^.+?\.bazel$ ]] || [[ "$changed_file" =~ ^.+?\.bzl$ ]] || [[ "$changed_file" == "WORKSPACE" ]]; then
-      changed_bazel_support_files+=($changed_file)
+      changed_bazel_support_files+=("$changed_file")
     fi
   done
   shopt -u nocasematch
