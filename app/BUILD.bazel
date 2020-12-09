@@ -87,6 +87,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/story/ExplorationSelectionListener.kt",
     "src/main/java/org/oppia/android/app/topic/RouteToRevisionCardListener.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/StorySummarySelector.kt",
+    "src/main/java/org/oppia/android/app/topic/lessons/ChapterSummarySelector.kt",
     "src/main/java/org/oppia/android/app/topic/revision/RevisionSubtopicSelector.kt",
     "src/main/java/org/oppia/android/app/topic/revisioncard/ReturnToTopicClickListener.kt",
     "src/main/java/org/oppia/android/app/utility/OnClickableAreaClickedListener.kt",
@@ -230,6 +231,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/testing/BindableAdapterTestViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/conceptcard/ConceptCardViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/StorySummaryViewModel.kt",
+    "src/main/java/org/oppia/android/app/topic/lessons/ChapterSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/TopicLessonsItemViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/TopicLessonsTitleViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/practice/practiceitemviewmodel/TopicPracticeFooterViewModel.kt",
@@ -494,6 +496,7 @@ android_library(
         artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
         artifact("androidx.viewpager:viewpager:1.0.0"),
+        artifact("androidx.viewpager2:viewpager2:1.0.0"),
         artifact("com.chaos.view:pinview:1.4.3"),
         artifact("com.google.android.material:material"),
         artifact("de.hdodenhof:circleimageview:3.0.1"),
@@ -616,6 +619,7 @@ kt_android_library(
         artifact("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"),
         artifact("androidx.multidex:multidex:2.0.1"),
         artifact("androidx.viewpager:viewpager:1.0.0"),
+        artifact("androidx.viewpager2:viewpager2:1.0.0"),
         artifact("androidx.work:work-runtime-ktx:2.4.0"),
         artifact("com.caverock:androidsvg-aar"),
         artifact("javax.annotation:javax.annotation-api:jar"),
@@ -687,7 +691,6 @@ TEST_DEPS = [
     artifact("org.robolectric:annotations:4.3"),
 ]
 
-# TODO(#973): Fix app module tests for Robolectric.
 """
 App module tests.
 
@@ -702,7 +705,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "ExplorationActivityLocalTest",
     srcs = ["src/test/java/org/oppia/android/app/player/exploration/ExplorationActivityLocalTest.kt"],
@@ -796,7 +798,6 @@ app_test(
 
 """ App Module Shared Tests """
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "AdministratorControlsActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/administratorcontrols/AdministratorControlsActivityTest.kt")],
@@ -804,7 +805,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "AppVersionActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/administratorcontrols/AppVersionActivityTest.kt")],
@@ -819,7 +819,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "CompletedStoryListActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/completedstorylist/CompletedStoryListActivityTest.kt")],
@@ -848,7 +847,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "HomeActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/home/HomeActivityTest.kt")],
@@ -856,7 +854,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "RecentlyPlayedFragmentTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/home/RecentlyPlayedFragmentTest.kt")],
@@ -879,7 +876,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "OngoingTopicListActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicListActivityTest.kt")],
@@ -887,7 +883,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "OptionsFragmentTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/options/OptionsFragmentTest.kt")],
@@ -895,7 +890,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "HtmlParserTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/parser/HtmlParserTest.kt")],
@@ -903,7 +897,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "AudioFragmentTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/player/audio/AudioFragmentTest.kt")],
@@ -911,7 +904,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "ExplorationActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/player/exploration/ExplorationActivityTest.kt")],
@@ -919,7 +911,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "StateFragmentTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/player/state/StateFragmentTest.kt")],
@@ -927,7 +918,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "AddProfileActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/profile/AddProfileActivityTest.kt")],
@@ -935,7 +925,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "AdminAuthActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/profile/AdminAuthActivityTest.kt")],
@@ -943,7 +932,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "AdminPinActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/profile/AdminPinActivityTest.kt")],
@@ -951,7 +939,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "PinPasswordActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/profile/PinPasswordActivityTest.kt")],
@@ -988,7 +975,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "ProfileEditActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/settings/profile/ProfileEditActivityTest.kt")],
@@ -1003,7 +989,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "ProfileRenameActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/settings/profile/ProfileRenameActivityTest.kt")],
@@ -1011,7 +996,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "ProfileResetPinActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/settings/profile/ProfileResetPinActivityTest.kt")],
@@ -1047,7 +1031,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "ImageRegionSelectionInteractionViewTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/testing/ImageRegionSelectionInteractionViewTest.kt")],
@@ -1071,7 +1054,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "TestFontScaleConfigurationUtilActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/testing/TestFontScaleConfigurationUtilActivityTest.kt")],
@@ -1079,7 +1061,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "TopicTestActivityForStoryTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/testing/TopicTestActivityForStoryTest.kt")],
@@ -1087,7 +1068,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "TopicFragmentTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/TopicFragmentTest.kt")],
@@ -1095,7 +1075,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "ConceptCardFragmentTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/conceptcard/ConceptCardFragmentTest.kt")],
@@ -1103,7 +1082,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "TopicInfoFragmentTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/info/TopicInfoFragmentTest.kt")],
@@ -1111,7 +1089,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "TopicLessonsFragmentTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/lessons/TopicLessonsFragmentTest.kt")],
@@ -1119,7 +1096,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "TopicPracticeFragmentTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/practice/TopicPracticeFragmentTest.kt")],
@@ -1134,7 +1110,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "TopicRevisionFragmentTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/revision/TopicRevisionFragmentTest.kt")],
@@ -1149,7 +1124,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "WalkthroughActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/walkthrough/WalkthroughActivityTest.kt")],
@@ -1157,7 +1131,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "WalkthroughFinalFragmentTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/walkthrough/WalkthroughFinalFragmentTest.kt")],
@@ -1165,7 +1138,6 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#973): Fix app module tests for Robolectric.
 app_test(
     name = "WalkthroughTopicListFragmentTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/walkthrough/WalkthroughTopicListFragmentTest.kt")],
