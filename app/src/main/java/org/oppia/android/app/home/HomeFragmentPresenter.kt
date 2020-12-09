@@ -38,7 +38,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val welcomeViewModelProvider: ViewModelProvider<WelcomeViewModel>,
   private val promotedStoryListViewModelProvider: ViewModelProvider<PromotedStoryListViewModel>,
   private val allTopicsViewModelProvider: ViewModelProvider<AllTopicsViewModel>,
-//  private val topicSummaryViewModelProvider: ViewModelProvider<TopicSummaryViewModel>,
   private val homeViewModelProvider: ViewModelProvider<HomeViewModel>,
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
@@ -47,7 +46,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val routeToTopicListener = activity as RouteToTopicListener
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
-//  private var spanCount = 0
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -65,7 +63,6 @@ class HomeFragmentPresenter @Inject constructor(
     promotedStoryListViewModel.setIntentFactoryShim(intentFactoryShim)
     val allTopicsViewModel = getAllTopicsViewModel()
     val homeViewModel = getHomeViewModel()
-//    homeViewModel.setTopicSummarySpanCount(activity.resources.getInteger(R.integer.home_span_count))
     homeViewModel.addHomeItem(welcomeViewModel)
     homeViewModel.addHomeItem(promotedStoryListViewModel)
     homeViewModel.addHomeItem(allTopicsViewModel)
@@ -195,10 +192,6 @@ class HomeFragmentPresenter @Inject constructor(
   private fun getAllTopicsViewModel(): AllTopicsViewModel {
     return allTopicsViewModelProvider.getForFragment(fragment, AllTopicsViewModel::class.java)
   }
-
-//  private fun getTopicSummaryViewModel(): TopicSummaryViewModel {
-//    return topicSummaryViewModelProvider.getForFragment(fragment, TopicSummaryViewModel::class.java)
-//  }
 
   private fun getHomeViewModel(): HomeViewModel {
     return homeViewModelProvider.getForFragment(fragment, HomeViewModel::class.java)
