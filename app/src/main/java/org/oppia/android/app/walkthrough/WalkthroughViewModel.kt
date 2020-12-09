@@ -1,6 +1,5 @@
 package org.oppia.android.app.walkthrough
 
-import android.opengl.Visibility
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
