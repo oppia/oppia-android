@@ -9,6 +9,7 @@ import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
@@ -21,6 +22,7 @@ class HomeViewModel @Inject constructor(
   private val topicListController: TopicListController,
   @TopicHtmlParserEntityType private val topicEntityType: String
   ) : ObservableViewModel() {
+
   private var itemList: MutableList<HomeItemViewModel> = ArrayList()
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
     topicListController.getTopicList()

@@ -6,26 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.PromotedStoryListAdapter
 import org.oppia.android.app.home.topiclist.PromotedStoryListViewModel
-import org.oppia.android.app.home.topiclist.PromotedStoryViewModel
-import org.oppia.android.app.home.topiclist.TopicListAdapter
-import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.OngoingStoryList
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
@@ -37,11 +27,6 @@ import org.oppia.android.databinding.TopicSummaryViewBinding
 import org.oppia.android.databinding.WelcomeBinding
 import org.oppia.android.databinding.HomeFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.topic.TopicListController
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.parser.StoryHtmlParserEntityType
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -53,7 +38,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val welcomeViewModelProvider: ViewModelProvider<WelcomeViewModel>,
   private val promotedStoryListViewModelProvider: ViewModelProvider<PromotedStoryListViewModel>,
   private val allTopicsViewModelProvider: ViewModelProvider<AllTopicsViewModel>,
-  private val topicSummaryViewModelProvider: ViewModelProvider<TopicSummaryViewModel>,
+//  private val topicSummaryViewModelProvider: ViewModelProvider<TopicSummaryViewModel>,
   private val homeViewModelProvider: ViewModelProvider<HomeViewModel>,
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
@@ -79,9 +64,8 @@ class HomeFragmentPresenter @Inject constructor(
     promotedStoryListViewModel.setActivity(activity)
     promotedStoryListViewModel.setIntentFactoryShim(intentFactoryShim)
     val allTopicsViewModel = getAllTopicsViewModel()
-    val topicSummaryViewModel = getTopicSummaryViewModel()
-    topicSummaryViewModel.setSpanCount(activity.resources.getInteger(R.integer.home_span_count))
     val homeViewModel = getHomeViewModel()
+//    homeViewModel.setTopicSummarySpanCount(activity.resources.getInteger(R.integer.home_span_count))
     homeViewModel.addHomeItem(welcomeViewModel)
     homeViewModel.addHomeItem(promotedStoryListViewModel)
     homeViewModel.addHomeItem(allTopicsViewModel)
@@ -212,9 +196,9 @@ class HomeFragmentPresenter @Inject constructor(
     return allTopicsViewModelProvider.getForFragment(fragment, AllTopicsViewModel::class.java)
   }
 
-  private fun getTopicSummaryViewModel(): TopicSummaryViewModel {
-    return topicSummaryViewModelProvider.getForFragment(fragment, TopicSummaryViewModel::class.java)
-  }
+//  private fun getTopicSummaryViewModel(): TopicSummaryViewModel {
+//    return topicSummaryViewModelProvider.getForFragment(fragment, TopicSummaryViewModel::class.java)
+//  }
 
   private fun getHomeViewModel(): HomeViewModel {
     return homeViewModelProvider.getForFragment(fragment, HomeViewModel::class.java)
