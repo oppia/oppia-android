@@ -19,7 +19,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest(){
+class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
   private val ITEM_SELECTION_SET_5 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
