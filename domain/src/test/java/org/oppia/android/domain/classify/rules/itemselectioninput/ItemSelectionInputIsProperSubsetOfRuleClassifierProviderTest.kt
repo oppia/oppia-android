@@ -1,7 +1,6 @@
 package org.oppia.android.domain.classify.rules.itemselectioninput
 
 import android.app.Application
-import android.graphics.Bitmap
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth
@@ -78,7 +77,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest(){
   }
 
   @Test
-  fun answerSetMoreThanInputSet_isSubset_returnsFalse(){
+  fun answerSetMoreThanInputSet_isSubset_returnsFalse() {
     val inputs = mapOf("x" to ITEM_SELECTION_SET_SUBSET)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -90,7 +89,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest(){
   }
 
   @Test
-  fun answerSetMoreThanInputSet_notSubset_returnsFalse(){
+  fun answerSetMoreThanInputSet_notSubset_returnsFalse() {
     val inputs = mapOf("x" to ITEM_SELECTION_SET_ONE_ELEMENT_PRESENT)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -102,7 +101,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest(){
   }
 
   @Test
-  fun answerSetLessThanInputSet_isSubset_returnsTrue(){
+  fun answerSetLessThanInputSet_isSubset_returnsTrue() {
     val inputs = mapOf("x" to ITEM_SELECTION_SET_5)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -114,7 +113,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest(){
   }
 
   @Test
-  fun answerSetLessThanInputSet_notSubset_returnsFalse(){
+  fun answerSetLessThanInputSet_notSubset_returnsFalse() {
     val inputs = mapOf("x" to ITEM_SELECTION_SET_5)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -126,7 +125,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest(){
   }
 
   @Test
-  fun inputSetEmpty_returnsFalse(){
+  fun inputSetEmpty_returnsFalse() {
     val inputs = mapOf("x" to ITEM_SELECTION_SET_EMPTY)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -138,7 +137,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest(){
   }
 
   @Test
-  fun answerSetSameAsInputSet_notSubset_returnsFalse(){
+  fun answerSetSameAsInputSet_notSubset_returnsFalse() {
     val inputs = mapOf("x" to ITEM_SELECTION_SET_SUBSET)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -150,7 +149,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest(){
   }
 
   @Test
-  fun answerSetSameAsInputSet_isSubset_returnsFalse(){
+  fun answerSetSameAsInputSet_isSubset_returnsFalse() {
     val inputs = mapOf("x" to ITEM_SELECTION_SET_5)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -182,5 +181,4 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest(){
 
     fun inject(test: ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest)
   }
-
 }
