@@ -104,6 +104,7 @@ class HomeFragmentPresenter @Inject constructor(
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
+//      .
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_WELCOME_MESSAGE,
         inflateDataBinding = WelcomeBinding::inflate,
@@ -174,6 +175,7 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
+    VIEW_TYPE_HOME,
     VIEW_TYPE_WELCOME_MESSAGE,
     VIEW_TYPE_PROMOTED_STORY_LIST,
     VIEW_TYPE_ALL_TOPICS,

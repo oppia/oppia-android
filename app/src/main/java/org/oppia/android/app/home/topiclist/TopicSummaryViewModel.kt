@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.BindingAdapter
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.TopicSummary
@@ -17,7 +18,7 @@ const val DARKEN_SATURATION_MULTIPLIER: Float = 1.2f
 
 /** The view model corresponding to individual topic summaries in the topic summary RecyclerView. */
 class TopicSummaryViewModel (
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   val topicSummary: TopicSummary,
   val entityType: String,
   private val topicSummaryClickListener: TopicSummaryClickListener
@@ -30,10 +31,13 @@ class TopicSummaryViewModel (
   val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
   private val marginTopBottom = (activity as Context).resources
       .getDimensionPixelSize(R.dimen.topic_list_item_margin_top_bottom)
-  private val marginMax = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_max)
-  private val marginMin = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_min)
+  private val marginMax by lazy {
+    (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_max) }
+  private val marginMin by lazy {
+    (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_min) }
   private var position = -1
-  private var spanCount = activity.resources.getInteger(R.integer.home_span_count)
+  private val spanCount by lazy {
+    activity.resources.getInteger(R.integer.home_span_count) }
 
   /** Callback from data-binding for when the summary tile is clicked. */
   fun clickOnSummaryTile() {
@@ -53,59 +57,55 @@ class TopicSummaryViewModel (
   }
 
   fun computeStartMargin(): Int {
-    var margin  = 0
-    when (spanCount) {
+    return when (spanCount) {
       2 -> {
         when (position % spanCount) {
-          0 -> margin = marginMin
-          else -> margin = marginMax
+          0 -> marginMin
+          else -> marginMax
         }
       }
       3 -> {
         when (position % spanCount) {
-          0 -> margin = marginMax
-          1 -> margin = marginMin
-          2 -> margin = 0
+          0 -> marginMax
+          1 -> marginMin
+          2 ->  0
+          else -> 0
         }
       }
       4 -> {
         when ((position + 1) % spanCount) {
-          0 -> margin = marginMax
-          1 -> margin = marginMin
-          2 -> margin = marginMin / 2
-          3 -> margin = 0
+          0 -> marginMax
+          1 -> marginMin
+          2 -> marginMin / 2
+          3 -> 0
+          else -> 0
         }
       }
+      else -> 0
     }
-    return margin  // error here?
   }
 
   fun computeEndMargin(): Int {
-    var margin = 0
-    when (spanCount) {
-      2 -> {
-        when (position % spanCount) {
-          0 -> margin = marginMax
-          else -> margin = marginMin
-        }
+    return when (spanCount) {
+      2 -> when (position % spanCount) {
+        0 -> marginMax
+        else -> marginMin
       }
-      3 -> {
-        when (position % spanCount) {
-          0 -> margin = 0
-          1 -> margin = marginMin
-          2 -> margin = marginMax
-        }
+      3 -> when (position % spanCount) {
+        0 -> 0
+        1 -> marginMin
+        2 -> marginMax
+        else -> 0
       }
-      4 -> {
-        when ((position + 1) % spanCount) {
-          0 -> margin = 0
-          1 -> margin = marginMin / 2
-          2 -> margin = marginMin
-          3 -> margin = marginMax
-        }
+      4 -> when ((position + 1) % spanCount) {
+        0 -> 0
+        1 -> marginMin / 2
+        2 -> marginMin
+        3 -> marginMax
+        else -> 0
       }
+      else -> 0
     }
-    return margin // error here?
   }
 
   @ColorInt
