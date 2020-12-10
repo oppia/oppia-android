@@ -1,25 +1,21 @@
 package org.oppia.android.app.home
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.R
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
-import org.oppia.android.app.home.topiclist.PromotedStoryListAdapter
 import org.oppia.android.app.home.topiclist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.databinding.AllTopicsBinding
 import org.oppia.android.databinding.PromotedStoryListBinding
@@ -132,7 +128,7 @@ class HomeFragmentPresenter @Inject constructor(
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_PROMOTED_STORY_LIST,
         inflateDataBinding = PromotedStoryListBinding::inflate,
-        setViewModel = this::bindPromotedStoryListView,  // PromotedStoryListBinding::setViewModel
+        setViewModel = PromotedStoryListBinding::setViewModel,
         transformViewModel = { it as PromotedStoryListViewModel }
       )
       .registerViewDataBinder(
@@ -148,42 +144,6 @@ class HomeFragmentPresenter @Inject constructor(
         transformViewModel = { it as TopicSummaryViewModel }
       )
       .build()
-  }
-
-  private fun bindPromotedStoryListView(
-    binding: PromotedStoryListBinding,
-    model: PromotedStoryListViewModel
-  ) {
-    binding.viewModel = model
-    if (activity.resources.getBoolean(R.bool.isTablet)) {
-      binding.itemCount = model.promotedStoryListLiveData.value!!.size
-    }
-    val promotedStoryAdapter = PromotedStoryListAdapter(activity, model.promotedStoryListLiveData.value!!)
-    val horizontalLayoutManager =
-      LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, /* reverseLayout= */ false)
-    binding.promotedStoryListRecyclerView.apply {
-      layoutManager = horizontalLayoutManager
-      adapter = promotedStoryAdapter
-    }
-
-    /*
-     * The StartSnapHelper is used to snap between items rather than smooth scrolling,
-     * so that the item is completely visible in [HomeFragment] as soon as learner lifts the finger after scrolling.
-     */
-    val snapHelper = StartSnapHelper()
-    binding.promotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
-    binding.promotedStoryListRecyclerView.setOnFlingListener(null)
-    snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
-
-    val paddingEnd =
-      (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_end)
-    val paddingStart =
-      (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_start)
-    if (model.promotedStoryListLiveData.value!!.size > 1) {
-      binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingEnd, 0)
-    } else {
-      binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingStart, 0)
-    }
   }
 
   private enum class ViewType {

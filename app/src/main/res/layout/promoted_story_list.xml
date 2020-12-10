@@ -58,6 +58,13 @@
       android:layout_marginTop="4dp"
       android:overScrollMode="never"
       android:scrollbars="none"
+      android:orientation="horizontal"
+      android:paddingStart="@{viewModel.paddingStart}"
+      android:paddingEnd="@{viewModel.promotedStoryListLiveData.size() > 1 ? viewModel.paddingEnd : viewModel.paddingStart}"
+      android:paddingTop="0dp"
+      android:paddingBottom="0dp"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:reverseLayout="false"
       app:data="@{viewModel.promotedStoryListLiveData}" />
   </LinearLayout>
 </layout>

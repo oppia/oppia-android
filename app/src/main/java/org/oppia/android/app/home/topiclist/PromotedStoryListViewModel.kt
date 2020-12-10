@@ -32,13 +32,16 @@ class PromotedStoryListViewModel @Inject constructor(
   private val activity: AppCompatActivity,
   private val internalProfileId: Int,
   private val intentFactoryShim: IntentFactoryShim,
-  private val topicListController,
+  private val topicListController: TopicListController,
   @StoryHtmlParserEntityType private val storyEntityType: String
 ) :
   HomeItemViewModel(),
   RouteToRecentlyPlayedListener {
-  private val orientation = Resources.getSystem().configuration.orientation
   private val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
+  val paddingEnd =
+    (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_end)
+  val paddingStart =
+    (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_start)
 
   private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>>
     by lazy {
@@ -103,43 +106,14 @@ class PromotedStoryListViewModel @Inject constructor(
     activity.startActivity(intent)
   }
 
-  inner class PromotedStoryListViewHolder(val binding: PromotedStoryListBinding) :
-    RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(
-      activity: AppCompatActivity,
-      promotedStoryListViewModel: PromotedStoryListViewModel,
-      promotedStoryList: MutableList<PromotedStoryViewModel>
-    ) {
-      binding.viewModel = promotedStoryListViewModel
-      if (activity.resources.getBoolean(R.bool.isTablet)) {  // Is this still needed?
-        binding.itemCount = promotedStoryList.size
-      }
-      val promotedStoryAdapter = PromotedStoryListAdapter(activity, promotedStoryList)
-      val horizontalLayoutManager =
-        LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, /* reverseLayout= */ false)
-      binding.promotedStoryListRecyclerView.apply {
-        layoutManager = horizontalLayoutManager
-        adapter = promotedStoryAdapter
-      }
 
-      /*
-       * The StartSnapHelper is used to snap between items rather than smooth scrolling,
-       * so that the item is completely visible in [HomeFragment] as soon as learner lifts the finger after scrolling.
-       */
-      val snapHelper = StartSnapHelper()
-      binding.promotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
-      binding.promotedStoryListRecyclerView.setOnFlingListener(null)
-      snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
-
-      val paddingEnd =
-        (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_end)
-      val paddingStart =
-        (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_start)
-      if (promotedStoryList.size > 1) {
-        binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingEnd, 0)
-      } else {
-        binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingStart, 0)
-      }
-    }
-  }
+//    /*
+//     * The StartSnapHelper is used to snap between items rather than smooth scrolling,
+//     * so that the item is completely visible in [HomeFragment] as soon as learner lifts the finger after scrolling.
+//     */
+//    val snapHelper = StartSnapHelper()
+//    binding.promotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
+//    binding.promotedStoryListRecyclerView.setOnFlingListener(null)
+//    snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
+//  }
 }
