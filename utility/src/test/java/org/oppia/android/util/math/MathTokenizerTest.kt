@@ -7,16 +7,24 @@ import org.junit.runner.RunWith
 import org.oppia.android.util.math.MathTokenizer.Token.CloseParenthesis
 import org.oppia.android.util.math.MathTokenizer.Token.DecimalNumber
 import org.oppia.android.util.math.MathTokenizer.Token.Identifier
+import org.oppia.android.util.math.MathTokenizer.Token.InvalidIdentifier
 import org.oppia.android.util.math.MathTokenizer.Token.InvalidToken
 import org.oppia.android.util.math.MathTokenizer.Token.OpenParenthesis
 import org.oppia.android.util.math.MathTokenizer.Token.Operator
 import org.oppia.android.util.math.MathTokenizer.Token.WholeNumber
 import org.robolectric.annotation.LooperMode
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
+import kotlin.test.fail
 
 /** Tests for [MathTokenizer]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class MathTokenizerTest {
+  private val ALLOWED_XYZ_VARIABLES = listOf("x", "y", "z")
+  private val ALLOWED_XYZ_WITH_LAMBDA_VARIABLES = ALLOWED_XYZ_VARIABLES + listOf("lambda")
+  private val ALLOWED_XYZ_WITH_COMBINED_XYZ_VARIABLES = ALLOWED_XYZ_VARIABLES + listOf("xyz")
+
   @Test
   fun testTokenize_emptyString_producesNoTokens() {
     val tokens = MathTokenizer.tokenize("").toList()
@@ -131,9 +139,29 @@ class MathTokenizerTest {
   }
 
   @Test
+  fun testTokenize_formalMultiplicationSign_producesAsteriskOperatorToken() {
+    val tokens = MathTokenizer.tokenize("×").toList()
+
+    // The formal math multiplication symbol is translated to the conventional one for simplicity.
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens.first()).isInstanceOf(Operator::class.java)
+    assertThat((tokens.first() as Operator).operator).isEqualTo('*')
+  }
+
+  @Test
   fun testTokenize_forwardSlash_producesOperatorToken() {
     val tokens = MathTokenizer.tokenize("/").toList()
 
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens.first()).isInstanceOf(Operator::class.java)
+    assertThat((tokens.first() as Operator).operator).isEqualTo('/')
+  }
+
+  @Test
+  fun testTokenize_formalDivisionSign_producesForwardSlashOperatorToken() {
+    val tokens = MathTokenizer.tokenize("÷").toList()
+
+    // The formal math division symbol is translated to the conventional one for simplicity.
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(Operator::class.java)
     assertThat((tokens.first() as Operator).operator).isEqualTo('/')
@@ -158,7 +186,7 @@ class MathTokenizerTest {
   }
 
   @Test
-  fun testTokenize_identifier_producesIdentifierToken() {
+  fun testTokenize_defaultIdentifier_producesIdentifierToken() {
     val tokens = MathTokenizer.tokenize("x").toList()
 
     assertThat(tokens).hasSize(1)
@@ -167,8 +195,89 @@ class MathTokenizerTest {
   }
 
   @Test
+  fun testTokenize_defaultIdentifier_withNoIdentifiersProvided_producesInvalidIdentifierToken() {
+    val tokens = MathTokenizer.tokenize("x", allowedIdentifiers = listOf()).toList()
+
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens.first()).isInstanceOf(InvalidIdentifier::class.java)
+    assertThat((tokens.first() as InvalidIdentifier).name).isEqualTo("x")
+  }
+
+  @Test
+  fun testTokenize_defaultIdentifier_withInvalidAllowedIdentifiers_throwsException() {
+    val exception = assertThrows(IllegalArgumentException::class) {
+      MathTokenizer.tokenize("x", allowedIdentifiers = listOf("valid", "invalid!")).toList()
+    }
+
+    assertThat(exception).hasMessageThat().contains("contains non-letters: invalid!")
+  }
+
+  @Test
+  fun testTokenize_nonDefaultIdentifier_withDefaultIdentifiers_producesInvalidIdentifierToken() {
+    val tokens = MathTokenizer.tokenize("z").toList()
+
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens.first()).isInstanceOf(InvalidIdentifier::class.java)
+    assertThat((tokens.first() as InvalidIdentifier).name).isEqualTo("z")
+  }
+
+  @Test
+  fun testTokenize_nonDefaultIdentifier_withAllowedIdentifiers_producesIdentifierToken() {
+    val tokens = MathTokenizer.tokenize("z", allowedIdentifiers = listOf("z")).toList()
+
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens.first()).isInstanceOf(Identifier::class.java)
+    assertThat((tokens.first() as Identifier).name).isEqualTo("z")
+  }
+
+  @Test
+  fun testTokenize_nonDefaultIdentifierLowercase_withAllowedIdentifiersUpper_producesIdToken() {
+    val tokens = MathTokenizer.tokenize("z", allowedIdentifiers = listOf("Z")).toList()
+
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens.first()).isInstanceOf(Identifier::class.java)
+    assertThat((tokens.first() as Identifier).name).isEqualTo("z")
+  }
+
+  @Test
+  fun testTokenize_nonDefaultIdentifierUppercase_withAllowedIdentifiersLower_producesIdToken() {
+    val tokens = MathTokenizer.tokenize("Z", allowedIdentifiers = listOf("z")).toList()
+
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens.first()).isInstanceOf(Identifier::class.java)
+    assertThat((tokens.first() as Identifier).name).isEqualTo("z")
+  }
+
+  @Test
+  fun testTokenize_nonDefaultIdentifierUppercase_withAllowedIdentifiersUpper_producesIdToken() {
+    val tokens = MathTokenizer.tokenize("Z", allowedIdentifiers = listOf("Z")).toList()
+
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens.first()).isInstanceOf(Identifier::class.java)
+    assertThat((tokens.first() as Identifier).name).isEqualTo("z")
+  }
+
+  @Test
+  fun testTokenize_greekLetterIdentifier_withAllowedIdentifiers_producesIdentifierToken() {
+    val tokens = MathTokenizer.tokenize("π", allowedIdentifiers = listOf("π")).toList()
+
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens.first()).isInstanceOf(Identifier::class.java)
+    assertThat((tokens.first() as Identifier).name).isEqualTo("π")
+  }
+
+  @Test
+  fun testTokenize_greekLetterIdentifier_withAllowedIdentifiersUppercase_producesIdentifierToken() {
+    val tokens = MathTokenizer.tokenize("π", allowedIdentifiers = listOf("Π")).toList()
+
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens.first()).isInstanceOf(Identifier::class.java)
+    assertThat((tokens.first() as Identifier).name).isEqualTo("π")
+  }
+
+  @Test
   fun testTokenize_multipleIdentifiers_withoutSpaces_producesIdentifierTokensForEachInOrder() {
-    val tokens = MathTokenizer.tokenize("xyz").toList()
+    val tokens = MathTokenizer.tokenize("xyz", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(3)
     assertThat(tokens[0]).isInstanceOf(Identifier::class.java)
@@ -180,8 +289,28 @@ class MathTokenizerTest {
   }
 
   @Test
-  fun testTokenize_multipleIdentifiers_withSpaces_producesIdentifierTokensForEachInOrder() {
-    val tokens = MathTokenizer.tokenize("x y z").toList()
+  fun testTokenize_validMultiWordIdentifier_producesSingleIdentifierToken() {
+    val tokens = MathTokenizer.tokenize("lambda", allowedIdentifiers = listOf("lambda")).toList()
+
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens.first()).isInstanceOf(Identifier::class.java)
+    assertThat((tokens.first() as Identifier).name).isEqualTo("lambda")
+  }
+
+  @Test
+  fun testTokenize_invalidMultiWordIdentifier_missingFromAllowedList_producesInvalidIdToken() {
+    val tokens = MathTokenizer.tokenize("xyz").toList()
+
+    // Note that even though 'x' and 'y' are valid single-letter variables, because 'z' is
+    // encountered the whole set of letters is considered a single invalid variable.
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens.first()).isInstanceOf(InvalidIdentifier::class.java)
+    assertThat((tokens.first() as InvalidIdentifier).name).isEqualTo("xyz")
+  }
+
+  @Test
+  fun testTokenize_multipleIdentifiers_singleLetter_withSpaces_producesIdTokensForEachInOrder() {
+    val tokens = MathTokenizer.tokenize("x y z", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(3)
     assertThat(tokens[0]).isInstanceOf(Identifier::class.java)
@@ -190,6 +319,133 @@ class MathTokenizerTest {
     assertThat((tokens[0] as Identifier).name).isEqualTo("x")
     assertThat((tokens[1] as Identifier).name).isEqualTo("y")
     assertThat((tokens[2] as Identifier).name).isEqualTo("z")
+  }
+
+  @Test
+  fun testTokenize_multipleIdentifiers_multiLetter_withSpaces_producesIdTokensForEachInOrder() {
+    val tokens = MathTokenizer.tokenize("abc def", listOf("abc", "def")).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isInstanceOf(Identifier::class.java)
+    assertThat(tokens[1]).isInstanceOf(Identifier::class.java)
+    assertThat((tokens[0] as Identifier).name).isEqualTo("abc")
+    assertThat((tokens[1] as Identifier).name).isEqualTo("def")
+  }
+
+  @Test
+  fun testTokenize_multipleIdentifiers_mixed_withSpaces_producesIdTokensForEachInOrder() {
+    val tokens = MathTokenizer.tokenize("a lambda", listOf("a", "lambda")).toList()
+
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isInstanceOf(Identifier::class.java)
+    assertThat(tokens[1]).isInstanceOf(Identifier::class.java)
+    assertThat((tokens[0] as Identifier).name).isEqualTo("a")
+    assertThat((tokens[1] as Identifier).name).isEqualTo("lambda")
+  }
+
+  @Test
+  fun testTokenize_multiplyTwoVariables_singleLetter_producesCorrectTokens() {
+    val tokens = MathTokenizer.tokenize("x*y", ALLOWED_XYZ_VARIABLES).toList()
+
+    assertThat(tokens).hasSize(3)
+    assertThat(tokens[0]).isInstanceOf(Identifier::class.java)
+    assertThat(tokens[1]).isInstanceOf(Operator::class.java)
+    assertThat(tokens[2]).isInstanceOf(Identifier::class.java)
+    assertThat((tokens[0] as Identifier).name).isEqualTo("x")
+    assertThat((tokens[1] as Operator).operator).isEqualTo('*')
+    assertThat((tokens[2] as Identifier).name).isEqualTo("y")
+  }
+
+  @Test
+  fun testTokenize_multiplyTwoVariables_multiLetter_producesCorrectTokens() {
+    val tokens = MathTokenizer.tokenize("abc*def", listOf("abc", "def")).toList()
+
+    assertThat(tokens).hasSize(3)
+    assertThat(tokens[0]).isInstanceOf(Identifier::class.java)
+    assertThat(tokens[1]).isInstanceOf(Operator::class.java)
+    assertThat(tokens[2]).isInstanceOf(Identifier::class.java)
+    assertThat((tokens[0] as Identifier).name).isEqualTo("abc")
+    assertThat((tokens[1] as Operator).operator).isEqualTo('*')
+    assertThat((tokens[2] as Identifier).name).isEqualTo("def")
+  }
+
+  @Test
+  fun testTokenize_multipleMultiLetterVar_withConsecutiveSingleLetter_producesTokensForAllIds() {
+    val tokens = MathTokenizer.tokenize("lambda*xyz", ALLOWED_XYZ_WITH_LAMBDA_VARIABLES).toList()
+
+    // The 'lambda' is a single variable, but the individual 'xyz' are separate variables that each
+    // show up separately (which allows interpreting implicit multiplication).
+    assertThat(tokens).hasSize(5)
+    assertThat(tokens[0]).isInstanceOf(Identifier::class.java)
+    assertThat(tokens[1]).isInstanceOf(Operator::class.java)
+    assertThat(tokens[2]).isInstanceOf(Identifier::class.java)
+    assertThat(tokens[3]).isInstanceOf(Identifier::class.java)
+    assertThat(tokens[4]).isInstanceOf(Identifier::class.java)
+    assertThat((tokens[0] as Identifier).name).isEqualTo("lambda")
+    assertThat((tokens[1] as Operator).operator).isEqualTo('*')
+    assertThat((tokens[2] as Identifier).name).isEqualTo("x")
+    assertThat((tokens[3] as Identifier).name).isEqualTo("y")
+    assertThat((tokens[4] as Identifier).name).isEqualTo("z")
+  }
+
+  @Test
+  fun testTokenize_ambiguousMutliSingleLetterIds_producesIdForPreferredMultiLetterId() {
+    val tokens = MathTokenizer.tokenize("xyz", ALLOWED_XYZ_WITH_COMBINED_XYZ_VARIABLES).toList()
+
+    // A single identifier should be parsed since the combined variable is encountered, and that
+    // takes precedent.
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens[0]).isInstanceOf(Identifier::class.java)
+    assertThat((tokens[0] as Identifier).name).isEqualTo("xyz")
+  }
+
+  @Test
+  fun testTokenize_ambiguousMutliSingleLetterIds_singleLetterIdsAlone_producesIdTokens() {
+    val tokens = MathTokenizer.tokenize("x y z", ALLOWED_XYZ_WITH_COMBINED_XYZ_VARIABLES).toList()
+
+    assertThat(tokens).hasSize(3)
+    assertThat(tokens[0]).isInstanceOf(Identifier::class.java)
+    assertThat(tokens[1]).isInstanceOf(Identifier::class.java)
+    assertThat(tokens[2]).isInstanceOf(Identifier::class.java)
+    assertThat((tokens[0] as Identifier).name).isEqualTo("x")
+    assertThat((tokens[1] as Identifier).name).isEqualTo("y")
+    assertThat((tokens[2] as Identifier).name).isEqualTo("z")
+  }
+
+  @Test
+  fun testTokenize_ambiguousMutliSingleLetterIds_multiIdSubstring_producesIndividualIdTokens() {
+    val tokens = MathTokenizer.tokenize("yz", ALLOWED_XYZ_WITH_COMBINED_XYZ_VARIABLES).toList()
+
+    // Partial substring of 'xyz' produces separate tokens since the whole token isn't present.
+    assertThat(tokens).hasSize(2)
+    assertThat(tokens[0]).isInstanceOf(Identifier::class.java)
+    assertThat(tokens[1]).isInstanceOf(Identifier::class.java)
+    assertThat((tokens[0] as Identifier).name).isEqualTo("y")
+    assertThat((tokens[1] as Identifier).name).isEqualTo("z")
+  }
+
+  @Test
+  fun testTokenize_ambiguousMutliSingleLetterIds_outOfOrder_producesIdTokens() {
+    val tokens = MathTokenizer.tokenize("zyx", ALLOWED_XYZ_WITH_COMBINED_XYZ_VARIABLES).toList()
+
+    // Reversing the tokens doesn't match the overall variable, so return separate variables.
+    assertThat(tokens).hasSize(3)
+    assertThat(tokens[0]).isInstanceOf(Identifier::class.java)
+    assertThat(tokens[1]).isInstanceOf(Identifier::class.java)
+    assertThat(tokens[2]).isInstanceOf(Identifier::class.java)
+    assertThat((tokens[0] as Identifier).name).isEqualTo("z")
+    assertThat((tokens[1] as Identifier).name).isEqualTo("y")
+    assertThat((tokens[2] as Identifier).name).isEqualTo("x")
+  }
+
+  @Test
+  fun testTokenize_ambiguousMutliSingleLetterIds_multiWord_withInvalidLetter_producesInvalidId() {
+    val tokens = MathTokenizer.tokenize("xyzw", ALLOWED_XYZ_WITH_COMBINED_XYZ_VARIABLES).toList()
+
+    // A single letter is sufficient to lead to an error ID.
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens[0]).isInstanceOf(InvalidIdentifier::class.java)
+    assertThat((tokens[0] as InvalidIdentifier).name).isEqualTo("xyzw")
   }
 
   @Test
@@ -282,5 +538,19 @@ class MathTokenizerTest {
 
     assertThat(tokens[14]).isInstanceOf(WholeNumber::class.java)
     assertThat((tokens[14] as WholeNumber).value).isEqualTo(3)
+  }
+
+  // TODO(#89): Move to a common test library.
+  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
+    try {
+      operation()
+      fail("Expected to encounter exception of $type")
+    } catch (t: Throwable) {
+      if (type.isInstance(t)) {
+        return type.cast(t)
+      }
+      // Unexpected exception; throw it.
+      throw t
+    }
   }
 }
