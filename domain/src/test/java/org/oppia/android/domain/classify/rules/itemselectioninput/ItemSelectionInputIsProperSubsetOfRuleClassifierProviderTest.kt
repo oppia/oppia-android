@@ -3,7 +3,7 @@ package org.oppia.android.domain.classify.rules.itemselectioninput
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import org.junit.Before
@@ -85,7 +85,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
       inputs = inputs
     )
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -97,7 +97,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
       inputs = inputs
     )
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -109,7 +109,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
       inputs = inputs
     )
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -121,7 +121,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
       inputs = inputs
     )
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -133,7 +133,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
       inputs = inputs
     )
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -145,7 +145,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
       inputs = inputs
     )
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -157,7 +157,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
       inputs = inputs
     )
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   private fun setUpTestApplicationComponent() {
