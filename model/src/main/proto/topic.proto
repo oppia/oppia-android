@@ -88,6 +88,9 @@ message ChapterSummary {
 
   // The thumbnail corresponding to this chapter.
   LessonThumbnail chapter_thumbnail = 5;
+
+  // Prerequisite chapter to unlock this chapter.
+  ChapterSummary prerequisite_chapter = 6;
 }
 
 // A summary of a skill that can be trained or reviewed by the player.

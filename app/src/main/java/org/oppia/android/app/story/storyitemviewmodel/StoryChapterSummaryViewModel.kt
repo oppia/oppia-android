@@ -22,13 +22,13 @@ class StoryChapterSummaryViewModel(
   val topicId: String,
   val storyId: String,
   val chapterSummary: ChapterSummary,
-  val previousChapterTitle: String,
   val entityType: String
 ) : StoryItemViewModel() {
   val explorationId: String = chapterSummary.explorationId
   val name: String = chapterSummary.name
   val summary: String = chapterSummary.summary
   val chapterThumbnail: LessonThumbnail = chapterSummary.chapterThumbnail
+  val prerequisiteChapter: ChapterSummary = chapterSummary.prerequisiteChapter
 
   fun onExplorationClicked() {
     explorationDataController.stopPlayingExploration()
