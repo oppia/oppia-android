@@ -160,7 +160,25 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_openNavDrawer_profileNameIsDisplayed() {
+  fun testNavigationDrawerTestActivity_openNavDrawer_navDrawerIsOpened() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_openNavDrawer_changeConfig_navDrawerIsDisplayed() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_withAdminProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -178,7 +196,7 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_openNavDrawer_changeConfig_profileNameIsDisplayed() {
+  fun testNavigationDrawerTestActivity_withAdminProfile_changeConfig_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -254,25 +272,7 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_openNavDrawer_navigationDrawerIsOpened() {
-    launch(NavigationDrawerTestActivity::class.java).use {
-      it.openNavigationDrawer()
-      onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
-    }
-  }
-
-  @Test
-  fun testNavigationDrawerTestActivity_openNavDrawer_changeConfig_navDrawerIsDisplayed() {
-    launch(NavigationDrawerTestActivity::class.java).use {
-      it.openNavigationDrawer()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
-    }
-  }
-
-  @Test
-  fun testNavigationDrawerTestActivity_openNavDrawer_adminControlsIsDisplayed() {
+  fun testNavigationDrawerTestActivity_withAdminProfile_openNavDrawer_adminControlsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -282,7 +282,7 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_openNavDrawer_changeConfig_adminControlsIsDisplayed() {
+  fun testNavigationDrawerTestActivity_withAdminProfile_changeConfig_adminControlsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -294,7 +294,7 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_adminControlsMenu_opensAdminControlsActivity() {
+  fun testNavigationDrawerTestActivity_withAdminProfile_adminMenu_opensAdminControlsActivity() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -309,7 +309,7 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_withUserProfile_openNavDrawer_adminControlsIsNotDisplayed() {
+  fun testNavigationDrawerTestActivity_withUserProfile_adminControlsIsNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId1
