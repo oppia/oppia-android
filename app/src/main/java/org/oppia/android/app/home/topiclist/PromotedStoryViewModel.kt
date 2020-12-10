@@ -1,13 +1,22 @@
 package org.oppia.android.app.home.topiclist
 
+import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.view.ViewGroup
+import android.view.animation.Transformation
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.R
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.databinding.PromotedStoryCardBinding
 
 // TODO(#283): Add download status information to promoted-story-card.
 
@@ -27,10 +36,33 @@ class PromotedStoryViewModel(
    * always in sync.
    */
   val promotedStoryObservable = ObservableField<PromotedStory>()
+  val promotedStoryLiveData: LiveData<PromotedStory> by lazy {
+    Transformations.map()
+  }
+  private val orientation = Resources.getSystem().configuration.orientation
 
   fun setPromotedStory(promotedStory: PromotedStory) {
     promotedStoryObservable.set(promotedStory)
   }
+
+//  inner class PromotedStoryViewHolder(
+//    val binding: PromotedStoryCardBinding
+//  ) : RecyclerView.ViewHolder(binding.root) {
+//    internal fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
+//      binding.viewModel = promotedStoryViewModel
+//      val layoutParams = binding.promotedStoryCardContainer.layoutParams
+//      layoutParams.width = if (itemCount > 1) {
+//        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+//          ViewGroup.LayoutParams.MATCH_PARENT
+//        } else {
+//          (activity as Context).resources.getDimensionPixelSize(R.dimen.promoted_story_card_width)
+//        }
+//      } else {
+//        ViewGroup.LayoutParams.MATCH_PARENT
+//      }
+//      binding.promotedStoryCardContainer.layoutParams = layoutParams
+//    }
+//  }
 
   fun clickOnStoryTile() {
     routeToTopicPlayStory(

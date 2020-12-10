@@ -141,7 +141,7 @@ class TopicListAdapter(
       promotedStoryList: MutableList<PromotedStoryViewModel>
     ) {
       binding.viewModel = promotedStoryListViewModel
-      if (activity.resources.getBoolean(R.bool.isTablet)) {
+      if (activity.resources.getBoolean(R.bool.isTablet)) {  // reset dataList to match number of stories to display => why does tablet matter
         binding.itemCount = promotedStoryList.size
       }
       val promotedStoryAdapter = PromotedStoryListAdapter(activity, promotedStoryList)

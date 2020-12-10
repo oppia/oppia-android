@@ -9,23 +9,29 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.R
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.PromotedStoryListAdapter
 import org.oppia.android.app.home.topiclist.PromotedStoryListViewModel
-import org.oppia.android.app.home.topiclist.PromotedStoryViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
-import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.databinding.AllTopicsBinding
 import org.oppia.android.databinding.PromotedStoryListBinding
 import org.oppia.android.databinding.TopicSummaryViewBinding
 import org.oppia.android.databinding.WelcomeBinding
 import org.oppia.android.databinding.HomeFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.StoryHtmlParserEntityType
+import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -34,12 +40,14 @@ import javax.inject.Inject
 class HomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val welcomeViewModelProvider: ViewModelProvider<WelcomeViewModel>,
-  private val promotedStoryListViewModelProvider: ViewModelProvider<PromotedStoryListViewModel>,
-  private val allTopicsViewModelProvider: ViewModelProvider<AllTopicsViewModel>,
-  private val homeViewModelProvider: ViewModelProvider<HomeViewModel>,
+  private val profileManagementController: ProfileManagementController,
+  private val topicListController: TopicListController,
   private val oppiaClock: OppiaClock,
-  private val oppiaLogger: OppiaLogger
+  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
+  private val intentFactoryShim: IntentFactoryShim,
+  @TopicHtmlParserEntityType private val topicEntityType: String,
+  @StoryHtmlParserEntityType private val storyEntityType: String
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
   private lateinit var binding: HomeFragmentBinding
@@ -50,12 +58,31 @@ class HomeFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    val welcomeViewModel = getWelcomeViewModel()
+    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val welcomeViewModel = WelcomeViewModel(
+      logger,
+      fragment,
+      oppiaClock,
+      profileManagementController,
+      profileId
+    )
     logHomeActivityEvent()
 
-    val promotedStoryListViewModel = getPromotedStoryListViewModel()
-    val allTopicsViewModel = getAllTopicsViewModel()
-    val homeViewModel = getHomeViewModel()
+    val promotedStoryListViewModel = PromotedStoryListViewModel(
+      activity,
+      internalProfileId,
+      intentFactoryShim,
+      topicListController,
+      storyEntityType
+    )
+    val allTopicsViewModel = AllTopicsViewModel()
+    val homeViewModel = HomeViewModel(
+      activity,
+      fragment,
+      topicListController,
+      topicEntityType
+    )
     homeViewModel.addHomeItem(welcomeViewModel)
     homeViewModel.addHomeItem(promotedStoryListViewModel)
     homeViewModel.addHomeItem(allTopicsViewModel)
@@ -105,7 +132,7 @@ class HomeFragmentPresenter @Inject constructor(
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_PROMOTED_STORY_LIST,
         inflateDataBinding = PromotedStoryListBinding::inflate,
-        setViewModel = this::bindPromotedStoryListView,
+        setViewModel = this::bindPromotedStoryListView,  // PromotedStoryListBinding::setViewModel
         transformViewModel = { it as PromotedStoryListViewModel }
       )
       .registerViewDataBinder(
@@ -164,23 +191,6 @@ class HomeFragmentPresenter @Inject constructor(
     VIEW_TYPE_PROMOTED_STORY_LIST,
     VIEW_TYPE_ALL_TOPICS,
     VIEW_TYPE_TOPIC_LIST
-  }
-
-  private fun getWelcomeViewModel(): WelcomeViewModel {
-    return welcomeViewModelProvider.getForFragment(fragment, WelcomeViewModel::class.java)
-  }
-
-  private fun getPromotedStoryListViewModel(): PromotedStoryListViewModel {
-    return promotedStoryListViewModelProvider
-      .getForFragment(fragment, PromotedStoryListViewModel::class.java)
-  }
-
-  private fun getAllTopicsViewModel(): AllTopicsViewModel {
-    return allTopicsViewModelProvider.getForFragment(fragment, AllTopicsViewModel::class.java)
-  }
-
-  private fun getHomeViewModel(): HomeViewModel {
-    return homeViewModelProvider.getForFragment(fragment, HomeViewModel::class.java)
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {

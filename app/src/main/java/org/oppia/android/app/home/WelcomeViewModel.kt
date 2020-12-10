@@ -19,14 +19,12 @@ import javax.inject.Inject
 
 /** [ViewModel] for welcome text in home screen. */
 class WelcomeViewModel @Inject constructor(
-  private val activity: AppCompatActivity,
   private val logger: ConsoleLogger,
   private val fragment: Fragment,
   private val oppiaClock: OppiaClock,
-  private val profileManagementController: ProfileManagementController
-) : HomeItemViewModel() {
-  private val internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
-  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileManagementController: ProfileManagementController,
+  private val profileId: ProfileId
+  ) : HomeItemViewModel() {
   var greeting: String = DateTimeUtil(
     fragment.requireContext(),
     oppiaClock
