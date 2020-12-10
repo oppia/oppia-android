@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.model.OngoingStoryList
@@ -26,7 +27,7 @@ class PromotedStoryListViewModel @Inject constructor(
   HomeItemViewModel(),
   RouteToRecentlyPlayedListener {
 
-  private var internalProfileId: Int = -1
+  private val internalProfileId: Int = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
 
   val promotedStoryListLiveData: LiveData<MutableList<PromotedStoryViewModel>> by lazy {
     Transformations.map(assumedSuccessfulOngoingStoryListLiveData, ::processOngoingStoryList)
@@ -90,17 +91,5 @@ class PromotedStoryListViewModel @Inject constructor(
       internalProfileId
     )
     activity.startActivity(intent)
-  }
-
-  fun setInternalProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
-  }
-
-  fun setActivity(activity: AppCompatActivity) {
-    this.activity = activity;
-  }
-
-  fun setIntentFactoryShim(intentFactoryShim: IntentFactoryShim) {
-    this.intentFactoryShim = intentFactoryShim
   }
 }

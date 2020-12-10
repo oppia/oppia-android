@@ -27,7 +27,7 @@ class HomeViewModel @Inject constructor(
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
     topicListController.getTopicList()
   }
-  val itemListliveData: LiveData<List<HomeItemViewModel>> by lazy {
+  val itemListLiveData: LiveData<List<HomeItemViewModel>> by lazy {
     Transformations.map(assumedSuccessfulTopicListLiveData, ::processItemList)
   }
 

@@ -9,17 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.R
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.PromotedStoryListAdapter
 import org.oppia.android.app.home.topiclist.PromotedStoryListViewModel
+import org.oppia.android.app.home.topiclist.PromotedStoryViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
-import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AllTopicsBinding
 import org.oppia.android.databinding.PromotedStoryListBinding
@@ -40,8 +39,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val allTopicsViewModelProvider: ViewModelProvider<AllTopicsViewModel>,
   private val homeViewModelProvider: ViewModelProvider<HomeViewModel>,
   private val oppiaClock: OppiaClock,
-  private val oppiaLogger: OppiaLogger,
-  private val intentFactoryShim: IntentFactoryShim
+  private val oppiaLogger: OppiaLogger
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
   private lateinit var binding: HomeFragmentBinding
@@ -53,22 +51,15 @@ class HomeFragmentPresenter @Inject constructor(
     // data-bound view models.
 
     val welcomeViewModel = getWelcomeViewModel()
-    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
-    welcomeViewModel.setInternalProfileId(internalProfileId)
     logHomeActivityEvent()
 
     val promotedStoryListViewModel = getPromotedStoryListViewModel()
-    promotedStoryListViewModel.setInternalProfileId(internalProfileId)
-    promotedStoryListViewModel.setActivity(activity)
-    promotedStoryListViewModel.setIntentFactoryShim(intentFactoryShim)
     val allTopicsViewModel = getAllTopicsViewModel()
     val homeViewModel = getHomeViewModel()
     homeViewModel.addHomeItem(welcomeViewModel)
     homeViewModel.addHomeItem(promotedStoryListViewModel)
     homeViewModel.addHomeItem(allTopicsViewModel)
 
-    // make item list a live data list
-    // live data is going to compute topic list (remove observe and turn it into transformation for list of viewmodels)
     val spanCount = activity.resources.getInteger(R.integer.home_span_count)
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -88,6 +79,7 @@ class HomeFragmentPresenter @Inject constructor(
     }
     binding.let {
       it.lifecycleOwner = fragment
+      it.viewModel = homeViewModel
     }
 
     return binding.root
@@ -104,7 +96,6 @@ class HomeFragmentPresenter @Inject constructor(
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
-//      .
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_WELCOME_MESSAGE,
         inflateDataBinding = WelcomeBinding::inflate,
@@ -131,12 +122,6 @@ class HomeFragmentPresenter @Inject constructor(
       )
       .build()
   }
-
-  // two options
-  // 1. Could pipe a position to the BindableAdapter bindview and use different registering
-  // 2. better -- go all out with databinding
-  //   -- put this logic in viewmodel as a function to calculate the padding
-  //   -- could also do computation in layout itself but probably better to do it in kotlin
 
   private fun bindPromotedStoryListView(
     binding: PromotedStoryListBinding,
@@ -175,7 +160,6 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
-    VIEW_TYPE_HOME,
     VIEW_TYPE_WELCOME_MESSAGE,
     VIEW_TYPE_PROMOTED_STORY_LIST,
     VIEW_TYPE_ALL_TOPICS,

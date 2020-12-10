@@ -1,9 +1,12 @@
 package org.oppia.android.app.home
 
+import android.app.AppComponentFactory
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -16,13 +19,18 @@ import javax.inject.Inject
 
 /** [ViewModel] for welcome text in home screen. */
 class WelcomeViewModel @Inject constructor(
+  private val activity: AppCompatActivity,
   private val logger: ConsoleLogger,
   private val fragment: Fragment,
   private val oppiaClock: OppiaClock,
   private val profileManagementController: ProfileManagementController
-  ) : HomeItemViewModel() {
-  private lateinit var profileId: ProfileId
-  lateinit var greeting: String
+) : HomeItemViewModel() {
+  private val internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  var greeting: String = DateTimeUtil(
+    fragment.requireContext(),
+    oppiaClock
+  ).getGreetingMessage()
 
   val profileName: LiveData<String> by lazy {
     Transformations.map(profileLiveData, Profile::getName)
@@ -33,23 +41,13 @@ class WelcomeViewModel @Inject constructor(
   }
 
   private val profileLiveData: LiveData<Profile> by lazy {
-    Transformations.map(
-      profileResultLiveData,
-      ::processGetProfileResult)
+    Transformations.map(profileResultLiveData, ::processGetProfileResult)
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
       logger.e("HomeFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
-    greeting = DateTimeUtil(
-      fragment.requireContext(),
-      oppiaClock
-    ).getGreetingMessage()
     return profileResult.getOrDefault(Profile.getDefaultInstance())
-  }
-
-  fun setInternalProfileId(internalProfileId: Int) {
-    this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
   }
 }
