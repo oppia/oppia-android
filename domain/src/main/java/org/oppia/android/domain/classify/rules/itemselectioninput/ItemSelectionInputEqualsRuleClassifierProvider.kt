@@ -25,7 +25,6 @@ internal class ItemSelectionInputEqualsRuleClassifierProvider @Inject constructo
     )
   }
 
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: StringList, input: StringList): Boolean {
     return answer.htmlList.toSet() == input.htmlList.toSet()
   }
