@@ -404,7 +404,7 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasExtra(AdminAuthActivity.getIntentKey(), AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value))
+      intended(hasExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value))
     }
   }
 
