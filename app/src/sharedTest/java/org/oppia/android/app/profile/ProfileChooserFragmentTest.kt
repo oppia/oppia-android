@@ -303,52 +303,7 @@ class ProfileChooserFragmentTest {
         )
       ).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testProfileChooserFragment_clickAddProfileWithNoPin_OpensAdminPinActivity_checkExtras() {
-    profileManagementController.addProfile(
-      "Admin",
-      "",
-      null,
-      true,
-      -10710042,
-      true
-    ).toLiveData()
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          1,
-          R.id.add_profile_item
-        )
-      ).perform(click())
       intended(hasExtra(ADMIN_PIN_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADD_PROFILE.value))
-    }
-  }
-
-  @Test
-  fun testProfileChooserFragment_clickAddProfileWithPin_OpensAdminAuthActivity_checkExtras() {
-    profileManagementController.addProfile(
-      "Admin",
-      "12345",
-      null,
-      true,
-      -10710042,
-      true
-    ).toLiveData()
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          1,
-          R.id.add_profile_item
-        )
-      ).perform(click())
-      intended(hasExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADD_PROFILE.value))
     }
   }
 
@@ -366,40 +321,7 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testProfileChooserFragment_clickAdminControlsWithNoPin_OpensAdminPinActivity_checkExtras() {
-    profileManagementController.addProfile(
-      "Admin",
-      "",
-      null,
-      true,
-      -10710042,
-      true
-    ).toLiveData()
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasExtra(ADMIN_PIN_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value))
-    }
-  }
-
-  @Test
-  fun testProfileChooserFragment_clickAdminControlsWithPin_OpensAdminAuthActivity_checkExtras() {
-    profileManagementController.addProfile(
-      "Admin",
-      "12345",
-      null,
-      true,
-      -10710042,
-      true
-    ).toLiveData()
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
-      intended(hasExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value))
     }
   }
 
@@ -482,7 +404,7 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasExtra(AdminAuthActivity.getIntentKey(), 0))
+      intended(hasExtra(AdminAuthActivity.getIntentKey(), AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value))
     }
   }
 
@@ -493,7 +415,7 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(atPosition(R.id.profile_recycler_view, 3)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasExtra(AdminAuthActivity.getIntentKey(), 1))
+      intended(hasExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADD_PROFILE.value))
     }
   }
 
