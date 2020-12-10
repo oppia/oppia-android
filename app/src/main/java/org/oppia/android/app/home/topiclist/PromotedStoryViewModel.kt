@@ -35,40 +35,35 @@ class PromotedStoryViewModel(
    * [LiveData] is used for all subsequent processed data to ensure the transformed [LiveData]s are
    * always in sync.
    */
-  val promotedStoryObservable = ObservableField<PromotedStory>()
-  val promotedStoryLiveData: LiveData<PromotedStory> by lazy {
-    Transformations.map()
-  }
+  var story : PromotedStory = PromotedStory.getDefaultInstance()
   private val orientation = Resources.getSystem().configuration.orientation
+  var totalStoryCount = -1
 
   fun setPromotedStory(promotedStory: PromotedStory) {
-    promotedStoryObservable.set(promotedStory)
+    this.story = promotedStory
   }
 
-//  inner class PromotedStoryViewHolder(
-//    val binding: PromotedStoryCardBinding
-//  ) : RecyclerView.ViewHolder(binding.root) {
-//    internal fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
-//      binding.viewModel = promotedStoryViewModel
-//      val layoutParams = binding.promotedStoryCardContainer.layoutParams
-//      layoutParams.width = if (itemCount > 1) {
-//        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-//          ViewGroup.LayoutParams.MATCH_PARENT
-//        } else {
-//          (activity as Context).resources.getDimensionPixelSize(R.dimen.promoted_story_card_width)
-//        }
-//      } else {
-//        ViewGroup.LayoutParams.MATCH_PARENT
-//      }
-//      binding.promotedStoryCardContainer.layoutParams = layoutParams
-//    }
-//  }
+  fun setStoryCount(newCount: Int) {
+    this.totalStoryCount = newCount
+  }
+
+  fun computeLayoutWidth(): Int {
+    if (totalStoryCount > 1) {
+      if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        return ViewGroup.LayoutParams.MATCH_PARENT
+      } else {
+        return (activity as Context).resources.getDimensionPixelSize(R.dimen.promoted_story_card_width)
+      }
+    } else {
+      return ViewGroup.LayoutParams.MATCH_PARENT
+    }
+  }
 
   fun clickOnStoryTile() {
     routeToTopicPlayStory(
       internalProfileId,
-      promotedStoryObservable.get()!!.topicId,
-      promotedStoryObservable.get()!!.storyId
+      story.topicId,
+      story.storyId
     )
   }
 

@@ -75,6 +75,7 @@ class PromotedStoryListViewModel @Inject constructor(
             intentFactoryShim
           )
           recentStory.setPromotedStory(promotedStory)
+          recentStory.setStoryCount(ongoingStoryList.recentStoryCount)
           newPromotedStoryList.add(recentStory)
       }
     } else {
@@ -88,6 +89,7 @@ class PromotedStoryListViewModel @Inject constructor(
             intentFactoryShim
           )
           oldStory.setPromotedStory(promotedStory)
+          oldStory.setStoryCount(ongoingStoryList.olderStoryCount)
           newPromotedStoryList.add(oldStory)
         }
       }
