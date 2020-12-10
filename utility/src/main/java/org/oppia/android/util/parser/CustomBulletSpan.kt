@@ -31,7 +31,7 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
     yOffset = context.resources.getDimensionPixelSize(R.dimen.bullet_y_offset)
     bulletLeadingMargin = context.resources.getDimensionPixelSize(R.dimen.bullet_leading_margin)
     textLeadingMargin = context.resources.getDimensionPixelSize(R.dimen.text_leading_margin)
-    margin = bulletLeadingMargin + textLeadingMargin + bulletRadius*2
+    margin = bulletLeadingMargin + textLeadingMargin + bulletRadius * 2
   }
 
   private var mBulletPath: Path? = null
