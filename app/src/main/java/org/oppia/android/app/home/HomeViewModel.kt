@@ -31,8 +31,8 @@ class HomeViewModel @Inject constructor(
     Transformations.map(assumedSuccessfulTopicListLiveData, ::processItemList)
   }
 
-  private fun processItemList(it: TopicList) : List<HomeItemViewModel> {
-    for (topicSummary in it.topicSummaryList) {
+  private fun processItemList(itemListLiveData: TopicList) : List<HomeItemViewModel> {
+    for (topicSummary in itemListLiveData.topicSummaryList) {
       val topicSummaryViewModel =
         TopicSummaryViewModel(
           activity,
@@ -40,7 +40,7 @@ class HomeViewModel @Inject constructor(
           topicEntityType,
           fragment as TopicSummaryClickListener
         )
-      topicSummaryViewModel.setPosition(it.topicSummaryList.indexOf(topicSummary))
+      topicSummaryViewModel.setPosition(itemListLiveData.topicSummaryList.indexOf(topicSummary))
       itemList.add(topicSummaryViewModel)
     }
     return itemList

@@ -21,6 +21,16 @@ public final class ViewBindingAdapters {
     view.setLayoutParams(layoutParams);
   }
 
+  /**
+   * BindingAdapter to set the width of a View.
+   */
+  @BindingAdapter("android:layout_width")
+  public static void setLayoutWidth(@NonNull View view, float width) {
+    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+    layoutParams.width = (int) width;
+    view.setLayoutParams(layoutParams);
+  }
+
   @BindingAdapter(
       value = {
           "app:isRotationAnimationClockwise",

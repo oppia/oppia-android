@@ -35,12 +35,12 @@ class PromotedStoryViewModel(
    * [LiveData] is used for all subsequent processed data to ensure the transformed [LiveData]s are
    * always in sync.
    */
-  var story : PromotedStory = PromotedStory.getDefaultInstance()
+  var promotedStoryObservable : PromotedStory = PromotedStory.getDefaultInstance()
   private val orientation = Resources.getSystem().configuration.orientation
   var totalStoryCount = -1
 
   fun setPromotedStory(promotedStory: PromotedStory) {
-    this.story = promotedStory
+    this.promotedStoryObservable = promotedStory
   }
 
   fun setStoryCount(newCount: Int) {
@@ -62,8 +62,8 @@ class PromotedStoryViewModel(
   fun clickOnStoryTile() {
     routeToTopicPlayStory(
       internalProfileId,
-      story.topicId,
-      story.storyId
+      promotedStoryObservable.topicId,
+      promotedStoryObservable.storyId
     )
   }
 

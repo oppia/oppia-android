@@ -29,7 +29,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/recently_played_stories_text_view"
-      app:roundedRectDrawableWithColor="@{viewModel.story.lessonThumbnail.backgroundColorRgb}">
+      app:roundedRectDrawableWithColor="@{viewModel.promotedStoryObservable.lessonThumbnail.backgroundColorRgb}">
 
       <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/lesson_thumbnail"
@@ -37,13 +37,13 @@
         android:layout_height="0dp"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
-        app:entityId="@{viewModel.story.storyId}"
+        app:entityId="@{viewModel.promotedStoryObservable.storyId}"
         app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="H, 16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:lessonThumbnail="@{viewModel.story.lessonThumbnail}" />
+        app:lessonThumbnail="@{viewModel.promotedStoryObservable.lessonThumbnail}" />
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -65,7 +65,7 @@
           android:ellipsize="end"
           android:fontFamily="sans-serif-medium"
           android:maxLines="1"
-          android:text="@{viewModel.story.nextChapterName}"
+          android:text="@{viewModel.promotedStoryObservable.nextChapterName}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="18sp" />
 
@@ -79,7 +79,7 @@
           android:ellipsize="end"
           android:fontFamily="sans-serif"
           android:maxLines="1"
-          android:text="@{viewModel.story.storyName}"
+          android:text="@{viewModel.promotedStoryObservable.storyName}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />
 
@@ -94,7 +94,7 @@
           android:fontFamily="sans-serif-light"
           android:maxLines="1"
           android:paddingBottom="8dp"
-          android:text="@{viewModel.story.topicName}"
+          android:text="@{viewModel.promotedStoryObservable.topicName}"
           android:textAllCaps="true"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="14sp" />
