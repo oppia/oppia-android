@@ -48,7 +48,7 @@ message MathUnaryOperation {
   enum Operator {
     OPERATOR_UNKNOWN = 0;
     // Represents negating a value, e.g.: -y.
-    NEGATION = 1;
+    NEGATE = 1;
   }
 
   Operator operator = 1;

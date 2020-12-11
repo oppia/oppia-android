@@ -128,7 +128,7 @@ private fun MathExpression.reduceToPolynomial(): Polynomial? {
 
 private fun MathUnaryOperation.reduceToPolynomial(): Polynomial? {
   return when (operator) {
-    MathUnaryOperation.Operator.NEGATION -> -(operand.reduceToPolynomial() ?: return null)
+    MathUnaryOperation.Operator.NEGATE -> -(operand.reduceToPolynomial() ?: return null)
     else -> null
   }
 }
@@ -387,7 +387,7 @@ private sealed class ExpressionTreeNode {
 
 //private fun MathUnaryOperation.reduceToConstant(): MathExpression? {
 //  return when (operator) {
-//    MathUnaryOperation.Operator.NEGATION -> operand.reduceToConstant()?.transformConstant { -it }
+//    MathUnaryOperation.Operator.NEGATE -> operand.reduceToConstant()?.transformConstant { -it }
 //    else -> null
 //  }
 //}

@@ -118,27 +118,32 @@ class MathTokenizer {
      * 'i', and 'pi', then encounters of 'pi' will use the multi-letter identifier rather than p*i.
      *
      * @param allowedIdentifiers a list of acceptable identifiers that can be parsed (these may be
-     *     more than one letter long). By default, the identifiers 'x' and 'y' are used. Any
-     *     identifiers encountered that aren't part of this list will result in an invalid
-     *     identifier token being returned. Note that identifiers must only contain strings with
-     *     letters (per the definition of Character.isLetter()). This list can be empty (in which
-     *     case all encountered identifiers will be presumed invalid).
+     *     more than one letter long). Any identifiers encountered that aren't part of this list
+     *     will result in an invalid identifier token being returned. Note that identifiers must
+     *     only contain strings with letters (per the definition of Character.isLetter()). This list
+     *     can be empty (in which case all encountered identifiers will be presumed invalid).
      */
     fun tokenize(
         rawLiteral: String,
-        allowedIdentifiers: List<String> = listOf("x", "y")
+        allowedIdentifiers: List<String>
     ): Iterable<Token> {
       // Verify that the provided identifiers are all valid.
       for (identifier in allowedIdentifiers) {
         if (identifier.any(Char::isNotLetter)) {
           throw IllegalArgumentException("Identifier contains non-letters: $identifier")
         }
+        if (identifier.isEmpty()) {
+          throw IllegalArgumentException("Encountered empty identifier in allowed identifier list")
+        }
       }
 
       val lowercaseLiteral = rawLiteral.toLowerCase(Locale.getDefault())
-      val lowercaseIdentifiers = allowedIdentifiers.map { it.toLowerCase(Locale.getDefault()) }
+      val lowercaseIdentifiers = allowedIdentifiers.map {
+        it.toLowerCase(Locale.getDefault())
+      }.toSet()
       return object : Iterable<Token> {
-        override fun iterator(): Iterator<Token> = Tokenizer(lowercaseLiteral, lowercaseIdentifiers)
+        override fun iterator(): Iterator<Token> =
+            Tokenizer(lowercaseLiteral, lowercaseIdentifiers.toList())
       }
     }
 

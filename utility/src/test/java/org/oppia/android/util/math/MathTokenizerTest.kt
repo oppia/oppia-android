@@ -27,14 +27,14 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_emptyString_producesNoTokens() {
-    val tokens = MathTokenizer.tokenize("").toList()
+    val tokens = MathTokenizer.tokenize("", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).isEmpty()
   }
 
   @Test
   fun testTokenize_wholeNumber_oneDigit_producesWholeNumberToken() {
-    val tokens = MathTokenizer.tokenize("1").toList()
+    val tokens = MathTokenizer.tokenize("1", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(WholeNumber::class.java)
@@ -43,7 +43,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_wholeNumber_multipleDigits_producesWholeNumberToken() {
-    val tokens = MathTokenizer.tokenize("913").toList()
+    val tokens = MathTokenizer.tokenize("913", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(WholeNumber::class.java)
@@ -52,7 +52,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_wholeNumber_zeroLeadingNumber_producesCorrectBase10WholeNumberToken() {
-    val tokens = MathTokenizer.tokenize("0913").toList()
+    val tokens = MathTokenizer.tokenize("0913", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(WholeNumber::class.java)
@@ -61,34 +61,34 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_decimalNumber_decimalLessThanOne_noZero_producesCorrectDecimalNumberToken() {
-    val tokens = MathTokenizer.tokenize(".14").toList()
+    val tokens = MathTokenizer.tokenize(".14", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(DecimalNumber::class.java)
-    assertThat((tokens.first() as DecimalNumber).value).isWithin(1e-3).of(0.14)
+    assertThat((tokens.first() as DecimalNumber).value).isWithin(1e-5).of(0.14)
   }
 
   @Test
   fun testTokenize_decimalNumber_decimalLessThanOne_withZero_producesCorrectDecimalNumberToken() {
-    val tokens = MathTokenizer.tokenize("0.14").toList()
+    val tokens = MathTokenizer.tokenize("0.14", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(DecimalNumber::class.java)
-    assertThat((tokens.first() as DecimalNumber).value).isWithin(1e-3).of(0.14)
+    assertThat((tokens.first() as DecimalNumber).value).isWithin(1e-5).of(0.14)
   }
 
   @Test
   fun testTokenize_decimalNumber_decimalGreaterThanOne_producesCorrectDecimalNumberToken() {
-    val tokens = MathTokenizer.tokenize("3.14").toList()
+    val tokens = MathTokenizer.tokenize("3.14", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(DecimalNumber::class.java)
-    assertThat((tokens.first() as DecimalNumber).value).isWithin(1e-3).of(3.14)
+    assertThat((tokens.first() as DecimalNumber).value).isWithin(1e-5).of(3.14)
   }
 
   @Test
   fun testTokenize_decimalNumber_decimalPointOnly_producesInvalidToken() {
-    val tokens = MathTokenizer.tokenize(".").toList()
+    val tokens = MathTokenizer.tokenize(".", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(InvalidToken::class.java)
@@ -97,7 +97,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_openParenthesis_producesOpenParenthesisToken() {
-    val tokens = MathTokenizer.tokenize("(").toList()
+    val tokens = MathTokenizer.tokenize("(", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(OpenParenthesis::class.java)
@@ -105,7 +105,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_closeParenthesis_producesCloseParenthesisToken() {
-    val tokens = MathTokenizer.tokenize(")").toList()
+    val tokens = MathTokenizer.tokenize(")", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(CloseParenthesis::class.java)
@@ -113,7 +113,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_plusSign_producesOperatorToken() {
-    val tokens = MathTokenizer.tokenize("+").toList()
+    val tokens = MathTokenizer.tokenize("+", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(Operator::class.java)
@@ -122,7 +122,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_minusSign_producesOperatorToken() {
-    val tokens = MathTokenizer.tokenize("-").toList()
+    val tokens = MathTokenizer.tokenize("-", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(Operator::class.java)
@@ -131,7 +131,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_asterisk_producesOperatorToken() {
-    val tokens = MathTokenizer.tokenize("*").toList()
+    val tokens = MathTokenizer.tokenize("*", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(Operator::class.java)
@@ -140,7 +140,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_formalMultiplicationSign_producesAsteriskOperatorToken() {
-    val tokens = MathTokenizer.tokenize("×").toList()
+    val tokens = MathTokenizer.tokenize("×", ALLOWED_XYZ_VARIABLES).toList()
 
     // The formal math multiplication symbol is translated to the conventional one for simplicity.
     assertThat(tokens).hasSize(1)
@@ -150,7 +150,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_forwardSlash_producesOperatorToken() {
-    val tokens = MathTokenizer.tokenize("/").toList()
+    val tokens = MathTokenizer.tokenize("/", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(Operator::class.java)
@@ -159,7 +159,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_formalDivisionSign_producesForwardSlashOperatorToken() {
-    val tokens = MathTokenizer.tokenize("÷").toList()
+    val tokens = MathTokenizer.tokenize("÷", ALLOWED_XYZ_VARIABLES).toList()
 
     // The formal math division symbol is translated to the conventional one for simplicity.
     assertThat(tokens).hasSize(1)
@@ -169,7 +169,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_caret_producesOperatorToken() {
-    val tokens = MathTokenizer.tokenize("^").toList()
+    val tokens = MathTokenizer.tokenize("^", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(Operator::class.java)
@@ -178,7 +178,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_exclamation_producesInvalidToken() {
-    val tokens = MathTokenizer.tokenize("!").toList()
+    val tokens = MathTokenizer.tokenize("!", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(InvalidToken::class.java)
@@ -186,8 +186,8 @@ class MathTokenizerTest {
   }
 
   @Test
-  fun testTokenize_defaultIdentifier_producesIdentifierToken() {
-    val tokens = MathTokenizer.tokenize("x").toList()
+  fun testTokenize_validIdentifier_withAllowedIds_producesIdentifierToken() {
+    val tokens = MathTokenizer.tokenize("x", allowedIdentifiers = listOf("x")).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(Identifier::class.java)
@@ -195,7 +195,7 @@ class MathTokenizerTest {
   }
 
   @Test
-  fun testTokenize_defaultIdentifier_withNoIdentifiersProvided_producesInvalidIdentifierToken() {
+  fun testTokenize_validIdentifier_withNoIdentifiersProvided_producesInvalidIdentifierToken() {
     val tokens = MathTokenizer.tokenize("x", allowedIdentifiers = listOf()).toList()
 
     assertThat(tokens).hasSize(1)
@@ -204,7 +204,7 @@ class MathTokenizerTest {
   }
 
   @Test
-  fun testTokenize_defaultIdentifier_withInvalidAllowedIdentifiers_throwsException() {
+  fun testTokenize_withInvalidAllowedIdentifiers_throwsException() {
     val exception = assertThrows(IllegalArgumentException::class) {
       MathTokenizer.tokenize("x", allowedIdentifiers = listOf("valid", "invalid!")).toList()
     }
@@ -213,16 +213,16 @@ class MathTokenizerTest {
   }
 
   @Test
-  fun testTokenize_nonDefaultIdentifier_withDefaultIdentifiers_producesInvalidIdentifierToken() {
-    val tokens = MathTokenizer.tokenize("z").toList()
+  fun testTokenize_withEmptyAllowedIdentifier_throwsException() {
+    val exception = assertThrows(IllegalArgumentException::class) {
+      MathTokenizer.tokenize("x", allowedIdentifiers = listOf("valid", "")).toList()
+    }
 
-    assertThat(tokens).hasSize(1)
-    assertThat(tokens.first()).isInstanceOf(InvalidIdentifier::class.java)
-    assertThat((tokens.first() as InvalidIdentifier).name).isEqualTo("z")
+    assertThat(exception).hasMessageThat().contains("Encountered empty identifier")
   }
 
   @Test
-  fun testTokenize_nonDefaultIdentifier_withAllowedIdentifiers_producesIdentifierToken() {
+  fun testTokenize_withAllowedIdentifiers_producesIdentifierToken() {
     val tokens = MathTokenizer.tokenize("z", allowedIdentifiers = listOf("z")).toList()
 
     assertThat(tokens).hasSize(1)
@@ -231,7 +231,7 @@ class MathTokenizerTest {
   }
 
   @Test
-  fun testTokenize_nonDefaultIdentifierLowercase_withAllowedIdentifiersUpper_producesIdToken() {
+  fun testTokenize_expressionWithIdLowercase_withAllowedIdentifiersUpper_producesIdToken() {
     val tokens = MathTokenizer.tokenize("z", allowedIdentifiers = listOf("Z")).toList()
 
     assertThat(tokens).hasSize(1)
@@ -240,7 +240,7 @@ class MathTokenizerTest {
   }
 
   @Test
-  fun testTokenize_nonDefaultIdentifierUppercase_withAllowedIdentifiersLower_producesIdToken() {
+  fun testTokenize_expressionWithIdUppercase_withAllowedIdentifiersLower_producesIdToken() {
     val tokens = MathTokenizer.tokenize("Z", allowedIdentifiers = listOf("z")).toList()
 
     assertThat(tokens).hasSize(1)
@@ -249,7 +249,7 @@ class MathTokenizerTest {
   }
 
   @Test
-  fun testTokenize_nonDefaultIdentifierUppercase_withAllowedIdentifiersUpper_producesIdToken() {
+  fun testTokenize_expressionWithIdUppercase_withAllowedIdentifiersUpper_producesIdToken() {
     val tokens = MathTokenizer.tokenize("Z", allowedIdentifiers = listOf("Z")).toList()
 
     assertThat(tokens).hasSize(1)
@@ -299,7 +299,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_invalidMultiWordIdentifier_missingFromAllowedList_producesInvalidIdToken() {
-    val tokens = MathTokenizer.tokenize("xyz").toList()
+    val tokens = MathTokenizer.tokenize("xyz", allowedIdentifiers = listOf()).toList()
 
     // Note that even though 'x' and 'y' are valid single-letter variables, because 'z' is
     // encountered the whole set of letters is considered a single invalid variable.
@@ -450,7 +450,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_identifier_whitespaceBefore_isIgnored() {
-    val tokens = MathTokenizer.tokenize(" \r\t\n x").toList()
+    val tokens = MathTokenizer.tokenize(" \r\t\n x", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(Identifier::class.java)
@@ -459,7 +459,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_identifier_whitespaceAfter_isIgnored() {
-    val tokens = MathTokenizer.tokenize("x \r\t\n ").toList()
+    val tokens = MathTokenizer.tokenize("x \r\t\n ", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(Identifier::class.java)
@@ -468,7 +468,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_identifierAndOperator_whitespaceBetween_isIgnored() {
-    val tokens = MathTokenizer.tokenize("- \r\t\n x").toList()
+    val tokens = MathTokenizer.tokenize("- \r\t\n x", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(2)
     assertThat(tokens[0]).isInstanceOf(Operator::class.java)
@@ -479,7 +479,7 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_digits_withSpaces_producesMultipleWholeNumberTokens() {
-    val tokens = MathTokenizer.tokenize("1 23 4").toList()
+    val tokens = MathTokenizer.tokenize("1 23 4", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(3)
     assertThat(tokens[0]).isInstanceOf(WholeNumber::class.java)
@@ -492,7 +492,8 @@ class MathTokenizerTest {
 
   @Test
   fun testTokenize_complexExpressionWithAllTokenTypes_tokenizesEverythingInOrder() {
-    val tokens = MathTokenizer.tokenize("133 + 3.14 * x / (11 - 15) ^ 2 ^ 3").toList()
+    val tokens =
+        MathTokenizer.tokenize("133 + 3.14 * x / (11 - 15) ^ 2 ^ 3", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(15)
 
@@ -503,7 +504,7 @@ class MathTokenizerTest {
     assertThat((tokens[1] as Operator).operator).isEqualTo('+')
 
     assertThat(tokens[2]).isInstanceOf(DecimalNumber::class.java)
-    assertThat((tokens[2] as DecimalNumber).value).isWithin(1e-3).of(3.14)
+    assertThat((tokens[2] as DecimalNumber).value).isWithin(1e-5).of(3.14)
 
     assertThat(tokens[3]).isInstanceOf(Operator::class.java)
     assertThat((tokens[3] as Operator).operator).isEqualTo('*')
@@ -538,6 +539,15 @@ class MathTokenizerTest {
 
     assertThat(tokens[14]).isInstanceOf(WholeNumber::class.java)
     assertThat((tokens[14] as WholeNumber).value).isEqualTo(3)
+  }
+
+  @Test
+  fun testTokenize_integralSymbol_producesInvalidToken() {
+    val tokens = MathTokenizer.tokenize("∫", ALLOWED_XYZ_VARIABLES).toList()
+
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens.first()).isInstanceOf(InvalidToken::class.java)
+    assertThat((tokens.first() as InvalidToken).token).isEqualTo("∫")
   }
 
   // TODO(#89): Move to a common test library.
