@@ -125,7 +125,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   }
 
   @Test
-  fun inputSetEmpty_returnsFalse(){
+  fun inputSetEmpty_returnsFalse() {
     val inputs = mapOf("x" to ITEM_SELECTION_)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -183,7 +183,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     assertThat(matches).isFalse()
   }
-  
+
 //  missing input, invalid input type, extra input param, invalid answer type
 
   private fun setUpTestApplicationComponent() {
