@@ -48,7 +48,7 @@ class WelcomeViewModel @Inject constructor(
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
-  fun setProfileId(id: ProfileId) {
+  fun setInternalProfileId(id: ProfileId) {
     this.profileId = id
   }
 }
