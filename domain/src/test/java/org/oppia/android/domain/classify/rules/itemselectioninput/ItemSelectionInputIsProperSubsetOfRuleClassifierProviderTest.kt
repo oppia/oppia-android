@@ -137,7 +137,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   }
 
   @Test
-  fun answerSetEmpty_returnsFalse() {
+  fun answerSetEmpty_andInputIsNotEmpty_returnsTrue() {
     val inputs = mapOf("x" to ITEM_SELECTION_1)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -145,7 +145,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
       inputs = inputs
     )
 
-    assertThat(matches).isFalse()
+    assertThat(matches).isTrue()
   }
 
   @Test
