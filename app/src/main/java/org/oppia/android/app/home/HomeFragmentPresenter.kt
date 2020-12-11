@@ -11,6 +11,7 @@ import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.PromotedStoryListViewModel
+import org.oppia.android.app.home.topiclist.TopicSummaryListViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.ProfileId
@@ -62,7 +63,7 @@ class HomeFragmentPresenter @Inject constructor(
       oppiaClock,
       profileManagementController
     )
-    welcomeViewModel.setInternalProfileId(profileId)
+    welcomeViewModel.setProfileId(profileId)
     logHomeActivityEvent()
 
     val promotedStoryListViewModel = PromotedStoryListViewModel(
@@ -73,15 +74,23 @@ class HomeFragmentPresenter @Inject constructor(
       storyEntityType
     )
     val allTopicsViewModel = AllTopicsViewModel()
-    val homeViewModel = HomeViewModel(
+    val topicSummaryListViewModel = TopicSummaryListViewModel(
       activity,
       fragment,
       topicListController,
       topicEntityType
     )
-    homeViewModel.addHomeItem(welcomeViewModel)
-    homeViewModel.addHomeItem(promotedStoryListViewModel)
-    homeViewModel.addHomeItem(allTopicsViewModel)
+    val itemList : MutableList<HomeItemViewModel> = ArrayList()
+    itemList.add(welcomeViewModel)
+    itemList.add(promotedStoryListViewModel)
+    itemList.add(allTopicsViewModel)
+    itemList.add(topicSummaryListViewModel)
+
+    val homeViewModel = HomeViewModel(
+      activity,
+      fragment,
+      itemList
+    )
 
     val spanCount = activity.resources.getInteger(R.integer.home_span_count)
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
@@ -120,6 +129,12 @@ class HomeFragmentPresenter @Inject constructor(
         }
       }
       .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_HOME_FRAGMENT,
+        inflateDataBinding = HomeFragmentBinding::inflate,
+        setViewModel = HomeFragmentBinding::setViewModel,
+        transformViewModel = { it as HomeViewModel }
+      )
+      .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_WELCOME_MESSAGE,
         inflateDataBinding = WelcomeBinding::inflate,
         setViewModel = WelcomeBinding::setViewModel,
@@ -147,6 +162,7 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
+    VIEW_TYPE_HOME_FRAGMENT,
     VIEW_TYPE_WELCOME_MESSAGE,
     VIEW_TYPE_PROMOTED_STORY_LIST,
     VIEW_TYPE_ALL_TOPICS,
