@@ -1,5 +1,6 @@
 package org.oppia.android.app.home
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import org.oppia.android.R
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
+import org.oppia.android.app.home.topiclist.ComingSoonTopicsListViewModel
 import org.oppia.android.app.home.topiclist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.PromotedStoryViewModel
 import org.oppia.android.app.home.topiclist.TopicListAdapter
@@ -22,6 +24,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.PromotedStoriesType
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.shim.IntentFactoryShim
@@ -55,6 +58,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
   private val promotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
+  private val comingSoonTopicList: MutableList<ComingSoonTopicsListViewModel> = ArrayList()
   private lateinit var welcomeViewModel: WelcomeViewModel
   private lateinit var promotedStoryListViewModel: PromotedStoryListViewModel
   private lateinit var allTopicsViewModel: AllTopicsViewModel
@@ -63,6 +67,7 @@ class HomeFragmentPresenter @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
   private lateinit var profileName: String
+  private var promotedStoriesType = PromotedStoriesType.PromotedStoriesTypeCase.PROMOTEDSTORIESTYPE_NOT_SET
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -83,7 +88,7 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(welcomeViewModel)
     itemList.add(promotedStoryListViewModel)
     itemList.add(allTopicsViewModel)
-    topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
+    topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList,comingSoonTopicList)
 
     val spanCount = activity.resources.getInteger(R.integer.home_span_count)
     topicListAdapter.setSpanCount(spanCount)
@@ -146,6 +151,10 @@ class HomeFragmentPresenter @Inject constructor(
     topicListController.getTopicList()
   }
 
+  private val comingSoontopicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
+    topicListController.getComingSoonTopicList()
+  }
+
   private fun subscribeToTopicList() {
     getAssumedSuccessfulTopicList().observe(
       fragment,
@@ -164,9 +173,34 @@ class HomeFragmentPresenter @Inject constructor(
     )
   }
 
+  private fun subscribeToComingSoonTopicList() {
+    getAssumedSuccessfulComingSoonTopicList().observe(
+      fragment,
+      Observer<TopicList> { result ->
+        for (topicSummary in result.topicSummaryList) {
+          val comingSoontopicViewModel =
+            ComingSoonTopicsListViewModel(
+              topicSummary,
+              topicEntityType,
+              fragment as TopicSummaryClickListener
+            )
+          comingSoonTopicList.add(comingSoontopicViewModel)
+        }
+        topicListAdapter.notifyItemChanged(1)
+      }
+    )
+  }
+
   private fun getAssumedSuccessfulTopicList(): LiveData<TopicList> {
     // If there's an error loading the data, assume the default.
     return Transformations.map(topicListSummaryResultLiveData) {
+      it.getOrDefault(TopicList.getDefaultInstance())
+    }
+  }
+
+  private fun getAssumedSuccessfulComingSoonTopicList(): LiveData<TopicList> {
+    // If there's an error loading the data, assume the default.
+    return Transformations.map(comingSoontopicListSummaryResultLiveData) {
       it.getOrDefault(TopicList.getDefaultInstance())
     }
   }
@@ -195,31 +229,54 @@ class HomeFragmentPresenter @Inject constructor(
       fragment,
       Observer<OngoingStoryList> {
         promotedStoryList.clear()
-        if (it.recentStoryCount != 0) {
-          it.recentStoryList.take(limit).forEach { promotedStory ->
-            val recentStory = PromotedStoryViewModel(
-              activity,
-              internalProfileId,
-              storyEntityType,
-              intentFactoryShim
-            )
-            recentStory.setPromotedStory(promotedStory)
-            promotedStoryList.add(recentStory)
+        promotedStoriesType = it.promotedStoriesType.promotedStoriesTypeCase
+        if(it.promotedStoriesType.promotedStoriesTypeCase == PromotedStoriesType.PromotedStoriesTypeCase.RECENTLY_PLAYED){
+          if (it.recentStoryCount != 0) {
+            it.recentStoryList.take(limit).forEach { promotedStory ->
+              val recentStory = PromotedStoryViewModel(
+                activity,
+                internalProfileId,
+                storyEntityType,
+                intentFactoryShim,
+                promotedStoriesType
+              )
+              recentStory.setPromotedStory(promotedStory)
+              promotedStoryList.add(recentStory)
+            }
+          }else {
+            it.olderStoryList.take(limit).forEach { promotedStory ->
+              val olderStory = PromotedStoryViewModel(
+                activity,
+                internalProfileId,
+                storyEntityType,
+                intentFactoryShim,
+                promotedStoriesType
+              )
+              olderStory.setPromotedStory(promotedStory)
+              promotedStoryList.add(olderStory)
+            }
           }
-        } else {
+          topicListAdapter.notifyItemChanged(1)
+        }else if(it.promotedStoriesType.promotedStoriesTypeCase == PromotedStoriesType.PromotedStoriesTypeCase.RECOMMENDED){
+
           // TODO(#936): Optimise this as part of recommended stories.
-          it.olderStoryList.take(limit).forEach { promotedStory ->
-            val oldStory = PromotedStoryViewModel(
+          it.recommendedStoryList.take(limit).forEach { promotedStory ->
+            val recommendedStory = PromotedStoryViewModel(
               activity,
               internalProfileId,
               storyEntityType,
-              intentFactoryShim
+              intentFactoryShim,
+              promotedStoriesType
             )
-            oldStory.setPromotedStory(promotedStory)
-            promotedStoryList.add(oldStory)
+            recommendedStory.setPromotedStory(promotedStory)
+            promotedStoryList.add(recommendedStory)
+
           }
+          topicListAdapter.notifyItemChanged(1)
+        }else if(it.promotedStoriesType.promotedStoriesTypeCase == PromotedStoriesType.PromotedStoriesTypeCase.COMING_SOON) {
+          subscribeToComingSoonTopicList()
         }
-        topicListAdapter.notifyItemChanged(1)
+
       }
     )
   }

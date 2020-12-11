@@ -6,6 +6,7 @@ import "subtitled_html.proto";
 import "thumbnail.proto";
 import "translation.proto";
 import "voiceover.proto";
+import "profile.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -147,11 +148,30 @@ message CompletedStory {
 
 // Corresponds to the list of stories the player is currently playing across all topics.
 message OngoingStoryList {
+
   // Ongoing stories from within the last 7 days.
   repeated PromotedStory recent_story = 1;
 
+  // Recommended stories based on user's interest.
+  repeated PromotedStory recommended_story = 2;
+
   // Other ongoing stories from longer than 7 days ago.
-  repeated PromotedStory older_story = 2;
+  repeated PromotedStory older_story = 3;
+
+  // Indicates type of story promoted
+  PromotedStoriesType promoted_stories_type = 5;
+}
+
+// Corresponds to the Walkthrough. When a user explores a topic through a walkthrough page.
+message Walkthrough {
+   // The ID of the profile.
+    ProfileId profile_id = 1;
+
+     // The ID of the exploration being played.
+     string exploration_id = 2;
+
+     // The ID of the topic being played.
+     string topic_id = 3;
 }
 
 // The summary of a story that should be promoted, either because it's been started and not yet completed by the player,
@@ -226,6 +246,9 @@ enum ChapterPlayState {
 message TopicProgressDatabase {
   // Map from topic ID to TopicProgress.
   map<string, TopicProgress> topic_progress = 1;
+
+  // The topic that was selected through walkthrough
+  Walkthrough walkthrough = 2;
 }
 
 // Represents the topic progress.
@@ -233,10 +256,31 @@ message TopicProgress {
   // The ID corresponding to the topic.
   string topic_id = 1;
 
+  // Preference on whether user launched topic from walkthrough
+   bool isFromWalkthrough = 2;
+
   // Map from story ID to StoryProgress.
-  map<string, StoryProgress> story_progress = 2;
+  map<string, StoryProgress> story_progress = 3;
+
+  // Indicates type of story promoted
+   PromotedStoriesType promoted_stories_type = 4;
 }
 
+// A structure corresponding to the Promoted Stories. This structure is set up
+// to properly account for recently_played stories, for recommended stories
+// and for coming soon topics.
+message PromotedStoriesType {
+  oneof promoted_stories_type {
+    // Indicates recently played topics from the topic list.
+    bool recently_played = 1;
+
+    // Indicates recommended from the topic list.
+    bool recommended = 2;
+
+     // Indicates coming soon topics.
+    bool coming_soon = 3;
+  }
+}
 // Represents the story progress.
 message StoryProgress {
   // The ID corresponding to the story.

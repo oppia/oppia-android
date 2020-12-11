@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.Walkthrough
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.audio.AudioFragment
 import org.oppia.android.app.player.audio.AudioUiManager
@@ -33,6 +35,7 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.topic.StoryProgressController
+import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
@@ -45,6 +48,7 @@ const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_AR
 const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY"
 const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
+const val STATE_FRAGMENT_EXPLORATION_IS_FROM_WALKTHROUGH_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_IS_FROM_WALKTHROUH_ARGUMENT_KEY"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
@@ -56,6 +60,7 @@ class StateFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
+  private val topicListController: TopicListController,
   private val logger: ConsoleLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
@@ -70,6 +75,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
+  private var isFromWalkthrough: Boolean = false
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
@@ -88,12 +94,14 @@ class StateFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    isFromWalkthrough: Boolean
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
+    this.isFromWalkthrough = isFromWalkthrough
 
     binding = StateFragmentBinding.inflate(
       inflater,
@@ -141,7 +149,7 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     subscribeToCurrentState()
-    markExplorationAsRecentlyPlayed()
+    subscribeToWalkthroughData()
     return binding.root
   }
 
@@ -502,14 +510,45 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun markExplorationAsRecentlyPlayed() {
-    storyProgressController.recordRecentlyPlayedChapter(
-      profileId,
-      topicId,
-      storyId,
-      explorationId,
-      Date().time
+  private val walkthroughResultLiveData:
+    LiveData<AsyncResult<Walkthrough>>
+    by lazy {
+      topicListController.getWalkthroughData(profileId).toLiveData()
+    }
+  private fun getAssumedSuccessfulWalkthroughData(): LiveData<Walkthrough> {
+    // If there's an error loading the data, assume the default.
+    return Transformations.map(walkthroughResultLiveData) {
+      it.getOrDefault(
+        Walkthrough.getDefaultInstance()
+      )
+    }
+  }
+
+  private fun subscribeToWalkthroughData() {
+    getAssumedSuccessfulWalkthroughData().observe(
+      fragment,
+      Observer<Walkthrough> {
+         if(it.topicId == topicId){
+           isFromWalkthrough = true
+
+           Log.d("topic state T=", "==" +it.topicId +" == " + topicId )
+        }else{
+          Log.d("topic state F=", "==" +it.topicId +" == " + topicId )
+          isFromWalkthrough = false
+        }
+        markExplorationAsRecentlyPlayed()
+      }
     )
+  }
+
+  private fun markExplorationAsRecentlyPlayed() {
+      storyProgressController.recordRecentlyPlayedChapter(
+        profileId,
+        topicId,
+        storyId,
+        explorationId,
+        Date().time,
+        isFromWalkthrough)
   }
 
   private fun markExplorationCompleted() {
@@ -518,7 +557,8 @@ class StateFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      Date().time
+      Date().time,
+      isFromWalkthrough
     )
   }
 }

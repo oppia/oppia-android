@@ -70,7 +70,8 @@ class TopicTestActivityForStory :
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        isFromWalkthrough = false
       )
     )
   }
@@ -83,3 +84,4 @@ class TopicTestActivityForStory :
     )
   }
 }
+

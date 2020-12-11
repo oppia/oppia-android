@@ -5,6 +5,7 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.model.PromotedStoriesType
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -16,7 +17,8 @@ class PromotedStoryViewModel(
   private val activity: AppCompatActivity,
   private val internalProfileId: Int,
   val entityType: String,
-  private val IntentFactoryShim: IntentFactoryShim
+  private val IntentFactoryShim: IntentFactoryShim,
+  val promotedStoriesType: PromotedStoriesType.PromotedStoriesTypeCase
 ) :
   ObservableViewModel(),
   RouteToTopicPlayStoryListener {

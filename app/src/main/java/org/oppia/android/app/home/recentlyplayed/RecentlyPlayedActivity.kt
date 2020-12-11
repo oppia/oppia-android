@@ -51,7 +51,8 @@ class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExploration
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        isFromWalkthrough = false
       )
     )
   }

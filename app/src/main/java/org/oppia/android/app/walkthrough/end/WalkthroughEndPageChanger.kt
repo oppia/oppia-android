@@ -4,4 +4,5 @@ package org.oppia.android.app.walkthrough.end
 interface WalkthroughEndPageChanger {
 
   fun goBack()
+  fun goToTopicsPage()
 }

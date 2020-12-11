@@ -48,6 +48,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private lateinit var explorationId: String
   private lateinit var context: Context
   private var backflowScreen: Int? = null
+  private var isFromWalkthrough: Boolean = false
 
   enum class ParentActivityForExploration(val value: Int) {
     BACKFLOW_SCREEN_LESSONS(0),
@@ -64,7 +65,8 @@ class ExplorationActivityPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    isFromWalkthrough: Boolean
   ) {
     val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
       activity,
@@ -98,6 +100,7 @@ class ExplorationActivityPresenter @Inject constructor(
     this.explorationId = explorationId
     this.context = context
     this.backflowScreen = backflowScreen
+    this.isFromWalkthrough = isFromWalkthrough
     if (getExplorationManagerFragment() == null) {
       val explorationManagerFragment = ExplorationManagerFragment()
       val args = Bundle()
@@ -123,7 +126,8 @@ class ExplorationActivityPresenter @Inject constructor(
           internalProfileId = internalProfileId,
           storyId = storyId,
           readingTextSize = readingTextSize.name,
-          explorationId = explorationId
+          explorationId = explorationId,
+           isFromWalkthrough = isFromWalkthrough
         ),
         TAG_EXPLORATION_FRAGMENT
       ).commitNow()

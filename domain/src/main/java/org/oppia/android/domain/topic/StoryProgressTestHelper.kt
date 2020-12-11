@@ -32,7 +32,8 @@ class StoryProgressTestHelper @Inject constructor(
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
   }
 
@@ -48,7 +49,8 @@ class StoryProgressTestHelper @Inject constructor(
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
   }
 
@@ -64,7 +66,8 @@ class StoryProgressTestHelper @Inject constructor(
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
 
     storyProgressController.recordCompletedChapter(
@@ -72,7 +75,8 @@ class StoryProgressTestHelper @Inject constructor(
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
   }
 
@@ -88,7 +92,8 @@ class StoryProgressTestHelper @Inject constructor(
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
 
     storyProgressController.recordCompletedChapter(
@@ -96,7 +101,8 @@ class StoryProgressTestHelper @Inject constructor(
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
   }
 
@@ -115,7 +121,8 @@ class StoryProgressTestHelper @Inject constructor(
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
 
     storyProgressController.recordCompletedChapter(
@@ -123,7 +130,8 @@ class StoryProgressTestHelper @Inject constructor(
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_1,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
   }
 
@@ -139,7 +147,8 @@ class StoryProgressTestHelper @Inject constructor(
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
 
     storyProgressController.recordCompletedChapter(
@@ -147,7 +156,8 @@ class StoryProgressTestHelper @Inject constructor(
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_1,
       RATIOS_EXPLORATION_ID_2,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
   }
 
@@ -166,7 +176,8 @@ class StoryProgressTestHelper @Inject constructor(
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
   }
 
@@ -185,7 +196,8 @@ class StoryProgressTestHelper @Inject constructor(
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
   }
 
@@ -205,7 +217,8 @@ class StoryProgressTestHelper @Inject constructor(
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
 
     storyProgressController.recordRecentlyPlayedChapter(
@@ -213,7 +226,8 @@ class StoryProgressTestHelper @Inject constructor(
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_1,
       RATIOS_EXPLORATION_ID_2,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
   }
 
@@ -233,7 +247,8 @@ class StoryProgressTestHelper @Inject constructor(
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
 
     storyProgressController.recordRecentlyPlayedChapter(
@@ -241,7 +256,8 @@ class StoryProgressTestHelper @Inject constructor(
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
 
     storyProgressController.recordRecentlyPlayedChapter(
@@ -249,7 +265,8 @@ class StoryProgressTestHelper @Inject constructor(
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_1,
       RATIOS_EXPLORATION_ID_2,
-      timestamp
+      timestamp,
+      isFromWalkthrough = false
     )
   }
 }

@@ -1,5 +1,6 @@
 package org.oppia.android.domain.topic
 
+import android.util.Log
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
@@ -7,6 +8,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicProgressDatabase
+import org.oppia.android.app.model.Walkthrough
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -39,11 +41,14 @@ const val RATIOS_EXPLORATION_ID_3 = "tIoSb3HZFN6e"
 private const val CACHE_NAME = "topic_progress_database"
 private const val RETRIEVE_TOPIC_PROGRESS_LIST_DATA_PROVIDER_ID =
   "retrieve_topic_progress_list_data_provider_id"
+private const val RETRIEVE_WALKTHROUGH_DATA_PROVIDER_ID =
+  "retrieve_walkthroug_data_provider_id"
 private const val RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID =
   "retrieve_topic_progress_data_provider_id"
 private const val RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID =
   "retrieve_story_progress_data_provider_id"
 private const val RECORD_COMPLETED_CHAPTER_PROVIDER_ID = "record_completed_chapter_provider_id"
+private const val RECORD_WALKTROUGH_TOPIC_PROVIDER_ID = "record_walkthrough_topic_provider_id"
 private const val RECORD_RECENTLY_PLAYED_CHAPTER_PROVIDER_ID =
   "record_recently_played_chapter_provider_id"
 
@@ -78,6 +83,7 @@ class StoryProgressController @Inject constructor(
    * @param storyId the ID corresponding to the story for which progress needs to be stored.
    * @param explorationId the chapter id which will marked as [ChapterPlayState.COMPLETED]
    * @param completionTimestamp the timestamp at the exploration was finished.
+   * @param isFromWalkthrough the boolean to be set false once exploration was finished.
    * @return a [DataProvider] that indicates the success/failure of this record progress operation.
    */
   fun recordCompletedChapter(
@@ -85,7 +91,8 @@ class StoryProgressController @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    completionTimestamp: Long
+    completionTimestamp: Long,
+    isFromWalkthrough: Boolean
   ): DataProvider<Any?> {
     val deferred =
       retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
@@ -110,7 +117,7 @@ class StoryProgressController @Inject constructor(
         storyProgressBuilder.putChapterProgress(explorationId, chapterProgress)
         val storyProgress = storyProgressBuilder.build()
 
-        val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId)
+        val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId).setIsFromWalkthrough(isFromWalkthrough)
         if (topicProgressDatabase.topicProgressMap[topicId] != null) {
           topicProgressBuilder
             .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)
@@ -141,6 +148,7 @@ class StoryProgressController @Inject constructor(
    * @param explorationId the chapter id which will marked as [ChapterPlayState.NOT_STARTED] if it
    *    has not been [ChapterPlayState.COMPLETED] already.
    * @param lastPlayedTimestamp the timestamp at which the exploration was last played.
+   * @param isFromWalkthrough the boolean to be set true if exploration was played from [WalkthroughActivity].
    * @return a [DataProvider] that indicates the success/failure of this record progress operation.
    */
   fun recordRecentlyPlayedChapter(
@@ -148,12 +156,14 @@ class StoryProgressController @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    lastPlayedTimestamp: Long
+    lastPlayedTimestamp: Long,
+    isFromWalkthrough: Boolean
   ): DataProvider<Any?> {
     val deferred =
       retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
         updateInMemoryCache = true
       ) { topicProgressDatabase ->
+
         val previousChapterProgress =
           topicProgressDatabase
             .topicProgressMap[topicId]?.storyProgressMap?.get(storyId)?.chapterProgressMap?.get(
@@ -190,17 +200,26 @@ class StoryProgressController @Inject constructor(
         }
         storyProgressBuilder.putChapterProgress(explorationId, chapterProgressBuilder.build())
         val storyProgress = storyProgressBuilder.build()
-
-        val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId)
+        val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId).setIsFromWalkthrough(isFromWalkthrough)
         if (topicProgressDatabase.topicProgressMap[topicId] != null) {
           topicProgressBuilder
             .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)
         }
         topicProgressBuilder.putStoryProgress(storyId, storyProgress)
         val topicProgress = topicProgressBuilder.build()
-
-        val topicDatabaseBuilder =
-          topicProgressDatabase.toBuilder().putTopicProgress(topicId, topicProgress)
+        val topicDatabaseBuilder = topicProgressDatabase.toBuilder()
+        Log.d("topic WW =","=="+topicProgress.getIsFromWalkthrough())
+        if (isFromWalkthrough) {
+          val walkthrough = Walkthrough.newBuilder()
+            .setExplorationId(explorationId)
+            .setTopicId(topicId)
+            .setProfileId(profileId)
+            .build()
+           topicDatabaseBuilder.putTopicProgress(topicId, topicProgress)
+              .setWalkthrough(walkthrough)
+        }else{
+           topicDatabaseBuilder.putTopicProgress(topicId, topicProgress)
+        }
         Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)
       }
 
@@ -220,6 +239,16 @@ class StoryProgressController @Inject constructor(
         val topicProgressList = mutableListOf<TopicProgress>()
         topicProgressList.addAll(topicProgressDatabase.topicProgressMap.values)
         AsyncResult.success(topicProgressList.toList())
+      }
+  }
+
+  /** Returns topic selected in [WalkthroughActivity] [DataProvider] for a particular profile. */
+  internal fun retrieveWalkthroughDataProvider(
+    profileId: ProfileId
+  ): DataProvider<Walkthrough> {
+    return retrieveCacheStore(profileId)
+      .transformAsync(RETRIEVE_WALKTHROUGH_DATA_PROVIDER_ID) { topicProgressDatabase ->
+        AsyncResult.success(topicProgressDatabase.walkthrough)
       }
   }
 

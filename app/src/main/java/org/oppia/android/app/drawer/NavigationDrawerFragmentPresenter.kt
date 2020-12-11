@@ -28,6 +28,7 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.databinding.DrawerFragmentBinding
 import org.oppia.android.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -214,9 +215,12 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.HELP -> {
-          val intent = HelpActivity.createHelpActivityIntent(
-            activity, internalProfileId,
-            /* isFromNavigationDrawer= */ true
+//          val intent = HelpActivity.createHelpActivityIntent(
+//            activity, internalProfileId,
+//            /* isFromNavigationDrawer= */ true
+//          )
+          val intent = WalkthroughActivity.createWalkthroughActivityIntent(
+            activity, internalProfileId
           )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {

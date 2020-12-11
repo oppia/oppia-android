@@ -245,7 +245,8 @@ class TopicListControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      isFromWalkthrough = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -267,7 +268,8 @@ class TopicListControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -289,7 +291,8 @@ class TopicListControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -298,7 +301,8 @@ class TopicListControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      isFromWalkthrough = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -321,7 +325,8 @@ class TopicListControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -330,7 +335,8 @@ class TopicListControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -352,7 +358,8 @@ class TopicListControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      isFromWalkthrough = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -361,7 +368,8 @@ class TopicListControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_1,
       RATIOS_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      isFromWalkthrough = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -384,7 +392,8 @@ class TopicListControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -393,7 +402,8 @@ class TopicListControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_1,
       RATIOS_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      isFromWalkthrough = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -416,7 +426,8 @@ class TopicListControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -425,7 +436,8 @@ class TopicListControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -434,7 +446,8 @@ class TopicListControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_1,
       RATIOS_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -458,7 +471,8 @@ class TopicListControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      getOldTimestamp()
+      getOldTimestamp(),
+      false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -467,7 +481,8 @@ class TopicListControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      getOldTimestamp()
+      getOldTimestamp(),
+      false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -476,7 +491,8 @@ class TopicListControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_1,
       RATIOS_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+      getCurrentTimestamp(),
+      false
     )
     testCoroutineDispatchers.runCurrent()
 

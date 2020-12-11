@@ -46,7 +46,8 @@ class StateFragment :
       internalProfileId: Int,
       topicId: String,
       storyId: String,
-      explorationId: String
+      explorationId: String,
+      isFromWalkthrough: Boolean
     ): StateFragment {
       val stateFragment = StateFragment()
       val args = Bundle()
@@ -54,6 +55,7 @@ class StateFragment :
       args.putString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY, topicId)
       args.putString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY, storyId)
       args.putString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
+      args.putBoolean(STATE_FRAGMENT_EXPLORATION_IS_FROM_WALKTHROUGH_ARGUMENT_KEY, isFromWalkthrough)
       stateFragment.arguments = args
       return stateFragment
     }
@@ -76,13 +78,16 @@ class StateFragment :
     val topicId = arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
     val storyId = arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
     val explorationId = arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
+    val isFromWalkthrough = arguments!!.getBoolean(
+      STATE_FRAGMENT_EXPLORATION_IS_FROM_WALKTHROUGH_ARGUMENT_KEY)
     return stateFragmentPresenter.handleCreateView(
       inflater,
       container,
       internalProfileId,
       topicId,
       storyId,
-      explorationId
+      explorationId,
+      isFromWalkthrough
     )
   }
 
