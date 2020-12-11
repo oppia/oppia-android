@@ -40,7 +40,7 @@ class HomeViewModel @Inject constructor(
           topicEntityType,
           fragment as TopicSummaryClickListener
         )
-      topicSummaryViewModel.setPosition(itemListLiveData.topicSummaryList.indexOf(topicSummary))
+      topicSummaryViewModel.setPosition(1 + itemListLiveData.topicSummaryList.indexOf(topicSummary))
       itemList.add(topicSummaryViewModel)
     }
     return itemList

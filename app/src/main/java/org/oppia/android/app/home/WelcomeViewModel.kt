@@ -17,8 +17,8 @@ import javax.inject.Inject
 /** [ViewModel] for welcome text in home screen. */
 class WelcomeViewModel @Inject constructor(
   private val logger: ConsoleLogger,
-  private val fragment: Fragment,
-  private val oppiaClock: OppiaClock,
+  fragment: Fragment,
+  oppiaClock: OppiaClock,
   private val profileManagementController: ProfileManagementController
   ) : HomeItemViewModel() {
   private lateinit var profileId : ProfileId
