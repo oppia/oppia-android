@@ -17,6 +17,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -37,6 +38,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -74,10 +76,13 @@ import org.oppia.android.domain.question.QuestionTrainingSeed
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.CoroutineExecutorService
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -101,6 +106,9 @@ private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 class QuestionPlayerActivityTest {
   // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
   // TODO(#1273): add tests for Hints and Solution in Question Player.
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -203,6 +211,70 @@ class QuestionPlayerActivityTest {
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
         .check(matches(withText(containsString("Identify the numerator and denominator"))))
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Test
+  fun testChooseCorrectAnswer_answerLongerThanScreen_phonePort_tickIsCompletelyVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Option 2 is the right answer and tick icon should be visible completely
+      selectMultipleChoiceOption(optionPosition = 2)
+      onView(withId(R.id.answer_tick)).check(
+        matches(
+          isCompletelyDisplayed()
+        )
+      )
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Test
+  fun testChooseCorrectAnswer_answerLongerThanScreen_phoneLand_tickIsCompletelyVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      rotateToLandscape()
+      // Option 2 is the right answer and tick icon should be visible completely
+      selectMultipleChoiceOption(optionPosition = 2)
+      onView(withId(R.id.answer_tick)).check(
+        matches(
+          isCompletelyDisplayed()
+        )
+      )
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Config(qualifiers = "sw600dp")
+  @Test
+  fun testChooseCorrectAnswer_answerLongerThanScreen_tabletPort_tickIsCompletelyVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Option 2 is the right answer and tick icon should be visible completely
+      selectMultipleChoiceOption(optionPosition = 2)
+      onView(withId(R.id.answer_tick)).check(
+        matches(
+          isCompletelyDisplayed()
+        )
+      )
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Config(qualifiers = "sw600dp")
+  @Test
+  fun testChooseCorrectAnswer_answerLongerThanScreen_tabletLand_tickIsCompletelyVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      rotateToLandscape()
+      // Option 2 is the right answer and tick icon should be visible completely
+      selectMultipleChoiceOption(optionPosition = 2)
+      onView(withId(R.id.answer_tick)).check(
+        matches(
+          isCompletelyDisplayed()
+        )
+      )
     }
   }
 

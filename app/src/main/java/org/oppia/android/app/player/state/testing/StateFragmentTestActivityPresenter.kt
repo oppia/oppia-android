@@ -39,11 +39,14 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       viewModel = getStateFragmentTestViewModel()
     }
 
-    val profileId = activity.intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA, 1)
-    val topicId = activity.intent.getStringExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA) ?: TEST_TOPIC_ID_0
-    val storyId = activity.intent.getStringExtra(TEST_ACTIVITY_STORY_ID_EXTRA) ?: TEST_STORY_ID_0
+    val profileId = activity.intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, 1)
+    val topicId =
+      activity.intent.getStringExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY) ?: TEST_TOPIC_ID_0
+    val storyId =
+      activity.intent.getStringExtra(TEST_ACTIVITY_STORY_ID_EXTRA_KEY) ?: TEST_STORY_ID_0
     val explorationId =
-      activity.intent.getStringExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA) ?: TEST_EXPLORATION_ID_2
+      activity.intent.getStringExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY)
+        ?: TEST_EXPLORATION_ID_2
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
       startPlayingExploration(profileId, topicId, storyId, explorationId)
     }

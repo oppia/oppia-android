@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.databinding.LessonsChapterViewBinding
 import org.oppia.android.databinding.TopicLessonsStorySummaryBinding
 import org.oppia.android.databinding.TopicLessonsTitleBinding
 
@@ -17,7 +19,6 @@ private const val VIEW_TYPE_STORY_ITEM = 2
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicLessonsFragment]. */
 class StorySummaryAdapter(
   private val itemList: MutableList<TopicLessonsItemViewModel>,
-  private val chapterSummarySelector: ChapterSummarySelector,
   private val expandedChapterListIndexListener: ExpandedChapterListIndexListener,
   private var currentExpandedChapterListIndex: Int?
 ) :
@@ -115,13 +116,7 @@ class StorySummaryAdapter(
         View.LAYER_TYPE_SOFTWARE,
         /* paint= */ null
       )
-      val chapterList = storySummaryViewModel.storySummary.chapterList
-      binding.chapterRecyclerView.adapter =
-        ChapterSummaryAdapter(
-          storySummaryViewModel.storySummary.storyId,
-          chapterList,
-          chapterSummarySelector
-        )
+      binding.chapterRecyclerView.adapter = createRecyclerViewAdapter()
 
       binding.root.setOnClickListener {
         val previousIndex: Int? = currentExpandedChapterListIndex
@@ -147,6 +142,15 @@ class StorySummaryAdapter(
           }
         }
       }
+    }
+
+    private fun createRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
+      return BindableAdapter.SingleTypeBuilder
+        .newBuilder<ChapterSummaryViewModel>()
+        .registerViewDataBinderWithSameModelType(
+          inflateDataBinding = LessonsChapterViewBinding::inflate,
+          setViewModel = LessonsChapterViewBinding::setViewModel
+        ).build()
     }
   }
 }

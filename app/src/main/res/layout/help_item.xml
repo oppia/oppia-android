@@ -14,6 +14,7 @@
     style="@style/Subtitle1"
     android:layout_width="match_parent"
     android:background="@drawable/general_item_background_border"
+    android:textAlignment="viewStart"
     android:paddingStart="16dp"
     android:paddingTop="20dp"
     android:paddingEnd="16dp"
