@@ -542,6 +542,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun markExplorationAsRecentlyPlayed() {
+    Log.d("topicplay=", "==" +topicId+" "+ storyId+" "+explorationId)
       storyProgressController.recordRecentlyPlayedChapter(
         profileId,
         topicId,
@@ -552,6 +553,8 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun markExplorationCompleted() {
+
+    Log.d("topicplaycom=", "==" +topicId+" "+ storyId+" "+explorationId)
     storyProgressController.recordCompletedChapter(
       profileId,
       topicId,

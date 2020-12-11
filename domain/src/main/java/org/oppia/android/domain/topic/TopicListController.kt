@@ -197,7 +197,7 @@ class TopicListController @Inject constructor(
           topicProgress.storyProgressMap.values.forEach { storyProgress ->
             val storyId = storyProgress.storyId
             var story = topicController.retrieveStory(topic.topicId, storyId)
-            Log.d("topic progress =", "" + topicProgress.topicId)
+            Log.d("topic progress =", "" + topicProgress.topicId + storyId)
 
             val completedChapterProgressList =
               storyProgress.chapterProgressMap.values
@@ -281,7 +281,7 @@ class TopicListController @Inject constructor(
           .getJSONArray("topic_id_list")
         for (j in 0 until topicIdJsonArray.length()) {
           val found = topicProgressList.any { it.topicId == topicIdJsonArray[j] }
-          if (!found) {
+          if (!found && ongoingStoryListBuilder.recommendedStoryList.size<3) {
             Log.d("topic =", " not" + " " + topicIdJsonArray[j])
             ongoingStoryListBuilder.addRecommendedStory(
               createRecommendedStoryFromAssets(
@@ -401,7 +401,7 @@ class TopicListController @Inject constructor(
           .loadJsonFromAsset("topics.json")!!
           .getJSONArray("topic_id_list")
         for (i in 0 until topicIdJsonArray.length()) {
-          if (topicProgress.topicId != topicIdJsonArray[i]) {
+          if (topicProgress.topicId != topicIdJsonArray[i] && recommendedStories.size<3) {
             recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[i].toString()))
           }
         }

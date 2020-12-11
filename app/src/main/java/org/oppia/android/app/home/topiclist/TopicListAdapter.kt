@@ -161,10 +161,12 @@ class TopicListAdapter(
         }
         when (promotedStoryList[0].promotedStoriesType) {
           PromotedStoriesType.PromotedStoriesTypeCase.RECENTLY_PLAYED -> {
+            binding.recentlyPlayedStoriesTextView.visibility = View.VISIBLE
             binding.recentlyPlayedStoriesTextView.setText(activity.getString(R.string.recently_played_stories))
             binding.viewAllTextView.visibility = View.VISIBLE
           }
           PromotedStoriesType.PromotedStoriesTypeCase.RECOMMENDED -> {
+            binding.recentlyPlayedStoriesTextView.visibility = View.VISIBLE
             binding.recentlyPlayedStoriesTextView.setText(activity.getString(R.string.recommended_stories))
             binding.viewAllTextView.visibility = View.INVISIBLE
           }
