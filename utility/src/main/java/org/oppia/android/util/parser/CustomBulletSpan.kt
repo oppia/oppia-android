@@ -18,26 +18,32 @@ import org.oppia.android.util.R
  * Reference: https://github.com/davidbilik/bullet-span-sample
  */
 class CustomBulletSpan(context: Context) : LeadingMarginSpan {
-  private var bulletRadius: Int = 0
-  private var gapWidth: Int = 0
-  private var yOffset: Int = 0
-  private var bulletLeadingMargin: Int = 0
-  private var textLeadingMargin: Int = 0
-  private var margin: Int = 0
+  private val bulletRadius : Int
+  private val gapWidth : Int
+  private val yOffset : Int
+  private val spacingBeforeBullet : Int
+  private val spacingBetweenBulletAndText : Int
+  private val totalSpacingToTextStart : Int
+  private var mBulletPath: Path? = null
 
   init {
     bulletRadius = context.resources.getDimensionPixelSize(R.dimen.bullet_radius)
     gapWidth = context.resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
     yOffset = context.resources.getDimensionPixelSize(R.dimen.bullet_y_offset)
-    bulletLeadingMargin = context.resources.getDimensionPixelSize(R.dimen.bullet_leading_margin)
-    textLeadingMargin = context.resources.getDimensionPixelSize(R.dimen.text_leading_margin)
-    margin = bulletLeadingMargin + textLeadingMargin + bulletRadius * 2
+    spacingBeforeBullet = context.resources.getDimensionPixelSize(R.dimen.spacing_before_bullet)
+    spacingBetweenBulletAndText = context.resources.getDimensionPixelSize(R.dimen.spacing_between_bullet_and_text)
+    totalSpacingToTextStart = spacingBeforeBullet + spacingBetweenBulletAndText + bulletRadius * 2
+    /**
+     * textLeadingMargin - is the space between bullet and the text
+     * bulletLeadingMargin - is the space between the parent and the bullet
+     * totalSpacingToTextStart - is used for total margin i.e, between parent and the text
+     * totolSpacingToTextStart includes textLeadingMargin and bulletLeadinMargin and double of
+     * the radius of the bullet
+     */
   }
 
-  private var mBulletPath: Path? = null
-
   override fun getLeadingMargin(first: Boolean): Int {
-    return margin
+    return totalSpacingToTextStart
   }
 
   override fun drawLeadingMargin(
@@ -66,7 +72,7 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
       }
       yPosition += yOffset
 
-      val xPosition = (x + dir * bulletRadius).toFloat() + bulletLeadingMargin
+      val xPosition = (x + dir * bulletRadius).toFloat() + spacingBeforeBullet
 
       if (canvas.isHardwareAccelerated) {
         if (mBulletPath == null) {
