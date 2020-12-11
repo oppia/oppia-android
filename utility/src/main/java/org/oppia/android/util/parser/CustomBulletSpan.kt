@@ -22,7 +22,7 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
   private val gapWidth: Int
   private val yOffset: Int
   private val spacingBeforeBullet: Int
-  private val spacingBetweenBulletAndText: Int
+  private val spacingBeforeText: Int
   private val totalSpacingToTextStart: Int
   private var mBulletPath: Path? = null
 
@@ -31,13 +31,13 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
     gapWidth = context.resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
     yOffset = context.resources.getDimensionPixelSize(R.dimen.bullet_y_offset)
     spacingBeforeBullet = context.resources.getDimensionPixelSize(R.dimen.spacing_before_bullet)
-    spacingBetweenBulletAndText = context.resources.getDimensionPixelSize(R.dimen.spacing_between_bullet_and_text) // ktlint-disable max-line-length
-    totalSpacingToTextStart = spacingBeforeBullet + spacingBetweenBulletAndText + bulletRadius * 2
+    spacingBeforeText = context.resources.getDimensionPixelSize(R.dimen.spacing_before_text)
+    totalSpacingToTextStart = spacingBeforeBullet + spacingBeforeText + bulletRadius * 2
     /**
-     * textLeadingMargin - is the space between bullet and the text
-     * bulletLeadingMargin - is the space between the parent and the bullet
+     * spacingBeforeText - is the space between bullet and the text
+     * spacingBeforeBullet - is the space between the parent and the bullet
      * totalSpacingToTextStart - is used for total margin i.e, between parent and the text
-     * totolSpacingToTextStart includes textLeadingMargin and bulletLeadinMargin and double of
+     * totolSpacingToTextStart includes spacingBeforeText and spacingBeforeBullet and double of
      * the radius of the bullet
      */
   }
