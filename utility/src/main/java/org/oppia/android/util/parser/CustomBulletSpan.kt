@@ -31,7 +31,7 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
     gapWidth = context.resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
     yOffset = context.resources.getDimensionPixelSize(R.dimen.bullet_y_offset)
     spacingBeforeBullet = context.resources.getDimensionPixelSize(R.dimen.spacing_before_bullet)
-    spacingBetweenBulletAndText = context.resources.getDimensionPixelSize(R.dimen.spacing_between_bullet_and_text)
+    spacingBetweenBulletAndText = context.resources.getDimensionPixelSize(R.dimen.spacing_between_bullet_and_text) // ktlint-disable max-line-length
     totalSpacingToTextStart = spacingBeforeBullet + spacingBetweenBulletAndText + bulletRadius * 2
     /**
      * textLeadingMargin - is the space between bullet and the text
