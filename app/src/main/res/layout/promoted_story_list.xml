@@ -50,7 +50,7 @@
         android:textSize="14sp" />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <org.oppia.android.app.home.topiclist.PromotedStoryListView
       android:id="@+id/promoted_story_list_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

@@ -1,9 +1,6 @@
 package org.oppia.android.app.home.topiclist
 
 import android.content.Context
-import android.content.res.Configuration
-import android.content.res.Resources
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -107,15 +104,4 @@ class PromotedStoryListViewModel @Inject constructor(
     )
     activity.startActivity(intent)
   }
-
-
-//    /*
-//     * The StartSnapHelper is used to snap between items rather than smooth scrolling,
-//     * so that the item is completely visible in [HomeFragment] as soon as learner lifts the finger after scrolling.
-//     */
-//    val snapHelper = StartSnapHelper()
-//    binding.promotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
-//    binding.promotedStoryListRecyclerView.setOnFlingListener(null)
-//    snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
-//  }
 }
