@@ -60,9 +60,9 @@ class HomeFragmentPresenter @Inject constructor(
       logger,
       fragment,
       oppiaClock,
-      profileManagementController,
-      profileId
+      profileManagementController
     )
+    welcomeViewModel.setInternalProfileId(profileId)
     logHomeActivityEvent()
 
     val promotedStoryListViewModel = PromotedStoryListViewModel(

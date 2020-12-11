@@ -22,9 +22,9 @@ class WelcomeViewModel @Inject constructor(
   private val logger: ConsoleLogger,
   private val fragment: Fragment,
   private val oppiaClock: OppiaClock,
-  private val profileManagementController: ProfileManagementController,
-  private val profileId: ProfileId
+  private val profileManagementController: ProfileManagementController
   ) : HomeItemViewModel() {
+  private lateinit var profileId : ProfileId
   var greeting: String = DateTimeUtil(
     fragment.requireContext(),
     oppiaClock
@@ -49,5 +49,9 @@ class WelcomeViewModel @Inject constructor(
       logger.e("HomeFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
     return profileResult.getOrDefault(Profile.getDefaultInstance())
+  }
+
+  fun setInternalProfileId(id: ProfileId) {
+    this.profileId = id
   }
 }

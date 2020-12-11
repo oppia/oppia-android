@@ -35,8 +35,7 @@ class PromotedStoryViewModel(
    * [LiveData] is used for all subsequent processed data to ensure the transformed [LiveData]s are
    * always in sync.
    */
-  var promotedStoryObservable : PromotedStory = PromotedStory.getDefaultInstance()
-  private val orientation = Resources.getSystem().configuration.orientation
+  lateinit var promotedStoryObservable : PromotedStory
   var totalStoryCount = -1
 
   fun setPromotedStory(promotedStory: PromotedStory) {
@@ -48,6 +47,7 @@ class PromotedStoryViewModel(
   }
 
   fun computeLayoutWidth(): Int {
+    val orientation = Resources.getSystem().configuration.orientation
     if (totalStoryCount > 1) {
       if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         return ViewGroup.LayoutParams.MATCH_PARENT
