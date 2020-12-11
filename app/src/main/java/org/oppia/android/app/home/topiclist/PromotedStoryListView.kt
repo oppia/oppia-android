@@ -20,11 +20,11 @@ class PromotedStoryListView @JvmOverloads constructor (
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    adapter = BindableAdapter.SingleTypeBuilder.newBuilder<PromotedStoryListViewModel>()
+    adapter = BindableAdapter.SingleTypeBuilder.newBuilder<PromotedStoryViewModel>()
       // should this be PromotedStoryCardBinding?
       .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = PromotedStoryListBinding::inflate,
-        setViewModel = PromotedStoryListBinding::setViewModel
+        inflateDataBinding = PromotedStoryCardBinding::inflate,
+        setViewModel = PromotedStoryCardBinding::setViewModel
       ).build()
 
     /*
