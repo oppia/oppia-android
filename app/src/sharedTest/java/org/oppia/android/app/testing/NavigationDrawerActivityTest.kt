@@ -105,10 +105,10 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = NavigationDrawerTestActivityTest.TestApplication::class,
+  application = NavigationDrawerActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class NavigationDrawerTestActivityTest {
+class NavigationDrawerActivityTest {
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -309,7 +309,7 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_withUserProfile_adminControlsIsNotDisplayed() {
+  fun testNavigationDrawerTestActivity_withUserProfile_adminControlsAreNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId1
@@ -513,18 +513,18 @@ class NavigationDrawerTestActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(navigationDrawerTestActivityTest: NavigationDrawerTestActivityTest)
+    fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerNavigationDrawerTestActivityTest_TestApplicationComponent.builder()
+      DaggerNavigationDrawerActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(navigationDrawerTestActivityTest: NavigationDrawerTestActivityTest) {
-      component.inject(navigationDrawerTestActivityTest)
+    fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest) {
+      component.inject(navigationDrawerActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
