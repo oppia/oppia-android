@@ -29,12 +29,12 @@ class TopicSummaryViewModel (
   val backgroundColor: Int = retrieveBackgroundColor()
   @ColorInt
   val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
-  private val marginTopBottom = (activity as Context).resources
+  private val marginTopBottom = activity.resources
       .getDimensionPixelSize(R.dimen.topic_list_item_margin_top_bottom)
   private val marginMax by lazy {
-    (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_max) }
+    activity.resources.getDimensionPixelSize(R.dimen.home_margin_max) }
   private val marginMin by lazy {
-    (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_min) }
+    activity.resources.getDimensionPixelSize(R.dimen.home_margin_min) }
   private var position = -1
   private val spanCount by lazy {
     activity.resources.getInteger(R.integer.home_span_count) }

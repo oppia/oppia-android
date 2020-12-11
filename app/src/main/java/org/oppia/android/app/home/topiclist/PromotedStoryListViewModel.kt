@@ -29,9 +29,9 @@ class PromotedStoryListViewModel @Inject constructor(
   RouteToRecentlyPlayedListener {
   private val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
   val paddingEnd =
-    (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_end)
+    activity.resources.getDimensionPixelSize(R.dimen.home_padding_end)
   val paddingStart =
-    (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_start)
+    activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
 
   private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>>
     by lazy {

@@ -52,7 +52,7 @@ class PromotedStoryViewModel(
       if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         return ViewGroup.LayoutParams.MATCH_PARENT
       } else {
-        return (activity as Context).resources.getDimensionPixelSize(R.dimen.promoted_story_card_width)
+        return activity.resources.getDimensionPixelSize(R.dimen.promoted_story_card_width)
       }
     } else {
       return ViewGroup.LayoutParams.MATCH_PARENT

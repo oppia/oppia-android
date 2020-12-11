@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.databinding.PromotedStoryCardBinding
-import org.oppia.android.databinding.PromotedStoryListBinding
 
 /**
  * A custom [RecyclerView] for displaying a variable list of promoted lesson stories that snaps to
@@ -18,8 +17,7 @@ class PromotedStoryListView @JvmOverloads constructor (
   defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
-  override fun onAttachedToWindow() {
-    super.onAttachedToWindow()
+  init {
     adapter = BindableAdapter.SingleTypeBuilder.newBuilder<PromotedStoryViewModel>()
       // should this be PromotedStoryCardBinding?
       .registerViewDataBinderWithSameModelType(
