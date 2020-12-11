@@ -5,22 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
-import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.shim.IntentFactoryShim
-import org.oppia.android.databinding.PromotedStoryListBinding
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
