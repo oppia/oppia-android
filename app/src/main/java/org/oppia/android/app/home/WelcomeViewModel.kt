@@ -31,7 +31,9 @@ class WelcomeViewModel @Inject constructor(
   ).getGreetingMessage()
 
   val profileName: LiveData<String> by lazy {
-    Transformations.map(profileLiveData, Profile::getName)
+    Transformations.map(profileLiveData) {
+      it.name
+    }
   }
 
   private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
