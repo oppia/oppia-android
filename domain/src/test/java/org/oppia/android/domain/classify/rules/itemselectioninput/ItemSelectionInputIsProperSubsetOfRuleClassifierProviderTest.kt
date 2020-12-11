@@ -21,43 +21,43 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
-  private val ITEM_SELECTION_SET_5 =
+  private val ITEM_SELECTION_12345 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1", "test2", "test3", "test4", "test5")
     )
 
-  private val ITEM_SELECTION_SET_SUBSET =
+  private val ITEM_SELECTION_1 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1")
     )
 
-  private val ITEM_SELECTION_SET_ONE_ELEMENT_PRESENT =
+  private val ITEM_SELECTION_16 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1", "test6")
     )
 
-  private val ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_NO_EXTRA_ELEMENT =
+  private val ITEM_SELECTION_12 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1", "test2")
     )
 
-  private val ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_WITH_EXTRA_ELEMENT =
+  private val ITEM_SELECTION_126 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1", "test2", "test6")
     )
 
-  private val ITEM_SELECTION_SET_EMPTY =
+  private val ITEM_SELECTION_ =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList()
     )
 
-  private val ITEM_SELECTION_SET_EXCLUSIVE =
+  private val ITEM_SELECTION_6 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test6")
@@ -78,10 +78,10 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
   @Test
   fun answerSetMoreThanInputSet_isSubset_returnsFalse() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_SUBSET)
+    val inputs = mapOf("x" to ITEM_SELECTION_1)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SELECTION_12345,
       inputs = inputs
     )
 
@@ -90,10 +90,10 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
   @Test
   fun answerSetMoreThanInputSet_notSubset_returnsFalse() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_ONE_ELEMENT_PRESENT)
+    val inputs = mapOf("x" to ITEM_SELECTION_16)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SELECTION_12345,
       inputs = inputs
     )
 
@@ -102,10 +102,10 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
   @Test
   fun answerSetLessThanInputSet_isSubset_returnsTrue() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_5)
+    val inputs = mapOf("x" to ITEM_SELECTION_12345)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_NO_EXTRA_ELEMENT,
+      answer = ITEM_SELECTION_12,
       inputs = inputs
     )
 
@@ -114,10 +114,10 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
   @Test
   fun answerSetLessThanInputSet_notSubset_returnsFalse() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_5)
+    val inputs = mapOf("x" to ITEM_SELECTION_12345)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_WITH_EXTRA_ELEMENT,
+      answer = ITEM_SELECTION_126,
       inputs = inputs
     )
 
@@ -125,11 +125,35 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   }
 
   @Test
-  fun inputSetEmpty_returnsFalse() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_EMPTY)
+  fun inputSetEmpty_returnsFalse(){
+    val inputs = mapOf("x" to ITEM_SELECTION_)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_ONE_ELEMENT_PRESENT,
+      answer = ITEM_SELECTION_16,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun answerSetEmpty_returnsFalse() {
+    val inputs = mapOf("x" to ITEM_SELECTION_1)
+
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun bothInputSetAndAnswerSetEmpty_returnsFalse() {
+    val inputs = mapOf("x" to ITEM_SELECTION_)
+
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_,
       inputs = inputs
     )
 
@@ -138,10 +162,10 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
   @Test
   fun answerSetSameAsInputSet_notSubset_returnsFalse() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_SUBSET)
+    val inputs = mapOf("x" to ITEM_SELECTION_1)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_EXCLUSIVE,
+      answer = ITEM_SELECTION_6,
       inputs = inputs
     )
 
@@ -150,15 +174,17 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
   @Test
   fun answerSetSameAsInputSet_isSubset_returnsFalse() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_5)
+    val inputs = mapOf("x" to ITEM_SELECTION_12345)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SELECTION_12345,
       inputs = inputs
     )
 
     assertThat(matches).isFalse()
   }
+  
+//  missing input, invalid input type, extra input param, invalid answer type
 
   private fun setUpTestApplicationComponent() {
     DaggerItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest_TestApplicationComponent
