@@ -18,12 +18,12 @@ import org.oppia.android.util.R
  * Reference: https://github.com/davidbilik/bullet-span-sample
  */
 class CustomBulletSpan(context: Context) : LeadingMarginSpan {
-  private val bulletRadius : Int
-  private val gapWidth : Int
-  private val yOffset : Int
-  private val spacingBeforeBullet : Int
-  private val spacingBetweenBulletAndText : Int
-  private val totalSpacingToTextStart : Int
+  private val bulletRadius: Int
+  private val gapWidth: Int
+  private val yOffset: Int
+  private val spacingBeforeBullet: Int
+  private val spacingBetweenBulletAndText: Int
+  private val totalSpacingToTextStart: Int
   private var mBulletPath: Path? = null
 
   init {
