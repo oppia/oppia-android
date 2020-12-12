@@ -56,13 +56,6 @@ class HomeFragmentPresenter @Inject constructor(
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    val welcomeViewModel = WelcomeViewModel(
-      logger,
-      fragment,
-      oppiaClock,
-      profileManagementController
-    )
-    welcomeViewModel.setInternalProfileId(profileId)
     logHomeActivityEvent()
 
     val promotedStoryListViewModel = PromotedStoryListViewModel(
@@ -76,12 +69,13 @@ class HomeFragmentPresenter @Inject constructor(
     val homeViewModel = HomeViewModel(
       activity,
       fragment,
+      oppiaClock,
+      logger,
+      profileId,
+      profileManagementController,
       topicListController,
       topicEntityType
     )
-    homeViewModel.addHomeItem(welcomeViewModel)
-    homeViewModel.addHomeItem(promotedStoryListViewModel)
-    homeViewModel.addHomeItem(allTopicsViewModel)
 
     val spanCount = activity.resources.getInteger(R.integer.home_span_count)
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
