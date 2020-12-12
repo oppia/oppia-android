@@ -350,7 +350,7 @@ class MathExpressionParser {
       }
 
       /**
-       * Corresponds to relative associativity for other encounterd operations whose operators are
+       * Corresponds to relative associativity for other encountered operations whose operators are
        * at the same level of precedence.
        */
       enum class Associativity {
