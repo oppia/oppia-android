@@ -55,26 +55,19 @@ class HomeFragmentPresenter @Inject constructor(
     // data-bound view models.
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     logHomeActivityEvent()
 
-    val promotedStoryListViewModel = PromotedStoryListViewModel(
-      activity,
-      internalProfileId,
-      intentFactoryShim,
-      topicListController,
-      storyEntityType
-    )
-    val allTopicsViewModel = AllTopicsViewModel()
     val homeViewModel = HomeViewModel(
       activity,
       fragment,
       oppiaClock,
       logger,
-      profileId,
+      internalProfileId,
+      intentFactoryShim,
       profileManagementController,
       topicListController,
-      topicEntityType
+      topicEntityType,
+      storyEntityType
     )
 
     val spanCount = activity.resources.getInteger(R.integer.home_span_count)

@@ -60,11 +60,11 @@
       android:scrollbars="none"
       android:orientation="horizontal"
       android:paddingStart="@{viewModel.paddingStart}"
-      android:paddingEnd="@{viewModel.promotedStoryListLiveData.size() > 1 ? viewModel.paddingEnd : viewModel.paddingStart}"
+      android:paddingEnd="@{viewModel.promotedStoryList.size() > 1 ? viewModel.paddingEnd : viewModel.paddingStart}"
       android:paddingTop="0dp"
       android:paddingBottom="0dp"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:reverseLayout="false"
-      app:data="@{viewModel.promotedStoryListLiveData}" />
+      app:data="@{viewModel.promotedStoryList}" />
   </LinearLayout>
 </layout>
