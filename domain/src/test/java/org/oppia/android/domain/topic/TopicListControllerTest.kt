@@ -706,25 +706,25 @@ class TopicListControllerTest {
     testCoroutineDispatchers.runCurrent()
 
 
-//    storyProgressController.recordCompletedChapter(
-//      profileId0,
-//      RATIOS_TOPIC_ID,
-//      RATIOS_STORY_ID_1,
-//      RATIOS_EXPLORATION_ID_2,
-//      getCurrentTimestamp(),
-//      false
-//    )
-//    testCoroutineDispatchers.runCurrent()
-//
-//    storyProgressController.recordCompletedChapter(
-//      profileId0,
-//      RATIOS_TOPIC_ID,
-//      RATIOS_STORY_ID_1,
-//      RATIOS_EXPLORATION_ID_3,
-//      getCurrentTimestamp(),
-//      false
-//    )
-//    testCoroutineDispatchers.runCurrent()
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      getCurrentTimestamp(),
+      false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_1,
+      getCurrentTimestamp(),
+      false
+    )
+    testCoroutineDispatchers.runCurrent()
 
     topicListController.getOngoingStoryList(profileId0).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
@@ -734,7 +734,13 @@ class TopicListControllerTest {
 
     val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
     assertThat(ongoingTopicList.recentStoryCount).isEqualTo(0)
-//    assertThat(ongoingTopicList.recommendedStoryCount).isEqualTo(3)
+    assertThat(ongoingTopicList.recommendedStoryCount).isEqualTo(0)
+
+    val comingSoontopicListLiveData = topicListController.getComingSoonTopicList()
+
+    val topicListResult = comingSoontopicListLiveData.value
+    assertThat(topicListResult).isNotNull()
+    assertThat(topicListResult!!.isSuccess()).isTrue()
   }
 
   @Test
