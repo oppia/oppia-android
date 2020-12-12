@@ -5,11 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioLanguageFragmentBinding
+import org.oppia.android.databinding.LanguageItemsBinding
 import javax.inject.Inject
 
 /** The presenter for [AudioLanguageFragment]. */
-class AudioLanguageFragmentPresenter @Inject constructor(private val fragment: Fragment) {
+class AudioLanguageFragmentPresenter @Inject constructor(
+  private val fragment: Fragment,
+  private val viewModelProvider: ViewModelProvider<LanguagesListViewModel>
+) {
 
   private lateinit var prefSummaryValue: String
   private lateinit var languageSelectionAdapter: LanguageSelectionAdapter
@@ -25,12 +31,16 @@ class AudioLanguageFragmentPresenter @Inject constructor(private val fragment: F
       container,
       /* attachToRoot= */ false
     )
+    val optionsViewModel = getOptionControlsViewModel()
     prefSummaryValue = prefValue
     languageSelectionAdapter = LanguageSelectionAdapter(prefKey) {
       updateAudioLanguage(it)
     }
+    binding.apply{
+      viewModel = optionsViewModel
+    }
     binding.audioLanguageRecyclerView.apply {
-      adapter = languageSelectionAdapter
+      adapter = createRecyclerViewAdapter()
     }
 
     binding.audioLanguageToolbar?.setNavigationOnClickListener {
@@ -40,7 +50,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(private val fragment: F
       (fragment.activity as AudioLanguageActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
       (fragment.activity as AudioLanguageActivity).finish()
     }
-    createAdapter()
+//    createAdapter()
     return binding.root
   }
 
@@ -69,4 +79,19 @@ class AudioLanguageFragmentPresenter @Inject constructor(private val fragment: F
     languageSelectionAdapter.setLanguageList(languageList)
     languageSelectionAdapter.setDefaultLanguageSelected(prefSummaryValue = prefSummaryValue)
   }
+
+  private fun createRecyclerViewAdapter(): BindableAdapter<LanguageSelectionItemViewModel> {
+    return BindableAdapter.SingleTypeBuilder
+      .newBuilder<LanguageSelectionItemViewModel>()
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = LanguageItemsBinding::inflate,
+        setViewModel = LanguageItemsBinding::setViewModel
+      )
+      .build()
+  }
+
+  private fun getOptionControlsViewModel(): LanguagesListViewModel {
+    return viewModelProvider.getForFragment(fragment, LanguagesListViewModel::class.java)
+  }
+
 }

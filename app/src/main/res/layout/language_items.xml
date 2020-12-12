@@ -3,6 +3,10 @@
   <data>
 
     <variable
+      name="viewModel"
+      type="org.oppia.android.app.options.LanguageSelectionItemViewModel" />
+
+    <variable
       name="languageString"
       type="CharSequence" />
   </data>
@@ -14,6 +18,7 @@
     android:background="@drawable/general_item_background_border_light"
     android:gravity="center_vertical"
     android:minHeight="48dp"
+    android:onClick="@{() -> viewModel.onClick(viewModel.languageTitle)}"
     android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatRadioButton
@@ -23,6 +28,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginEnd="24dp"
+      android:checked="@{viewModel.selected}"
       android:clickable="false"
       android:minWidth="20dp"
       android:minHeight="20dp" />
@@ -33,7 +39,7 @@
       android:layout_height="wrap_content"
       android:layout_marginEnd="24dp"
       android:fontFamily="sans-serif"
-      android:text="@{languageString}"
+      android:text="@{viewModel.languageTitle}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp" />
   </LinearLayout>
