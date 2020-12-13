@@ -24,6 +24,14 @@ class ProfileTestHelper @Inject constructor(
       isAdmin = true
     )
     profileManagementController.addProfile(
+      name = "MyyUserNameIsPranshuPandey",
+      pin = "123456789",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = -10710042,
+      isAdmin = false
+    )
+    profileManagementController.addProfile(
       name = "Ben",
       pin = "123",
       avatarImagePath = null,

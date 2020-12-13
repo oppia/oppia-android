@@ -17,9 +17,11 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -380,6 +382,50 @@ class HomeActivityTest {
           withText(containsString("First Test Topic"))
         )
       )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_profileNameTextview1_profileNameTextview2_textView1VisibleForAdminNameAndTextView2Gone() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
+        .check(matches(withText("Admin!")))
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview2
+        )
+      ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
+        .check(matches(withText("Admin!")))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_profileNameTextview1_profileNameTextview2_textView1GoneForLongUserNameAndTextView2Visible() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
+        .check(matches(withText("MyyUserNameIsPranshuPandey!")))
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview2
+        )
+      ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
+        .check(matches(withText("MyyUserNameIsPranshuPandey!")))
     }
   }
 
