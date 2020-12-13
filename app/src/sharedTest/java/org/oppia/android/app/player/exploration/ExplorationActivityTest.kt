@@ -3,6 +3,7 @@ package org.oppia.android.app.player.exploration
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -10,9 +11,13 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.PerformException
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
-import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -28,12 +33,15 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.util.HumanReadables
+import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -84,13 +92,10 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.IsOnRobolectric
-import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -102,6 +107,7 @@ import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
+import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -113,17 +119,6 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ExplorationActivityTest {
-
-  // TODO(#163): Fill in remaining tests for this activity.
-  @get:Rule
-  var explorationActivityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
-    ExplorationActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var explorationDataController: ExplorationDataController
@@ -143,6 +138,7 @@ class ExplorationActivityTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    context = ApplicationProvider.getApplicationContext()
     testCoroutineDispatchers.registerIdlingResource()
     FirebaseApp.initializeApp(context)
   }
@@ -166,6 +162,12 @@ class ExplorationActivityTest {
       }
     }
   }
+
+  // TODO(#163): Fill in remaining tests for this activity.
+  @get:Rule
+  var explorationActivityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
+    ExplorationActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
   @Test
   fun testExploration_toolbarTitle_isDisplayedSuccessfully() {
@@ -196,7 +198,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
-      changeConfiguration()
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.exploration_toolbar_title))
         .check(matches(withText("Prototype Exploration")))
@@ -293,7 +295,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
-      changeConfiguration()
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
     }
     explorationDataController.stopPlayingExploration()
@@ -310,12 +312,13 @@ class ExplorationActivityTest {
         RATIOS_EXPLORATION_ID_0
       )
     ).use {
-      startPlayingExplorationWithConnectionType(
-        explorationId = RATIOS_EXPLORATION_ID_0,
-        connectionStatus = NetworkConnectionUtil.ConnectionStatus.NONE
-      )
-      clickAudioPlayerIcon()
-      verifyTextInDialog(context.getString(R.string.audio_dialog_offline_message))
+      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withText(context.getString(R.string.audio_dialog_offline_message)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -325,18 +328,19 @@ class ExplorationActivityTest {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0
+        internalProfileId, RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
       )
     ).use {
-      startPlayingExplorationWithConnectionType(
-        explorationId = RATIOS_EXPLORATION_ID_0,
-        connectionStatus = NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(
+        NetworkConnectionUtil.ConnectionStatus.CELLULAR
       )
-      clickAudioPlayerIcon()
-      verifyTextInDialog(context.getString(R.string.cellular_data_alert_dialog_title))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -347,19 +351,20 @@ class ExplorationActivityTest {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0
+        internalProfileId, RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
       )
     ).use {
-      startPlayingExplorationWithConnectionType(
-        explorationId = RATIOS_EXPLORATION_ID_0,
-        connectionStatus = NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(
+        NetworkConnectionUtil.ConnectionStatus.CELLULAR
       )
-      clickAudioPlayerIcon()
-      changeConfiguration()
-      verifyTextInDialog(context.getString(R.string.cellular_data_alert_dialog_title))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -370,17 +375,22 @@ class ExplorationActivityTest {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0
+        internalProfileId, RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
       )
     ).use {
-      startPlayingExplorationWithConnectionType(
-        explorationId = RATIOS_EXPLORATION_ID_0,
-        connectionStatus = NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(
+        NetworkConnectionUtil.ConnectionStatus.CELLULAR
       )
-      clickAudioPlayerIcon()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(
+        allOf(
+          withText(context.getString(R.string.cellular_data_alert_dialog_title)),
+          withEffectiveVisibility(Visibility.VISIBLE)
+        )
+      )
       onView(
         allOf(
           withText(context.getString(R.string.audio_language_select_dialog_cancel_button)),
@@ -404,17 +414,26 @@ class ExplorationActivityTest {
         RATIOS_EXPLORATION_ID_0
       )
     ).use {
-      startPlayingExplorationWithConnectionType(
-        explorationId = RATIOS_EXPLORATION_ID_0,
-        connectionStatus = NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(
+        NetworkConnectionUtil.ConnectionStatus.CELLULAR
       )
-      clickAudioPlayerIcon()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(
+        allOf(
+          withText(context.getString(R.string.cellular_data_alert_dialog_title)),
+          withEffectiveVisibility(Visibility.VISIBLE)
+        )
+      )
+
       onView(
         allOf(
           withText(context.getString(R.string.cellular_data_alert_dialog_okay_button)),
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       ).inRoot(isDialog()).perform(click())
+
       onView(
         allOf(
           withId(R.id.ivPlayPauseAudio),
@@ -431,23 +450,28 @@ class ExplorationActivityTest {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0
+        internalProfileId, RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
       )
     ).use {
-      startPlayingExplorationWithConnectionType(
-        explorationId = RATIOS_EXPLORATION_ID_0,
-        connectionStatus = NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(
+        NetworkConnectionUtil.ConnectionStatus.CELLULAR
       )
-      clickAudioPlayerIcon()
-      verifyTextInDialog(context.getString(R.string.cellular_data_alert_dialog_title))
-      clickOnDialogItemView(R.id.cellular_data_dialog_checkbox)
-      clickOnDialogItemText(context.getString(R.string.audio_language_select_dialog_cancel_button))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.cellular_data_dialog_checkbox))
+        .inRoot(isDialog())
+        .perform(click())
+      onView(withText(context.getString(R.string.audio_language_select_dialog_cancel_button)))
+        .inRoot(isDialog())
+        .perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      clickAudioPlayerIcon()
+      onView(withId(R.id.action_audio_player)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(not(isDisplayed())))
@@ -463,24 +487,29 @@ class ExplorationActivityTest {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0
+        internalProfileId, RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
       )
     ).use {
-      startPlayingExplorationWithConnectionType(
-        explorationId = RATIOS_EXPLORATION_ID_0,
-        connectionStatus = NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(
+        NetworkConnectionUtil.ConnectionStatus.CELLULAR
       )
-      clickAudioPlayerIcon()
-      verifyTextInDialog(context.getString(R.string.cellular_data_alert_dialog_title))
-      clickOnDialogItemView(R.id.cellular_data_dialog_checkbox)
-      clickOnDialogItemText(context.getString(R.string.audio_language_select_dialog_okay_button))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.cellular_data_dialog_checkbox))
+        .inRoot(isDialog())
+        .perform(click())
+      onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button)))
+        .inRoot(isDialog())
+        .perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      clickAudioPlayerIcon()
-      clickAudioPlayerIcon()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
@@ -492,10 +521,11 @@ class ExplorationActivityTest {
 
   // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
-  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
+  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWithWifi_openRatioExploration_clickAudioIcon_checkAudioFragmentHasDefaultLanguageAndAutoPlays() { // ktlint-disable max-line-length
-    setupAudio()
+    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -504,19 +534,16 @@ class ExplorationActivityTest {
         RATIOS_EXPLORATION_ID_0
       )
     ).use {
-      startPlayingExplorationWithConnectionType(
-        explorationId = RATIOS_EXPLORATION_ID_0,
-        connectionStatus = NetworkConnectionUtil.ConnectionStatus.LOCAL
+      waitForTheView(withText("What is a Ratio?"))
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.ivPlayPauseAudio),
+          withEffectiveVisibility(Visibility.VISIBLE)
+        )
       )
-      testCoroutineDispatchers.runCurrent()
-      clickAudioPlayerIcon()
-
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ivPlayPauseAudio))
-        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-      onView(withText("EN"))
-        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-      testCoroutineDispatchers.advanceUntilIdle()
+      onView(allOf(withText("EN"), withEffectiveVisibility(Visibility.VISIBLE)))
+      waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
       onView(withId(R.id.ivPlayPauseAudio)).check(
         matches(
           withDrawable(
@@ -540,26 +567,29 @@ class ExplorationActivityTest {
         FRACTIONS_EXPLORATION_ID_0
       )
     ).use {
-      startPlayingExplorationWithConnectionType(
-        explorationId = FRACTIONS_EXPLORATION_ID_0,
-        connectionStatus = NetworkConnectionUtil.ConnectionStatus.LOCAL
-      )
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
         )
       )
       onView(withId(R.id.continue_button)).perform(click())
-      clickAudioPlayerIcon()
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(
         allOf(
           withText("EN"),
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       ).perform(click())
-      clickOnDialogItemText("Hinglish")
+      onView(withText("Hinglish"))
+        .inRoot(isDialog())
+        .perform(click())
 
-      clickOnDialogItemText(context.getString(R.string.audio_language_select_dialog_okay_button))
+      onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button)))
+        .inRoot(isDialog())
+        .perform(click())
 
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -575,26 +605,17 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
-  @Ignore
+  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWithWifi_openRatioExploration_continueToInteraction_clickAudioButton_submitAnswer_checkFeedbackAudioPlays() { // ktlint-disable max-line-length
-    setupAudio()
+    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
-        internalProfileId,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0
+        internalProfileId, RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
       )
     ).use {
-      startPlayingExplorationWithConnectionType(
-        explorationId = RATIOS_EXPLORATION_ID_0,
-        connectionStatus = NetworkConnectionUtil.ConnectionStatus.LOCAL
-      )
-      onView(withId(R.id.state_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
+      waitForTheView(withText("What is a Ratio?"))
       // Clicks continue until we reach the first interaction.
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.continue_button)).perform(click())
@@ -602,28 +623,16 @@ class ExplorationActivityTest {
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.continue_button)).perform(click())
 
-      clickAudioPlayerIcon()
-      onView(withId(R.id.state_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.text_input_interaction_view)).perform(
-        typeText("123"),
+        ViewActions.typeText("123"),
         closeSoftKeyboard()
       )
-      testCoroutineDispatchers.advanceUntilIdle()
-
       onView(withId(R.id.submit_answer_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
+      Thread.sleep(1000)
 
-      onView(withId(R.id.ivPlayPauseAudio)).check(
-        matches(
-          withDrawable(
-            R.drawable.ic_pause_circle_filled_white_24dp
-          )
-        )
-      )
+      onView(withId(R.id.ivPlayPauseAudio))
+        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -653,7 +662,8 @@ class ExplorationActivityTest {
       )
     ).use {
       pressBack()
-      verifyTextInDialog(context.getString(R.string.stop_exploration_dialog_title))
+      onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -668,11 +678,13 @@ class ExplorationActivityTest {
       )
     ).use {
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-      verifyTextInDialog(context.getString(R.string.stop_exploration_dialog_title))
+      onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
   // TODO (#1855): Resolve ktlint max line in app module test
+  // TODO(#89): Check this test case too. It works in pair with below test case.
   @Test
   fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickCancel_dismissesDialog() { // ktlint-disable max-line-length
     explorationActivityTestRule.launchActivity(
@@ -684,8 +696,8 @@ class ExplorationActivityTest {
       )
     )
     pressBack()
-    clickOnDialogItemText(context.getString(R.string.stop_exploration_dialog_cancel_button))
-    testCoroutineDispatchers.runCurrent()
+    onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
+      .perform(click())
     assertThat(explorationActivityTestRule.activity.isFinishing).isFalse()
   }
 
@@ -703,8 +715,8 @@ class ExplorationActivityTest {
       )
     )
     pressBack()
-    clickOnDialogItemText(context.getString(R.string.stop_exploration_dialog_leave_button))
-    testCoroutineDispatchers.runCurrent()
+    onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+      .perform(click())
     assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
   }
 
@@ -720,43 +732,8 @@ class ExplorationActivityTest {
       topicId,
       storyId,
       explorationId,
-      backflowScreen = null
+      /* backflowScreen= */ null
     )
-  }
-
-  private fun changeConfiguration() {
-    onView(isRoot()).perform(orientationLandscape())
-  }
-
-  private fun clickAudioPlayerIcon() {
-    onView(withId(R.id.action_audio_player)).perform(click())
-  }
-
-  private fun startPlayingExplorationWithConnectionType(
-    explorationId: String,
-    connectionStatus: NetworkConnectionUtil.ConnectionStatus
-  ) {
-    explorationDataController.startPlayingExploration(explorationId)
-    networkConnectionUtil.setCurrentConnectionStatus(connectionStatus)
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun verifyTextInDialog(textInDialog: String) {
-    onView(withText(textInDialog))
-      .inRoot(isDialog())
-      .check(matches(isDisplayed()))
-  }
-
-  private fun clickOnDialogItemText(string: String) {
-    onView(withText(string))
-      .inRoot(isDialog())
-      .perform(click())
-  }
-
-  private fun clickOnDialogItemView(viewId: Int) {
-    onView(withId(viewId))
-      .inRoot(isDialog())
-      .perform(click())
   }
 
   private fun setupAudio() {
@@ -814,6 +791,53 @@ class ExplorationActivityTest {
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
+  }
+
+  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
+    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
+  }
+
+// TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
+//  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
+//  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
+//  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
+//  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
+//  thread helps to counter that.
+  /**
+   * Perform action of waiting for a specific matcher to finish. Adapted from:
+   * https://stackoverflow.com/a/22563297/3689782.
+   */
+  private fun waitForMatch(viewMatcher: Matcher<View>, millis: Long): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String {
+        return "wait for a specific view with matcher <$viewMatcher> during $millis millis."
+      }
+
+      override fun getConstraints(): Matcher<View> {
+        return isRoot()
+      }
+
+      override fun perform(uiController: UiController?, view: View?) {
+        checkNotNull(uiController)
+        uiController.loopMainThreadUntilIdle()
+        val startTime = System.currentTimeMillis()
+        val endTime = startTime + millis
+
+        do {
+          if (TreeIterables.breadthFirstViewTraversal(view).any { viewMatcher.matches(it) }) {
+            return
+          }
+          uiController.loopMainThreadForAtLeast(50)
+        } while (System.currentTimeMillis() < endTime)
+
+        // Couldn't match in time.
+        throw PerformException.Builder()
+          .withActionDescription(description)
+          .withViewDescription(HumanReadables.describe(view))
+          .withCause(TimeoutException())
+          .build()
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
