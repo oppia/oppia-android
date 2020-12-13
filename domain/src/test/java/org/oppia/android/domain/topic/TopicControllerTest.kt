@@ -422,10 +422,15 @@ class TopicControllerTest {
     val story = storySummaryResultCaptor.value!!.getOrThrow()
     assertThat(story.getChapter(0).chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(story.getChapter(0).missingPrerequisiteChapter).isNull()
     assertThat(story.getChapter(1).chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(story.getChapter(1).missingPrerequisiteChapter)
+      .isEqualTo(story.getChapter(0))
     assertThat(story.getChapter(2).chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(story.getChapter(2).missingPrerequisiteChapter)
+      .isEqualTo(story.getChapter(1))
   }
 
   @Test
@@ -884,6 +889,8 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(topic.storyList[0].chapterList[1].missingPrerequisiteChapter)
+      .isEqualTo(topic.storyList[0].chapterList[0])
   }
 
   @Test
@@ -927,6 +934,8 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(storySummary.chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(storySummary.chapterList[1].missingPrerequisiteChapter)
+      .isEqualTo(storySummary.chapterList[0])
   }
 
   @Test
