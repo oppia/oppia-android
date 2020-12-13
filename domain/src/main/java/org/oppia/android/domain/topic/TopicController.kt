@@ -382,10 +382,11 @@ class TopicController @Inject constructor(
       val storyBuilder = storySummary.toBuilder()
       storySummary.chapterList.forEachIndexed { index, chapterSummary ->
         val chapterBuilder = chapterSummary.toBuilder()
-        chapterBuilder.chapterPlayState = if (index != 0) {
-          ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+        if (index != 0) {
+          chapterBuilder.chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+          chapterBuilder.missingPrerequisiteChapter = storySummary.chapterList.get(index - 1)
         } else {
-          ChapterPlayState.NOT_STARTED
+          chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
         }
         storyBuilder.setChapter(index, chapterBuilder)
       }
