@@ -4,10 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.work.impl.utils.LiveDataUtils
+import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.PromotedStoryViewModel
@@ -21,7 +20,8 @@ import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
-import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
@@ -29,6 +29,10 @@ import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
+private const val PROFILE_AND_ONGOING_STORY_COMBINED_PROVIDER_ID = "profile+ongoingStoryList"
+private const val HOME_FRAGMENT_COMBINED_PROVIDER_ID = "profile+ongoingStoryList+topicListProvider"
+
+/** [ViewModel] for layouts in home fragment . */
 @FragmentScope
 class HomeViewModel @Inject constructor(
   private val activity: AppCompatActivity,
@@ -44,77 +48,91 @@ class HomeViewModel @Inject constructor(
   ) : ObservableViewModel() {
 
   private val profileId : ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-  private lateinit var welcomeViewModel : WelcomeViewModel
-  private lateinit var promotedStoryListViewModel : PromotedStoryListViewModel
   private val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
-  private val allTopicsViewModel = AllTopicsViewModel()
-  private lateinit var topicSummaryViewModelList : List<TopicSummaryViewModel>
 
-  val itemsList = listOf(
-    welcomeViewModel,
-    promotedStoryListViewModel,
-    allTopicsViewModel,
-    topicSummaryViewModelList
-  )
-
-  private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
-    profileManagementController.getProfile(profileId).toLiveData()
+  private val profileDataProvider: DataProvider<Profile> by lazy {
+    profileManagementController.getProfile(profileId)
   }
 
-  private val welcomeViewModelLiveData: LiveData<WelcomeViewModel> by lazy {
-    Transformations.map(profileResultLiveData, ::processGetProfileResult)
-  }
-
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>) : WelcomeViewModel {
-    if (profileResult.isFailure()) {
-      logger.e("HomeFragment",
-        "Failed to retrieve profile",
-        profileResult.getErrorOrNull()!!)
-    }
-    val profile = profileResult.getOrDefault(Profile.getDefaultInstance())
-    val welcome = WelcomeViewModel(
-      fragment,
-      oppiaClock
-    )
-    welcome.profileName.set(profile.name)
-    welcomeViewModel = welcome
-    return welcome
-  }
-
-  private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>>
+  private val ongoingStoryListSummaryDataProvider: DataProvider<OngoingStoryList>
     by lazy {
-      topicListController.getOngoingStoryList(profileId).toLiveData()
+      topicListController.getOngoingStoryList(profileId)
     }
 
-  private val assumedSuccessfulOngoingStoryListLiveData: LiveData<OngoingStoryList> by lazy {
-    // If there's an error loading the data, assume the default.
-    Transformations.map(ongoingStoryListSummaryResultLiveData) {
-      it.getOrDefault(
-        OngoingStoryList.getDefaultInstance()
+  private val topicListSummaryDataProvider: DataProvider<TopicList> by lazy {
+    topicListController.getTopicList()
+  }
+
+  private val combinedHomeFragmentModelDataProvider: DataProvider<HomeFragmentModel> by lazy {
+    // This will block until all data providers return initial results (which may be default
+    // instances). If any of the data providers are pending or failed, the combined result will also
+    // be pending or failed.
+    profileDataProvider.combineWith(
+      ongoingStoryListSummaryDataProvider,
+      PROFILE_AND_ONGOING_STORY_COMBINED_PROVIDER_ID) { profile, ongoingStoryList ->
+      HomeFragmentModel(profile, ongoingStoryList)
+    }.combineWith(
+      topicListSummaryDataProvider,
+      HOME_FRAGMENT_COMBINED_PROVIDER_ID) { combinedModel, topicList ->
+      HomeFragmentModel(combinedModel.profile, combinedModel.ongoingStoryList, topicList)
+    }
+  }
+
+  // Resulting LiveData to bind to the outer RecyclerView & that contains all ViewModels.
+  val combinedHomeViewModelListLiveData: LiveData<List<HomeItemViewModel>> by lazy {
+    Transformations.map(combinedHomeFragmentModelDataProvider.toLiveData()) { combinedModelResult ->
+      if (combinedModelResult.isFailure()) {
+        logger.e("HomeFragment",
+        "Failed to retrieve fragment",
+          combinedModelResult.getErrorOrNull()
+        )
+      }
+      val combinedModel = combinedModelResult.getOrDefault(HomeFragmentModel())
+      // Convert combinedModel into a list of view models for the home screen (proto defaults
+      // should result in no view models for corresponding sections so that they don't appear).
+      // This can usually be done by checking that a constituent list is empty.
+      var itemList : List<HomeItemViewModel> = listOf(
+        getProfileData(combinedModel.profile) as HomeItemViewModel,
+        getPromotedStoryListData(combinedModel.ongoingStoryList) as HomeItemViewModel,
+        AllTopicsViewModel() as HomeItemViewModel,
+        getTopicListData(combinedModel.topicList) as HomeItemViewModel
       )
+      return@map itemList
     }
   }
 
-  private val promotedStoryListViewModelLiveData: LiveData<PromotedStoryListViewModel> by lazy {
-    Transformations.map(promotedStoryListLiveData, ::processPromotedStories)
+  private fun getProfileData(profile: Profile) : WelcomeViewModel {
+    val welcomeViewModel = WelcomeViewModel(fragment, oppiaClock)
+    if (profile.isInitialized) {
+      welcomeViewModel.profileName.set(profile.name)
+    } else {
+      logger.i("HomeFragment",
+        "Failed to retrieve profile"
+      )
+      welcomeViewModel.profileName.set(Profile.getDefaultInstance().name)
+    }
+    return welcomeViewModel
   }
 
-  private fun processPromotedStories(list: List<PromotedStoryViewModel>) : PromotedStoryListViewModel{
-    promotedStoryListViewModel = PromotedStoryListViewModel(
+  private fun getPromotedStoryListData(ongoingStoryList: OngoingStoryList) : PromotedStoryListViewModel {
+    val promotedStoryListViewModel = PromotedStoryListViewModel(
       activity,
       internalProfileId,
-      intentFactoryShim
-    )
-    promotedStoryListViewModel.setList(list)
+      intentFactoryShim)
+    if (ongoingStoryList.isInitialized) {
+      promotedStoryListViewModel.setPromotedStories(processPromotedStories(ongoingStoryList))
+    } else {
+      logger.i("HomeFragment",
+        "Failed to retrieve promoted stories"
+      )
+      promotedStoryListViewModel.setPromotedStories(
+        processPromotedStories(OngoingStoryList.getDefaultInstance()))
+    }
     return promotedStoryListViewModel
   }
 
-  val promotedStoryListLiveData: LiveData<List<PromotedStoryViewModel>> by lazy {
-    Transformations.map(assumedSuccessfulOngoingStoryListLiveData, ::processOngoingStoryList)
-  }
-
-  private fun processOngoingStoryList(ongoingStoryList: OngoingStoryList) : List<PromotedStoryViewModel> {
-    var newPromotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
+  private fun processPromotedStories(ongoingStoryList: OngoingStoryList) : List<PromotedStoryViewModel> {
+    var promotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
     if (ongoingStoryList.recentStoryCount != 0) {
       ongoingStoryList.recentStoryList.take(limit)
         .forEach { promotedStory ->
@@ -126,7 +144,7 @@ class HomeViewModel @Inject constructor(
           )
           recentStory.setPromotedStory(promotedStory)
           recentStory.setStoryCount(ongoingStoryList.recentStoryCount)
-          newPromotedStoryList.add(recentStory)
+          promotedStoryList.add(recentStory)
         }
     } else {
       // TODO(#936): Optimise this as part of recommended stories.
@@ -140,22 +158,26 @@ class HomeViewModel @Inject constructor(
           )
           oldStory.setPromotedStory(promotedStory)
           oldStory.setStoryCount(ongoingStoryList.olderStoryCount)
-          newPromotedStoryList.add(oldStory)
+          promotedStoryList.add(oldStory)
         }
     }
-    return newPromotedStoryList
+    return promotedStoryList
   }
 
-  private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
-    topicListController.getTopicList()
-  }
-  private val topicListLiveData: LiveData<MutableList<TopicSummaryViewModel>> by lazy {
-    Transformations.map(assumedSuccessfulTopicListLiveData, ::processTopicList)
+  private fun getTopicListData(topicsList: TopicList) : List<TopicSummaryViewModel> {
+    if (topicsList.isInitialized) {
+      return processTopicsList(topicsList)
+    } else {
+      logger.i("HomeFragment",
+        "Failed to retrieve topics list"
+      )
+      return processTopicsList(TopicList.getDefaultInstance())
+    }
   }
 
-  private fun processTopicList(itemsList: TopicList) : MutableList<TopicSummaryViewModel> {
-    var list : MutableList<TopicSummaryViewModel> = ArrayList()
-    for (topicSummary in itemsList.topicSummaryList) {
+  private fun processTopicsList(topicsList: TopicList) : List<TopicSummaryViewModel> {
+    var list: MutableList<TopicSummaryViewModel> = ArrayList()
+    for (topicSummary in topicsList.topicSummaryList) {
       val topicSummaryViewModel =
         TopicSummaryViewModel(
           activity,
@@ -163,17 +185,18 @@ class HomeViewModel @Inject constructor(
           topicEntityType,
           fragment as TopicSummaryClickListener
         )
-      topicSummaryViewModel.setPosition(1 + itemsList.topicSummaryList.indexOf(topicSummary))
+      topicSummaryViewModel.setPosition(1 + topicsList.topicSummaryList.indexOf(topicSummary))
       list.add(topicSummaryViewModel)
     }
-    topicSummaryViewModelList = list
     return list
   }
 
-  private val assumedSuccessfulTopicListLiveData: LiveData<TopicList> by lazy {
-    // If there's an error loading the data, assume the default.
-    Transformations.map(topicListSummaryResultLiveData) {
-      it.getOrDefault(TopicList.getDefaultInstance())
-    }
-  }
+  // Model to display combined fragment data from all view models. Initialize to the default values
+  // so that fragment can display on initial load until data-fetching from each Data Provider
+  // finishes.
+  private data class HomeFragmentModel(
+    val profile: Profile = Profile.getDefaultInstance(),
+    val ongoingStoryList: OngoingStoryList = OngoingStoryList.getDefaultInstance(),
+    val topicList: TopicList = TopicList.getDefaultInstance()
+  )
 }

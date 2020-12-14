@@ -16,15 +16,14 @@ class PromotedStoryListViewModel @Inject constructor(
 ) :
   HomeItemViewModel(),
   RouteToRecentlyPlayedListener {
-//  private val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
   val paddingEnd =
     activity.resources.getDimensionPixelSize(R.dimen.home_padding_end)
   val paddingStart =
     activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
 
-  var promotedStoryList : List<PromotedStoryViewModel> = ArrayList()
+  var promotedStoryList : List<PromotedStoryViewModel> = listOf()
 
-  fun setList(storyList: List<PromotedStoryViewModel>) {
+  fun setPromotedStories(storyList: List<PromotedStoryViewModel>) {
     this.promotedStoryList = storyList
   }
 

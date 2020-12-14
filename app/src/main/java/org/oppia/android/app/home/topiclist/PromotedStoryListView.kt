@@ -26,8 +26,9 @@ class PromotedStoryListView @JvmOverloads constructor (
       ).build()
 
     /*
-     * The StartSnapHelper is used to snap between items rather than smooth scrolling,
-     * so that the item is completely visible in [HomeFragment] as soon as learner lifts the finger after scrolling.
+     * The StartSnapHelper is used to snap between items rather than smooth scrolling, so that
+     * the item is completely visible in [HomeFragment] as soon as learner lifts the finger
+     * after scrolling.
      */
     val snapHelper = StartSnapHelper()
     this.setOnFlingListener(null)
