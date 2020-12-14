@@ -28,7 +28,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginEnd="24dp"
-      android:checked="@{viewModel.selected}"
+      android:checked="@={viewModel.selected}"
       android:clickable="false"
       android:minWidth="20dp"
       android:minHeight="20dp" />

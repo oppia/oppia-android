@@ -55,7 +55,7 @@
         android:paddingBottom="96dp"
         android:scrollbars="none"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:list="@{viewModel.audioLanguages}"
+        app:list="@{viewModel.audioLanguagesLiveData}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

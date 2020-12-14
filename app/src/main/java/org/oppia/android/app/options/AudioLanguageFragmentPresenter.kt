@@ -1,10 +1,12 @@
 package org.oppia.android.app.options
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioLanguageFragmentBinding
@@ -19,6 +21,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
 
   private lateinit var prefSummaryValue: String
   private lateinit var languageSelectionAdapter: LanguageSelectionAdapter
+  val optionsViewModel = getOptionControlsViewModel()
 
   fun handleOnCreateView(
     inflater: LayoutInflater,
@@ -31,11 +34,17 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    val optionsViewModel = getOptionControlsViewModel()
     prefSummaryValue = prefValue
     languageSelectionAdapter = LanguageSelectionAdapter(prefKey) {
       updateAudioLanguage(it)
     }
+
+    optionsViewModel.preferenceValue.observe(fragment, Observer {
+      optionsViewModel.updateAudioLanguageList(it)
+    })
+
+    optionsViewModel.preferenceValue.postValue(prefValue)
+
     binding.apply{
       viewModel = optionsViewModel
     }
@@ -67,6 +76,16 @@ class AudioLanguageFragmentPresenter @Inject constructor(
         parentActivity.audioLanguageActivityPresenter.setLanguageSelected(audioLanguage)
     }
   }
+
+  fun updatePrefValue(title: String){
+
+    Log.d("posted", "vrooo ;( ;(")
+    optionsViewModel.preferenceValue.postValue(title)
+  }
+
+//  override fun updatePrefLanguage(title: String) {
+//    optionsViewModel.updatePrefValue(title)
+//  }
 
   private fun createAdapter() {
     // TODO(#669): Replace dummy list with actual language list from backend.
