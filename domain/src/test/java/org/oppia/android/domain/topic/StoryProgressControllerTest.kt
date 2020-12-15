@@ -91,8 +91,7 @@ class StoryProgressControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      timestamp,
-      false
+      timestamp
     ).toLiveData().observeForever(mockRecordProgressObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -106,23 +105,7 @@ class StoryProgressControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      timestamp,
-      isFromWalkthrough = false
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyRecordProgressSucceeded()
-  }
-
-  @Test
-  fun testStoryProgressController_recordRecentlyPlayedChapterFromWalkthrough_isSuccessful() {
-    storyProgressController.recordRecentlyPlayedChapter(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      timestamp,
-      isFromWalkthrough = true
+      timestamp
     ).toLiveData().observeForever(mockRecordProgressObserver)
     testCoroutineDispatchers.runCurrent()
 

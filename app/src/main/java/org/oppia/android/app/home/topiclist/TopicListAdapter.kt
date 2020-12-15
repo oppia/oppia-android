@@ -34,9 +34,6 @@ class TopicListAdapter(
 
   private var spanCount = 0
 
-  private lateinit var promotedStoryViewModel: PromotedStoryViewModel
-  private lateinit var comingSoonTopicsListViewModel: ComingSoonTopicsListViewModel
-
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
       // TODO(#216): Generalize this binding to make adding future items easier.
@@ -161,6 +158,11 @@ class TopicListAdapter(
         }
         when (promotedStoryList[0].promotedStoriesType) {
           PromotedStoriesType.PromotedStoriesTypeCase.RECENTLY_PLAYED -> {
+            binding.recentlyPlayedStoriesTextView.visibility = View.VISIBLE
+            binding.recentlyPlayedStoriesTextView.setText(activity.getString(R.string.recently_played_stories))
+            binding.viewAllTextView.visibility = View.VISIBLE
+          }
+          PromotedStoriesType.PromotedStoriesTypeCase.LAST_PLAYED -> {
             binding.recentlyPlayedStoriesTextView.visibility = View.VISIBLE
             binding.recentlyPlayedStoriesTextView.setText(activity.getString(R.string.recently_played_stories))
             binding.viewAllTextView.visibility = View.VISIBLE

@@ -79,7 +79,6 @@
         android:layout_weight="1"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
-        android:onClick="@{(v) -> presenter.goToTopicsPage()}"
         android:focusable="true"
         app:cardCornerRadius="4dp"
         app:contentPadding="@dimen/walkthrough_final_fragment_card_content_padding">

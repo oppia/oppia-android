@@ -4,15 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.home.RouteToExplorationListener
-import org.oppia.android.app.home.RouteToTopicListener
-import org.oppia.android.app.player.exploration.ExplorationActivity
-import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
 /** Activity that contains the walkthrough flow for users. */
-class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentChangeListener,
-  RouteToExplorationListener {
+class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentChangeListener {
   @Inject
   lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter
 
@@ -30,28 +25,6 @@ class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentCh
     walkthroughActivityPresenter.setTopicId(topicId)
     walkthroughActivityPresenter.changePage(walkthroughPage)
   }
-
-  override fun routeToExploration(
-    internalProfileId: Int,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    backflowScreen: Int?
-  ) {
-    startActivity(
-      ExplorationActivity.createExplorationActivityIntent(
-        this,
-        internalProfileId,
-        topicId,
-        storyId,
-        explorationId,
-        backflowScreen,
-        isFromWalkthrough = true
-      )
-    )
-    finish()
-  }
-
 
   override fun onBackPressed() {
     walkthroughActivityPresenter.handleSystemBack()
