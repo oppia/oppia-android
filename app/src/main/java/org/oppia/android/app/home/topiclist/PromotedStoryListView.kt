@@ -11,7 +11,7 @@ import org.oppia.android.databinding.PromotedStoryCardBinding
  * A custom [RecyclerView] for displaying a variable list of promoted lesson stories that snaps to
  * a fixed position on the device.
  */
-class PromotedStoryListView @JvmOverloads constructor (
+class PromotedStoryListView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyleAttr: Int = 0

@@ -6,7 +6,6 @@ import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.shim.IntentFactoryShim
-import javax.inject.Inject
 
 /** [ViewModel] promoted story list in [HomeFragment]. */
 class PromotedStoryListViewModel(

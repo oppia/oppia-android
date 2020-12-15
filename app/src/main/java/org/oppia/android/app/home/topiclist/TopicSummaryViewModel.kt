@@ -1,10 +1,8 @@
 package org.oppia.android.app.home.topiclist
 
-import android.content.Context
 import android.graphics.Color
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.BindingAdapter
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.TopicSummary
@@ -17,7 +15,7 @@ const val DARKEN_VALUE_MULTIPLIER: Float = 0.9f
 const val DARKEN_SATURATION_MULTIPLIER: Float = 1.2f
 
 /** The view model corresponding to individual topic summaries in the topic summary RecyclerView. */
-class TopicSummaryViewModel (
+class TopicSummaryViewModel(
   private val activity: AppCompatActivity,
   val topicSummary: TopicSummary,
   val entityType: String,
@@ -26,18 +24,23 @@ class TopicSummaryViewModel (
 ) : HomeItemViewModel() {
   val name: String = topicSummary.name
   val totalChapterCount: Int = topicSummary.totalChapterCount
+
   @ColorInt
   val backgroundColor: Int = retrieveBackgroundColor()
+
   @ColorInt
   val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
   private val marginTopBottom = activity.resources
-      .getDimensionPixelSize(R.dimen.topic_list_item_margin_top_bottom)
+    .getDimensionPixelSize(R.dimen.topic_list_item_margin_top_bottom)
   private val marginMax by lazy {
-    activity.resources.getDimensionPixelSize(R.dimen.home_margin_max) }
+    activity.resources.getDimensionPixelSize(R.dimen.home_margin_max)
+  }
   private val marginMin by lazy {
-    activity.resources.getDimensionPixelSize(R.dimen.home_margin_min) }
+    activity.resources.getDimensionPixelSize(R.dimen.home_margin_min)
+  }
   private val spanCount by lazy {
-    activity.resources.getInteger(R.integer.home_span_count) }
+    activity.resources.getInteger(R.integer.home_span_count)
+  }
 
   /** Callback from data-binding for when the summary tile is clicked. */
   fun clickOnSummaryTile() {
@@ -48,7 +51,7 @@ class TopicSummaryViewModel (
     return marginTopBottom
   }
 
-   fun computeBottomMargin(): Int {
+  fun computeBottomMargin(): Int {
     return marginTopBottom
   }
 
@@ -64,7 +67,7 @@ class TopicSummaryViewModel (
         when (position % spanCount) {
           0 -> marginMax
           1 -> marginMin
-          2 ->  0
+          2 -> 0
           else -> 0
         }
       }

@@ -45,9 +45,9 @@ class HomeViewModel @Inject constructor(
   private val topicListController: TopicListController,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String
-  ) : ObservableViewModel() {
+) : ObservableViewModel() {
 
-  private val profileId : ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
   private val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
@@ -70,12 +70,19 @@ class HomeViewModel @Inject constructor(
     // be pending or failed.
     profileDataProvider.combineWith(
       ongoingStoryListSummaryDataProvider,
-      PROFILE_AND_ONGOING_STORY_COMBINED_PROVIDER_ID) { profile, ongoingStoryList ->
-      listOfNotNull(computeWelcomeViewModel(profile), computePromotedStoryListViewModel(ongoingStoryList))
+      PROFILE_AND_ONGOING_STORY_COMBINED_PROVIDER_ID
+    ) { profile, ongoingStoryList ->
+      listOfNotNull(
+        computeWelcomeViewModel(profile),
+        computePromotedStoryListViewModel(ongoingStoryList)
+      )
     }.combineWith(
       topicListSummaryDataProvider,
-      HOME_FRAGMENT_COMBINED_PROVIDER_ID) { homeItemViewModelList, topicList ->
-      homeItemViewModelList + listOf(AllTopicsViewModel()) + computeTopicSummaryItemViewModelList(topicList)
+      HOME_FRAGMENT_COMBINED_PROVIDER_ID
+    ) { homeItemViewModelList, topicList ->
+      homeItemViewModelList + listOf(AllTopicsViewModel()) + computeTopicSummaryItemViewModelList(
+        topicList
+      )
     }
   }
 
@@ -83,8 +90,9 @@ class HomeViewModel @Inject constructor(
   val homeItemViewModelListLiveData: LiveData<List<HomeItemViewModel>> by lazy {
     Transformations.map(homeItemViewModelListDataProvider.toLiveData()) { itemListResult ->
       if (itemListResult.isFailure()) {
-        logger.e("HomeFragment",
-        "Failed to retrieve fragment",
+        logger.e(
+          "HomeFragment",
+          "Failed to retrieve fragment",
           itemListResult.getErrorOrNull()
         )
       }
@@ -92,7 +100,7 @@ class HomeViewModel @Inject constructor(
     }
   }
 
-  private fun computeWelcomeViewModel(profile: Profile) : HomeItemViewModel? {
+  private fun computeWelcomeViewModel(profile: Profile): HomeItemViewModel? {
     return if (profile.name.isNotEmpty()) {
       WelcomeViewModel(fragment, oppiaClock, profile.name)
     } else null
@@ -141,7 +149,7 @@ class HomeViewModel @Inject constructor(
     }
   }
 
-  private fun computeTopicSummaryItemViewModelList(topicList: TopicList) : List<HomeItemViewModel> {
+  private fun computeTopicSummaryItemViewModelList(topicList: TopicList): List<HomeItemViewModel> {
     return topicList.topicSummaryList.mapIndexed { topicIndex, topicSummary ->
       TopicSummaryViewModel(
         activity,
