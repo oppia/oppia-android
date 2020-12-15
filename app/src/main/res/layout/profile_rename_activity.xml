@@ -62,11 +62,11 @@
           android:layout_marginStart="28dp"
           android:layout_marginTop="28dp"
           android:layout_marginEnd="28dp"
+          app:label="@string/profile_rename_label"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
-          profile:error="@{viewModel.nameErrorMsg}"
-          profile:label="@string/profile_rename_label" />
+          profile:error="@{viewModel.nameErrorMsg}" />
 
         <Button
           android:id="@+id/profile_rename_save_button"

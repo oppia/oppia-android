@@ -96,11 +96,11 @@
             android:imeOptions="actionDone"
             app:inputLength="5"
             app:isPasswordInput="true"
+            app:label="@string/admin_auth_pin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/admin_auth_sub_text"
             profile:error="@{viewModel.errorMessage}"
-            profile:label="@string/admin_auth_pin"
             profile:labelMargin="@{@dimen/admin_auth_input_pin_label_margin}" />
 
           <Button
