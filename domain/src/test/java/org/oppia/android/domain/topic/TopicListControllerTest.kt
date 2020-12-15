@@ -431,7 +431,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveRecentStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_RecentStoryListCorrect() {
+  fun testRetrieveRecentStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_recentStoryListCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,

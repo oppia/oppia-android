@@ -1148,8 +1148,7 @@ class TopicControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      currentTimestamp,
-      false
+      currentTimestamp
     ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 
@@ -1159,8 +1158,7 @@ class TopicControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1,
-      currentTimestamp,
-      false
+      currentTimestamp
     ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 
@@ -1170,8 +1168,7 @@ class TopicControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      currentTimestamp,
-      false
+      currentTimestamp
     ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 
@@ -1181,8 +1178,7 @@ class TopicControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_1,
-      currentTimestamp,
-      false
+      currentTimestamp
     ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 

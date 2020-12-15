@@ -109,7 +109,7 @@ class TopicListController @Inject constructor(
   fun getOngoingStoryList(profileId: ProfileId): DataProvider<OngoingStoryList> {
     return storyProgressController.retrieveTopicProgressListDataProvider(profileId)
       .transformAsync(GET_ONGOING_STORY_LIST_PROVIDER_ID) {
-        val ongoingStoryList = createOngoingStoryListFromProgress(it, profileId)
+        val ongoingStoryList = createOngoingStoryListFromProgress(it)
         AsyncResult.success(ongoingStoryList)
       }
   }
@@ -161,21 +161,21 @@ class TopicListController @Inject constructor(
   }
 
   private fun createOngoingStoryListFromProgress(
-    topicProgressList: List<TopicProgress>,
-    profileId: ProfileId
+    topicProgressList: List<TopicProgress>
   ): OngoingStoryList {
     val ongoingStoryListBuilder = OngoingStoryList.newBuilder()
 
-    if (topicProgressList.size!=0) {
+    if (topicProgressList.isNotEmpty()) {
+      Log.d("topic size",""+topicProgressList.size)
       if (topicProgressList.size==1) {
         ongoingStoryListBuilder.setPromotedStoriesType(
           PromotedStoriesType.newBuilder().setRecommended(true)
         )
+        Log.d("topic size = 1",""+topicProgressList.size)
         ongoingStoryListBuilder.addAllRecommendedStory(
           createRecommendedStoryList(
             topicProgressList
           ))
-
       } else {
       topicProgressList.forEach { topicProgress ->
         val topic = topicController.retrieveTopic(topicProgress.topicId)
@@ -185,7 +185,7 @@ class TopicListController @Inject constructor(
           )
           topicProgress.storyProgressMap.values.forEach { storyProgress ->
             val storyId = storyProgress.storyId
-            var story = topicController.retrieveStory(topic.topicId, storyId)
+            val story = topicController.retrieveStory(topic.topicId, storyId)
             Log.d("topic progress =", "" + topicProgress.topicId + storyId)
 
             val completedChapterProgressList =
@@ -258,7 +258,10 @@ class TopicListController @Inject constructor(
               }
             }
           }
-        if (ongoingStoryListBuilder.recentStoryCount == 0 && ongoingStoryListBuilder.olderStoryCount == 0 || topicProgressList.size==1) {
+
+    }
+
+        if (ongoingStoryListBuilder.recentStoryCount == 0 && ongoingStoryListBuilder.olderStoryCount == 0) {
           ongoingStoryListBuilder.setPromotedStoriesType(
             PromotedStoriesType.newBuilder().setRecommended(true)
           )
@@ -266,41 +269,14 @@ class TopicListController @Inject constructor(
             createRecommendedStoryList(
               topicProgressList
             ))
-//        val topicIdJsonArray = jsonAssetRetriever
-//          .loadJsonFromAsset("topics.json")!!
-//          .getJSONArray("topic_id_list")
-//        for (j in 0 until topicIdJsonArray.length()) {
-//          val found = topicProgressList.any { it.topicId == topicIdJsonArray[j] }
-//          if (!found && ongoingStoryListBuilder.recommendedStoryList.size<3) {
-//            Log.d("topic =", " not" + " " + topicIdJsonArray[j])
-//            ongoingStoryListBuilder.addRecommendedStory(
-//              createRecommendedStoryFromAssets(
-//                topicIdJsonArray[j].toString()
-//              )
-//            )
-//          }
-//        }
           if (ongoingStoryListBuilder.recommendedStoryCount == 0) {
             ongoingStoryListBuilder.setPromotedStoriesType(
               PromotedStoriesType.newBuilder().setComingSoon(true)
             )
             Log.d("topic =", " coming" + " " + "soon")
           }
-//        if ( topicProgressList.size == 1) {
-//          ongoingStoryListBuilder.setPromotedStoriesType(
-//            PromotedStoriesType.newBuilder().setRecommended(true)
-//          )
-//          ongoingStoryListBuilder.addAllRecommendedStory(
-//            createRecommendedStoryList(
-//              topicProgressList
-//            )
-//          )
-        }
         }
       }
-
-
-//      }
     }
     return ongoingStoryListBuilder.build()
   }
@@ -391,21 +367,27 @@ class TopicListController @Inject constructor(
             }
           }
         }
-
-
-        val topicIdJsonArray = jsonAssetRetriever
-          .loadJsonFromAsset("topics.json")!!
-          .getJSONArray("topic_id_list")
-        for (i in 0 until topicIdJsonArray.length()) {
-          if (topicProgress.topicId == topicIdJsonArray[i] && topicIdJsonArray[i + 1] != null) {
-            Log.d("topicpos "," "+topicProgress.topicId +" = "+topicIdJsonArray[i] + " "+topicIdJsonArray[i + 1] )
-            recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[i + 1].toString()))
-            return recommendedStories
-          }
-
-        }
       }
+
     }
+
+    val topicIdJsonArray = jsonAssetRetriever
+      .loadJsonFromAsset("topics.json")!!
+      .getJSONArray("topic_id_list")
+
+    val topicList = ArrayList<String>()
+    for (i in 0 until topicIdJsonArray.length()) {
+      topicList.add(topicIdJsonArray[i].toString())
+    }
+
+    val index = topicList.indexOf(topicProgressList[topicProgressList.size-1].topicId)
+    Log.d("topic index", " = " +  " " + index +" "+topicProgressList[topicProgressList.size-1].topicId)
+    Log.d("topic index", " = " +  " " + topicIdJsonArray.length())
+    if ( topicIdJsonArray[index + 1] != null && topicIdJsonArray.length() > (index+1) ) {
+      recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[index + 1].toString()))
+      return recommendedStories
+    }
+
     return recommendedStories
   }
 
