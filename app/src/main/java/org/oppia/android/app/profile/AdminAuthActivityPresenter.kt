@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -47,7 +48,7 @@ class AdminAuthActivityPresenter @Inject constructor(
 
     setTitleAndSubTitle(binding)
 
-    binding.adminAuthInputPin.addTextChangedListener(object : TextWatcher {
+    binding.adminAuthInputPinEditText!!.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
         confirmPin?.let {
           authViewModel.errorMessage.set("")
@@ -58,9 +59,9 @@ class AdminAuthActivityPresenter @Inject constructor(
       override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
     })
 
-    binding.adminAuthInputPin.addEditorActionListener(
-      TextView.OnEditorActionListener { _, actionId, _ ->
-        if (actionId == EditorInfo.IME_ACTION_DONE) {
+    binding.adminAuthInputPinEditText!!.setOnEditorActionListener(
+      TextView.OnEditorActionListener { _, actionId, event ->
+        if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))) {
           binding.adminAuthSubmitButton.callOnClick()
         }
         false
@@ -68,7 +69,7 @@ class AdminAuthActivityPresenter @Inject constructor(
     )
 
     binding.adminAuthSubmitButton.setOnClickListener {
-      val inputPin = binding.adminAuthInputPin.getInput()
+      val inputPin = binding.adminAuthInputPinEditText!!.text!!.toString()
       if (inputPin.isEmpty()) {
         return@setOnClickListener
       }
@@ -118,15 +119,18 @@ class AdminAuthActivityPresenter @Inject constructor(
 
   fun handleOnSavedInstanceState(bundle: Bundle) {
     bundle.putString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE, authViewModel.errorMessage.get())
-    bundle.putString(KEY_ADMIN_AUTH_INPUT_PASSWORD, binding.adminAuthInputPin.getInput())
+    bundle.putString(
+      KEY_ADMIN_AUTH_INPUT_PASSWORD,
+      binding.adminAuthInputPinEditText!!.text.toString()
+    )
   }
 
   fun handleOnRestoreInstanceState(bundle: Bundle) {
     val errorMessage = bundle.getString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE)
     val password = bundle.getString(KEY_ADMIN_AUTH_INPUT_PASSWORD)
     if (!password.isNullOrEmpty()) {
-      binding.adminAuthInputPin.setInput(password)
-      binding.adminAuthInputPin.setSelection(password.length)
+      binding.adminAuthInputPinEditText!!.setText(password)
+      binding.adminAuthInputPinEditText!!.setSelection(password.length)
     }
     if (errorMessage != null && errorMessage.isNotEmpty()) {
       authViewModel.errorMessage.set(errorMessage)
