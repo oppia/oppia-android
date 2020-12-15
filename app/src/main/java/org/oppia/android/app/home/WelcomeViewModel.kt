@@ -8,18 +8,13 @@ import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** [ViewModel] for welcome text in home screen. */
-class WelcomeViewModel @Inject constructor(
+class WelcomeViewModel(
   fragment: Fragment,
-  oppiaClock: OppiaClock
-  ) : HomeItemViewModel() {
-  private val greeting: String = DateTimeUtil(
+  oppiaClock: OppiaClock,
+  val profileName: String
+): HomeItemViewModel() {
+  val greeting: String = DateTimeUtil(
     fragment.requireContext(),
     oppiaClock
   ).getGreetingMessage()
-
-  val profileName = ObservableField<String>("")
-
-  fun getGreeting() : String {
-    return greeting
-  }
 }

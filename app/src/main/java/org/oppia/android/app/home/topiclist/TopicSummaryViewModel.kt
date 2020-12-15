@@ -21,7 +21,8 @@ class TopicSummaryViewModel (
   private val activity: AppCompatActivity,
   val topicSummary: TopicSummary,
   val entityType: String,
-  private val topicSummaryClickListener: TopicSummaryClickListener
+  private val topicSummaryClickListener: TopicSummaryClickListener,
+  private val position: Int
 ) : HomeItemViewModel() {
   val name: String = topicSummary.name
   val totalChapterCount: Int = topicSummary.totalChapterCount
@@ -35,17 +36,12 @@ class TopicSummaryViewModel (
     activity.resources.getDimensionPixelSize(R.dimen.home_margin_max) }
   private val marginMin by lazy {
     activity.resources.getDimensionPixelSize(R.dimen.home_margin_min) }
-  private var position = -1
   private val spanCount by lazy {
     activity.resources.getInteger(R.integer.home_span_count) }
 
   /** Callback from data-binding for when the summary tile is clicked. */
   fun clickOnSummaryTile() {
     topicSummaryClickListener.onTopicSummaryClicked(topicSummary)
-  }
-
-  fun setPosition(newPosition: Int) {
-    this.position = newPosition
   }
 
   fun computeTopMargin(): Int {
@@ -60,8 +56,8 @@ class TopicSummaryViewModel (
     return when (spanCount) {
       2 -> {
         when (position % spanCount) {
-          0 -> marginMin
-          else -> marginMax
+          0 -> marginMax
+          else -> marginMin
         }
       }
       3 -> {
@@ -73,7 +69,7 @@ class TopicSummaryViewModel (
         }
       }
       4 -> {
-        when ((position + 1) % spanCount) {
+        when (position % spanCount) {
           0 -> marginMax
           1 -> marginMin
           2 -> marginMin / 2
@@ -88,8 +84,8 @@ class TopicSummaryViewModel (
   fun computeEndMargin(): Int {
     return when (spanCount) {
       2 -> when (position % spanCount) {
-        0 -> marginMax
-        else -> marginMin
+        0 -> marginMin
+        else -> marginMax
       }
       3 -> when (position % spanCount) {
         0 -> 0
@@ -97,7 +93,7 @@ class TopicSummaryViewModel (
         2 -> marginMax
         else -> 0
       }
-      4 -> when ((position + 1) % spanCount) {
+      4 -> when (position % spanCount) {
         0 -> 0
         1 -> marginMin / 2
         2 -> marginMin

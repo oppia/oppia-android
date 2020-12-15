@@ -65,6 +65,6 @@
       android:paddingBottom="0dp"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:reverseLayout="false"
-      app:data="@{viewModel.promotedStoryList}" />
+      app:list="@{viewModel.promotedStoryList}" />
   </LinearLayout>
 </layout>

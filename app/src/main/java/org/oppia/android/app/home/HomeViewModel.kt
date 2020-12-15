@@ -60,143 +60,96 @@ class HomeViewModel @Inject constructor(
     }
 
   private val topicListSummaryDataProvider: DataProvider<TopicList> by lazy {
-    topicListController.getTopicList()
+    // TODO: once #2253 is merged change this function call
+    topicListController.getTopicList2()
   }
 
-  private val combinedHomeFragmentModelDataProvider: DataProvider<HomeFragmentModel> by lazy {
+  private val homeItemViewModelListDataProvider: DataProvider<List<HomeItemViewModel>> by lazy {
     // This will block until all data providers return initial results (which may be default
     // instances). If any of the data providers are pending or failed, the combined result will also
     // be pending or failed.
     profileDataProvider.combineWith(
       ongoingStoryListSummaryDataProvider,
       PROFILE_AND_ONGOING_STORY_COMBINED_PROVIDER_ID) { profile, ongoingStoryList ->
-      HomeFragmentModel(profile, ongoingStoryList)
+      listOfNotNull(computeWelcomeViewModel(profile), computePromotedStoryListViewModel(ongoingStoryList))
     }.combineWith(
       topicListSummaryDataProvider,
-      HOME_FRAGMENT_COMBINED_PROVIDER_ID) { combinedModel, topicList ->
-      HomeFragmentModel(combinedModel.profile, combinedModel.ongoingStoryList, topicList)
+      HOME_FRAGMENT_COMBINED_PROVIDER_ID) { homeItemViewModelList, topicList ->
+      homeItemViewModelList + listOf(AllTopicsViewModel()) + computeTopicSummaryItemViewModelList(topicList)
     }
   }
 
   // Resulting LiveData to bind to the outer RecyclerView & that contains all ViewModels.
-  val combinedHomeViewModelListLiveData: LiveData<List<HomeItemViewModel>> by lazy {
-    Transformations.map(combinedHomeFragmentModelDataProvider.toLiveData()) { combinedModelResult ->
-      if (combinedModelResult.isFailure()) {
+  val homeItemViewModelListLiveData: LiveData<List<HomeItemViewModel>> by lazy {
+    Transformations.map(homeItemViewModelListDataProvider.toLiveData()) { itemListResult ->
+      if (itemListResult.isFailure()) {
         logger.e("HomeFragment",
         "Failed to retrieve fragment",
-          combinedModelResult.getErrorOrNull()
+          itemListResult.getErrorOrNull()
         )
       }
-      val combinedModel = combinedModelResult.getOrDefault(HomeFragmentModel())
-      // Convert combinedModel into a list of view models for the home screen (proto defaults
-      // should result in no view models for corresponding sections so that they don't appear).
-      // This can usually be done by checking that a constituent list is empty.
-      var itemList : List<HomeItemViewModel> = listOf(
-        getProfileData(combinedModel.profile) as HomeItemViewModel,
-        getPromotedStoryListData(combinedModel.ongoingStoryList) as HomeItemViewModel,
-        AllTopicsViewModel() as HomeItemViewModel,
-        getTopicListData(combinedModel.topicList) as HomeItemViewModel
-      )
-      return@map itemList
+      return@map itemListResult.getOrDefault(listOf())
     }
   }
 
-  private fun getProfileData(profile: Profile) : WelcomeViewModel {
-    val welcomeViewModel = WelcomeViewModel(fragment, oppiaClock)
-    if (profile.isInitialized) {
-      welcomeViewModel.profileName.set(profile.name)
-    } else {
-      logger.i("HomeFragment",
-        "Failed to retrieve profile"
-      )
-      welcomeViewModel.profileName.set(Profile.getDefaultInstance().name)
-    }
-    return welcomeViewModel
+  private fun computeWelcomeViewModel(profile: Profile) : HomeItemViewModel? {
+    return if (profile.name.isNotEmpty()) {
+      WelcomeViewModel(fragment, oppiaClock, profile.name)
+    } else null
   }
 
-  private fun getPromotedStoryListData(ongoingStoryList: OngoingStoryList) : PromotedStoryListViewModel {
-    val promotedStoryListViewModel = PromotedStoryListViewModel(
-      activity,
-      internalProfileId,
-      intentFactoryShim)
-    if (ongoingStoryList.isInitialized) {
-      promotedStoryListViewModel.setPromotedStories(processPromotedStories(ongoingStoryList))
-    } else {
-      logger.i("HomeFragment",
-        "Failed to retrieve promoted stories"
+  private fun computePromotedStoryListViewModel(ongoingStoryList: OngoingStoryList): HomeItemViewModel? {
+    val storyViewModelList = computePromotedStoryViewModelList(ongoingStoryList)
+    return if (storyViewModelList.isNotEmpty()) {
+      return PromotedStoryListViewModel(
+        activity,
+        internalProfileId,
+        intentFactoryShim,
+        storyViewModelList
       )
-      promotedStoryListViewModel.setPromotedStories(
-        processPromotedStories(OngoingStoryList.getDefaultInstance()))
-    }
-    return promotedStoryListViewModel
+    } else null
   }
 
-  private fun processPromotedStories(ongoingStoryList: OngoingStoryList) : List<PromotedStoryViewModel> {
-    var promotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
+  private fun computePromotedStoryViewModelList(
+    ongoingStoryList: OngoingStoryList
+  ): List<PromotedStoryViewModel> {
     if (ongoingStoryList.recentStoryCount != 0) {
-      ongoingStoryList.recentStoryList.take(limit)
-        .forEach { promotedStory ->
-          val recentStory = PromotedStoryViewModel(
+      return ongoingStoryList.recentStoryList.take(limit)
+        .map { promotedStory ->
+          PromotedStoryViewModel(
             activity,
             internalProfileId,
+            intentFactoryShim,
+            ongoingStoryList.recentStoryCount,
             storyEntityType,
-            intentFactoryShim
+            promotedStory
           )
-          recentStory.setPromotedStory(promotedStory)
-          recentStory.setStoryCount(ongoingStoryList.recentStoryCount)
-          promotedStoryList.add(recentStory)
         }
     } else {
       // TODO(#936): Optimise this as part of recommended stories.
-      ongoingStoryList.olderStoryList.take(limit)
-        .forEach { promotedStory ->
-          val oldStory = PromotedStoryViewModel(
+      return ongoingStoryList.olderStoryList.take(limit)
+        .map { promotedStory ->
+          PromotedStoryViewModel(
             activity,
             internalProfileId,
+            intentFactoryShim,
+            ongoingStoryList.olderStoryCount,
             storyEntityType,
-            intentFactoryShim
+            promotedStory
           )
-          oldStory.setPromotedStory(promotedStory)
-          oldStory.setStoryCount(ongoingStoryList.olderStoryCount)
-          promotedStoryList.add(oldStory)
         }
     }
-    return promotedStoryList
   }
 
-  private fun getTopicListData(topicsList: TopicList) : List<TopicSummaryViewModel> {
-    if (topicsList.isInitialized) {
-      return processTopicsList(topicsList)
-    } else {
-      logger.i("HomeFragment",
-        "Failed to retrieve topics list"
+  private fun computeTopicSummaryItemViewModelList(topicList: TopicList) : List<HomeItemViewModel> {
+    return topicList.topicSummaryList.mapIndexed { topicIndex, topicSummary ->
+      TopicSummaryViewModel(
+        activity,
+        topicSummary,
+        topicEntityType,
+        fragment as TopicSummaryClickListener,
+        position = topicIndex
       )
-      return processTopicsList(TopicList.getDefaultInstance())
     }
   }
-
-  private fun processTopicsList(topicsList: TopicList) : List<TopicSummaryViewModel> {
-    var list: MutableList<TopicSummaryViewModel> = ArrayList()
-    for (topicSummary in topicsList.topicSummaryList) {
-      val topicSummaryViewModel =
-        TopicSummaryViewModel(
-          activity,
-          topicSummary,
-          topicEntityType,
-          fragment as TopicSummaryClickListener
-        )
-      topicSummaryViewModel.setPosition(1 + topicsList.topicSummaryList.indexOf(topicSummary))
-      list.add(topicSummaryViewModel)
-    }
-    return list
-  }
-
-  // Model to display combined fragment data from all view models. Initialize to the default values
-  // so that fragment can display on initial load until data-fetching from each Data Provider
-  // finishes.
-  private data class HomeFragmentModel(
-    val profile: Profile = Profile.getDefaultInstance(),
-    val ongoingStoryList: OngoingStoryList = OngoingStoryList.getDefaultInstance(),
-    val topicList: TopicList = TopicList.getDefaultInstance()
-  )
 }

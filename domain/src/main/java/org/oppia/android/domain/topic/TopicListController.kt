@@ -19,6 +19,7 @@ import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -67,6 +68,7 @@ val EXPLORATION_THUMBNAILS = mapOf(
   TEST_EXPLORATION_ID_6 to createChapterThumbnail0()
 )
 
+private const val GET_TOPIC_LIST_PROVIDER_ID = "get_topic_list_provider_id"
 private const val GET_ONGOING_STORY_LIST_PROVIDER_ID =
   "get_ongoing_story_list_provider_id"
 
@@ -77,7 +79,8 @@ private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 class TopicListController @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val topicController: TopicController,
-  private val storyProgressController: StoryProgressController
+  private val storyProgressController: StoryProgressController,
+  private val dataProviders: DataProviders
 ) {
   /**
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
@@ -85,6 +88,13 @@ class TopicListController @Inject constructor(
    */
   fun getTopicList(): LiveData<AsyncResult<TopicList>> {
     return MutableLiveData(AsyncResult.success(createTopicList()))
+  }
+
+  fun getTopicList2(): DataProvider<TopicList> {
+    return dataProviders.createInMemoryDataProvider(
+      GET_TOPIC_LIST_PROVIDER_ID,
+      this::createTopicList
+    )
   }
 
   /**

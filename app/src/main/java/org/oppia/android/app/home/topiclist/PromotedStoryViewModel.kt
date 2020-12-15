@@ -24,47 +24,25 @@ import org.oppia.android.databinding.PromotedStoryCardBinding
 class PromotedStoryViewModel(
   private val activity: AppCompatActivity,
   private val internalProfileId: Int,
+  private val IntentFactoryShim: IntentFactoryShim,
+  private val totalStoryCount: Int,
   val entityType: String,
-  private val IntentFactoryShim: IntentFactoryShim
+  val promotedStory: PromotedStory
 ) :
   ObservableViewModel(),
   RouteToTopicPlayStoryListener {
 
-  /**
-   * The retrieved [LiveData] for retrieving topic summaries. This model should ensure only one
-   * [LiveData] is used for all subsequent processed data to ensure the transformed [LiveData]s are
-   * always in sync.
-   */
-  lateinit var promotedStoryObservable : PromotedStory
-  var totalStoryCount = -1
-
-  fun setPromotedStory(promotedStory: PromotedStory) {
-    this.promotedStoryObservable = promotedStory
-  }
-
-  fun setStoryCount(newCount: Int) {
-    this.totalStoryCount = newCount
-  }
-
   fun computeLayoutWidth(): Int {
     val orientation = Resources.getSystem().configuration.orientation
-    if (totalStoryCount > 1) {
-      if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-        return ViewGroup.LayoutParams.MATCH_PARENT
-      } else {
-        return activity.resources.getDimensionPixelSize(R.dimen.promoted_story_card_width)
-      }
+    return if (orientation != Configuration.ORIENTATION_PORTRAIT && totalStoryCount > 1) {
+      activity.resources.getDimensionPixelSize(R.dimen.promoted_story_card_width)
     } else {
-      return ViewGroup.LayoutParams.MATCH_PARENT
+      ViewGroup.LayoutParams.MATCH_PARENT
     }
   }
 
   fun clickOnStoryTile() {
-    routeToTopicPlayStory(
-      internalProfileId,
-      promotedStoryObservable.topicId,
-      promotedStoryObservable.storyId
-    )
+    routeToTopicPlayStory(internalProfileId, promotedStory.topicId, promotedStory.storyId)
   }
 
   override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -8,7 +9,6 @@
     <variable
       name="viewModel"
       type="org.oppia.android.app.home.topiclist.PromotedStoryListViewModel" />
-
   </data>
 
   <LinearLayout
@@ -51,13 +51,20 @@
         android:textSize="14sp" />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <org.oppia.android.app.home.topiclist.PromotedStoryListView
       android:id="@+id/promoted_story_list_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:clipToPadding="false"
       android:layout_marginTop="4dp"
       android:overScrollMode="never"
-      android:scrollbars="none" />
+      android:scrollbars="none"
+      android:paddingStart="@{viewModel.paddingStart}"
+      android:paddingEnd="@{viewModel.promotedStoryList.size() > 1 ? viewModel.paddingEnd : viewModel.paddingStart}"
+      android:paddingTop="0dp"
+      android:paddingBottom="0dp"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:reverseLayout="false"
+      app:list="@{viewModel.promotedStoryList}" />
   </LinearLayout>
 </layout>

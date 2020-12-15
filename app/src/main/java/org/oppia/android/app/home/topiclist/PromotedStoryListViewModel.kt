@@ -9,10 +9,11 @@ import org.oppia.android.app.shim.IntentFactoryShim
 import javax.inject.Inject
 
 /** [ViewModel] promoted story list in [HomeFragment]. */
-class PromotedStoryListViewModel @Inject constructor(
+class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
   private val internalProfileId: Int,
-  private val intentFactoryShim: IntentFactoryShim
+  private val intentFactoryShim: IntentFactoryShim,
+  val promotedStoryList: List<PromotedStoryViewModel>
 ) :
   HomeItemViewModel(),
   RouteToRecentlyPlayedListener {
@@ -20,12 +21,6 @@ class PromotedStoryListViewModel @Inject constructor(
     activity.resources.getDimensionPixelSize(R.dimen.home_padding_end)
   val paddingStart =
     activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
-
-  var promotedStoryList : List<PromotedStoryViewModel> = listOf()
-
-  fun setPromotedStories(storyList: List<PromotedStoryViewModel>) {
-    this.promotedStoryList = storyList
-  }
 
   fun clickOnViewAll() {
     routeToRecentlyPlayed()
