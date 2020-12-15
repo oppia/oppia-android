@@ -51,8 +51,8 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="56dp"
         android:background="@drawable/general_item_background_border"
+        android:paddingBottom="56dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <org.oppia.android.app.profile.ProfileInputView
@@ -62,11 +62,11 @@
           android:layout_marginStart="168dp"
           android:layout_marginTop="32dp"
           android:layout_marginEnd="168dp"
-          app:label="@string/profile_rename_label"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
-          profile:error="@{viewModel.nameErrorMsg}" />
+          profile:error="@{viewModel.nameErrorMsg}"
+          profile:label="@string/profile_rename_label" />
 
         <Button
           android:id="@+id/profile_rename_save_button"

@@ -57,7 +57,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -92,9 +91,6 @@ class ProfileResetPinActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-
   @Before
   fun setUp() {
     Intents.init()
@@ -123,13 +119,12 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        editTextInputAction.appendText("12345"),
+        typeText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("12345"),
+        typeText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -147,17 +142,16 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
         .perform(
-          editTextInputAction.appendText("12345"),
+          typeText("12345"),
           closeSoftKeyboard()
         )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo()
       ).perform(
-        editTextInputAction.appendText("12345"),
+        typeText("12345"),
         closeSoftKeyboard()
       )
 
@@ -176,13 +170,12 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        editTextInputAction.appendText("123"),
+        typeText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("123"),
+        typeText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -200,13 +193,12 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        editTextInputAction.appendText("1234"),
+        typeText("1234"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("1234"),
+        typeText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -230,13 +222,12 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        editTextInputAction.appendText("1234"),
+        typeText("1234"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("1234"),
+        typeText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
@@ -314,13 +305,12 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        editTextInputAction.appendText("12345"),
+        typeText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("1234"),
+        typeText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -343,13 +333,12 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        editTextInputAction.appendText("12345"),
+        typeText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("1234"),
+        typeText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -378,13 +367,12 @@ class ProfileResetPinActivityTest {
         true
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        editTextInputAction.appendText("12345"),
+        typeText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("12345"),
+        typeText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -441,13 +429,12 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        editTextInputAction.appendText("12"),
+        typeText("12"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("12"),
+        typeText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -497,13 +484,12 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        editTextInputAction.appendText("123"),
+        typeText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("12"),
+        typeText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -621,13 +607,12 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        editTextInputAction.appendText("123"),
+        typeText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("12"),
+        typeText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
@@ -643,13 +628,12 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        editTextInputAction.appendText("123"),
+        typeText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("12"),
+        typeText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
@@ -670,13 +654,12 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        editTextInputAction.appendText("123"),
+        typeText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("12"),
+        typeText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
@@ -697,13 +680,12 @@ class ProfileResetPinActivityTest {
         false
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        editTextInputAction.appendText("123"),
+        typeText("123"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("12"),
+        typeText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))

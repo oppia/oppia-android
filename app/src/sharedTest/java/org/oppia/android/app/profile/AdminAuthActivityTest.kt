@@ -56,7 +56,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -86,9 +85,6 @@ class AdminAuthActivityTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
 
   private val internalProfileId: Int = 0
 
@@ -122,8 +118,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
+        typeText("12345")
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -165,8 +160,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
+        typeText("12345")
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -206,12 +200,12 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        editTextInputAction.appendText("12354"),
-        closeSoftKeyboard()
+        typeText("12354")
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.error_text),
@@ -441,9 +435,8 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        editTextInputAction.appendText("12345"),
+        typeText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -466,9 +459,8 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        editTextInputAction.appendText("12354"),
+        typeText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
