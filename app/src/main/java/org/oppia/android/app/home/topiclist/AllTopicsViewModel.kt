@@ -5,4 +5,4 @@ import org.oppia.android.app.home.HomeItemViewModel
 import javax.inject.Inject
 
 /** [ViewModel] all topics text in [HomeFragment]. */
-class AllTopicsViewModel @Inject constructor() : HomeItemViewModel() {}
+class AllTopicsViewModel @Inject constructor() : HomeItemViewModel()
