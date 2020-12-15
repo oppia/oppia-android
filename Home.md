@@ -51,8 +51,8 @@ The following instructions describe how to make a one-off code change using a fe
 
     * Before making the commit, do some sanity-checks:
        * Start up a local instance of Oppia and do some manual testing in order to check that you haven't broken anything!
-       * Ensure that your code follows the style rules **[TBD]** and that it is well-tested.
-       * Ensure that the code has no lint errors and passes all automated tests by running the presubmit script **[TBD]**.
+       * Ensure that your code follows the [style rules](https://github.com/oppia/oppia-android/wiki/Coding-style-guide) and that it is well-tested.
+       * Ensure that the code has no [lint errors](https://github.com/oppia/oppia-android/wiki/Ktlint-Guide) and passes all automated tests (which will automatically run when you create your pull request).
       * Use a tool like `git diff` or `meld` to check that the changes you've made are exactly what you want them to be, and that you haven't left in anything spurious. Make sure to do this _before_ you push.
 
     * To actually make the commit and push it to your GitHub fork, run:
@@ -69,11 +69,10 @@ The following instructions describe how to make a one-off code change using a fe
     * Add a descriptive title explaining the purpose of the PR (e.g. "Fix issue #bugnum: add a warning when the user leaves a page in the middle of an exploration.").
        * If the PR resolves an issue on the issue tracker, the title must start with **"Fix #bugnum: "**. This will be the case for most PRs.
        * However, if your PR fixes part of a bigger issue (e.g. the first-contributor-issues listed above), please use **"Fix part of #bugnum: "** instead. Otherwise, GitHub will close the entire issue automatically when your PR is merged.
-    * Fill out the PR checklist **[TBD]**, ensuring that your PR description includes the issue number (e.g. "This PR fixes issue #bugnum" or "This PR fixes part of issue #bugnum").
+    * Fill out the PR checklist (this shows up in the body of the PR when you create it), ensuring that your PR description includes the issue number (e.g. "This PR fixes issue #bugnum" or "This PR fixes part of issue #bugnum").
     * Click "Create pull request", then **immediately** check the "Files changed" tab on your PR on GitHub and read it carefully to make sure that the changes are correct (e.g., that you haven't left out important files that should be part of the PR. (If not, please fix this by making additional commits, or by closing this PR and submitting a new one, before requesting a review.) This is a good way to catch obvious errors that would otherwise lead to delays in the review process.
     * Request a review from the issue's "owner" **and** also set them as the PR assignee.
     * Leave a top-level comment on your PR saying "@{{reviewer}} PTAL", where {{reviewer}} is the GitHub username of your reviewer. ("PTAL" means "Please take a look".)
-    * After a while, check your PR to see whether the Travis checks have passed. If not, follow the instructions at "[If your build fails...](https://github.com/oppia/oppia/wiki/If-your-build-fails)". **[TBD]**
     * Then, wait for your code to get reviewed! While you're doing so, it's totally fine to start work on a new PR if you like. Just make sure to **checkout the develop branch** and sync to HEAD before you check out a new branch, so that each of your feature branches is based off the main trunk.
 
 5. #### **Address review comments until all reviewers give LGTM ('looks good to me').** 
