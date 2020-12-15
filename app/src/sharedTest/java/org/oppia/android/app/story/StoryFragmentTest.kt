@@ -117,10 +117,6 @@ class StoryFragmentTest {
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
-      profileId,
-      timestampOlderThanAWeek = false
-    )
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -159,6 +155,10 @@ class StoryFragmentTest {
   @Test
   fun testStoryFragment_correctStoryCountLoadedInHeader() {
     launch<StoryActivity>(createStoryActivityIntent()).use {
+      storyProgressTestHelper.markPartialStoryProgressForFractions(
+        profileId,
+        timestampOlderThanAWeek = false
+      )
       testCoroutineDispatchers.runCurrent()
       val headerString: String =
         getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
@@ -243,6 +243,41 @@ class StoryFragmentTest {
   }
 
   @Test
+  fun testStoryFragment_changeConfiguration_chapterMissingPrerequisiteIsShownCorrectly() {
+    launch<StoryActivity>(createStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(atPositionOnView(R.id.story_chapter_list, 2, R.id.chapter_summary)).check(
+        matches(
+          withText("Complete Chapter 1: What is a Fraction? to unlock this chapter.")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_chapterMissingPrerequisiteIsShownCorrectly() {
+    launch<StoryActivity>(createStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(atPositionOnView(R.id.story_chapter_list, 2, R.id.chapter_summary)).check(
+        matches(
+          withText("Complete Chapter 1: What is a Fraction? to unlock this chapter.")
+        )
+      )
+    }
+  }
+
+  @Test
   fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
     launch<StoryActivity>(createStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -263,6 +298,10 @@ class StoryFragmentTest {
   @Test
   fun testStoryFragment_changeConfiguration_correctStoryCountInHeader() {
     launch<StoryActivity>(createStoryActivityIntent()).use {
+      storyProgressTestHelper.markPartialStoryProgressForFractions(
+        profileId,
+        timestampOlderThanAWeek = false
+      )
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       val headerString: String =

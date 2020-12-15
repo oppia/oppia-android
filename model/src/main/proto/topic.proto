@@ -89,7 +89,8 @@ message ChapterSummary {
   // The thumbnail corresponding to this chapter.
   LessonThumbnail chapter_thumbnail = 5;
 
-  // Prerequisite chapter to unlock this chapter. It is only defined when the play state of this chapter is NOT_PLAYABLE_MISSING_PREREQUISITES.
+  // Prerequisite chapter to unlock this chapter. It is only defined when the play state of this
+  // chapter is NOT_PLAYABLE_MISSING_PREREQUISITES.
   ChapterSummary missing_prerequisite_chapter = 6;
 }
 
