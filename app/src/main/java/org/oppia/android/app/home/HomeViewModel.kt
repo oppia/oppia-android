@@ -54,10 +54,9 @@ class HomeViewModel @Inject constructor(
     profileManagementController.getProfile(profileId)
   }
 
-  private val ongoingStoryListSummaryDataProvider: DataProvider<OngoingStoryList>
-    by lazy {
-      topicListController.getOngoingStoryList(profileId)
-    }
+  private val ongoingStoryListSummaryDataProvider: DataProvider<OngoingStoryList> by lazy {
+    topicListController.getOngoingStoryList(profileId)
+  }
 
   private val topicListSummaryDataProvider: DataProvider<TopicList> by lazy {
     // TODO: once #2253 is merged change this function call
@@ -106,7 +105,9 @@ class HomeViewModel @Inject constructor(
     } else null
   }
 
-  private fun computePromotedStoryListViewModel(ongoingStoryList: OngoingStoryList): HomeItemViewModel? {
+  private fun computePromotedStoryListViewModel(
+    ongoingStoryList: OngoingStoryList
+  ): HomeItemViewModel? {
     val storyViewModelList = computePromotedStoryViewModelList(ongoingStoryList)
     return if (storyViewModelList.isNotEmpty()) {
       return PromotedStoryListViewModel(
