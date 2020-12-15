@@ -162,7 +162,7 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_customSpan_isAdded_checkLeadingMargin() {
+  fun testHtmlContent_customSpan_isAddedWithCorrectlySpacedLeadingMargin() {
     val textView =
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(
@@ -203,9 +203,6 @@ class HtmlParserTest {
 
     val bulletSpan1 = bulletSpans[1] as CustomBulletSpan
     assertThat(bulletSpan1).isNotNull()
-
-    val bulletSpan1Margin = bulletSpan1.getLeadingMargin(true)
-    assertThat(bulletSpan1Margin).isEqualTo(expectedMargin)
   }
 
   @Test

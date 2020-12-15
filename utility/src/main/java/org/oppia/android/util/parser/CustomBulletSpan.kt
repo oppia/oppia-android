@@ -21,10 +21,15 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
   private val bulletRadius: Int
   private val gapWidth: Int
   private val yOffset: Int
+  /** The space between the parent and the bullet. */
   private val spacingBeforeBullet: Int
+  /** The space between the bullet and the text. */
   private val spacingBeforeText: Int
+  /** The total spacing between the bullet and the text.
+   *  totalSpacingToTextStart - includes spacingBeforeBullet, spacingBeforeText and double of bulletRadius
+   * */
   private val totalSpacingToTextStart: Int
-  private var mBulletPath: Path? = null
+  private var bulletPath: Path? = null
 
   init {
     bulletRadius = context.resources.getDimensionPixelSize(R.dimen.bullet_radius)
@@ -33,13 +38,6 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
     spacingBeforeBullet = context.resources.getDimensionPixelSize(R.dimen.spacing_before_bullet)
     spacingBeforeText = context.resources.getDimensionPixelSize(R.dimen.spacing_before_text)
     totalSpacingToTextStart = spacingBeforeBullet + spacingBeforeText + bulletRadius * 2
-    /**
-     * spacingBeforeText - is the space between bullet and the text
-     * spacingBeforeBullet - is the space between the parent and the bullet
-     * totalSpacingToTextStart - is used for total margin i.e, between parent and the text
-     * totolSpacingToTextStart includes spacingBeforeText and spacingBeforeBullet and double of
-     * the radius of the bullet
-     */
   }
 
   override fun getLeadingMargin(first: Boolean): Int {
@@ -75,14 +73,14 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
       val xPosition = (x + dir * bulletRadius).toFloat() + spacingBeforeBullet
 
       if (canvas.isHardwareAccelerated) {
-        if (mBulletPath == null) {
-          mBulletPath = Path()
-          mBulletPath!!.addCircle(0.0f, 0.0f, bulletRadius.toFloat(), Direction.CW)
+        if (bulletPath == null) {
+          bulletPath = Path()
+          bulletPath!!.addCircle(0.0f, 0.0f, bulletRadius.toFloat(), Direction.CW)
         }
 
         canvas.save()
         canvas.translate(xPosition, yPosition)
-        canvas.drawPath(mBulletPath!!, paint)
+        canvas.drawPath(bulletPath!!, paint)
         canvas.restore()
       } else {
         canvas.drawCircle(xPosition, yPosition, bulletRadius.toFloat(), paint)
