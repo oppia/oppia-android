@@ -62,7 +62,7 @@
       android:clipToPadding="false"
       android:layout_marginTop="4dp"
       android:overScrollMode="never"
-      android:scrollbars="none" />
+      android:scrollbars="none"
     android:orientation="horizontal"
     android:paddingStart="@{viewModel.paddingStart}"
     android:paddingEnd="@{viewModel.promotedStoryList.size() > 1 ? viewModel.paddingEnd : viewModel.paddingStart}"
