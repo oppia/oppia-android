@@ -5,6 +5,7 @@ import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
+import android.text.InputType
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -22,6 +23,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -678,6 +680,35 @@ class PinPasswordActivityTest {
             )
           )
         )
+    }
+  }
+
+  @Test
+  fun testPinPasswordActivityWithAdmin_checkKeyboardTypeConsistency_clickShowHidePassword_keyboardTypeIsSame() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        adminId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.input_pin)).check(
+        matches(
+          withInputType(
+            InputType.TYPE_CLASS_NUMBER
+          )
+        )
+      )
+      onView(withId(R.id.show_pin)).perform(click())
+      onView(withId(R.id.input_pin)).check(
+        matches(
+          withInputType(
+            InputType.TYPE_CLASS_NUMBER
+          )
+        )
+      )
     }
   }
 
