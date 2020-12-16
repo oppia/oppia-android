@@ -14,6 +14,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
 
 /** Tests for [ItemSelectionInputIsProperSubsetOfRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
@@ -51,7 +53,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
         .createHtmlStringList("test1", "test2", "test6")
     )
 
-  private val ITEM_SELECTION_ =
+  private val ITEM_SELECTION_NONE =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList()
@@ -61,6 +63,11 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test6")
+    )
+
+  private val ITEM_SELECTION_INVAILD =
+    InteractionObjectTestBuilder.createString(
+      value = "test string"
     )
 
   @Inject
@@ -77,7 +84,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   }
 
   @Test
-  fun answerSetMoreThanInputSet_isSubset_returnsFalse() {
+  fun testIsProperSubset_withInput1_forAnswer12345_returnsFalse() {
     val inputs = mapOf("x" to ITEM_SELECTION_1)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -89,7 +96,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   }
 
   @Test
-  fun answerSetMoreThanInputSet_notSubset_returnsFalse() {
+  fun testIsProperSubset_withInput16_forAnswer12345_returnsFalse() {
     val inputs = mapOf("x" to ITEM_SELECTION_16)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -101,7 +108,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   }
 
   @Test
-  fun answerSetLessThanInputSet_isSubset_returnsTrue() {
+  fun testIsProperSubset_withInput12345_forAnswer12_returnsTrue() {
     val inputs = mapOf("x" to ITEM_SELECTION_12345)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -113,7 +120,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   }
 
   @Test
-  fun answerSetLessThanInputSet_notSubset_returnsFalse() {
+  fun testIsProperSubset_withInput12345_forAnswer126_returnsFalse() {
     val inputs = mapOf("x" to ITEM_SELECTION_12345)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -125,8 +132,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   }
 
   @Test
-  fun inputSetEmpty_returnsFalse() {
-    val inputs = mapOf("x" to ITEM_SELECTION_)
+  fun testIsProperSubset_withEmptyInput_forAnswer16_returnsFalse() {
+    val inputs = mapOf("x" to ITEM_SELECTION_NONE)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_16,
@@ -137,11 +144,11 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   }
 
   @Test
-  fun answerSetEmpty_andInputIsNotEmpty_returnsTrue() {
+  fun testIsProperSubset_withInput1_forEmptyAnswer_returnsTrue() {
     val inputs = mapOf("x" to ITEM_SELECTION_1)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_,
+      answer = ITEM_SELECTION_NONE,
       inputs = inputs
     )
 
@@ -149,11 +156,11 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   }
 
   @Test
-  fun bothInputSetAndAnswerSetEmpty_returnsFalse() {
-    val inputs = mapOf("x" to ITEM_SELECTION_)
+  fun testIsProperSubset_withEmptyInput_forEmptyAnswer_returnsFalse() {
+    val inputs = mapOf("x" to ITEM_SELECTION_NONE)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_,
+      answer = ITEM_SELECTION_NONE,
       inputs = inputs
     )
 
@@ -161,7 +168,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   }
 
   @Test
-  fun answerSetSameAsInputSet_notSubset_returnsFalse() {
+  fun testIsProperSubset_withInput1_forAnswer6_returnsFalse() {
     val inputs = mapOf("x" to ITEM_SELECTION_1)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -173,7 +180,7 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
   }
 
   @Test
-  fun answerSetSameAsInputSet_isSubset_returnsFalse() {
+  fun testIsProperSubset_withInput12345_forAnswer12345_returnsFalse() {
     val inputs = mapOf("x" to ITEM_SELECTION_12345)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
@@ -184,7 +191,51 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
     assertThat(matches).isFalse()
   }
 
-//  missing input, invalid input type, extra input param, invalid answer type
+  @Test
+  fun testIsProperSubset_withInvalidInput_forAnswer12345_throwsException() {
+    val inputs = mapOf("x" to ITEM_SELECTION_INVAILD)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      inputContainsAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SELECTION_12345,
+        inputs = inputs
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected input value to be of type SET_OF_HTML_STRING not NORMALIZED_STRING")
+  }
+
+  @Test
+  fun testIsProperSubset_withInput12345_forInvalidAnswer_throwsException() {
+    val inputs = mapOf("x" to ITEM_SELECTION_12345)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      inputContainsAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SELECTION_INVAILD,
+        inputs = inputs
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected answer to be of type SET_OF_HTML_STRING not NORMALIZED_STRING")
+  }
+
+  // TODO(#89): Move to a common test library.
+  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
+    try {
+      operation()
+      kotlin.test.fail("Expected to encounter exception of $type")
+    } catch (t: Throwable) {
+      if (type.isInstance(t)) {
+        return type.cast(t)
+      }
+      // Unexpected exception; throw it.
+      throw t
+    }
+  }
 
   private fun setUpTestApplicationComponent() {
     DaggerItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest_TestApplicationComponent

@@ -51,7 +51,7 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
         .createHtmlStringList("test1", "test2", "test6")
     )
 
-  private val ITEM_SELECTION_ =
+  private val ITEM_SELECTION_NONE =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList()
@@ -126,7 +126,7 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
   @Test
   fun testItemSet_setAnswer_inputIsEmptySet_answerDoesNotContainInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_)
+    val inputs = mapOf("x" to ITEM_SELECTION_NONE)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
