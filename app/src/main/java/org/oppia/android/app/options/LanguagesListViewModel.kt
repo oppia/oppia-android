@@ -9,7 +9,7 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 class LanguagesListViewModel @Inject constructor(
-  fragment: Fragment
+  val fragment: Fragment
 )
   : ObservableViewModel() {
   val audioLanguages : List<LanguageSelectionItemViewModel> by lazy {
