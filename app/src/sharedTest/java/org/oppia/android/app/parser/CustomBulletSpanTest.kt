@@ -167,21 +167,20 @@ class CustomBulletSpanTest {
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
-    private val component: TestApplicationComponent by lazy {
-      DaggerCustomBulletSpanTest_TestApplicationComponent.builder()
-        .setApplication(this)
-        .build() as TestApplicationComponent
-    }
+      private val component: TestApplicationComponent by lazy {
+        DaggerCustomBulletSpanTest_TestApplicationComponent.builder()
+          .setApplication(this)
+          .build() as TestApplicationComponent
+      }
 
-    fun inject(customBulletSpanTest: CustomBulletSpanTest) {
-      component.inject(customBulletSpanTest)
-    }
+      fun inject(customBulletSpanTest: CustomBulletSpanTest) {
+        component.inject(customBulletSpanTest)
+      }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+      override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+        return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+      }
 
-    override fun getApplicationInjector(): ApplicationInjector = component
-
+      override fun getApplicationInjector(): ApplicationInjector = component
     }
   }
