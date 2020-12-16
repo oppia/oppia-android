@@ -127,6 +127,18 @@ class ExplorationActivityPresenter @Inject constructor(
         ),
         TAG_EXPLORATION_FRAGMENT
       ).commitNow()
+    } else {
+      activity.supportFragmentManager.beginTransaction().replace(
+        R.id.exploration_fragment_placeholder,
+        ExplorationFragment.newInstance(
+          topicId = topicId,
+          internalProfileId = internalProfileId,
+          storyId = storyId,
+          readingTextSize = readingTextSize.name,
+          explorationId = explorationId
+        ),
+        TAG_EXPLORATION_FRAGMENT
+      ).commitNow()
     }
 
     if (getHintsAndSolutionManagerFragment() == null) {
@@ -147,6 +159,7 @@ class ExplorationActivityPresenter @Inject constructor(
           internalProfileId,
           /* isFromNavigationDrawer= */ false
         )
+        fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
         context.startActivity(intent)
         true
       }
@@ -155,6 +168,7 @@ class ExplorationActivityPresenter @Inject constructor(
           activity, internalProfileId,
           /* isFromNavigationDrawer= */false
         )
+        fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
         context.startActivity(intent)
         true
       }
