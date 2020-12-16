@@ -7,9 +7,9 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
+import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.OngoingStoryList
@@ -47,7 +47,8 @@ class HomeViewModel(
 ) : ObservableViewModel() {
 
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-  private val promotedStoryListLimit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
+  private val promotedStoryListLimit =
+    activity.resources.getInteger(R.integer.promoted_story_list_limit)
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
     profileManagementController.getProfile(profileId)
@@ -165,7 +166,9 @@ class HomeViewModel(
    * displayed on the home activity (see [TopicSummaryViewModel]) along with associated topics list header (see
    * [AllTopicsViewModel]). Returns null if there are no lesson topics to display in the home fragment.
    */
-  private fun computeAllTopicsItemsViewModelList(topicList: TopicList): Iterable<HomeItemViewModel>? {
+  private fun computeAllTopicsItemsViewModelList(
+    topicList: TopicList
+  ): Iterable<HomeItemViewModel>?{
     val allTopicsList = topicList.topicSummaryList.mapIndexed { topicIndex, topicSummary ->
       TopicSummaryViewModel(
         activity,
