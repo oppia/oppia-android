@@ -24,6 +24,8 @@ import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -81,8 +83,6 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [StoryFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -126,31 +126,6 @@ class StoryFragmentTest {
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
-  }
-
-  private fun createStoryActivityIntent(): Intent {
-    return StoryActivity.createStoryActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
-    )
-  }
-
-  private fun createTestStoryActivityIntent(): Intent {
-    return StoryActivity.createStoryActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_1
-    )
-  }
-
-  private fun setStoryPartialProgressForFractions() {
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
-      profileId,
-      timestampOlderThanAWeek = false
-    )
   }
 
   @Test
@@ -425,6 +400,31 @@ class StoryFragmentTest {
         )
       )
     }
+  }
+
+  private fun createStoryActivityIntent(): Intent {
+    return StoryActivity.createStoryActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    )
+  }
+
+  private fun createTestStoryActivityIntent(): Intent {
+    return StoryActivity.createStoryActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_1
+    )
+  }
+
+  private fun setStoryPartialProgressForFractions() {
+    storyProgressTestHelper.markPartialStoryProgressForFractions(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
   }
 
   private fun setUpTestApplicationComponent() {
