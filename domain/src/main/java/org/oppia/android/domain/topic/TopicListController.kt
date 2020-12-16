@@ -1,8 +1,6 @@
 package org.oppia.android.domain.topic
 
 import android.graphics.Color
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
@@ -86,11 +84,7 @@ class TopicListController @Inject constructor(
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
    */
-  fun getTopicList(): LiveData<AsyncResult<TopicList>> {
-    return MutableLiveData(AsyncResult.success(createTopicList()))
-  }
-
-  fun getTopicList2(): DataProvider<TopicList> {
+  fun getTopicList(): DataProvider<TopicList> {
     return dataProviders.createInMemoryDataProvider(
       GET_TOPIC_LIST_PROVIDER_ID,
       this::createTopicList

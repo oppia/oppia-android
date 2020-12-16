@@ -58,8 +58,7 @@ class HomeViewModel(
   }
 
   private val topicListSummaryDataProvider: DataProvider<TopicList> by lazy {
-    // TODO: once #2253 is merged change this function call
-    topicListController.getTopicList2()
+    topicListController.getTopicList()
   }
 
   private val homeItemViewModelListDataProvider: DataProvider<List<HomeItemViewModel>> by lazy {
