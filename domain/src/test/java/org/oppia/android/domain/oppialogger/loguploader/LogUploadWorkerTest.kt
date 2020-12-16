@@ -177,10 +177,10 @@ class LogUploadWorkerTest {
   private fun Array<StackTraceElement>.extractRelevantDetails(): List<List<Any>> {
     return this.map { element ->
       return@map listOf(
-          element.fileName,
-          element.methodName,
-          element.lineNumber,
-          element.className
+        element.fileName,
+        element.methodName,
+        element.lineNumber,
+        element.className
       )
     }
   }

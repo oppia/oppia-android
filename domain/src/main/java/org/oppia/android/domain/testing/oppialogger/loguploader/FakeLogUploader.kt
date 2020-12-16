@@ -9,20 +9,20 @@ import javax.inject.Singleton
 
 /** A test specific fake for the log uploader. */
 @Singleton
-class FakeLogUploader @Inject constructor(): LogUploader {
+class FakeLogUploader @Inject constructor() : LogUploader {
   private val eventRequestIdList = mutableListOf<UUID>()
   private val exceptionRequestIdList = mutableListOf<UUID>()
 
   override fun enqueueWorkRequestForEvents(
-      workManager: WorkManager,
-      workRequest: PeriodicWorkRequest
+    workManager: WorkManager,
+    workRequest: PeriodicWorkRequest
   ) {
     eventRequestIdList.add(workRequest.id)
   }
 
   override fun enqueueWorkRequestForExceptions(
-      workManager: WorkManager,
-      workRequest: PeriodicWorkRequest
+    workManager: WorkManager,
+    workRequest: PeriodicWorkRequest
   ) {
     exceptionRequestIdList.add(workRequest.id)
   }
