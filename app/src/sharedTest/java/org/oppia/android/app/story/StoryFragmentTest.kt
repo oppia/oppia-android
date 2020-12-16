@@ -243,10 +243,9 @@ class StoryFragmentTest {
   }
 
   @Test
-  fun testStoryFragment_changeConfiguration_chapterMissingPrerequisiteIsShownCorrectly() {
+  fun testStoryFragment_chapterMissingPrerequisiteIsShownCorrectly() {
     launch<StoryActivity>(createStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           2
@@ -261,9 +260,10 @@ class StoryFragmentTest {
   }
 
   @Test
-  fun testStoryFragment_chapterMissingPrerequisiteIsShownCorrectly() {
+  fun testStoryFragment_changeConfiguration_chapterMissingPrerequisiteIsShownCorrectly() {
     launch<StoryActivity>(createStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           2
