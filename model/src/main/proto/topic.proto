@@ -246,6 +246,9 @@ message TopicProgress {
 
   // Indicates type of story promoted
    PromotedStoriesType promoted_stories_type = 4;
+
+  // Timestamp to record last time the exploration was played in ms.
+  int64 last_played_timestamp = 5;
 }
 
 // A structure corresponding to the Promoted Stories. This structure is set up
