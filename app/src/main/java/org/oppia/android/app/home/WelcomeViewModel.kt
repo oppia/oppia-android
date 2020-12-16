@@ -11,6 +11,8 @@ class WelcomeViewModel(
   oppiaClock: OppiaClock,
   val profileName: String
 ) : HomeItemViewModel() {
+
+  /** Text [String] to greet the learner and display on-screen when launching the home activity. */
   val greeting: String = DateTimeUtil(
     fragment.requireContext(),
     oppiaClock

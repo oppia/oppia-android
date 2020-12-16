@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.home.topiclist.PromotedStoryListViewModel" />
+      type="org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel" />
   </data>
 
   <LinearLayout
@@ -51,7 +51,7 @@
         android:textSize="14sp" />
     </LinearLayout>
 
-    <org.oppia.android.app.home.topiclist.PromotedStoryListView
+    <org.oppia.android.app.home.promotedlist.PromotedStoryListView
       android:id="@+id/promoted_story_list_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -60,12 +60,9 @@
       android:overScrollMode="never"
       android:scrollbars="none"
       android:orientation="horizontal"
-      android:paddingStart="@{viewModel.paddingStart}"
-      android:paddingEnd="@{viewModel.promotedStoryList.size() > 1 ? viewModel.paddingEnd : viewModel.paddingStart}"
-      android:paddingTop="0dp"
-      android:paddingBottom="0dp"
+      android:paddingStart="@{viewModel.getStartPadding}"
+      android:paddingEnd="@{viewModel.getEndPadding}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-      app:reverseLayout="false"
       app:list="@{viewModel.promotedStoryList}" />
   </LinearLayout>
 </layout>

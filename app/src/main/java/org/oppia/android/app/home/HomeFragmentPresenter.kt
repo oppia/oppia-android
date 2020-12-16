@@ -10,7 +10,7 @@ import org.oppia.android.R
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
-import org.oppia.android.app.home.topiclist.PromotedStoryListViewModel
+import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.TopicSummary
@@ -98,33 +98,33 @@ class HomeFragmentPresenter @Inject constructor(
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<HomeItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
-          is WelcomeViewModel -> ViewType.VIEW_TYPE_WELCOME_MESSAGE
-          is PromotedStoryListViewModel -> ViewType.VIEW_TYPE_PROMOTED_STORY_LIST
-          is AllTopicsViewModel -> ViewType.VIEW_TYPE_ALL_TOPICS
-          is TopicSummaryViewModel -> ViewType.VIEW_TYPE_TOPIC_LIST
+          is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
+          is PromotedStoryListViewModel -> ViewType.PROMOTED_STORY_LIST
+          is AllTopicsViewModel -> ViewType.ALL_TOPICS
+          is TopicSummaryViewModel -> ViewType.TOPIC_LIST
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_WELCOME_MESSAGE,
+        viewType = ViewType.WELCOME_MESSAGE,
         inflateDataBinding = WelcomeBinding::inflate,
         setViewModel = WelcomeBinding::setViewModel,
         transformViewModel = { it as WelcomeViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_PROMOTED_STORY_LIST,
+        viewType = ViewType.PROMOTED_STORY_LIST,
         inflateDataBinding = PromotedStoryListBinding::inflate,
         setViewModel = PromotedStoryListBinding::setViewModel,
         transformViewModel = { it as PromotedStoryListViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_ALL_TOPICS,
+        viewType = ViewType.ALL_TOPICS,
         inflateDataBinding = AllTopicsBinding::inflate,
         setViewModel = AllTopicsBinding::setViewModel,
         transformViewModel = { it as AllTopicsViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_TOPIC_LIST,
+        viewType = ViewType.TOPIC_LIST,
         inflateDataBinding = TopicSummaryViewBinding::inflate,
         setViewModel = TopicSummaryViewBinding::setViewModel,
         transformViewModel = { it as TopicSummaryViewModel }
@@ -133,10 +133,10 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
-    VIEW_TYPE_WELCOME_MESSAGE,
-    VIEW_TYPE_PROMOTED_STORY_LIST,
-    VIEW_TYPE_ALL_TOPICS,
-    VIEW_TYPE_TOPIC_LIST
+    WELCOME_MESSAGE,
+    PROMOTED_STORY_LIST,
+    ALL_TOPICS,
+    TOPIC_LIST
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {

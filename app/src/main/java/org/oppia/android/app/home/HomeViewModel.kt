@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
-import org.oppia.android.app.home.topiclist.PromotedStoryListViewModel
-import org.oppia.android.app.home.topiclist.PromotedStoryViewModel
+import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
+import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.OngoingStoryList
@@ -27,14 +27,13 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
-import javax.inject.Inject
 
 private const val PROFILE_AND_ONGOING_STORY_COMBINED_PROVIDER_ID = "profile+ongoingStoryList"
 private const val HOME_FRAGMENT_COMBINED_PROVIDER_ID = "profile+ongoingStoryList+topicListProvider"
 
 /** [ViewModel] for layouts in home fragment . */
 @FragmentScope
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaClock: OppiaClock,
@@ -48,7 +47,7 @@ class HomeViewModel @Inject constructor(
 ) : ObservableViewModel() {
 
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-  private val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
+  private val promotedStoryListLimit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
     profileManagementController.getProfile(profileId)
@@ -79,19 +78,26 @@ class HomeViewModel @Inject constructor(
       topicListSummaryDataProvider,
       HOME_FRAGMENT_COMBINED_PROVIDER_ID
     ) { homeItemViewModelList, topicList ->
-      homeItemViewModelList + listOf(AllTopicsViewModel()) + computeTopicSummaryItemViewModelList(
-        topicList
-      )
+      computeAllTopicsItemsViewModelList(topicList).let {
+        if (it != null) {
+          homeItemViewModelList + it
+        } else {
+          homeItemViewModelList
+        }
+      }
     }
   }
 
-  // Resulting LiveData to bind to the outer RecyclerView & that contains all ViewModels.
+  /**
+   * [LiveData] of the list of items displayed in the HomeFragment RecyclerView. The list backing this live data will
+   * automatically update if constituent parts of the UI change (e.g. if the promoted story list changes).
+   * */
   val homeItemViewModelListLiveData: LiveData<List<HomeItemViewModel>> by lazy {
     Transformations.map(homeItemViewModelListDataProvider.toLiveData()) { itemListResult ->
       if (itemListResult.isFailure()) {
         logger.e(
           "HomeFragment",
-          "Failed to retrieve fragment",
+          "Failed to retrieve items for home fragment",
           itemListResult.getErrorOrNull()
         )
       }
@@ -99,12 +105,21 @@ class HomeViewModel @Inject constructor(
     }
   }
 
+  /**
+   * Returns a [HomeItemViewModel] corresponding to the welcome message (see [WelcomeViewModel]), or null if
+   * the specified profile has insufficient information to show the welcome message.
+   * */
   private fun computeWelcomeViewModel(profile: Profile): HomeItemViewModel? {
     return if (profile.name.isNotEmpty()) {
       WelcomeViewModel(fragment, oppiaClock, profile.name)
     } else null
   }
 
+  /**
+   * Returns a [HomeItemViewModel] corresponding to the promoted stories to be displayed for this learner
+   * (see [PromotedStoryListViewModel]), or null if this profile does not have any promoted stories.
+   * Promoted stories are determined by any recent stories started by this profile.
+   * */
   private fun computePromotedStoryListViewModel(
     ongoingStoryList: OngoingStoryList
   ): HomeItemViewModel? {
@@ -119,39 +134,40 @@ class HomeViewModel @Inject constructor(
     } else null
   }
 
+  /**
+   * Returns a list of [HomeItemViewModel]s corresponding to the the [PromotedStoryListViewModel] displayed
+   * for this profile (see [PromotedStoryViewModel]), or an empty list if the profile does not have any
+   * ongoing stories at all.
+   */
   private fun computePromotedStoryViewModelList(
     ongoingStoryList: OngoingStoryList
   ): List<PromotedStoryViewModel> {
-    if (ongoingStoryList.recentStoryCount != 0) {
-      return ongoingStoryList.recentStoryList.take(limit)
-        .map { promotedStory ->
-          PromotedStoryViewModel(
-            activity,
-            internalProfileId,
-            intentFactoryShim,
-            ongoingStoryList.recentStoryCount,
-            storyEntityType,
-            promotedStory
-          )
-        }
+    val storyList = if (ongoingStoryList.recentStoryCount != 0) {
+      ongoingStoryList.recentStoryList
     } else {
       // TODO(#936): Optimise this as part of recommended stories.
-      return ongoingStoryList.olderStoryList.take(limit)
-        .map { promotedStory ->
-          PromotedStoryViewModel(
-            activity,
-            internalProfileId,
-            intentFactoryShim,
-            ongoingStoryList.olderStoryCount,
-            storyEntityType,
-            promotedStory
-          )
-        }
+      ongoingStoryList.olderStoryList
     }
+    return storyList.take(promotedStoryListLimit)
+      .map { promotedStory ->
+        PromotedStoryViewModel(
+          activity,
+          internalProfileId,
+          intentFactoryShim,
+          storyList.size,
+          storyEntityType,
+          promotedStory
+        )
+      }
   }
 
-  private fun computeTopicSummaryItemViewModelList(topicList: TopicList): List<HomeItemViewModel> {
-    return topicList.topicSummaryList.mapIndexed { topicIndex, topicSummary ->
+  /**
+   * Returns a list of [HomeItemViewModel]s corresponding to all the lesson topics available and to be
+   * displayed on the home activity (see [TopicSummaryViewModel]) along with associated topics list header (see
+   * [AllTopicsViewModel]). Returns null if there are no lesson topics to display in the home fragment.
+   */
+  private fun computeAllTopicsItemsViewModelList(topicList: TopicList): Iterable<HomeItemViewModel>? {
+    val allTopicsList = topicList.topicSummaryList.mapIndexed { topicIndex, topicSummary ->
       TopicSummaryViewModel(
         activity,
         topicSummary,
@@ -160,5 +176,8 @@ class HomeViewModel @Inject constructor(
         position = topicIndex
       )
     }
+    return if (!allTopicsList.isEmpty()) {
+      listOf(AllTopicsViewModel()) + allTopicsList
+    } else null
   }
 }

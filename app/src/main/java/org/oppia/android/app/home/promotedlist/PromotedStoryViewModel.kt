@@ -1,4 +1,4 @@
-package org.oppia.android.app.home.topiclist
+package org.oppia.android.app.home.promotedlist
 
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -17,7 +17,7 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 class PromotedStoryViewModel(
   private val activity: AppCompatActivity,
   private val internalProfileId: Int,
-  private val IntentFactoryShim: IntentFactoryShim,
+  private val intentFactoryShim: IntentFactoryShim,
   private val totalStoryCount: Int,
   val entityType: String,
   val promotedStory: PromotedStory
@@ -25,6 +25,10 @@ class PromotedStoryViewModel(
   ObservableViewModel(),
   RouteToTopicPlayStoryListener {
 
+  /**
+   * Returns an [Int] for the width of the card layout of this promoted story, based on the device's orientation
+   * and the number of promoted stories displayed the home activity.
+   */
   fun computeLayoutWidth(): Int {
     val orientation = Resources.getSystem().configuration.orientation
     return if (orientation != Configuration.ORIENTATION_PORTRAIT && totalStoryCount > 1) {
@@ -38,8 +42,9 @@ class PromotedStoryViewModel(
     routeToTopicPlayStory(internalProfileId, promotedStory.topicId, promotedStory.storyId)
   }
 
+  /** Launches the lesson for this story. */
   override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
-    val intent = IntentFactoryShim.createTopicPlayStoryActivityIntent(
+    val intent = intentFactoryShim.createTopicPlayStoryActivityIntent(
       activity.applicationContext,
       internalProfileId,
       topicId,

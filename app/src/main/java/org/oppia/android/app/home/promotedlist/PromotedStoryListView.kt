@@ -1,4 +1,4 @@
-package org.oppia.android.app.home.topiclist
+package org.oppia.android.app.home.promotedlist
 
 import android.content.Context
 import android.util.AttributeSet
@@ -9,7 +9,7 @@ import org.oppia.android.databinding.PromotedStoryCardBinding
 
 /**
  * A custom [RecyclerView] for displaying a variable list of promoted lesson stories that snaps to
- * a fixed position on the device.
+ * a fixed position when being scrolled.
  */
 class PromotedStoryListView @JvmOverloads constructor(
   context: Context,
@@ -19,7 +19,6 @@ class PromotedStoryListView @JvmOverloads constructor(
 
   init {
     adapter = BindableAdapter.SingleTypeBuilder.newBuilder<PromotedStoryViewModel>()
-      // should this be PromotedStoryCardBinding?
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = PromotedStoryCardBinding::inflate,
         setViewModel = PromotedStoryCardBinding::setViewModel
