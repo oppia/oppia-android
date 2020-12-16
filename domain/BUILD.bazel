@@ -10,7 +10,10 @@ load("//domain:domain_test.bzl", "domain_test")
 
 kt_android_library(
     name = "domain",
-    srcs = glob(["src/main/java/org/oppia/android/domain/**/*.kt"]),
+    srcs = glob(
+        ["src/main/java/org/oppia/android/domain/**/*.kt"],
+        exclude=["src/main/java/org/oppia/android/domain/testing/**/*.kt"]
+    ),
     assets = glob(["src/main/assets/**"]),
     assets_dir = "src/main/assets/",
     custom_package = "org.oppia.android.domain",
@@ -19,6 +22,16 @@ kt_android_library(
     deps = [
         ":dagger",
         "//data:persistent_cache_store",
+        artifact("androidx.work:work-runtime-ktx:2.4.0"),
+    ],
+)
+
+kt_android_library(
+    name = "testing",
+    testonly = True,
+    srcs = glob(["src/main/java/org/oppia/android/domain/testing/**/*.kt"]),
+    deps = [
+        ":domain",
         artifact("androidx.work:work-runtime-ktx:2.4.0"),
     ],
 )
@@ -39,6 +52,7 @@ TEST_DEPS = [
     ":dagger",
     ":domain",
     ":interaction_object_test_builder",
+    ":testing",
     "//data:persistent_cache_store",
     "//model",
     "//testing",
