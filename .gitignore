@@ -28,3 +28,4 @@ gradlew.bat
 !*.secret
 config/oppia-dev-workflow-remote-cache-credentials.json
 bazel-*
+.bazelproject

@@ -157,13 +157,32 @@ class LogUploadWorkerTest {
       .build()
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
-    val workInfo = workManager.getWorkInfoById(request.id)
-    val exceptionGot = fakeExceptionLogger.getMostRecentException()
 
+    val workInfo = workManager.getWorkInfoById(request.id)
+    val loggedException = fakeExceptionLogger.getMostRecentException()
+    val loggedExceptionStackTraceElems = loggedException.stackTrace.extractRelevantDetails()
+    val expectedExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(exceptionGot.message).isEqualTo("TEST")
-    assertThat(exceptionGot.stackTrace).isEqualTo(exception.stackTrace)
-    assertThat(exceptionGot.cause).isEqualTo(null)
+    assertThat(loggedException.message).isEqualTo("TEST")
+    assertThat(loggedException.cause).isEqualTo(null)
+    // The following can't be an exact match for the stack trace since new properties are added to
+    // stack trace elements in newer versions of Java (such as module name).
+    assertThat(loggedExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
+  }
+
+  /**
+   * Returns a list of lists of each relevant element of a [StackTraceElement] to be used for
+   * comparison in a way that's consistent across JDK versions.
+   */
+  private fun Array<StackTraceElement>.extractRelevantDetails(): List<List<Any>> {
+    return this.map { element ->
+      return@map listOf(
+          element.fileName,
+          element.methodName,
+          element.lineNumber,
+          element.className
+      )
+    }
   }
 
   private fun setUpTestApplicationComponent() {
