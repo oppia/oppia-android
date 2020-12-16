@@ -29,7 +29,7 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="132dp"
-        app:list="@{viewModel.audioLanguagesLiveData}"
+        app:data="@{viewModel.audioLanguagesLiveData}"
         android:scrollbars="none"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"

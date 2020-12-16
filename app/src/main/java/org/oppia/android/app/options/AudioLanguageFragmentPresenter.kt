@@ -41,6 +41,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
 
     optionsViewModel.preferenceValue.observe(fragment, Observer {
       optionsViewModel.updateAudioLanguageList(it)
+      Log.d("posted","observer fun called")
     })
 
     optionsViewModel.preferenceValue.postValue(prefValue)
@@ -78,8 +79,6 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   }
 
   fun updatePrefValue(title: String){
-
-    Log.d("posted", "vrooo ;( ;(")
     optionsViewModel.preferenceValue.postValue(title)
   }
 

@@ -51,7 +51,7 @@
         android:background="@color/generalNavigationBackground"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        app:list="@{viewModel.audioLanguagesLiveData}"
+        app:data="@{viewModel.audioLanguagesLiveData}"
         android:paddingBottom="132dp"
         android:scrollbars="none"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

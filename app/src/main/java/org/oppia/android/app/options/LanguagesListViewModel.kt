@@ -2,13 +2,14 @@ package org.oppia.android.app.options
 
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 class LanguagesListViewModel @Inject constructor(
-  val activity: AppCompatActivity
+  fragment: Fragment
 )
   : ObservableViewModel() {
   val audioLanguages : List<LanguageSelectionItemViewModel> by lazy {
@@ -22,18 +23,16 @@ class LanguagesListViewModel @Inject constructor(
 
 
   init {
-    arrayList.add(LanguageSelectionItemViewModel(activity,"No Audio", false))
-    arrayList.add(LanguageSelectionItemViewModel(activity,"English", false))
-    arrayList.add(LanguageSelectionItemViewModel(activity,"French", false))
-    arrayList.add(LanguageSelectionItemViewModel(activity,"Hindi", true))
-    arrayList.add(LanguageSelectionItemViewModel(activity,"Chinese", true))
+    arrayList.add(LanguageSelectionItemViewModel(fragment,"No Audio", false))
+    arrayList.add(LanguageSelectionItemViewModel(fragment,"English", false))
+    arrayList.add(LanguageSelectionItemViewModel(fragment,"French", false))
+    arrayList.add(LanguageSelectionItemViewModel(fragment,"Hindi", true))
+    arrayList.add(LanguageSelectionItemViewModel(fragment,"Chinese", true))
     audioLanguagesLiveData.postValue(getAudioLanguagesList())
   }
 
 
   fun updatePrefValue(title: String){
-
-    Log.d("posted", "vrooo ;( ;(")
     preferenceValue.postValue(title)
   }
 
@@ -48,9 +47,9 @@ class LanguagesListViewModel @Inject constructor(
   fun updateAudioLanguageList(title: String) {
     arrayList.forEach {
       it.isSelected = title==it.languageTitle
+      Log.d("posted","${it.languageTitle} : ${it.isSelected}")
     }
     audioLanguagesLiveData.postValue(arrayList)
-    Log.d("posted", "vroo ;(")
   }
 
   private val appLanguages: MutableList<OptionsAppLanguageViewModel> = ArrayList()
