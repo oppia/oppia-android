@@ -8,14 +8,22 @@ import kotlin.reflect.full.cast
    Not for methods which are specific to a certain test or part of the codebase. */
 
 /**
- * A replacement to JUnit5's assertThrows().
+ * A replacement to JUnit5's assertThrows() that asserts an execution of the supplied operation
+ * throws an exception of the supplied type
  *
- * Takes a parameter 'type' which defines the expected exception type and another parameter
- * 'operation' which defines the function to be performed.
+ * An example of this might be:
  *
- * Asserts that execution of the supplied operation throws an exception of the supplied type.
+ * val exception = assertThrows(IllegalArgumentException::class) {
+ *  stringToRatioParser.parseRatioOrThrow("a:b:c")
+ * }
+ * assertThat(exception)
+ *  .hasMessageThat()
+ *  .contains("Incorrectly formatted ratio: a:b:c")
  *
- * Returns the exception.
+ * @param type the type of exception to be thrown
+ * @param operation the operation being run
+ * @return the exception being thrown
+ * @throws AssertionError if the specified exception is not thrown
  */
 fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
   try {
