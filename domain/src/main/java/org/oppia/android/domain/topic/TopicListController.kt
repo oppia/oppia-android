@@ -383,7 +383,7 @@ class TopicListController @Inject constructor(
     val index = topicList.indexOf(topicProgressList[topicProgressList.size-1].topicId)
     Log.d("topic index", " = " +  " " + index +" "+topicProgressList[topicProgressList.size-1].topicId)
     Log.d("topic index", " = " +  " " + topicIdJsonArray.length())
-    if ( topicIdJsonArray[index + 1] != null && topicIdJsonArray.length() > (index+1) ) {
+    if (topicIdJsonArray.length() > (index+1) ) {
       recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[index + 1].toString()))
       return recommendedStories
     }
