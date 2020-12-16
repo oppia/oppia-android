@@ -63,6 +63,8 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.android.domain.topic.TEST_STORY_ID_1
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.testing.TestAccessibilityModule
@@ -135,6 +137,22 @@ class StoryFragmentTest {
     )
   }
 
+  private fun createTestStoryActivityIntent(): Intent {
+    return StoryActivity.createStoryActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_1
+    )
+  }
+
+  private fun setStoryPartialProgressForFractions() {
+    storyProgressTestHelper.markPartialStoryProgressForFractions(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+  }
+
   @Test
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
     activityTestRule.launchActivity(createStoryActivityIntent())
@@ -154,11 +172,8 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_correctStoryCountLoadedInHeader() {
+    setStoryPartialProgressForFractions()
     launch<StoryActivity>(createStoryActivityIntent()).use {
-      storyProgressTestHelper.markPartialStoryProgressForFractions(
-        profileId,
-        timestampOlderThanAWeek = false
-      )
       testCoroutineDispatchers.runCurrent()
       val headerString: String =
         getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
@@ -199,7 +214,13 @@ class StoryFragmentTest {
           1
         )
       )
-      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_title)).check(
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_title
+        )
+      ).check(
         matches(
           withText("Chapter 1: What is a Fraction?")
         )
@@ -216,7 +237,13 @@ class StoryFragmentTest {
           1
         )
       )
-      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_summary)).check(
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_summary
+        )
+      ).check(
         matches(
           withText("This is outline/summary for What is a Fraction?")
         )
@@ -234,9 +261,70 @@ class StoryFragmentTest {
           1
         )
       )
-      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_summary)).check(
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_summary
+        )
+      ).check(
         matches(
           withText("This is outline/summary for What is a Fraction?")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_chapterLongSummaryIsShownCorrectly() {
+    launch<StoryActivity>(createTestStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_summary
+        )
+      ).check(
+        matches(
+          withText(
+            "This is outline/summary for Second Exploration. It is very long but " +
+              "it has to be fully visible. You wil be learning about oppia app in Second Story. " +
+              "Learn about oppia app via testing in second exploration."
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_chapterLongSummaryIsShownCorrectly() {
+    launch<StoryActivity>(createTestStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_summary
+        )
+      ).check(
+        matches(
+          withText(
+            "This is outline/summary for Second Exploration. It is very long but " +
+              "it has to be fully visible. You wil be learning about oppia app in Second Story. " +
+              "Learn about oppia app via testing in second exploration."
+          )
         )
       )
     }
@@ -251,7 +339,13 @@ class StoryFragmentTest {
           2
         )
       )
-      onView(atPositionOnView(R.id.story_chapter_list, 2, R.id.chapter_summary)).check(
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          2,
+          R.id.chapter_summary
+        )
+      ).check(
         matches(
           withText("Complete Chapter 1: What is a Fraction? to unlock this chapter.")
         )
@@ -269,7 +363,13 @@ class StoryFragmentTest {
           2
         )
       )
-      onView(atPositionOnView(R.id.story_chapter_list, 2, R.id.chapter_summary)).check(
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          2,
+          R.id.chapter_summary
+        )
+      ).check(
         matches(
           withText("Complete Chapter 1: What is a Fraction? to unlock this chapter.")
         )
@@ -297,11 +397,8 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_correctStoryCountInHeader() {
+    setStoryPartialProgressForFractions()
     launch<StoryActivity>(createStoryActivityIntent()).use {
-      storyProgressTestHelper.markPartialStoryProgressForFractions(
-        profileId,
-        timestampOlderThanAWeek = false
-      )
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       val headerString: String =
