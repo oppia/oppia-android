@@ -168,7 +168,7 @@ class HomeViewModel(
    */
   private fun computeAllTopicsItemsViewModelList(
     topicList: TopicList
-  ): Iterable<HomeItemViewModel>?{
+  ): Iterable<HomeItemViewModel>? {
     val allTopicsList = topicList.topicSummaryList.mapIndexed { topicIndex, topicSummary ->
       TopicSummaryViewModel(
         activity,
