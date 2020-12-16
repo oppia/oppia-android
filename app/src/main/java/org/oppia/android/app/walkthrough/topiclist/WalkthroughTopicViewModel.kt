@@ -10,6 +10,7 @@ import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.Walkthroug
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -24,7 +25,7 @@ class WalkthroughTopicViewModel @Inject constructor(
   }
 
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
-    topicListController.getTopicList()
+    topicListController.getTopicList().toLiveData()
   }
 
   private val topicListSummaryLiveData: LiveData<TopicList> by lazy {
