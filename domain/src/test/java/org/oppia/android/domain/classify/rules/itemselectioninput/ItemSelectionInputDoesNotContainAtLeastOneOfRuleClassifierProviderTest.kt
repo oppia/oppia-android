@@ -12,8 +12,12 @@ import org.junit.runner.RunWith
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
+import kotlin.test.fail
 
 /** Tests for [ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
@@ -21,47 +25,50 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
 
-  private val ITEM_SELECTION_SET_5 =
+  private val ITEM_SET_12345 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1", "test2", "test3", "test4", "test5")
     )
 
-  private val ITEM_SELECTION_SET_SUBSET =
+  private val ITEM_SET_1 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1")
     )
 
-  private val ITEM_SELECTION_SET_ONE_ELEMENT_PRESENT =
+  private val ITEM_SET_16 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1", "test6")
     )
 
-  private val ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_NO_EXTRA_ELEMENT =
+  private val ITEM_SET_12 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1", "test2")
     )
 
-  private val ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_WITH_EXTRA_ELEMENT =
+  private val ITEM_SET_126 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1", "test2", "test6")
     )
 
-  private val ITEM_SELECTION_SET_EMPTY =
+  private val ITEM_SET_EMPTY =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList()
     )
 
-  private val ITEM_SELECTION_SET_EXCLUSIVE =
+  private val ITEM_SET_6 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test6")
     )
+
+  private val DIFFERENT_INTERACTION_OBJECT_TYPE =
+    InteractionObjectTestBuilder.createInt(0)
 
   @Inject
   internal lateinit var itemSelectionInputDesNotContainAtLeastOneOfRuleClassifierProvider:
@@ -78,10 +85,10 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
 
   @Test
   fun testItemSet_setAnswer_inputIsASubset_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_SUBSET)
+    val inputs = mapOf("x" to ITEM_SET_1)
 
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SET_12345,
       inputs = inputs
     )
 
@@ -90,10 +97,10 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
 
   @Test
   fun testItemSet_setAnswer_inputHasOneElementInSet_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_ONE_ELEMENT_PRESENT)
+    val inputs = mapOf("x" to ITEM_SET_16)
 
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SET_12345,
       inputs = inputs
     )
 
@@ -102,10 +109,10 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
 
   @Test
   fun testItemSet_setAnswer_inputHasTwoElementsInSetNoneExtra_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_NO_EXTRA_ELEMENT)
+    val inputs = mapOf("x" to ITEM_SET_12)
 
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SET_12345,
       inputs = inputs
     )
 
@@ -114,10 +121,10 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
 
   @Test
   fun testItemSet_setAnswer_inputHasTwoElementsInSetOneExtra_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_WITH_EXTRA_ELEMENT)
+    val inputs = mapOf("x" to ITEM_SET_126)
 
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SET_12345,
       inputs = inputs
     )
 
@@ -126,10 +133,10 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
 
   @Test
   fun testItemSet_setAnswer_inputIsEmptySet_answerDoesNotContainInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_EMPTY)
+    val inputs = mapOf("x" to ITEM_SET_EMPTY)
 
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SET_12345,
       inputs = inputs
     )
 
@@ -138,14 +145,86 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
 
   @Test
   fun testItemSet_setAnswer_inputIsExclusiveOfSet_answerDoesNotContainInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_EXCLUSIVE)
+    val inputs = mapOf("x" to ITEM_SET_6)
 
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SET_12345,
       inputs = inputs
     )
 
     assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testItemSet_setAnswerIsEmpty_inputIsNonEmpty_answerDoesNotContainInput() {
+    val inputs = mapOf("x" to ITEM_SET_12345)
+
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SET_EMPTY,
+      inputs = inputs
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testItemSet_setAnswer_inputIsASuperset_answerContainsInput() {
+    val inputs = mapOf("x" to ITEM_SET_12345)
+
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SET_12,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testItemSet_inputIsMissing_throwsException() {
+    val inputs = mapOf("y" to ITEM_SET_1)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SET_12345,
+        inputs = inputs
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected classifier inputs to contain parameter with name 'x'")
+  }
+
+  @Test
+  fun testItemSet_inputHasTheWrongType_throwsException() {
+    val inputs = mapOf("x" to DIFFERENT_INTERACTION_OBJECT_TYPE)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SET_12345,
+        inputs = inputs
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected input value to be of type SET_OF_HTML_STRING")
+  }
+
+  @Test
+  fun testItemSet_answerHasTheWrongType_throwsException() {
+    val inputs = mapOf("x" to ITEM_SET_12345)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+        answer = DIFFERENT_INTERACTION_OBJECT_TYPE,
+        inputs = inputs
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected answer to be of type SET_OF_HTML_STRING")
   }
 
   private fun setUpTestApplicationComponent() {
@@ -154,6 +233,20 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
+  }
+
+  // TODO(#89): Move to a common test library.
+  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
+    try {
+      operation()
+      fail("Expected to encounter exception of $type")
+    } catch (t: Throwable) {
+      if (type.isInstance(t)) {
+        return type.cast(t)
+      }
+      // Unexpected exception; throw it.
+      throw t
+    }
   }
 
   @Singleton
