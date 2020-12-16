@@ -61,7 +61,9 @@ class AdminAuthActivityPresenter @Inject constructor(
 
     binding.adminAuthInputPinEditText!!.setOnEditorActionListener(
       TextView.OnEditorActionListener { _, actionId, event ->
-        if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))) {
+        if (actionId == EditorInfo.IME_ACTION_DONE ||
+          (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+        ) {
           binding.adminAuthSubmitButton.callOnClick()
         }
         false

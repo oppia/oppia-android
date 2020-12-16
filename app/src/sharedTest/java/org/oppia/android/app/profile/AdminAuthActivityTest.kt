@@ -136,7 +136,6 @@ class AdminAuthActivityTest {
   }
 
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  //@Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddProfileActivity() {
     launch<AdminAuthActivity>(
@@ -189,7 +188,6 @@ class AdminAuthActivityTest {
   }
 
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  //@Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddAdministratorControlsActivity() { // ktlint-disable max-line-length
     launch<AdminAuthActivity>(
@@ -243,7 +241,6 @@ class AdminAuthActivityTest {
   }
 
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  //@Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_clickImeActionButton_checkError() {
     launch<AdminAuthActivity>(
@@ -307,7 +304,6 @@ class AdminAuthActivityTest {
   }
 
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  //@Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_clickImeActionButton_checkErrorIsGone() { // ktlint-disable max-line-length
     launch<AdminAuthActivity>(
@@ -539,7 +535,6 @@ class AdminAuthActivityTest {
   }
 
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  //@Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputIncorrectPasswordLandscape_clickImeActionButton_checkError() {
     launch<AdminAuthActivity>(
