@@ -228,6 +228,13 @@ domain_test(
 )
 
 domain_test(
+     name = "FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest",
+     deps = TEST_DEPS,
+)
+
+domain_test(
      name = "FractionInputIsEquivalentToRuleClassifierProviderTest",
      srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputIsEquivalentToRuleClassifierProviderTest.kt"],
      test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsEquivalentToRuleClassifierProviderTest",
