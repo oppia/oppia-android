@@ -75,6 +75,7 @@
             android:text="@string/profile_reset_pin_main"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp"
+            android:textDirection="locale"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -86,6 +87,7 @@
             android:layout_marginStart="168dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="168dp"
+            android:textDirection="locale"
             app:isPasswordInput="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -101,6 +103,7 @@
             android:layout_marginStart="168dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="168dp"
+            android:textDirection="locale"
             app:isPasswordInput="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
