@@ -165,11 +165,13 @@ class DirectoryManagementUtilTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component( modules = [
-    TestModule::class,
-    TestDispatcherModule::class,
-    RobolectricProviderModule::class
-  ] )
+  @Component(
+    modules = [
+      TestModule::class,
+      TestDispatcherModule::class,
+      RobolectricProviderModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

@@ -931,10 +931,12 @@ class AsyncResultTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component( modules = [
-    TestDispatcherModule::class,
-    RobolectricProviderModule::class
-  ] )
+  @Component(
+    modules = [
+      TestDispatcherModule::class,
+      RobolectricProviderModule::class
+   ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
