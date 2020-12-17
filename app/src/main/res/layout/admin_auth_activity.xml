@@ -81,27 +81,20 @@
 
         <com.google.android.material.textfield.TextInputLayout
           android:id="@+id/admin_auth_input_pin"
-          style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+          style="@style/TextInputLayout"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="28dp"
           android:layout_marginTop="48dp"
           android:layout_marginEnd="28dp"
-          app:boxBackgroundColor="@color/white"
-          app:boxCornerRadiusBottomEnd="4dp"
-          app:boxCornerRadiusBottomStart="4dp"
-          app:boxCornerRadiusTopEnd="4dp"
-          app:boxCornerRadiusTopStart="4dp"
-          app:boxStrokeColor="@color/black"
-          app:boxStrokeWidth="1dp"
           app:error="@{viewModel.errorMessage}"
-          app:errorEnabled="true"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/admin_auth_sub_text">
 
           <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/admin_auth_input_pin_edit_text"
+            style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/admin_auth_pin"
