@@ -40,8 +40,8 @@ android {
   }
   splits {
     // See: https://developer.android.com/studio/build/configure-apk-splits
-    abi {
-      enable true
+    density {
+      enable false
     }
   }
   dataBinding {
