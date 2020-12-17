@@ -67,7 +67,7 @@ class TestDispatcherModule {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun provideTestCoroutineDispatchers(
-    isOnRobolectric: Boolean = provideIsOnRobolectric(),
+    @IsOnRobolectric isOnRobolectric: Boolean,
     robolectricImplProvider: Provider<TestCoroutineDispatchersRobolectricImpl>,
     espressoImplProvider: Provider<TestCoroutineDispatchersEspressoImpl>
   ): TestCoroutineDispatchers {
@@ -78,13 +78,15 @@ class TestDispatcherModule {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun provideTestCoroutineDispatcherFactory(
-    isOnRobolectric: Boolean = provideIsOnRobolectric(),
+    @IsOnRobolectric isOnRobolectric: Boolean,
     robolectricFactoryProvider: Provider<TestCoroutineDispatcherRobolectricImpl.FactoryImpl>,
     espressoFactoryProvider: Provider<TestCoroutineDispatcherEspressoImpl.FactoryImpl>
   ): TestCoroutineDispatcher.Factory {
     return if (isOnRobolectric) robolectricFactoryProvider.get() else espressoFactoryProvider.get()
   }
 
+  @IsOnRobolectric
+  @Singleton
   fun provideIsOnRobolectric(): Boolean {
     return Build.FINGERPRINT.contains("robolectric", ignoreCase = true)
   }
