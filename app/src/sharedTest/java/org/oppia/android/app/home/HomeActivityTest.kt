@@ -540,6 +540,9 @@ class HomeActivityTest {
     }
   }
 
+  // HomeActivity does not display promoted stories when the list is empty
+  // HomeActivity does not display topics list when there are no topics
+
   private fun createHomeActivityIntent(profileId: Int): Intent {
     return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }

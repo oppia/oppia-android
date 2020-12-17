@@ -78,13 +78,7 @@ class HomeViewModel(
       topicListSummaryDataProvider,
       HOME_FRAGMENT_COMBINED_PROVIDER_ID
     ) { homeItemViewModelList, topicList ->
-      computeAllTopicsItemsViewModelList(topicList).let {
-        if (it != null) {
-          homeItemViewModelList + it
-        } else {
-          homeItemViewModelList
-        }
-      }
+      homeItemViewModelList + computeAllTopicsItemsViewModelList(topicList)
     }
   }
 
@@ -168,7 +162,7 @@ class HomeViewModel(
    */
   private fun computeAllTopicsItemsViewModelList(
     topicList: TopicList
-  ): Iterable<HomeItemViewModel>? {
+  ): Iterable<HomeItemViewModel> {
     val allTopicsList = topicList.topicSummaryList.mapIndexed { topicIndex, topicSummary ->
       TopicSummaryViewModel(
         activity,
@@ -180,6 +174,6 @@ class HomeViewModel(
     }
     return if (!allTopicsList.isEmpty()) {
       listOf(AllTopicsViewModel()) + allTopicsList
-    } else null
+    } else emptyList()
   }
 }
