@@ -336,37 +336,6 @@ class TopicListControllerTest {
     verifyOngoingStoryAsRatioStory0Exploration0(ongoingTopicList.recommendedStoryList[1])
   }
 
-//  @Test
-//  fun testRetrieveRecommendedStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_recommendedListCorrect() {
-//    storyProgressController.recordCompletedChapter(
-//      profileId0,
-//      FRACTIONS_TOPIC_ID,
-//      FRACTIONS_STORY_ID_0,
-//      FRACTIONS_EXPLORATION_ID_0,
-//      getCurrentTimestamp()
-//    )
-//    testCoroutineDispatchers.runCurrent()
-//
-//    storyProgressController.recordRecentlyPlayedChapter(
-//      profileId0,
-//      FRACTIONS_TOPIC_ID,
-//      FRACTIONS_STORY_ID_0,
-//      FRACTIONS_EXPLORATION_ID_1,
-//      getCurrentTimestamp()
-//    )
-//    testCoroutineDispatchers.runCurrent()
-//
-//    topicListController.getOngoingStoryList(profileId0).toLiveData()
-//      .observeForever(mockOngoingStoryListObserver)
-//    testCoroutineDispatchers.runCurrent()
-//
-//    verifyGetOngoingStoryListSucceeded()
-//
-//    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-//    assertThat(ongoingTopicList.recommendedStoryCount).isEqualTo(2)
-//    verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recommendedStoryList[0])
-//  }
-
   @Test
   fun testRetrieveRecommendedStoryList_markAllChaptersCompletedInFractions_recommendedListIsCorrect() {
     storyProgressController.recordCompletedChapter(
