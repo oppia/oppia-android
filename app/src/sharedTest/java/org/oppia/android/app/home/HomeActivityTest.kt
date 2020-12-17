@@ -343,35 +343,6 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_displaysComingSoonTopicsText() {
-    storyProgressTestHelper.markFullStoryProgressForFractions(
-      profileId,
-      timestampOlderThanAWeek = false
-    )
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
-      profileId,
-      timestampOlderThanAWeek = false
-    )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          1,
-          R.id.recently_played_stories_text_view
-        )
-      ).check(
-        matches(
-          withText(R.string.coming_soon)
-        )
-      )
-    }
-  }
-
-  @Test
   fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensRecentlyPlayedActivity() {
     storyProgressTestHelper.markTopicPlayedForFractionsStory0Exploration0(
       profileId,

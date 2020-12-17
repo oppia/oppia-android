@@ -574,33 +574,6 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-//    storyProgressController.recordCompletedChapter(
-//      profileId0,
-//      TEST_TOPIC_ID_0,
-//      TEST_STORY_ID_0,
-//      TEST_EXPLORATION_ID_2,
-//      getCurrentTimestamp()
-//    )
-//    testCoroutineDispatchers.runCurrent()
-//    storyProgressController.recordCompletedChapter(
-//      profileId0,
-//      TEST_TOPIC_ID_0,
-//      TEST_STORY_ID_0,
-//      TEST_EXPLORATION_ID_5,
-//      getCurrentTimestamp()
-//    )
-//    testCoroutineDispatchers.runCurrent()
-//
-//    storyProgressController.recordCompletedChapter(
-//      profileId0,
-//      TEST_TOPIC_ID_1,
-//      TEST_STORY_ID_2,
-//      TEST_EXPLORATION_ID_4,
-//      getCurrentTimestamp()
-//    )
-//    testCoroutineDispatchers.runCurrent()
-
-
     storyProgressController.recordCompletedChapter(
       profileId0,
       RATIOS_TOPIC_ID,
