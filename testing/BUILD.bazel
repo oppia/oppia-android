@@ -90,7 +90,7 @@ kt_android_library(
     deps = [
         artifact("org.jetbrains.kotlin:kotlin-reflect"),
         artifact("junit:junit:4.12"),
-    ]
+    ],
 )
 
 dagger_rules()
