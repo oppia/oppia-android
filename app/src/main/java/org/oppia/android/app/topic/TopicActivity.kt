@@ -86,8 +86,7 @@ class TopicActivity :
         topicId,
         storyId,
         explorationId,
-        backflowScreen,
-        isFromWalkthrough = false
+        backflowScreen
       )
     )
   }

@@ -32,8 +32,7 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
         topicId,
         storyId,
         explorationId,
-        backflowScreen,
-        isFromWalkthrough = false
+        backflowScreen
       )
     )
   }

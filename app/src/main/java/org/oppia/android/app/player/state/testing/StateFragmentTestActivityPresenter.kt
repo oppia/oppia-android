@@ -110,8 +110,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       profileId,
       topicId,
       storyId,
-      explorationId,
-      isFromWalkthrough = false
+      explorationId
     )
     activity.supportFragmentManager.beginTransaction().add(
       R.id.state_fragment_placeholder,

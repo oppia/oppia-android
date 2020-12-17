@@ -167,33 +167,38 @@ class TopicListController @Inject constructor(
   }
 
   private fun createOngoingStoryListFromProgress(
-    sortedTopicProgressList: List<TopicProgress>
+    topicProgressList: List<TopicProgress>
   ): OngoingStoryList {
     val ongoingStoryListBuilder = OngoingStoryList.newBuilder()
 
-
-   val topicProgressList = sortedTopicProgressList.sortedByDescending { it.lastPlayedTimestamp }
     if (topicProgressList.isNotEmpty()) {
-      Log.d("topic size",""+topicProgressList.size)
-      if (topicProgressList.size==1) {
+      Log.d("topic size", "" + topicProgressList.size)
+      if (topicProgressList.size == 1) {
         ongoingStoryListBuilder.setPromotedStoriesType(
           PromotedStoriesType.newBuilder().setRecommended(true)
         )
         ongoingStoryListBuilder.addAllRecommendedStory(
           createRecommendedStoryList(
             topicProgressList
-          ))
+          )
+        )
       } else {
-      topicProgressList.forEach { topicProgress ->
-        val topic = topicController.retrieveTopic(topicProgress.topicId)
+        val sortedTopicProgressList = topicProgressList.sortedByDescending { it.lastPlayedTimestamp }
+
+        sortedTopicProgressList.forEach { topicProgress ->
+          val topic = topicController.retrieveTopic(topicProgress.topicId)
 
           ongoingStoryListBuilder.setPromotedStoriesType(
             PromotedStoriesType.newBuilder().setRecentlyPlayed(true)
           )
+
           topicProgress.storyProgressMap.values.forEach { storyProgress ->
             val storyId = storyProgress.storyId
             val story = topicController.retrieveStory(topic.topicId, storyId)
-            Log.d("topic progress =", "" + topicProgress.topicId +" "+ topicProgress.lastPlayedTimestamp)
+            Log.d(
+              "topic progress =",
+              "" + topicProgress.topicId + " " + topicProgress.lastPlayedTimestamp
+            )
 
             val completedChapterProgressList =
               storyProgress.chapterProgressMap.values
@@ -265,9 +270,14 @@ class TopicListController @Inject constructor(
               }
             }
           }
-
-    }
-
+        }
+        if (ongoingStoryListBuilder.recentStoryCount == 0 && ongoingStoryListBuilder.olderStoryCount > 0
+          && ongoingStoryListBuilder.recommendedStoryCount == 0
+        ) {
+          ongoingStoryListBuilder.setPromotedStoriesType(
+            PromotedStoriesType.newBuilder().setLastPlayed(true)
+          )
+        }
         if (ongoingStoryListBuilder.recentStoryCount == 0 && ongoingStoryListBuilder.olderStoryCount == 0) {
           ongoingStoryListBuilder.setPromotedStoriesType(
             PromotedStoriesType.newBuilder().setRecommended(true)
@@ -275,7 +285,8 @@ class TopicListController @Inject constructor(
           ongoingStoryListBuilder.addAllRecommendedStory(
             createRecommendedStoryList(
               topicProgressList
-            ))
+            )
+          )
           if (ongoingStoryListBuilder.recommendedStoryCount == 0) {
             ongoingStoryListBuilder.setPromotedStoriesType(
               PromotedStoriesType.newBuilder().setComingSoon(true)
@@ -292,111 +303,104 @@ class TopicListController @Inject constructor(
     topicProgressList: List<TopicProgress>
   ): List<PromotedStory> {
     val recommendedStories = ArrayList<PromotedStory>()
-      topicProgressList.forEach { topicProgress ->
-        val topic = topicController.retrieveTopic(topicProgress.topicId)
-        topicProgress.storyProgressMap.values.forEach { storyProgress ->
-          val storyId = storyProgress.storyId
-          var story = topicController.retrieveStory(topic.topicId, storyId)
+    topicProgressList.forEach { topicProgress ->
+      val topic = topicController.retrieveTopic(topicProgress.topicId)
+      topicProgress.storyProgressMap.values.forEach { storyProgress ->
+        val storyId = storyProgress.storyId
+        var story = topicController.retrieveStory(topic.topicId, storyId)
 
-          val completedChapterProgressList =
-            storyProgress.chapterProgressMap.values
-              .filter { chapterProgress ->
-                chapterProgress.chapterPlayState ==
-                  ChapterPlayState.COMPLETED
-              }
-              .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
-          val startedChapterProgressList =
-            storyProgress.chapterProgressMap.values
-              .filter { chapterProgress ->
-                chapterProgress.chapterPlayState ==
-                  ChapterPlayState.STARTED_NOT_COMPLETED
-              }
-              .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
-
-          val lastCompletedChapterProgress: ChapterProgress? =
-            completedChapterProgressList.firstOrNull()
-
-          val recentlyPlayerChapterProgress: ChapterProgress? =
-            startedChapterProgressList.firstOrNull()
-          if (recentlyPlayerChapterProgress != null) {
-            val recentlyPlayerChapterSummary: ChapterSummary? =
-              story.chapterList.find { chapterSummary ->
-                recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
-              }
-            if (recentlyPlayerChapterSummary != null) {
-              val promotedStory = createPromotedStory(
-                storyId,
-                topic,
-                completedChapterProgressList.size,
-                story.chapterCount,
-                recentlyPlayerChapterSummary.name,
-                recentlyPlayerChapterSummary.explorationId
-              )
-              recommendedStories.add(promotedStory)
+        val completedChapterProgressList =
+          storyProgress.chapterProgressMap.values
+            .filter { chapterProgress ->
+              chapterProgress.chapterPlayState ==
+                ChapterPlayState.COMPLETED
             }
-          } else if (lastCompletedChapterProgress != null &&
-            lastCompletedChapterProgress.explorationId != story.chapterList.last().explorationId
-          ) {
-            val lastChapterSummary: ChapterSummary? = story.chapterList.find { chapterSummary ->
-              lastCompletedChapterProgress.explorationId == chapterSummary.explorationId
+            .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
+        val startedChapterProgressList =
+          storyProgress.chapterProgressMap.values
+            .filter { chapterProgress ->
+              chapterProgress.chapterPlayState ==
+                ChapterPlayState.STARTED_NOT_COMPLETED
             }
-            val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
-            val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
-            if (nextChapterSummary != null) {
-              val promotedStory = createPromotedStory(
-                storyId,
-                topic,
-                completedChapterProgressList.size,
-                story.chapterCount,
-                nextChapterSummary.name,
-                nextChapterSummary.explorationId
+            .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
+
+        val lastCompletedChapterProgress: ChapterProgress? =
+          completedChapterProgressList.firstOrNull()
+
+        val recentlyPlayerChapterProgress: ChapterProgress? =
+          startedChapterProgressList.firstOrNull()
+        if (recentlyPlayerChapterProgress != null) {
+          val recentlyPlayerChapterSummary: ChapterSummary? =
+            story.chapterList.find { chapterSummary ->
+              recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
+            }
+          if (recentlyPlayerChapterSummary != null) {
+            val promotedStory = createPromotedStory(
+              storyId,
+              topic,
+              completedChapterProgressList.size,
+              story.chapterCount,
+              recentlyPlayerChapterSummary.name,
+              recentlyPlayerChapterSummary.explorationId
+            )
+            recommendedStories.add(promotedStory)
+          }
+        } else if (lastCompletedChapterProgress != null &&
+          lastCompletedChapterProgress.explorationId != story.chapterList.last().explorationId
+        ) {
+          val lastChapterSummary: ChapterSummary? = story.chapterList.find { chapterSummary ->
+            lastCompletedChapterProgress.explorationId == chapterSummary.explorationId
+          }
+          val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
+          val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
+          if (nextChapterSummary != null) {
+            val promotedStory = createPromotedStory(
+              storyId,
+              topic,
+              completedChapterProgressList.size,
+              story.chapterCount,
+              nextChapterSummary.name,
+              nextChapterSummary.explorationId
+            )
+            recommendedStories.add(promotedStory)
+          } else {
+            val nextStoryIndex = topic.storyList.indexOf(story) + 1
+            if (nextStoryIndex < topic.storyList.size) {
+              story = topicController.retrieveStory(
+                topic.topicId,
+                topic.storyList[nextStoryIndex].storyId
               )
-              recommendedStories.add(promotedStory)
-            } else {
-              val nextStoryIndex = topic.storyList.indexOf(story) + 1
-              if (nextStoryIndex < topic.storyList.size) {
-                story = topicController.retrieveStory(
-                  topic.topicId,
-                  topic.storyList[nextStoryIndex].storyId
+              val nextChapterSummary: ChapterSummary? = story.chapterList[0]
+              if (nextChapterSummary != null) {
+                val promotedStory = createPromotedStory(
+                  story.storyId,
+                  topic,
+                  completedChapterProgressList.size,
+                  story.chapterCount,
+                  nextChapterSummary.name,
+                  nextChapterSummary.explorationId
                 )
-                val nextChapterSummary: ChapterSummary? = story.chapterList[0]
-                if (nextChapterSummary != null) {
-                  val promotedStory = createPromotedStory(
-                    story.storyId,
-                    topic,
-                    completedChapterProgressList.size,
-                    story.chapterCount,
-                    nextChapterSummary.name,
-                    nextChapterSummary.explorationId
-                  )
-                  recommendedStories.add(promotedStory)
-                }
+                recommendedStories.add(promotedStory)
               }
             }
           }
         }
-
       }
+    }
 
-      val topicIdJsonArray = jsonAssetRetriever
-        .loadJsonFromAsset("topics.json")!!
-        .getJSONArray("topic_id_list")
+    val topicIdJsonArray = jsonAssetRetriever
+      .loadJsonFromAsset("topics.json")!!
+      .getJSONArray("topic_id_list")
 
-      val topicList = ArrayList<String>()
-      for (i in 0 until topicIdJsonArray.length()) {
-        topicList.add(topicIdJsonArray[i].toString())
-      }
-
-      val index = topicList.indexOf(topicProgressList[topicProgressList.size - 1].topicId)
-      Log.d(
-        "topic index",
-        " = " + " " + index + " " + topicProgressList[topicProgressList.size - 1].topicId
-      )
-      Log.d("topic index", " = " + " " + topicIdJsonArray.length())
-      if (topicIdJsonArray.length() > (index + 1)) {
-        recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[index + 1].toString()))
-        return recommendedStories
-      }
+    val topicList = ArrayList<String>()
+    for (i in 0 until topicIdJsonArray.length()) {
+      topicList.add(topicIdJsonArray[i].toString())
+    }
+    val index = topicList.indexOf(topicProgressList[topicProgressList.size - 1].topicId)
+    if (topicIdJsonArray.length() > (index + 1)) {
+      recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[index + 1].toString()))
+      return recommendedStories
+    }
     return recommendedStories
   }
 

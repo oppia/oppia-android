@@ -46,8 +46,7 @@ class StateFragment :
       internalProfileId: Int,
       topicId: String,
       storyId: String,
-      explorationId: String,
-      isFromWalkthrough: Boolean
+      explorationId: String
     ): StateFragment {
       val stateFragment = StateFragment()
       val args = Bundle()

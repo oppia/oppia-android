@@ -26,8 +26,6 @@ class ExplorationFragment : InjectableFragment() {
       "ExplorationFragment.story_default_font_size"
     internal const val EXPLORATION_ID_ARGUMENT_KEY =
       "ExplorationFragment.exploration_id"
-    internal const val EXPLORATION_IS_FROM_WALKTHROUGH_ARGUMENT_KEY =
-      "ExplorationFragment.is_from_walkthrough"
 
     /** Returns a new [ExplorationFragment] to pass the profileId, topicId, storyId, readingTextSize and explorationId. */
     fun newInstance(
@@ -35,8 +33,7 @@ class ExplorationFragment : InjectableFragment() {
       topicId: String,
       storyId: String,
       readingTextSize: String,
-      explorationId: String,
-      isFromWalkthrough: Boolean
+      explorationId: String
     ): ExplorationFragment {
       val explorationFragment = ExplorationFragment()
       val args = Bundle()
@@ -53,10 +50,6 @@ class ExplorationFragment : InjectableFragment() {
       args.putString(
         EXPLORATION_ID_ARGUMENT_KEY,
         explorationId
-      )
-      args.putBoolean(
-        EXPLORATION_IS_FROM_WALKTHROUGH_ARGUMENT_KEY,
-        isFromWalkthrough
       )
       explorationFragment.arguments = args
       return explorationFragment
@@ -88,16 +81,13 @@ class ExplorationFragment : InjectableFragment() {
     val explorationId =
       arguments!!.getString(EXPLORATION_ID_ARGUMENT_KEY)
     checkNotNull(explorationId) { "StateFragment must be created with an exploration ID" }
-    val isFromWalkthrough =
-      arguments!!.getBoolean(EXPLORATION_IS_FROM_WALKTHROUGH_ARGUMENT_KEY)
     return explorationFragmentPresenter.handleCreateView(
       inflater,
       container,
       profileId,
       topicId,
       storyId,
-      explorationId,
-      isFromWalkthrough
+      explorationId
     )
   }
 

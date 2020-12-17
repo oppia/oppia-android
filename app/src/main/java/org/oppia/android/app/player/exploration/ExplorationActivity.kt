@@ -46,7 +46,6 @@ class ExplorationActivity :
   private lateinit var explorationId: String
   private lateinit var state: State
   private var backflowScreen: Int? = null
-  private var isFromWalkthrough: Boolean = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -55,17 +54,14 @@ class ExplorationActivity :
     topicId = intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
     storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
-    explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
     backflowScreen = intent.getIntExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, -1)
-    isFromWalkthrough = intent.getBooleanExtra(EXPLORATION_ACTIVITY_IS_FROM_WALKTHROUGH_KEY, false)
     explorationActivityPresenter.handleOnCreate(
       this,
       internalProfileId,
       topicId,
       storyId,
       explorationId,
-      backflowScreen,
-      isFromWalkthrough
+      backflowScreen
     )
   }
 
@@ -81,8 +77,6 @@ class ExplorationActivity :
       "ExplorationActivity.exploration_id"
     const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY =
       "ExplorationActivity.backflow_screen"
-    const val EXPLORATION_ACTIVITY_IS_FROM_WALKTHROUGH_KEY =
-      "ExplorationActivity.is_from_walkthrough_screen"
 
     fun createExplorationActivityIntent(
       context: Context,
@@ -90,8 +84,7 @@ class ExplorationActivity :
       topicId: String,
       storyId: String,
       explorationId: String,
-      backflowScreen: Int?,
-      isFromWalkthrough: Boolean
+      backflowScreen: Int?
     ): Intent {
       val intent = Intent(context, ExplorationActivity::class.java)
       intent.putExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
@@ -99,7 +92,6 @@ class ExplorationActivity :
       intent.putExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       intent.putExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       intent.putExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, backflowScreen)
-      intent.putExtra(EXPLORATION_ACTIVITY_IS_FROM_WALKTHROUGH_KEY, isFromWalkthrough)
       return intent
     }
   }
