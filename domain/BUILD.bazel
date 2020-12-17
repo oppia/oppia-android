@@ -308,6 +308,15 @@ domain_test(
 )
 
 domain_test(
+    name = "ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/textinput/ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.textinput.ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
     name = "TextInputEqualsRuleClassifierProviderTest",
     srcs = [
         "src/test/java/org/oppia/android/domain/classify/rules/textinput/TextInputEqualsRuleClassifierProviderTest.kt",
