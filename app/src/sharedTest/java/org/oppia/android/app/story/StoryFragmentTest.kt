@@ -130,7 +130,7 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
-    activityTestRule.launchActivity(createStoryActivityIntent())
+    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
     onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
     assertThat(activityTestRule.activity.isFinishing).isTrue()
@@ -138,7 +138,7 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_toolbarTitle_isDisplayedSuccessfully() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.story_toolbar_title))
         .check(matches(withText("Matthew Goes to the Bakery")))
@@ -148,7 +148,7 @@ class StoryFragmentTest {
   @Test
   fun testStoryFragment_correctStoryCountLoadedInHeader() {
     setStoryPartialProgressForFractions()
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       val headerString: String =
         getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
@@ -173,7 +173,7 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_correctNumberOfStoriesLoadedInRecyclerView() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.story_chapter_list)).check(hasItemCount(3))
     }
@@ -181,7 +181,7 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_textViewIsShownCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
@@ -205,7 +205,7 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_chapterSummaryIsShownCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -228,7 +228,7 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_chapterSummaryIsShownCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
@@ -307,7 +307,7 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_chapterMissingPrerequisiteIsShownCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -330,7 +330,7 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_chapterMissingPrerequisiteIsShownCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
@@ -354,7 +354,7 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
@@ -373,7 +373,7 @@ class StoryFragmentTest {
   @Test
   fun testStoryFragment_changeConfiguration_correctStoryCountInHeader() {
     setStoryPartialProgressForFractions()
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       val headerString: String =
@@ -402,7 +402,7 @@ class StoryFragmentTest {
     }
   }
 
-  private fun createStoryActivityIntent(): Intent {
+  private fun createFractionsStoryActivityIntent(): Intent {
     return StoryActivity.createStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
