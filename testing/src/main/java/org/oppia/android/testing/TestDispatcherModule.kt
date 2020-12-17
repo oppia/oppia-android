@@ -85,10 +85,10 @@ class TestDispatcherModule {
     return if (isOnRobolectric) robolectricFactoryProvider.get() else espressoFactoryProvider.get()
   }
 
-//  @Provides
-//  @IsOnRobolectric
-//  @Singleton
-//  fun provideIsOnRobolectric(): Boolean {
-//    return Build.FINGERPRINT.contains("robolectric", ignoreCase = true)
-//  }
+  @Provides
+  @IsOnRobolectric
+  @Singleton
+  fun provideIsOnRobolectric(): Boolean {
+    return Build.FINGERPRINT.contains("robolectric", ignoreCase = true)
+  }
 }
