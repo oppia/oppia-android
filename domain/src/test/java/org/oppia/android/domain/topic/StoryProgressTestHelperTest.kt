@@ -620,7 +620,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testProgressTestHelper_markRecentlyPlayed_fractionsStory0Exp0_getOngoingStoryListIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
+    storyProgressTestHelper.markTopicPlayedForFractionsStory0Exploration0(
       profileId,
       /* timestampOlderThanAWeek= */ false
     )

@@ -10,6 +10,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -17,9 +18,11 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -42,6 +45,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -67,7 +71,10 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.TestAccessibilityModule
@@ -110,6 +117,8 @@ class HomeActivityTest {
   lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject
   lateinit var context: Context
 
   @Inject
@@ -117,6 +126,7 @@ class HomeActivityTest {
 
   private val internalProfileId: Int = 1
   private lateinit var oppiaClock: OppiaClock
+  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
@@ -124,6 +134,7 @@ class HomeActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     FirebaseApp.initializeApp(context)
   }
 
@@ -239,6 +250,14 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysRecentlyPlayedStoriesText() {
+    storyProgressTestHelper.markTopicPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = true
+    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -260,6 +279,14 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysViewAllText() {
+    storyProgressTestHelper.markTopicPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = true
+    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -274,7 +301,86 @@ class HomeActivityTest {
   }
 
   @Test
+  fun testHomeActivity_recyclerViewIndex1_displaysRecommendedStoriesText() {
+    storyProgressTestHelper.markTopicPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          1,
+          R.id.recently_played_stories_text_view
+        )
+      ).check(
+        matches(
+          withText(R.string.recommended_stories)
+        )
+      )
+    }
+  }
+
+ @Test
+  fun testHomeActivity_recyclerViewIndex1_forRecommendedStories_hideViewAll() {
+    storyProgressTestHelper.markTopicPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+
+      onView(allOf(withId(R.id.view_all_text_view),
+        withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex1_displaysComingSoonTopicsText() {
+    storyProgressTestHelper.markFullStoryProgressForFractions(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          1,
+          R.id.recently_played_stories_text_view
+        )
+      ).check(
+        matches(
+          withText(R.string.coming_soon)
+        )
+      )
+    }
+  }
+
+  @Test
   fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensRecentlyPlayedActivity() {
+    storyProgressTestHelper.markTopicPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = true
+    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -291,6 +397,14 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_chapterNameIsCorrect() {
+    storyProgressTestHelper.markTopicPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = true
+    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -300,12 +414,20 @@ class HomeActivityTest {
             atPosition(R.id.home_recycler_view, 1)
           )
         )
-      ).check(matches(hasDescendant(withText(containsString("Prototype Exploration")))))
+      ).check(matches(hasDescendant(withText(containsString("What is a Fraction")))))
     }
   }
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
+    storyProgressTestHelper.markTopicPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = true
+    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -313,7 +435,7 @@ class HomeActivityTest {
       )
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
-          withText(containsString("First Story"))
+          withText(containsString("Matthew Goes to the Bakery"))
         )
       )
     }
@@ -321,6 +443,14 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_configurationChange_promotedCard_storyNameIsCorrect() {
+    storyProgressTestHelper.markTopicPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = true
+    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -329,7 +459,7 @@ class HomeActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
-          withText(containsString("First Story"))
+          withText(containsString("Matthew Goes to the Bakery"))
         )
       )
     }
@@ -337,6 +467,14 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
+    storyProgressTestHelper.markTopicPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = true
+    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -352,13 +490,21 @@ class HomeActivityTest {
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), TEST_STORY_ID_0))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
+      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_topicNameIsCorrect() {
+    storyProgressTestHelper.markTopicPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = true
+    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -366,7 +512,7 @@ class HomeActivityTest {
       )
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("FIRST TEST TOPIC"))
+          withText(containsString("Fractions"))
         )
       )
     }

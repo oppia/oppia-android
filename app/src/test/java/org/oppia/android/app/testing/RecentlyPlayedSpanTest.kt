@@ -84,7 +84,7 @@ class RecentlyPlayedSpanTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
+    storyProgressTestHelper.markTopicPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
     )
