@@ -162,7 +162,6 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/help/faq/faqItemViewModel/FAQHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/faqItemViewModel/FAQItemViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpItems.kt",
-    "src/main/java/org/oppia/android/app/home/WelcomeViewModel.kt",
     "src/main/java/org/oppia/android/app/topiclist/AllTopicsViewModel.kt",
     "src/main/java/org/oppia/android/app/hintsandsolution/HintsAndSolutionItemViewModel.kt",
     "src/main/java/org/oppia/android/app/hintsandsolution/HintsDividerViewModel.kt",
