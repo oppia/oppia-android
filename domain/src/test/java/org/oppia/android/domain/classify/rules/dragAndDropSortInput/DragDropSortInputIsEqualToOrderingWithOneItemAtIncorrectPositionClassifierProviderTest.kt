@@ -63,7 +63,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
 
   @Inject
   internal lateinit var
-    dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider:
+  dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider:
     DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
 
   private val isEqualToOrderingWithOneItemIncorrectClassifier: RuleClassifier by lazy {
@@ -181,7 +181,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
 
     fun inject(
       test:
-      DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest
+        DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest
     )
   }
 }
