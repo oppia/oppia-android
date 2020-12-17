@@ -935,7 +935,7 @@ class AsyncResultTest {
     modules = [
       TestDispatcherModule::class,
       RobolectricProviderModule::class
-   ]
+    ]
   )
   interface TestApplicationComponent {
     @Component.Builder
