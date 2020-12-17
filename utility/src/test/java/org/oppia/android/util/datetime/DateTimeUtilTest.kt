@@ -13,7 +13,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.RobolectricProviderModule
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -100,7 +99,6 @@ class DateTimeUtilTest {
   @Component(
     modules = [
       TestModule::class,
-      TestDispatcherModule::class,
       RobolectricProviderModule::class
     ]
   )
