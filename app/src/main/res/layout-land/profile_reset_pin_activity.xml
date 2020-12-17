@@ -51,10 +51,10 @@
       <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:overScrollMode="never"
-        android:scrollbars="none"
-        android:paddingBottom="168dp"
         android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingBottom="168dp"
+        android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -74,8 +74,8 @@
             android:paddingEnd="72dp"
             android:text="@string/profile_reset_pin_main"
             android:textColor="@color/oppiaPrimaryText"
-            android:textSize="16sp"
             android:textDirection="locale"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
