@@ -2,7 +2,6 @@ package org.oppia.android.app.home.topiclist
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.WelcomeViewModel
-import org.oppia.android.app.model.PromotedStoriesType
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.databinding.AllTopicsBinding
 import org.oppia.android.databinding.PromotedStoryListBinding
@@ -21,14 +19,12 @@ private const val VIEW_TYPE_WELCOME_MESSAGE = 1
 private const val VIEW_TYPE_PROMOTED_STORY_LIST = 2
 private const val VIEW_TYPE_ALL_TOPICS = 3
 private const val VIEW_TYPE_TOPIC_LIST = 4
-private const val VIEW_TYPE_COMING_SOON_TOPIC_LIST = 5
 
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class TopicListAdapter(
   private val activity: AppCompatActivity,
   private val itemList: MutableList<HomeItemViewModel>,
-  private val promotedStoryList: MutableList<PromotedStoryViewModel>,
-  private val comingSoonTopicList: MutableList<ComingSoonTopicsListViewModel>
+  private val promotedStoryList: MutableList<PromotedStoryViewModel>
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -90,8 +86,7 @@ class TopicListAdapter(
         (holder as PromotedStoryListViewHolder).bind(
           activity,
           itemList[position] as PromotedStoryListViewModel,
-          promotedStoryList,
-          comingSoonTopicList
+          promotedStoryList
         )
       }
       VIEW_TYPE_ALL_TOPICS -> {
@@ -143,65 +138,18 @@ class TopicListAdapter(
     internal fun bind(
       activity: AppCompatActivity,
       promotedStoryListViewModel: PromotedStoryListViewModel,
-      promotedStoryList: MutableList<PromotedStoryViewModel>,
-      comingSoonTopicList: MutableList<ComingSoonTopicsListViewModel>
+      promotedStoryList: MutableList<PromotedStoryViewModel>
     ) {
-
       binding.viewModel = promotedStoryListViewModel
-
-       val horizontalLayoutManager =
+      if (activity.resources.getBoolean(R.bool.isTablet)) {
+        binding.itemCount = promotedStoryList.size
+      }
+      val promotedStoryAdapter = PromotedStoryListAdapter(activity, promotedStoryList)
+      val horizontalLayoutManager =
         LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, /* reverseLayout= */ false)
-
-      if (promotedStoryList.size!=0) {
-        if (activity.resources.getBoolean(R.bool.isTablet)) {
-          binding.itemCount = promotedStoryList.size
-        }
-        when (promotedStoryList[0].promotedStoriesType) {
-          PromotedStoriesType.PromotedStoriesTypeCase.RECENTLY_PLAYED -> {
-            binding.recentlyPlayedStoriesTextView.visibility = View.VISIBLE
-            binding.recentlyPlayedStoriesTextView.setText(activity.getString(R.string.recently_played_stories))
-            binding.viewAllTextView.visibility = View.VISIBLE
-          }
-          PromotedStoriesType.PromotedStoriesTypeCase.LAST_PLAYED -> {
-            binding.recentlyPlayedStoriesTextView.visibility = View.VISIBLE
-            binding.recentlyPlayedStoriesTextView.setText(activity.getString(R.string.recently_played_stories))
-            binding.viewAllTextView.visibility = View.VISIBLE
-          }
-          PromotedStoriesType.PromotedStoriesTypeCase.RECOMMENDED -> {
-            binding.recentlyPlayedStoriesTextView.visibility = View.VISIBLE
-            binding.recentlyPlayedStoriesTextView.setText(activity.getString(R.string.recommended_stories))
-            binding.viewAllTextView.visibility = View.INVISIBLE
-          }
-          else -> {
-            binding.recentlyPlayedStoriesTextView.visibility = View.GONE
-            binding.viewAllTextView.visibility = View.GONE
-          }
-        }
-        val promotedStoryAdapter = PromotedStoryListAdapter(activity, promotedStoryList)
-
-        binding.promotedStoryListRecyclerView.apply {
-          layoutManager = horizontalLayoutManager
-          adapter = promotedStoryAdapter
-        }
-      }else if (comingSoonTopicList.size!=0){
-
-        if (activity.resources.getBoolean(R.bool.isTablet)) {
-          binding.itemCount = comingSoonTopicList.size
-        }
-
-        binding.recentlyPlayedStoriesTextView.setText(activity.getString(R.string.coming_soon))
-        binding.viewAllTextView.visibility = View.INVISIBLE
-
-        val comingSoonTopicListAdapter = ComingSoonTopicListAdapter(activity, comingSoonTopicList)
-        comingSoonTopicListAdapter.setSpanCount(spanCount)
-
-        binding.promotedStoryListRecyclerView.apply {
-          layoutManager = horizontalLayoutManager
-          adapter = comingSoonTopicListAdapter
-        }
-      }else{
-        binding.recentlyPlayedStoriesTextView.visibility = View.GONE
-        binding.viewAllTextView.visibility = View.GONE
+      binding.promotedStoryListRecyclerView.apply {
+        layoutManager = horizontalLayoutManager
+        adapter = promotedStoryAdapter
       }
 
       /*

@@ -152,7 +152,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /** Marks exploration [FRACTIONS_EXPLORATION_ID_0] as recently played for a particular profile. */
-  fun markTopicPlayedForFractionsStory0Exploration0(
+  fun markRecentlyPlayedForFractionsStory0Exploration0(
     profileId: ProfileId,
     timestampOlderThanAWeek: Boolean
   ) {
