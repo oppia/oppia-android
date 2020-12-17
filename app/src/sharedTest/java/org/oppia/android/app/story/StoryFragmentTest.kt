@@ -441,7 +441,7 @@ class StoryFragmentTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricProviderModule::class, ApplicationModule::class,
+      RobolectricProviderModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

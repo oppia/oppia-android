@@ -28,6 +28,7 @@ import org.mockito.Mockito.verifyZeroInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.TestMessage
+import org.oppia.android.testing.RobolectricProviderModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -621,6 +622,7 @@ class PersistentCacheStoreTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricProviderModule::class,
       TestDispatcherModule::class,
       TestModule::class,
       TestLogReportingModule::class

@@ -800,7 +800,7 @@ class ProfileProgressFragmentTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricProviderModule::class, ApplicationModule::class,
+      RobolectricProviderModule::class,
       TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
       ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,

@@ -25,6 +25,7 @@ import org.oppia.android.app.model.ExceptionLog.ExceptionType
 import org.oppia.android.app.model.OppiaExceptionLogs
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.RobolectricProviderModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -38,6 +39,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtil
+import org.robolectric.Robolectric
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -359,7 +361,7 @@ class ExceptionsControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
-      TestLogStorageModule::class
+      TestLogStorageModule::class, RobolectricProviderModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

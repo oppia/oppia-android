@@ -12,6 +12,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.RobolectricProviderModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
@@ -164,7 +165,11 @@ class DirectoryManagementUtilTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, TestDispatcherModule::class])
+  @Component(modules = [
+    TestModule::class,
+    TestDispatcherModule::class,
+    RobolectricProviderModule::class
+  ])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
