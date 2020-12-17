@@ -28,7 +28,7 @@
     app:explorationViewMarginApplicable="@{buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
     app:explorationViewMarginBottom="@{@dimen/space_0dp}"
     app:explorationViewMarginEnd="@{@dimen/space_0dp}"
-    app:explorationViewMarginStart="@{@dimen/space_112dp}"
+    app:explorationViewMarginStart="@{@dimen/previous_button_item_exploration_view_margin_start}"
     app:explorationViewMarginTop="@{@dimen/previous_button_item_exploration_view_margin_top}"
     app:explorationViewPaddingApplicable="@{buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
     app:explorationViewPaddingBottom="@{@dimen/space_0dp}"

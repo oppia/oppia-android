@@ -34,7 +34,7 @@ class OptionsActivity :
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
-      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
+      "OptionsActivity.bool_is_from_navigation_drawer_extra_key"
 
     fun createOptionsActivity(
       context: Context,
@@ -77,15 +77,15 @@ class OptionsActivity :
     super.onActivityResult(requestCode, resultCode, data)
     when (requestCode) {
       REQUEST_CODE_TEXT_SIZE -> {
-        val textSize = data!!.getStringExtra(KEY_MESSAGE_READING_TEXT_SIZE) as String
+        val textSize = data!!.getStringExtra(MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY) as String
         optionActivityPresenter.updateReadingTextSize(textSize)
       }
       REQUEST_CODE_APP_LANGUAGE -> {
-        val appLanguage = data!!.getStringExtra(KEY_MESSAGE_APP_LANGUAGE) as String
+        val appLanguage = data!!.getStringExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY) as String
         optionActivityPresenter.updateAppLanguage(appLanguage)
       }
       else -> {
-        val audioLanguage = data!!.getStringExtra(KEY_MESSAGE_AUDIO_LANGUAGE) as String
+        val audioLanguage = data!!.getStringExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY) as String
         optionActivityPresenter.updateAudioLanguage(audioLanguage)
       }
     }
