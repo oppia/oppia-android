@@ -3,9 +3,7 @@ package org.oppia.android.util.parser
 import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.text.style.BulletSpan
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
