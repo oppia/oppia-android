@@ -537,7 +537,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_withAdminProfile_adminControlsIsDisplayed() {
+  fun testAdministratorControlsFragment_selectAdminNavItem_adminControlsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
