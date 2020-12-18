@@ -492,6 +492,43 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
+  fun testProgressTestHelper_markProgressForAllTopics_getOngoingTopicListIsEmpty() {
+    storyProgressTestHelper.markFullProgressForAllTopics(
+      profileId,
+      /* timestampOlderThanAWeek= */ false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetOngoingTopicListSucceeded()
+
+    val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.topicList.size).isEqualTo(0)
+  }
+
+  @Test
+  fun testProgressTestHelper_markProgressForAllTopics_getCompletedStoryListIsCorrect() {
+    storyProgressTestHelper.markFullProgressForAllTopics(
+      profileId,
+      /* timestampOlderThanAWeek= */ false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    topicController.getCompletedStoryList(profileId).toLiveData()
+      .observeForever(mockCompletedStoryListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetCompletedStoryListSucceeded()
+
+    val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
+    assertThat(completedStoryList.completedStoryList.size).isEqualTo(6)
+  }
+
+  @Test
   fun testProgressTestHelper_markPartialTopicProgressForRatios_getOngoingTopicListIsCorrect() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
