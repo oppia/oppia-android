@@ -11,7 +11,6 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,7 +44,7 @@ import org.oppia.android.util.parser.DefaultGcsPrefix
 import org.oppia.android.util.parser.ImageDownloadUrlTemplate
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -103,36 +102,24 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_isSuccessful() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicListResult = topicListResultCaptor.value
     assertThat(topicListResult!!.isSuccess()).isTrue()
   }
 
   @Test
   fun testRetrieveTopicList_providesListOfMultipleTopics() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     assertThat(topicList.topicSummaryCount).isGreaterThan(1)
   }
 
   @Test
   fun testRetrieveTopicList_firstTopic_hasCorrectTopicInfo() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
@@ -141,12 +128,8 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_firstTopic_hasCorrectThumbnail() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.topicThumbnail.thumbnailGraphic)
@@ -155,12 +138,8 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_firstTopic_hasCorrectLessonCount() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.totalChapterCount).isEqualTo(5)
@@ -168,12 +147,8 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_secondTopic_hasCorrectTopicInfo() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.topicId).isEqualTo(TEST_TOPIC_ID_1)
@@ -182,12 +157,8 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_secondTopic_hasCorrectThumbnail() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.topicThumbnail.thumbnailGraphic)
@@ -196,12 +167,8 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_secondTopic_hasCorrectLessonCount() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.totalChapterCount).isEqualTo(1)
@@ -209,12 +176,8 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectTopicInfo() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     val fractionsTopic = topicList.getTopicSummary(2)
     assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
@@ -223,12 +186,8 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectThumbnail() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     val fractionsTopic = topicList.getTopicSummary(2)
     assertThat(fractionsTopic.topicThumbnail.thumbnailGraphic)
@@ -237,12 +196,8 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectLessonCount() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     val fractionsTopic = topicList.getTopicSummary(2)
     assertThat(fractionsTopic.totalChapterCount).isEqualTo(2)
@@ -250,12 +205,8 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_ratiosTopic_hasCorrectTopicInfo() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.topicId).isEqualTo(RATIOS_TOPIC_ID)
@@ -264,12 +215,8 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_ratiosTopic_hasCorrectThumbnail() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.topicThumbnail.thumbnailGraphic)
@@ -278,12 +225,8 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_ratiosTopic_hasCorrectLessonCount() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    verifyObserverOfTopicListLiveData()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.totalChapterCount).isEqualTo(4)
@@ -300,7 +243,6 @@ class TopicListControllerTest {
   }
 
   @Test
-  @Ignore("Failing on Circle CI.")
   fun testRetrieveOngoingStoryList_markRecentlyPlayedFracStory0Exp0_ongoingStoryListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
@@ -376,7 +318,6 @@ class TopicListControllerTest {
   }
 
   @Test
-  @Ignore("Failing on Circle CI.")
   fun testRetrieveOngoingStoryList_markAllChaptersCompletedInFractions_ongoingStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
@@ -403,7 +344,7 @@ class TopicListControllerTest {
     verifyGetOngoingStoryListSucceeded()
 
     val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
+    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(4)
     verifyDefaultOngoingStoryListSucceeded()
   }
 
@@ -676,6 +617,13 @@ class TopicListControllerTest {
   // Returns a timestamp which is atleast a week older than current timestamp.
   private fun getOldTimestamp(): Long {
     return Date().time - NINE_DAYS_IN_MS
+  }
+
+  private fun verifyObserverOfTopicListLiveData() {
+    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    topicListLiveData.observeForever(mockTopicListObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
   }
 
   // TODO(#89): Move this to a common test application component.

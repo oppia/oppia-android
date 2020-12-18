@@ -3,6 +3,7 @@ package org.oppia.android.app.administratorcontrols
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -128,7 +129,7 @@ class AdministratorControlsActivityTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.edit_account_text_view,
-        stringToMatch = context.getString(R.string.administrator_controls_edit_account)
+        stringIdToMatch = R.string.administrator_controls_edit_account
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 1,
@@ -137,7 +138,7 @@ class AdministratorControlsActivityTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.edit_profiles_text_view,
-        stringToMatch = context.getString(R.string.administrator_controls_edit_profiles)
+        stringIdToMatch = R.string.administrator_controls_edit_profiles
       )
     }
   }
@@ -153,9 +154,7 @@ class AdministratorControlsActivityTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.download_permissions_text_view,
-        stringToMatch = context.getString(
-          R.string.administrator_controls_download_permissions_label
-        )
+        stringIdToMatch = R.string.administrator_controls_download_permissions_label
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 2,
@@ -185,7 +184,7 @@ class AdministratorControlsActivityTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 3,
         targetViewId = R.id.app_version_text_view,
-        stringToMatch = context.getString(R.string.administrator_controls_app_version)
+        stringIdToMatch = R.string.administrator_controls_app_version
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 4,
@@ -194,7 +193,7 @@ class AdministratorControlsActivityTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 4,
         targetViewId = R.id.log_out_text_view,
-        stringToMatch = context.getString(R.string.administrator_controls_log_out)
+        stringIdToMatch = R.string.administrator_controls_log_out
       )
     }
   }
@@ -313,9 +312,9 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialog = context.getString(R.string.log_out_dialog_message))
-      verifyTextInDialog(textInDialog = context.getString(R.string.log_out_dialog_okay_button))
-      verifyTextInDialog(textInDialog = context.getString(R.string.log_out_dialog_cancel_button))
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button)
     }
   }
 
@@ -331,9 +330,9 @@ class AdministratorControlsActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 4)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialog = context.getString(R.string.log_out_dialog_message))
-      verifyTextInDialog(textInDialog = context.getString(R.string.log_out_dialog_okay_button))
-      verifyTextInDialog(textInDialog = context.getString(R.string.log_out_dialog_cancel_button))
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button)
     }
   }
 
@@ -348,7 +347,7 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialog = context.getString(R.string.log_out_dialog_message))
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       onView(withText(R.string.log_out_dialog_okay_button)).perform(click())
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
@@ -364,7 +363,7 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialog = context.getString(R.string.log_out_dialog_message))
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       onView(withText(R.string.log_out_dialog_cancel_button)).perform(click())
       onView(withId(R.id.log_out_text_view)).check(matches(isDisplayed()))
     }
@@ -407,7 +406,7 @@ class AdministratorControlsActivityTest {
   private fun verifyTextOnAdministratorListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
-    stringToMatch: String
+    @StringRes stringIdToMatch: Int
   ) {
     onView(
       atPositionOnView(
@@ -415,7 +414,7 @@ class AdministratorControlsActivityTest {
         itemPosition,
         targetViewId
       )
-    ).check(matches(withText(stringToMatch)))
+    ).check(matches(withText(context.getString(stringIdToMatch))))
   }
 
   private fun scrollToPosition(position: Int) {
@@ -426,8 +425,8 @@ class AdministratorControlsActivityTest {
     )
   }
 
-  private fun verifyTextInDialog(textInDialog: String) {
-    onView(withText(textInDialog))
+  private fun verifyTextInDialog(@StringRes textInDialogId: Int) {
+    onView(withText(context.getString(textInDialogId)))
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
   }

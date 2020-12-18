@@ -155,8 +155,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_checkProfileName_profileNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.profile_name_text_view,
         stringToMatch = "Admin"
@@ -169,8 +168,7 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.profile_name_text_view,
         stringToMatch = "Admin"
@@ -246,8 +244,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsCount_countIsZero() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_count,
         stringToMatch = "0"
@@ -268,8 +265,7 @@ class ProfileProgressFragmentTest {
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_count,
         stringToMatch = "2"
@@ -292,8 +288,7 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_count,
         stringToMatch = "2"
@@ -305,8 +300,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_description_text_view,
         stringToMatch = context.getString(R.string.topics_in_progress)
@@ -327,8 +321,7 @@ class ProfileProgressFragmentTest {
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_description_text_view,
         stringToMatch = context.getString(R.string.topics_in_progress)
@@ -351,8 +344,7 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_description_text_view,
         stringToMatch = context.getString(R.string.topics_in_progress)
@@ -364,8 +356,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsZero() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.completed_stories_count,
         stringToMatch = "0"
@@ -386,8 +377,7 @@ class ProfileProgressFragmentTest {
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.completed_stories_count,
         stringToMatch = "2"
@@ -399,8 +389,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesString_descriptionIsCorrect() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.completed_stories_description_text_view,
         stringToMatch = context.getString(R.string.stories_completed)
@@ -421,8 +410,7 @@ class ProfileProgressFragmentTest {
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.completed_stories_description_text_view,
         stringToMatch = context.getString(R.string.stories_completed)
@@ -438,8 +426,7 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 1,
         targetViewId = R.id.story_name_text_view,
         stringToMatch = "First Story"
@@ -456,8 +443,7 @@ class ProfileProgressFragmentTest {
           1
         )
       )
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 1,
         targetViewId = R.id.story_name_text_view,
         stringToMatch = "First Story"
@@ -474,8 +460,7 @@ class ProfileProgressFragmentTest {
           1
         )
       )
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "FIRST TEST TOPIC"
@@ -505,8 +490,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      matchTextOnListItem(
-        recyclerView = R.id.profile_progress_list,
+      verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.view_all_text_view,
         stringToMatch = "View All"
@@ -628,16 +612,14 @@ class ProfileProgressFragmentTest {
     return Instrumentation.ActivityResult(RESULT_OK, resultIntent)
   }
 
-  // TODO(#2208): Create helper function in Test for RecyclerView
-  private fun matchTextOnListItem(
-    recyclerView: Int,
+  private fun verifyItemDisplayedOnProfileProgressListItem(
     itemPosition: Int,
     targetViewId: Int,
     stringToMatch: String
   ) {
     onView(
       atPositionOnView(
-        recyclerView,
+        R.id.profile_progress_list,
         itemPosition,
         targetViewId
       )
