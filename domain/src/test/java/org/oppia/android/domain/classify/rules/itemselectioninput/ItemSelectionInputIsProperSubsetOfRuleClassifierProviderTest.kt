@@ -223,6 +223,22 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
       .contains("Expected answer to be of type SET_OF_HTML_STRING not NORMALIZED_STRING")
   }
 
+  @Test
+  fun testIsProperSubset_missingInputX_throwsException() {
+    val inputs = mapOf("a" to ITEM_SELECTION_12345)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      inputContainsAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SELECTION_12345,
+        inputs = inputs
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected classifier inputs to contain parameter with name 'x' but had: [a]")
+  }
+
   // TODO(#89): Move to a common test library.
   private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
     try {
