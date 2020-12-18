@@ -28,6 +28,7 @@ import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.model.TopicList
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -87,6 +88,12 @@ class StoryProgressTestHelperTest {
 
   @Captor
   lateinit var ongoingTopicListResultCaptor: ArgumentCaptor<AsyncResult<OngoingTopicList>>
+
+  @Mock
+  lateinit var mockTopicListObserver: Observer<AsyncResult<TopicList>>
+
+  @Captor
+  lateinit var topicListResultCaptor: ArgumentCaptor<AsyncResult<TopicList>>
 
   @Mock
   lateinit var mockStorySummaryObserver: Observer<AsyncResult<StorySummary>>
@@ -492,7 +499,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markProgressForAllTopics_getOngoingTopicListIsEmpty() {
+  fun testProgressTestHelper_markFullProgressForAllTopics_getOngoingTopicListIsEmpty() {
     storyProgressTestHelper.markFullProgressForAllTopics(
       profileId,
       /* timestampOlderThanAWeek= */ false
@@ -511,7 +518,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markProgressForAllTopics_getCompletedStoryListIsCorrect() {
+  fun testProgressTestHelper_markFullProgressForAllTopics_getCompletedStoryListIsCorrect() {
     storyProgressTestHelper.markFullProgressForAllTopics(
       profileId,
       /* timestampOlderThanAWeek= */ false
@@ -526,6 +533,24 @@ class StoryProgressTestHelperTest {
 
     val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
     assertThat(completedStoryList.completedStoryList.size).isEqualTo(6)
+  }
+
+  @Test
+  fun testProgressTestHelper_markFullProgressForAllTopics_getTopicListIsCorrect() {
+    storyProgressTestHelper.markFullProgressForAllTopics(
+      profileId,
+      /* timestampOlderThanAWeek= */ false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    topicListController.getTopicList().toLiveData()
+      .observeForever(mockTopicListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetTopicListSucceeded()
+
+    val topicList = topicListResultCaptor.value.getOrThrow()
+    assertThat(topicList.topicSummaryCount).isEqualTo(4)
   }
 
   @Test
@@ -796,6 +821,14 @@ class StoryProgressTestHelperTest {
       atLeastOnce()
     ).onChanged(ongoingStoryListResultCaptor.capture())
     assertThat(ongoingStoryListResultCaptor.value.isSuccess()).isTrue()
+  }
+
+  private fun verifyGetTopicListSucceeded() {
+    verify(
+      mockTopicListObserver,
+      atLeastOnce()
+    ).onChanged(topicListResultCaptor.capture())
+    assertThat(topicListResultCaptor.value.isSuccess()).isTrue()
   }
 
   // TODO(#89): Move this to a common test application component.
