@@ -113,8 +113,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
               internalProfileId
             )
 
-          // added a flag to intent so that the activity created only once and used if already existed,
-          // as for other menu item this case is not applicable.
+          // Need only one instance of the AdministratorControlsActivity, use if already existed
           intent.setFlags(FLAG_ACTIVITY_SINGLE_TOP)
 
           fragment.activity!!.startActivity(intent)

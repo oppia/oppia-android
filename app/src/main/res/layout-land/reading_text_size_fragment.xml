@@ -70,8 +70,7 @@
           <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="84dp"
-            android:background="@color/white"
-            android:orientation="horizontal">
+            android:background="@color/white">
 
             <TextView
               android:id="@+id/reading_text_size_small_textview"
