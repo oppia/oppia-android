@@ -4,7 +4,7 @@ echo "********************************"
 echo "Checking code formatting"
 echo "********************************"
 
-ktlint --android app/src/**/*.kt data/src/**/*.kt domain/src/**/*.kt testing/src/**/*.kt utility/src/**/*.kt
+bash ../oppia-android-tools/ktlint --android app/src/**/*.kt data/src/**/*.kt domain/src/**/*.kt testing/src/**/*.kt utility/src/**/*.kt
 
 status=$?
 
