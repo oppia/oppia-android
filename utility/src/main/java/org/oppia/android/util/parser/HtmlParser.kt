@@ -78,24 +78,10 @@ class HtmlParser private constructor(
       htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards)
     )
 
-    val spannableBuilder = SpannableStringBuilder(htmlSpannable)
-    val bulletSpans = spannableBuilder.getSpans(
-      /* queryStart= */ 0,
-      spannableBuilder.length,
-      BulletSpan::class.java
+    val spannableBuilder = CustomBulletSpan.replaceBulletSpan(
+      SpannableStringBuilder(htmlSpannable),
+      htmlContentTextView.context
     )
-    bulletSpans.forEach {
-      val start = spannableBuilder.getSpanStart(it)
-      val end = spannableBuilder.getSpanEnd(it)
-      spannableBuilder.removeSpan(it)
-      spannableBuilder.setSpan(
-        CustomBulletSpan(htmlContentTextView.context),
-        start,
-        end,
-        Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-      )
-    }
-
     return ensureNonEmpty(trimSpannable(spannableBuilder))
   }
 

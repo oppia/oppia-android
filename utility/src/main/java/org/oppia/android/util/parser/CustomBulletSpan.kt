@@ -6,7 +6,9 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Path.Direction
 import android.text.Layout
+import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.style.BulletSpan
 import android.text.style.LeadingMarginSpan
 import org.oppia.android.util.R
 
@@ -85,6 +87,32 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
       }
 
       paint.style = style
+    }
+  }
+
+  companion object {
+    fun replaceBulletSpan(
+      spannableStringBuilder: SpannableStringBuilder,
+      context: Context
+    ): SpannableStringBuilder {
+      val bulletSpans = spannableStringBuilder.getSpans(
+        /* queryStart= */ 0,
+        spannableStringBuilder.length,
+        BulletSpan::class.java
+      )
+
+      bulletSpans.forEach {
+        val start = spannableStringBuilder.getSpanStart(it)
+        val end = spannableStringBuilder.getSpanEnd(it)
+        spannableStringBuilder.removeSpan(it)
+        spannableStringBuilder.setSpan(
+          CustomBulletSpan(context),
+          start,
+          end,
+          Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+        )
+      }
+      return spannableStringBuilder
     }
   }
 }
