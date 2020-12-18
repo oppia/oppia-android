@@ -10,6 +10,9 @@
 #
 # NOTE: this script should be run once after the initial codebase setup
 
+# Move file from script folder to .git/hooks folder
+cp scripts/pre-push.sh .git/hooks/pre-push
+
 # Download ktlint
 KTLINT="0.37.0"
 echo Using Ktlint $KTLINT
@@ -19,6 +22,3 @@ cd oppia-android-tools
 curl -sSL https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
 chmod a+x ktlint
 echo Ktlint file downloaded
-
-# Move file from script folder to .git/hooks folder
-cp scripts/pre-push.sh .git/hooks/pre-push
