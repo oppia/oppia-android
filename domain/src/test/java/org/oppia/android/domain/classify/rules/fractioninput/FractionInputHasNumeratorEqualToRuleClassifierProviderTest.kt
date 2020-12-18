@@ -9,8 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -25,14 +24,40 @@ import kotlin.test.fail
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
-  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
-  private val WHOLE_NUMBER_123 = createWholeNumber(isNegative = false, value = 123)
-  private val FRACTION_2_OVER_4 = createFraction(isNegative = false, numerator = 2, denominator = 4)
-  private val FRACTION_NEGATIVE_2_OVER_4 =
-    createFraction(isNegative = true, numerator = -2, denominator = 4)
-  private val SIGNED_INT_1 = createSignedInt(1)
-  private val SIGNED_INT_2 = createSignedInt(2)
-  private val SIGNED_INT_NEGATIVE_2 = createSignedInt(-2)
+
+  private val NON_NEGATIVE_VALUE_TEST_0 =
+    InteractionObjectTestBuilder.createNonNegativeInt(
+      value = 0
+    )
+  private val WHOLE_NUMBER_VALUE_TEST_123 =
+    InteractionObjectTestBuilder.createWholeNumber(
+      isNegative = false,
+      value = 123
+    )
+  private val FRACTION_VALUE_TEST_2_OVER_4 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = false,
+      numerator = 2,
+      denominator = 4
+    )
+  private val FRACTION_VALUE_TEST_NEGATIVE_2_OVER_4 =
+    InteractionObjectTestBuilder.createFraction(
+      isNegative = true,
+      numerator = -2,
+      denominator = 4
+    )
+  private val SIGNED_INT_VALUE_TEST_1 =
+    InteractionObjectTestBuilder.createSignedInt(
+      value = 1
+    )
+  private val SIGNED_INT_VALUE_TEST_2 =
+    InteractionObjectTestBuilder.createSignedInt(
+      value = 2
+    )
+  private val SIGNED_INT_NEGATIVE_VALUE_TEST_2 =
+    InteractionObjectTestBuilder.createSignedInt(
+      value = -2
+    )
 
   @Inject
   internal lateinit var fractionInputHasNumeratorEqualToRuleClassifierProvider:
@@ -42,13 +67,18 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     fractionInputHasNumeratorEqualToRuleClassifierProvider.createRuleClassifier()
   }
 
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+  }
+
   @Test
   fun testNumeratorEquals_negativeNumerators_bothValuesMatch() {
-    val inputs = mapOf("x" to SIGNED_INT_NEGATIVE_2)
+    val inputs = mapOf("x" to SIGNED_INT_NEGATIVE_VALUE_TEST_2)
 
     val matches =
       numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_NEGATIVE_2_OVER_4,
+        answer = FRACTION_VALUE_TEST_NEGATIVE_2_OVER_4,
         inputs = inputs
       )
 
@@ -57,11 +87,11 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNumeratorEquals_wholeNumber123Answer_withSignedInt1Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to SIGNED_INT_1)
+    val inputs = mapOf("x" to SIGNED_INT_VALUE_TEST_1)
 
     val matches =
       numeratorIsEqualClassifierProvider.matches(
-        answer = WHOLE_NUMBER_123,
+        answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs
       )
 
@@ -70,11 +100,11 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNumeratorEquals_fraction2Over4Answer_withSignedInt1Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to SIGNED_INT_1)
+    val inputs = mapOf("x" to SIGNED_INT_VALUE_TEST_1)
 
     val matches =
       numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_2_OVER_4,
+        answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs
       )
 
@@ -83,11 +113,11 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNumeratorEquals_fraction2Over4Answer_withSignedIntNegative2Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to SIGNED_INT_NEGATIVE_2)
+    val inputs = mapOf("x" to SIGNED_INT_NEGATIVE_VALUE_TEST_2)
 
     val matches =
       numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_2_OVER_4,
+        answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs
       )
 
@@ -96,11 +126,11 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNumeratorEquals_fraction2Over4Answer_withSignedInt2Input_bothValuesMatch() {
-    val inputs = mapOf("x" to SIGNED_INT_2)
+    val inputs = mapOf("x" to SIGNED_INT_VALUE_TEST_2)
 
     val matches =
       numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_2_OVER_4,
+        answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs
       )
 
@@ -109,11 +139,11 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNumeratorEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
     val exception = assertThrows(IllegalStateException::class) {
       numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_2_OVER_4,
+        answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs
       )
     }
@@ -127,11 +157,11 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNumeratorEquals_missingInputF_throwsException() {
-    val inputs = mapOf("y" to FRACTION_2_OVER_4)
+    val inputs = mapOf("y" to FRACTION_VALUE_TEST_2_OVER_4)
 
     val exception = assertThrows(IllegalStateException::class) {
       numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_2_OVER_4,
+        answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs
       )
     }
@@ -139,46 +169,6 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'x' but had: [y]")
-  }
-
-  private fun createFraction(
-    isNegative: Boolean,
-    numerator: Int,
-    denominator: Int
-  ): InteractionObject {
-    // Fraction-only numbers imply no whole number.
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setNumerator(numerator)
-        .setDenominator(denominator)
-        .build()
-    ).build()
-  }
-
-  private fun createWholeNumber(isNegative: Boolean, value: Int): InteractionObject {
-    // Whole number fractions imply '0/1' fractional parts.
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setWholeNumber(value)
-        .setNumerator(0)
-        .setDenominator(1)
-        .build()
-    ).build()
-  }
-
-  private fun createSignedInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setSignedInt(value).build()
-  }
-
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
-
-  @Before
-  fun setUp() {
-    setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponent() {

@@ -95,6 +95,9 @@ class ProfileManagementController @Inject constructor(
   /** Indicates that the given profileId is not associated with an admin. */
   class ProfileNotAdminException(msg: String) : Exception(msg)
 
+  /** Indicates that the Profile already has admin. */
+  class ProfileAlreadyHasAdminException(msg: String) : Exception(msg)
+
   /** Indicates that the there is not device settings currently. */
   class DeviceSettingsNotFoundException(msg: String) : Exception(msg)
 
@@ -112,7 +115,8 @@ class ProfileManagementController @Inject constructor(
     FAILED_TO_GENERATE_GRAVATAR,
     FAILED_TO_DELETE_DIR,
     PROFILE_NOT_FOUND,
-    PROFILE_NOT_ADMIN
+    PROFILE_NOT_ADMIN,
+    PROFILE_ALREADY_HAS_ADMIN
   }
 
   // TODO(#272): Remove init block when storeDataAsync is fixed
@@ -198,6 +202,12 @@ class ProfileManagementController @Inject constructor(
       }
       if (!isNameUnique(name, it)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE)
+      }
+      if (isAdmin && alreadyHasAdmin(it)) {
+        return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_ALREADY_HAS_ADMIN
+        )
       }
 
       val nextProfileId = it.nextProfileId
@@ -662,6 +672,11 @@ class ProfileManagementController @Inject constructor(
           "ProfileId ${profileId?.internalId} does not match an existing admin"
         )
       )
+      ProfileActionStatus.PROFILE_ALREADY_HAS_ADMIN -> AsyncResult.failed(
+        ProfileAlreadyHasAdminException(
+          "Profile cannot be an admin"
+        )
+      )
     }
   }
 
@@ -673,6 +688,15 @@ class ProfileManagementController @Inject constructor(
       }
     }
     return true
+  }
+
+  private fun alreadyHasAdmin(profileDatabase: ProfileDatabase): Boolean {
+    profileDatabase.profilesMap.values.forEach {
+      if (it.isAdmin) {
+        return true
+      }
+    }
+    return false
   }
 
   private fun saveImageToInternalStorage(avatarImagePath: Uri, profileDir: File): String? {

@@ -22,7 +22,6 @@
     android:elevation="8dp"
     android:gravity="center_vertical"
     android:minHeight="48dp"
-    android:orientation="horizontal"
     android:padding="4dp">
 
     <ImageView
