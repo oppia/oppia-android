@@ -5,6 +5,10 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
+/**
+ * Dagger [Module] that provides [IsOnRobolectric]
+ */
+
 @Module
 class RobolectricProviderModule {
 
