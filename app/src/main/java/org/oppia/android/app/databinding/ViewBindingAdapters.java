@@ -13,8 +13,8 @@ public final class ViewBindingAdapters {
 
   /**
    * BindingAdapter to set the height of a View. If this value is calculated in data fetching, the
-   * layout will require a default value since data fetching is not immediately evaluated with
-   * view layouts and measurements.
+   * layout will require a default value since binding adapters aren't called until after initial
+   * view measurements and layouts are formatted.
    */
   @BindingAdapter("android:layout_height")
   public static void setLayoutHeight(@NonNull View view, float height) {
@@ -24,9 +24,9 @@ public final class ViewBindingAdapters {
   }
 
   /**
-   * BindingAdapter to set the width of a View. If this value is calculated in data fetching, the
-   * layout will require a default value since data fetching is not immediately evaluated with
-   * view layouts and measurements.
+   * BindingAdapter to set the height of a Width. If this value is calculated in data fetching, the
+   * layout will require a default value since binding adapters aren't called until after initial
+   * view measurements and layouts are formatted.
    */
   @BindingAdapter("android:layout_width")
   public static void setLayoutWidth(@NonNull View view, float width) {

@@ -84,8 +84,9 @@ class HomeViewModel(
 
   /**
    * [LiveData] of the list of items displayed in the HomeFragment RecyclerView. The list backing this live data will
-   * automatically update if constituent parts of the UI change (e.g. if the promoted story list changes).
-   * */
+   * automatically update if constituent parts of the UI change (e.g. if the promoted story list changes). If an error
+   * occurs or data providers are still pending, the list is empty and so the view shown will be empty.
+   */
   val homeItemViewModelListLiveData: LiveData<List<HomeItemViewModel>> by lazy {
     Transformations.map(homeItemViewModelListDataProvider.toLiveData()) { itemListResult ->
       if (itemListResult.isFailure()) {
@@ -102,7 +103,7 @@ class HomeViewModel(
   /**
    * Returns a [HomeItemViewModel] corresponding to the welcome message (see [WelcomeViewModel]), or null if
    * the specified profile has insufficient information to show the welcome message.
-   * */
+   */
   private fun computeWelcomeViewModel(profile: Profile): HomeItemViewModel? {
     return if (profile.name.isNotEmpty()) {
       WelcomeViewModel(fragment, oppiaClock, profile.name)
@@ -113,7 +114,7 @@ class HomeViewModel(
    * Returns a [HomeItemViewModel] corresponding to the promoted stories to be displayed for this learner
    * (see [PromotedStoryListViewModel]), or null if this profile does not have any promoted stories.
    * Promoted stories are determined by any recent stories started by this profile.
-   * */
+   */
   private fun computePromotedStoryListViewModel(
     ongoingStoryList: OngoingStoryList
   ): HomeItemViewModel? {
@@ -158,7 +159,8 @@ class HomeViewModel(
   /**
    * Returns a list of [HomeItemViewModel]s corresponding to all the lesson topics available and to be
    * displayed on the home activity (see [TopicSummaryViewModel]) along with associated topics list header (see
-   * [AllTopicsViewModel]). Returns null if there are no lesson topics to display in the home fragment.
+   * [AllTopicsViewModel]). Returns an empty list if there are no topics to display to the learner (caused by
+   * either error or pending data providers).
    */
   private fun computeAllTopicsItemsViewModelList(
     topicList: TopicList
