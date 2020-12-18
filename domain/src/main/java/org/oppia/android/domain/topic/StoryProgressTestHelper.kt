@@ -90,12 +90,93 @@ class StoryProgressTestHelper @Inject constructor(
       FRACTIONS_EXPLORATION_ID_0,
       timestamp
     )
-
     storyProgressController.recordCompletedChapter(
       profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1,
+      timestamp
+    )
+  }
+
+  /** Marks full story progress for a particular profile. */
+  fun markFullProgressForAllTopics(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
+    val timestamp = if (!timestampOlderThanAWeek) {
+      getCurrentTimestamp()
+    } else {
+      getOldTimestamp()
+    }
+    markFullTopicProgressForFractions(profileId, timestampOlderThanAWeek)
+    // Stories and Explorations for "Test Topic"s are not in chronological order so we want to ensure
+    // that the combinations of Topic / Story / Exploration that are visible will be marked as completed.
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_1,
+      TEST_EXPLORATION_ID_3,
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_1,
+      TEST_EXPLORATION_ID_4,
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_4,
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_5,
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_1,
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_1,
+      RATIOS_EXPLORATION_ID_2,
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_1,
+      RATIOS_EXPLORATION_ID_3,
       timestamp
     )
   }

@@ -10,6 +10,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -42,10 +43,12 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridColumnCount
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HomeInjectionActivity
@@ -68,6 +71,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.TestAccessibilityModule
@@ -108,6 +112,9 @@ class HomeActivityTest {
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
   @Inject
   lateinit var context: Context
@@ -537,6 +544,71 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_allTopicsCompleted_hidesPromotedStories() {
+    storyProgressTestHelper.markFullProgressForAllTopics(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanAWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          2,
+          R.id.promoted_story_list_recycler_view
+        )
+      ).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testHomeActivity_allTopicsCompleted_displaysAllTopicsHeader() {
+    storyProgressTestHelper.markFullProgressForAllTopics(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanAWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(2)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          2,
+          R.id.all_topics_text_view
+        )
+      ).check(
+        matches(withText(R.string.all_topics))
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_allTopicsCompleted_displaysTopicCards() {
+    storyProgressTestHelper.markFullProgressForAllTopics(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanAWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(3)
+      )
+      onView(withId(R.id.home_recycler_view)).check(
+        hasGridColumnCount(2)
+      )
     }
   }
 
