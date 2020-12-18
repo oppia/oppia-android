@@ -684,7 +684,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithAdmin_checkKeyboardTypeConsistency_clickShowHidePassword_keyboardTypeIsSame() {
+  fun testPinPasswordActivityWithAdmin_checkKeyboardTypeConsistency_clickShowHidePassword_keyboardTypeIsSame() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
