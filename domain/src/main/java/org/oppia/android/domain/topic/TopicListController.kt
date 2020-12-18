@@ -14,6 +14,7 @@ import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStoriesType
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.model.RecommendedStoryList
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicProgress
@@ -120,6 +121,23 @@ class TopicListController @Inject constructor(
       }
   }
 
+  /**
+   * Returns the list of ongoing [PromotedStory]s that can be viewed via a link on the homescreen.
+   * The total number of promoted stories should correspond to the ongoing story count within the
+   * [TopicList] returned by [getTopicList].
+   *
+   * @param profileId the ID corresponding to the profile for which [PromotedStory] needs to be
+   *    fetched.
+   * @return a [DataProvider] for an [OngoingStoryList].
+   */
+  fun getRecommendedActivityList(profileId: ProfileId): DataProvider<RecommendedStoryList> {
+    return storyProgressController.retrieveTopicProgressListDataProvider(profileId)
+      .transformAsync(GET_ONGOING_STORY_LIST_PROVIDER_ID) {
+        val ongoingStoryList = createRecommendedActivityList(it)
+        AsyncResult.success(ongoingStoryList)
+      }
+  }
+
   private fun createTopicList(): TopicList {
     val topicIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("topics.json")!!
@@ -172,33 +190,15 @@ class TopicListController @Inject constructor(
     val ongoingStoryListBuilder = OngoingStoryList.newBuilder()
 
     if (topicProgressList.isNotEmpty()) {
-      Log.d("topic size", "" + topicProgressList.size)
-      if (topicProgressList.size == 1) {
-        ongoingStoryListBuilder.setPromotedStoriesType(
-          PromotedStoriesType.newBuilder().setRecommended(true)
-        )
-        ongoingStoryListBuilder.addAllRecommendedStory(
-          createRecommendedStoryList(
-            topicProgressList
-          )
-        )
-      } else {
+
         val sortedTopicProgressList = topicProgressList.sortedByDescending { it.lastPlayedTimestamp }
 
         sortedTopicProgressList.forEach { topicProgress ->
           val topic = topicController.retrieveTopic(topicProgress.topicId)
 
-          ongoingStoryListBuilder.setPromotedStoriesType(
-            PromotedStoriesType.newBuilder().setRecentlyPlayed(true)
-          )
-
           topicProgress.storyProgressMap.values.forEach { storyProgress ->
             val storyId = storyProgress.storyId
             val story = topicController.retrieveStory(topic.topicId, storyId)
-            Log.d(
-              "topic progress =",
-              "" + topicProgress.topicId + " " + topicProgress.lastPlayedTimestamp
-            )
 
             val completedChapterProgressList =
               storyProgress.chapterProgressMap.values
@@ -271,32 +271,142 @@ class TopicListController @Inject constructor(
             }
           }
         }
-        if (ongoingStoryListBuilder.recentStoryCount == 0 && ongoingStoryListBuilder.olderStoryCount > 0
-          && ongoingStoryListBuilder.recommendedStoryCount == 0
-        ) {
-          ongoingStoryListBuilder.setPromotedStoriesType(
-            PromotedStoriesType.newBuilder().setLastPlayed(true)
+      }
+
+    return ongoingStoryListBuilder.build()
+  }
+
+  private fun createRecommendedActivityList(
+    topicProgressList: List<TopicProgress>
+  ): RecommendedStoryList {
+    val recommendedStoryBuilder = RecommendedStoryList.newBuilder()
+
+    if (topicProgressList.isNotEmpty()) {
+      Log.d("topic size", "" + topicProgressList.size)
+      if (topicProgressList.size == 1) {
+//        recommendedStoryBuilder.setPromotedStoriesType(
+//          PromotedStoriesType.newBuilder().setRecommended(true)
+//        )
+        recommendedStoryBuilder.addAllSuggestStory(
+          createRecommendedStoryList(
+            topicProgressList
           )
+        )
+      } else {
+        val sortedTopicProgressList = topicProgressList.sortedByDescending { it.lastPlayedTimestamp }
+
+        sortedTopicProgressList.forEach { topicProgress ->
+          val topic = topicController.retrieveTopic(topicProgress.topicId)
+
+//          recommendedStoryBuilder.setPromotedStoriesType(
+//            PromotedStoriesType.newBuilder().setRecentlyPlayed(true)
+//          )
+
+          topicProgress.storyProgressMap.values.forEach { storyProgress ->
+            val storyId = storyProgress.storyId
+            val story = topicController.retrieveStory(topic.topicId, storyId)
+            Log.d(
+              "topic progress =",
+              "" + topicProgress.topicId + " " + topicProgress.lastPlayedTimestamp
+            )
+
+            val completedChapterProgressList =
+              storyProgress.chapterProgressMap.values
+                .filter { chapterProgress ->
+                  chapterProgress.chapterPlayState ==
+                    ChapterPlayState.COMPLETED
+                }
+                .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
+
+            val lastCompletedChapterProgress: ChapterProgress? =
+              completedChapterProgressList.firstOrNull()
+
+            val startedChapterProgressList =
+              storyProgress.chapterProgressMap.values
+                .filter { chapterProgress ->
+                  chapterProgress.chapterPlayState ==
+                    ChapterPlayState.STARTED_NOT_COMPLETED
+                }
+                .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
+
+            val recentlyPlayerChapterProgress: ChapterProgress? =
+              startedChapterProgressList.firstOrNull()
+            if (recentlyPlayerChapterProgress != null) {
+              val recentlyPlayerChapterSummary: ChapterSummary? =
+                story.chapterList.find { chapterSummary ->
+                  recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
+                }
+              if (recentlyPlayerChapterSummary != null) {
+                val numberOfDaysPassed =
+                  (Date().time - recentlyPlayerChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+                val promotedStory = createPromotedStory(
+                  storyId,
+                  topic,
+                  completedChapterProgressList.size,
+                  story.chapterCount,
+                  recentlyPlayerChapterSummary.name,
+                  recentlyPlayerChapterSummary.explorationId
+                )
+                if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
+                  recommendedStoryBuilder.addRecentlyPlayed(promotedStory)
+                } else {
+                  recommendedStoryBuilder.addOlderStory(promotedStory)
+                }
+              }
+            } else if (lastCompletedChapterProgress != null &&
+              lastCompletedChapterProgress.explorationId != story.chapterList.last().explorationId
+            ) {
+              val lastChapterSummary: ChapterSummary? = story.chapterList.find { chapterSummary ->
+                lastCompletedChapterProgress.explorationId == chapterSummary.explorationId
+              }
+              val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
+              val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
+              if (nextChapterSummary != null) {
+                val numberOfDaysPassed =
+                  (Date().time - lastCompletedChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+                val promotedStory = createPromotedStory(
+                  storyId,
+                  topic,
+                  completedChapterProgressList.size,
+                  story.chapterCount,
+                  nextChapterSummary.name,
+                  nextChapterSummary.explorationId
+                )
+                if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
+                  recommendedStoryBuilder.addRecentlyPlayed(promotedStory)
+                } else {
+                  recommendedStoryBuilder.addOlderStory(promotedStory)
+                }
+              }
+            }
+          }
         }
-        if (ongoingStoryListBuilder.recentStoryCount == 0 && ongoingStoryListBuilder.olderStoryCount == 0) {
-          ongoingStoryListBuilder.setPromotedStoriesType(
-            PromotedStoriesType.newBuilder().setRecommended(true)
-          )
-          ongoingStoryListBuilder.addAllRecommendedStory(
+        if (recommendedStoryBuilder.recentlyPlayedCount == 0 && recommendedStoryBuilder.olderStoryCount > 0
+          && recommendedStoryBuilder.suggestStoryCount == 0
+        ) {
+//          recommendedStoryBuilder.setPromotedStoriesType(
+//            PromotedStoriesType.newBuilder().setLastPlayed(true)
+//          )
+        }
+        if (recommendedStoryBuilder.recentlyPlayedCount == 0 && recommendedStoryBuilder.olderStoryCount == 0) {
+//          recommendedStoryBuilder.setPromotedStoriesType(
+//            PromotedStoriesType.newBuilder().setRecommended(true)
+//          )
+          recommendedStoryBuilder.addAllSuggestStory(
             createRecommendedStoryList(
               topicProgressList
             )
           )
-          if (ongoingStoryListBuilder.recommendedStoryCount == 0) {
-            ongoingStoryListBuilder.setPromotedStoriesType(
-              PromotedStoriesType.newBuilder().setComingSoon(true)
-            )
+          if (recommendedStoryBuilder.suggestStoryCount == 0) {
+//            recommendedStoryBuilder.setPromotedStoriesType(
+//              PromotedStoriesType.newBuilder().setComingSoon(true)
+//            )
             Log.d("topic =", " coming" + " " + "soon")
           }
         }
       }
     }
-    return ongoingStoryListBuilder.build()
+    return recommendedStoryBuilder.build()
   }
 
   private fun createRecommendedStoryList(

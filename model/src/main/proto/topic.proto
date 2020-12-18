@@ -156,14 +156,8 @@ message OngoingStoryList {
   // Ongoing stories from within the last 7 days.
   repeated PromotedStory recent_story = 1;
 
-  // Recommended stories based on user's interest.
-  repeated PromotedStory recommended_story = 2;
-
   // Other ongoing stories from longer than 7 days ago.
   repeated PromotedStory older_story = 3;
-
-  // Indicates type of story promoted
-  PromotedStoriesType promoted_stories_type = 5;
 }
 
 // The summary of a story that should be promoted, either because it's been started and not yet completed by the player,
@@ -255,6 +249,30 @@ message TopicProgress {
   int64 last_played_timestamp = 5;
 }
 
+message RecommendedActivityList {
+  oneof recommendation_type {
+    RecommendedStoryList recommended_story_list = 1;
+    ComingSoonTopicList coming_soon_topic_list = 2;
+  }
+}
+
+message RecommendedStoryList {
+  repeated PromotedStory recently_played = 1;
+  repeated PromotedStory older_story = 2;
+  repeated PromotedStory suggest_story = 3;
+}
+
+message ComingSoonTopicList {
+  repeated UpcomingTopic upcoming_topic = 1;
+}
+
+message UpcomingTopic {
+  string topic_id = 1;
+  string name = 2;
+  int32 version = 3;
+  int64 estimated_release_unix_timestamp = 4;
+  LessonThumbnail lesson_thumbnail = 5;
+}
 // A structure corresponding to the Promoted Stories. This structure is set up
 // to properly account for recently_played stories, for recommended stories
 // and for coming soon topics.
