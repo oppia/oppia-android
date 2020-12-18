@@ -46,7 +46,7 @@
         android:onClick="@{() -> viewModel.clickOnViewAll()}"
         android:text="@string/view_all"
         android:textAllCaps="true"
-        android:visibility="@{viewModel.promotedStoryList.size() > 3 ? View.VISIBLE : View.INVISIBLE}"
+        android:visibility="@{viewModel.getButtonVisibility()}"
         android:textColor="@color/oppiaPrimaryDark"
         android:textSize="14sp" />
     </LinearLayout>

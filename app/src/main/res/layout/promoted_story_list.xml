@@ -46,6 +46,7 @@
         android:onClick="@{() -> viewModel.clickOnViewAll()}"
         android:text="@string/view_all"
         android:textAllCaps="true"
+        android:visibility="@{viewModel.getButtonVisibility()}"
         android:textColor="@color/oppiaPrimaryDark"
         android:textSize="14sp" />
     </LinearLayout>

@@ -1,5 +1,8 @@
 package org.oppia.android.app.home.promotedlist
 
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
@@ -30,6 +33,24 @@ class PromotedStoryListViewModel(
     } else {
       getStartPadding()
     }
+  }
+
+  /**
+   * Determines and returns the visibility for the "View All" button.
+   */
+  fun getButtonVisibility(): Int {
+    if (activity.resources.getBoolean(R.bool.isTablet)) {
+      when (Resources.getSystem().configuration.orientation) {
+        Configuration.ORIENTATION_PORTRAIT -> {
+          return if (promotedStoryList.size > 2) View.VISIBLE else View.INVISIBLE
+        }
+        Configuration.ORIENTATION_LANDSCAPE -> {
+          return if (promotedStoryList.size > 3) View.VISIBLE else View.INVISIBLE
+        }
+        else -> View.VISIBLE
+      }
+    }
+    return View.VISIBLE
   }
 
   fun clickOnViewAll() {
