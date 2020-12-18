@@ -9,7 +9,7 @@
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="administrator_controls">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
-  <string name="drawer_close_content_description">>Navigation Menu Close</string>
+  <string name="drawer_close_content_description">Navigation Menu Close</string>
   <string name="welcome_text">Welcome to Oppia!</string>
   <string name="welcome_back_text">Welcome back to Oppia!</string>
   <string name="audio_play_description">Play audio</string>
@@ -63,6 +63,7 @@
   <string name="topic_play_chapter_index">%s.</string>
   <string name="chapter_name">Chapter %s: %s</string>
   <string name="chapter_completed">Chapter %s: %s is completed.</string>
+  <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>

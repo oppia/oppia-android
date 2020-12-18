@@ -218,6 +218,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysRecentlyPlayedStoriesText() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
@@ -230,6 +231,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_userProfile_displaysViewAllText() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
@@ -242,6 +244,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_clickViewAll_opensRecentlyPlayedActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
@@ -332,6 +335,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_topicSummaryCard_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 3,
@@ -344,6 +348,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_topicSummaryCard_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 3,
@@ -356,6 +361,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_topicSummarySecondCard_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 4,
@@ -368,6 +374,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_topicSummarySecondCard_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 4,
@@ -380,6 +387,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_topicSummary_configurationChange_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 4)
       verifyTextOnHomeListItemAtPosition(
@@ -393,6 +401,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_clickTopicSummary_opensTopicActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
@@ -403,6 +412,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_onBackPressed_showsExitToProfileChooserDialog() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_message))
         .inRoot(isDialog())
@@ -413,6 +423,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_onBackPressed_orientationChange_showsExitToProfileChooserDialog() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(isRoot()).perform(orientationLandscape())
       onView(withText(R.string.home_activity_back_dialog_message))
@@ -424,6 +435,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_onBackPressed_clickExit_checkOpensProfileActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_exit))
         .inRoot(isDialog())
@@ -435,6 +447,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_checkSpanForItem0_spanSizeIsTwoOrThree() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
         onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
       } else {
@@ -446,6 +459,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_checkSpanForItem4_spanSizeIsOne() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
     }
   }
@@ -453,6 +467,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_configurationChange_checkSpanForItem4_spanSizeIsOne() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
     }
