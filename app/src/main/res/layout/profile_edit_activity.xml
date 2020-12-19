@@ -123,6 +123,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
+                android:textAlignment="viewStart"
                 android:text="@string/profile_edit_allow_download_sub"
                 android:textColor="@color/light_grey"
                 android:textSize="14sp" />
