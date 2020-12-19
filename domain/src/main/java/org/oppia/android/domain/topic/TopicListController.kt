@@ -8,17 +8,20 @@ import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStoriesType
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.model.RecommendedActivityList
 import org.oppia.android.app.model.RecommendedStoryList
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicSummary
+import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -72,6 +75,7 @@ val EXPLORATION_THUMBNAILS = mapOf(
 )
 
 private const val GET_TOPIC_LIST_PROVIDER_ID = "get_topic_list_provider_id"
+private const val GET_COMING_SOON_TOPIC_LIST_PROVIDER_ID = "get_coming_soon_topic_list_provider_id"
 private const val GET_ONGOING_STORY_LIST_PROVIDER_ID =
   "get_ongoing_story_list_provider_id"
 
@@ -100,8 +104,11 @@ class TopicListController @Inject constructor(
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
    */
-  fun getComingSoonTopicList(): LiveData<AsyncResult<TopicList>> {
-    return MutableLiveData(AsyncResult.success(createComingSoonTopicList()))
+  fun getComingSoonTopicList(): DataProvider<ComingSoonTopicList> {
+    return dataProviders.createInMemoryDataProvider(
+      GET_COMING_SOON_TOPIC_LIST_PROVIDER_ID,
+      this::createComingSoonTopicList
+    )
   }
 
   /**
@@ -130,11 +137,11 @@ class TopicListController @Inject constructor(
    *    fetched.
    * @return a [DataProvider] for an [OngoingStoryList].
    */
-  fun getRecommendedActivityList(profileId: ProfileId): DataProvider<RecommendedStoryList> {
+  fun getRecommendedActivityList(profileId: ProfileId): DataProvider<RecommendedActivityList> {
     return storyProgressController.retrieveTopicProgressListDataProvider(profileId)
       .transformAsync(GET_ONGOING_STORY_LIST_PROVIDER_ID) {
-        val ongoingStoryList = createRecommendedActivityList(it)
-        AsyncResult.success(ongoingStoryList)
+        val recommendedActivityList = createRecommendedActivityList(it)
+        AsyncResult.success(recommendedActivityList)
       }
   }
 
@@ -149,21 +156,28 @@ class TopicListController @Inject constructor(
     return topicListBuilder.build()
   }
 
-  private fun createComingSoonTopicList(): TopicList {
+  private fun createComingSoonTopicList(): ComingSoonTopicList {
     val topicIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
-    val topicListBuilder = TopicList.newBuilder()
+    val comingSoonTopicListBuilder = ComingSoonTopicList.newBuilder()
     for (i in 0 until topicIdJsonArray.length()) {
-      topicListBuilder.addTopicSummary(createTopicSummary(topicIdJsonArray.optString(i)!!))
+      comingSoonTopicListBuilder.addUpcomingTopic(createUpcomingTopicSummary(topicIdJsonArray.optString(i)!!))
     }
-    return topicListBuilder.build()
+    RecommendedActivityList.newBuilder().setComingSoonTopicList(comingSoonTopicListBuilder)
+    return comingSoonTopicListBuilder.build()
   }
 
   private fun createTopicSummary(topicId: String): TopicSummary {
     val topicJson =
       jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
     return createTopicSummaryFromJson(topicId, topicJson)
+  }
+
+  private fun createUpcomingTopicSummary(topicId: String): UpcomingTopic {
+    val topicJson =
+      jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
+    return createUpcomingTopicSummaryFromJson(topicId, topicJson)
   }
 
   private fun createTopicSummaryFromJson(topicId: String, jsonObject: JSONObject): TopicSummary {
@@ -181,6 +195,24 @@ class TopicListController @Inject constructor(
       .setVersion(jsonObject.optInt("version"))
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(createTopicThumbnail(jsonObject))
+      .build()
+  }
+
+  private fun createUpcomingTopicSummaryFromJson(topicId: String, jsonObject: JSONObject): UpcomingTopic {
+    var totalChapterCount = 0
+    val storyData = jsonObject.getJSONArray("canonical_story_dicts")
+    for (i in 0 until storyData.length()) {
+      totalChapterCount += storyData
+        .getJSONObject(i)
+        .getJSONArray("node_titles")
+        .length()
+    }
+    return UpcomingTopic.newBuilder()
+      .setTopicId(topicId)
+      .setName(jsonObject.getString("topic_name"))
+      .setVersion(jsonObject.optInt("version"))
+      .setEstimatedReleaseUnixTimestamp(Date().time)
+      .setLessonThumbnail(createTopicThumbnail(jsonObject))
       .build()
   }
 
@@ -278,20 +310,21 @@ class TopicListController @Inject constructor(
 
   private fun createRecommendedActivityList(
     topicProgressList: List<TopicProgress>
-  ): RecommendedStoryList {
-    val recommendedStoryBuilder = RecommendedStoryList.newBuilder()
+  ): RecommendedActivityList {
+    val recommendedActivityListBuilder = RecommendedActivityList.newBuilder()
 
     if (topicProgressList.isNotEmpty()) {
+      val recommendedStoryBuilder = RecommendedStoryList.newBuilder()
+
       Log.d("topic size", "" + topicProgressList.size)
       if (topicProgressList.size == 1) {
-//        recommendedStoryBuilder.setPromotedStoriesType(
-//          PromotedStoriesType.newBuilder().setRecommended(true)
-//        )
+
         recommendedStoryBuilder.addAllSuggestStory(
           createRecommendedStoryList(
             topicProgressList
           )
         )
+        recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
       } else {
         val sortedTopicProgressList = topicProgressList.sortedByDescending { it.lastPlayedTimestamp }
 
@@ -380,33 +413,29 @@ class TopicListController @Inject constructor(
               }
             }
           }
+          recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
         }
         if (recommendedStoryBuilder.recentlyPlayedCount == 0 && recommendedStoryBuilder.olderStoryCount > 0
           && recommendedStoryBuilder.suggestStoryCount == 0
         ) {
-//          recommendedStoryBuilder.setPromotedStoriesType(
-//            PromotedStoriesType.newBuilder().setLastPlayed(true)
-//          )
+          recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
         }
         if (recommendedStoryBuilder.recentlyPlayedCount == 0 && recommendedStoryBuilder.olderStoryCount == 0) {
-//          recommendedStoryBuilder.setPromotedStoriesType(
-//            PromotedStoriesType.newBuilder().setRecommended(true)
-//          )
-          recommendedStoryBuilder.addAllSuggestStory(
+           recommendedStoryBuilder.addAllSuggestStory(
             createRecommendedStoryList(
               topicProgressList
             )
           )
+          recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
+
           if (recommendedStoryBuilder.suggestStoryCount == 0) {
-//            recommendedStoryBuilder.setPromotedStoriesType(
-//              PromotedStoriesType.newBuilder().setComingSoon(true)
-//            )
+            recommendedActivityListBuilder.setComingSoonTopicList(createComingSoonTopicList())
             Log.d("topic =", " coming" + " " + "soon")
           }
         }
       }
     }
-    return recommendedStoryBuilder.build()
+    return recommendedActivityListBuilder.build()
   }
 
   private fun createRecommendedStoryList(

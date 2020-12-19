@@ -7,14 +7,18 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
+import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
-import org.oppia.android.app.model.OngoingStoryList
+import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecommendedActivityList
+import org.oppia.android.app.model.RecommendedStoryList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -28,8 +32,8 @@ import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 
-private const val PROFILE_AND_ONGOING_STORY_COMBINED_PROVIDER_ID = "profile+ongoingStoryList"
-private const val HOME_FRAGMENT_COMBINED_PROVIDER_ID = "profile+ongoingStoryList+topicListProvider"
+private const val PROFILE_AND_Recommended_Activity_COMBINED_PROVIDER_ID = "profile+recommendedActivityList"
+private const val HOME_FRAGMENT_COMBINED_PROVIDER_ID = "profile+recommendedActivityList+topicListProvider"
 
 /** [ViewModel] for layouts in home fragment . */
 @FragmentScope
@@ -54,13 +58,17 @@ class HomeViewModel(
     profileManagementController.getProfile(profileId)
   }
 
-  private val ongoingStoryListSummaryDataProvider: DataProvider<OngoingStoryList> by lazy {
-    topicListController.getOngoingStoryList(profileId)
+  private val ongoingStoryListSummaryDataProvider: DataProvider<RecommendedActivityList> by lazy {
+    topicListController.getRecommendedActivityList(profileId)
   }
 
   private val topicListSummaryDataProvider: DataProvider<TopicList> by lazy {
     topicListController.getTopicList()
   }
+
+//  private val comingSoontopicListSummaryDataProvider: DataProvider<ComingSoonTopicList> by lazy {
+//    topicListController.getComingSoonTopicList()
+//  }
 
   private val homeItemViewModelListDataProvider: DataProvider<List<HomeItemViewModel>> by lazy {
     // This will block until all data providers return initial results (which may be default
@@ -68,11 +76,11 @@ class HomeViewModel(
     // be pending or failed.
     profileDataProvider.combineWith(
       ongoingStoryListSummaryDataProvider,
-      PROFILE_AND_ONGOING_STORY_COMBINED_PROVIDER_ID
-    ) { profile, ongoingStoryList ->
+      PROFILE_AND_Recommended_Activity_COMBINED_PROVIDER_ID
+    ) { profile, recommendedActivityList ->
       listOfNotNull(
         computeWelcomeViewModel(profile),
-        computePromotedStoryListViewModel(ongoingStoryList)
+        computeRecommendedActivityListViewModel(recommendedActivityList)
       )
     }.combineWith(
       topicListSummaryDataProvider,
@@ -115,18 +123,29 @@ class HomeViewModel(
    * (see [PromotedStoryListViewModel]), or null if this profile does not have any promoted stories.
    * Promoted stories are determined by any recent stories started by this profile.
    */
-  private fun computePromotedStoryListViewModel(
-    ongoingStoryList: OngoingStoryList
+  private fun computeRecommendedActivityListViewModel(
+    recommendedActivityList: RecommendedActivityList
   ): HomeItemViewModel? {
-    val storyViewModelList = computePromotedStoryViewModelList(ongoingStoryList)
-    return if (storyViewModelList.isNotEmpty()) {
-      return PromotedStoryListViewModel(
-        activity,
-        internalProfileId,
-        intentFactoryShim,
-        storyViewModelList
-      )
-    } else null
+    if(recommendedActivityList.recommendationTypeCase == RecommendedActivityList.RecommendationTypeCase.RECOMMENDED_STORY_LIST) {
+      val storyViewModelList = computePromotedStoryViewModelList(recommendedActivityList.recommendedStoryList)
+      return if (storyViewModelList.isNotEmpty()) {
+        return PromotedStoryListViewModel(
+          activity,
+          internalProfileId,
+          intentFactoryShim,
+          storyViewModelList
+        )
+      } else null
+    }else if(recommendedActivityList.recommendationTypeCase == RecommendedActivityList.RecommendationTypeCase.COMING_SOON_TOPIC_LIST) {
+      val comingSoonTopicsList = computeComingSoonTopicViewModelList(recommendedActivityList.comingSoonTopicList)
+      return if (comingSoonTopicsList.isNotEmpty()) {
+        return ComingSoonTopicListViewModel(
+          activity,
+          comingSoonTopicsList
+        )
+      } else null
+    }else
+      return null
   }
 
   /**
@@ -135,13 +154,15 @@ class HomeViewModel(
    * ongoing stories at all.
    */
   private fun computePromotedStoryViewModelList(
-    ongoingStoryList: OngoingStoryList
+    recommendedStoryList: RecommendedStoryList
   ): List<PromotedStoryViewModel> {
-    val storyList = if (ongoingStoryList.recentStoryCount != 0) {
-      ongoingStoryList.recentStoryList
+    val storyList = if (recommendedStoryList.suggestStoryCount != 0) {
+      recommendedStoryList.suggestStoryList
+    } else if (recommendedStoryList.recentlyPlayedCount != 0) {
+      recommendedStoryList.recentlyPlayedList
     } else {
       // TODO(#936): Optimise this as part of recommended stories.
-      ongoingStoryList.olderStoryList
+      recommendedStoryList.olderStoryList
     }
     return storyList.take(promotedStoryListLimit)
       .map { promotedStory ->
@@ -156,6 +177,18 @@ class HomeViewModel(
       }
   }
 
+  private fun computeComingSoonTopicViewModelList(
+    comingSoonTopicList: ComingSoonTopicList
+  ): List<ComingSoonTopicsViewModel> {
+    val upComingTopicsList = comingSoonTopicList.upcomingTopicList.mapIndexed { topicIndex, topicSummary ->
+        ComingSoonTopicsViewModel(
+          topicSummary,
+          topicEntityType,
+          fragment as TopicSummaryClickListener
+        )
+      }
+     return upComingTopicsList
+  }
   /**
    * Returns a list of [HomeItemViewModel]s corresponding to all the lesson topics available and to be
    * displayed on the home activity (see [TopicSummaryViewModel]) along with associated topics list header (see
