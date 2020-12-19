@@ -8,10 +8,8 @@ import javax.inject.Singleton
 /**
  * Dagger [Module] that provides [IsOnRobolectric]
  */
-
 @Module
-class RobolectricProviderModule {
-
+class RobolectricModule {
   @Provides
   @IsOnRobolectric
   @Singleton

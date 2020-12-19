@@ -1125,7 +1125,7 @@ class CoroutineExecutorServiceTest {
       TestDispatcherModule::class,
       TestModule::class,
       TestLogReportingModule::class,
-      RobolectricProviderModule::class
+      RobolectricModule::class
     ]
   )
   interface TestApplicationComponent {

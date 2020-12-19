@@ -22,7 +22,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.CellularDataPreference
-import org.oppia.android.testing.RobolectricProviderModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -173,7 +173,7 @@ class CellularAudioDialogControllerTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricProviderModule::class,
+      RobolectricModule::class,
       TestDispatcherModule::class,
       TestModule::class,
       TestLogReportingModule::class
