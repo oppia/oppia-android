@@ -683,6 +683,7 @@ TEST_DEPS = [
     artifact("androidx.test.ext:junit"),
     artifact("androidx.test:runner:1.2.0"),
     artifact("com.github.bumptech.glide:mocks:4.11.0"),
+    artifact("com.github.mmin18:realtimeblurview:1.2.1"),
     artifact("com.google.truth:truth"),
     artifact("org.jetbrains.kotlin:kotlin-test-junit"),
     artifact("org.jetbrains.kotlin:kotlin-reflect"),
