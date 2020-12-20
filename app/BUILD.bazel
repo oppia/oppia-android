@@ -498,7 +498,6 @@ android_library(
         artifact("androidx.viewpager:viewpager:1.0.0"),
         artifact("androidx.viewpager2:viewpager2:1.0.0"),
         artifact("com.chaos.view:pinview:1.4.3"),
-        artifact("com.github.mmin18:realtimeblurview:1.2.1"),
         artifact("com.google.android.material:material"),
         artifact("de.hdodenhof:circleimageview:3.0.1"),
         artifact("javax.annotation:javax.annotation-api"),
@@ -623,6 +622,7 @@ kt_android_library(
         artifact("androidx.viewpager2:viewpager2:1.0.0"),
         artifact("androidx.work:work-runtime-ktx:2.4.0"),
         artifact("com.caverock:androidsvg-aar"),
+        artifact("com.github.mmin18:realtimeblurview:1.2.1"),
         artifact("javax.annotation:javax.annotation-api:jar"),
     ],
 )
