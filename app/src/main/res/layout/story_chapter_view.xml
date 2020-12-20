@@ -53,6 +53,40 @@
           app:layout_constraintTop_toTopOf="parent"
           app:lessonThumbnail="@{viewModel.chapterThumbnail}" />
 
+        <com.github.mmin18.widget.RealtimeBlurView
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}"
+          app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
+          app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
+          app:layout_constraintStart_toStartOf="@id/chapter_thumbnail"
+          app:layout_constraintTop_toTopOf="@id/chapter_thumbnail"
+          app:realtimeBlurRadius="15dp" />
+
+        <View
+          android:id="@+id/overlay_rectangle"
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:alpha="0.5"
+          android:background="@color/oppiaPrimaryLight"
+          android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}"
+          app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
+          app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
+          app:layout_constraintStart_toStartOf="@id/chapter_thumbnail"
+          app:layout_constraintTop_toTopOf="@id/chapter_thumbnail" />
+
+        <ImageView
+          android:id="@+id/lock_thumbnail"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:scaleType="center"
+          android:src="@drawable/ic_baseline_lock_24"
+          android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}"
+          app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
+          app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
+          app:layout_constraintStart_toStartOf="@id/chapter_thumbnail"
+          app:layout_constraintTop_toTopOf="@id/chapter_thumbnail" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
