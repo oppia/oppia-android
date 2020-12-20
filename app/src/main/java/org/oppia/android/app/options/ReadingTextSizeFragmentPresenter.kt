@@ -37,7 +37,7 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
 
     binding.readingTextSizeToolbar?.setNavigationOnClickListener {
       val intent = Intent()
-      intent.putExtra(KEY_MESSAGE_READING_TEXT_SIZE, fontSize)
+      intent.putExtra(MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY, fontSize)
       (fragment.activity as ReadingTextSizeActivity).setResult(REQUEST_CODE_TEXT_SIZE, intent)
       (fragment.activity as ReadingTextSizeActivity).finish()
     }

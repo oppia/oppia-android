@@ -16,7 +16,7 @@ import org.oppia.android.app.mydownloads.MyDownloadsActivity
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.options.AppLanguageActivity
-import org.oppia.android.app.options.DefaultAudioActivity
+import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.options.ReadingTextSizeActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
@@ -80,7 +80,7 @@ interface ActivityComponent {
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   fun inject(completedStoryListActivity: CompletedStoryListActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
-  fun inject(defaultAudioActivity: DefaultAudioActivity)
+  fun inject(audioLanguageActivity: AudioLanguageActivity)
   fun inject(dragDropTestActivity: DragDropTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)

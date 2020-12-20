@@ -95,7 +95,7 @@ class TestFontScaleConfigurationUtilActivityTest {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(
-            context.resources.getDimension(R.dimen.margin_16)
+            context.resources.getDimension(R.dimen.font_scale_content_small_text_view_size)
           )
         )
       )
@@ -110,7 +110,7 @@ class TestFontScaleConfigurationUtilActivityTest {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(
-            context.resources.getDimension(R.dimen.margin_20)
+            context.resources.getDimension(R.dimen.font_scale_content_text_size)
           )
         )
       )
@@ -125,7 +125,7 @@ class TestFontScaleConfigurationUtilActivityTest {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(
-            context.resources.getDimension(R.dimen.margin_24)
+            context.resources.getDimension(R.dimen.font_scale_content_large_text_view_size)
           )
         )
       )
@@ -140,7 +140,7 @@ class TestFontScaleConfigurationUtilActivityTest {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(
-            context.resources.getDimension(R.dimen.margin_28)
+            context.resources.getDimension(R.dimen.font_scale_content_extra_large_text_view_size)
           )
         )
       )

@@ -22,10 +22,10 @@ class NetworkInterceptor @Inject constructor() : Interceptor {
     val response = chain.proceed(request)
 
     if (response.code() == Constants.HTTP_OK) {
-      if (response.body() != null) {
-        var rawJson = response.body()!!.string()
+      response.body()?.let { responseBody ->
+        var rawJson = responseBody.string()
         rawJson = removeXSSIPrefix(rawJson)
-        val contentType = response.body()!!.contentType()
+        val contentType = responseBody.contentType()
         val body = ResponseBody.create(contentType, rawJson)
         return response.newBuilder().body(body).build()
       }

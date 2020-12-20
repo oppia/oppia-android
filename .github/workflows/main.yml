@@ -66,15 +66,15 @@ jobs:
 
      - name: Install Dependencies
        if: steps.cache.outputs.cache-hit != 'true'
-       run: ./gradlew androidDependencies
+       run: ./gradlew --full-stacktrace androidDependencies
      
      - name: Build App
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run: sudo ./gradlew assembleDebug
+       run: sudo ./gradlew --full-stacktrace assembleDebug
     
      - name: Utility tests
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run:  sudo ./gradlew :utility:testDebugUnitTest
+       run:  sudo ./gradlew --full-stacktrace :utility:testDebugUnitTest
      - name: Upload Utility Test Reports
        uses: actions/upload-artifact@v2
        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
@@ -84,7 +84,7 @@ jobs:
      
      - name: Domain tests
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run:  sudo ./gradlew :domain:testDebugUnitTest
+       run:  sudo ./gradlew --full-stacktrace :domain:testDebugUnitTest
      - name: Upload Domain Test Reports
        uses: actions/upload-artifact@v2
        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
@@ -94,7 +94,7 @@ jobs:
 
      - name: Testing tests
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run:  sudo ./gradlew :testing:testDebugUnitTest
+       run:  sudo ./gradlew --full-stacktrace :testing:testDebugUnitTest
      - name: Upload Testing Test Reports
        uses: actions/upload-artifact@v2
        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
@@ -124,7 +124,7 @@ jobs:
       - name: Robolectric tests - App Module
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run: |
-          sudo ./gradlew :app:testDebugUnitTest
+          sudo ./gradlew --full-stacktrace :app:testDebugUnitTest
       - name: Upload App Test Reports
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status

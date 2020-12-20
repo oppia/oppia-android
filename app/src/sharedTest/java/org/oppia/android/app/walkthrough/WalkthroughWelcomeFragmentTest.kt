@@ -19,7 +19,6 @@ import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -53,6 +52,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -81,6 +81,9 @@ class WalkthroughWelcomeFragmentTest {
   lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
   lateinit var context: Context
   private val internalProfileId = 0
   private lateinit var profileId: ProfileId
@@ -89,6 +92,7 @@ class WalkthroughWelcomeFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     FirebaseApp.initializeApp(context)
@@ -96,6 +100,7 @@ class WalkthroughWelcomeFragmentTest {
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -105,7 +110,7 @@ class WalkthroughWelcomeFragmentTest {
 
   private fun createWalkthroughActivityIntent(profileId: Int): Intent {
     return WalkthroughActivity.createWalkthroughActivityIntent(
-      ApplicationProvider.getApplicationContext(),
+      context,
       profileId
     )
   }
@@ -123,10 +128,9 @@ class WalkthroughWelcomeFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix WalkthroughWelcomeFragmentTest
-  @Ignore
   fun testWalkthroughWelcomeFragment_checkProfileName_isCorrect() {
     launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.walkthrough_welcome_title_text_view),
@@ -137,10 +141,9 @@ class WalkthroughWelcomeFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix WalkthroughWelcomeFragmentTest
-  @Ignore
   fun testWalkthroughWelcomeFragment_checkProfileName_configurationChanged_isCorrect() {
     launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.walkthrough_welcome_title_text_view),
@@ -148,6 +151,7 @@ class WalkthroughWelcomeFragmentTest {
         )
       ).check(matches(withText("Welcome Admin!")))
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.walkthrough_welcome_title_text_view),

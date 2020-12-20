@@ -19,7 +19,7 @@ import org.oppia.android.app.mydownloads.UpdatesTabFragment
 import org.oppia.android.app.onboarding.OnboardingFragment
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListFragment
 import org.oppia.android.app.options.AppLanguageFragment
-import org.oppia.android.app.options.DefaultAudioFragment
+import org.oppia.android.app.options.AudioLanguageFragment
 import org.oppia.android.app.options.OptionsFragment
 import org.oppia.android.app.options.ReadingTextSizeFragment
 import org.oppia.android.app.player.audio.AudioFragment
@@ -81,7 +81,7 @@ interface FragmentComponent {
   fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
-  fun inject(defaultAudioFragment: DefaultAudioFragment)
+  fun inject(audioLanguageFragment: AudioLanguageFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(explorationManagerFragment: ExplorationManagerFragment)

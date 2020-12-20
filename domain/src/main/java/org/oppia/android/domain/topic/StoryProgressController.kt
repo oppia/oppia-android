@@ -37,16 +37,15 @@ const val RATIOS_EXPLORATION_ID_2 = "k2bQ7z5XHNbK"
 const val RATIOS_EXPLORATION_ID_3 = "tIoSb3HZFN6e"
 
 private const val CACHE_NAME = "topic_progress_database"
-
-private const val TRANSFORMED_GET_STORY_PROGRESS_LIST_PROVIDER_ID =
-  "transformed_get_story_progress_list_provider_id"
-private const val TRANSFORMED_GET_TOPIC_PROGRESS_PROVIDER_ID =
-  "transformed_get_topic_progress_provider_id"
-private const val TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID =
-  "transformed_get_story_progress_provider_id"
-private const val ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID = "add_story_progress_transformed_id"
-private const val RECENTLY_PLAYED_CHAPTER_TRANSFORMED_PROVIDER_ID =
-  "recently_played_chapter_transformed_id"
+private const val RETRIEVE_TOPIC_PROGRESS_LIST_DATA_PROVIDER_ID =
+  "retrieve_topic_progress_list_data_provider_id"
+private const val RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID =
+  "retrieve_topic_progress_data_provider_id"
+private const val RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID =
+  "retrieve_story_progress_data_provider_id"
+private const val RECORD_COMPLETED_CHAPTER_PROVIDER_ID = "record_completed_chapter_provider_id"
+private const val RECORD_RECENTLY_PLAYED_CHAPTER_PROVIDER_ID =
+  "record_recently_played_chapter_provider_id"
 
 /**
  * Controller that records and provides completion statuses of chapters within the context of a
@@ -125,7 +124,7 @@ class StoryProgressController @Inject constructor(
       }
 
     return dataProviders.createInMemoryDataProviderAsync(
-      ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID
+      RECORD_COMPLETED_CHAPTER_PROVIDER_ID
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(deferred)
     }
@@ -206,7 +205,7 @@ class StoryProgressController @Inject constructor(
       }
 
     return dataProviders.createInMemoryDataProviderAsync(
-      RECENTLY_PLAYED_CHAPTER_TRANSFORMED_PROVIDER_ID
+      RECORD_RECENTLY_PLAYED_CHAPTER_PROVIDER_ID
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(deferred)
     }
@@ -217,7 +216,7 @@ class StoryProgressController @Inject constructor(
     profileId: ProfileId
   ): DataProvider<List<TopicProgress>> {
     return retrieveCacheStore(profileId)
-      .transformAsync(TRANSFORMED_GET_STORY_PROGRESS_LIST_PROVIDER_ID) { topicProgressDatabase ->
+      .transformAsync(RETRIEVE_TOPIC_PROGRESS_LIST_DATA_PROVIDER_ID) { topicProgressDatabase ->
         val topicProgressList = mutableListOf<TopicProgress>()
         topicProgressList.addAll(topicProgressDatabase.topicProgressMap.values)
         AsyncResult.success(topicProgressList.toList())
@@ -230,7 +229,7 @@ class StoryProgressController @Inject constructor(
     topicId: String
   ): DataProvider<TopicProgress> {
     return retrieveCacheStore(profileId)
-      .transformAsync(TRANSFORMED_GET_TOPIC_PROGRESS_PROVIDER_ID) {
+      .transformAsync(RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID) {
         AsyncResult.success(it.topicProgressMap[topicId] ?: TopicProgress.getDefaultInstance())
       }
   }
@@ -242,7 +241,7 @@ class StoryProgressController @Inject constructor(
     storyId: String
   ): DataProvider<StoryProgress> {
     return retrieveTopicProgressDataProvider(profileId, topicId)
-      .transformAsync(TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID) {
+      .transformAsync(RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID) {
         AsyncResult.success(it.storyProgressMap[storyId] ?: StoryProgress.getDefaultInstance())
       }
   }

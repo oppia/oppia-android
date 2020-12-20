@@ -10,105 +10,97 @@
       type="org.oppia.android.app.profile.AdminPinViewModel" />
   </data>
 
-  <FrameLayout
+  <androidx.core.widget.NestedScrollView
+    android:id="@+id/scrollViewAdminPin"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <ScrollView
-      android:id="@+id/scrollViewAdminPin"
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/admin_auth_container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/oppiaBackgroundYellowIvory"
-      android:overScrollMode="never"
-      android:scrollbars="none">
+      android:paddingBottom="96dp">
 
-      <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/admin_auth_container"
+      <View
+        android:layout_width="0dp"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <TextView
+        android:id="@+id/admin_pin_main_text"
+        style="@style/Subtitle1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/oppiaBackgroundYellowIvory"
-        android:paddingBottom="96dp">
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="28dp"
+        android:text="@string/admin_pin_requirement_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-          android:id="@+id/admin_pin_main_text"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="28dp"
-          android:layout_marginTop="32dp"
-          android:layout_marginEnd="28dp"
-          android:fontFamily="sans-serif"
-          android:text="@string/admin_pin_requirement_description"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="16sp"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
+      <TextView
+        android:id="@+id/admin_pin_warning_text"
+        style="@style/Subtitle1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="28dp"
+        android:text="@string/admin_pin_pin_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/admin_pin_main_text" />
 
-        <TextView
-          android:id="@+id/admin_pin_warning_text"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="28dp"
-          android:layout_marginTop="16dp"
-          android:layout_marginEnd="28dp"
-          android:fontFamily="sans-serif"
-          android:text="@string/admin_pin_pin_description"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="16sp"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/admin_pin_main_text" />
+      <org.oppia.android.app.profile.ProfileInputView
+        android:id="@+id/input_pin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="28dp"
+        app:inputLength="5"
+        app:isPasswordInput="true"
+        app:label="@string/admin_pin_new_pin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/admin_pin_warning_text"
+        profile:error="@{viewModel.pinErrorMsg}" />
 
-        <org.oppia.android.app.profile.ProfileInputView
-          android:id="@+id/input_pin"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="28dp"
-          android:layout_marginTop="28dp"
-          android:layout_marginEnd="28dp"
-          app:inputLength="5"
-          app:isPasswordInput="true"
-          app:label="@string/admin_pin_new_pin"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/admin_pin_warning_text"
-          profile:error="@{viewModel.pinErrorMsg}" />
+      <org.oppia.android.app.profile.ProfileInputView
+        android:id="@+id/input_confirm_pin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="28dp"
+        app:inputLength="5"
+        app:isPasswordInput="true"
+        app:label="@string/admin_pin_new_confirm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_pin"
+        profile:error="@{viewModel.confirmPinErrorMsg}" />
 
-        <org.oppia.android.app.profile.ProfileInputView
-          android:id="@+id/input_confirm_pin"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="28dp"
-          android:layout_marginTop="16dp"
-          android:layout_marginEnd="28dp"
-          app:inputLength="5"
-          app:isPasswordInput="true"
-          app:label="@string/admin_pin_new_confirm"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/input_pin"
-          profile:error="@{viewModel.confirmPinErrorMsg}" />
-
-        <Button
-          android:id="@+id/submit_button"
-          style="@style/StateButtonActive"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="48dp"
-          android:layout_marginEnd="28dp"
-          android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
-          android:clickable="@{viewModel.isButtonActive()}"
-          android:minHeight="48dp"
-          android:text="@string/save"
-          android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submitButtonInactiveText }"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/input_confirm_pin" />
-      </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
-
-    <View
-      android:layout_width="match_parent"
-      android:layout_height="6dp"
-      android:background="@drawable/toolbar_drop_shadow" />
-  </FrameLayout>
+      <Button
+        android:id="@+id/submit_button"
+        style="@style/StateButtonActive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="28dp"
+        android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
+        android:clickable="@{viewModel.isButtonActive()}"
+        android:minHeight="48dp"
+        android:text="@string/save"
+        android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submitButtonInactiveText }"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_confirm_pin" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </androidx.core.widget.NestedScrollView>
 </layout>

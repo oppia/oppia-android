@@ -11,7 +11,7 @@ message VoiceoverMapping {
 }
 
 // Structure for a single voiceover
-// Maps from: data/src/main/java/org.oppia.android.android/data/backends/gae/model/GaeVoiceover.kt
+// Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeVoiceover.kt
 message Voiceover {
   int64 file_size_bytes = 1;
   bool needs_update = 2;

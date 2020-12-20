@@ -28,7 +28,7 @@ class FontSizeMatcher(private val expectedSize: Float) :
      * Matcher that checks font size.
      * Example usage:
      *  onView(withId(R.id.question_player_content_text_view)).check(matches(FontSizeMatcher
-     *  .withFontSize(context.resources.getDimension(R.dimen.margin_16))))
+     *  .withFontSize(context.resources.getDimension(R.dimen.space_16dp))))
      */
     @CheckResult
     fun withFontSize(fontSize: Float): Matcher<View?>? {

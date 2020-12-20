@@ -167,7 +167,7 @@ class OptionsFragmentPresenter @Inject constructor(
     return when (selectedFragment) {
       READING_TEXT_SIZE_FRAGMENT -> 0
       APP_LANGUAGE_FRAGMENT -> 1
-      DEFAULT_AUDIO_FRAGMENT -> 2
+      AUDIO_LANGUAGE_FRAGMENT -> 2
       else -> throw InvalidParameterException("Not a valid fragment in getSelectedFragmentIndex.")
     }
   }

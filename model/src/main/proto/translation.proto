@@ -11,7 +11,7 @@ message TranslationMapping {
 }
 
 // Structure for a single translation
-// Maps from: data/src/main/java/org.oppia.android.android/data/backends/gae/model/GaeWrittenTranslation.kt
+// Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeWrittenTranslation.kt
 message Translation {
   string html = 1;
   bool needs_update = 2;

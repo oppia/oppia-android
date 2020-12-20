@@ -26,7 +26,6 @@ internal class FractionInputHasNumeratorEqualToRuleClassifierProvider @Inject co
     )
   }
 
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: Fraction, input: Int): Boolean {
     return answer.numerator == input
   }

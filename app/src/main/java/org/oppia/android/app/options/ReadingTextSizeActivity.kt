@@ -56,7 +56,7 @@ class ReadingTextSizeActivity : InjectableAppCompatActivity() {
   override fun onBackPressed() {
     val message = readingTextSizeActivityPresenter.getSelectedReadingTextSize()
     val intent = Intent()
-    intent.putExtra(KEY_MESSAGE_READING_TEXT_SIZE, message)
+    intent.putExtra(MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY, message)
     setResult(REQUEST_CODE_TEXT_SIZE, intent)
     finish()
   }

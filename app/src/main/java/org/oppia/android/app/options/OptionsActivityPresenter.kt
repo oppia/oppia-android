@@ -109,13 +109,13 @@ class OptionsActivityPresenter @Inject constructor(
   }
 
   fun loadAudioLanguageFragment(audioLanguage: String) {
-    val defaultAudioFragment =
-      DefaultAudioFragment.newInstance(AUDIO_LANGUAGE, audioLanguage)
+    val audioLanguageFragment =
+      AudioLanguageFragment.newInstance(AUDIO_LANGUAGE, audioLanguage)
     activity.supportFragmentManager
       .beginTransaction()
-      .add(R.id.multipane_options_container, defaultAudioFragment)
+      .add(R.id.multipane_options_container, audioLanguageFragment)
       .commitNow()
-    getOptionFragment()?.setSelectedFragment(DEFAULT_AUDIO_FRAGMENT)
+    getOptionFragment()?.setSelectedFragment(AUDIO_LANGUAGE_FRAGMENT)
   }
 
   fun setExtraOptionTitle(title: String) {

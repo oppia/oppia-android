@@ -67,7 +67,6 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="64dp"
             android:fontFamily="sans-serif"
-            android:text="@{viewModel.explanationLiveData}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp" />
         </LinearLayout>

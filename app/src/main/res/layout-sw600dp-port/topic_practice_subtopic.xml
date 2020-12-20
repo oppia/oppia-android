@@ -22,8 +22,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="360dp"
       android:layout_height="wrap_content"
-      android:layout_marginStart="8dp"
       android:layout_gravity="center"
+      android:layout_marginStart="8dp"
       app:barrierDirection="right">
 
       <androidx.constraintlayout.widget.Barrier
@@ -42,9 +42,10 @@
         android:drawableStart="@android:color/transparent"
         android:drawablePadding="20dp"
         android:fontFamily="sans-serif"
-        android:gravity="center_vertical"
+        android:gravity="start"
         android:minHeight="22dp"
         android:text="@{viewModel.subtopic.title}"
+        android:textAlignment="viewStart"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -61,9 +61,72 @@ domain_test(
 
 domain_test(
     name = "NumericInputEqualsRuleClassifierProviderTest",
-    srcs = ["src/test/java/org/oppia/android/domain/classify/NumericInputEqualsRuleClassifierProviderTest.kt"],
-    test_class = "org.oppia.android.domain.classify.NumericInputEqualsRuleClassifierProviderTest",
+    srcs = ["src/test/java/org/oppia/android/domain/classify/rules/numericinput/NumericInputEqualsRuleClassifierProviderTest.kt"],
+    test_class = "org.oppia.android.domain.classify.rules.numericinput.NumericInputEqualsRuleClassifierProviderTest",
     deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest",
+    srcs = ["src/test/java/org/oppia/android/domain/classify/rules/numericinput/NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest.kt"],
+    test_class = "org.oppia.android.domain.classify.rules.numericinput.NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "NumericInputIsGreaterThanRuleClassifierProviderTest",
+    srcs = ["src/test/java/org/oppia/android/domain/classify/rules/numericinput/NumericInputIsGreaterThanRuleClassifierProviderTest.kt"],
+    test_class = "org.oppia.android.domain.classify.rules.numericinput.NumericInputIsGreaterThanRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "NumericInputIsInclusivelyBetweenRuleClassifierProviderTest",
+    srcs = ["src/test/java/org/oppia/android/domain/classify/rules/numericinput/NumericInputIsInclusivelyBetweenRuleClassifierProviderTest.kt"],
+    test_class = "org.oppia.android.domain.classify.rules.numericinput.NumericInputIsInclusivelyBetweenRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "NumericInputIsLessThanOrEqualToRuleClassifierProviderTest",
+    srcs = ["src/test/java/org/oppia/android/domain/classify/rules/numericinput/NumericInputIsLessThanOrEqualToRuleClassifierProviderTest.kt"],
+    test_class = "org.oppia.android.domain.classify.rules.numericinput.NumericInputIsLessThanOrEqualToRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "NumericInputIsLessThanRuleClassifierProviderTest",
+    srcs = ["src/test/java/org/oppia/android/domain/classify/rules/numericinput/NumericInputIsLessThanRuleClassifierProviderTest.kt"],
+    test_class = "org.oppia.android.domain.classify.rules.numericinput.NumericInputIsLessThanRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "NumericInputIsWithinToleranceRuleClassifierProviderTest",
+    srcs = ["src/test/java/org/oppia/android/domain/classify/rules/numericinput/NumericInputIsWithinToleranceRuleClassifierProviderTest.kt"],
+    test_class = "org.oppia.android.domain.classify.rules.numericinput.NumericInputIsWithinToleranceRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+     name = "RatioInputEqualsRuleClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/ratioinput/RatioInputEqualsRuleClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.ratioinput.RatioInputEqualsRuleClassifierProviderTest",
+     deps = TEST_DEPS,
+)
+
+domain_test(
+     name = "RatioInputHasNumberOfTermsEqualToClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/ratioinput/RatioInputHasNumberOfTermsEqualToClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.ratioinput.RatioInputHasNumberOfTermsEqualToClassifierProviderTest",
+     deps = TEST_DEPS,
+)
+
+domain_test(
+     name = "RatioInputIsEquivalentRuleClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/ratioinput/RatioInputIsEquivalentRuleClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.ratioinput.RatioInputIsEquivalentRuleClassifierProviderTest",
+     deps = TEST_DEPS,
 )
 
 domain_test(
@@ -103,11 +166,99 @@ domain_test(
 )
 
 domain_test(
+     name = "FractionInputHasDenominatorEqualToRuleClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputHasDenominatorEqualToRuleClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasDenominatorEqualToRuleClassifierProviderTest",
+     deps = TEST_DEPS,
+)
+
+domain_test(
+     name = "FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest",
+     deps = TEST_DEPS,
+)
+
+domain_test(
+     name = "FractionInputHasIntegerPartEqualToRuleClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputHasIntegerPartEqualToRuleClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasIntegerPartEqualToRuleClassifierProviderTest",
+     deps = TEST_DEPS,
+)
+
+domain_test(
+     name = "FractionInputHasNoFractionalPartRuleClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputHasNoFractionalPartRuleClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasNoFractionalPartRuleClassifierProviderTest",
+     deps = TEST_DEPS,
+)
+
+domain_test(
+     name = "FractionInputHasNumeratorEqualToRuleClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputHasNumeratorEqualToRuleClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasNumeratorEqualToRuleClassifierProviderTest",
+     deps = TEST_DEPS,
+)
+
+domain_test(
+     name = "FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest",
+     deps = TEST_DEPS,
+)
+
+domain_test(
+     name = "FractionInputIsEquivalentToRuleClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputIsEquivalentToRuleClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsEquivalentToRuleClassifierProviderTest",
+     deps = TEST_DEPS,
+)
+
+domain_test(
+     name = "FractionInputIsExactlyEqualToRuleClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputIsExactlyEqualToRuleClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsExactlyEqualToRuleClassifierProviderTest",
+     deps = TEST_DEPS,
+)
+
+domain_test(
+     name = "FractionInputIsGreaterThanRuleClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputIsGreaterThanRuleClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsGreaterThanRuleClassifierProviderTest",
+     deps = TEST_DEPS,
+)
+
+domain_test(
+     name = "FractionInputIsLessThanRuleClassifierProviderTest",
+     srcs = ["src/test/java/org/oppia/android/domain/classify/rules/fractioninput/FractionInputIsLessThanRuleClassifierProviderTest.kt"],
+     test_class = "org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsLessThanRuleClassifierProviderTest",
+     deps = TEST_DEPS,
+)
+
+domain_test(
     name = "ImageClickInputIsInRegionRuleClassifierProviderTest",
     srcs = [
         "src/test/java/org/oppia/android/domain/classify/rules/imageClickInput/ImageClickInputIsInRegionRuleClassifierProviderTest.kt",
     ],
     test_class = "org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputIsInRegionRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/itemselectioninput/ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "ItemsSelectionInputEqualsRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/itemselectioninput/ItemsSelectionInputEqualsRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.itemselectioninput.ItemsSelectionInputEqualsRuleClassifierProviderTest",
     deps = TEST_DEPS,
 )
 
@@ -121,6 +272,33 @@ domain_test(
 )
 
 domain_test(
+    name = "NumberWithUnitsIsEqualToRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/numberwithunits/NumberWithUnitsIsEqualToRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsIsEqualToRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "NumberWithUnitsIsEquivalentToRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/numberwithunits/NumberWithUnitsIsEquivalentToRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsIsEquivalentToRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "TextInputCaseSensitiveEqualsRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/textinput/TextInputCaseSensitiveEqualsRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.textinput.TextInputCaseSensitiveEqualsRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
     name = "TextInputContainsRuleClassifierProviderTest",
     srcs = [
         "src/test/java/org/oppia/android/domain/classify/rules/textinput/TextInputContainsRuleClassifierProviderTest.kt",
@@ -130,11 +308,38 @@ domain_test(
 )
 
 domain_test(
+    name = "ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/textinput/ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.textinput.ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
     name = "TextInputEqualsRuleClassifierProviderTest",
     srcs = [
         "src/test/java/org/oppia/android/domain/classify/rules/textinput/TextInputEqualsRuleClassifierProviderTest.kt",
     ],
     test_class = "org.oppia.android.domain.classify.rules.textinput.TextInputEqualsRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "TextInputFuzzyEqualsRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/textinput/TextInputFuzzyEqualsRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.textinput.TextInputFuzzyEqualsRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "TextInputStartsWithRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/textinput/TextInputStartsWithRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.textinput.TextInputStartsWithRuleClassifierProviderTest",
     deps = TEST_DEPS,
 )
 
@@ -163,6 +368,27 @@ domain_test(
     name = "AnalyticsControllerTest",
     srcs = ["src/test/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsControllerTest.kt"],
     test_class = "org.oppia.android.domain.oppialogger.analytics.AnalyticsControllerTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "UncaughtExceptionLoggerStartupListenerTest",
+    srcs = ["src/test/java/org/oppia/android/domain/oppialogger/exceptions/UncaughtExceptionLoggerStartupListenerTest.kt"],
+    test_class = "org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerStartupListenerTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "LogUploadWorkerTest",
+    srcs = ["src/test/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorkerTest.kt"],
+    test_class = "org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "OppiaLoggerTest",
+    srcs = ["src/test/java/org/oppia/android/domain/oppialogger/OppiaLoggerTest.kt"],
+    test_class = "org.oppia.android.domain.oppialogger.OppiaLoggerTest",
     deps = TEST_DEPS,
 )
 
@@ -223,9 +449,23 @@ domain_test(
 )
 
 domain_test(
+    name = "RatioExtensionsTest",
+    srcs = ["src/test/java/org/oppia/android/domain/util/RatioExtensionsTest.kt"],
+    test_class = "org.oppia.android.domain.util.RatioExtensionsTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
     name = "StateRetrieverTest",
     srcs = ["src/test/java/org/oppia/android/domain/util/StateRetrieverTest.kt"],
     test_class = "org.oppia.android.domain.util.StateRetrieverTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "StringExtensionsTest",
+    srcs = ["src/test/java/org/oppia/android/domain/util/StringExtensionsTest.kt"],
+    test_class = "org.oppia.android.domain.util.StringExtensionsTest",
     deps = TEST_DEPS,
 )
 

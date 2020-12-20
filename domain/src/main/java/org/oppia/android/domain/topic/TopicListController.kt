@@ -1,8 +1,6 @@
 package org.oppia.android.domain.topic
 
 import android.graphics.Color
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
@@ -19,6 +17,7 @@ import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -67,8 +66,9 @@ val EXPLORATION_THUMBNAILS = mapOf(
   TEST_EXPLORATION_ID_6 to createChapterThumbnail0()
 )
 
-private const val TRANSFORMED_GET_ONGOING_STORY_LIST_PROVIDER_ID =
-  "transformed_get_ongoing_story_list_provider_id"
+private const val GET_TOPIC_LIST_PROVIDER_ID = "get_topic_list_provider_id"
+private const val GET_ONGOING_STORY_LIST_PROVIDER_ID =
+  "get_ongoing_story_list_provider_id"
 
 private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 
@@ -77,14 +77,18 @@ private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 class TopicListController @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val topicController: TopicController,
-  private val storyProgressController: StoryProgressController
+  private val storyProgressController: StoryProgressController,
+  private val dataProviders: DataProviders
 ) {
   /**
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
    */
-  fun getTopicList(): LiveData<AsyncResult<TopicList>> {
-    return MutableLiveData(AsyncResult.success(createTopicList()))
+  fun getTopicList(): DataProvider<TopicList> {
+    return dataProviders.createInMemoryDataProvider(
+      GET_TOPIC_LIST_PROVIDER_ID,
+      this::createTopicList
+    )
   }
 
   /**
@@ -98,7 +102,7 @@ class TopicListController @Inject constructor(
    */
   fun getOngoingStoryList(profileId: ProfileId): DataProvider<OngoingStoryList> {
     return storyProgressController.retrieveTopicProgressListDataProvider(profileId)
-      .transformAsync(TRANSFORMED_GET_ONGOING_STORY_LIST_PROVIDER_ID) {
+      .transformAsync(GET_ONGOING_STORY_LIST_PROVIDER_ID) {
         val ongoingStoryList = createOngoingStoryListFromProgress(it)
         AsyncResult.success(ongoingStoryList)
       }

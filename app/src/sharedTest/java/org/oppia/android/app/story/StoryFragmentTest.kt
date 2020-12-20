@@ -4,16 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.PerformException
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -21,19 +16,18 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.espresso.util.HumanReadables
-import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -71,6 +65,8 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
+import org.oppia.android.domain.topic.TEST_STORY_ID_1
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -85,7 +81,6 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -107,6 +102,11 @@ class StoryFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @get:Rule
+  var activityTestRule: ActivityTestRule<StoryActivity> = ActivityTestRule(
+    StoryActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   private val internalProfileId = 0
 
   private lateinit var profileId: ProfileId
@@ -119,10 +119,6 @@ class StoryFragmentTest {
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
-      profileId, /* timestampOlderThanAWeek= */
-      false
-    )
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -132,33 +128,18 @@ class StoryFragmentTest {
     Intents.release()
   }
 
-  private fun createStoryActivityIntent(): Intent {
-    return StoryActivity.createStoryActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
-    )
-  }
-
   @Test
-  @Ignore("Test wasn't correct originally") // TODO(#1804): Fix this test & re-enable.
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.story_toolbar)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      it.onActivity { activity -> assertThat(activity.isFinishing).isTrue() }
-    }
+    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
+    testCoroutineDispatchers.runCurrent()
+    onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+    assertThat(activityTestRule.activity.isFinishing).isTrue()
   }
 
   @Test
   fun testStoryFragment_toolbarTitle_isDisplayedSuccessfully() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      waitForTheView(withText("Chapter 1: What is a Fraction?"))
       onView(withId(R.id.story_toolbar_title))
         .check(matches(withText("Matthew Goes to the Bakery")))
     }
@@ -166,11 +147,11 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_correctStoryCountLoadedInHeader() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    setStoryPartialProgressForFractions()
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       val headerString: String =
         getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
-      waitForTheView(withText("Chapter 1: What is a Fraction?"))
       onView(withId(R.id.story_chapter_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -192,26 +173,29 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_correctNumberOfStoriesLoadedInRecyclerView() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      waitForTheView(withText("Chapter 1: What is a Fraction?"))
       onView(withId(R.id.story_chapter_list)).check(hasItemCount(3))
     }
   }
 
   @Test
   fun testStoryFragment_changeConfiguration_textViewIsShownCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      waitForTheView(withText("Chapter 1: What is a Fraction?"))
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
         )
       )
-      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_title)).check(
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_title
+        )
+      ).check(
         matches(
           withText("Chapter 1: What is a Fraction?")
         )
@@ -221,16 +205,20 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_chapterSummaryIsShownCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      waitForTheView(withText("Chapter 1: What is a Fraction?"))
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
         )
       )
-      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_summary)).check(
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_summary
+        )
+      ).check(
         matches(
           withText("This is outline/summary for What is a Fraction?")
         )
@@ -240,17 +228,21 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_chapterSummaryIsShownCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      waitForTheView(withText("Chapter 1: What is a Fraction?"))
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
         )
       )
-      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_summary)).check(
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_summary
+        )
+      ).check(
         matches(
           withText("This is outline/summary for What is a Fraction?")
         )
@@ -259,13 +251,112 @@ class StoryFragmentTest {
   }
 
   @Test
-  fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+  fun testStoryFragment_chapterLongSummaryIsShownCorrectly() {
+    launch<StoryActivity>(createTestStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      waitForTheView(withText("Chapter 1: What is a Fraction?"))
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_summary
+        )
+      ).check(
+        matches(
+          withText(
+            "This is outline/summary for Second Exploration. It is very long but " +
+              "it has to be fully visible. You wil be learning about oppia app in Second Story. " +
+              "Learn about oppia app via testing in second exploration."
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_chapterLongSummaryIsShownCorrectly() {
+    launch<StoryActivity>(createTestStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_summary
+        )
+      ).check(
+        matches(
+          withText(
+            "This is outline/summary for Second Exploration. It is very long but " +
+              "it has to be fully visible. You wil be learning about oppia app in Second Story. " +
+              "Learn about oppia app via testing in second exploration."
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_chapterMissingPrerequisiteIsShownCorrectly() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      waitForTheView(withText("Chapter 1: What is a Fraction?"))
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          2,
+          R.id.chapter_summary
+        )
+      ).check(
+        matches(
+          withText("Complete Chapter 1: What is a Fraction? to unlock this chapter.")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_chapterMissingPrerequisiteIsShownCorrectly() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          2,
+          R.id.chapter_summary
+        )
+      ).check(
+        matches(
+          withText("Complete Chapter 1: What is a Fraction? to unlock this chapter.")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -281,10 +372,10 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_correctStoryCountInHeader() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    setStoryPartialProgressForFractions()
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
       val headerString: String =
         getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
       onView(withId(R.id.story_chapter_list)).perform(
@@ -292,7 +383,6 @@ class StoryFragmentTest {
           0
         )
       )
-      waitForTheView(withText(headerString))
       onView(withId(R.id.story_chapter_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -312,60 +402,37 @@ class StoryFragmentTest {
     }
   }
 
+  private fun createFractionsStoryActivityIntent(): Intent {
+    return StoryActivity.createStoryActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    )
+  }
+
+  private fun createTestStoryActivityIntent(): Intent {
+    return StoryActivity.createStoryActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_1
+    )
+  }
+
+  private fun setStoryPartialProgressForFractions() {
+    storyProgressTestHelper.markPartialStoryProgressForFractions(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun getResources(): Resources {
     return ApplicationProvider.getApplicationContext<Context>().resources
-  }
-
-  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
-    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
-  }
-
-  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-  //  thread helps to counter that.
-
-  /**
-   * Perform action of waiting for a specific matcher to finish. Adapted from:
-   * https://stackoverflow.com/a/22563297/3689782.
-   */
-  private fun waitForMatch(viewMatcher: Matcher<View>, millis: Long): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String {
-        return "wait for a specific view with matcher <$viewMatcher> during $millis millis."
-      }
-
-      override fun getConstraints(): Matcher<View> {
-        return isRoot()
-      }
-
-      override fun perform(uiController: UiController?, view: View?) {
-        checkNotNull(uiController)
-        uiController.loopMainThreadUntilIdle()
-        val startTime = System.currentTimeMillis()
-        val endTime = startTime + millis
-
-        do {
-          if (TreeIterables.breadthFirstViewTraversal(view).any { viewMatcher.matches(it) }) {
-            return
-          }
-          uiController.loopMainThreadForAtLeast(50)
-        } while (System.currentTimeMillis() < endTime)
-
-        // Couldn't match in time.
-        throw PerformException.Builder()
-          .withActionDescription(description)
-          .withViewDescription(HumanReadables.describe(view))
-          .withCause(TimeoutException())
-          .build()
-      }
-    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

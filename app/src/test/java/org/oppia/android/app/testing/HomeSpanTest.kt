@@ -1,4 +1,4 @@
-package org.oppia.android.app.testing.options
+package org.oppia.android.app.testing
 
 import android.app.Application
 import android.content.Context
@@ -7,18 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.isChecked
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
-import dagger.Module
-import dagger.Provides
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,13 +21,11 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.options.AUDIO_LANGUAGE
-import org.oppia.android.app.options.DefaultAudioActivity
-import org.oppia.android.app.options.OptionsActivity
+import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
+import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -55,11 +44,8 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.profile.ProfileTestHelper
-import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -72,145 +58,87 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val NO_AUDIO = 0
-private const val ENGLISH = 1
-private const val FRENCH = 2
-private const val HINDI = 3
-private const val CHINESE = 4
-
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = DefaultAudioFragmentTest.TestApplication::class)
-class DefaultAudioFragmentTest {
+@Config(application = HomeSpanTest.TestApplication::class)
+class HomeSpanTest {
 
   @Inject
   lateinit var context: Context
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  private val internalProfileId: Int = 1
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    Intents.init()
-    FirebaseApp.initializeApp(context)
-    profileTestHelper.initializeProfiles()
-  }
-
-  @After
-  fun tearDown() {
-    Intents.release()
-  }
-
-  @Test
-  fun testAudioLanguage_changeLanguageToHindi_changeConfiguration_checkHindiLanguageIsSelected() {
-    launch<DefaultAudioActivity>(createDefaultAudioActivityIntent("French")).use {
-      selectLanguage(HINDI)
-      rotateToLandscape()
-      checkSelectedLanguage(HINDI)
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAudioLanguage_loadFragment_changeAudioLanguage_checkOptionsFragmentIsUpdatedCorrectly() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.runCurrent()
-      selectChangeAudioLanguage()
-      selectLanguage(CHINESE)
-      checkAudioLanguage("Chinese")
-    }
-  }
-
-  private fun createDefaultAudioActivityIntent(summaryValue: String): Intent {
-    return DefaultAudioActivity.createDefaultAudioActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      AUDIO_LANGUAGE,
-      summaryValue
-    )
-  }
-
-  private fun createOptionActivityIntent(
-    internalProfileId: Int,
-    isFromNavigationDrawer: Boolean
-  ): Intent {
-    return OptionsActivity.createOptionsActivity(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      isFromNavigationDrawer
-    )
-  }
-
-  private fun selectLanguage(index: Int) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.audio_language_recycler_view,
-        position = index,
-        targetViewId = R.id.language_radio_button
-      )
-    ).perform(
-      click()
-    )
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun rotateToLandscape() {
-    onView(isRoot()).perform(orientationLandscape())
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun checkSelectedLanguage(index: Int) {
-    onView(
-      atPositionOnView(
-        R.id.audio_language_recycler_view,
-        index,
-        R.id.language_radio_button
-      )
-    ).check(matches(isChecked()))
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun selectChangeAudioLanguage() {
-    onView(
-      atPositionOnView(
-        R.id.options_recyclerview,
-        2,
-        R.id.audio_laguage_item_layout
-      )
-    ).perform(
-      click()
-    )
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun checkAudioLanguage(audioLanguage: String) {
-    onView(
-      atPositionOnView(
-        R.id.options_recyclerview,
-        2,
-        R.id.audio_language_text_view
-      )
-    ).check(
-      matches(withText(audioLanguage))
-    )
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  @Module
-  class TestModule {
-    // Do not use caching to ensure URLs are always used as the main data source when loading audio.
-    @Provides
-    @CacheAssetsLocally
-    fun provideCacheAssetsLocally(): Boolean = false
+  @Config(qualifiers = "port")
+  @Test
+  fun testHomeSpanTest_checkSpanForItem0_port_hasCorrectSpanCount() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view))
+        .check(
+          hasGridItemCount(
+            spanCount = 2,
+            position = 0
+          )
+        )
+    }
+  }
+
+  @Config(qualifiers = "land")
+  @Test
+  fun testHomeSpanTest_checkSpanForItem0_landscape_hasCorrectSpanCount() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view))
+        .check(
+          hasGridItemCount(
+            spanCount = 3,
+            position = 0
+          )
+        )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testHomeSpanTest_checkSpanForItem0_port_tablet_hasCorrectSpanCount() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view))
+        .check(
+          hasGridItemCount(
+            spanCount = 3,
+            position = 0
+          )
+        )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testHomeSpanTest_checkSpanForItem0_landscape_tablet_hasCorrectSpanCount() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view))
+        .check(
+          hasGridItemCount(
+            spanCount = 4,
+            position = 0
+          )
+        )
+    }
+  }
+
+  private fun createHomeActivityIntent(profileId: Int): Intent {
+    return HomeActivity.createHomeActivity(context, profileId)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -221,11 +149,11 @@ class DefaultAudioFragmentTest {
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
+      ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
+      ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
-      RatioInputModule::class, HintsAndSolutionConfigModule::class,
-      WorkManagerConfigurationModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class
     ]
   )
@@ -233,18 +161,18 @@ class DefaultAudioFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(defaultAudioFragmentTest: DefaultAudioFragmentTest)
+    fun inject(homeSpanTest: HomeSpanTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerDefaultAudioFragmentTest_TestApplicationComponent.builder()
+      DaggerHomeSpanTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(defaultAudioFragmentTest: DefaultAudioFragmentTest) {
-      component.inject(defaultAudioFragmentTest)
+    fun inject(homeSpanTest: HomeSpanTest) {
+      component.inject(homeSpanTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

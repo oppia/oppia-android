@@ -16,16 +16,14 @@
     <TextView
       android:id="@+id/download_permissions_text_view"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      style="@style/Caption"
       android:background="@color/mid_grey_30"
-      android:fontFamily="sans-serif-medium"
       android:paddingStart="36dp"
       android:paddingTop="28dp"
       android:paddingEnd="36dp"
       android:paddingBottom="20dp"
       android:text="@string/administrator_controls_download_permissions_label"
       android:textColor="@color/colorPrimary"
-      android:textSize="14sp"
       app:layout_constraintBottom_toTopOf="@id/topic_update_on_wifi_constraint_layout"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -47,26 +45,21 @@
 
       <TextView
         android:id="@+id/topic_update_on_wifi_title_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Body"
         android:background="@color/white"
-        android:fontFamily="sans-serif"
         android:paddingBottom="4dp"
         android:text="@string/administrator_controls_update_on_wifi_title"
         android:textColor="@color/oppiaPrimaryTextDark"
-        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
         android:id="@+id/topic_update_on_wifi_description_text_view"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        style="@style/Subtitle2"
         android:background="@color/white"
-        android:fontFamily="sans-serif"
         android:text="@string/administrator_controls_update_on_wifi_message"
         android:textColor="@color/divider"
-        android:textSize="14sp"
         app:layout_constraintEnd_toStartOf="@id/topic_update_on_wifi_switch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topic_update_on_wifi_title_text_view" />
@@ -111,26 +104,21 @@
 
       <TextView
         android:id="@+id/auto_update_topic_title_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Body"
         android:background="@color/white"
-        android:fontFamily="sans-serif"
         android:paddingBottom="4dp"
         android:text="@string/administrator_controls_auto_update_title"
         android:textColor="@color/oppiaPrimaryTextDark"
-        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
         android:id="@+id/auto_update_topic_description_text_view"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        style="@style/Subtitle2"
         android:background="@color/white"
-        android:fontFamily="sans-serif"
         android:text="@string/administrator_controls_auto_update_message"
         android:textColor="@color/divider"
-        android:textSize="14sp"
         app:layout_constraintEnd_toStartOf="@id/auto_update_topic_switch"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"

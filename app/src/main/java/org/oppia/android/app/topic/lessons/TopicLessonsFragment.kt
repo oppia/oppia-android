@@ -12,7 +12,8 @@ import org.oppia.android.app.topic.STORY_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
-private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
+private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
+  "TopicLessonsFragment.current_expanded_list_index"
 
 /** Fragment that contains subtopic list for lessons mode. */
 class TopicLessonsFragment :
@@ -57,7 +58,7 @@ class TopicLessonsFragment :
   ): View? {
     if (savedInstanceState != null) {
       currentExpandedChapterListIndex =
-        savedInstanceState.getInt(KEY_CURRENT_EXPANDED_LIST_INDEX, -1)
+        savedInstanceState.getInt(CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY, -1)
       if (currentExpandedChapterListIndex == -1) {
         currentExpandedChapterListIndex = null
       }
@@ -82,7 +83,7 @@ class TopicLessonsFragment :
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     if (currentExpandedChapterListIndex != null) {
-      outState.putInt(KEY_CURRENT_EXPANDED_LIST_INDEX, currentExpandedChapterListIndex!!)
+      outState.putInt(CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY, currentExpandedChapterListIndex!!)
     }
   }
 

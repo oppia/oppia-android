@@ -54,31 +54,28 @@
 
         <TextView
           android:id="@+id/admin_auth_heading_textview"
+          style="@style/Heading2"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="28dp"
           android:layout_marginTop="40dp"
           android:layout_marginEnd="28dp"
-          android:fontFamily="sans-serif-medium"
           android:maxLines="2"
           android:text="@string/admin_auth_heading"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="20sp"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
           android:id="@+id/admin_auth_sub_text"
+          style="@style/Subtitle1"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_marginStart="28dp"
           android:layout_marginTop="12dp"
           android:layout_marginEnd="28dp"
-          android:fontFamily="sans-serif"
           android:text="@string/admin_auth_sub"
           android:textColor="@color/oppiaAdminAuthSecondaryText"
-          android:textSize="16sp"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/admin_auth_heading_textview" />
@@ -99,7 +96,7 @@
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/admin_auth_sub_text"
           profile:error="@{viewModel.errorMessage}"
-          profile:labelMargin="@{@dimen/margin_8}" />
+          profile:labelMargin="@{@dimen/admin_auth_input_pin_label_margin}" />
 
         <Button
           android:id="@+id/admin_auth_submit_button"

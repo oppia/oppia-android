@@ -143,7 +143,7 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
-    topicListController.getTopicList()
+    topicListController.getTopicList().toLiveData()
   }
 
   private fun subscribeToTopicList() {

@@ -1,6 +1,7 @@
 package org.oppia.android.app.testing.administratorcontrols
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -15,11 +16,9 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -55,6 +54,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -65,6 +65,7 @@ import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
@@ -74,26 +75,37 @@ import javax.inject.Singleton
 )
 class AdministratorControlsFragmentTest {
 
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     Intents.init()
-    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
   @Test
-  // TODO(#973): Fix AdministratorControlsFragmentTest
-  @Ignore
   fun testAdministratorControlsFragment_clickEditProfile_checkSendingTheCorrectIntent() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.edit_profiles_text_view))
         .perform(click())
       intended(hasComponent(ProfileListActivity::class.java.name))
@@ -101,14 +113,13 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  // TODO(#973): Fix AdministratorControlsFragmentTest
-  @Ignore
   fun testAdministratorControlsFragment_clickAppVersion_checkSendingTheCorrectIntent() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           3
@@ -121,14 +132,13 @@ class AdministratorControlsFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  // TODO(#973): Fix AdministratorControlsFragmentTest
-  @Ignore
   fun testAdministratorControlsFragment_clickEditProfile_checkLoadingTheCorrectFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.edit_profiles_text_view))
         .perform(click())
       it.onActivity { activity ->
@@ -142,14 +152,13 @@ class AdministratorControlsFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  // TODO(#973): Fix AdministratorControlsFragmentTest
-  @Ignore
   fun testAdministratorControlsFragment_clickAppVersion_checkLoadingTheCorrectFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           3
@@ -167,7 +176,7 @@ class AdministratorControlsFragmentTest {
 
   private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-      ApplicationProvider.getApplicationContext(),
+      context,
       profileId
     )
   }
