@@ -64,7 +64,6 @@
           app:realtimeBlurRadius="15dp" />
 
         <View
-          android:id="@+id/overlay_rectangle"
           android:layout_width="match_parent"
           android:layout_height="0dp"
           android:alpha="0.5"
@@ -76,7 +75,6 @@
           app:layout_constraintTop_toTopOf="@id/chapter_thumbnail" />
 
         <ImageView
-          android:id="@+id/lock_thumbnail"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:scaleType="center"
