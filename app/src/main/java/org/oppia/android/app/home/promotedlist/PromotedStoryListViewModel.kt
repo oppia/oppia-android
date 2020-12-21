@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
+import org.oppia.android.app.model.RecommendedActivityList
 import org.oppia.android.app.shim.IntentFactoryShim
 
 /** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
@@ -15,7 +16,8 @@ class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
   private val internalProfileId: Int,
   private val intentFactoryShim: IntentFactoryShim,
-  val promotedStoryList: List<PromotedStoryViewModel>
+  val promotedStoryList: List<PromotedStoryViewModel>,
+  val recommendedActivityList: RecommendedActivityList
 ) : HomeItemViewModel(),
   RouteToRecentlyPlayedListener {
 
@@ -35,11 +37,22 @@ class PromotedStoryListViewModel(
     }
   }
 
+  fun getHeader(): String{
+    if (recommendedActivityList.recommendedStoryList.suggestStoryCount != 0){
+      return activity.getString(R.string.recommended_stories)
+    }else if (recommendedActivityList.recommendedStoryList.recentlyPlayedCount != 0){
+      return activity.getString(R.string.recently_played_stories)
+    }else {
+      return activity.getString(R.string.last_played_stories)
+    }
+  }
   /**
    * Determines and returns the visibility for the "View All" button.
    */
   fun getButtonVisibility(): Int {
-    if (activity.resources.getBoolean(R.bool.isTablet)) {
+    if (recommendedActivityList.recommendedStoryList.suggestStoryCount != 0){
+      return View.INVISIBLE
+    }else if (activity.resources.getBoolean(R.bool.isTablet)) {
       when (Resources.getSystem().configuration.orientation) {
         Configuration.ORIENTATION_PORTRAIT -> {
           return if (promotedStoryList.size > 2) View.VISIBLE else View.INVISIBLE

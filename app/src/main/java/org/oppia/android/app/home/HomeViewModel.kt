@@ -133,7 +133,8 @@ class HomeViewModel(
           activity,
           internalProfileId,
           intentFactoryShim,
-          storyViewModelList
+          storyViewModelList,
+          recommendedActivityList
         )
       } else null
     }else if(recommendedActivityList.recommendationTypeCase == RecommendedActivityList.RecommendationTypeCase.COMING_SOON_TOPIC_LIST) {

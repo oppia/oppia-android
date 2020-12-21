@@ -1,14 +1,9 @@
 package org.oppia.android.app.home.promotedlist
 
-import android.content.res.Configuration
-import android.content.res.Resources
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
-import org.oppia.android.app.home.RouteToRecentlyPlayedListener
-import org.oppia.android.app.shim.IntentFactoryShim
 
 /** [ViewModel] for the upcoming topic list displayed in [HomeFragment]. */
 class ComingSoonTopicListViewModel(
