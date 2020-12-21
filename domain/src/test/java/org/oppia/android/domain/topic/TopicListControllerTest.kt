@@ -22,11 +22,13 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.LessonThumbnailGraphic
-import org.oppia.android.app.model.OngoingStoryList
+import org.oppia.android.app.model.RecommendedActivityList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.TopicList
+import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -77,13 +79,19 @@ class TopicListControllerTest {
   lateinit var mockTopicListObserver: Observer<AsyncResult<TopicList>>
 
   @Mock
-  lateinit var mockOngoingStoryListObserver: Observer<AsyncResult<OngoingStoryList>>
+  lateinit var mockComingSoonTopicListObserver: Observer<AsyncResult<ComingSoonTopicList>>
+
+  @Mock
+  lateinit var mockRecommendedActivityListObserver: Observer<AsyncResult<RecommendedActivityList>>
 
   @Captor
   lateinit var topicListResultCaptor: ArgumentCaptor<AsyncResult<TopicList>>
 
   @Captor
-  lateinit var ongoingStoryListResultCaptor: ArgumentCaptor<AsyncResult<OngoingStoryList>>
+  lateinit var comingSoonTopicListResultCaptor: ArgumentCaptor<AsyncResult<ComingSoonTopicList>>
+
+  @Captor
+  lateinit var recommendedActivityListResultCaptor: ArgumentCaptor<AsyncResult<RecommendedActivityList>>
 
   private lateinit var profileId0: ProfileId
 
@@ -99,7 +107,7 @@ class TopicListControllerTest {
 
   // TODO(#15): Add tests for recommended lessons rather than promoted, and tests for the 'continue playing' LiveData
   //  not providing any data for cases when there are no ongoing lessons. Also, add tests for other uncovered cases
-  //  (such as having and not having lessons in either of the OngoingStoryList section, or AsyncResult errors).
+  //  (such as having and not having lessons in either of the RecommendedActivityList section, or AsyncResult errors).
 
   @Test
   fun testRetrieveTopicList_isSuccessful() {
@@ -290,7 +298,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveRecommendedStoryList_markChapterCompletedFracStory0Exp0_recommendedStoryListIsCorrect() {
+  fun testRetrieveRecommendedActivityList_markChapterCompletedFracStory0Exp0_recommendedStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -300,16 +308,16 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getRecommendedActivityList(profileId0).toLiveData()
+      .observeForever(mockRecommendedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetRecommendedActivityListSucceeded()
 
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recommendedStoryCount).isEqualTo(2)
-    verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recommendedStoryList[0])
-    verifyOngoingStoryAsRatioStory0Exploration0(ongoingTopicList.recommendedStoryList[1])
+    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    assertThat(recommendedActivityList.recommendedStoryList.suggestStoryCount).isEqualTo(2)
+    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.suggestStoryList[0])
+    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.suggestStoryList[1])
   }
 
   @Test
@@ -324,20 +332,20 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getRecommendedActivityList(profileId0).toLiveData()
+      .observeForever(mockRecommendedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetRecommendedActivityListSucceeded()
 
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recommendedStoryCount).isEqualTo(2)
-    verifyOngoingStoryAsFractionStory0Exploration0(ongoingTopicList.recommendedStoryList[0])
-    verifyOngoingStoryAsRatioStory0Exploration0(ongoingTopicList.recommendedStoryList[1])
+    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    assertThat(recommendedActivityList.recommendedStoryList.suggestStoryCount).isEqualTo(2)
+    verifyOngoingStoryAsFractionStory0Exploration0(recommendedActivityList.recommendedStoryList.suggestStoryList[0])
+    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.suggestStoryList[1])
   }
 
   @Test
-  fun testRetrieveRecommendedStoryList_markAllChaptersCompletedInFractions_recommendedListIsCorrect() {
+  fun testRetrieveSuggestedStoryList_markAllChaptersCompletedInFractions_suggestedStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -356,14 +364,14 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getRecommendedActivityList(profileId0).toLiveData()
+      .observeForever(mockRecommendedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetRecommendedActivityListSucceeded()
 
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recommendedStoryCount).isEqualTo(1)
+    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    assertThat(recommendedActivityList.recommendedStoryList.suggestStoryCount).isEqualTo(1)
     verifyDefaultRecommendedStoryListSucceeded()
   }
 
@@ -396,16 +404,16 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getRecommendedActivityList(profileId0).toLiveData()
+      .observeForever(mockRecommendedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetRecommendedActivityListSucceeded()
 
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
+    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(1)
 
-    verifyOngoingStoryAsFirstTopicStory0Exploration0(ongoingTopicList.recentStoryList[0])
+    verifyOngoingStoryAsFirstTopicStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedList[0])
   }
 
   @Test
@@ -438,20 +446,20 @@ class TopicListControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     testCoroutineDispatchers.runCurrent()
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getRecommendedActivityList(profileId0).toLiveData()
+      .observeForever(mockRecommendedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetRecommendedActivityListSucceeded()
 
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
-    verifyOngoingStoryAsRatioStory0Exploration0(ongoingTopicList.recentStoryList[0])
-    verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[1])
+    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(2)
+    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedList[0])
+    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedList[1])
   }
 
   @Test
-  fun testRetrieveStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_ongoingListIsCorrect() {
+  fun testRetrieveRecentlyStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_recentStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -479,17 +487,17 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getRecommendedActivityList(profileId0).toLiveData()
+      .observeForever(mockRecommendedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetRecommendedActivityListSucceeded()
 
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(3)
-    verifyOngoingStoryAsRatioStory0Exploration1(ongoingTopicList.recentStoryList[0])
-    verifyOngoingStoryAsRatioStory1Exploration3(ongoingTopicList.recentStoryList[1])
-    verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[2])
+    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(3)
+    verifyOngoingStoryAsRatioStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedList[0])
+    verifyOngoingStoryAsRatioStory1Exploration3(recommendedActivityList.recommendedStoryList.recentlyPlayedList[1])
+    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedList[2])
   }
 
   @Test
@@ -512,15 +520,15 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getRecommendedActivityList(profileId0).toLiveData()
+      .observeForever(mockRecommendedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetRecommendedActivityListSucceeded()
 
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(0)
-    assertThat(ongoingTopicList.recommendedStoryCount).isEqualTo(1)
+    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(0)
+    assertThat(recommendedActivityList.recommendedStoryList.suggestStoryCount).isEqualTo(1)
   }
 
   @Test
@@ -561,21 +569,24 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getRecommendedActivityList(profileId0).toLiveData()
+      .observeForever(mockRecommendedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetRecommendedActivityListSucceeded()
 
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(0)
-    assertThat(ongoingTopicList.recommendedStoryCount).isEqualTo(0)
+    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(0)
+    assertThat(recommendedActivityList.recommendedStoryList.suggestStoryCount).isEqualTo(0)
 
-    val comingSoontopicListLiveData = topicListController.getComingSoonTopicList()
+    val comingSoonTopicListLiveData = topicListController.getComingSoonTopicList().toLiveData()
 
-    val topicListResult = comingSoontopicListLiveData.value
-    assertThat(topicListResult).isNotNull()
-    assertThat(topicListResult!!.isSuccess()).isTrue()
+    comingSoonTopicListLiveData.observeForever(mockComingSoonTopicListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockComingSoonTopicListObserver).onChanged(comingSoonTopicListResultCaptor.capture())
+    val comingSoonTopicListResult = comingSoonTopicListResultCaptor.value
+    assertThat(comingSoonTopicListResult!!.isSuccess()).isTrue()
   }
 
   @Test
@@ -607,41 +618,41 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getRecommendedActivityList(profileId0).toLiveData()
+      .observeForever(mockRecommendedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetRecommendedActivityListSucceeded()
 
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
-    assertThat(ongoingTopicList.olderStoryCount).isEqualTo(2)
-    verifyOngoingStoryAsRatioStory0Exploration1(ongoingTopicList.olderStoryList[0])
-    verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.olderStoryList[1])
-    verifyOngoingStoryAsRatioStory1Exploration3(ongoingTopicList.recentStoryList[0])
+    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(1)
+    assertThat(recommendedActivityList.recommendedStoryList.olderStoryCount).isEqualTo(2)
+    verifyOngoingStoryAsRatioStory0Exploration1(recommendedActivityList.recommendedStoryList.olderStoryList[0])
+    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.olderStoryList[1])
+    verifyOngoingStoryAsRatioStory1Exploration3(recommendedActivityList.recommendedStoryList.recentlyPlayedList[0])
   }
 
-  private fun verifyGetOngoingStoryListSucceeded() {
+  private fun verifyGetRecommendedActivityListSucceeded() {
     verify(
-      mockOngoingStoryListObserver,
+      mockRecommendedActivityListObserver,
       atLeastOnce()
-    ).onChanged(ongoingStoryListResultCaptor.capture())
-    assertThat(ongoingStoryListResultCaptor.value.isSuccess()).isTrue()
+    ).onChanged(recommendedActivityListResultCaptor.capture())
+    assertThat(recommendedActivityListResultCaptor.value.isSuccess()).isTrue()
   }
 
-  private fun verifyDefaultOngoingStoryListSucceeded() {
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(4)
-    verifyOngoingStoryAsFirstTopicStory0Exploration0(ongoingTopicList.recentStoryList[0])
-    verifyOngoingStoryAsSecondTopicStory0Exploration0(ongoingTopicList.recentStoryList[1])
-    verifyOngoingStoryAsFractionStory0Exploration0(ongoingTopicList.recentStoryList[2])
-    verifyOngoingStoryAsRatioStory0Exploration0(ongoingTopicList.recentStoryList[3])
+  private fun verifyDefaultRecommendedActivityListSucceeded() {
+    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(4)
+    verifyOngoingStoryAsFirstTopicStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedList[0])
+    verifyOngoingStoryAsSecondTopicStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedList[1])
+    verifyOngoingStoryAsFractionStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedList[2])
+    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedList[3])
   }
 
   private fun verifyDefaultRecommendedStoryListSucceeded() {
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recommendedStoryCount).isEqualTo(1)
-    verifyOngoingStoryAsRatioStory0Exploration0(ongoingTopicList.recommendedStoryList[0])
+    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    assertThat(recommendedActivityList.recommendedStoryList.suggestStoryCount).isEqualTo(1)
+    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.suggestStoryList[0])
   }
 
   private fun verifyOngoingStoryAsFirstTopicStory0Exploration0(promotedStory: PromotedStory) {
