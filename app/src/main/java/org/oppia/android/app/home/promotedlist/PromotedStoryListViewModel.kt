@@ -40,7 +40,7 @@ class PromotedStoryListViewModel(
   fun getHeader(): String{
     if (recommendedActivityList.recommendedStoryList.suggestStoryCount != 0){
       return activity.getString(R.string.recommended_stories)
-    }else if (recommendedActivityList.recommendedStoryList.recentlyPlayedCount != 0){
+    }else if (recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount != 0){
       return activity.getString(R.string.recently_played_stories)
     }else {
       return activity.getString(R.string.last_played_stories)

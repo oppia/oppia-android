@@ -159,11 +159,10 @@ class HomeViewModel(
   ): List<PromotedStoryViewModel> {
     val storyList = if (recommendedStoryList.suggestStoryCount != 0) {
       recommendedStoryList.suggestStoryList
-    } else if (recommendedStoryList.recentlyPlayedCount != 0) {
-      recommendedStoryList.recentlyPlayedList
+    } else if (recommendedStoryList.recentlyPlayedStoryCount != 0) {
+      recommendedStoryList.recentlyPlayedStoryList
     } else {
-      // TODO(#936): Optimise this as part of recommended stories.
-      recommendedStoryList.olderStoryList
+      recommendedStoryList.olderPlayedStoryList
     }
     return storyList.take(promotedStoryListLimit)
       .map { promotedStory ->
