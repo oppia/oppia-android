@@ -25,10 +25,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: develop
           VALIDATE_ALL_CODEBASE: true
-          VALIDATE_MD: false
           VALIDATE_XML: true
-          VALIDATE_KOTLIN: false
-          VALIDATE_JAVA: false
-          VALIDATE_PROTOBUF: false
-          VALIDATE_YAML: false
-          VALIDATE_BASH: false
