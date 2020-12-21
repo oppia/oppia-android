@@ -6,7 +6,6 @@ import "subtitled_html.proto";
 import "thumbnail.proto";
 import "translation.proto";
 import "voiceover.proto";
-import "profile.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -152,12 +151,11 @@ message CompletedStory {
 
 // Corresponds to the list of stories the player is currently playing across all topics.
 message OngoingStoryList {
-
   // Ongoing stories from within the last 7 days.
   repeated PromotedStory recent_story = 1;
 
   // Other ongoing stories from longer than 7 days ago.
-  repeated PromotedStory older_story = 3;
+  repeated PromotedStory older_story = 2;
 }
 
 // The summary of a story that should be promoted, either because it's been started and not yet completed by the player,
@@ -240,15 +238,15 @@ message TopicProgress {
   string topic_id = 1;
 
   // Map from story ID to StoryProgress.
-  map<string, StoryProgress> story_progress = 3;
-
-  // Indicates type of story promoted
-   PromotedStoriesType promoted_stories_type = 4;
+  map<string, StoryProgress> story_progress = 2;
 
   // Timestamp to record last time the exploration was played in ms.
-  int64 last_played_timestamp = 5;
+  int64 last_played_timestamp = 4;
 }
 
+// A structure corresponding to the Promoted Stories. This structure is set up
+// to properly account for recently_played stories, for recommended stories
+// and for coming soon topics.
 message RecommendedActivityList {
   oneof recommendation_type {
     RecommendedStoryList recommended_story_list = 1;
@@ -256,41 +254,42 @@ message RecommendedActivityList {
   }
 }
 
+// Corresponds to the list of stories the player is currently playing across all topics and Recommended stories.
 message RecommendedStoryList {
-  repeated PromotedStory recently_played = 1;
-  repeated PromotedStory older_story = 2;
+   // Ongoing stories from within the last 7 days.
+  repeated PromotedStory recently_played_story   = 1;
+
+  // Other ongoing stories from longer than 7 days ago.
+  repeated PromotedStory older_played_story = 2;
+
+  // Stories recommended to the user.
   repeated PromotedStory suggest_story = 3;
 }
 
+// Corresponds to the list of Coming soon topics that can be shown on the homescreen.
 message ComingSoonTopicList {
+// Upcoming topics for the user.
   repeated UpcomingTopic upcoming_topic = 1;
 }
 
+// Represents upcoming topics
 message UpcomingTopic {
+  // The ID of the topic.
   string topic_id = 1;
+
+  // The name of the topic.
   string name = 2;
+
+  // The structural version of the topic.
   int32 version = 3;
+
+  // The estimated release date/timestamp of topic.
   int64 estimated_release_unix_timestamp = 4;
+
+  // The associated thumbnail that should be displayed with this topic.
   LessonThumbnail lesson_thumbnail = 5;
 }
-// A structure corresponding to the Promoted Stories. This structure is set up
-// to properly account for recently_played stories, for recommended stories
-// and for coming soon topics.
-message PromotedStoriesType {
-  oneof promoted_stories_type {
-    // Indicates recently played topics from the topic list.
-    bool recently_played = 1;
 
-    // Indicates last played topics more than a week ago from the topic list.
-    bool last_played = 2;
-
-    // Indicates recommended from the topic list.
-    bool recommended = 3;
-
-     // Indicates coming soon topics.
-    bool coming_soon = 4;
-  }
-}
 // Represents the story progress.
 message StoryProgress {
   // The ID corresponding to the story.
