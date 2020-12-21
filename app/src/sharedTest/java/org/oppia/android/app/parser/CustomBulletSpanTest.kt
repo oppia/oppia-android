@@ -2,7 +2,12 @@ package org.oppia.android.app.parser
 
 import android.app.Application
 import android.content.Context
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.BulletSpan
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.getSpans
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -62,7 +67,6 @@ class CustomBulletSpanTest {
   @Test
   fun customBulletSpan_checkLeadingMargin() {
     val context = ApplicationProvider.getApplicationContext<TestApplication>()
-    val span = CustomBulletSpan(context)
     val bulletRadius = context.resources.getDimensionPixelSize(
       org.oppia.android.util.R.dimen.bullet_radius
     )
@@ -73,9 +77,19 @@ class CustomBulletSpanTest {
       org.oppia.android.util.R.dimen.spacing_before_text
     )
     val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
-
-    val bulletSpanMargin = span.getLeadingMargin(true)
-    assertThat(bulletSpanMargin).isEqualTo(expectedMargin)
+    val testString = SpannableString("Text with \nBullet Point")
+    testString.setSpan(BulletSpan(), 10, 22, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    val spannableString = SpannableStringBuilder(testString)
+    val customBulletSpannble = CustomBulletSpan.replaceBulletSpan(spannableString, context)
+    customBulletSpannble.getSpans<CustomBulletSpan>(
+      0,
+      spannableString.length,
+      CustomBulletSpan::class.java
+    ).forEach {
+      val margin = it.getLeadingMargin(true)
+      assertThat(margin).isEqualTo(expectedMargin)
+    }
+    assertThat(customBulletSpannble.getSpans<CustomBulletSpan>().size).isGreaterThan(0)
   }
 
   @Singleton
