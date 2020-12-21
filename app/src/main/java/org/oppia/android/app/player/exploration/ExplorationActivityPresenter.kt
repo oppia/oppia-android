@@ -114,6 +114,23 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
+  fun loadExplorationManagerFragment() {
+    if (getExplorationManagerFragment() == null) {
+      val explorationManagerFragment = ExplorationManagerFragment()
+      val args = Bundle()
+      args.putInt(
+        ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
+        internalProfileId
+      )
+      explorationManagerFragment.arguments = args
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_fragment_placeholder,
+        explorationManagerFragment,
+        TAG_EXPLORATION_MANAGER_FRAGMENT
+      ).commitNow()
+    }
+  }
+
   fun loadExplorationFragment(readingTextSize: ReadingTextSize) {
     if (getExplorationFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(

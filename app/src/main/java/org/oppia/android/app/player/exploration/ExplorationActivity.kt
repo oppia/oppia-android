@@ -47,6 +47,11 @@ class ExplorationActivity :
   private lateinit var state: State
   private var backflowScreen: Int? = null
 
+  override fun onResume() {
+    super.onResume()
+    explorationActivityPresenter.loadExplorationManagerFragment()
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
