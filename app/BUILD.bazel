@@ -374,6 +374,7 @@ Place your file here if:
 BINDING_ADAPTERS = [
     "src/main/java/org/oppia/android/app/databinding/ConstraintLayoutAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/EditTextBindingAdapters.java",
+    "src/main/java/org/oppia/android/app/databinding/TextInputLayoutBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/GuidelineBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/MarginBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/StateAssemblerMarginBindingAdapters.java",

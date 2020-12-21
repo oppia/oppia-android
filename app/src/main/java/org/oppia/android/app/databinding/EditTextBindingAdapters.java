@@ -13,9 +13,4 @@ public final class EditTextBindingAdapters {
   public static void bindTextWatcher(@NonNull EditText editText, TextWatcher textWatcher) {
     editText.addTextChangedListener(textWatcher);
   }
-
-  @BindingAdapter("app:error")
-  public static void setError(@NonNull EditText editText, String errorMessage) {
-    editText.setError(errorMessage);
-  }
 }
