@@ -9,24 +9,25 @@ on:
       - develop
 
 jobs:
-  name: Lint Code Base
-  runs-on:  ${{ matrix.os }}
-  strategy:
-    matrix:
-      os: [ubuntu-18.04]
-  steps:
-    - name: Checkout Code
-    - uses: actions/checkout@v2
+  linters:
+    name: Lint Tests
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
 
-    - name: Lint Code Base
-      uses: github/super-linter@v3
-      env:
-        DEFAULT_BRANCH: develop
-        VALIDATE_ALL_CODEBASE: true
-        VALIDATE_MD: false
-        VALIDATE_XML: true
-        VALIDATE_KOTLIN: false
-        VALIDATE_JAVA: false
-        VALIDATE_PROTOBUF: false
-        VALIDATE_YAML: false
-        VALIDATE_BASH: false
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Lint Code Base
+        uses: github/super-linter@v3
+        env:
+          DEFAULT_BRANCH: develop
+          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_MD: false
+          VALIDATE_XML: true
+          VALIDATE_KOTLIN: false
+          VALIDATE_JAVA: false
+          VALIDATE_PROTOBUF: false
+          VALIDATE_YAML: false
+          VALIDATE_BASH: false
