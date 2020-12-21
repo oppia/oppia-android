@@ -6,8 +6,10 @@
 <module name = "Checker">
   <property name="charset" value="UTF-8"/>
 
+  <!-- Helps in showing error when check runs -->
   <property name="severity" value="error"/>
 
+  <!-- extension of file which needs to check with this configuration file -->
   <property name="fileExtensions" value="java"/>
 
   <!-- Checks for whitespace -->
@@ -17,7 +19,6 @@
   </module>
 
   <module name="LineLength">
-    <property name="fileExtensions" value="java"/>
     <property name="max" value="100"/>
     <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
   </module>
