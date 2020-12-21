@@ -13,7 +13,6 @@ import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.PromotedStoriesType
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.RecommendedActivityList
 import org.oppia.android.app.model.RecommendedStoryList
@@ -381,9 +380,9 @@ class TopicListController @Inject constructor(
                   recentlyPlayerChapterSummary.explorationId
                 )
                 if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
-                  recommendedStoryBuilder.addRecentlyPlayed(promotedStory)
+                  recommendedStoryBuilder.addRecentlyPlayedStory(promotedStory)
                 } else {
-                  recommendedStoryBuilder.addOlderStory(promotedStory)
+                  recommendedStoryBuilder.addOlderPlayedStory(promotedStory)
                 }
               }
             } else if (lastCompletedChapterProgress != null &&
@@ -406,21 +405,21 @@ class TopicListController @Inject constructor(
                   nextChapterSummary.explorationId
                 )
                 if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
-                  recommendedStoryBuilder.addRecentlyPlayed(promotedStory)
+                  recommendedStoryBuilder.addRecentlyPlayedStory(promotedStory)
                 } else {
-                  recommendedStoryBuilder.addOlderStory(promotedStory)
+                  recommendedStoryBuilder.addOlderPlayedStory(promotedStory)
                 }
               }
             }
           }
           recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
         }
-        if (recommendedStoryBuilder.recentlyPlayedCount == 0 && recommendedStoryBuilder.olderStoryCount > 0
+        if (recommendedStoryBuilder.recentlyPlayedStoryCount == 0 && recommendedStoryBuilder.olderPlayedStoryCount > 0
           && recommendedStoryBuilder.suggestStoryCount == 0
         ) {
           recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
         }
-        if (recommendedStoryBuilder.recentlyPlayedCount == 0 && recommendedStoryBuilder.olderStoryCount == 0) {
+        if (recommendedStoryBuilder.recentlyPlayedStoryCount == 0 && recommendedStoryBuilder.olderPlayedStoryCount == 0) {
            recommendedStoryBuilder.addAllSuggestStory(
             createRecommendedStoryList(
               topicProgressList

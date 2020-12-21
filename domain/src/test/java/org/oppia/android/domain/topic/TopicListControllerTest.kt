@@ -411,9 +411,9 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(1)
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(1)
 
-    verifyOngoingStoryAsFirstTopicStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedList[0])
+    verifyOngoingStoryAsFirstTopicStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0])
   }
 
   @Test
@@ -453,9 +453,9 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(2)
-    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedList[0])
-    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedList[1])
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(2)
+    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0])
+    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[1])
   }
 
   @Test
@@ -494,10 +494,10 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(3)
-    verifyOngoingStoryAsRatioStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedList[0])
-    verifyOngoingStoryAsRatioStory1Exploration3(recommendedActivityList.recommendedStoryList.recentlyPlayedList[1])
-    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedList[2])
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(3)
+    verifyOngoingStoryAsRatioStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0])
+    verifyOngoingStoryAsRatioStory1Exploration3(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[1])
+    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[2])
   }
 
   @Test
@@ -527,7 +527,7 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(0)
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(0)
     assertThat(recommendedActivityList.recommendedStoryList.suggestStoryCount).isEqualTo(1)
   }
 
@@ -576,7 +576,7 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(0)
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(0)
     assertThat(recommendedActivityList.recommendedStoryList.suggestStoryCount).isEqualTo(0)
 
     val comingSoonTopicListLiveData = topicListController.getComingSoonTopicList().toLiveData()
@@ -625,11 +625,11 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(1)
-    assertThat(recommendedActivityList.recommendedStoryList.olderStoryCount).isEqualTo(2)
-    verifyOngoingStoryAsRatioStory0Exploration1(recommendedActivityList.recommendedStoryList.olderStoryList[0])
-    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.olderStoryList[1])
-    verifyOngoingStoryAsRatioStory1Exploration3(recommendedActivityList.recommendedStoryList.recentlyPlayedList[0])
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(1)
+    assertThat(recommendedActivityList.recommendedStoryList.olderPlayedStoryCount).isEqualTo(2)
+    verifyOngoingStoryAsRatioStory0Exploration1(recommendedActivityList.recommendedStoryList.olderPlayedStoryList[0])
+    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.olderPlayedStoryList[1])
+    verifyOngoingStoryAsRatioStory1Exploration3(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0])
   }
 
   private fun verifyGetRecommendedActivityListSucceeded() {
@@ -642,11 +642,11 @@ class TopicListControllerTest {
 
   private fun verifyDefaultRecommendedActivityListSucceeded() {
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedCount).isEqualTo(4)
-    verifyOngoingStoryAsFirstTopicStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedList[0])
-    verifyOngoingStoryAsSecondTopicStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedList[1])
-    verifyOngoingStoryAsFractionStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedList[2])
-    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedList[3])
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(4)
+    verifyOngoingStoryAsFirstTopicStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0])
+    verifyOngoingStoryAsSecondTopicStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[1])
+    verifyOngoingStoryAsFractionStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[2])
+    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[3])
   }
 
   private fun verifyDefaultRecommendedStoryListSucceeded() {
