@@ -47,8 +47,8 @@ class AdminAuthActivityPresenter @Inject constructor(
     setTitleAndSubTitle(binding)
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
-    binding.adminAuthInputPinEditText.onTextChanged { comfirmPin ->
-      comfirmPin?.let {
+    binding.adminAuthInputPinEditText.onTextChanged { confirmPin ->
+      confirmPin?.let {
         authViewModel.errorMessage.set("")
       }
     }
