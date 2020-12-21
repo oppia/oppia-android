@@ -249,6 +249,7 @@ message TopicProgress {
   int64 last_played_timestamp = 5;
 }
 
+// Represents the recommended stories and coming soon topics.
 message RecommendedActivityList {
   oneof recommendation_type {
     RecommendedStoryList recommended_story_list = 1;
@@ -256,16 +257,26 @@ message RecommendedActivityList {
   }
 }
 
+// Corresponds to the list of stories the player is currently playing across all topics and Recommended stories.
 message RecommendedStoryList {
+   // Ongoing stories from within the last 7 days.
   repeated PromotedStory recently_played = 1;
+
+  // Other ongoing stories from longer than 7 days ago.
   repeated PromotedStory older_story = 2;
+
+  // Stories recommended to the user.
   repeated PromotedStory suggest_story = 3;
 }
 
+
+// Corresponds to the list of Coming soon topics that can be shown on the homescreen.
 message ComingSoonTopicList {
+// Upcoming topics for the user.
   repeated UpcomingTopic upcoming_topic = 1;
 }
 
+// Represents upcoming topics
 message UpcomingTopic {
   string topic_id = 1;
   string name = 2;
