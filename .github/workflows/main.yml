@@ -44,6 +44,12 @@ jobs:
     
     -  name: Protobuf lint check
        run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
+
+    - name: XML lint check
+      run: ./gradlew lintDebug
+      uses: yutailang0119/action-android-lint@v1.0.2
+        with:
+          xml_path: app/build/reports/lint-results.xml
      
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
