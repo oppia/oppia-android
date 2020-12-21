@@ -3,14 +3,17 @@ package org.oppia.android.app.profile
 import android.app.Application
 import android.content.Context
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
-import androidx.test.espresso.action.ViewActions.replaceText
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -21,6 +24,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import dagger.Component
 import org.hamcrest.Description
@@ -40,6 +44,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.player.state.StateFragmentTest
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -60,6 +65,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.IsOnRobolectric
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -126,8 +132,7 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        click(),
-        replaceText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -153,8 +158,7 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        click(),
-        replaceText("12345"),
+        appendText("12345"),
         pressImeActionButton()
       )
       intended(hasComponent(AddProfileActivity::class.java.name))
@@ -178,8 +182,7 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        click(),
-        replaceText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -205,8 +208,7 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        click(),
-        replaceText("12345"),
+        appendText("12345"),
         pressImeActionButton()
       )
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
@@ -230,13 +232,12 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        click(),
-        replaceText("12354"),
+        appendText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasErrorText(context.resources.getString(R.string.admin_auth_incorrect))))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
@@ -258,12 +259,11 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        click(),
-        replaceText("12354"),
+        appendText("12354"),
         pressImeActionButton()
       )
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasErrorText(context.resources.getString(R.string.admin_auth_incorrect))))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
@@ -284,8 +284,7 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        click(),
-        replaceText("123"),
+        appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -295,7 +294,7 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        replaceText("4"),
+        appendText("4"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_input_pin))
@@ -321,8 +320,7 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        click(),
-        replaceText("123"),
+        appendText("123"),
         pressImeActionButton()
       )
       onView(
@@ -331,7 +329,7 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        replaceText("4"),
+        appendText("4"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_input_pin))
@@ -356,8 +354,7 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        click(),
-        replaceText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -486,8 +483,7 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        click(),
-        replaceText("12345"),
+        appendText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -521,16 +517,15 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        click(),
-        replaceText("12354"),
+        appendText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasErrorText(context.resources.getString(R.string.admin_auth_incorrect))))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasErrorText(context.resources.getString(R.string.admin_auth_incorrect))))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
@@ -552,21 +547,21 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        click(),
-        replaceText("12354"),
+        appendText("12354"),
         pressImeActionButton()
       )
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasErrorText(context.resources.getString(R.string.admin_auth_incorrect))))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasErrorText(context.resources.getString(R.string.admin_auth_incorrect))))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
-  private fun hasErrorText(expectedErrorText: String): Matcher<View> {
+  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
     return object : TypeSafeMatcher<View>() {
       override fun matchesSafely(view: View): Boolean {
+        val expectedErrorText = context.resources.getString(expectedErrorTextId)
         return (view as TextInputLayout).error == expectedErrorText
       }
 
@@ -586,6 +581,35 @@ class AdminAuthActivityTest {
         description.appendText("")
       }
     }
+  }
+
+  /**
+   * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
+   * properly input digits for text views using 'android:digits'. See
+   * https://github.com/robolectric/robolectric/issues/5110 for specifics.
+   */
+  private fun appendText(text: String): ViewAction {
+    val typeTextViewAction = typeText(text)
+    return object : ViewAction {
+      override fun getDescription(): String = typeTextViewAction.description
+
+      override fun getConstraints(): Matcher<View> = typeTextViewAction.constraints
+
+      override fun perform(uiController: UiController?, view: View?) {
+        // Appending text only works on Robolectric, whereas Espresso needs to use typeText().
+        if (isOnRobolectric()) {
+          (view as? TextInputEditText)?.append(text)
+          testCoroutineDispatchers.runCurrent()
+        } else {
+          typeTextViewAction.perform(uiController, view)
+        }
+      }
+    }
+  }
+
+  private fun isOnRobolectric(): Boolean {
+    return ApplicationProvider.getApplicationContext<TestApplication>()
+      .isOnRobolectric()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -613,6 +637,9 @@ class AdminAuthActivityTest {
     interface Builder : ApplicationComponent.Builder
 
     fun inject(adminAuthActivityTest: AdminAuthActivityTest)
+
+    @IsOnRobolectric
+    fun isOnRobolectric(): Boolean
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -625,6 +652,8 @@ class AdminAuthActivityTest {
     fun inject(adminAuthActivityTest: AdminAuthActivityTest) {
       component.inject(adminAuthActivityTest)
     }
+
+    fun isOnRobolectric(): Boolean = component.isOnRobolectric()
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
