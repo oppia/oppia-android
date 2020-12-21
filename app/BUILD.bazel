@@ -360,6 +360,7 @@ Place your file here if:
 BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/databinding/DrawableBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/ImageViewBindingAdapters.java",
+    "src/main/java/org/oppia/android/app/databinding/PinViewBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/TextViewBindingAdapters.java",
 ]
 
