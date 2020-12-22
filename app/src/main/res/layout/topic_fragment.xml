@@ -50,6 +50,7 @@
           android:singleLine="true"
           android:text="@{String.format(@string/topic_name, viewModel.topicNameLiveData)}"
           android:textColor="@color/white"
+
           android:textSize="20sp" />
       </androidx.appcompat.widget.Toolbar>
 

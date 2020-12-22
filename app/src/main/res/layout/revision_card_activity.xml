@@ -45,6 +45,7 @@
           android:singleLine="true"
           android:textAlignment="viewStart"
           android:textColor="@color/white"
+
           android:textSize="20sp" />
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

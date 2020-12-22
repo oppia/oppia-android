@@ -51,6 +51,7 @@
           android:singleLine="true"
           android:text="@{viewModel.storyNameLiveData}"
           android:textColor="@color/white"
+
           android:textSize="20sp" />
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
