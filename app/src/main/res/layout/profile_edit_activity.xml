@@ -209,12 +209,14 @@
             android:id="@+id/profile_edit_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="150dp"
             android:fontFamily="sans-serif-medium"
             android:text="@{viewModel.profile.name}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            profile:ignore="TextViewEdits" />
 
           <TextView
             android:id="@+id/profile_edit_created"
