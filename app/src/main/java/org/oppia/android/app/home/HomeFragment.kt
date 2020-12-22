@@ -12,8 +12,7 @@ import javax.inject.Inject
 
 /** Fragment that contains an introduction to the app. */
 class HomeFragment : InjectableFragment(), TopicSummaryClickListener {
-  @Inject
-  lateinit var homeFragmentPresenter: HomeFragmentPresenter
+  @Inject lateinit var homeFragmentPresenter: HomeFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
