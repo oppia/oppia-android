@@ -166,11 +166,19 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  @Config(qualifiers = "land-xxhdpi")
   fun testLessonsPlayFragment_loadRatiosTopic_configurationChange_storyName_isCorrect() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       onView(isRoot()).perform(orientationLandscape())
+      verifyTextOnStorySummaryListItemAtPosition(itemPosition = 1, stringToMatch = "Ratios: Part 1")
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land-xxhdpi")
+  fun testLessonsPlayFragment_loadRatiosTopic_configurationLandscape_storyName_isCorrect() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
       verifyTextOnStorySummaryListItemAtPosition(itemPosition = 1, stringToMatch = "Ratios: Part 1")
     }
   }
@@ -307,11 +315,27 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  @Config(qualifiers = "land-xxhdpi")
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationChange_chapterListIsVisible() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       onView(isRoot()).perform(orientationLandscape())
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      onView(
+        atPositionOnView(
+          R.id.story_summary_recycler_view,
+          1,
+          R.id.chapter_recycler_view
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land-xxhdpi")
+  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationLandscape_chapterListIsVisible() { // ktlint-disable max-line-length
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
       onView(
