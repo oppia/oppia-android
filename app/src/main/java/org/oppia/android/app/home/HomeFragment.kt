@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.model.TopicSummary
+import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
 /** Fragment that contains an introduction to the app. */

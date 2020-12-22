@@ -120,8 +120,6 @@ class HomeViewModel(
     return if (storyViewModelList.isNotEmpty()) {
       return PromotedStoryListViewModel(
         activity,
-        internalProfileId,
-        intentFactoryShim,
         storyViewModelList
       )
     } else null
@@ -146,7 +144,6 @@ class HomeViewModel(
         PromotedStoryViewModel(
           activity,
           internalProfileId,
-          intentFactoryShim,
           storyList.size,
           storyEntityType,
           promotedStory

@@ -43,7 +43,7 @@
         android:layout_marginEnd="@dimen/home_tablet_land_outer_margin"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
-        android:onClick="@{() -> viewModel.routeToRecentlyPlayed()}"
+        android:onClick="@{() -> viewModel.clickOnViewAll()}"
         android:text="@string/view_all"
         android:textAllCaps="true"
         android:visibility="@{viewModel.getButtonVisibility()}"

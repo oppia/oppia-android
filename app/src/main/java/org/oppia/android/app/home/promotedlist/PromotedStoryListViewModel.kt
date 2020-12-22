@@ -13,10 +13,10 @@ import org.oppia.android.app.shim.IntentFactoryShim
 /** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
 class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
-  private val internalProfileId: Int,
-  private val intentFactoryShim: IntentFactoryShim,
   val promotedStoryList: List<PromotedStoryViewModel>
 ) : HomeItemViewModel() {
+  private val routeToRecentlyPlayedListener = activity as RouteToRecentlyPlayedListener
+
   // TODO(#2297): Update this span count and move to values/integers.xml once behavior is clarified
   private val promotedStoriesTabletSpanCount: Int =
     if (Resources.getSystem().configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 2
@@ -49,11 +49,12 @@ class PromotedStoryListViewModel(
     return View.VISIBLE
   }
 
-  fun routeToRecentlyPlayed() {
-    val intent = intentFactoryShim.createRecentlyPlayedActivityIntent(
-      activity.applicationContext,
-      internalProfileId
-    )
-    activity.startActivity(intent)
+  fun clickOnViewAll() {
+    routeToRecentlyPlayedListener.routeToRecentlyPlayed()
+//    val intent = intentFactoryShim.createRecentlyPlayedActivityIntent(
+//      activity.applicationContext,
+//      internalProfileId
+//    )
+//    activity.startActivity(intent)
   }
 }
