@@ -59,7 +59,7 @@
       android:clipToPadding="false"
       android:orientation="horizontal"
       android:overScrollMode="never"
-      android:paddingStart="@{@dimen/home_padding_start}"
+      android:paddingStart="@dimen/home_padding_start"
       android:paddingEnd="@{viewModel.endPadding}"
       android:scrollbars="none"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
