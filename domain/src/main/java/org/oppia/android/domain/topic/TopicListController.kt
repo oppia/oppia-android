@@ -314,10 +314,7 @@ class TopicListController @Inject constructor(
 
     if (topicProgressList.isNotEmpty()) {
       val recommendedStoryBuilder = RecommendedStoryList.newBuilder()
-
-      Log.d("topic size", "" + topicProgressList.size)
       if (topicProgressList.size == 1) {
-
         recommendedStoryBuilder.addAllSuggestStory(
           createRecommendedStoryList(
             topicProgressList
@@ -329,18 +326,9 @@ class TopicListController @Inject constructor(
 
         sortedTopicProgressList.forEach { topicProgress ->
           val topic = topicController.retrieveTopic(topicProgress.topicId)
-
-//          recommendedStoryBuilder.setPromotedStoriesType(
-//            PromotedStoriesType.newBuilder().setRecentlyPlayed(true)
-//          )
-
           topicProgress.storyProgressMap.values.forEach { storyProgress ->
             val storyId = storyProgress.storyId
             val story = topicController.retrieveStory(topic.topicId, storyId)
-            Log.d(
-              "topic progress =",
-              "" + topicProgress.topicId + " " + topicProgress.lastPlayedTimestamp
-            )
 
             val completedChapterProgressList =
               storyProgress.chapterProgressMap.values
@@ -535,6 +523,13 @@ class TopicListController @Inject constructor(
       topicList.add(topicIdJsonArray[i].toString())
     }
     val index = topicList.indexOf(topicProgressList[topicProgressList.size - 1].topicId)
+
+      if (topicIdJsonArray.length() > (index - 1)) {
+        val found = topicProgressList.any { it.topicId == topicIdJsonArray[index - 1] }
+        if (!found) {
+          recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[index - 1].toString()))
+        }
+    }
     if (topicIdJsonArray.length() > (index + 1)) {
       recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[index + 1].toString()))
       return recommendedStories
