@@ -551,7 +551,7 @@ class HomeActivityTest {
   fun testHomeActivity_allTopicsCompleted_hidesPromotedStories() {
     storyProgressTestHelper.markFullProgressForAllTopics(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -571,10 +571,41 @@ class HomeActivityTest {
   }
 
   @Test
+  fun testHomeActivity_partialProgressForFractionsAndRatios_showsRecentlyPlayedStories() {
+    storyProgressTestHelper.markPartialTopicProgressForFractions(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanAWeek = false
+    )
+    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanAWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          1,
+          R.id.recently_played_stories_text_view
+        )
+      ).check(
+        matches(
+          withText(R.string.recently_played_stories)
+        )
+      )
+    }
+  }
+
+  @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicsHeader() {
     storyProgressTestHelper.markFullProgressForAllTopics(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -598,7 +629,7 @@ class HomeActivityTest {
   fun testHomeActivity_allTopicsCompleted_displaysTopicCards() {
     storyProgressTestHelper.markFullProgressForAllTopics(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {

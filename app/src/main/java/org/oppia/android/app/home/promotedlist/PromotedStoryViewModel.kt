@@ -6,10 +6,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
-import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.model.PromotedStory
-import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 // TODO(#283): Add download status information to promoted-story-card.
@@ -44,16 +42,4 @@ class PromotedStoryViewModel(
       promotedStory.storyId
     )
   }
-
-  /** Launches the lesson for this story. */
-
-//  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
-//    val intent = intentFactoryShim.createTopicPlayStoryActivityIntent(
-//      activity.applicationContext,
-//      internalProfileId,
-//      topicId,
-//      storyId
-//    )
-//    activity.startActivity(intent)
-//  }
 }

@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
-import org.oppia.android.app.shim.IntentFactoryShim
 
 /** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
 class PromotedStoryListViewModel(
@@ -26,14 +25,14 @@ class PromotedStoryListViewModel(
   val endPadding: Int =
     if (promotedStoryList.size > 1)
       activity.resources.getDimensionPixelSize(R.dimen.home_padding_end)
-    else  activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
+    else activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
 
   /** Determines and returns the visibility for the "View All" button. */
   fun getButtonVisibility(): Int {
     if (activity.resources.getBoolean(R.bool.isTablet)) {
       when (Resources.getSystem().configuration.orientation) {
         Configuration.ORIENTATION_PORTRAIT -> {
-          return if (promotedStoryList.size > promotedStoriesTabletSpanCount)View.VISIBLE
+          return if (promotedStoryList.size > promotedStoriesTabletSpanCount) View.VISIBLE
           else View.INVISIBLE
         }
         Configuration.ORIENTATION_LANDSCAPE -> {
@@ -48,10 +47,5 @@ class PromotedStoryListViewModel(
 
   fun clickOnViewAll() {
     routeToRecentlyPlayedListener.routeToRecentlyPlayed()
-//    val intent = intentFactoryShim.createRecentlyPlayedActivityIntent(
-//      activity.applicationContext,
-//      internalProfileId
-//    )
-//    activity.startActivity(intent)
   }
 }
