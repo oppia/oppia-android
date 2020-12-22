@@ -13,7 +13,8 @@ import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
-class HomeActivity : InjectableAppCompatActivity(),
+class HomeActivity :
+  InjectableAppCompatActivity(),
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
   RouteToRecentlyPlayedListener {
