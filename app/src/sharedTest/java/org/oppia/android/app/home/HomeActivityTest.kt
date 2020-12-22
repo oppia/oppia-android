@@ -626,12 +626,49 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_allTopicsCompleted_displaysTopicCards() {
+  fun testHomeActivity_allTopicsCompleted_displaysAllTopicCards() {
     storyProgressTestHelper.markFullProgressForAllTopics(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(3)
+      )
+      onView(withId(R.id.home_recycler_view)).check(
+        // The "All Topics" section currently should display the four test topics in two rows.
+        hasGridColumnCount(2)
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_noTopicsCompleted_displaysAllTopicsHeader() {
+    // Only new users will have no progress for any topics.
+    profileTestHelper.loginToNewUser()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(2)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          2,
+          R.id.all_topics_text_view
+        )
+      ).check(
+        matches(withText(R.string.all_topics))
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_noTopicsStarted_displaysAllTopicCards() {
+    // Only new users will have no progress for any topics.
+    profileTestHelper.loginToNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
