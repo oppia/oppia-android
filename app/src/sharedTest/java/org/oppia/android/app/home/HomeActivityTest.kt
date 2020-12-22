@@ -607,6 +607,7 @@ class HomeActivityTest {
         scrollToPosition<RecyclerView.ViewHolder>(3)
       )
       onView(withId(R.id.home_recycler_view)).check(
+        // The "All Topics" section currently should display the four test topics in two rows.
         hasGridColumnCount(2)
       )
     }

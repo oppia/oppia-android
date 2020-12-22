@@ -22,14 +22,11 @@ class PromotedStoryListViewModel(
     if (Resources.getSystem().configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 2
     else 3
 
-    /** Returns the padding placed at the end of the promoted stories list based on the number of promoted stories. */
-  fun getEndPadding(): Int {
-    return if (promotedStoryList.size > 1) {
+  /** Returns the padding placed at the end of the promoted stories list based on the number of promoted stories. */
+  val endPadding: Int =
+    if (promotedStoryList.size > 1)
       activity.resources.getDimensionPixelSize(R.dimen.home_padding_end)
-    } else {
-      activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
-    }
-  }
+    else  activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
 
   /** Determines and returns the visibility for the "View All" button. */
   fun getButtonVisibility(): Int {

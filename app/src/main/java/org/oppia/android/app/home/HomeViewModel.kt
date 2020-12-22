@@ -39,7 +39,6 @@ class HomeViewModel(
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   private val internalProfileId: Int,
-  private val intentFactoryShim: IntentFactoryShim,
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   @TopicHtmlParserEntityType private val topicEntityType: String,

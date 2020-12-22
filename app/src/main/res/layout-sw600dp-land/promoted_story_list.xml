@@ -61,7 +61,7 @@
       android:scrollbars="none"
       android:orientation="horizontal"
       android:paddingStart="@{@dimen/home_padding_start}"
-      android:paddingEnd="@{viewModel.getEndPadding}"
+      android:paddingEnd="@{viewModel.endPadding}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:list="@{viewModel.promotedStoryList}" />
   </LinearLayout>
