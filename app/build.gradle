@@ -41,7 +41,7 @@ android {
   splits {
     // See: https://developer.android.com/studio/build/configure-apk-splits
     density {
-      enable true
+      enable false
     }
   }
   dataBinding {
