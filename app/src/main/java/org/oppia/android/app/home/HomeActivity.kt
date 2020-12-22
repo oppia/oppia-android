@@ -16,8 +16,7 @@ import javax.inject.Inject
 class HomeActivity : InjectableAppCompatActivity(),
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
-  RouteToRecentlyPlayedListener
-{
+  RouteToRecentlyPlayedListener {
   @Inject
   lateinit var homeActivityPresenter: HomeActivityPresenter
   private var internalProfileId: Int = -1

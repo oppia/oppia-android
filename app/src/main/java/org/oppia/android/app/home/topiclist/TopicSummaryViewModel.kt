@@ -48,22 +48,22 @@ class TopicSummaryViewModel(
   fun computeStartMargin(): Int {
     return when (spanCount) {
       2 -> when (position % spanCount) {
-          0 -> marginMax
-          else -> marginMin
-        }
+        0 -> marginMax
+        else -> marginMin
+      }
       3 -> when (position % spanCount) {
-          0 -> marginMax
-          1 -> marginMin
-          2 -> 0
-          else -> 0
-        }
+        0 -> marginMax
+        1 -> marginMin
+        2 -> 0
+        else -> 0
+      }
       4 -> when (position % spanCount) {
-          0 -> marginMax
-          1 -> marginMin
-          2 -> marginMin / 2
-          3 -> 0
-          else -> 0
-        }
+        0 -> marginMax
+        1 -> marginMin
+        2 -> marginMin / 2
+        3 -> 0
+        else -> 0
+      }
       else -> 0
     }
   }
