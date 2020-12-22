@@ -43,7 +43,7 @@
         android:layout_marginEnd="@dimen/home_tablet_port_outer_margin"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
-        android:onClick="@{() -> viewModel.clickOnViewAll()}"
+        android:onClick="@{() -> viewModel.routeToRecentlyPlayed()}"
         android:text="@string/view_all"
         android:textAllCaps="true"
         android:visibility="@{viewModel.getButtonVisibility()}"
@@ -60,7 +60,7 @@
       android:overScrollMode="never"
       android:scrollbars="none"
       android:orientation="horizontal"
-      android:paddingStart="@{viewModel.getStartPadding}"
+      android:paddingStart="@{@dimen/home_padding_start}"
       android:paddingEnd="@{viewModel.getEndPadding}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:list="@{viewModel.promotedStoryList}" />

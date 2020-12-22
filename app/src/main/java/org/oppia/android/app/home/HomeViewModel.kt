@@ -47,8 +47,6 @@ class HomeViewModel(
 ) : ObservableViewModel() {
 
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-  private val promotedStoryListLimit =
-    activity.resources.getInteger(R.integer.promoted_story_list_limit)
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
     profileManagementController.getProfile(profileId)
@@ -143,7 +141,7 @@ class HomeViewModel(
       // TODO(#936): Optimise this as part of recommended stories.
       ongoingStoryList.olderStoryList
     }
-    return storyList.take(promotedStoryListLimit)
+    return storyList.take(R.integer.promoted_story_list_limit)
       .map { promotedStory ->
         PromotedStoryViewModel(
           activity,
@@ -164,7 +162,7 @@ class HomeViewModel(
    */
   private fun computeAllTopicsItemsViewModelList(
     topicList: TopicList
-  ): Iterable<HomeItemViewModel> {
+  ): List<HomeItemViewModel> {
     val allTopicsList = topicList.topicSummaryList.mapIndexed { topicIndex, topicSummary ->
       TopicSummaryViewModel(
         activity,
@@ -175,7 +173,7 @@ class HomeViewModel(
       )
     }
     return if (!allTopicsList.isEmpty()) {
-      listOf(AllTopicsViewModel()) + allTopicsList
+      listOf(AllTopicsViewModel) + allTopicsList
     } else emptyList()
   }
 }

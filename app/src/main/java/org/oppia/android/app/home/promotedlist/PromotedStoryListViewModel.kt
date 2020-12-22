@@ -16,36 +16,32 @@ class PromotedStoryListViewModel(
   private val internalProfileId: Int,
   private val intentFactoryShim: IntentFactoryShim,
   val promotedStoryList: List<PromotedStoryViewModel>
-) : HomeItemViewModel(),
-  RouteToRecentlyPlayedListener {
+) : HomeItemViewModel() {
+  // TODO(#2297): Update this span count and move to values/integers.xml once behavior is clarified
+  private val promotedStoriesTabletSpanCount: Int =
+    if (Resources.getSystem().configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 2
+    else 3
 
-  /**
-   * Returns the padding placed at the start of the promoted stories list.
-   */
-  fun getStartPadding(): Int = activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
-
-  /**
-   * Returns the padding placed at the end of the promoted stories list based on the number of promoted stories.
-   */
+    /** Returns the padding placed at the end of the promoted stories list based on the number of promoted stories. */
   fun getEndPadding(): Int {
     return if (promotedStoryList.size > 1) {
       activity.resources.getDimensionPixelSize(R.dimen.home_padding_end)
     } else {
-      getStartPadding()
+      activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
     }
   }
 
-  /**
-   * Determines and returns the visibility for the "View All" button.
-   */
+  /** Determines and returns the visibility for the "View All" button. */
   fun getButtonVisibility(): Int {
     if (activity.resources.getBoolean(R.bool.isTablet)) {
       when (Resources.getSystem().configuration.orientation) {
         Configuration.ORIENTATION_PORTRAIT -> {
-          return if (promotedStoryList.size > 2) View.VISIBLE else View.INVISIBLE
+          return if (promotedStoryList.size > promotedStoriesTabletSpanCount)View.VISIBLE
+          else View.INVISIBLE
         }
         Configuration.ORIENTATION_LANDSCAPE -> {
-          return if (promotedStoryList.size > 3) View.VISIBLE else View.INVISIBLE
+          return if (promotedStoryList.size > promotedStoriesTabletSpanCount) View.VISIBLE
+          else View.INVISIBLE
         }
         else -> View.VISIBLE
       }
@@ -53,11 +49,7 @@ class PromotedStoryListViewModel(
     return View.VISIBLE
   }
 
-  fun clickOnViewAll() {
-    routeToRecentlyPlayed()
-  }
-
-  override fun routeToRecentlyPlayed() {
+  fun routeToRecentlyPlayed() {
     val intent = intentFactoryShim.createRecentlyPlayedActivityIntent(
       activity.applicationContext,
       internalProfileId

@@ -30,8 +30,6 @@ class TopicSummaryViewModel(
 
   @ColorInt
   val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
-  private val marginTopBottom = activity.resources
-    .getDimensionPixelSize(R.dimen.topic_list_item_margin_top_bottom)
   private val marginMax by lazy {
     activity.resources.getDimensionPixelSize(R.dimen.home_margin_max)
   }
@@ -47,39 +45,25 @@ class TopicSummaryViewModel(
     topicSummaryClickListener.onTopicSummaryClicked(topicSummary)
   }
 
-  fun computeTopMargin(): Int {
-    return marginTopBottom
-  }
-
-  fun computeBottomMargin(): Int {
-    return marginTopBottom
-  }
-
   fun computeStartMargin(): Int {
     return when (spanCount) {
-      2 -> {
-        when (position % spanCount) {
+      2 -> when (position % spanCount) {
           0 -> marginMax
           else -> marginMin
         }
-      }
-      3 -> {
-        when (position % spanCount) {
+      3 -> when (position % spanCount) {
           0 -> marginMax
           1 -> marginMin
           2 -> 0
           else -> 0
         }
-      }
-      4 -> {
-        when (position % spanCount) {
+      4 -> when (position % spanCount) {
           0 -> marginMax
           1 -> marginMin
           2 -> marginMin / 2
           3 -> 0
           else -> 0
         }
-      }
       else -> 0
     }
   }
