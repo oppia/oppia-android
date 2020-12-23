@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
