@@ -416,6 +416,7 @@
     description="The default hint text for the ratio interaction if the placeholder text is not available.">
     Enter a ratio in the form x:y.
   </string>
-
-
+  <string name="coming_soon" />
+  <string name="recommended_stories">Recommended Stories</string>
+  <string name="stories_for_you">Stories for you</string>
 </resources>

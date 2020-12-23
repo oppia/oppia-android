@@ -2,6 +2,7 @@ package org.oppia.android.app.home.promotedlist
 
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
@@ -37,30 +38,48 @@ class PromotedStoryListViewModel(
     }
   }
 
-  fun getHeader(): String{
-    if (recommendedActivityList.recommendedStoryList.suggestedStoryCount != 0){
-      return activity.getString(R.string.recommended_stories)
-    }else if (recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount != 0){
-      return activity.getString(R.string.recently_played_stories)
-    }else {
-      return activity.getString(R.string.last_played_stories)
+  fun getHeader(): String {
+    return when {
+      recommendedActivityList.recommendedStoryList.suggestedStoryCount != 0 -> {
+        if (recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount != 0
+          || recommendedActivityList.recommendedStoryList.olderPlayedStoryCount != 0
+        ) {
+          activity.getString(R.string.stories_for_you)
+        } else
+          activity.getString(R.string.recommended_stories)
+      }
+      recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount != 0 -> {
+        activity.getString(R.string.recently_played_stories)
+      }
+      else -> {
+        activity.getString(R.string.last_played_stories)
+      }
     }
   }
+
   /**
    * Determines and returns the visibility for the "View All" button.
    */
   fun getButtonVisibility(): Int {
-    if (recommendedActivityList.recommendedStoryList.suggestedStoryCount != 0){
-      return View.INVISIBLE
-    }else if (activity.resources.getBoolean(R.bool.isTablet)) {
-      when (Resources.getSystem().configuration.orientation) {
-        Configuration.ORIENTATION_PORTRAIT -> {
-          return if (promotedStoryList.size > 2) View.VISIBLE else View.INVISIBLE
+    when {
+      recommendedActivityList.recommendedStoryList.suggestedStoryCount != 0 -> {
+        return if (recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount != 0
+          || recommendedActivityList.recommendedStoryList.olderPlayedStoryCount != 0
+        ) {
+          View.VISIBLE
+        } else
+          View.INVISIBLE
+      }
+      activity.resources.getBoolean(R.bool.isTablet) -> {
+        when (Resources.getSystem().configuration.orientation) {
+          Configuration.ORIENTATION_PORTRAIT -> {
+            return if (promotedStoryList.size > 2) View.VISIBLE else View.INVISIBLE
+          }
+          Configuration.ORIENTATION_LANDSCAPE -> {
+            return if (promotedStoryList.size > 3) View.VISIBLE else View.INVISIBLE
+          }
+          else -> View.VISIBLE
         }
-        Configuration.ORIENTATION_LANDSCAPE -> {
-          return if (promotedStoryList.size > 3) View.VISIBLE else View.INVISIBLE
-        }
-        else -> View.VISIBLE
       }
     }
     return View.VISIBLE
