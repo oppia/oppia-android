@@ -406,6 +406,10 @@ in order to keep Gradle building.
      """,
 ) for file in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS]
 
+# Snap Helper
+
+SNAP_HELPER = ["src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper.kt"]
+
 """
 Files to be excluded from the source list for the app library. This list includes all the files
 built by the following libraries:
@@ -416,7 +420,7 @@ built by the following libraries:
 - binding_adapters
 """
 
-EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS
+EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS + SNAP_HELPER
 
 """
 Files to be built by the app library. All of these files are assumed to have resource imports and
@@ -531,6 +535,7 @@ kt_android_library(
         ":listeners",
         ":resources",
         ":view_models",
+        ":snap_helper",
         "//model",
         "@circularimageview//circularimageview:circular_image_view",
         artifact("androidx.appcompat:appcompat"),
@@ -571,6 +576,12 @@ kt_android_library(
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.databinding:databinding-runtime"),
     ],
+)
+
+# Library for scope annotations required to build views and view_model libraries.
+kt_android_library(
+    name = "snap_helper",
+    srcs = SNAP_HELPER,
 )
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
