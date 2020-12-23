@@ -24,7 +24,7 @@ public final class ViewBindingAdapters {
   }
 
   /**
-   * BindingAdapter to set the height of a Width. If this value is calculated in data fetching, the
+   * BindingAdapter to set the width of a View. If this value is calculated in data fetching, the
    * layout will require a default value since binding adapters aren't called until after initial
    * view measurements and layouts are formatted.
    */
@@ -34,7 +34,12 @@ public final class ViewBindingAdapters {
     layoutParams.width = (int) width;
     view.setLayoutParams(layoutParams);
   }
-  /** Used to set a padding-start for views. */
+
+  /**
+   * BindingAdapter to set the end padding of a View. If this value is calculated in data fetching, the
+   * layout will require a default value since binding adapters aren't called until after initial
+   * view measurements and layouts are formatted.
+   */
   @BindingAdapter("android:padding_end")
   public static void setPaddingEnd(@NonNull View view, float paddingEnd) {
     view.setPaddingRelative(
