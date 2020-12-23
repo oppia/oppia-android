@@ -215,7 +215,7 @@
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
           <TextView
             android:id="@+id/profile_edit_created"
