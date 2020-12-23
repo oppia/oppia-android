@@ -51,7 +51,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
-import org.oppia.android.testing.EditTextInputAction
+import org.oppia.android.testing.EditTextInputActions
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -92,7 +92,7 @@ class QuestionPlayerActivityLocalTest {
   lateinit var context: Context
 
   @Inject
-  lateinit var editTextInputAction: EditTextInputAction
+  lateinit var editTextInputActions: EditTextInputActions
 
   private val SKILL_ID_LIST = arrayListOf(TEST_SKILL_ID_1)
 
@@ -202,7 +202,7 @@ class QuestionPlayerActivityLocalTest {
   private fun submitWrongAnswerToQuestionPlayerFractionInput() {
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
-    onView(withId(R.id.text_input_interaction_view)).perform(editTextInputAction.appendText("1"))
+    onView(withId(R.id.text_input_interaction_view)).perform(editTextInputActions.appendText2("1"))
     testCoroutineDispatchers.runCurrent()
 
     onView(withId(R.id.question_recycler_view))
