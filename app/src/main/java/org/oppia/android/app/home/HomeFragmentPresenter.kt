@@ -40,7 +40,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   private val oppiaLogger: OppiaLogger,
-  private val intentFactoryShim: IntentFactoryShim,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String
 ) {
@@ -68,29 +67,6 @@ class HomeFragmentPresenter @Inject constructor(
       storyEntityType
     )
 
-    val spanCount = activity.resources.getInteger(R.integer.home_span_count)
-    val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
-    homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-      override fun getSpanSize(position: Int): Int {
-        val homeItemList = homeViewModel.homeItemViewModelListLiveData.value
-        if (homeItemList.isNullOrEmpty() || homeItemList.size < position) {
-          // If there is any error with the data or it is still pending, set each view to cover the entire
-          // span of the HomeFragment. Any TopicSummaries displayed this way will be off-centered, but this
-          // ensures that most other views properly display.
-          return spanCount
-        }
-        return when (homeItemList!!.get(position)) {
-          is TopicSummaryViewModel -> /* number of spaces this item should occupy = */ 1
-          else -> /* number of spaces this item should occupy = */ spanCount
-        }
-      }
-    }
-
-    binding.homeRecyclerView.apply {
-      adapter = createRecyclerViewAdapter()
-      // https://stackoverflow.com/a/32763434/32763621
-      layoutManager = homeLayoutManager
-    }
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = homeViewModel
