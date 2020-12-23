@@ -81,7 +81,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.CoroutineExecutorService
-import org.oppia.android.testing.EditTextInputActions
+import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -131,7 +131,7 @@ class StateFragmentLocalTest {
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
   @Inject
-  lateinit var editTextInputActions: EditTextInputActions
+  lateinit var editTextInputAction: EditTextInputAction
 
   private val internalProfileId: Int = 1
   private val solutionIndex: Int = 4
@@ -1112,7 +1112,7 @@ class StateFragmentLocalTest {
   private fun submitFractionAnswer(answerText: String) {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(FRACTION_INPUT_INTERACTION))
     onView(withId(R.id.fraction_input_interaction_view)).perform(
-      editTextInputActions.appendText2(answerText)
+      editTextInputAction.appendText(answerText)
     )
     testCoroutineDispatchers.runCurrent()
 

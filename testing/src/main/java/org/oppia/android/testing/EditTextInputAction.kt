@@ -16,14 +16,16 @@ import javax.inject.Inject
  * 'android:digits' or other filters. See https://github.com/robolectric/robolectric/issues/5110
  * for specifics.
  */
-class EditTextInputActions @Inject constructor(
+class EditTextInputAction @Inject constructor(
   val testCoroutineDispatchers: TestCoroutineDispatchers
 ) {
+  // TODO(#1720): Move this to a companion object & use a test-only singleton injector to retrieve
+  // the TestCoroutineDispatchers so that the outer class doesn't need to be injected.
   /**
    * Returns a [ViewAction] that appends the specified string into the view targeted by the
    * [ViewAction].
    */
-  fun appendText2(text: String): ViewAction {
+  fun appendText(text: String): ViewAction {
     val typeTextViewAction = typeText(text)
     return object : ViewAction {
       override fun getDescription(): String = typeTextViewAction.description
