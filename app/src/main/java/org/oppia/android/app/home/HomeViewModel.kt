@@ -157,8 +157,8 @@ class HomeViewModel(
   private fun computePromotedStoryViewModelList(
     recommendedStoryList: RecommendedStoryList
   ): List<PromotedStoryViewModel> {
-    val storyList = if (recommendedStoryList.suggestStoryCount != 0) {
-      recommendedStoryList.suggestStoryList
+    val storyList = if (recommendedStoryList.suggestedStoryCount != 0) {
+      recommendedStoryList.suggestedStoryList
     } else if (recommendedStoryList.recentlyPlayedStoryCount != 0) {
       recommendedStoryList.recentlyPlayedStoryList
     } else {

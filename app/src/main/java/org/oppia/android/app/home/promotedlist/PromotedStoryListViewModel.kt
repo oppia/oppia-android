@@ -38,7 +38,7 @@ class PromotedStoryListViewModel(
   }
 
   fun getHeader(): String{
-    if (recommendedActivityList.recommendedStoryList.suggestStoryCount != 0){
+    if (recommendedActivityList.recommendedStoryList.suggestedStoryCount != 0){
       return activity.getString(R.string.recommended_stories)
     }else if (recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount != 0){
       return activity.getString(R.string.recently_played_stories)
@@ -50,7 +50,7 @@ class PromotedStoryListViewModel(
    * Determines and returns the visibility for the "View All" button.
    */
   fun getButtonVisibility(): Int {
-    if (recommendedActivityList.recommendedStoryList.suggestStoryCount != 0){
+    if (recommendedActivityList.recommendedStoryList.suggestedStoryCount != 0){
       return View.INVISIBLE
     }else if (activity.resources.getBoolean(R.bool.isTablet)) {
       when (Resources.getSystem().configuration.orientation) {

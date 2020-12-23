@@ -103,17 +103,6 @@ class TopicListController @Inject constructor(
   }
 
   /**
-   * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
-   * [EVICTION_TIME_MILLIS] old.
-   */
-  fun getComingSoonTopicList(): DataProvider<ComingSoonTopicList> {
-    return dataProviders.createInMemoryDataProvider(
-      GET_COMING_SOON_TOPIC_LIST_PROVIDER_ID,
-      this::createComingSoonTopicList
-    )
-  }
-
-  /**
    * Returns the list of ongoing [PromotedStory]s that can be viewed via a link on the homescreen.
    * The total number of promoted stories should correspond to the ongoing story count within the
    * [TopicList] returned by [getTopicList].
