@@ -53,14 +53,14 @@ class AdminAuthActivityPresenter @Inject constructor(
       }
     }
 
-    binding.adminAuthInputPinEditText.setOnEditorActionListener({ _, actionId, event ->
+    binding.adminAuthInputPinEditText.setOnEditorActionListener { _, actionId, event ->
       if (actionId == EditorInfo.IME_ACTION_DONE ||
-        (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
       ) {
         binding.adminAuthSubmitButton.callOnClick()
       }
       false
-    })
+    }
 
     binding.adminAuthSubmitButton.setOnClickListener {
       val inputPin = binding.adminAuthInputPinEditText.text.toString()
