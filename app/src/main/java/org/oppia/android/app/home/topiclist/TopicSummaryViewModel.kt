@@ -30,10 +30,10 @@ class TopicSummaryViewModel(
 
   @ColorInt
   val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
-  private val marginMax by lazy {
+  private val outerMargin by lazy {
     activity.resources.getDimensionPixelSize(R.dimen.home_margin_max)
   }
-  private val marginMin by lazy {
+  private val innerMargin by lazy {
     activity.resources.getDimensionPixelSize(R.dimen.home_margin_min)
   }
   private val spanCount by lazy {
@@ -45,22 +45,39 @@ class TopicSummaryViewModel(
     topicSummaryClickListener.onTopicSummaryClicked(topicSummary)
   }
 
+  /**
+   * Determines the start margin for an individual TopicSummary relative to the grid columns laid out on the
+   * HomeActivity. GridLayout columns are evenly spread out across the entire activity screen but the
+   * Topic Summaries are positioned towards the center, so start margins are calculated to stagger inside each
+   * fixed column but centered on the activity's layout, as shown below.
+   *
+   *  |        _____|      _____   |   _____      |_____        |
+   *  |       |     |     |     |  |  |     |     |     |       |
+   *  |       |     |     |     |  |  |     |     |     |       |
+   *  |       |_____|     |_____|  |  |_____|     |_____|       |
+   *  |             |              |              |             |
+   *  |        _____       _____       _____       _____        |
+   *  |       |     |     |     |     |     |     |     |       |
+   *  |       |     |     |     |     |     |     |     |       |
+   *  |       |_____|     |_____|     |_____|     |_____|       |
+   *  |                                                         |
+   */
   fun computeStartMargin(): Int {
     return when (spanCount) {
       2 -> when (position % spanCount) {
-        0 -> marginMax
-        else -> marginMin
+        0 -> outerMargin
+        else -> innerMargin
       }
       3 -> when (position % spanCount) {
-        0 -> marginMax
-        1 -> marginMin
+        0 -> outerMargin
+        1 -> innerMargin
         2 -> 0
         else -> 0
       }
       4 -> when (position % spanCount) {
-        0 -> marginMax
-        1 -> marginMin
-        2 -> marginMin / 2
+        0 -> outerMargin
+        1 -> innerMargin
+        2 -> innerMargin / 2
         3 -> 0
         else -> 0
       }
@@ -68,23 +85,28 @@ class TopicSummaryViewModel(
     }
   }
 
+  /**
+   * Determines the end margin for an individual TopicSummary relative to the grid columns laid out on the
+   * HomeActivity. The end margins are calculated to stagger inside each fixed column but centered on the
+   * activity's layout (see [computeStartMargin])/
+   */
   fun computeEndMargin(): Int {
     return when (spanCount) {
       2 -> when (position % spanCount) {
-        0 -> marginMin
-        else -> marginMax
+        0 -> innerMargin
+        else -> outerMargin
       }
       3 -> when (position % spanCount) {
         0 -> 0
-        1 -> marginMin
-        2 -> marginMax
+        1 -> innerMargin
+        2 -> outerMargin
         else -> 0
       }
       4 -> when (position % spanCount) {
         0 -> 0
-        1 -> marginMin / 2
-        2 -> marginMin
-        3 -> marginMax
+        1 -> innerMargin / 2
+        2 -> innerMargin
+        3 -> outerMargin
         else -> 0
       }
       else -> 0

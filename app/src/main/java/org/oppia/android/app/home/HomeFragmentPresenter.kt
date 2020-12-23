@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
@@ -72,10 +73,16 @@ class HomeFragmentPresenter @Inject constructor(
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
-        return if (position == 0 || position == 1 || position == 2) {
-          /* number of spaces this item should occupy = */ spanCount
-        } else {
-          /* number of spaces this item should occupy = */ 1
+        val homeItemList = homeViewModel.homeItemViewModelListLiveData.value
+        if (homeItemList.isNullOrEmpty() || homeItemList.size < position) {
+          // If there is any error with the data or it is still pending, set each view to cover the entire
+          // span of the HomeFragment. Any TopicSummaries displayed this way will be off-centered, but this
+          // ensures that most other views properly display.
+          return spanCount
+        }
+        return when (homeItemList!!.get(position)) {
+          is TopicSummaryViewModel -> /* number of spaces this item should occupy = */ 1
+          else -> /* number of spaces this item should occupy = */ spanCount
         }
       }
     }
