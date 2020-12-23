@@ -13,7 +13,8 @@ import javax.inject.Inject
  * Action for inputting text into an EditText in a test infrastructure-specific way.
  *
  * This is needed because Robolectric doesn't seem to properly input digits for text views using
- * 'android:digits'. See https://github.com/robolectric/robolectric/issues/5110 for specifics.
+ * 'android:digits' or other filters. See https://github.com/robolectric/robolectric/issues/5110
+ * for specifics.
  */
 class EditTextInputAction @Inject constructor(
   val testCoroutineDispatchers: TestCoroutineDispatchers
