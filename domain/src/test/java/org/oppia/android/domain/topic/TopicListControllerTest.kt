@@ -531,7 +531,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveComingSoonTopicList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_comingSoonListIsCorrect() {
+  fun testRetrieveComingSoonTopicList_markFirstStoryOfEveryTopicDoneWithinLastSevenDays_comingSoonListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -577,15 +577,7 @@ class TopicListControllerTest {
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
     assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(0)
     assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount).isEqualTo(0)
-
-    val comingSoonTopicListLiveData = topicListController.getComingSoonTopicList().toLiveData()
-
-    comingSoonTopicListLiveData.observeForever(mockComingSoonTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockComingSoonTopicListObserver).onChanged(comingSoonTopicListResultCaptor.capture())
-    val comingSoonTopicListResult = comingSoonTopicListResultCaptor.value
-    assertThat(comingSoonTopicListResult!!.isSuccess()).isTrue()
+    assertThat(recommendedActivityList.comingSoonTopicList.upcomingTopicCount).isEqualTo(4)
   }
 
   @Test
