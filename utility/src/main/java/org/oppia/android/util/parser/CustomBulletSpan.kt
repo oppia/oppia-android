@@ -90,6 +90,10 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
     }
   }
 
+  /**
+   * Update and return the [SpannableStringBuilder] by replacing all the [BulletSpan]s in the
+   * [SpannableStringBuilder] with [CustomBulletSpan].
+   */
   companion object {
     fun replaceBulletSpan(
       spannableStringBuilder: SpannableStringBuilder,
