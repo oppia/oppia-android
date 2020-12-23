@@ -34,6 +34,15 @@ public final class ViewBindingAdapters {
     layoutParams.width = (int) width;
     view.setLayoutParams(layoutParams);
   }
+  /** Used to set a padding-start for views. */
+  @BindingAdapter("android:padding_end")
+  public static void setPaddingEnd(@NonNull View view, float paddingEnd) {
+    view.setPaddingRelative(
+        view.getPaddingStart(),
+        view.getPaddingTop(),
+        (int) paddingEnd,
+        view.getPaddingBottom());
+  }
 
   @BindingAdapter(
       value = {
