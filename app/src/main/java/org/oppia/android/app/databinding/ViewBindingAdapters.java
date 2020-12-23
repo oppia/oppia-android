@@ -41,11 +41,11 @@ public final class ViewBindingAdapters {
    * view measurements and layouts are formatted.
    */
   @BindingAdapter("android:padding_end")
-  public static void setPaddingEnd(@NonNull View view, float paddingEnd) {
+  public static void setPaddingEnd(@NonNull View view, int paddingEnd) {
     view.setPaddingRelative(
         view.getPaddingStart(),
         view.getPaddingTop(),
-        (int) paddingEnd,
+        paddingEnd,
         view.getPaddingBottom());
   }
 
