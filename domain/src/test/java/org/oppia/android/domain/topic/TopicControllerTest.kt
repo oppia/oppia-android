@@ -413,7 +413,7 @@ class TopicControllerTest {
   }
 
   @Test
-  fun testRetrieveStory_validSecondStory_returnsStoryWithProgress() {
+  fun testRetrieveStory_validSecondStory_returnsStoryWithoutProgress() {
     topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
@@ -424,8 +424,31 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(story.getChapter(1).chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(story.getChapter(1).missingPrerequisiteChapter.name)
+      .isEqualTo(story.getChapter(0).name)
     assertThat(story.getChapter(2).chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(story.getChapter(2).missingPrerequisiteChapter.name)
+      .isEqualTo(story.getChapter(1).name)
+  }
+
+  @Test
+  fun testRetrieveStory_validSecondStory_returnsStoryWithProgress() {
+    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
+      .observeForever(mockStorySummaryObserver)
+    markSecondStory1Chapter1AsCompleted()
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetStorySucceeded()
+    val story = storySummaryResultCaptor.value!!.getOrThrow()
+    assertThat(story.getChapter(0).chapterPlayState)
+      .isEqualTo(ChapterPlayState.COMPLETED)
+    assertThat(story.getChapter(1).chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(story.getChapter(2).chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(story.getChapter(2).missingPrerequisiteChapter.name)
+      .isEqualTo(story.getChapter(1).name)
   }
 
   @Test
@@ -884,6 +907,8 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(topic.storyList[0].chapterList[1].missingPrerequisiteChapter.name)
+      .isEqualTo(topic.storyList[0].chapterList[0].name)
   }
 
   @Test
@@ -927,6 +952,8 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(storySummary.chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(storySummary.chapterList[1].missingPrerequisiteChapter.name)
+      .isEqualTo(storySummary.chapterList[0].name)
   }
 
   @Test
@@ -1158,6 +1185,16 @@ class TopicControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1,
+      currentTimestamp
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+  }
+
+  private fun markSecondStory1Chapter1AsCompleted() {
+    storyProgressController.recordCompletedChapter(
+      profileId1,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_1,
+      TEST_EXPLORATION_ID_1,
       currentTimestamp
     ).toLiveData().observeForever(mockRecordProgressObserver)
   }

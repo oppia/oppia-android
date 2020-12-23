@@ -19,14 +19,12 @@ import org.junit.runner.RunWith
 import org.oppia.android.testing.TestCoroutineDispatcher
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 
 private const val INITIALIZED_CACHE_VALUE = "inited cache value"
 private const val CREATED_CACHE_VALUE = "created cache value"
@@ -669,24 +667,6 @@ class InMemoryBlockingCacheTest {
   private fun <T> awaitCompletion(deferred: Deferred<T>): T {
     testCoroutineDispatchers.runCurrent()
     return deferred.getCompleted()
-  }
-
-  // TODO(#89): Move to a common test library.
-  /** A replacement to JUnit5's assertThrows() with Kotlin lambda support. */
-  private fun <T : Throwable> assertThrows(
-    type: KClass<T>,
-    operation: () -> Unit
-  ): T {
-    try {
-      operation()
-      fail("Expected to encounter exception of $type")
-    } catch (t: Throwable) {
-      if (type.isInstance(t)) {
-        return type.cast(t)
-      }
-      // Unexpected exception; throw it.
-      throw t
-    }
   }
 
   private fun setUpTestApplicationComponent() {

@@ -41,10 +41,10 @@ class ProfileResetPinActivityPresenter @Inject constructor(
         R.layout.profile_reset_pin_activity
       )
     val profileId = activity.intent.getIntExtra(
-      KEY_PROFILE_RESET_PIN_PROFILE_ID, 0
+      PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY, 0
     )
     val isAdmin = activity.intent.getBooleanExtra(
-      KEY_PROFILE_RESET_PIN_IS_ADMIN, false
+      PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY, false
     )
     resetViewModel.isAdmin.set(isAdmin)
 

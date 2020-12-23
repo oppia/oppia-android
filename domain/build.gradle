@@ -78,7 +78,6 @@ dependencies {
       'com.google.dagger:dagger:2.24',
       'com.google.truth:truth:0.43',
       'junit:junit:4.12',
-      "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',

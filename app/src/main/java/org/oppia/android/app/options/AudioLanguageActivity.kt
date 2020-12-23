@@ -54,7 +54,7 @@ class AudioLanguageActivity : InjectableAppCompatActivity() {
   override fun onBackPressed() {
     val message = audioLanguageActivityPresenter.getLanguageSelected()
     val intent = Intent()
-    intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, message)
+    intent.putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, message)
     setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
     finish()
   }
