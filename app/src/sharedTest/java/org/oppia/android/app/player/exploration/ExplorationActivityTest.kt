@@ -15,7 +15,6 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -629,7 +628,7 @@ class ExplorationActivityTest {
 
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.text_input_interaction_view)).perform(
-          editTextInputAction.appendText("123"),
+        editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_answer_button)).perform(click())

@@ -121,7 +121,8 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
-    onView(withId(R.id.test_fraction_input_interaction_view)).perform(editTextInputAction.appendText("-9"))
+    onView(withId(R.id.test_fraction_input_interaction_view))
+      .perform(editTextInputAction.appendText("-9"))
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
@@ -138,7 +139,8 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
-    onView(withId(R.id.test_fraction_input_interaction_view)).perform(editTextInputAction.appendText("9"))
+    onView(withId(R.id.test_fraction_input_interaction_view))
+      .perform(editTextInputAction.appendText("9"))
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
@@ -157,7 +159,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "9/10"
         )
       )
@@ -180,7 +182,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "-9/10"
         )
       )
@@ -203,7 +205,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "5 9/10"
         )
       )
@@ -227,7 +229,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "-55 59/9"
         )
       )
@@ -252,7 +254,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "9/5"
         )
       )
@@ -268,7 +270,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "55-"
         )
       )
@@ -287,7 +289,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "--55"
         )
       )
@@ -306,7 +308,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "5/5/"
         )
       )
@@ -325,7 +327,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "/5"
         )
       )
@@ -344,7 +346,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "5 5/"
         )
       )
@@ -356,7 +358,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "5 5/"
         )
       )
@@ -377,7 +379,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "3 1/2"
         )
       )
@@ -391,7 +393,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "1/0"
         )
       )
@@ -403,7 +405,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "1/0"
         )
       )
@@ -424,7 +426,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
-            editTextInputAction.appendText(
+          editTextInputAction.appendText(
             "."
           )
         )
@@ -444,7 +446,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
-            editTextInputAction.appendText(
+          editTextInputAction.appendText(
             "12345678"
           )
         )
@@ -480,7 +482,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "9"
         )
       )
@@ -501,7 +503,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "9.5"
         )
       )
@@ -521,7 +523,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "-9.5"
         )
       )
@@ -541,7 +543,8 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
-    onView(withId(R.id.test_number_input_interaction_view)).perform(editTextInputAction.appendText("9"))
+    onView(withId(R.id.test_number_input_interaction_view))
+      .perform(editTextInputAction.appendText("9"))
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
@@ -554,7 +557,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
-            editTextInputAction.appendText(
+          editTextInputAction.appendText(
             "/"
           )
         )
@@ -574,7 +577,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
-            editTextInputAction.appendText(
+          editTextInputAction.appendText(
             "-12345678.6787687678"
           )
         )
@@ -596,7 +599,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
-            editTextInputAction.appendText(
+          editTextInputAction.appendText(
             "1234567886787687678"
           )
         )
@@ -618,7 +621,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
-            editTextInputAction.appendText(
+          editTextInputAction.appendText(
             "-"
           )
         )
@@ -637,7 +640,8 @@ class InputInteractionViewTestActivityTest {
 
   fun testNumericInputInteractionView_withInputtedNegativeSymbolOtherThanAt0_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_number_input_interaction_view)).perform(editTextInputAction.appendText("55-"))
+    onView(withId(R.id.test_number_input_interaction_view))
+      .perform(editTextInputAction.appendText("55-"))
     onView(withId(R.id.number_input_error))
       .check(
         matches(
@@ -653,7 +657,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "--55"
         )
       )
@@ -672,7 +676,7 @@ class InputInteractionViewTestActivityTest {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "5.5."
         )
       )
@@ -689,7 +693,8 @@ class InputInteractionViewTestActivityTest {
   @Test
   fun testNumericInputInteractionView_withInputtedFloatingPointAtStart_numberStartingWithFloatingPointErrorIsDisplayed() { // ktlint-disable max-line-length
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_number_input_interaction_view)).perform(editTextInputAction.appendText(".5"))
+    onView(withId(R.id.test_number_input_interaction_view))
+      .perform(editTextInputAction.appendText(".5"))
     onView(withId(R.id.number_input_error))
       .check(
         matches(
@@ -719,7 +724,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_text_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "abc"
         )
       )
@@ -741,7 +746,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_text_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "abc"
         )
       )
@@ -794,7 +799,7 @@ class InputInteractionViewTestActivityTest {
     )
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
-          editTextInputAction.appendText(
+        editTextInputAction.appendText(
           "1:2"
         )
       )

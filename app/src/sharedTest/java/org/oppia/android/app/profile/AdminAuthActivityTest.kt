@@ -144,7 +144,7 @@ class AdminAuthActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-          editTextInputAction.appendText("12345"),
+        editTextInputAction.appendText("12345"),
         pressImeActionButton()
       )
       intended(hasComponent(AddProfileActivity::class.java.name))
@@ -187,7 +187,7 @@ class AdminAuthActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-          editTextInputAction.appendText("12345"),
+        editTextInputAction.appendText("12345"),
         pressImeActionButton()
       )
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
@@ -234,7 +234,7 @@ class AdminAuthActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-          editTextInputAction.appendText("12354"),
+        editTextInputAction.appendText("12354"),
         pressImeActionButton()
       )
       onView(
@@ -258,12 +258,12 @@ class AdminAuthActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-          editTextInputAction.appendText("123"),
+        editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-          editTextInputAction.appendText("4"),
+        editTextInputAction.appendText("4"),
         closeSoftKeyboard()
       )
       onView(
@@ -289,11 +289,11 @@ class AdminAuthActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-          editTextInputAction.appendText("123"),
+        editTextInputAction.appendText("123"),
         pressImeActionButton()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-          editTextInputAction.appendText("4"),
+        editTextInputAction.appendText("4"),
         closeSoftKeyboard()
       )
       onView(
@@ -317,7 +317,7 @@ class AdminAuthActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-          editTextInputAction.appendText("12345"),
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -501,7 +501,7 @@ class AdminAuthActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-          editTextInputAction.appendText("12354"),
+        editTextInputAction.appendText("12354"),
         pressImeActionButton()
       )
       onView(

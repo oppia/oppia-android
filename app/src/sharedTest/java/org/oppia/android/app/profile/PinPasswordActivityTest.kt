@@ -281,7 +281,8 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
@@ -326,7 +327,8 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
@@ -365,7 +367,8 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
@@ -400,7 +403,8 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
@@ -421,7 +425,8 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
@@ -445,7 +450,8 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
@@ -496,7 +502,8 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
@@ -531,7 +538,8 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())

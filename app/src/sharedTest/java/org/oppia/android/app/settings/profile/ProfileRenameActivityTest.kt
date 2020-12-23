@@ -302,7 +302,7 @@ class ProfileRenameActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
-          editTextInputAction.appendText("test"),
+        editTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -325,7 +325,7 @@ class ProfileRenameActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
-          editTextInputAction.appendText("Admin"),
+        editTextInputAction.appendText("Admin"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
