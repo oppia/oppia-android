@@ -75,10 +75,10 @@
         android:contentDescription="@string/administrator_controls_update_on_wifi_title"
         android:onCheckedChanged="@{(switch, checked) -> viewModel.onTopicWifiUpdatePermissionChanged(checked)}"
         android:theme="@style/SwitchCompatTheme"
-        app:layout_constraintBottom_toBottomOf="@id/topic_update_on_wifi_description_text_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/topic_update_on_wifi_description_text_view"
-        app:layout_constraintTop_toTopOf="@id/topic_update_on_wifi_title_text_view" />
+        app:layout_constraintTop_toTopOf="parent" /> />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
@@ -138,10 +138,10 @@
         android:contentDescription="@string/administrator_controls_auto_update_title"
         android:onCheckedChanged="@{(switch, checked) -> viewModel.onTopicAutoUpdatePermissionChanged(checked)}"
         android:theme="@style/SwitchCompatTheme"
-        app:layout_constraintBottom_toBottomOf="@id/auto_update_topic_description_text_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/auto_update_topic_description_text_view"
-        app:layout_constraintTop_toTopOf="@id/auto_update_topic_title_text_view" />
+        app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
