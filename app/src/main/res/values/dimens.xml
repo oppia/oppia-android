@@ -15,7 +15,7 @@
   <dimen name="divider_margin_top">8dp</dimen>
   <dimen name="divider_margin_bottom">8dp</dimen>
   <dimen name="bottom_white_space">160dp</dimen>
-  <dimen name="touch_target_size">48dp</dimen>
+  <dimen name="min_touch_target_size">48dp</dimen>
 
   <dimen name="ongoing_story_card_view_is_tablet_margin_top">28dp</dimen>
   <dimen name="ongoing_story_card_view_margin_top_portrait_story_grid_greater_then_2">28dp</dimen>
