@@ -69,11 +69,11 @@ class CustomBulletSpanTest {
   val testStringWithMultipleBulletSpan = SpannableStringBuilder(
     "Text With \nfirst \nsecond \nthird \nfour \nfive"
   ).apply {
-    setSpan(BulletSpan(),  10,  18,  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    setSpan(BulletSpan(),  18,  27,  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    setSpan(BulletSpan(),  27,  35,  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    setSpan(BulletSpan(),  35,  42,  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    setSpan(UnderlineSpan(),  42,  43,  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    setSpan(BulletSpan(), 10, 18, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    setSpan(BulletSpan(), 18, 27, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    setSpan(BulletSpan(), 27, 35, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    setSpan(BulletSpan(), 35, 42, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    setSpan(UnderlineSpan(), 42, 43, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
   }
   val testStringWithCustomBulletSpan = SpannableStringBuilder("Text With \nBullet Point").apply {
     this.setSpan(
