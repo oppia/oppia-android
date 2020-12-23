@@ -69,11 +69,11 @@ class CustomBulletSpanTest {
   val testStringWithMultipleBulletSpan = SpannableStringBuilder(
     "Text With \nfirst \nsecond \nthird \nfour \nfive"
   ).apply {
-    setSpan(BulletSpan(),10,18,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    setSpan(BulletSpan(),18,27,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    setSpan(BulletSpan(),27,35,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    setSpan(BulletSpan(),35,42,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    setSpan(UnderlineSpan(),42,43,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    setSpan(BulletSpan(),  10,  18,  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    setSpan(BulletSpan(),  18,  27,  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    setSpan(BulletSpan(),  27,  35,  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    setSpan(BulletSpan(),  35,  42,  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    setSpan(UnderlineSpan(),  42,  43,  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
   }
   val testStringWithCustomBulletSpan = SpannableStringBuilder("Text With \nBullet Point").apply {
     this.setSpan(
@@ -100,8 +100,8 @@ class CustomBulletSpanTest {
     val spannableString2 = CustomBulletSpan.replaceBulletSpan(spannableString1, context)
 //    assertThat(getNoofBulletSpans(spannableString1)).isEqualTo(1) //0
 //    assertThat(getNoofCustomBulletSpans(spannableString1)).isEqualTo(0) //1
-    assertThat(getNoofBulletSpans(spannableString2)).isEqualTo(0) //0
-    assertThat(getNoofCustomBulletSpans(spannableString2)).isEqualTo(1) //1
+    assertThat(getNoofBulletSpans(spannableString2)).isEqualTo(0) //  0
+    assertThat(getNoofCustomBulletSpans(spannableString2)).isEqualTo(1) //  1
   }
 
   @Test
@@ -110,10 +110,10 @@ class CustomBulletSpanTest {
     val spannableString2 = CustomBulletSpan.replaceBulletSpan(spannableString1, context)
 //    assertThat(getNoofBulletSpans(spannableString1)).isEqualTo(4) //0
 //    assertThat(getNoofCustomBulletSpans(spannableString1)).isEqualTo(0) //4
-    assertThat(getNoofUnderlineSpans(spannableString1)).isEqualTo(1) //0
-    assertThat(getNoofBulletSpans(spannableString2)).isEqualTo(0) //0
-    assertThat(getNoofCustomBulletSpans(spannableString2)).isEqualTo(4) //4
-    assertThat(getNoofUnderlineSpans(spannableString2)).isEqualTo(1) //0
+    assertThat(getNoofUnderlineSpans(spannableString1)).isEqualTo(1) // 0
+    assertThat(getNoofBulletSpans(spannableString2)).isEqualTo(0) // 0
+    assertThat(getNoofCustomBulletSpans(spannableString2)).isEqualTo(4) // 4
+    assertThat(getNoofUnderlineSpans(spannableString2)).isEqualTo(1) // 0
   }
 
   @Test
@@ -125,7 +125,6 @@ class CustomBulletSpanTest {
     assertThat(getNoofBulletSpans(spannableString2)).isEqualTo(0)
     assertThat(getNoofCustomBulletSpans(spannableString2)).isEqualTo(1)
   }
-
 
   @Test
   fun customBulletSpan_testLeadMargin_isComputedToProperlyIndentText() {
@@ -158,7 +157,7 @@ class CustomBulletSpanTest {
 //    assertThat(customBulletSpannble.getSpans<CustomBulletSpan>().size).isGreaterThan(0)
   }
 
-  private fun getBulletSpans(spannableString: SpannableStringBuilder) : Array<out BulletSpan>{
+  private fun getBulletSpans(spannableString: SpannableStringBuilder): Array<out BulletSpan> {
     return spannableString.getSpans<BulletSpan>(
       0,
       spannableString.length
