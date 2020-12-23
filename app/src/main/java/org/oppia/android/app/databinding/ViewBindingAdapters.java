@@ -40,7 +40,7 @@ public final class ViewBindingAdapters {
    * layout will require a default value since binding adapters aren't called until after initial
    * view measurements and layouts are formatted.
    */
-  @BindingAdapter("app:padding_End")
+  @BindingAdapter("app:padding_end")
   public static void setPaddingEnd(@NonNull View view, float paddingEnd) {
     view.setPaddingRelative(
         view.getPaddingStart(),
