@@ -694,10 +694,11 @@ class PinPasswordActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
+      val inputType = InputType.TYPE_CLASS_NUMBER
       onView(withId(R.id.input_pin)).check(
         matches(
           withInputType(
-            InputType.TYPE_CLASS_NUMBER
+            inputType
           )
         )
       )
@@ -705,7 +706,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.input_pin)).check(
         matches(
           withInputType(
-            InputType.TYPE_CLASS_NUMBER
+            inputType
           )
         )
       )
