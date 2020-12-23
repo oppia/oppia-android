@@ -140,21 +140,12 @@ class CustomBulletSpanTest {
     val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
     val spannableString = SpannableStringBuilder(testStringWithBulletSpan)
     val customBulletSpannble = CustomBulletSpan.replaceBulletSpan(spannableString, context)
-//    customBulletSpannble.getSpans<CustomBulletSpan>(
-//      0,
-//      spannableString.length,
-//      CustomBulletSpan::class.java
-//    ).forEach {
-//      val margin = it.getLeadingMargin(true)
-//      assertThat(margin).isEqualTo(expectedMargin)
-//    }
     val leadingMargin = customBulletSpannble.getSpans(
       0,
       spannableString.length,
       CustomBulletSpan::class.java
     )[0].getLeadingMargin(true)
     assertThat(leadingMargin).isEqualTo(expectedMargin)
-//    assertThat(customBulletSpannble.getSpans<CustomBulletSpan>().size).isGreaterThan(0)
   }
 
   private fun getBulletSpans(spannableString: SpannableStringBuilder): Array<out BulletSpan> {
