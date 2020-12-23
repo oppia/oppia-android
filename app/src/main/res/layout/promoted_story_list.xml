@@ -59,9 +59,9 @@
       android:clipToPadding="false"
       android:orientation="horizontal"
       android:overScrollMode="never"
-      android:paddingStart="@dimen/home_padding_start"
-      android:paddingEnd="@{viewModel.endPadding}"
       android:scrollbars="none"
+      android:paddingStart="@dimen/home_padding_start"
+      app:padding_End="@{viewModel.endPadding}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:list="@{viewModel.promotedStoryList}" />
   </LinearLayout>
