@@ -241,12 +241,12 @@ message TopicProgress {
   map<string, StoryProgress> story_progress = 2;
 
   // Timestamp to record last time the exploration was played in ms.
-  int64 last_played_timestamp = 4;
+  int64 last_played_timestamp = 3;
 }
 
 // A structure corresponding to the Promoted Stories. This structure is set up
-// to properly account for recently_played stories, for recommended stories
-// and for coming soon topics.
+// to properly account for recently played stories, recommended stories
+// and coming soon topics.
 message RecommendedActivityList {
   oneof recommendation_type {
     RecommendedStoryList recommended_story_list = 1;
@@ -256,19 +256,19 @@ message RecommendedActivityList {
 
 // Corresponds to the list of stories the player is currently playing across all topics and Recommended stories.
 message RecommendedStoryList {
-   // Ongoing stories from within the last 7 days.
+  // Ongoing stories from within the last 7 days.
   repeated PromotedStory recently_played_story   = 1;
 
   // Other ongoing stories from longer than 7 days ago.
   repeated PromotedStory older_played_story = 2;
 
-  // Stories recommended to the user.
-  repeated PromotedStory suggest_story = 3;
+  // Stories specifically recommended for the learner to complete next.
+  repeated PromotedStory suggested_story = 3;
 }
 
-// Corresponds to the list of Coming soon topics that can be shown on the homescreen.
+// Corresponds to the list of coming soon topics that can be shown on the home screen.
 message ComingSoonTopicList {
-// Upcoming topics for the user.
+  // Upcoming topics for the user.
   repeated UpcomingTopic upcoming_topic = 1;
 }
 
