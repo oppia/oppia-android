@@ -22,7 +22,7 @@ class PromotedStoryListViewModel(
     else 3
 
   /** Returns the padding placed at the end of the promoted stories list based on the number of promoted stories. */
-  val endPadding: Int =
+  val endPadding =
     if (promotedStoryList.size > 1)
       activity.resources.getDimensionPixelSize(R.dimen.home_padding_end)
     else activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
