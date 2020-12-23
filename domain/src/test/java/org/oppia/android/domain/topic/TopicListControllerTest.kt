@@ -457,6 +457,7 @@ class TopicListControllerTest {
     verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[1])
   }
 
+  // TODO(#2303): Rewrite this testcase for coming soon topics.
   @Test
   fun testRetrieveRecentlyStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_recentStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
