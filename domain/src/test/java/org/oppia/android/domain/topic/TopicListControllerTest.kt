@@ -321,7 +321,6 @@ class TopicListControllerTest {
   }
 
   @Test
-//  @Ignore("Failing on Circle CI.")
   fun testRetrieveRecommendedStoryList_markRecentlyPlayedFracStory0Exp0_recommendedStoryListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
@@ -640,15 +639,6 @@ class TopicListControllerTest {
     assertThat(recommendedActivityListResultCaptor.value.isSuccess()).isTrue()
   }
 
-  private fun verifyDefaultRecommendedActivityListSucceeded() {
-    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(4)
-    verifyOngoingStoryAsFirstTopicStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0])
-    verifyOngoingStoryAsSecondTopicStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[1])
-    verifyOngoingStoryAsFractionStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[2])
-    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[3])
-  }
-
   private fun verifyDefaultRecommendedStoryListSucceeded() {
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
     assertThat(recommendedActivityList.recommendedStoryList.suggestStoryCount).isEqualTo(1)
@@ -724,18 +714,6 @@ class TopicListControllerTest {
     assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
     assertThat(promotedStory.completedChapterCount).isEqualTo(1)
-    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
-  }
-
-  private fun verifyOngoingStoryAsRatioStory1Exploration2(promotedStory: PromotedStory) {
-    assertThat(promotedStory.explorationId).isEqualTo(RATIOS_EXPLORATION_ID_2)
-    assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_1)
-    assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
-    assertThat(promotedStory.nextChapterName).isEqualTo("Equivalent Ratios")
-    assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
-    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
-      .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
-    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
