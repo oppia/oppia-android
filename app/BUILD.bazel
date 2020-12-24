@@ -294,7 +294,6 @@ Place your file here if:
 VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
-    "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListView.kt",
     "src/main/java/org/oppia/android/app/profile/ProfileInputView.kt",
     "src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt",
 ]
@@ -315,6 +314,7 @@ VIEWS = [
     "src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/TextInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/RatioInputInteractionView.kt",
+    "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListView.kt",
     "src/main/java/org/oppia/android/app/player/state/DragDropSortInteractionView.kt",
     "src/main/java/org/oppia/android/app/player/state/ImageRegionSelectionInteractionView.kt",
     "src/main/java/org/oppia/android/app/player/state/SelectionInteractionView.kt",
@@ -582,7 +582,8 @@ kt_android_library(
 kt_android_library(
     name = "snap_helper",
     srcs = SNAP_HELPER,
-    deps = [artifact("androidx.recyclerview:recyclerview:1.0.0")],
+    deps = [artifact("androidx.recyclerview:recyclerview:1.0.0"),
+            ":databinding_resources",],
 )
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
