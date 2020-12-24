@@ -9,6 +9,8 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.app.home.promotedlist.PromotedStoryListView
+import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.android.util.parser.HtmlParser
@@ -45,6 +47,19 @@ interface ViewBindingShim {
   fun provideProfileInputViewBindingErrorText(
     profileInputView: View
   ): TextView
+
+  /** Handles binding inflation for [PromotedStoryListView] */
+  fun inflatePromotedStoryCardBinding(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View
+
+  /** Handles binding inflation for [PromotedStoryListView] and returns the view model.*/
+  fun providePromotedStoryViewModel(
+    view: View,
+    viewModel: PromotedStoryViewModel
+  )
 
   /**
    * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
