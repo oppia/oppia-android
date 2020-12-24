@@ -294,6 +294,7 @@ Place your file here if:
 VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
+    "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListView.kt",
     "src/main/java/org/oppia/android/app/profile/ProfileInputView.kt",
     "src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt",
 ]
@@ -314,7 +315,6 @@ VIEWS = [
     "src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/TextInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/RatioInputInteractionView.kt",
-    "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListView.kt",
     "src/main/java/org/oppia/android/app/player/state/DragDropSortInteractionView.kt",
     "src/main/java/org/oppia/android/app/player/state/ImageRegionSelectionInteractionView.kt",
     "src/main/java/org/oppia/android/app/player/state/SelectionInteractionView.kt",
@@ -534,7 +534,6 @@ kt_android_library(
         ":annotations",
         ":listeners",
         ":resources",
-        ":databinding_resources",
         ":view_models",
         ":snap_helper",
         "//model",
