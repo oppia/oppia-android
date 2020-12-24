@@ -582,6 +582,7 @@ kt_android_library(
 kt_android_library(
     name = "snap_helper",
     srcs = SNAP_HELPER,
+    deps = [artifact("androidx.recyclerview:recyclerview:1.0.0")],
 )
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
