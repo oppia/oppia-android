@@ -32,6 +32,7 @@
   "topic_name": "First Test Topic",
   "topic_id": "test_topic_id_0",
   "version": 1,
+  "published": true,
   "skill_descriptions": {
     "test_skill_id_0": "An important skill",
     "test_skill_id_1": "Another important skill"
