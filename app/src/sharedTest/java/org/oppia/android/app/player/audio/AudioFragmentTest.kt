@@ -135,42 +135,43 @@ class AudioFragmentTest {
     )
   }
 
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
   @Test
-  @Ignore
   fun testAudioFragment_openFragment_profileWithEnglishAudioLanguage_showsEnglishAudioLanguage() {
+    addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.ivAudioLanguage)).check(matches(withContentDescription("en")))
     }
   }
 
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
-  @Test
   @Ignore
+  @Test
   fun testAudioFragment_openFragment_showsDefaultAudioLanguageAsHindi() {
+    addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_HINDI
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("HI")))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.ivAudioLanguage)).check(matches(withContentDescription("hi")))
     }
   }
 
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
   @Test
-  @Ignore
   fun testAudioFragment_openFragment_showsEnglishAudioLanguageWhenDefaultAudioLanguageNotAvailable() { // ktlint-disable max-line-length
+    addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         PROFILE_ID_INVALID_AUDIO_LANGUAGE
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.ivAudioLanguage)).check(matches(withContentDescription("en")))
     }
   }
 
@@ -247,7 +248,7 @@ class AudioFragmentTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
+  @Ignore("Landscape not properly supported") // TODO(#56): Re-enable once landscape is supported.
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
@@ -279,7 +280,7 @@ class AudioFragmentTest {
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.tvAudioLanguage)).perform(click())
+      onView(withId(R.id.ivAudioLanguage)).perform(click())
 
       val locale = Locale("es")
 
