@@ -408,7 +408,7 @@ in order to keep Gradle building.
 
 # Snap Helper
 
-SNAP_HELPER = ["src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper.kt"]
+#SNAP_HELPER = ["src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper.kt"]
 
 """
 Files to be excluded from the source list for the app library. This list includes all the files
@@ -420,7 +420,7 @@ built by the following libraries:
 - binding_adapters
 """
 
-EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS + SNAP_HELPER
+EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS
 
 """
 Files to be built by the app library. All of these files are assumed to have resource imports and
@@ -535,13 +535,14 @@ kt_android_library(
         ":listeners",
         ":resources",
         ":view_models",
-        ":snap_helper",
+        "src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper.kt",
         "//model",
         "@circularimageview//circularimageview:circular_image_view",
         artifact("androidx.appcompat:appcompat"),
         artifact("androidx.core:core-ktx"),
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.recyclerview:recyclerview:1.0.0"),
     ],
 )
 
@@ -579,12 +580,12 @@ kt_android_library(
 )
 
 # Library for scope annotations required to build views and view_model libraries.
-kt_android_library(
-    name = "snap_helper",
-    srcs = SNAP_HELPER,
-    deps = [artifact("androidx.recyclerview:recyclerview:1.0.0"),
-            ":databinding_resources",],
-)
+#kt_android_library(
+#    name = "snap_helper",
+#    enable_data_binding = True,
+#    srcs = SNAP_HELPER,
+#    deps = [artifact("androidx.recyclerview:recyclerview:1.0.0"),],
+#)
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
 # Library for all custom data-binding adapters under org/oppia/android/app/databinding.
