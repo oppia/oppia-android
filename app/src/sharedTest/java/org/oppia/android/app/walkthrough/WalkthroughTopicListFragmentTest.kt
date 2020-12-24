@@ -110,11 +110,13 @@ class WalkthroughTopicListFragmentTest {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           4
         )
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_progress_bar)).check(
         matches(
           withEffectiveVisibility(
@@ -130,11 +132,13 @@ class WalkthroughTopicListFragmentTest {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           4
         )
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_activity_topic_header_text_view)).check(
         matches(
           withEffectiveVisibility(
