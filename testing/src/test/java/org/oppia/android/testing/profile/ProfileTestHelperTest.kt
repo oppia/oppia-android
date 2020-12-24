@@ -153,6 +153,18 @@ class ProfileTestHelperTest {
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(1)
   }
 
+  @Test
+  fun testLogingToNewUser_initializeProfiles_loginToUser_checkIsSuccessful() {
+    profileTestHelper.initializeProfiles()
+
+    profileTestHelper.loginToNewUser().observeForever(mockUpdateResultObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {

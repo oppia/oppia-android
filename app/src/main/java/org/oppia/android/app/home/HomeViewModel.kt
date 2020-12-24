@@ -16,7 +16,6 @@ import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicList
-import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
@@ -39,7 +38,6 @@ class HomeViewModel(
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   private val internalProfileId: Int,
-  private val intentFactoryShim: IntentFactoryShim,
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   @TopicHtmlParserEntityType private val topicEntityType: String,
@@ -47,8 +45,6 @@ class HomeViewModel(
 ) : ObservableViewModel() {
 
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-  private val promotedStoryListLimit =
-    activity.resources.getInteger(R.integer.promoted_story_list_limit)
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
     profileManagementController.getProfile(profileId)
@@ -92,7 +88,7 @@ class HomeViewModel(
       if (itemListResult.isFailure()) {
         logger.e(
           "HomeFragment",
-          "Failed to retrieve items for home fragment",
+          "No home fragment available -- failed to retrieve home fragment information.",
           itemListResult.getErrorOrNull()
         )
       }
@@ -122,8 +118,6 @@ class HomeViewModel(
     return if (storyViewModelList.isNotEmpty()) {
       return PromotedStoryListViewModel(
         activity,
-        internalProfileId,
-        intentFactoryShim,
         storyViewModelList
       )
     } else null
@@ -143,12 +137,11 @@ class HomeViewModel(
       // TODO(#936): Optimise this as part of recommended stories.
       ongoingStoryList.olderStoryList
     }
-    return storyList.take(promotedStoryListLimit)
+    return storyList.take(R.integer.promoted_story_list_limit)
       .map { promotedStory ->
         PromotedStoryViewModel(
           activity,
           internalProfileId,
-          intentFactoryShim,
           storyList.size,
           storyEntityType,
           promotedStory
@@ -164,7 +157,7 @@ class HomeViewModel(
    */
   private fun computeAllTopicsItemsViewModelList(
     topicList: TopicList
-  ): Iterable<HomeItemViewModel> {
+  ): List<HomeItemViewModel> {
     val allTopicsList = topicList.topicSummaryList.mapIndexed { topicIndex, topicSummary ->
       TopicSummaryViewModel(
         activity,
@@ -175,7 +168,7 @@ class HomeViewModel(
       )
     }
     return if (!allTopicsList.isEmpty()) {
-      listOf(AllTopicsViewModel()) + allTopicsList
+      listOf(AllTopicsViewModel) + allTopicsList
     } else emptyList()
   }
 }
