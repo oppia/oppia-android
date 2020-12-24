@@ -27,6 +27,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
@@ -268,6 +269,72 @@ class NavigationDrawerActivityTest {
           internalProfileId
         )
       )
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_openNavDrawer_clickSwitchProfile_clickCancel() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      onView(withId(R.id.nav_home)).check(matches(ViewMatchers.isChecked()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_goToOptions_openNavDrawer_clickSwitchProfile_clickCancel() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_options)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_options)).check(matches(ViewMatchers.isChecked()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_goToHelp_openNavDrawer_clickSwitchProfile_clickCancel() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_help)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_help)).check(matches(ViewMatchers.isChecked()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_goToAdmin_openNavDrawer_clickSwitchProfile_clickCancel() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.administrator_controls)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.administrator_controls)).check(matches(ViewMatchers.isChecked()))
     }
   }
 
