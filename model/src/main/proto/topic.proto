@@ -42,10 +42,10 @@ message TopicPlayAvailability {
   // Corresponds to the availability of this topic (e.g. whether it can be played now).
   oneof availability {
     // Indicates this topic is available to be played.
-    bool available_to_play_now = 8;
+    bool available_to_play_now = 1;
 
     // Indicates this topic is not yet available to be played but is expected to be in the future.
-    bool available_to_play_in_future = 9;
+    bool available_to_play_in_future = 2;
   }
 }
 
