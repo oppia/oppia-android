@@ -31,6 +31,8 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
+import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.RobolectricModule
@@ -217,7 +219,30 @@ class TopicControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicFailed()
-    assertThat(topicResultCaptor.value!!.isFailure()).isTrue()
+  }
+
+  @Test
+  fun testRetrieveTopic_testTopic_published_returnsAsAvailable() {
+    topicController.getTopic(
+      profileId1, TEST_TOPIC_ID_0
+    ).toLiveData().observeForever(mockTopicObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetTopicSucceeded()
+    val topic = topicResultCaptor.value.getOrThrow()
+    assertThat(topic.topicPlayAvailability.availabilityCase).isEqualTo(AVAILABLE_TO_PLAY_NOW)
+  }
+
+  @Test
+  fun testRetrieveTopic_testTopic_unpublished_returnsAsAvailableInFuture() {
+    topicController.getTopic(
+      profileId1, TEST_TOPIC_ID_2
+    ).toLiveData().observeForever(mockTopicObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetTopicSucceeded()
+    val topic = topicResultCaptor.value.getOrThrow()
+    assertThat(topic.topicPlayAvailability.availabilityCase).isEqualTo(AVAILABLE_TO_PLAY_IN_FUTURE)
   }
 
   @Test
