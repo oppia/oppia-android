@@ -582,6 +582,7 @@ kt_android_library(
 kt_android_library(
     name = "snap_helper",
     srcs = SNAP_HELPER,
+    custom_package = "org.oppia.android.app.recyclerview",
     deps = [artifact("androidx.recyclerview:recyclerview:1.0.0"),],
 )
 
