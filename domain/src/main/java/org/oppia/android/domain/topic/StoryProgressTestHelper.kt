@@ -20,10 +20,10 @@ class StoryProgressTestHelper @Inject constructor(
     return Date().time - EIGHT_DAYS_IN_MS
   }
 
-  /** Creates a partial story progress for a particular profile.
+  /**
+   * Creates a partial story progress for a particular profile.
    *
    * @param profileId The profile we are setting partial progress of the fraction story for.
-   *
    * @param timestampOlderThanOneWeek If the timestamp for this topic progress is more than one week ago.
    */
   fun markPartialStoryProgressForFractions(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
@@ -41,10 +41,10 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
-  /** Creates a partial topic progress for a particular profile.
+  /**
+   * Creates a partial topic progress for a particular profile.
    *
    * @param profileId The profile we are setting partial progress of the fraction topic for.
-   *
    * @param timestampOlderThanOneWeek If the timestamp for this topic progress is more than one week ago.
    */
   fun markPartialTopicProgressForFractions(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
@@ -62,10 +62,10 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
-  /** Marks full story progress for a particular profile.
+  /**
+   *  Marks full story progress for a particular profile.
    *
    * @param profileId The profile we are setting full on the fraction story progress for.
-   *
    * @param timestampOlderThanOneWeek If the timestamp for completing the story is more than one week ago.
    */
   fun markFullStoryProgressForFractions(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
@@ -95,7 +95,6 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks full topic progress for a particular profile.
    *
    * @param profileId The profile we are setting fraction topic progress for.
-   *
    * @param timestampOlderThanOneWeek If the timestamp for completing the topic is more than one week ago.
    */
   fun markFullTopicProgressForFractions(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
@@ -124,7 +123,6 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks full topic progress on all topics for a particular profile.
    *
    * @param profileId The profile we are setting topic progress for.
-   *
    * @param timestampOlderThanOneWeek If the timestamp for completing the topic is from more than one week ago.
    */
   fun markFullProgressForAllTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -137,7 +135,6 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks full topic progress on Test Topics for a particular profile.
    *
    * @param profileId The profile we are setting topic progress for.
-   *
    * @param timestampOlderThanOneWeek If the timestamp for completing the topic is from more than one week ago.
    */
   fun markFullTopicProgressForTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -196,8 +193,8 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks full topic progress on Ratios for a particular profile.
    *
    * @param profileId The profile we are setting topic progress for.
-   *
    * @param timestampOlderThanOneWeek If the timestamp for completing the topic is from more than one week ago.
+   *
    */
   fun markFullTopicProgressForRatios(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     val timestamp = if (!timestampOlderThanOneWeek) {
@@ -235,10 +232,10 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
-  /** Marks one story progress full in ratios exploration for a particular profile.
+  /**
+   * Marks one story progress full in ratios exploration for a particular profile.
    *
    * @param profileId The profile we are setting topic progress on ratios for.
-   *
    * @param timestampOlderThanOneWeek If the timestamp for this progress is from more than one week ago.
    */
   fun markFullStoryPartialTopicProgressForRatios(
@@ -267,10 +264,10 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
-  /** Marks two partial story progress in ratios exploration for a particular profile.
+  /**
+   * Marks two partial story progress in ratios exploration for a particular profile.
    *
    * @param profileId The profile we are setting topic progress on ratios for.
-   *
    * @param timestampOlderThanOneWeek If the timestamp for the progress on the two stories is from more than one week
    *        ago.
    */
@@ -297,10 +294,10 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
-  /** Marks exploration [FRACTIONS_EXPLORATION_ID_0] as recently played for a particular profile.
+  /**
+   * Marks exploration [FRACTIONS_EXPLORATION_ID_0] as recently played for a particular profile.
    *
    * @param profileId The profile we are setting recently played for.
-   *
    * @param timestampOlderThanOneWeek If the timestamp for the recently played stor is more than a week ago.
    */
   fun markRecentlyPlayedForFractionsStory0Exploration0(
@@ -321,10 +318,10 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
-  /** Marks exploration [RATIOS_EXPLORATION_ID_0] as recently played for a particular profile.
+  /**
+   * Marks exploration [RATIOS_EXPLORATION_ID_0] as recently played for a particular profile.
    *
    * @param profileId The profile we are setting recently played for.
-   *
    * @param timestampOlderThanOneWeek If the timestamp for the recently played story is more than a week ago.
    */
   fun markRecentlyPlayedForRatiosStory0Exploration0(
@@ -345,10 +342,10 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
-  /** Marks first exploration in both stories of Ratios as recently played for a particular profile.
+  /**
+   *  Marks first exploration in both stories of Ratios as recently played for a particular profile.
    *
    * @param profileId The profile we are setting recently played for.
-   *
    * @param timestampOlderThanOneWeek If the timestamp for the recently played story and explorations is more than
    *        a week ago.
    */
@@ -379,10 +376,10 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
-  /** Marks first exploration in all stories of Ratios & Fractions as recently played for a particular profile.
+  /**
+   * Marks first exploration in all stories of Ratios & Fractions as recently played for a particular profile.
    *
    * @param profileId The profile we are setting recently played for.
-   *
    * @param timestampOlderThanOneWeek If the timestamp for the recently played explorations is more than a week ago.
    */
   fun markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(

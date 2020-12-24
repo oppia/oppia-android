@@ -35,20 +35,6 @@ public final class ViewBindingAdapters {
     view.setLayoutParams(layoutParams);
   }
 
-  /**
-   * BindingAdapter to set the end padding of a View. If this value is calculated in data fetching, the
-   * layout will require a default value since binding adapters aren't called until after initial
-   * view measurements and layouts are formatted.
-   */
-  @BindingAdapter("app:padding_end")
-  public static void setPaddingEnd(@NonNull View view, float paddingEnd) {
-    view.setPaddingRelative(
-        view.getPaddingStart(),
-        view.getPaddingTop(),
-        (int) paddingEnd,
-        view.getPaddingBottom());
-  }
-
   @BindingAdapter(
       value = {
           "app:isRotationAnimationClockwise",

@@ -31,10 +31,10 @@ class TopicSummaryViewModel(
   @ColorInt
   val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
   private val outerMargin by lazy {
-    activity.resources.getDimensionPixelSize(R.dimen.home_margin_max)
+    activity.resources.getDimensionPixelSize(R.dimen.home_outer_margin)
   }
   private val innerMargin by lazy {
-    activity.resources.getDimensionPixelSize(R.dimen.home_margin_min)
+    activity.resources.getDimensionPixelSize(R.dimen.home_inner_margin)
   }
   private val spanCount by lazy {
     activity.resources.getInteger(R.integer.home_span_count)
@@ -88,7 +88,7 @@ class TopicSummaryViewModel(
   /**
    * Determines the end margin for an individual TopicSummary relative to the grid columns laid out on the
    * HomeActivity. The end margins are calculated to stagger inside each fixed column but centered on the
-   * activity's layout (see [computeStartMargin])/
+   * activity's layout (see [computeStartMargin]).
    */
   fun computeEndMargin(): Int {
     return when (spanCount) {

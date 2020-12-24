@@ -406,8 +406,6 @@ in order to keep Gradle building.
      """,
 ) for file in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS]
 
-# Snap Helper
-
 SNAP_HELPER = ["src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper.kt"]
 
 """
@@ -578,7 +576,7 @@ kt_android_library(
     ],
 )
 
-# Library for scope annotations required to build views and view_model libraries.
+# Library for snap helper used to build views.
 kt_android_library(
     name = "snap_helper",
     srcs = SNAP_HELPER,
