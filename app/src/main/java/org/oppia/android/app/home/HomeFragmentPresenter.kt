@@ -67,6 +67,20 @@ class HomeFragmentPresenter @Inject constructor(
       storyEntityType
     )
 
+    val homeAdapter = createRecyclerViewAdapter()
+    val spanCount = activity.resources.getInteger(R.integer.home_span_count)
+    val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
+    homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+      override fun getSpanSize(position: Int): Int {
+        return if (homeAdapter.getItemViewType(position) === ViewType.TOPIC_LIST.ordinal) 1
+        else spanCount
+      }
+    }
+    binding.homeRecyclerView.apply{
+      adapter = homeAdapter
+      layoutManager = homeLayoutManager
+    }
+
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = homeViewModel
