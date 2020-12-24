@@ -149,10 +149,12 @@ LICENSE @rt4914
 /domain/**/*.java @rt4914
 
 # Questions support.
-/domain/src/*/java/org/oppia/android/domain/question/ @vinitamurthi
+# TODO(#2306): Replace @rt4914 with @vinitamurthi after 2021-01-05
+/domain/src/*/java/org/oppia/android/domain/question/ @rt4914
 
 # Oppia logging support.
-/domain/src/main/java/org/oppia/android/domain/oppialogger/ @vinitamurthi
+# TODO(#2306): Replace @rt4914 with @vinitamurthi after 2021-01-05
+/domain/src/main/java/org/oppia/android/domain/oppialogger/ @rt4914
 
 #####################################################################################
 #                                  testing module                                   #
@@ -189,7 +191,8 @@ LICENSE @rt4914
 /utility/src/*/java/org/oppia/android/util/accessibility/ @rt4914
 
 # Core logging infrastructure.
-/utility/src/*/java/org/oppia/android/util/logging/ @vinitamurthi
+# TODO(#2306): Replace @rt4914 with @vinitamurthi after 2021-01-05
+/utility/src/*/java/org/oppia/android/util/logging/ @rt4914
 
 # Miscellaneous statusbar UI utilities.
 /utility/src/*/java/org/oppia/android/util/statusbar/ @rt4914
@@ -208,10 +211,12 @@ LICENSE @rt4914
 
 # Global proto file ownership (for protos outside the model directory since all protos should belong in models).
 # TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-*.proto @rt4914 @vinitamurthi
+# TODO(#2306): Replace @rt4914 with @vinitamurthi after 2021-01-05
+*.proto @rt4914
 
 # Global model ownership (secondary).
-/model/ @vinitamurthi
+# TODO(#2306): Replace @rt4914 with @vinitamurthi after 2021-01-05
+/model/ @rt4914
 
 # Global model ownership (primary).
 # TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
