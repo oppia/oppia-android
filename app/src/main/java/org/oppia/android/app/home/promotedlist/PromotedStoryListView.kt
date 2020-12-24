@@ -26,9 +26,12 @@ class PromotedStoryListView @JvmOverloads constructor(
   @Inject
   lateinit var bindingInterface: ViewBindingShim
 
-  init {
+  override fun onAttachedToWindow() {
+    super.onAttachedToWindow()
+
     (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
       .createViewComponent(this).inject(this)
+
     adapter = BindableAdapter.SingleTypeBuilder.newBuilder<PromotedStoryViewModel>()
       .registerViewBinder(
         inflateView = { parent ->

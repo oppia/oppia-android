@@ -44,6 +44,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -68,6 +69,9 @@ class HomeSpanTest {
 
   private val internalProfileId: Int = 1
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -81,6 +85,7 @@ class HomeSpanTest {
   @Test
   fun testHomeSpanTest_checkSpanForItem0_port_hasCorrectSpanCount() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view))
         .check(
           hasGridItemCount(
