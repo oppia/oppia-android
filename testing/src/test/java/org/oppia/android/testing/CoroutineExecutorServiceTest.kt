@@ -1106,7 +1106,10 @@ class CoroutineExecutorServiceTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, TestModule::class, TestLogReportingModule::class
+      TestDispatcherModule::class,
+      TestModule::class,
+      TestLogReportingModule::class,
+      RobolectricModule::class
     ]
   )
   interface TestApplicationComponent {
