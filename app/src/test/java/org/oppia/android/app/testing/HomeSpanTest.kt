@@ -7,9 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -69,9 +71,6 @@ class HomeSpanTest {
 
   private val internalProfileId: Int = 1
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -85,7 +84,6 @@ class HomeSpanTest {
   @Test
   fun testHomeSpanTest_checkSpanForItem0_port_hasCorrectSpanCount() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view))
         .check(
           hasGridItemCount(

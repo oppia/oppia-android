@@ -25,5 +25,4 @@ interface ViewComponent {
   fun inject(dragDropSortInteractionView: DragDropSortInteractionView)
   fun inject(imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView)
   fun inject(lessonThumbnailImageView: LessonThumbnailImageView)
-  fun inject(promotedStoryListView: PromotedStoryListView)
 }
