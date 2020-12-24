@@ -71,8 +71,9 @@ class HomeFragmentPresenter @Inject constructor(
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
-        return if (position < homeAdapter.itemCount
-          && homeAdapter.getItemViewType(position) === ViewType.TOPIC_LIST.ordinal) 1
+        return if (position < homeAdapter.itemCount &&
+          homeAdapter.getItemViewType(position) === ViewType.TOPIC_LIST.ordinal
+        ) 1
         else spanCount
       }
     }

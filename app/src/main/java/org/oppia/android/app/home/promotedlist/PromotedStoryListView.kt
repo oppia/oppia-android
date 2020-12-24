@@ -3,15 +3,11 @@ package org.oppia.android.app.home.promotedlist
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.databinding.Bindable
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.shim.ViewBindingShim
-import org.oppia.android.app.shim.ViewComponentFactory
 import javax.inject.Inject
 
 /**

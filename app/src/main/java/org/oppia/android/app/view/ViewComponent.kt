@@ -4,7 +4,6 @@ import android.view.View
 import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.android.app.customview.LessonThumbnailImageView
-import org.oppia.android.app.home.promotedlist.PromotedStoryListView
 import org.oppia.android.app.player.state.DragDropSortInteractionView
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.player.state.SelectionInteractionView
