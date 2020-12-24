@@ -534,6 +534,7 @@ kt_android_library(
         ":annotations",
         ":listeners",
         ":resources",
+        ":databinding_resources",
         ":view_models",
         ":snap_helper",
         "//model",
