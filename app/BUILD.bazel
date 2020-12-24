@@ -581,7 +581,6 @@ kt_android_library(
 # Library for scope annotations required to build views and view_model libraries.
 kt_android_library(
     name = "snap_helper",
-    enable_data_binding = True,
     srcs = SNAP_HELPER,
     deps = [artifact("androidx.recyclerview:recyclerview:1.0.0"),],
 )
