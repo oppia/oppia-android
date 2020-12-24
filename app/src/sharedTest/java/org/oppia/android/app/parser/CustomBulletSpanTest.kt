@@ -3,6 +3,7 @@ package org.oppia.android.app.parser
 import android.app.Application
 import android.content.Context
 import android.text.Spannable
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.BulletSpan
 import android.text.style.UnderlineSpan
@@ -62,11 +63,11 @@ class CustomBulletSpanTest {
 
   private var context: Context = ApplicationProvider.getApplicationContext<TestApplication>()
 
-  val testStringWithoutBulletSpan = SpannableStringBuilder("Text Without BulletSpan")
-  val testStringWithBulletSpan = SpannableStringBuilder("Text With \nBullet Point").apply {
+  private val testStringWithoutBulletSpan = SpannableString("Text Without BulletSpan")
+  private val testStringWithBulletSpan = SpannableString("Text With \nBullet Point").apply {
     setSpan(BulletSpan(), 10, 22, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
   }
-  val testStringWithMultipleBulletSpan = SpannableStringBuilder(
+  private val testStringWithMultipleBulletSpan = SpannableString(
     "Text With \nfirst \nsecond \nthird \nfour \nfive"
   ).apply {
     setSpan(BulletSpan(), 10, 18, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -75,7 +76,7 @@ class CustomBulletSpanTest {
     setSpan(BulletSpan(), 35, 42, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     setSpan(UnderlineSpan(), 42, 43, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
   }
-  val testStringWithCustomBulletSpan = SpannableStringBuilder("Text With \nBullet Point").apply {
+  private val testStringWithCustomBulletSpan = SpannableString("Text With \nBullet Point").apply {
     this.setSpan(
       CustomBulletSpan(context),
       10,
@@ -87,43 +88,60 @@ class CustomBulletSpanTest {
   @Test
   fun customBulletSpan_testReplaceBulletSpan_spannableStringWithoutBulletSpanRemainSame() {
     val spannableString1 = testStringWithoutBulletSpan
-    val spannableString2 = CustomBulletSpan.replaceBulletSpan(spannableString1, context)
-    assertThat(getNoofBulletSpans(spannableString1)).isEqualTo(0)
-    assertThat(getNoofCustomBulletSpans(spannableString1)).isEqualTo(0)
-    assertThat(getNoofBulletSpans(spannableString2)).isEqualTo(0)
-    assertThat(getNoofCustomBulletSpans(spannableString2)).isEqualTo(0)
+    val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
+      SpannableStringBuilder(spannableString1),
+      context
+    )
+    val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
+    assertThat(getBulletSpanCount(spannableString1)).isEqualTo(0)
+    assertThat(getCustomBulletSpanCount(spannableString1)).isEqualTo(0)
+    assertThat(getBulletSpanCount(spannableString2)).isEqualTo(0)
+    assertThat(getCustomBulletSpanCount(spannableString2)).isEqualTo(0)
   }
 
   @Test
   fun customBulletSpan_testReplaceBulletSpan_spannableStringWithBulletSpanIsNotSame() {
     val spannableString1 = testStringWithBulletSpan
-    val spannableString2 = CustomBulletSpan.replaceBulletSpan(spannableString1, context)
-//    assertThat(getNoofBulletSpans(spannableString1)).isEqualTo(1) //0
-//    assertThat(getNoofCustomBulletSpans(spannableString1)).isEqualTo(0) //1
-    assertThat(getNoofBulletSpans(spannableString2)).isEqualTo(0) //  0
-    assertThat(getNoofCustomBulletSpans(spannableString2)).isEqualTo(1) //  1
+    val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
+      SpannableStringBuilder(spannableString1),
+      context
+    )
+    val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
+
+    assertThat(getBulletSpanCount(spannableString1)).isEqualTo(1)
+    assertThat(getCustomBulletSpanCount(spannableString1)).isEqualTo(0)
+    assertThat(getBulletSpanCount(spannableString2)).isEqualTo(0)
+    assertThat(getCustomBulletSpanCount(spannableString2)).isEqualTo(1)
   }
 
   @Test
   fun customBulletSpan_testReplaceBulletSpan_multipleBulletSpanAndUnderlineSpan_underlineSpan() {
     val spannableString1 = testStringWithMultipleBulletSpan
-    val spannableString2 = CustomBulletSpan.replaceBulletSpan(spannableString1, context)
-//    assertThat(getNoofBulletSpans(spannableString1)).isEqualTo(4) //0
-//    assertThat(getNoofCustomBulletSpans(spannableString1)).isEqualTo(0) //4
-    assertThat(getNoofUnderlineSpans(spannableString1)).isEqualTo(1) // 0
-    assertThat(getNoofBulletSpans(spannableString2)).isEqualTo(0) // 0
-    assertThat(getNoofCustomBulletSpans(spannableString2)).isEqualTo(4) // 4
-    assertThat(getNoofUnderlineSpans(spannableString2)).isEqualTo(1) // 0
+    val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
+      SpannableStringBuilder(spannableString1),
+      context
+    )
+    val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
+    assertThat(getBulletSpanCount(spannableString1)).isEqualTo(4)
+    assertThat(getCustomBulletSpanCount(spannableString1)).isEqualTo(0)
+    assertThat(getUnderlineSpanCount(spannableString1)).isEqualTo(1)
+    assertThat(getBulletSpanCount(spannableString2)).isEqualTo(0)
+    assertThat(getCustomBulletSpanCount(spannableString2)).isEqualTo(4)
+    assertThat(getUnderlineSpanCount(spannableString2)).isEqualTo(1)
   }
 
   @Test
   fun customBulletSpan_testReplaceBulletSpan_customBulletSpans_RemainsSame() {
     val spannableString1 = testStringWithCustomBulletSpan
-    val spannableString2 = CustomBulletSpan.replaceBulletSpan(spannableString1, context)
-    assertThat(getNoofBulletSpans(spannableString1)).isEqualTo(0)
-    assertThat(getNoofCustomBulletSpans(spannableString1)).isEqualTo(1)
-    assertThat(getNoofBulletSpans(spannableString2)).isEqualTo(0)
-    assertThat(getNoofCustomBulletSpans(spannableString2)).isEqualTo(1)
+    val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
+      SpannableStringBuilder(spannableString1),
+      context
+    )
+    val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
+    assertThat(getBulletSpanCount(spannableString1)).isEqualTo(0)
+    assertThat(getCustomBulletSpanCount(spannableString1)).isEqualTo(1)
+    assertThat(getBulletSpanCount(spannableString2)).isEqualTo(0)
+    assertThat(getCustomBulletSpanCount(spannableString2)).isEqualTo(1)
   }
 
   @Test
@@ -148,7 +166,7 @@ class CustomBulletSpanTest {
     assertThat(leadingMargin).isEqualTo(expectedMargin)
   }
 
-  private fun getBulletSpans(spannableString: SpannableStringBuilder): Array<out BulletSpan> {
+  private fun getBulletSpans(spannableString: SpannableString): Array<out BulletSpan> {
     return spannableString.getSpans<BulletSpan>(
       0,
       spannableString.length
@@ -156,7 +174,7 @@ class CustomBulletSpanTest {
   }
 
   private fun getCustomBulletSpans(
-    spannableString: SpannableStringBuilder
+    spannableString: SpannableString
   ): Array<out CustomBulletSpan> {
     return spannableString.getSpans<CustomBulletSpan>(
       0,
@@ -164,22 +182,22 @@ class CustomBulletSpanTest {
     )
   }
 
-  private fun getUnderlineSpans(spannableString: SpannableStringBuilder): Array<out UnderlineSpan> {
+  private fun getUnderlineSpans(spannableString: SpannableString): Array<out UnderlineSpan> {
     return spannableString.getSpans<UnderlineSpan>(
       0,
       spannableString.length
     )
   }
 
-  private fun getNoofBulletSpans(spannableString: SpannableStringBuilder): Int {
+  private fun getBulletSpanCount(spannableString: SpannableString): Int {
     return getBulletSpans(spannableString).size
   }
 
-  private fun getNoofCustomBulletSpans(spannableString: SpannableStringBuilder): Int {
+  private fun getCustomBulletSpanCount(spannableString: SpannableString): Int {
     return getCustomBulletSpans(spannableString).size
   }
 
-  private fun getNoofUnderlineSpans(spannableString: SpannableStringBuilder): Int {
+  private fun getUnderlineSpanCount(spannableString: SpannableString): Int {
     return getUnderlineSpans(spannableString).size
   }
 
