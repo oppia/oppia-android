@@ -314,21 +314,6 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveTopicList_doesNotContainUnavailableTopic() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    // Verify that the topic list does not contain a not-yet published topic (since it can't be
-    // played by the user).
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
-    val topicIds = topicList.topicSummaryList.map(TopicSummary::getTopicId)
-    assertThat(topicIds).doesNotContain(TEST_TOPIC_ID_2)
-  }
-
-  @Test
   fun testRetrieveRecommendedActivityList_markChapterCompletedFracStory0Exp0_recommendedStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
