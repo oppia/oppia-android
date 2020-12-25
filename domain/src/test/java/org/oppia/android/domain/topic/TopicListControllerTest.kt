@@ -28,6 +28,7 @@ import org.oppia.android.app.model.RecommendedActivityList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.TopicList
+import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -298,6 +299,21 @@ class TopicListControllerTest {
   }
 
   @Test
+  fun testRetrieveTopicList_doesNotContainUnavailableTopic() {
+    val topicListLiveData = topicListController.getTopicList().toLiveData()
+
+    topicListLiveData.observeForever(mockTopicListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the topic list does not contain a not-yet published topic (since it can't be
+    // played by the user).
+    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
+    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicIds = topicList.topicSummaryList.map(TopicSummary::getTopicId)
+    assertThat(topicIds).doesNotContain(TEST_TOPIC_ID_2)
+  }
+
+  @Test
   fun testRetrieveRecommendedActivityList_markChapterCompletedFracStory0Exp0_recommendedStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
@@ -457,7 +473,6 @@ class TopicListControllerTest {
     verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[1])
   }
 
-  // TODO(#2303): Rewrite this testcase for coming soon topics.
   @Test
   fun testRetrieveRecentlyStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_recentStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
@@ -578,7 +593,7 @@ class TopicListControllerTest {
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
     assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(0)
     assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount).isEqualTo(0)
-    assertThat(recommendedActivityList.comingSoonTopicList.upcomingTopicCount).isEqualTo(4)
+    assertThat(recommendedActivityList.comingSoonTopicList.upcomingTopicCount).isEqualTo(1)
   }
 
   @Test

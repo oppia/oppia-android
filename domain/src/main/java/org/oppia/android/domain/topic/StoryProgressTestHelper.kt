@@ -181,6 +181,49 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
+  /** Marks full story progress for a particular profile. */
+  fun markFullProgressForFirstTopics(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
+    val timestamp = if (!timestampOlderThanAWeek) {
+      getCurrentTimestamp()
+    } else {
+      getOldTimestamp()
+    }
+    // Stories and Explorations for "Test Topic"s are not in chronological order so we want to ensure
+    // that the combinations of Topic / Story / Exploration that are visible will be marked as completed.
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
+      timestamp
+    )
+  }
+
+  /** Marks full story progress for a particular profile. */
+  fun markFullProgressForSecondTopics(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
+    val timestamp = if (!timestampOlderThanAWeek) {
+      getCurrentTimestamp()
+    } else {
+      getOldTimestamp()
+    }
+    // Stories and Explorations for "Test Topic"s are not in chronological order so we want to ensure
+    // that the combinations of Topic / Story / Exploration that are visible will be marked as completed.
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_4,
+      timestamp
+    )
+  }
+
   /** Marks one story progress full in ratios exploration for a particular profile. */
   fun markFullStoryPartialTopicProgressForRatios(
     profileId: ProfileId,
@@ -191,13 +234,6 @@ class StoryProgressTestHelper @Inject constructor(
     } else {
       getOldTimestamp()
     }
-    storyProgressController.recordCompletedChapter(
-      profileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      timestamp
-    )
 
     storyProgressController.recordCompletedChapter(
       profileId,
