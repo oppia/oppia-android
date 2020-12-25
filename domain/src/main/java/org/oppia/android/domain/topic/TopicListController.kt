@@ -20,6 +20,7 @@ import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicPlayAvailability
+import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicSummary
@@ -160,15 +161,12 @@ class TopicListController @Inject constructor(
       .getJSONArray("topic_id_list")
     val comingSoonTopicListBuilder = ComingSoonTopicList.newBuilder()
     for (i in 0 until topicIdJsonArray.length()) {
-      comingSoonTopicListBuilder.addUpcomingTopic(
-        createUpcomingTopicSummary(
-          topicIdJsonArray.optString(
-            i
-          )!!
-        )
-      )
+      val upcomingTopicSummary = createUpcomingTopicSummary(topicIdJsonArray.optString(i)!!)
+      // Only include topics currently not playable in the upcoming topic list.
+      if (upcomingTopicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_IN_FUTURE) {
+        comingSoonTopicListBuilder.addUpcomingTopic(upcomingTopicSummary)
+      }
     }
-//    RecommendedActivityList.newBuilder().setComingSoonTopicList(comingSoonTopicListBuilder)
     return comingSoonTopicListBuilder.build()
   }
 
@@ -212,6 +210,7 @@ class TopicListController @Inject constructor(
     topicId: String,
     jsonObject: JSONObject
   ): UpcomingTopic {
+    val upcomingTopic = UpcomingTopic.newBuilder()
     var totalChapterCount = 0
     val storyData = jsonObject.getJSONArray("canonical_story_dicts")
     for (i in 0 until storyData.length()) {
@@ -220,13 +219,21 @@ class TopicListController @Inject constructor(
         .getJSONArray("node_titles")
         .length()
     }
-    return UpcomingTopic.newBuilder()
-      .setTopicId(topicId)
-      .setName(jsonObject.getString("topic_name"))
-      .setVersion(jsonObject.optInt("version"))
-      .setEstimatedReleaseUnixTimestamp(oppiaClock.getCurrentCalendar().timeInMillis)
-      .setLessonThumbnail(createTopicThumbnail(jsonObject))
-      .build()
+    val topicPlayAvailability = if (jsonObject.getBoolean("published")) {
+      TopicPlayAvailability.newBuilder().setAvailableToPlayNow(true).build()
+    } else {
+      TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
+    }
+
+      return  upcomingTopic.setTopicId(topicId)
+        .setName(jsonObject.getString("topic_name"))
+        .setVersion(jsonObject.optInt("version"))
+        .setEstimatedReleaseUnixTimestamp(oppiaClock.getCurrentCalendar().timeInMillis)
+         .setTopicPlayAvailability(topicPlayAvailability)
+        .setLessonThumbnail(createTopicThumbnail(jsonObject))
+         .build()
+
+
   }
 
   private fun createOngoingStoryListFromProgress(
@@ -330,29 +337,31 @@ class TopicListController @Inject constructor(
   ): RecommendedActivityList {
     val recommendedActivityListBuilder = RecommendedActivityList.newBuilder()
 
+    Log.d("topic prog","size - "+ topicProgressList.size)
     if (topicProgressList.isNotEmpty()) {
       val recommendedStoryBuilder = RecommendedStoryList.newBuilder()
       if (topicProgressList.size == 1) {
-        (createRecommendedStoryList(
-          topicProgressList,
-          recommendedActivityListBuilder,
-          recommendedStoryBuilder
-        )
+        recommendedStoryBuilder.addAllSuggestedStory(
+          createRecommendedStoryList(
+            topicProgressList,
+            recommendedActivityListBuilder,
+            recommendedStoryBuilder
           )
+        )
         recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
+        if (recommendedStoryBuilder.suggestedStoryCount == 0 && recommendedStoryBuilder.recentlyPlayedStoryCount == 0
+          && recommendedStoryBuilder.olderPlayedStoryCount == 0) {
+          recommendedActivityListBuilder.setComingSoonTopicList( createComingSoonTopicList())
+        }
       } else {
+        // Add recently played stories or last played stories in RecommendedActivityList.
         createRecentPlayedStories(
           topicProgressList,
           recommendedActivityListBuilder,
           recommendedStoryBuilder
         )
-        when {
-          recommendedStoryBuilder.recentlyPlayedStoryCount == 0 &&
-            recommendedStoryBuilder.olderPlayedStoryCount > 0
-            && recommendedStoryBuilder.suggestedStoryCount == 0 -> {
-            recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
-          }
-        }
+
+        // If no recently played stories or last played stories then set suggested stories stories in RecommendedActivityList.
         when {
           recommendedStoryBuilder.recentlyPlayedStoryCount == 0
             && recommendedStoryBuilder.olderPlayedStoryCount == 0 -> {
@@ -365,9 +374,11 @@ class TopicListController @Inject constructor(
             )
             recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
 
+            // If user has completed all the topcs then add upcoming topics in RecommendedActivityList.
             if (recommendedStoryBuilder.suggestedStoryCount == 0) {
-              recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
+              recommendedActivityListBuilder.setComingSoonTopicList( createComingSoonTopicList())
             }
+
           }
         }
       }
@@ -471,15 +482,15 @@ class TopicListController @Inject constructor(
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
 
-    val topicList = mutableListOf<String>()
-    for (i in 0 until topicIdJsonArray.length()) {
-      topicList.add(topicIdJsonArray[i].toString())
-    }
+    val topicIdList = (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
 
-    val index = topicList.indexOf(topicProgressList.last().topicId)
-    if (topicIdJsonArray.length() > (index + 1)) {
-      recommendedStoryBuilder.addSuggestedStory(createRecommendedStoryFromAssets(topicIdJsonArray[index + 1].toString()))
-      return recommendedStories
+    val index = topicIdList.indexOf(topicProgressList.last().topicId)
+
+      for (i in (index+1) until topicIdJsonArray.length()) {
+        if (topicIdJsonArray.length() > i && createRecommendedStoryFromAssets(topicIdJsonArray[i].toString()) != null) {
+          recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[i].toString())!!)
+          return recommendedStories
+        }
     }
     return recommendedStories
   }

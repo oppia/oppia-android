@@ -306,6 +306,9 @@ message UpcomingTopic {
 
   // The associated thumbnail that should be displayed with this topic.
   LessonThumbnail lesson_thumbnail = 5;
+
+  // Specifics about whether this topic is playable.
+  TopicPlayAvailability topic_play_availability = 6;
 }
 
 // Represents the story progress.

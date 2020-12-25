@@ -473,7 +473,6 @@ class TopicListControllerTest {
     verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[1])
   }
 
-  // TODO(#2303): Rewrite this testcase for coming soon topics.
   @Test
   fun testRetrieveRecentlyStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_recentStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
@@ -594,7 +593,7 @@ class TopicListControllerTest {
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
     assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(0)
     assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount).isEqualTo(0)
-    assertThat(recommendedActivityList.comingSoonTopicList.upcomingTopicCount).isEqualTo(4)
+    assertThat(recommendedActivityList.comingSoonTopicList.upcomingTopicCount).isEqualTo(1)
   }
 
   @Test

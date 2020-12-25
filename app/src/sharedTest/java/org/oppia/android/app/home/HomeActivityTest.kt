@@ -303,7 +303,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_displaysRecommendedStoriesText() {
+  fun testHomeActivity_recyclerViewIndex1_displaysStoriesForYouText() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -321,11 +321,66 @@ class HomeActivityTest {
         )
       ).check(
         matches(
+          withText(R.string.stories_for_you)
+        )
+      )
+    }
+  }
+  @Test
+  fun testHomeActivity_recyclerViewIndex1_displaysLastPlayedStoriesText() {
+    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = true
+    )
+    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = true
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          1,
+          R.id.recently_played_stories_text_view
+        )
+      ).check(
+        matches(
+          withText(R.string.last_played_stories)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex1_displaysRecommendedStoriesText() {
+    storyProgressTestHelper.markFullProgressForSecondTopics(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          1,
+          R.id.coming_soon_topic_text_view
+        )
+      ).check(
+        matches(
           withText(R.string.recommended_stories)
         )
       )
     }
   }
+
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_forRecommendedStories_hideViewAll() {
@@ -346,10 +401,6 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysComingSoonTopicsText() {
-    storyProgressTestHelper.markFullStoryProgressForFractions(
-      profileId,
-      timestampOlderThanAWeek = false
-    )
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false
@@ -358,17 +409,6 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          1,
-          R.id.recently_played_stories_text_view
-        )
-      ).check(
-        matches(
-          withText(R.string.coming_soon)
-        )
       )
     }
   }

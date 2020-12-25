@@ -113,8 +113,12 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         }
 
         if (it.recommendedStoryList.suggestedStoryCount > 0) {
+          val showDivider = itemList.isNotEmpty()
           val recommendedSectionTitleViewModel =
-            SectionTitleViewModel(activity.getString(R.string.recommended_stories), false)
+            SectionTitleViewModel(
+              activity.getString(R.string.recommended_stories),
+              showDivider
+            )
           itemList.add(recommendedSectionTitleViewModel)
           for (promotedStory in it.recommendedStoryList.suggestedStoryList) {
             val ongoingStoryViewModel =
@@ -167,7 +171,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     val sectionTitle2Position = if (suggestedStoryCount == 0) {
       // If suggested story count is 0, that means that section title 2 will not be visible.
       -1
-    } else if (oldStoryCount == 0) {
+    } else if (recentStoryCount == 0) {
       0
     } else {
       recentStoryCount + 1
