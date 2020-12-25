@@ -118,6 +118,7 @@ const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 class StatePlayerRecyclerViewAssembler private constructor(
   val adapter: BindableAdapter<StateItemViewModel>,
   val rhsAdapter: BindableAdapter<StateItemViewModel>,
+  val isCorrectAnswer: ObservableField<Boolean>,
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
   private val congratulationsTextView: TextView?,
@@ -147,8 +148,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * not retained upon configuration changes since the user can just re-expand the list.
    */
   private var hasPreviousResponsesExpanded: Boolean = false
-
-  val isCorrectAnswer = ObservableField<Boolean>(false)
 
   private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
@@ -775,6 +774,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
     }
 
+    private val isCorrectAnswer: ObservableField<Boolean> = ObservableField(false)
+
+    /** @param isCorrectAnswer is restored to its updated value on configuration change */
+    fun isAnswerCorrect(isCorrectAnswer: Boolean): Builder {
+      this.isCorrectAnswer.set(isCorrectAnswer)
+      return this
+    }
+
     /** Adds support for displaying state content to the learner. */
     fun addContentSupport(): Builder {
       adapterBuilder.registerViewBinder(
@@ -1170,6 +1177,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       val assembler = StatePlayerRecyclerViewAssembler(
         /* adapter= */ adapterBuilder.build(),
         /* rhsAdapter= */ adapterBuilder.build(),
+        isCorrectAnswer,
         playerFeatureSet,
         fragment,
         congratulationsTextView,
