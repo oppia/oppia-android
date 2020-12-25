@@ -28,6 +28,7 @@ import org.oppia.android.app.model.RecommendedActivityList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.TopicList
+import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -295,6 +296,21 @@ class TopicListControllerTest {
     val topicList = topicListResultCaptor.value.getOrThrow()
     val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.totalChapterCount).isEqualTo(4)
+  }
+
+  @Test
+  fun testRetrieveTopicList_doesNotContainUnavailableTopic() {
+    val topicListLiveData = topicListController.getTopicList().toLiveData()
+
+    topicListLiveData.observeForever(mockTopicListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the topic list does not contain a not-yet published topic (since it can't be
+    // played by the user).
+    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
+    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicIds = topicList.topicSummaryList.map(TopicSummary::getTopicId)
+    assertThat(topicIds).doesNotContain(TEST_TOPIC_ID_2)
   }
 
   @Test
