@@ -319,7 +319,7 @@ class TopicListControllerTest {
       profileId0,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
+      FRACTIONS_EXPLORATION_ID_1,
       getCurrentTimestamp()
     )
     testCoroutineDispatchers.runCurrent()
@@ -331,32 +331,8 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount).isEqualTo(2)
-    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.suggestedStoryList[0])
-    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.suggestedStoryList[1])
-  }
-
-  @Test
-  fun testRetrieveRecommendedStoryList_markRecentlyPlayedFracStory0Exp0_recommendedStoryListIsCorrect() {
-    storyProgressController.recordRecentlyPlayedChapter(
-      profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    topicListController.getRecommendedActivityList(profileId0).toLiveData()
-      .observeForever(mockRecommendedActivityListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetRecommendedActivityListSucceeded()
-
-    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount).isEqualTo(2)
-    verifyOngoingStoryAsFractionStory0Exploration0(recommendedActivityList.recommendedStoryList.suggestedStoryList[0])
-    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.suggestedStoryList[1])
+    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount).isEqualTo(1)
+    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.suggestedStoryList[0])
   }
 
   @Test
