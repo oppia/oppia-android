@@ -20,7 +20,6 @@ import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicPlayAvailability
-import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicSummary

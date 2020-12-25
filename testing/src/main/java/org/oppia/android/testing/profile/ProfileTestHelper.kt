@@ -99,6 +99,9 @@ class ProfileTestHelper @Inject constructor(
   /** Login to user profile. */
   fun loginToUser() = logIntoProfile(internalProfileId = 1)
 
+  /** Login to a new user profile, since profile #2 is not used as a default user anywhere in this helper. */
+  fun loginToNewUser() = logIntoProfile(internalProfileId = 2)
+
   private fun logIntoProfile(internalProfileId: Int): LiveData<AsyncResult<Any?>> {
     val result = profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(internalProfileId).build()
