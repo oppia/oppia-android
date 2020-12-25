@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -22,15 +22,38 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
-  private val POSITIVE_REAL_VALUE_1_5 = createReal(value = 1.5)
-  private val POSITIVE_REAL_VALUE_3_5 = createReal(value = 3.5)
-  private val NEGATIVE_REAL_VALUE_1_5 = createReal(value = -1.5)
-  private val NEGATIVE_REAL_VALUE_3_5 = createReal(value = -3.5)
-  private val STRING_VALUE = createString(value = "test")
-  private val POSITIVE_INT_VALUE_3 = createInt(value = 3)
-  private val POSITIVE_INT_VALUE_1 = createInt(value = 1)
-  private val NEGATIVE_INT_VALUE_1 = createInt(value = -1)
-  private val NEGATIVE_INT_VALUE_3 = createInt(value = -3)
+  private val STRING_VALUE_X =
+    InteractionObjectTestBuilder.createString(value = "x")
+
+  private val STRING_VALUE_Y =
+    InteractionObjectTestBuilder.createString(value = "y")
+
+  private val POSITIVE_REAL_VALUE_1_5 =
+    InteractionObjectTestBuilder.createReal(value = 1.5)
+
+  private val POSITIVE_REAL_VALUE_3_5 =
+    InteractionObjectTestBuilder.createReal(value = 3.5)
+
+  private val NEGATIVE_REAL_VALUE_1_5 =
+    InteractionObjectTestBuilder.createReal(value = -1.5)
+
+  private val NEGATIVE_REAL_VALUE_3_5 =
+    InteractionObjectTestBuilder.createReal(value = -3.5)
+
+  private val STRING_VALUE =
+    InteractionObjectTestBuilder.createString(value = "test")
+
+  private val POSITIVE_INT_VALUE_3 =
+    InteractionObjectTestBuilder.createInt(value = 3)
+
+  private val POSITIVE_INT_VALUE_1 =
+    InteractionObjectTestBuilder.createInt(value = 1)
+
+  private val NEGATIVE_INT_VALUE_1 =
+    InteractionObjectTestBuilder.createInt(value = -1)
+
+  private val NEGATIVE_INT_VALUE_3 =
+    InteractionObjectTestBuilder.createInt(value = -3)
 
   @Inject
   internal lateinit var numericInputIsGreaterThanOrEqualToRuleClassifierProvider:
@@ -47,7 +70,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_sameExactValues_answerGreaterOrEqual() {
-    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
+    val inputs = mapOf(STRING_VALUE_X to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -58,7 +81,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNegativeRealAnswer_negativeRealInput_sameExactValues_answerGreaterOrEqual() {
-    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
+    val inputs = mapOf(STRING_VALUE_X to NEGATIVE_REAL_VALUE_1_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -69,7 +92,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_answerValueGreater_answerGreaterOrEqual() {
-    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
+    val inputs = mapOf(STRING_VALUE_X to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -80,7 +103,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
-    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_3_5)
+    val inputs = mapOf(STRING_VALUE_X to POSITIVE_REAL_VALUE_3_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -91,7 +114,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNegativeRealAnswer_negativeRealInput_answerValueGreater_answerGreaterOrEqual() {
-    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_3_5)
+    val inputs = mapOf(STRING_VALUE_X to NEGATIVE_REAL_VALUE_3_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -102,7 +125,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNegativeRealAnswer_negativeRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
-    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
+    val inputs = mapOf(STRING_VALUE_X to NEGATIVE_REAL_VALUE_1_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -113,7 +136,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNegativeRealAnswer_positiveRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
-    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
+    val inputs = mapOf(STRING_VALUE_X to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -124,7 +147,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_negativeRealInput_answerValueGreater_answerGreaterOrEqual() {
-    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
+    val inputs = mapOf(STRING_VALUE_X to NEGATIVE_REAL_VALUE_1_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -135,7 +158,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testPositiveIntAnswer_negativeIntInput_answerValueGreater_answerGreaterOrEqual() {
-    val inputs = mapOf("x" to NEGATIVE_INT_VALUE_3)
+    val inputs = mapOf(STRING_VALUE_X to NEGATIVE_INT_VALUE_3)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -146,7 +169,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNegativeIntAnswer_positiveIntInput_answerValueSmaller_answerNotGreaterOrEqual() {
-    val inputs = mapOf("x" to POSITIVE_INT_VALUE_3)
+    val inputs = mapOf(STRING_VALUE_X to POSITIVE_INT_VALUE_3)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -157,7 +180,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testRealAnswer_missingInput_throwsException() {
-    val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
+    val inputs = mapOf(STRING_VALUE_Y to POSITIVE_REAL_VALUE_1_5)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -171,7 +194,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testRealAnswer_stringInput_throwsException() {
-    val inputs = mapOf("x" to STRING_VALUE)
+    val inputs = mapOf(STRING_VALUE_X to STRING_VALUE)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -181,18 +204,6 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected input value to be of type REAL not NORMALIZED_STRING")
-  }
-
-  private fun createReal(value: Double): InteractionObject {
-    return InteractionObject.newBuilder().setReal(value).build()
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
-  }
-
-  private fun createInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setReal(value.toDouble()).build()
   }
 
   private fun setUpTestApplicationComponent() {
