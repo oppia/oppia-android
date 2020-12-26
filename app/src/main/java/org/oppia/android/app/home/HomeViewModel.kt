@@ -200,8 +200,7 @@ class HomeViewModel(
     return comingSoonTopicList.upcomingTopicList.mapIndexed { topicIndex, topicSummary ->
       ComingSoonTopicsViewModel(
         topicSummary,
-        topicEntityType,
-        fragment as TopicSummaryClickListener
+        topicEntityType
       )
     }
   }

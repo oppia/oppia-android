@@ -18,8 +18,7 @@ import java.util.*
 /** The view model corresponding to coming soon topic summaries in the topic summary RecyclerView. */
 class ComingSoonTopicsViewModel(
   val topicSummary: UpcomingTopic,
-  val entityType: String,
-  private val topicSummaryClickListener: TopicSummaryClickListener
+  val entityType: String
 ) : HomeItemViewModel() {
   val name: String = topicSummary.name
   val estimateReleaseUnixTimeStamp: Long = topicSummary.estimatedReleaseUnixTimestamp
@@ -27,11 +26,6 @@ class ComingSoonTopicsViewModel(
   val backgroundColor: Int = retrieveBackgroundColor()
   @ColorInt
   val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
-
-//  /** Callback from data-binding for when the summary tile is clicked. */
-//  fun clickOnSummaryTile() {
-//    topicSummaryClickListener.onTopicSummaryClicked(topicSummary)
-//  }
 
   @ColorInt
   private fun retrieveBackgroundColor(): Int {

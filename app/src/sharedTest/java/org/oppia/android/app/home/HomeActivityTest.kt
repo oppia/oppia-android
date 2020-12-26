@@ -326,6 +326,7 @@ class HomeActivityTest {
       )
     }
   }
+
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysLastPlayedStoriesText() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
@@ -361,7 +362,6 @@ class HomeActivityTest {
       profileId,
       timestampOlderThanAWeek = false
     )
-
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -380,8 +380,7 @@ class HomeActivityTest {
       )
     }
   }
-
-
+  
   @Test
   fun testHomeActivity_recyclerViewIndex1_forRecommendedStories_hideViewAll() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
