@@ -23,9 +23,9 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class NumericInputEqualsRuleClassifierProviderTest {
 
-  private val STRING_VALUE_X : String = "x"
+  private val STRING_VALUE_X: String = "x"
 
-  private val STRING_VALUE_Y : String = "y"
+  private val STRING_VALUE_Y: String = "y"
 
   private val POSITIVE_REAL_VALUE_1_5 =
     InteractionObjectTestBuilder.createReal(value = 1.5)
