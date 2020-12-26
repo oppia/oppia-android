@@ -22,6 +22,15 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
 
+  private val STRING_VALUE_A =
+    InteractionObjectTestBuilder.createString(value = "a")
+
+  private val STRING_VALUE_B =
+    InteractionObjectTestBuilder.createString(value = "b")
+
+  private val STRING_VALUE_C =
+    InteractionObjectTestBuilder.createString(value = "c")
+
   private val POSITIVE_REAL_VALUE_1_5 =
     InteractionObjectTestBuilder.createReal(value = 1.5)
 
@@ -80,8 +89,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testPositiveRealAnswer_positiveRealInputs_sameExactValues_answerInclusivelyBetween() {
     val inputs = mapOf(
-      "a" to POSITIVE_REAL_VALUE_1_5,
-      "b" to POSITIVE_REAL_VALUE_1_5
+      STRING_VALUE_A to POSITIVE_REAL_VALUE_1_5,
+      STRING_VALUE_B to POSITIVE_REAL_VALUE_1_5
     )
     val matches =
       inputIsInclusivelyBetweenRuleClassifier
@@ -93,8 +102,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testNegativeRealAnswer_negativeRealInputs_sameExactValues_answerInclusivelyBetween() {
     val inputs = mapOf(
-      "a" to NEGATIVE_REAL_VALUE_3_5,
-      "b" to NEGATIVE_REAL_VALUE_3_5
+      STRING_VALUE_A to NEGATIVE_REAL_VALUE_3_5,
+      STRING_VALUE_B to NEGATIVE_REAL_VALUE_3_5
     )
     val matches =
       inputIsInclusivelyBetweenRuleClassifier
@@ -106,8 +115,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testPositiveRealAnswer_negativeRealInput_positiveRealInput_answerInclusivelyBetween() {
     val inputs = mapOf(
-      "a" to NEGATIVE_REAL_VALUE_1_5,
-      "b" to POSITIVE_REAL_VALUE_3_5
+      STRING_VALUE_A to NEGATIVE_REAL_VALUE_1_5,
+      STRING_VALUE_B to POSITIVE_REAL_VALUE_3_5
     )
     val matches =
       inputIsInclusivelyBetweenRuleClassifier
@@ -119,8 +128,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testPositiveRealAnswer_positiveRealInput_negativeRealInput_answerInclusivelyBetween() {
     val inputs = mapOf(
-      "a" to POSITIVE_REAL_VALUE_3_5,
-      "b" to NEGATIVE_REAL_VALUE_3_5
+      STRING_VALUE_A to POSITIVE_REAL_VALUE_3_5,
+      STRING_VALUE_B to NEGATIVE_REAL_VALUE_3_5
     )
     val matches =
       inputIsInclusivelyBetweenRuleClassifier
@@ -132,8 +141,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testNegativeRealAnswer_negativeRealInput_positiveRealInput_answerInclusivelyBetween() {
     val inputs = mapOf(
-      "a" to NEGATIVE_REAL_VALUE_3_5,
-      "b" to POSITIVE_REAL_VALUE_1_5
+      STRING_VALUE_A to NEGATIVE_REAL_VALUE_3_5,
+      STRING_VALUE_B to POSITIVE_REAL_VALUE_1_5
     )
     val matches =
       inputIsInclusivelyBetweenRuleClassifier
@@ -145,8 +154,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testNegativeRealAnswer_positiveRealInput_negativeRealInput_answerInclusivelyBetween() {
     val inputs = mapOf(
-      "a" to POSITIVE_REAL_VALUE_3_5,
-      "b" to NEGATIVE_REAL_VALUE_3_5
+      STRING_VALUE_A to POSITIVE_REAL_VALUE_3_5,
+      STRING_VALUE_B to NEGATIVE_REAL_VALUE_3_5
     )
     val matches =
       inputIsInclusivelyBetweenRuleClassifier
@@ -158,8 +167,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testPositiveIntAnswer_negativeInput_positiveIntInput_answerInclusivelyBetween() {
     val inputs = mapOf(
-      "a" to NEGATIVE_INT_VALUE_1,
-      "b" to POSITIVE_INT_VALUE_3
+      STRING_VALUE_A to NEGATIVE_INT_VALUE_1,
+      STRING_VALUE_B to POSITIVE_INT_VALUE_3
     )
     val matches =
       inputIsInclusivelyBetweenRuleClassifier
@@ -171,8 +180,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testPositiveIntAnswer_positiveIntInput_negativeIntInput_answerNotInclusivelyBetween() {
     val inputs = mapOf(
-      "a" to POSITIVE_INT_VALUE_3,
-      "b" to NEGATIVE_INT_VALUE_1
+      STRING_VALUE_A to POSITIVE_INT_VALUE_3,
+      STRING_VALUE_B to NEGATIVE_INT_VALUE_1
     )
     val matches =
       inputIsInclusivelyBetweenRuleClassifier
@@ -184,8 +193,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testNegativeIntAnswer_negativeIntInput_positiveIntInput_answerInclusivelyBetween() {
     val inputs = mapOf(
-      "a" to NEGATIVE_INT_VALUE_3,
-      "b" to POSITIVE_INT_VALUE_1
+      STRING_VALUE_A to NEGATIVE_INT_VALUE_3,
+      STRING_VALUE_B to POSITIVE_INT_VALUE_1
     )
     val matches =
       inputIsInclusivelyBetweenRuleClassifier
@@ -197,8 +206,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testNegativeIntAnswer_positiveIntInput_negativeIntInput_answerNotInclusivelyBetween() {
     val inputs = mapOf(
-      "a" to POSITIVE_REAL_VALUE_3_5,
-      "b" to NEGATIVE_REAL_VALUE_3_5
+      STRING_VALUE_A to POSITIVE_REAL_VALUE_3_5,
+      STRING_VALUE_B to NEGATIVE_REAL_VALUE_3_5
     )
     val matches =
       inputIsInclusivelyBetweenRuleClassifier
@@ -210,8 +219,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testRealAnswer_firstMissingInput_throwsException() {
     val inputs = mapOf(
-      "c" to NEGATIVE_REAL_VALUE_3_5,
-      "b" to POSITIVE_REAL_VALUE_3_5
+      STRING_VALUE_C to NEGATIVE_REAL_VALUE_3_5,
+      STRING_VALUE_B to POSITIVE_REAL_VALUE_3_5
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsInclusivelyBetweenRuleClassifier
@@ -226,8 +235,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testRealAnswer_secondMissingInput_throwsException() {
     val inputs = mapOf(
-      "a" to NEGATIVE_REAL_VALUE_3_5,
-      "c" to POSITIVE_REAL_VALUE_1_5
+      STRING_VALUE_A to NEGATIVE_REAL_VALUE_3_5,
+      STRING_VALUE_C to POSITIVE_REAL_VALUE_1_5
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsInclusivelyBetweenRuleClassifier
@@ -242,8 +251,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testRealAnswer_firstStringInput_throwsException() {
     val inputs = mapOf(
-      "a" to STRING_VALUE_1,
-      "b" to NEGATIVE_REAL_VALUE_3_5
+      STRING_VALUE_A to STRING_VALUE_1,
+      STRING_VALUE_B to NEGATIVE_REAL_VALUE_3_5
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsInclusivelyBetweenRuleClassifier
@@ -258,8 +267,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testRealAnswer_secondStringInput_throwsException() {
     val inputs = mapOf(
-      "a" to POSITIVE_REAL_VALUE_1_5,
-      "b" to STRING_VALUE_2
+      STRING_VALUE_A to POSITIVE_REAL_VALUE_1_5,
+      STRING_VALUE_B to STRING_VALUE_2
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsInclusivelyBetweenRuleClassifier
@@ -274,8 +283,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testIntAnswer_missingFirstInput_throwsException() {
     val inputs = mapOf(
-      "c" to POSITIVE_INT_VALUE_1,
-      "b" to POSITIVE_INT_VALUE_3
+      STRING_VALUE_C to POSITIVE_INT_VALUE_1,
+      STRING_VALUE_B to POSITIVE_INT_VALUE_3
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsInclusivelyBetweenRuleClassifier
@@ -290,8 +299,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testIntAnswer_missingSecondInput_throwsException() {
     val inputs = mapOf(
-      "a" to POSITIVE_INT_VALUE_1,
-      "c" to POSITIVE_INT_VALUE_3
+      STRING_VALUE_A to POSITIVE_INT_VALUE_1,
+      STRING_VALUE_C to POSITIVE_INT_VALUE_3
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsInclusivelyBetweenRuleClassifier
@@ -306,8 +315,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testIntAnswer_firstStringInput_throwsException() {
     val inputs = mapOf(
-      "a" to STRING_VALUE_1,
-      "b" to POSITIVE_INT_VALUE_3
+      STRING_VALUE_A to STRING_VALUE_1,
+      STRING_VALUE_B to POSITIVE_INT_VALUE_3
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsInclusivelyBetweenRuleClassifier
@@ -322,8 +331,8 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   @Test
   fun testIntAnswer_secondStringInput_throwsException() {
     val inputs = mapOf(
-      "a" to NEGATIVE_INT_VALUE_3,
-      "b" to STRING_VALUE_2
+      STRING_VALUE_A to NEGATIVE_INT_VALUE_3,
+      STRING_VALUE_B to STRING_VALUE_2
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsInclusivelyBetweenRuleClassifier
