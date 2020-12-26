@@ -378,7 +378,6 @@ class TopicListController @Inject constructor(
             if (recommendedStoryBuilder.suggestedStoryCount == 0) {
               recommendedActivityListBuilder.setComingSoonTopicList( createComingSoonTopicList())
             }
-
           }
         }
       }

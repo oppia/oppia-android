@@ -16,7 +16,6 @@ import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.databinding.AllTopicsBinding
 import org.oppia.android.databinding.ComingSoonTopicListBinding
 import org.oppia.android.databinding.HomeFragmentBinding
@@ -42,7 +41,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   private val oppiaLogger: OppiaLogger,
-  private val intentFactoryShim: IntentFactoryShim,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String
 ) {
@@ -64,30 +62,28 @@ class HomeFragmentPresenter @Inject constructor(
       oppiaClock,
       logger,
       internalProfileId,
-      intentFactoryShim,
       profileManagementController,
       topicListController,
       topicEntityType,
       storyEntityType
     )
 
+    val homeAdapter = createRecyclerViewAdapter()
     val spanCount = activity.resources.getInteger(R.integer.home_span_count)
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
-        return if (position == 0 || position == 1 || position == 2) {
-          /* number of spaces this item should occupy = */ spanCount
-        } else {
-          /* number of spaces this item should occupy = */ 1
-        }
+        return if (position < homeAdapter.itemCount &&
+          homeAdapter.getItemViewType(position) === ViewType.TOPIC_LIST.ordinal
+        ) 1
+        else spanCount
       }
     }
-
     binding.homeRecyclerView.apply {
-      adapter = createRecyclerViewAdapter()
-      // https://stackoverflow.com/a/32763434/32763621
+      adapter = homeAdapter
       layoutManager = homeLayoutManager
     }
+
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = homeViewModel

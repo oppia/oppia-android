@@ -499,10 +499,10 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markFullProgressForAllTopics_getOngoingTopicListIsEmpty() {
+  fun testProgressTestHelper_markFullProgressForAllTopicsMoreThanOneWeek_ongoingTopicListEmpty() {
     storyProgressTestHelper.markFullProgressForAllTopics(
       profileId,
-      /* timestampOlderThanAWeek= */ false
+      /* timestampOlderThanOneWeek= */ true
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -514,14 +514,33 @@ class StoryProgressTestHelperTest {
     verifyGetOngoingTopicListSucceeded()
 
     val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.topicList.size).isEqualTo(0)
+    assertThat(ongoingTopicList.topicList).isEmpty()
   }
 
   @Test
-  fun testProgressTestHelper_markFullProgressForAllTopics_getCompletedStoryListIsCorrect() {
+  fun testProgressTestHelper_markFullProgressForAllTopicsLessThanOneWeek_ongoingTopicListEmpty() {
     storyProgressTestHelper.markFullProgressForAllTopics(
       profileId,
-      /* timestampOlderThanAWeek= */ false
+      /* timestampOlderThanOneWeek= */ false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetOngoingTopicListSucceeded()
+
+    val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.topicList).isEmpty()
+  }
+
+  @Test
+  fun testProgressTestHelper_fullProgressAllTopicsMoreThanOneWk_completedStoryListHasSixStories() {
+    storyProgressTestHelper.markFullProgressForAllTopics(
+      profileId,
+      /* timestampOlderThanOneWeek= */ true
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -532,14 +551,50 @@ class StoryProgressTestHelperTest {
     verifyGetCompletedStoryListSucceeded()
 
     val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-    assertThat(completedStoryList.completedStoryList.size).isEqualTo(6)
+    assertThat(completedStoryList.completedStoryList).hasSize(6)
   }
 
   @Test
-  fun testProgressTestHelper_markFullProgressForAllTopics_getTopicListIsCorrect() {
+  fun testProgressTestHelper_fullProgressAllTopicsLessThanOneWk_completedStoryListHasSixStories() {
     storyProgressTestHelper.markFullProgressForAllTopics(
       profileId,
-      /* timestampOlderThanAWeek= */ false
+      /* timestampOlderThanOneWeek= */ false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    topicController.getCompletedStoryList(profileId).toLiveData()
+      .observeForever(mockCompletedStoryListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetCompletedStoryListSucceeded()
+
+    val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
+    assertThat(completedStoryList.completedStoryList).hasSize(6)
+  }
+
+  @Test
+  fun testProgressTestHelper_markFullProgressForAllTopicsMoreThanOneWeek_topicListHasFourStories() {
+    storyProgressTestHelper.markFullProgressForAllTopics(
+      profileId,
+      /* timestampOlderThanOneWeek= */ true
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    topicListController.getTopicList().toLiveData()
+      .observeForever(mockTopicListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetTopicListSucceeded()
+
+    val topicList = topicListResultCaptor.value.getOrThrow()
+    assertThat(topicList.topicSummaryCount).isEqualTo(4)
+  }
+
+  @Test
+  fun testProgressTestHelper_markFullProgressForAllTopicsLessThanOneWeek_topicListHasFourStories() {
+    storyProgressTestHelper.markFullProgressForAllTopics(
+      profileId,
+      /* timestampOlderThanOneWeek= */ false
     )
     testCoroutineDispatchers.runCurrent()
 
