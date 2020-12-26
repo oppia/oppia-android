@@ -68,10 +68,6 @@ class HomeViewModel(
     topicListController.getTopicList()
   }
 
-//  private val comingSoontopicListSummaryDataProvider: DataProvider<ComingSoonTopicList> by lazy {
-//    topicListController.getComingSoonTopicList()
-//  }
-
   private val homeItemViewModelListDataProvider: DataProvider<List<HomeItemViewModel>> by lazy {
     // This will block until all data providers return initial results (which may be default
     // instances). If any of the data providers are pending or failed, the combined result will also
@@ -121,9 +117,9 @@ class HomeViewModel(
   }
 
   /**
-   * Returns a [HomeItemViewModel] corresponding to the promoted stories to be displayed for this learner
-   * (see [PromotedStoryListViewModel]), or null if this profile does not have any promoted stories.
-   * Promoted stories are determined by any recent stories started by this profile.
+   * Returns a [HomeItemViewModel] corresponding to the promoted stories[PromotedStoryListViewModel] and Upcoming topics
+   * [ComingSoonTopicListViewModel]  to be displayed for this learner or null if this profile does not have any promoted stories.
+   * Promoted stories are determined by any recent stories or suggested stories started by this profile.
    */
   private fun computeRecommendedActivityListViewModel(
     recommendedActivityList: RecommendedActivityList
@@ -163,7 +159,7 @@ class HomeViewModel(
   ): List<PromotedStoryViewModel> {
     val storyList = when {
       recommendedStoryList.suggestedStoryCount != 0 -> {
-        if (recommendedStoryList.recentlyPlayedStoryCount != 0
+        val list = if (recommendedStoryList.recentlyPlayedStoryCount != 0
           || recommendedStoryList.olderPlayedStoryCount != 0
         ) {
           recommendedStoryList.recentlyPlayedStoryList +
@@ -172,6 +168,7 @@ class HomeViewModel(
         } else {
           recommendedStoryList.suggestedStoryList
         }
+        list
       }
       recommendedStoryList.recentlyPlayedStoryCount != 0 -> {
         recommendedStoryList.recentlyPlayedStoryList
@@ -193,18 +190,21 @@ class HomeViewModel(
       }
   }
 
+  /**
+   * Returns a list of [HomeItemViewModel]s corresponding to [ComingSoonTopicListViewModel]  all the upcoming topics available in future and to be
+   * displayed for this profile (see [ComingSoonTopicsViewModel]), or an empty list if the profile does not have any
+   * ongoing stories at all.
+   */
   private fun computeComingSoonTopicViewModelList(
     comingSoonTopicList: ComingSoonTopicList
   ): List<ComingSoonTopicsViewModel> {
-    val upComingTopicsList =
-      comingSoonTopicList.upcomingTopicList.mapIndexed { topicIndex, topicSummary ->
-        ComingSoonTopicsViewModel(
-          topicSummary,
-          topicEntityType,
-          fragment as TopicSummaryClickListener
-        )
-      }
-    return upComingTopicsList
+    return comingSoonTopicList.upcomingTopicList.mapIndexed { topicIndex, topicSummary ->
+      ComingSoonTopicsViewModel(
+        topicSummary,
+        topicEntityType,
+        fragment as TopicSummaryClickListener
+      )
+    }
   }
 
   /**
