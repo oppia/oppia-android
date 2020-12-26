@@ -262,7 +262,7 @@ message TopicProgress {
   int64 last_played_timestamp = 3;
 }
 
-// A structure corresponding to the Promoted Stories. This structure is set up
+// A structure corresponding to the promoted stories. This structure is set up
 // to properly account for recently played stories, recommended stories
 // and coming soon topics.
 message RecommendedActivityList {
@@ -272,7 +272,7 @@ message RecommendedActivityList {
   }
 }
 
-// Corresponds to the list of stories the player is currently playing across all topics and Recommended stories.
+// Corresponds to the list of stories the player is currently playing across all topics and recommended stories.
 message RecommendedStoryList {
   // Ongoing stories from within the last 7 days.
   repeated PromotedStory recently_played_story   = 1;
