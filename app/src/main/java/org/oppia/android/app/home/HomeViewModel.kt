@@ -182,7 +182,6 @@ class HomeViewModel(
         PromotedStoryViewModel(
           activity,
           internalProfileId,
-          intentFactoryShim,
           storyList.size,
           storyEntityType,
           promotedStory
@@ -215,7 +214,7 @@ class HomeViewModel(
    */
   private fun computeAllTopicsItemsViewModelList(
     topicList: TopicList
-  ): Iterable<HomeItemViewModel> {
+  ): List<HomeItemViewModel> {
     val allTopicsList = topicList.topicSummaryList.mapIndexed { topicIndex, topicSummary ->
       TopicSummaryViewModel(
         activity,
@@ -226,7 +225,7 @@ class HomeViewModel(
       )
     }
     return if (!allTopicsList.isEmpty()) {
-      listOf(AllTopicsViewModel()) + allTopicsList
+      listOf(AllTopicsViewModel) + allTopicsList
     } else emptyList()
   }
 }
