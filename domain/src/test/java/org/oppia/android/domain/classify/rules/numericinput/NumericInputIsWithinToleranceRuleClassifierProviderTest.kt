@@ -22,8 +22,11 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class NumericInputIsWithinToleranceRuleClassifierProviderTest {
 
-  private val STRING_VALUE_X =
-    InteractionObjectTestBuilder.createString(value = "x")
+  private val STRING_VALUE_X : String = "x"
+
+  private val STRING_VALUE_C : String = "c"
+
+  private val STRING_VALUE_TOL : String = "tol"
 
   private val POSITIVE_REAL_VALUE_1_5 =
     InteractionObjectTestBuilder.createReal(value = 1.5)
@@ -87,7 +90,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswer2pt5_input3pt5_tolerance1pt5_isWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to POSITIVE_REAL_VALUE_3_5,
-      "tol" to POSITIVE_REAL_VALUE_1_5
+       STRING_VALUE_TOL to POSITIVE_REAL_VALUE_1_5
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -100,7 +103,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswer1pt5_input3pt5_tolerance1pt5_isNotWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to POSITIVE_REAL_VALUE_3_5,
-      "tol" to POSITIVE_REAL_VALUE_1_5
+       STRING_VALUE_TOL to POSITIVE_REAL_VALUE_1_5
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -113,7 +116,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswer2pt5_input3pt5_tolerance1_isWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to POSITIVE_REAL_VALUE_3_5,
-      "tol" to POSITIVE_INT_VALUE_1
+       STRING_VALUE_TOL to POSITIVE_INT_VALUE_1
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -126,7 +129,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerNegative2pt5_inputNegative3pt5_tolerance1_isWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to NEGATIVE_REAL_VALUE_3_5,
-      "tol" to POSITIVE_INT_VALUE_1
+       STRING_VALUE_TOL to POSITIVE_INT_VALUE_1
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -139,7 +142,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerNegative2pt5_inputNegative3pt5_tolerance1pt5_isWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to NEGATIVE_REAL_VALUE_3_5,
-      "tol" to POSITIVE_REAL_VALUE_1_5
+       STRING_VALUE_TOL to POSITIVE_REAL_VALUE_1_5
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -152,7 +155,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerNegative1pt5_inputNegative3pt5_tolerance1pt5_isNotWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to NEGATIVE_REAL_VALUE_3_5,
-      "tol" to POSITIVE_REAL_VALUE_1_5
+       STRING_VALUE_TOL to POSITIVE_REAL_VALUE_1_5
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -165,7 +168,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswer1pt5_input1pt5_tolerance0_isWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to POSITIVE_REAL_VALUE_1_5,
-      "tol" to ZERO_REAL_VALUE
+       STRING_VALUE_TOL to ZERO_REAL_VALUE
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -178,7 +181,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswer2pt5_input3pt5_tolerance0_isNotWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to POSITIVE_REAL_VALUE_3_5,
-      "tol" to ZERO_REAL_VALUE
+       STRING_VALUE_TOL to ZERO_REAL_VALUE
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -191,7 +194,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerNegative1pt5_inputNegative1pt5_tolerance0_isWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to NEGATIVE_REAL_VALUE_1_5,
-      "tol" to ZERO_REAL_VALUE
+       STRING_VALUE_TOL to ZERO_REAL_VALUE
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -204,7 +207,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerNegative2pt5_inputNegative3pt5_tolerance0_isNotWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to NEGATIVE_REAL_VALUE_3_5,
-      "tol" to ZERO_REAL_VALUE
+       STRING_VALUE_TOL to ZERO_REAL_VALUE
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -217,7 +220,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswer2pt5_input3pt5_toleranceNegative1pt5_isNotWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to POSITIVE_REAL_VALUE_3_5,
-      "tol" to NEGATIVE_REAL_VALUE_1_5
+       STRING_VALUE_TOL to NEGATIVE_REAL_VALUE_1_5
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -230,7 +233,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerInt2_inputInt3_toleranceInt2_isWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to POSITIVE_INT_VALUE_3,
-      "tol" to POSITIVE_INT_VALUE_2
+       STRING_VALUE_TOL to POSITIVE_INT_VALUE_2
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -243,7 +246,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerInt1_inputInt3_toleranceInt1_isNotWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to POSITIVE_INT_VALUE_3,
-      "tol" to POSITIVE_INT_VALUE_1
+       STRING_VALUE_TOL to POSITIVE_INT_VALUE_1
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -256,7 +259,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerNegativeInt2_inputNegativeInt3_toleranceInt1_isWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to NEGATIVE_INT_VALUE_3,
-      "tol" to POSITIVE_INT_VALUE_1
+       STRING_VALUE_TOL to POSITIVE_INT_VALUE_1
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -269,7 +272,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerNegativeInt1_inputNegativeInt3_toleranceInt1_isNotWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to NEGATIVE_INT_VALUE_3,
-      "tol" to POSITIVE_INT_VALUE_1
+       STRING_VALUE_TOL to POSITIVE_INT_VALUE_1
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -282,7 +285,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerInt1_inputInt3_toleranceInt0_isWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to POSITIVE_INT_VALUE_1,
-      "tol" to ZERO_INT_VALUE
+       STRING_VALUE_TOL to ZERO_INT_VALUE
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -295,7 +298,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerInt2_inputInt3_toleranceInt0_isNotWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to POSITIVE_INT_VALUE_3,
-      "tol" to ZERO_INT_VALUE
+       STRING_VALUE_TOL to ZERO_INT_VALUE
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -308,7 +311,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerNegativeInt3_inputInt3_toleranceInt0_isWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to NEGATIVE_INT_VALUE_3,
-      "tol" to ZERO_REAL_VALUE
+       STRING_VALUE_TOL to ZERO_REAL_VALUE
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -321,7 +324,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerNegativeInt2_inputNegativeInt3_tolerance0_isNotWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to NEGATIVE_INT_VALUE_3,
-      "tol" to ZERO_REAL_VALUE
+       STRING_VALUE_TOL to ZERO_REAL_VALUE
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -334,7 +337,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerInt2_inputInt3_toleranceNegativeInt1_isNotWithinTolerance() {
     val inputs = mapOf(
       STRING_VALUE_X to POSITIVE_INT_VALUE_3,
-      "tol" to NEGATIVE_INT_VALUE_1
+       STRING_VALUE_TOL to NEGATIVE_INT_VALUE_1
     )
     val matches =
       inputIsWithinToleranceRuleClassifier
@@ -346,7 +349,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   @Test
   fun testAnswer1pt5_firstMissingInput_throwsException() {
     val inputs = mapOf(
-      "tol" to POSITIVE_REAL_VALUE_3_5
+       STRING_VALUE_TOL to POSITIVE_REAL_VALUE_3_5
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsWithinToleranceRuleClassifier
@@ -376,8 +379,8 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   @Test
   fun testAnswer1pt5_firstIncorrectInput_throwsException() {
     val inputs = mapOf(
-      "c" to NEGATIVE_REAL_VALUE_3_5,
-      "tol" to POSITIVE_REAL_VALUE_3_5
+       STRING_VALUE_C to NEGATIVE_REAL_VALUE_3_5,
+       STRING_VALUE_TOL to POSITIVE_REAL_VALUE_3_5
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsWithinToleranceRuleClassifier
@@ -393,7 +396,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswer1pt5_secondIncorrectInput_throwsException() {
     val inputs = mapOf(
       STRING_VALUE_X to NEGATIVE_REAL_VALUE_3_5,
-      "c" to POSITIVE_REAL_VALUE_1_5
+       STRING_VALUE_C to POSITIVE_REAL_VALUE_1_5
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsWithinToleranceRuleClassifier
@@ -409,7 +412,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswer1pt5_firstStringInput_throwsException() {
     val inputs = mapOf(
       STRING_VALUE_X to STRING_VALUE_1,
-      "tol" to NEGATIVE_REAL_VALUE_3_5
+       STRING_VALUE_TOL to NEGATIVE_REAL_VALUE_3_5
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsWithinToleranceRuleClassifier
@@ -424,7 +427,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   @Test
   fun testAnswerInt2_firstMissingInput_throwsException() {
     val inputs = mapOf(
-      "tol" to POSITIVE_INT_VALUE_3
+       STRING_VALUE_TOL to POSITIVE_INT_VALUE_3
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsWithinToleranceRuleClassifier
@@ -454,8 +457,8 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   @Test
   fun testAnswerInt2_firstIncorrectInput_throwsException() {
     val inputs = mapOf(
-      "c" to POSITIVE_INT_VALUE_1,
-      "tol" to POSITIVE_INT_VALUE_3
+       STRING_VALUE_C to POSITIVE_INT_VALUE_1,
+       STRING_VALUE_TOL to POSITIVE_INT_VALUE_3
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsWithinToleranceRuleClassifier
@@ -471,7 +474,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerInt2_secondIncorrectInput_throwsException() {
     val inputs = mapOf(
       STRING_VALUE_X to POSITIVE_INT_VALUE_1,
-      "c" to POSITIVE_INT_VALUE_3
+       STRING_VALUE_C to POSITIVE_INT_VALUE_3
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsWithinToleranceRuleClassifier
@@ -487,7 +490,7 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
   fun testAnswerInt1_firstStringInput_throwsException() {
     val inputs = mapOf(
       STRING_VALUE_X to STRING_VALUE_1,
-      "tol" to POSITIVE_INT_VALUE_3
+       STRING_VALUE_TOL to POSITIVE_INT_VALUE_3
     )
     val exception = assertThrows(IllegalStateException::class) {
       inputIsWithinToleranceRuleClassifier

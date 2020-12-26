@@ -22,14 +22,11 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
 
-  private val STRING_VALUE_A =
-    InteractionObjectTestBuilder.createString(value = "a")
+  private val STRING_VALUE_A : String = "a"
 
-  private val STRING_VALUE_B =
-    InteractionObjectTestBuilder.createString(value = "b")
+  private val STRING_VALUE_B : String = "b"
 
-  private val STRING_VALUE_C =
-    InteractionObjectTestBuilder.createString(value = "c")
+  private val STRING_VALUE_C : String = "c"
 
   private val POSITIVE_REAL_VALUE_1_5 =
     InteractionObjectTestBuilder.createReal(value = 1.5)

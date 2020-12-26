@@ -22,11 +22,9 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class NumericInputIsLessThanRuleClassifierProviderTest {
 
-  private val STRING_VALUE_X =
-    InteractionObjectTestBuilder.createString(value = "x")
+  private val STRING_VALUE_X : String = "x"
 
-  private val STRING_VALUE_Y =
-    InteractionObjectTestBuilder.createString(value = "y")
+  private val STRING_VALUE_Y : String = "y"
 
   private val POSITIVE_REAL_VALUE_1_5 =
     InteractionObjectTestBuilder.createReal(value = 1.5)
@@ -222,7 +220,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
 
   @Test
   fun testIntAnswer_stringInput_throwsException() {
-    val inputs = mapOf("x" to STRING_VALUE)
+    val inputs = mapOf(STRING_VALUE_X to STRING_VALUE)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputIsLessThanRuleClassifier
