@@ -16,7 +16,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.scrollTo
-import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -71,6 +70,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.EditTextInputAction
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -350,7 +350,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name_profile_input_view))
         )
       ).perform(
-        typeText("Rajat"), closeSoftKeyboard()
+        editTextInputAction.appendText("Rajat"), closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).check(matches(isClickable()))
@@ -367,7 +367,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name_profile_input_view))
         )
       ).perform(
-        typeText("Rajat"), closeSoftKeyboard()
+        editTextInputAction.appendText("Rajat"), closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
@@ -512,7 +512,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name_profile_input_view))
         )
       ).perform(
-        typeText("123"), closeSoftKeyboard()
+        editTextInputAction.appendText("123"), closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
@@ -539,7 +539,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name_profile_input_view))
         )
       ).perform(
-        typeText("123"), closeSoftKeyboard()
+        editTextInputAction.appendText("123"), closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
@@ -759,7 +759,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo()).perform(
-        typeText("12"),
+        editTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo()).perform(click())
@@ -775,7 +775,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
-        typeText("3"),
+        editTextInputAction.appendText("3"),
         closeSoftKeyboard()
       )
       onView(
@@ -933,7 +933,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
-        typeText("123"),
+        editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(
@@ -948,7 +948,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
-        typeText("12"),
+        editTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
@@ -965,7 +965,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
-        typeText("3"),
+        editTextInputAction.appendText("3"),
         closeSoftKeyboard()
       )
       onView(
@@ -989,7 +989,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo()).perform(
-        typeText("123"),
+        editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(
@@ -998,7 +998,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo()).perform(
-        typeText("12"),
+        editTextInputAction.appendText("12"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
@@ -1015,7 +1015,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
-        typeText("3"),
+        editTextInputAction.appendText("3"),
         closeSoftKeyboard()
       )
       onView(
@@ -1064,7 +1064,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo()).perform(
-        typeText("123"),
+        editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_allow_download_switch))
@@ -1224,7 +1224,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name_profile_input_view))
         )
       ).perform(
-        typeText("test"),
+        editTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -1642,6 +1642,7 @@ class AddProfileActivityTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
