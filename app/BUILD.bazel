@@ -1049,9 +1049,9 @@ app_test(
 
 # TODO(#973): Fix app module tests for Robolectric.
 app_test(
-    name = "NavigationDrawerTestActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/testing/NavigationDrawerTestActivityTest.kt")],
-    test_class = "org.oppia.android.app.testing.NavigationDrawerTestActivityTest",
+    name = "NavigationDrawerActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/testing/NavigationDrawerActivityTest.kt")],
+    test_class = "org.oppia.android.app.testing.NavigationDrawerActivityTest",
     deps = TEST_DEPS,
 )
 

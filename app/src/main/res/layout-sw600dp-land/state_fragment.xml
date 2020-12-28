@@ -22,8 +22,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="horizontal">
+      android:layout_height="match_parent">
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/state_recycler_view"
