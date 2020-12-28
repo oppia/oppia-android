@@ -22,10 +22,6 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
-  private val STRING_VALUE_X: String = "x"
-
-  private val STRING_VALUE_Y: String = "y"
-
   private val POSITIVE_REAL_VALUE_1_5 =
     InteractionObjectTestBuilder.createReal(value = 1.5)
 
@@ -68,7 +64,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_sameExactValues_answerGreaterOrEqual() {
-    val inputs = mapOf(STRING_VALUE_X to POSITIVE_REAL_VALUE_1_5)
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -79,7 +75,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNegativeRealAnswer_negativeRealInput_sameExactValues_answerGreaterOrEqual() {
-    val inputs = mapOf(STRING_VALUE_X to NEGATIVE_REAL_VALUE_1_5)
+    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -90,7 +86,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_answerValueGreater_answerGreaterOrEqual() {
-    val inputs = mapOf(STRING_VALUE_X to POSITIVE_REAL_VALUE_1_5)
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -101,7 +97,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
-    val inputs = mapOf(STRING_VALUE_X to POSITIVE_REAL_VALUE_3_5)
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_3_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -112,7 +108,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNegativeRealAnswer_negativeRealInput_answerValueGreater_answerGreaterOrEqual() {
-    val inputs = mapOf(STRING_VALUE_X to NEGATIVE_REAL_VALUE_3_5)
+    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_3_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -123,7 +119,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNegativeRealAnswer_negativeRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
-    val inputs = mapOf(STRING_VALUE_X to NEGATIVE_REAL_VALUE_1_5)
+    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -134,7 +130,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNegativeRealAnswer_positiveRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
-    val inputs = mapOf(STRING_VALUE_X to POSITIVE_REAL_VALUE_1_5)
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -145,7 +141,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_negativeRealInput_answerValueGreater_answerGreaterOrEqual() {
-    val inputs = mapOf(STRING_VALUE_X to NEGATIVE_REAL_VALUE_1_5)
+    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -156,7 +152,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testPositiveIntAnswer_negativeIntInput_answerValueGreater_answerGreaterOrEqual() {
-    val inputs = mapOf(STRING_VALUE_X to NEGATIVE_INT_VALUE_3)
+    val inputs = mapOf("x" to NEGATIVE_INT_VALUE_3)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -167,7 +163,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testNegativeIntAnswer_positiveIntInput_answerValueSmaller_answerNotGreaterOrEqual() {
-    val inputs = mapOf(STRING_VALUE_X to POSITIVE_INT_VALUE_3)
+    val inputs = mapOf("x" to POSITIVE_INT_VALUE_3)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -178,7 +174,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testRealAnswer_missingInput_throwsException() {
-    val inputs = mapOf(STRING_VALUE_Y to POSITIVE_REAL_VALUE_1_5)
+    val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputIsGreaterThanOrEqualToRuleClassifier
@@ -192,7 +188,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   @Test
   fun testRealAnswer_stringInput_throwsException() {
-    val inputs = mapOf(STRING_VALUE_X to STRING_VALUE)
+    val inputs = mapOf("x" to STRING_VALUE)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputIsGreaterThanOrEqualToRuleClassifier

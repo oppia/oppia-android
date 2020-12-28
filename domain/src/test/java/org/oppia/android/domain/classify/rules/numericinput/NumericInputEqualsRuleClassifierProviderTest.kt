@@ -23,10 +23,6 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class NumericInputEqualsRuleClassifierProviderTest {
 
-  private val STRING_VALUE_X: String = "x"
-
-  private val STRING_VALUE_Y: String = "y"
-
   private val POSITIVE_REAL_VALUE_1_5 =
     InteractionObjectTestBuilder.createReal(value = 1.5)
 
@@ -57,7 +53,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_sameExactValue_bothValuesMatch() {
-    val inputs = mapOf(STRING_VALUE_X to POSITIVE_REAL_VALUE_1_5)
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
       inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
@@ -67,7 +63,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testNegativeRealAnswer_negativeRealInput_sameExactValue_bothValuesMatch() {
-    val inputs = mapOf(STRING_VALUE_X to NEGATIVE_REAL_VALUE_1_5)
+    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
     val matches =
       inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
@@ -78,7 +74,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valuesInRange_bothValuesMatch() {
     val inputs = mapOf(
-      STRING_VALUE_X to InteractionObjectTestBuilder.createReal(
+      "x" to InteractionObjectTestBuilder.createReal(
         value = 5 * FLOAT_EQUALITY_INTERVAL
       )
     )
@@ -96,7 +92,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valueOutOfRange_valuesDoNotMatch() {
-    val inputs = mapOf(STRING_VALUE_X to POSITIVE_REAL_VALUE_1_5)
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
       inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_3_5, inputs = inputs)
@@ -106,7 +102,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testNegativeRealAnswer_negativeRealInput_valueOutOfRange_valuesDoNotMatch() {
-    val inputs = mapOf(STRING_VALUE_X to NEGATIVE_REAL_VALUE_1_5)
+    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
     val matches =
       inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
@@ -116,7 +112,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testNegativeRealAnswer_positiveRealInput_valueOutOfRange_valuesDoNotMatch() {
-    val inputs = mapOf(STRING_VALUE_X to POSITIVE_REAL_VALUE_3_5)
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_3_5)
 
     val matches =
       inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
@@ -127,7 +123,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valueAtRange_valuesDoNotMatch() {
     val inputs = mapOf(
-      STRING_VALUE_X to InteractionObjectTestBuilder.createReal(
+      "x" to InteractionObjectTestBuilder.createReal(
         value = 5 * FLOAT_EQUALITY_INTERVAL
       )
     )
@@ -142,7 +138,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testRealAnswer_missingInput_throwsException() {
-    val inputs = mapOf(STRING_VALUE_Y to POSITIVE_REAL_VALUE_1_5)
+    val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
@@ -155,7 +151,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testRealAnswer_stringInput_throwsException() {
-    val inputs = mapOf(STRING_VALUE_X to STRING_VALUE)
+    val inputs = mapOf("x" to STRING_VALUE)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
