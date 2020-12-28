@@ -35,6 +35,13 @@ class NumericInputEqualsRuleClassifierProviderTest {
   private val NEGATIVE_REAL_VALUE_3_5 =
     InteractionObjectTestBuilder.createReal(value = -3.5)
 
+  private val FIVE_TIMES_FLOAT_EQUALITY_INTERVAL =
+    InteractionObjectTestBuilder.createReal(value = 5 * FLOAT_EQUALITY_INTERVAL)
+
+  private val FIVE_POINT_ONE_TIMES_FLOAT_EQUALITY_INTERVAL =
+    InteractionObjectTestBuilder.createReal(value = 5 * FLOAT_EQUALITY_INTERVAL
+    + FLOAT_EQUALITY_INTERVAL / 10)
+
   private val STRING_VALUE =
     InteractionObjectTestBuilder.createString(value = "test")
 
@@ -74,16 +81,11 @@ class NumericInputEqualsRuleClassifierProviderTest {
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valuesInRange_bothValuesMatch() {
     val inputs = mapOf(
-      "x" to InteractionObjectTestBuilder.createReal(
-        value = 5 * FLOAT_EQUALITY_INTERVAL
-      )
+      "x" to FIVE_TIMES_FLOAT_EQUALITY_INTERVAL
     )
 
     val matches = inputEqualsRuleClassifier.matches(
-      answer = InteractionObjectTestBuilder.createReal(
-        value = 5 * FLOAT_EQUALITY_INTERVAL +
-          FLOAT_EQUALITY_INTERVAL / 10
-      ),
+      answer = FIVE_POINT_ONE_TIMES_FLOAT_EQUALITY_INTERVAL,
       inputs = inputs
     )
 
@@ -123,9 +125,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valueAtRange_valuesDoNotMatch() {
     val inputs = mapOf(
-      "x" to InteractionObjectTestBuilder.createReal(
-        value = 5 * FLOAT_EQUALITY_INTERVAL
-      )
+      "x" to FIVE_TIMES_FLOAT_EQUALITY_INTERVAL
     )
 
     val matches = inputEqualsRuleClassifier.matches(
