@@ -127,7 +127,7 @@ class StoryProgressTestHelper @Inject constructor(
    */
   fun markFullProgressForAllTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markFullTopicProgressForFractions(profileId, timestampOlderThanOneWeek)
-    markFullTopicProgressForTestTopics(profileId, timestampOlderThanOneWeek)
+    markFullTopicProgressForTestTopic(profileId, timestampOlderThanOneWeek)
     markFullTopicProgressForRatios(profileId, timestampOlderThanOneWeek)
   }
 
@@ -137,7 +137,7 @@ class StoryProgressTestHelper @Inject constructor(
    * @param profileId The profile we are setting topic progress for.
    * @param timestampOlderThanOneWeek If the timestamp for completing the topic is from more than one week ago.
    */
-  fun markFullTopicProgressForTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markFullTopicProgressForTestTopic(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     val timestamp = if (!timestampOlderThanOneWeek) {
       getCurrentTimestamp()
     } else {
@@ -234,32 +234,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /** Marks full story progress for a particular profile. */
-  fun markFullProgressForFirstTopics(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
-    val timestamp = if (!timestampOlderThanAWeek) {
-      getCurrentTimestamp()
-    } else {
-      getOldTimestamp()
-    }
-    // Stories and Explorations for "Test Topic"s are not in chronological order so we want to ensure
-    // that the combinations of Topic / Story / Exploration that are visible will be marked as completed.
-    storyProgressController.recordCompletedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      timestamp
-    )
-    storyProgressController.recordCompletedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
-      timestamp
-    )
-  }
-
-  /** Marks full story progress for a particular profile. */
-  fun markFullProgressForSecondTopics(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
+  fun markFullProgressForSecondTopic(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
     val timestamp = if (!timestampOlderThanAWeek) {
       getCurrentTimestamp()
     } else {

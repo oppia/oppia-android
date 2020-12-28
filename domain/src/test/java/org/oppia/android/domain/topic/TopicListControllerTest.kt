@@ -11,7 +11,6 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,14 +21,12 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.LessonThumbnailGraphic
-import org.oppia.android.app.model.RecommendedActivityList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.model.RecommendedActivityList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicSummary
-import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -80,16 +77,10 @@ class TopicListControllerTest {
   lateinit var mockTopicListObserver: Observer<AsyncResult<TopicList>>
 
   @Mock
-  lateinit var mockComingSoonTopicListObserver: Observer<AsyncResult<ComingSoonTopicList>>
-
-  @Mock
   lateinit var mockRecommendedActivityListObserver: Observer<AsyncResult<RecommendedActivityList>>
 
   @Captor
   lateinit var topicListResultCaptor: ArgumentCaptor<AsyncResult<TopicList>>
-
-  @Captor
-  lateinit var comingSoonTopicListResultCaptor: ArgumentCaptor<AsyncResult<ComingSoonTopicList>>
 
   @Captor
   lateinit var recommendedActivityListResultCaptor: ArgumentCaptor<AsyncResult<RecommendedActivityList>>
@@ -638,30 +629,6 @@ class TopicListControllerTest {
     assertThat(promotedStory.nextChapterName).isEqualTo("Prototype Exploration")
     assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.BAKER)
-    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
-    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
-  }
-
-  private fun verifyOngoingStoryAsSecondTopicStory0Exploration0(promotedStory: PromotedStory) {
-    assertThat(promotedStory.explorationId).isEqualTo(TEST_EXPLORATION_ID_4)
-    assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_2)
-    assertThat(promotedStory.topicId).isEqualTo(TEST_TOPIC_ID_1)
-    assertThat(promotedStory.topicName).isEqualTo("Second Test Topic")
-    assertThat(promotedStory.nextChapterName).isEqualTo("Fifth Exploration")
-    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
-      .isEqualTo(LessonThumbnailGraphic.DERIVE_A_RATIO)
-    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
-    assertThat(promotedStory.totalChapterCount).isEqualTo(1)
-  }
-
-  private fun verifyOngoingStoryAsFractionStory0Exploration0(promotedStory: PromotedStory) {
-    assertThat(promotedStory.explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
-    assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
-    assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(promotedStory.topicName).isEqualTo("Fractions")
-    assertThat(promotedStory.nextChapterName).isEqualTo("What is a Fraction?")
-    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
-      .isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }

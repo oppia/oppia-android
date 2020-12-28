@@ -17,7 +17,6 @@
     android:layout_marginTop="24dp"
     android:orientation="vertical">
 
-
       <TextView
         android:id="@+id/coming_soon_topic_text_view"
         android:layout_width="match_parent"

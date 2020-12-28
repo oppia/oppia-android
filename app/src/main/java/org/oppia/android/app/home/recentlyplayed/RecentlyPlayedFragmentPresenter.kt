@@ -42,7 +42,6 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private lateinit var binding: RecentlyPlayedFragmentBinding
   private lateinit var ongoingListAdapter: OngoingListAdapter
   private val itemList: MutableList<RecentlyPlayedItemViewModel> = ArrayList()
-  private val orientation = Resources.getSystem().configuration.orientation
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -168,13 +167,17 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     } else {
       recentStoryCount + 1
     }
-    val sectionTitle2Position = if (suggestedStoryCount == 0) {
-      // If suggested story count is 0, that means that section title 2 will not be visible.
-      -1
-    } else if (recentStoryCount == 0) {
-      0
-    } else {
-      recentStoryCount + 1
+    val sectionTitle2Position = when {
+      suggestedStoryCount == 0 -> {
+        // If suggested story count is 0, that means that section title 2 will not be visible.
+        -1
+      }
+      recentStoryCount == 0 -> {
+        0
+      }
+      else -> {
+        recentStoryCount + 1
+      }
     }
 
     val spanCount = activity.resources.getInteger(R.integer.recently_played_span_count)

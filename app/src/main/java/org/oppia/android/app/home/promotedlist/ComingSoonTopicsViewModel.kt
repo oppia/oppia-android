@@ -5,10 +5,7 @@ import androidx.annotation.ColorInt
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.topiclist.DARKEN_SATURATION_MULTIPLIER
 import org.oppia.android.app.home.topiclist.DARKEN_VALUE_MULTIPLIER
-import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
-import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.model.UpcomingTopic
-import java.util.*
 
 // TODO(#206): Remove the color darkening computation and properly set up the topic thumbnails.
 // These values were roughly computed based on the mocks. They won't produce the same colors since darker colors in the

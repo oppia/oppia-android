@@ -130,8 +130,6 @@ class HomeViewModel(
       return if (storyViewModelList.isNotEmpty()) {
         return PromotedStoryListViewModel(
           activity,
-          internalProfileId,
-          intentFactoryShim,
           storyViewModelList,
           recommendedActivityList
         )

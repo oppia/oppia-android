@@ -358,7 +358,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysRecommendedStoriesText() {
-    storyProgressTestHelper.markFullProgressForSecondTopics(
+    storyProgressTestHelper.markFullProgressForSecondTopic(
       profileId,
       timestampOlderThanAWeek = false
     )

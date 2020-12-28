@@ -26,6 +26,7 @@ import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecommendedActivityList
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicList
@@ -79,6 +80,12 @@ class StoryProgressTestHelperTest {
 
   @Mock
   lateinit var mockOngoingStoryListObserver: Observer<AsyncResult<OngoingStoryList>>
+
+  @Mock
+  lateinit var mockRecommendedActivityListObserver: Observer<AsyncResult<RecommendedActivityList>>
+
+  @Captor
+  lateinit var recommendedActivityListResultCaptor: ArgumentCaptor<AsyncResult<RecommendedActivityList>>
 
   @Captor
   lateinit var ongoingStoryListResultCaptor: ArgumentCaptor<AsyncResult<OngoingStoryList>>
@@ -810,6 +817,28 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
+  fun testProgressTestHelper_markFullProgressForSecondTopic_showRecommendedStories_storyListIsCorrect() {
+    storyProgressTestHelper.markFullProgressForSecondTopic(
+      profileId,
+      /* timestampOlderThanAWeek= */ false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    topicListController.getRecommendedActivityList(profileId).toLiveData()
+      .observeForever(mockRecommendedActivityListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetRecommendedActivityListSucceeded()
+
+    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(0)
+    assertThat(recommendedActivityList.recommendedStoryList.olderPlayedStoryCount).isEqualTo(0)
+    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryList[0].explorationId).isEqualTo(
+      FRACTIONS_EXPLORATION_ID_0
+    )
+  }
+
+  @Test
   fun testHelper_recentlyPlayed_firstExpInAllFracRatio_asOldStories_ongoingStoryListCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId,
@@ -876,6 +905,14 @@ class StoryProgressTestHelperTest {
       atLeastOnce()
     ).onChanged(ongoingStoryListResultCaptor.capture())
     assertThat(ongoingStoryListResultCaptor.value.isSuccess()).isTrue()
+  }
+
+  private fun verifyGetRecommendedActivityListSucceeded() {
+    verify(
+      mockRecommendedActivityListObserver,
+      atLeastOnce()
+    ).onChanged(recommendedActivityListResultCaptor.capture())
+    assertThat(recommendedActivityListResultCaptor.value.isSuccess()).isTrue()
   }
 
   private fun verifyGetTopicListSucceeded() {

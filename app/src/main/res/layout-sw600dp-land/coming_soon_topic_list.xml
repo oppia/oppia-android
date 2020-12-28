@@ -30,7 +30,6 @@
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="18sp" />
 
-
     <org.oppia.android.app.home.promotedlist.ComingSoonTopicsListView
       android:id="@+id/coming_soon_topic_list_recycler_view"
       android:layout_width="match_parent"
