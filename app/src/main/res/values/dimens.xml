@@ -301,7 +301,7 @@
 
   <dimen name="story_chapter_card_playable_state_elevation">4dp</dimen>
   <dimen name="ongoing_topic_card_elevation">4dp</dimen>
-  <dimen name="story_chapter_card_not_playable_state_elevation">0dp</dimen>
+  <dimen name="story_chapter_card_not_playable_state_elevation">2dp</dimen>
   <dimen name="profile_chooser_padding_bottom_profile_already_added">224dp</dimen>
 
   <dimen name="continue_item_exploration_split_view_margin_top">72dp</dimen>
