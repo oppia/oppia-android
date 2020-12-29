@@ -25,7 +25,6 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
   private val yOffset: Int
   private val spacingBeforeBullet: Int
   private val spacingBeforeText: Int
-  /** The total spacing between the start of the line and the text. */
   private val totalSpacingToTextStart: Int
   private var bulletPath: Path? = null
 
