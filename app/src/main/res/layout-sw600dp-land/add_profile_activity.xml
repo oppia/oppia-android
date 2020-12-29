@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:profile="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -94,7 +93,6 @@
               android:singleLine="true"
               android:imeOptions="actionDone" />
           </com.google.android.material.textfield.TextInputLayout>
-
 
           <CheckBox
             android:id="@+id/add_profile_activity_pin_check_box"

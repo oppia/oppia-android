@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:profile="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -73,18 +72,6 @@
             android:textSize="12sp"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view" />
 
-<!--          <org.oppia.android.app.profile.ProfileInputView-->
-<!--            android:id="@+id/add_profile_activity_user_name_profile_input_view"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            app:inputLength="36"-->
-<!--            app:label="@string/add_profile_input_name"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_required_heading_text_view"-->
-<!--            profile:error="@{viewModel.nameErrorMsg}"-->
-<!--            profile:singleLine="@{true}" />-->
           <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/add_profile_activity_user_name"
             style="@style/TextInputLayout"
@@ -102,9 +89,9 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:hint="@string/add_profile_input_name"
+              android:imeOptions="actionDone"
               android:maxLength="36"
-              android:singleLine="true"
-              android:imeOptions="actionDone" />
+              android:singleLine="true" />
           </com.google.android.material.textfield.TextInputLayout>
 
           <CheckBox
@@ -135,33 +122,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin_check_box">
-
-<!--            <org.oppia.android.app.profile.ProfileInputView-->
-<!--              android:id="@+id/add_profile_activity_pin_profile_input_view"-->
-<!--              android:layout_width="match_parent"-->
-<!--              android:layout_height="wrap_content"-->
-<!--              android:layout_marginTop="24dp"-->
-<!--              android:visibility="visible"-->
-<!--              app:inputLength="3"-->
-<!--              app:isPasswordInput="true"-->
-<!--              app:label="@string/add_profile_input_pin"-->
-<!--              app:layout_constraintEnd_toEndOf="parent"-->
-<!--              app:layout_constraintStart_toStartOf="parent"-->
-<!--              app:layout_constraintTop_toTopOf="parent"-->
-<!--              profile:error="@{viewModel.pinErrorMsg}" />-->
-
-<!--            <org.oppia.android.app.profile.ProfileInputView-->
-<!--              android:id="@+id/add_profile_activity_confirm_pin_profile_input_view"-->
-<!--              android:layout_width="match_parent"-->
-<!--              android:layout_height="wrap_content"-->
-<!--              android:layout_marginTop="8dp"-->
-<!--              app:inputLength="3"-->
-<!--              app:isPasswordInput="true"-->
-<!--              app:label="@string/add_profile_input_confirm_pin"-->
-<!--              app:layout_constraintEnd_toEndOf="parent"-->
-<!--              app:layout_constraintStart_toStartOf="parent"-->
-<!--              app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin_profile_input_view"-->
-<!--              profile:error="@{viewModel.confirmPinErrorMsg}" />-->
 
             <com.google.android.material.textfield.TextInputLayout
               android:id="@+id/add_profile_activity_pin"
@@ -206,7 +166,6 @@
                 android:inputType="numberPassword"
                 android:maxLength="3" />
             </com.google.android.material.textfield.TextInputLayout>
-
 
             <androidx.constraintlayout.widget.ConstraintLayout
               android:id="@+id/add_profile_activity_allow_download_constraint_layout"
