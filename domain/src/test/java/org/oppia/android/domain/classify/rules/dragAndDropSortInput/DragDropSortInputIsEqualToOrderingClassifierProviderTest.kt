@@ -9,37 +9,59 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
-import org.oppia.android.app.model.StringList
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 
 /** Tests for [DragDropSortInputIsEqualToOrderingClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
-  private val ITEM_SET_1_A = listOf("item a")
-  private val ITEM_SET_1_AB = listOf("item a", "item b")
-  private val ITEM_SET_2_ITEM_2 = listOf("item 2")
-  private val ITEM_SET_3_ITEM_3 = listOf("item 3")
-  private val ITEM_SET_4_INVALID_AB = listOf("item invalid a", "item invalid b")
+
+  private val ITEM_SET_1_A =
+    InteractionObjectTestBuilder.createHtmlStringList("item a")
+
+  private val ITEM_SET_1_AB =
+    InteractionObjectTestBuilder.createHtmlStringList("item a", "item b")
+
+  private val ITEM_SET_2_ITEM_2 =
+    InteractionObjectTestBuilder.createHtmlStringList("item 2")
+
+  private val ITEM_SET_3_ITEM_3 =
+    InteractionObjectTestBuilder.createHtmlStringList("item 3")
+
+  private val ITEM_SET_4_INVALID_AB =
+    InteractionObjectTestBuilder.createHtmlStringList("item invalid a", "item invalid b")
+
   private val LIST_OF_SETS_123 =
-    createListOfSetsOfHtmlStrings(ITEM_SET_1_AB, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      listOf(ITEM_SET_1_AB, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+    )
+
   private val LIST_OF_SETS_213 =
-    createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_1_AB, ITEM_SET_3_ITEM_3)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      listOf(ITEM_SET_2_ITEM_2, ITEM_SET_1_AB, ITEM_SET_3_ITEM_3)
+    )
+
   private val LIST_OF_SETS_243 =
-    createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_4_INVALID_AB, ITEM_SET_3_ITEM_3)
-  private val LIST_OF_SETS_21 = createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_1_AB)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      listOf(ITEM_SET_2_ITEM_2, ITEM_SET_4_INVALID_AB, ITEM_SET_3_ITEM_3)
+    )
+
+  private val LIST_OF_SETS_21 =
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      listOf(ITEM_SET_2_ITEM_2, ITEM_SET_1_AB)
+    )
+
   private val LIST_OF_SETS_1A23 =
-    createListOfSetsOfHtmlStrings(ITEM_SET_1_A, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
+      listOf(ITEM_SET_1_A, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+    )
 
   @Inject
   internal lateinit var dragDropSortInputIsEqualToOrderingClassifierProvider:
@@ -117,36 +139,10 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
       .contains("Expected classifier inputs to contain parameter with name 'x' but had: [y]")
   }
 
-  private fun createListOfSetsOfHtmlStrings(vararg items: List<String>): InteractionObject {
-    val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
-      .addAllSetOfHtmlStrings(items.map { createHtmlStringList(it) })
-      .build()
-
-    return InteractionObject.newBuilder().setListOfSetsOfHtmlString(listOfSetsOfHtmlStrings).build()
-  }
-
-  private fun createHtmlStringList(items: List<String>): StringList {
-    return StringList.newBuilder().addAllHtml(items).build()
-  }
-
   private fun setUpTestApplicationComponent() {
     DaggerDragDropSortInputIsEqualToOrderingClassifierProviderTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
-  }
-
-  // TODO(#89): Move to a common test library.
-  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
-    try {
-      operation()
-      fail("Expected to encounter exception of $type")
-    } catch (t: Throwable) {
-      if (type.isInstance(t)) {
-        return type.cast(t)
-      }
-      // Unexpected exception; throw it.
-      throw t
-    }
   }
 
   // TODO(#89): Move this to a common test application component.

@@ -70,6 +70,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -240,6 +241,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysRecentlyPlayedStoriesText() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(1)
       )
@@ -260,6 +262,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysViewAllText() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(1)
       )
@@ -274,6 +277,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensRecentlyPlayedActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(1)
       )
@@ -372,6 +376,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(3)
       )
@@ -386,6 +391,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(3)
       )
@@ -405,6 +411,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex4_topicSummary_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(4)
       )
@@ -419,6 +426,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex4_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(4)
       )
@@ -438,6 +446,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex4_topicSummary_configurationChange_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(4)
@@ -458,6 +467,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex3_clickTopicSummary_opensTopicActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(3)
       )
@@ -470,6 +480,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_onBackPressed_showsExitToProfileChooserDialog() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_message))
         .inRoot(isDialog())
@@ -480,6 +491,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_onBackPressed_orientationChange_showsExitToProfileChooserDialog() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(isRoot()).perform(orientationLandscape())
       onView(withText(R.string.home_activity_back_dialog_message))
@@ -491,6 +503,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_onBackPressed_clickExit_checkOpensProfileActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_exit))
         .inRoot(isDialog())
@@ -502,6 +515,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_checkSpanForItem0_spanSizeIsTwoOrThree() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
         onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
       } else {
@@ -513,6 +527,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_checkSpanForItem4_spanSizeIsOne() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
     }
   }
@@ -520,6 +535,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_configurationChange_checkSpanForItem4_spanSizeIsOne() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
     }
@@ -534,6 +550,7 @@ class HomeActivityTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

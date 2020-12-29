@@ -32,6 +32,21 @@ message Topic {
 
   // The number of on-disk bytes this topic consumes.
   int64 disk_size_bytes = 7;
+
+  // Specifics about whether this topic is playable.
+  TopicPlayAvailability topic_play_availability = 8;
+}
+
+// Corresponds to details around whether a particular topic is playable.
+message TopicPlayAvailability {
+  // Corresponds to the availability of this topic (e.g. whether it can be played now).
+  oneof availability {
+    // Indicates this topic is available to be played.
+    bool available_to_play_now = 1;
+
+    // Indicates this topic is not yet available to be played but is expected to be in the future.
+    bool available_to_play_in_future = 2;
+  }
 }
 
 // Corresponds to a concept card that can be displayed for a specific skill.
@@ -88,6 +103,10 @@ message ChapterSummary {
 
   // The thumbnail corresponding to this chapter.
   LessonThumbnail chapter_thumbnail = 5;
+
+  // Prerequisite chapter to unlock this chapter. It is only defined when the play state of this
+  // chapter is NOT_PLAYABLE_MISSING_PREREQUISITES.
+  ChapterSummary missing_prerequisite_chapter = 6;
 }
 
 // A summary of a skill that can be trained or reviewed by the player.
@@ -202,6 +221,9 @@ message TopicSummary {
 
   // The associated thumbnail that should be displayed with this topic summary.
   LessonThumbnail topic_thumbnail = 5;
+
+  // Specifics about whether this topic is playable.
+  TopicPlayAvailability topic_play_availability = 6;
 }
 
 // Represents the play state of a single chapter.

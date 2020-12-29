@@ -2,6 +2,8 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.view.View
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -9,7 +11,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
-import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -20,11 +21,14 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.textfield.TextInputLayout
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -57,6 +61,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.EditTextInputAction
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -120,19 +125,20 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddProfileActivity() {
     launch<AdminAuthActivity>(
@@ -144,8 +150,13 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("12345"),
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("12345"),
         pressImeActionButton()
       )
       intended(hasComponent(AddProfileActivity::class.java.name))
@@ -163,19 +174,20 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddAdministratorControlsActivity() { // ktlint-disable max-line-length
     launch<AdminAuthActivity>(
@@ -187,8 +199,13 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("12345"),
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("12345"),
         pressImeActionButton()
       )
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
@@ -206,23 +223,21 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
-      onView(
-        allOf(
-          withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
-      ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
+      onView(withId(R.id.admin_auth_input_pin))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_clickImeActionButton_checkError() {
     launch<AdminAuthActivity>(
@@ -234,16 +249,17 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("12354"),
-        pressImeActionButton()
-      )
       onView(
         allOf(
-          withId(R.id.error_text),
+          withId(R.id.admin_auth_input_pin_edit_text),
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
-      ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
+      ).perform(
+        editTextInputAction.appendText("12354"),
+        pressImeActionButton()
+      )
+      onView(withId(R.id.admin_auth_input_pin))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
@@ -258,26 +274,30 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("123"),
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("4"),
-        closeSoftKeyboard()
-      )
       onView(
         allOf(
-          withId(R.id.error_text),
+          withId(R.id.admin_auth_input_pin_edit_text),
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
-      ).check(matches(withText("")))
+      ).perform(
+        editTextInputAction.appendText("4"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.admin_auth_input_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_clickImeActionButton_checkErrorIsGone() { // ktlint-disable max-line-length
     launch<AdminAuthActivity>(
@@ -289,20 +309,26 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("123"),
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("123"),
         pressImeActionButton()
-      )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("4"),
-        closeSoftKeyboard()
       )
       onView(
         allOf(
-          withId(R.id.error_text),
+          withId(R.id.admin_auth_input_pin_edit_text),
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
-      ).check(matches(withText("")))
+      ).perform(
+        editTextInputAction.appendText("4"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.admin_auth_input_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -317,8 +343,13 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("12345"),
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -441,13 +472,22 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).check(
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).check(
         matches(
           withText("12345")
         )
@@ -466,30 +506,25 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
-      onView(
-        allOf(
-          withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
-      ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
+      onView(withId(R.id.admin_auth_input_pin))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
       onView(isRoot()).perform(orientationLandscape())
-      onView(
-        allOf(
-          withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
-      ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
+      onView(withId(R.id.admin_auth_input_pin))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
   // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputIncorrectPasswordLandscape_clickImeActionButton_checkError() {
     launch<AdminAuthActivity>(
@@ -501,23 +536,45 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("12354"),
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("12354"),
         pressImeActionButton()
       )
-      onView(
-        allOf(
-          withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
-      ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
+      onView(withId(R.id.admin_auth_input_pin))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
       onView(isRoot()).perform(orientationLandscape())
-      onView(
-        allOf(
-          withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
-      ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
+      onView(withId(R.id.admin_auth_input_pin))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
+    }
+  }
+
+  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun matchesSafely(view: View): Boolean {
+        val expectedErrorText = context.resources.getString(expectedErrorTextId)
+        return (view as TextInputLayout).error == expectedErrorText
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("TextInputLayout's error")
+      }
+    }
+  }
+
+  private fun hasNoErrorText(): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun matchesSafely(view: View): Boolean {
+        return (view as TextInputLayout).error.isNullOrEmpty()
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("")
+      }
     }
   }
 
@@ -526,7 +583,7 @@ class AdminAuthActivityTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class,
+      RobolectricModule::class, TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,

@@ -64,6 +64,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -345,6 +346,7 @@ class TopicInfoFragmentTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

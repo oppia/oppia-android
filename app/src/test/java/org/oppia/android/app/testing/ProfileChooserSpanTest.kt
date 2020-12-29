@@ -42,6 +42,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -243,6 +244,18 @@ class ProfileChooserSpanTest {
   }
 
   @Test
+  @Config(qualifiers = "sw600dp-port")
+  fun testProfileChooserFragmentRecyclerView_tablet_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(3)
+      }
+    }
+  }
+
+  @Test
   @Config(qualifiers = "sw600dp-land-mdpi")
   fun testProfileChooserFragmentRecyclerView_landscape_tablet_mdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
@@ -329,7 +342,7 @@ class ProfileChooserSpanTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class,
+      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
