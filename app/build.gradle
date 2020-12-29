@@ -37,11 +37,14 @@ android {
       shrinkResources true
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
+    debug {
+      pseudoLocalesEnabled true
+    }
   }
   splits {
     // See: https://developer.android.com/studio/build/configure-apk-splits
     density {
-      enable true
+      enable false
     }
   }
   dataBinding {

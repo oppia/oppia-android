@@ -48,6 +48,7 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_1
 import org.oppia.android.domain.util.toAnswerString
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -1578,7 +1579,7 @@ class ExplorationProgressControllerTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
-      RatioInputModule::class
+      RatioInputModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
