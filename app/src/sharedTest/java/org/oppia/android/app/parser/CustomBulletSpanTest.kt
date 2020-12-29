@@ -158,8 +158,8 @@ class CustomBulletSpanTest {
     )
     val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
     val spannableString = SpannableStringBuilder(testStringWithBulletSpan)
-    val customBulletSpannble = CustomBulletSpan.replaceBulletSpan(spannableString, context)
-    val leadingMargin = customBulletSpannble.getSpans(
+    val customBulletSpannable = CustomBulletSpan.replaceBulletSpan(spannableString, context)
+    val leadingMargin = customBulletSpannable.getSpans(
       0,
       spannableString.length,
       CustomBulletSpan::class.java
