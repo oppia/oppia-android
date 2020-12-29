@@ -10,7 +10,7 @@
 /.idea/modules.xml
 /.idea/navEditor.xml
 /.idea/vcs.xml
-/.idea/workspace.xml
+/.idea
 app/build
 data/build
 domain/build
