@@ -119,10 +119,10 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
               showDivider
             )
           itemList.add(recommendedSectionTitleViewModel)
-          for (promotedStory in it.recommendedStoryList.suggestedStoryList) {
+          for (suggestedStory in it.recommendedStoryList.suggestedStoryList) {
             val ongoingStoryViewModel =
               OngoingStoryViewModel(
-                promotedStory,
+                suggestedStory,
                 entityType,
                 fragment as OngoingStoryClickListener
               )

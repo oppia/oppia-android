@@ -13,7 +13,7 @@ import org.oppia.android.app.model.RecommendedActivityList
 /** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
 class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
-  private val promotedStoryList: List<PromotedStoryViewModel>,
+  val promotedStoryList: List<PromotedStoryViewModel>,
   private val recommendedActivityList: RecommendedActivityList
 ) : HomeItemViewModel() {
   private val routeToRecentlyPlayedListener = activity as RouteToRecentlyPlayedListener

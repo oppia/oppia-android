@@ -143,7 +143,6 @@ class StoryProgressTestHelper @Inject constructor(
     } else {
       getOldTimestamp()
     }
-    markFullTopicProgressForFractions(profileId, timestampOlderThanOneWeek)
     // Stories and Explorations for "Test Topic"s are not in chronological order so we want to ensure
     // that the combinations of Topic / Story / Exploration that are visible will be marked as completed.
     storyProgressController.recordCompletedChapter(

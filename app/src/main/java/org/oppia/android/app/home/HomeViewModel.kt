@@ -20,7 +20,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecommendedActivityList
 import org.oppia.android.app.model.RecommendedStoryList
 import org.oppia.android.app.model.TopicList
-import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
@@ -45,7 +44,6 @@ class HomeViewModel(
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   private val internalProfileId: Int,
-  private val intentFactoryShim: IntentFactoryShim,
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   @TopicHtmlParserEntityType private val topicEntityType: String,
@@ -124,27 +122,30 @@ class HomeViewModel(
   private fun computeRecommendedActivityListViewModel(
     recommendedActivityList: RecommendedActivityList
   ): HomeItemViewModel? {
-    if (recommendedActivityList.recommendationTypeCase == RecommendedActivityList.RecommendationTypeCase.RECOMMENDED_STORY_LIST) {
-      val storyViewModelList =
-        computePromotedStoryViewModelList(recommendedActivityList.recommendedStoryList)
-      return if (storyViewModelList.isNotEmpty()) {
-        return PromotedStoryListViewModel(
-          activity,
-          storyViewModelList,
-          recommendedActivityList
-        )
-      } else null
-    } else if (recommendedActivityList.recommendationTypeCase == RecommendedActivityList.RecommendationTypeCase.COMING_SOON_TOPIC_LIST) {
-      val comingSoonTopicsList =
-        computeComingSoonTopicViewModelList(recommendedActivityList.comingSoonTopicList)
-      return if (comingSoonTopicsList.isNotEmpty()) {
-        return ComingSoonTopicListViewModel(
-          activity,
-          comingSoonTopicsList
-        )
-      } else null
-    } else
-      return null
+    when (recommendedActivityList.recommendationTypeCase) {
+      RecommendedActivityList.RecommendationTypeCase.RECOMMENDED_STORY_LIST -> {
+        val storyViewModelList =
+          computePromotedStoryViewModelList(recommendedActivityList.recommendedStoryList)
+        return if (storyViewModelList.isNotEmpty()) {
+          return PromotedStoryListViewModel(
+            activity,
+            storyViewModelList,
+            recommendedActivityList
+          )
+        } else null
+      }
+      RecommendedActivityList.RecommendationTypeCase.COMING_SOON_TOPIC_LIST -> {
+        val comingSoonTopicsList =
+          computeComingSoonTopicViewModelList(recommendedActivityList.comingSoonTopicList)
+        return if (comingSoonTopicsList.isNotEmpty()) {
+          return ComingSoonTopicListViewModel(
+            activity,
+            comingSoonTopicsList
+          )
+        } else null
+      }
+      else -> return null
+    }
   }
 
   /**

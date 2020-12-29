@@ -9,7 +9,7 @@ import org.oppia.android.databinding.ComingSoonTopicViewBinding
 import org.oppia.android.databinding.PromotedStoryCardBinding
 
 /**
- * A custom [RecyclerView] for displaying a variable list of promoted lesson stories that snaps to
+ * A custom [RecyclerView] for displaying a variable list of Upcoming topics that snaps to
  * a fixed position when being scrolled.
  */
 class ComingSoonTopicsListView @JvmOverloads constructor(

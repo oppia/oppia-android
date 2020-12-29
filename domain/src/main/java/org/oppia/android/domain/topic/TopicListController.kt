@@ -2,8 +2,6 @@ package org.oppia.android.domain.topic
 
 import android.graphics.Color
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
@@ -31,11 +29,9 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.system.OppiaClock
-import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.collections.ArrayList
 
 private const val ONE_WEEK_IN_DAYS = 7
 private const val ONE_DAY_IN_MS = 24 * 60 * 60 * 1000
@@ -80,7 +76,6 @@ val EXPLORATION_THUMBNAILS = mapOf(
 )
 
 private const val GET_TOPIC_LIST_PROVIDER_ID = "get_topic_list_provider_id"
-private const val GET_COMING_SOON_TOPIC_LIST_PROVIDER_ID = "get_coming_soon_topic_list_provider_id"
 private const val GET_ONGOING_STORY_LIST_PROVIDER_ID =
   "get_ongoing_story_list_provider_id"
 
@@ -225,14 +220,13 @@ class TopicListController @Inject constructor(
       TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
     }
 
-      return  upcomingTopic.setTopicId(topicId)
-        .setName(jsonObject.getString("topic_name"))
-        .setVersion(jsonObject.optInt("version"))
-        .setEstimatedReleaseUnixTimestamp(oppiaClock.getCurrentCalendar().timeInMillis)
-         .setTopicPlayAvailability(topicPlayAvailability)
-        .setLessonThumbnail(createTopicThumbnail(jsonObject))
-         .build()
-
+    return upcomingTopic.setTopicId(topicId)
+      .setName(jsonObject.getString("topic_name"))
+      .setVersion(jsonObject.optInt("version"))
+      .setEstimatedReleaseUnixTimestamp(oppiaClock.getCurrentCalendar().timeInMillis)
+      .setTopicPlayAvailability(topicPlayAvailability)
+      .setLessonThumbnail(createTopicThumbnail(jsonObject))
+      .build()
 
   }
 
@@ -337,7 +331,7 @@ class TopicListController @Inject constructor(
   ): RecommendedActivityList {
     val recommendedActivityListBuilder = RecommendedActivityList.newBuilder()
 
-    Log.d("topic prog","size - "+ topicProgressList.size)
+    Log.d("topic prog", "size - " + topicProgressList.size)
     if (topicProgressList.isNotEmpty()) {
       val recommendedStoryBuilder = RecommendedStoryList.newBuilder()
       if (topicProgressList.size == 1) {
@@ -350,8 +344,9 @@ class TopicListController @Inject constructor(
         )
         recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
         if (recommendedStoryBuilder.suggestedStoryCount == 0 && recommendedStoryBuilder.recentlyPlayedStoryCount == 0
-          && recommendedStoryBuilder.olderPlayedStoryCount == 0) {
-          recommendedActivityListBuilder.setComingSoonTopicList( createComingSoonTopicList())
+          && recommendedStoryBuilder.olderPlayedStoryCount == 0
+        ) {
+          recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
         }
       } else {
         // Add recently played stories or last played stories in RecommendedActivityList.
@@ -376,7 +371,7 @@ class TopicListController @Inject constructor(
 
             // If user has completed all the topcs then add upcoming topics in RecommendedActivityList.
             if (recommendedStoryBuilder.suggestedStoryCount == 0) {
-              recommendedActivityListBuilder.setComingSoonTopicList( createComingSoonTopicList())
+              recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
             }
           }
         }
@@ -485,11 +480,11 @@ class TopicListController @Inject constructor(
 
     val index = topicIdList.indexOf(topicProgressList.last().topicId)
 
-      for (i in (index+1) until topicIdJsonArray.length()) {
-        if (topicIdJsonArray.length() > i && createRecommendedStoryFromAssets(topicIdJsonArray[i].toString()) != null) {
-          recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[i].toString())!!)
-          return recommendedStories
-        }
+    for (i in (index + 1) until topicIdJsonArray.length()) {
+      if (topicIdJsonArray.length() > i && createRecommendedStoryFromAssets(topicIdJsonArray[i].toString()) != null) {
+        recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[i].toString())!!)
+        return recommendedStories
+      }
     }
     return recommendedStories
   }

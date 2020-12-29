@@ -18,7 +18,7 @@ class ComingSoonTopicsViewModel(
   val entityType: String
 ) : HomeItemViewModel() {
   val name: String = topicSummary.name
-  val estimateReleaseUnixTimeStamp: Long = topicSummary.estimatedReleaseUnixTimestamp
+
   @ColorInt
   val backgroundColor: Int = retrieveBackgroundColor()
   @ColorInt
