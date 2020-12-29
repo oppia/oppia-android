@@ -23,9 +23,7 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
   private val bulletRadius: Int
   private val gapWidth: Int
   private val yOffset: Int
-  /** The space between the start of the line and the bullet. */
   private val spacingBeforeBullet: Int
-  /** The space between the bullet and the text. */
   private val spacingBeforeText: Int
   /** The total spacing between the start of the line and the text. */
   private val totalSpacingToTextStart: Int
@@ -35,8 +33,11 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
     bulletRadius = context.resources.getDimensionPixelSize(R.dimen.bullet_radius)
     gapWidth = context.resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
     yOffset = context.resources.getDimensionPixelSize(R.dimen.bullet_y_offset)
+    /** The space between the start of the line and the bullet. */
     spacingBeforeBullet = context.resources.getDimensionPixelSize(R.dimen.spacing_before_bullet)
+    /** The space between the bullet and the text. */
     spacingBeforeText = context.resources.getDimensionPixelSize(R.dimen.spacing_before_text)
+    /** The total spacing between the start of the line and the text. */
     totalSpacingToTextStart = spacingBeforeBullet + spacingBeforeText + bulletRadius * 2
   }
 
