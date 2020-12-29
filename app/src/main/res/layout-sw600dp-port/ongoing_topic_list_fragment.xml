@@ -32,7 +32,6 @@
         android:minHeight="?attr/actionBarSize"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:title="@string/topics_in_progress"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
