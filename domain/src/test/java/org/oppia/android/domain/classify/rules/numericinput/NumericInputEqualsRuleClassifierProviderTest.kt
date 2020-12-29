@@ -36,8 +36,10 @@ class NumericInputEqualsRuleClassifierProviderTest {
   private val SIX_TIMES_FLOAT_EQUALITY_INTERVAL =
     InteractionObjectTestBuilder.createReal(value = 6 * FLOAT_EQUALITY_INTERVAL)
   private val FIVE_POINT_ONE_TIMES_FLOAT_EQUALITY_INTERVAL =
-    InteractionObjectTestBuilder.createReal(value = 5 * FLOAT_EQUALITY_INTERVAL
-      + FLOAT_EQUALITY_INTERVAL / 10)
+    InteractionObjectTestBuilder.createReal(
+      value = 5 * FLOAT_EQUALITY_INTERVAL +
+        FLOAT_EQUALITY_INTERVAL / 10
+    )
   private val STRING_VALUE =
     InteractionObjectTestBuilder.createString(value = "test")
 
