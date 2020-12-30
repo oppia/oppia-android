@@ -453,7 +453,6 @@ class TopicListControllerTest {
     )
   }
 
-  // TODO(#2303): Rewrite this testcase for coming soon topics.
   @Test
   fun testRetrieveRecentlyStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_recentStoryListIsCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordCompletedChapter(
