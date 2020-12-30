@@ -42,7 +42,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   private val oppiaLogger: OppiaLogger,
-  private val intentFactoryShim: IntentFactoryShim,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String
 ) {

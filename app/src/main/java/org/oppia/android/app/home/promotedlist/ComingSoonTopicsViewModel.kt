@@ -21,20 +21,9 @@ class ComingSoonTopicsViewModel(
 
   @ColorInt
   val backgroundColor: Int = retrieveBackgroundColor()
-  @ColorInt
-  val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
 
   @ColorInt
   private fun retrieveBackgroundColor(): Int {
     return topicSummary.lessonThumbnail.backgroundColorRgb
-  }
-
-  /** Returns a version of [backgroundColor] that is slightly darker. */
-  private fun computeDarkerBackgroundColor(): Int {
-    val hsv = floatArrayOf(0f, 0f, 0f)
-    Color.colorToHSV(backgroundColor, hsv)
-    hsv[1] = (hsv[1] * DARKEN_SATURATION_MULTIPLIER).coerceIn(0f, 1f)
-    hsv[2] = (hsv[2] * DARKEN_VALUE_MULTIPLIER).coerceIn(0f, 1f)
-    return Color.HSVToColor(hsv)
   }
 }

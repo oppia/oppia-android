@@ -51,8 +51,9 @@ class HomeViewModel(
 ) : ObservableViewModel() {
 
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-  private val promotedStoryListLimit =
-    activity.resources.getInteger(R.integer.promoted_story_list_limit)
+  private val promotedStoryListLimit = activity.resources.getInteger(
+      R.integer.promoted_story_list_limit
+    )
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
     profileManagementController.getProfile(profileId)
@@ -124,8 +125,9 @@ class HomeViewModel(
   ): HomeItemViewModel? {
     when (recommendedActivityList.recommendationTypeCase) {
       RecommendedActivityList.RecommendationTypeCase.RECOMMENDED_STORY_LIST -> {
-        val storyViewModelList =
-          computePromotedStoryViewModelList(recommendedActivityList.recommendedStoryList)
+        val storyViewModelList = computePromotedStoryViewModelList(
+          recommendedActivityList.recommendedStoryList
+        )
         return if (storyViewModelList.isNotEmpty()) {
           return PromotedStoryListViewModel(
             activity,
@@ -135,8 +137,9 @@ class HomeViewModel(
         } else null
       }
       RecommendedActivityList.RecommendationTypeCase.COMING_SOON_TOPIC_LIST -> {
-        val comingSoonTopicsList =
-          computeComingSoonTopicViewModelList(recommendedActivityList.comingSoonTopicList)
+        val comingSoonTopicsList = computeComingSoonTopicViewModelList(
+          recommendedActivityList.comingSoonTopicList
+        )
         return if (comingSoonTopicsList.isNotEmpty()) {
           return ComingSoonTopicListViewModel(
             activity,
@@ -158,16 +161,17 @@ class HomeViewModel(
   ): List<PromotedStoryViewModel> {
     val storyList = when {
       recommendedStoryList.suggestedStoryCount != 0 -> {
-        val list = if (recommendedStoryList.recentlyPlayedStoryCount != 0 ||
+        if (recommendedStoryList.recentlyPlayedStoryCount != 0 ||
           recommendedStoryList.olderPlayedStoryCount != 0
         ) {
           recommendedStoryList.recentlyPlayedStoryList +
             recommendedStoryList.olderPlayedStoryList +
             recommendedStoryList.suggestedStoryList
-        } else {
+        }
+        else {
           recommendedStoryList.suggestedStoryList
         }
-        list
+
       }
       recommendedStoryList.recentlyPlayedStoryCount != 0 -> {
         recommendedStoryList.recentlyPlayedStoryList
