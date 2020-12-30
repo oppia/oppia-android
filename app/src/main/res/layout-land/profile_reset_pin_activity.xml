@@ -53,9 +53,7 @@
         android:overScrollMode="never"
         android:scrollbars="none"
         android:paddingBottom="168dp"
-        android:clipToPadding="false"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:clipToPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
