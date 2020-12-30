@@ -24,8 +24,10 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -531,6 +533,23 @@ class AdministratorControlsActivityTest {
       )
       onView(withId(R.id.app_version_text_view)).perform(click())
       intended(hasComponent(AppVersionActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAdministratorControls_selectAdminNavItem_displaysAdminControls() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        0
+      )
+    ).use {
+      onView(withContentDescription(R.string.drawer_open_content_description))
+        .check(matches(isCompletelyDisplayed()))
+        .perform(click())
+      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
+        .perform(click())
+      onView(withText(context.getString(R.string.administrator_controls_edit_account)))
+        .check(matches(isDisplayed()))
     }
   }
 
