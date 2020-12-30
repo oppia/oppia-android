@@ -52,8 +52,8 @@ class HomeViewModel(
 
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
   private val promotedStoryListLimit = activity.resources.getInteger(
-      R.integer.promoted_story_list_limit
-    )
+    R.integer.promoted_story_list_limit
+  )
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
     profileManagementController.getProfile(profileId)
@@ -167,11 +167,9 @@ class HomeViewModel(
           recommendedStoryList.recentlyPlayedStoryList +
             recommendedStoryList.olderPlayedStoryList +
             recommendedStoryList.suggestedStoryList
-        }
-        else {
+        } else {
           recommendedStoryList.suggestedStoryList
         }
-
       }
       recommendedStoryList.recentlyPlayedStoryCount != 0 -> {
         recommendedStoryList.recentlyPlayedStoryList

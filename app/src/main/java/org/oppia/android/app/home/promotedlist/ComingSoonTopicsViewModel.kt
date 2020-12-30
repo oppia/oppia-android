@@ -1,10 +1,7 @@
 package org.oppia.android.app.home.promotedlist
 
-import android.graphics.Color
 import androidx.annotation.ColorInt
 import org.oppia.android.app.home.HomeItemViewModel
-import org.oppia.android.app.home.topiclist.DARKEN_SATURATION_MULTIPLIER
-import org.oppia.android.app.home.topiclist.DARKEN_VALUE_MULTIPLIER
 import org.oppia.android.app.model.UpcomingTopic
 
 // TODO(#206): Remove the color darkening computation and properly set up the topic thumbnails.

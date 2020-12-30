@@ -16,7 +16,6 @@ import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.databinding.AllTopicsBinding
 import org.oppia.android.databinding.ComingSoonTopicListBinding
 import org.oppia.android.databinding.HomeFragmentBinding
