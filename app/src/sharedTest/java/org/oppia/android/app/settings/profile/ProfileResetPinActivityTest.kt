@@ -11,6 +11,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -155,6 +156,39 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
+  fun testProfileResetPinActivity_startActivityWithAdmin_inputPin_inputConfirmPin_pressImeActionButton_checkReturnsToProfileEditActivity() { // ktlint-disable max-line-length
+    launch<ProfileResetPinActivity>(
+      ProfileResetPinActivity.createProfileResetPinActivity(
+        context,
+        0,
+        true
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("12345"),
+        pressImeActionButton()
+      )
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileEditActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testProfileResetPinActivity_startActivityWithAdmin_changeConfiguration_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
@@ -219,9 +253,8 @@ class ProfileResetPinActivityTest {
         )
       ).perform(
         editTextInputAction.appendText("123"),
-        closeSoftKeyboard()
+        pressImeActionButton()
       )
-      onView(withId(R.id.profile_reset_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
