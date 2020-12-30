@@ -453,7 +453,7 @@ class TopicListControllerTest {
     )
   }
 
-   @Test
+  @Test
   fun testRetrieveRecentlyStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_recentStoryListIsCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordCompletedChapter(
       profileId0,
