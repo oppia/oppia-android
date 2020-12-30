@@ -72,12 +72,11 @@
             style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLength="36"
-            android:singleLine="true"
             android:hint="@string/profile_rename_label"
-            android:imeOptions="actionDone" />
+            android:imeOptions="actionDone"
+            android:maxLength="36"
+            android:singleLine="true" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <Button
           android:id="@+id/profile_rename_save_button"
