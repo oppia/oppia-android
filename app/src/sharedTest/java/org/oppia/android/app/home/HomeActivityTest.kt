@@ -455,7 +455,13 @@ class HomeActivityTest {
             atPosition(R.id.home_recycler_view, 1)
           )
         )
-      ).check(matches(hasDescendant(withText(containsString("Matthew Goes to the Bakery")))))
+      ).check(
+        matches(
+          hasDescendant(
+            withText(containsString("Matthew Goes to the Bakery"))
+          )
+        )
+      )
     }
   }
 
@@ -498,11 +504,12 @@ class HomeActivityTest {
         scrollToPosition<RecyclerView.ViewHolder>(1)
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
-        matches(
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view))
+        .check(
+          matches(
             withText(containsString("Matthew Goes to the Bakery"))
+          )
         )
-      )
     }
   }
 
@@ -553,11 +560,12 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(1)
       )
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
-        matches(
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view))
+        .check(
+          matches(
             withText(containsString("Fractions"))
+          )
         )
-      )
     }
   }
 
@@ -568,7 +576,8 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(3)
       )
-      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view)).check(
+      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view))
+        .check(
         matches(
           withText(containsString("First Test Topic"))
         )
@@ -603,11 +612,12 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(4)
       )
-      onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.topic_name_text_view)).check(
-        matches(
-          withText(containsString("Second Test Topic"))
+      onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.topic_name_text_view))
+        .check(
+          matches(
+            withText(containsString("Second Test Topic"))
+          )
         )
-      )
     }
   }
 

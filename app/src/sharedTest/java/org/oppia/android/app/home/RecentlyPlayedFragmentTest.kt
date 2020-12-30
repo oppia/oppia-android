@@ -224,7 +224,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem0_showsRecommendedSectionTitle() {
+  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem0_showsRecommendedSectionTitle() { // ktlint-disable max-line-length
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
