@@ -83,6 +83,7 @@
             android:layout_marginStart="28dp"
             android:layout_marginTop="28dp"
             android:layout_marginEnd="28dp"
+            android:hint="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_pin_label : @string/profile_reset_pin_user_pin_label}"
             app:errorMessage="@{viewModel.pinErrorMsg}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -93,7 +94,6 @@
               style="@style/TextInputEditText"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:hint="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_pin_label : @string/profile_reset_pin_user_pin_label}"
               android:imeOptions="actionNext"
               android:inputType="numberPassword"
               android:maxLength="@{viewModel.isAdmin ? 5 : 3}" />
@@ -108,6 +108,7 @@
             android:layout_marginTop="28dp"
             android:layout_marginEnd="28dp"
             app:errorMessage="@{viewModel.confirmErrorMsg}"
+            android:hint="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_pin_label : @string/profile_reset_pin_user_pin_label}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_reset_input_pin">
@@ -117,7 +118,6 @@
               style="@style/TextInputEditText"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:hint="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_pin_label : @string/profile_reset_pin_user_pin_label}"
               android:imeOptions="actionDone"
               android:inputType="numberPassword"
               android:maxLength="@{viewModel.isAdmin ? 5 : 3}" />
