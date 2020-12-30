@@ -734,4 +734,3 @@ internal fun createChapterThumbnail9(): LessonThumbnail {
     .setBackgroundColorRgb(0xd3a67ec)
     .build()
 }
-
