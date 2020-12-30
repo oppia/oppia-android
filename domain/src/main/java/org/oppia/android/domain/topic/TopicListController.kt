@@ -259,9 +259,8 @@ class TopicListController @Inject constructor(
                   recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
                 }
               if (recentlyPlayerChapterSummary != null) {
-                val numberOfDaysPassed =
-                  (oppiaClock.getCurrentCalendar().timeInMillis -
-                    recentlyPlayerChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+                val numberOfDaysPassed = (oppiaClock.getCurrentCalendar().timeInMillis -
+                  recentlyPlayerChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
                 val promotedStory = createPromotedStory(
                   storyId,
                   topic,
@@ -287,9 +286,8 @@ class TopicListController @Inject constructor(
               val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
               val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
               if (nextChapterSummary != null) {
-                val numberOfDaysPassed =
-                  (oppiaClock.getCurrentCalendar().timeInMillis -
-                    lastCompletedChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+                val numberOfDaysPassed = (oppiaClock.getCurrentCalendar().timeInMillis -
+                  lastCompletedChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
                 val promotedStory = createPromotedStory(
                   storyId,
                   topic,
@@ -417,9 +415,8 @@ class TopicListController @Inject constructor(
                 recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
               }
             if (recentlyPlayerChapterSummary != null) {
-              val numberOfDaysPassed =
-                (oppiaClock.getCurrentCalendar().timeInMillis -
-                  recentlyPlayerChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+              val numberOfDaysPassed = (oppiaClock.getCurrentCalendar().timeInMillis -
+                recentlyPlayerChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
               val promotedStory = createPromotedStory(
                 storyId,
                 topic,
@@ -445,9 +442,8 @@ class TopicListController @Inject constructor(
               val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
               val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
               if (nextChapterSummary != null) {
-                val numberOfDaysPassed =
-                  (oppiaClock.getCurrentCalendar().timeInMillis -
-                    lastCompletedChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+                val numberOfDaysPassed = (oppiaClock.getCurrentCalendar().timeInMillis -
+                  lastCompletedChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
                 val promotedStory = createPromotedStory(
                   storyId,
                   topic,
