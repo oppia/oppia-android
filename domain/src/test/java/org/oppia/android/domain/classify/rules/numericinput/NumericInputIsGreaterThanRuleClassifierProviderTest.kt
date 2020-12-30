@@ -40,6 +40,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
     InteractionObjectTestBuilder.createInt(value = -1)
   private val NEGATIVE_INT_VALUE_3 =
     InteractionObjectTestBuilder.createInt(value = -3)
+
   @Inject
   internal lateinit var numericInputIsGreaterThanRuleClassifierProvider:
     NumericInputIsGreaterThanRuleClassifierProvider
