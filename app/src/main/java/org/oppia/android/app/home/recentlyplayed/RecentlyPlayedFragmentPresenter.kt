@@ -1,6 +1,5 @@
 package org.oppia.android.app.home.recentlyplayed
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -131,9 +130,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         }
 
         binding.ongoingStoryRecyclerView.layoutManager =
-          createLayoutManager(it.recommendedStoryList.recentlyPlayedStoryCount,
+          createLayoutManager(
+            it.recommendedStoryList.recentlyPlayedStoryCount,
             it.recommendedStoryList.olderPlayedStoryCount,
-          it.recommendedStoryList.suggestedStoryCount)
+            it.recommendedStoryList.suggestedStoryCount
+          )
         ongoingListAdapter.notifyDataSetChanged()
       }
     )
@@ -159,13 +160,17 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     } else {
       0
     }
-    val sectionTitle1Position = if (oldStoryCount == 0) {
-      // If old story count is 0, that means that section title 1 will not be visible.
-      -1
-    } else if (recentStoryCount == 0) {
-      0
-    } else {
-      recentStoryCount + 1
+    val sectionTitle1Position = when {
+      oldStoryCount == 0 -> {
+        // If old story count is 0, that means that section title 1 will not be visible.
+        -1
+      }
+      recentStoryCount == 0 -> {
+        0
+      }
+      else -> {
+        recentStoryCount + 1
+      }
     }
     val sectionTitle2Position = when {
       suggestedStoryCount == 0 -> {

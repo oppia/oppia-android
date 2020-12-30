@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.databinding.ComingSoonTopicViewBinding
-import org.oppia.android.databinding.PromotedStoryCardBinding
 
 /**
  * A custom [RecyclerView] for displaying a variable list of Upcoming topics that snaps to
@@ -31,7 +30,7 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
      * after scrolling.
      */
     val snapHelper = StartSnapHelper()
-    this.setOnFlingListener(null)
+    this.onFlingListener = null
     snapHelper.attachToRecyclerView(this)
   }
 }

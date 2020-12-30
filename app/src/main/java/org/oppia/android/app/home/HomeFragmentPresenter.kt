@@ -64,7 +64,6 @@ class HomeFragmentPresenter @Inject constructor(
       oppiaClock,
       logger,
       internalProfileId,
-      intentFactoryShim,
       profileManagementController,
       topicListController,
       topicEntityType,

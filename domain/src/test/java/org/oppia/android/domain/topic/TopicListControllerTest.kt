@@ -326,7 +326,8 @@ class TopicListControllerTest {
     assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount)
       .isEqualTo(1)
     verifyOngoingStoryAsRatioStory0Exploration0(
-      recommendedActivityList.recommendedStoryList.suggestedStoryList[0])
+      recommendedActivityList.recommendedStoryList.suggestedStoryList[0]
+    )
   }
 
   @Test

@@ -9,7 +9,7 @@ import org.oppia.android.app.home.HomeItemViewModel
 class ComingSoonTopicListViewModel(
   private val activity: AppCompatActivity,
   val comingSoonTopicsList: List<ComingSoonTopicsViewModel>
-) : HomeItemViewModel(){
+) : HomeItemViewModel() {
 
   /**
    * Returns the padding placed at the start of the coming soon topics list.
