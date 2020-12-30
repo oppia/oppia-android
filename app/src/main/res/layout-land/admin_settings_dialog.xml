@@ -14,17 +14,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <org.oppia.android.app.profile.ProfileInputView
+    <com.google.android.material.textfield.TextInputLayout
       android:id="@+id/input_pin"
+      style="@style/TextInputLayout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginTop="32dp"
       android:layout_marginEnd="24dp"
       android:layout_marginBottom="20dp"
-      app:inputLength="5"
-      app:isPasswordInput="true"
-      app:label="@string/admin_settings_label"
-      profile:error="@{viewModel.errorMessage}" />
+      app:errorMessage="@{viewModel.errorMessage}">
+
+      <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/input_pin_edit_text"
+        style="@style/TextInputEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/admin_auth_pin"
+        android:imeOptions="actionDone"
+        android:inputType="numberPassword"
+        android:maxLength="5" />
+    </com.google.android.material.textfield.TextInputLayout>
+
   </RelativeLayout>
 </layout>
