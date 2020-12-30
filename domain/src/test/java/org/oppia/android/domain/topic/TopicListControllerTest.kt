@@ -83,7 +83,8 @@ class TopicListControllerTest {
   lateinit var topicListResultCaptor: ArgumentCaptor<AsyncResult<TopicList>>
 
   @Captor
-  lateinit var recommendedActivityListResultCaptor: ArgumentCaptor<AsyncResult<RecommendedActivityList>>
+  lateinit var recommendedActivityListResultCaptor:
+    ArgumentCaptor<AsyncResult<RecommendedActivityList>>
 
   private lateinit var profileId0: ProfileId
 
@@ -305,7 +306,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveRecommendedActivityList_markChapterCompletedFracStory0Exp0_recommendedStoryListIsCorrect() {
+  fun testRetrieveRecommendedActivityList_markChapterCompletedFracStory0Exp0_recommendedStoryListIsCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -322,12 +323,14 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount).isEqualTo(1)
-    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.suggestedStoryList[0])
+    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount)
+      .isEqualTo(1)
+    verifyOngoingStoryAsRatioStory0Exploration0(
+      recommendedActivityList.recommendedStoryList.suggestedStoryList[0])
   }
 
   @Test
-  fun testRetrieveSuggestedStoryList_markAllChaptersCompletedInFractions_suggestedStoryListIsCorrect() {
+  fun testRetrieveSuggestedStoryList_markAllChaptersCompletedInFractions_suggestedStoryListIsCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -353,12 +356,13 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount).isEqualTo(1)
+    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount)
+      .isEqualTo(1)
     verifyDefaultRecommendedStoryListSucceeded()
   }
 
   @Test
-  fun testRetrieveRecentStoryList_markAllChaptersCompletedInFractions_fromRecommendedList_playedFirstTopicStory0Exploration0_recentStoryListIsCorrect() {
+  fun testRetrieveRecentStoryList_markAllChaptersCompletedInFractions_fromRecommendedList_playedFirstTopicStory0Exploration0_recentStoryListIsCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -393,13 +397,16 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(1)
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
 
-    verifyOngoingStoryAsFirstTopicStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0])
+    verifyOngoingStoryAsFirstTopicStory0Exploration0(
+      recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0]
+    )
   }
 
   @Test
-  fun testRetrieveRecentStoryList_markChapDoneFracStory0Exp0_fromRecommendedStories_playedFracStory0Exp1_playedRatioStory0Exp0_recentStoryListCorrect() {
+  fun testRetrieveRecentStoryList_markChapDoneFracStory0Exp0_fromRecommendedStories_playedFracStory0Exp1_playedRatioStory0Exp0_recentStoryListCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -435,14 +442,19 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(2)
-    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0])
-    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[1])
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(2)
+    verifyOngoingStoryAsRatioStory0Exploration0(
+      recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0]
+    )
+    verifyOngoingStoryAsFractionStory0Exploration1(
+      recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[1]
+    )
   }
 
   // TODO(#2303): Rewrite this testcase for coming soon topics.
   @Test
-  fun testRetrieveRecentlyStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_recentStoryListIsCorrect() {
+  fun testRetrieveRecentlyStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_recentStoryListIsCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -477,14 +489,21 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(3)
-    verifyOngoingStoryAsRatioStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0])
-    verifyOngoingStoryAsRatioStory1Exploration3(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[1])
-    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[2])
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(3)
+    verifyOngoingStoryAsRatioStory0Exploration1(
+      recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0]
+    )
+    verifyOngoingStoryAsRatioStory1Exploration3(
+      recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[1]
+    )
+    verifyOngoingStoryAsFractionStory0Exploration1(
+      recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[2]
+    )
   }
 
   @Test
-  fun testRetrieveRecommendedStoryList_markFirstStoryOfFractDone_noMoreOngoingList_recommendedListIsCorrect() {
+  fun testRetrieveRecommendedStoryList_markFirstStoryOfFractDone_noMoreOngoingList_recommendedListIsCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -510,12 +529,14 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(0)
-    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount).isEqualTo(1)
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount)
+      .isEqualTo(1)
   }
 
   @Test
-  fun testRetrieveComingSoonTopicList_markFirstStoryOfEveryTopicDoneWithinLastSevenDays_comingSoonListIsCorrect() {
+  fun testRetrieveComingSoonTopicList_markFirstStoryOfEveryTopicDoneWithinLastSevenDays_comingSoonListIsCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -559,9 +580,12 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(0)
-    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount).isEqualTo(0)
-    assertThat(recommendedActivityList.comingSoonTopicList.upcomingTopicCount).isEqualTo(1)
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount)
+      .isEqualTo(0)
+    assertThat(recommendedActivityList.comingSoonTopicList.upcomingTopicCount)
+      .isEqualTo(1)
   }
 
   @Test
@@ -600,11 +624,19 @@ class TopicListControllerTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(1)
-    assertThat(recommendedActivityList.recommendedStoryList.olderPlayedStoryCount).isEqualTo(2)
-    verifyOngoingStoryAsRatioStory0Exploration1(recommendedActivityList.recommendedStoryList.olderPlayedStoryList[0])
-    verifyOngoingStoryAsFractionStory0Exploration1(recommendedActivityList.recommendedStoryList.olderPlayedStoryList[1])
-    verifyOngoingStoryAsRatioStory1Exploration3(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0])
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
+    assertThat(recommendedActivityList.recommendedStoryList.olderPlayedStoryCount)
+      .isEqualTo(2)
+    verifyOngoingStoryAsRatioStory0Exploration1(
+      recommendedActivityList.recommendedStoryList.olderPlayedStoryList[0]
+    )
+    verifyOngoingStoryAsFractionStory0Exploration1(
+      recommendedActivityList.recommendedStoryList.olderPlayedStoryList[1]
+    )
+    verifyOngoingStoryAsRatioStory1Exploration3(
+      recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0]
+    )
   }
 
   private fun verifyGetRecommendedActivityListSucceeded() {
@@ -617,8 +649,11 @@ class TopicListControllerTest {
 
   private fun verifyDefaultRecommendedStoryListSucceeded() {
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount).isEqualTo(1)
-    verifyOngoingStoryAsRatioStory0Exploration0(recommendedActivityList.recommendedStoryList.suggestedStoryList[0])
+    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryCount)
+      .isEqualTo(1)
+    verifyOngoingStoryAsRatioStory0Exploration0(
+      recommendedActivityList.recommendedStoryList.suggestedStoryList[0]
+    )
   }
 
   private fun verifyOngoingStoryAsFirstTopicStory0Exploration0(promotedStory: PromotedStory) {

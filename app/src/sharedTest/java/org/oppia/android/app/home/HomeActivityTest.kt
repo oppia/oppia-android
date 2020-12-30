@@ -380,7 +380,7 @@ class HomeActivityTest {
       )
     }
   }
-  
+
   @Test
   fun testHomeActivity_recyclerViewIndex1_forRecommendedStories_hideViewAll() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
@@ -392,9 +392,12 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(1)
       )
-
-      onView(allOf(withId(R.id.view_all_text_view),
-        withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
+      onView(
+        allOf(
+          withId(R.id.view_all_text_view),
+          withEffectiveVisibility(ViewMatchers.Visibility.GONE)
+        )
+      )
     }
   }
 
@@ -482,7 +485,7 @@ class HomeActivityTest {
       )
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
-            withText(containsString("Matthew Goes to the Bakery"))
+          withText(containsString("Matthew Goes to the Bakery"))
         )
       )
     }
@@ -578,10 +581,10 @@ class HomeActivityTest {
       )
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view))
         .check(
-        matches(
-          withText(containsString("First Test Topic"))
+          matches(
+            withText(containsString("First Test Topic"))
+          )
         )
-      )
     }
   }
 

@@ -85,7 +85,8 @@ class StoryProgressTestHelperTest {
   lateinit var mockRecommendedActivityListObserver: Observer<AsyncResult<RecommendedActivityList>>
 
   @Captor
-  lateinit var recommendedActivityListResultCaptor: ArgumentCaptor<AsyncResult<RecommendedActivityList>>
+  lateinit var recommendedActivityListResultCaptor:
+    ArgumentCaptor<AsyncResult<RecommendedActivityList>>
 
   @Captor
   lateinit var ongoingStoryListResultCaptor: ArgumentCaptor<AsyncResult<OngoingStoryList>>
@@ -817,7 +818,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markFullProgressForSecondTopic_showRecommendedStories_storyListIsCorrect() {
+  fun testProgressTestHelper_markFullProgressForSecondTopic_showRecommendedStories_storyListIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markFullProgressForSecondTopic(
       profileId,
       /* timestampOlderThanAWeek= */ false
@@ -831,11 +832,14 @@ class StoryProgressTestHelperTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount).isEqualTo(0)
-    assertThat(recommendedActivityList.recommendedStoryList.olderPlayedStoryCount).isEqualTo(0)
-    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryList[0].explorationId).isEqualTo(
-      FRACTIONS_EXPLORATION_ID_0
-    )
+    assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(recommendedActivityList.recommendedStoryList.olderPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(recommendedActivityList.recommendedStoryList.suggestedStoryList[0].explorationId)
+      .isEqualTo(
+        FRACTIONS_EXPLORATION_ID_0
+      )
   }
 
   @Test

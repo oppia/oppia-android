@@ -24,7 +24,8 @@ class StoryProgressTestHelper @Inject constructor(
    * Creates a partial story progress for a particular profile.
    *
    * @param profileId The profile we are setting partial progress of the fraction story for.
-   * @param timestampOlderThanOneWeek If the timestamp for this topic progress is more than one week ago.
+   * @param timestampOlderThanOneWeek If the timestamp for this topic progress is more
+   * than one week ago.
    */
   fun markPartialStoryProgressForFractions(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
     val timestamp = if (!timestampOlderThanAWeek) {
@@ -45,7 +46,8 @@ class StoryProgressTestHelper @Inject constructor(
    * Creates a partial topic progress for a particular profile.
    *
    * @param profileId The profile we are setting partial progress of the fraction topic for.
-   * @param timestampOlderThanOneWeek If the timestamp for this topic progress is more than one week ago.
+   * @param timestampOlderThanOneWeek If the timestamp for this topic progress is more than
+   * one week ago.
    */
   fun markPartialTopicProgressForFractions(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
     val timestamp = if (!timestampOlderThanAWeek) {
@@ -249,7 +251,6 @@ class StoryProgressTestHelper @Inject constructor(
       timestamp
     )
   }
-
 
   /**
    * Marks one story progress full in ratios exploration for a particular profile.

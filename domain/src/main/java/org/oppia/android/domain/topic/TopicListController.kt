@@ -158,7 +158,9 @@ class TopicListController @Inject constructor(
     for (i in 0 until topicIdJsonArray.length()) {
       val upcomingTopicSummary = createUpcomingTopicSummary(topicIdJsonArray.optString(i)!!)
       // Only include topics currently not playable in the upcoming topic list.
-      if (upcomingTopicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_IN_FUTURE) {
+      if (upcomingTopicSummary.topicPlayAvailability.availabilityCase
+        == AVAILABLE_TO_PLAY_IN_FUTURE
+      ) {
         comingSoonTopicListBuilder.addUpcomingTopic(upcomingTopicSummary)
       }
     }
@@ -259,7 +261,8 @@ class TopicListController @Inject constructor(
                 }
               if (recentlyPlayerChapterSummary != null) {
                 val numberOfDaysPassed =
-                  (oppiaClock.getCurrentCalendar().timeInMillis - recentlyPlayerChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+                  (oppiaClock.getCurrentCalendar().timeInMillis
+                    - recentlyPlayerChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
                 val promotedStory = createPromotedStory(
                   storyId,
                   topic,
@@ -276,15 +279,18 @@ class TopicListController @Inject constructor(
               }
             }
             lastCompletedChapterProgress != null &&
-              lastCompletedChapterProgress.explorationId != story.chapterList.last().explorationId -> {
-              val lastChapterSummary: ChapterSummary? = story.chapterList.find { chapterSummary ->
-                lastCompletedChapterProgress.explorationId == chapterSummary.explorationId
-              }
+              lastCompletedChapterProgress.explorationId !=
+              story.chapterList.last().explorationId -> {
+              val lastChapterSummary: ChapterSummary? =
+                story.chapterList.find { chapterSummary ->
+                  lastCompletedChapterProgress.explorationId == chapterSummary.explorationId
+                }
               val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
               val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
               if (nextChapterSummary != null) {
                 val numberOfDaysPassed =
-                  (oppiaClock.getCurrentCalendar().timeInMillis - lastCompletedChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+                  (oppiaClock.getCurrentCalendar().timeInMillis
+                    - lastCompletedChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
                 val promotedStory = createPromotedStory(
                   storyId,
                   topic,
@@ -343,7 +349,8 @@ class TopicListController @Inject constructor(
           )
         )
         recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
-        if (recommendedStoryBuilder.suggestedStoryCount == 0 && recommendedStoryBuilder.recentlyPlayedStoryCount == 0
+        if (recommendedStoryBuilder.suggestedStoryCount == 0
+          && recommendedStoryBuilder.recentlyPlayedStoryCount == 0
           && recommendedStoryBuilder.olderPlayedStoryCount == 0
         ) {
           recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
@@ -356,7 +363,8 @@ class TopicListController @Inject constructor(
           recommendedStoryBuilder
         )
 
-        // If no recently played stories or last played stories then set suggested stories stories in RecommendedActivityList.
+        // If no recently played stories or last played stories then set suggested stories
+        // in RecommendedActivityList.
         when {
           recommendedStoryBuilder.recentlyPlayedStoryCount == 0
             && recommendedStoryBuilder.olderPlayedStoryCount == 0 -> {
@@ -369,7 +377,8 @@ class TopicListController @Inject constructor(
             )
             recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
 
-            // If user has completed all the topcs then add upcoming topics in RecommendedActivityList.
+            // If user has completed all the topcs then add upcoming topics in
+            // RecommendedActivityList.
             if (recommendedStoryBuilder.suggestedStoryCount == 0) {
               recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
             }
@@ -411,7 +420,8 @@ class TopicListController @Inject constructor(
               }
             if (recentlyPlayerChapterSummary != null) {
               val numberOfDaysPassed =
-                (oppiaClock.getCurrentCalendar().timeInMillis - recentlyPlayerChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+                (oppiaClock.getCurrentCalendar().timeInMillis
+                  - recentlyPlayerChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
               val promotedStory = createPromotedStory(
                 storyId,
                 topic,
@@ -428,7 +438,9 @@ class TopicListController @Inject constructor(
             }
           }
           lastCompletedChapterProgress != null -> {
-            if (lastCompletedChapterProgress.explorationId != story.chapterList.last().explorationId) {
+            if (lastCompletedChapterProgress.explorationId
+              != story.chapterList.last().explorationId
+            ) {
               val lastChapterSummary: ChapterSummary? = story.chapterList.find { chapterSummary ->
                 lastCompletedChapterProgress.explorationId == chapterSummary.explorationId
               }
@@ -436,7 +448,8 @@ class TopicListController @Inject constructor(
               val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
               if (nextChapterSummary != null) {
                 val numberOfDaysPassed =
-                  (oppiaClock.getCurrentCalendar().timeInMillis - lastCompletedChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+                  (oppiaClock.getCurrentCalendar().timeInMillis
+                    - lastCompletedChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
                 val promotedStory = createPromotedStory(
                   storyId,
                   topic,
@@ -481,7 +494,8 @@ class TopicListController @Inject constructor(
     val index = topicIdList.indexOf(topicProgressList.last().topicId)
 
     for (i in (index + 1) until topicIdJsonArray.length()) {
-      if (topicIdJsonArray.length() > i && createRecommendedStoryFromAssets(topicIdJsonArray[i].toString()) != null) {
+      if (topicIdJsonArray.length() > i
+        && createRecommendedStoryFromAssets(topicIdJsonArray[i].toString()) != null) {
         recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[i].toString())!!)
         return recommendedStories
       }
