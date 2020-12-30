@@ -26,7 +26,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.textfield.TextInputLayout
@@ -155,7 +154,6 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AddProfileActivity::class.java.name))
@@ -191,6 +189,7 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("12345"),
         pressImeActionButton()
       )
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
   }
@@ -264,6 +263,7 @@ class AdminPinActivityTest {
           editTextInputAction.appendText("12345"),
           pressImeActionButton()
         )
+        testCoroutineDispatchers.runCurrent()
         intended(hasComponent(AdministratorControlsActivity::class.java.name))
       }
   }
@@ -321,9 +321,9 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("45"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
+      onView(withId(R.id.input_confirm_pin)).check(
         matches(
-          withText("")
+          hasNoErrorText()
         )
       )
     }
@@ -399,6 +399,7 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("1234"),
         pressImeActionButton()
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.input_confirm_pin)).check(
         matches(
           hasErrorText(
@@ -570,6 +571,7 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("12345"),
         pressImeActionButton()
       )
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
   }
@@ -607,7 +609,6 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
@@ -645,6 +646,7 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("12345"),
         pressImeActionButton()
       )
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
     }
   }
@@ -704,9 +706,9 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("45"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
+      onView(withId(R.id.input_pin)).check(
         matches(
-          withText("")
+          hasNoErrorText()
         )
       )
     }
@@ -724,7 +726,6 @@ class AdminPinActivityTest {
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
-      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.input_pin_edit_text),
@@ -734,7 +735,6 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.input_confirm_pin_edit_text),
@@ -745,7 +745,6 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.input_confirm_pin)).check(
@@ -789,6 +788,7 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("1234"),
         pressImeActionButton()
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.input_confirm_pin)).check(
         matches(
           hasErrorText(
