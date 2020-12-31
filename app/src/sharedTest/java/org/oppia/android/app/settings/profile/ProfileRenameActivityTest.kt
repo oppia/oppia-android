@@ -8,7 +8,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
-import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -57,6 +56,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.EditTextInputAction
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -125,7 +125,7 @@ class ProfileRenameActivityTest {
           withId(R.id.input),
           isDescendantOfA(withId(R.id.input_name))
         )
-      ).perform(typeText("James"))
+      ).perform(editTextInputAction.appendText("James"))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -146,7 +146,7 @@ class ProfileRenameActivityTest {
           withId(R.id.input),
           isDescendantOfA(withId(R.id.input_name))
         )
-      ).perform(typeText("James"))
+      ).perform(editTextInputAction.appendText("James"))
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -167,7 +167,7 @@ class ProfileRenameActivityTest {
           withId(R.id.input),
           isDescendantOfA(withId(R.id.input_name))
         )
-      ).perform(typeText("James"))
+      ).perform(editTextInputAction.appendText("James"))
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -248,7 +248,7 @@ class ProfileRenameActivityTest {
           withId(R.id.input),
           isDescendantOfA(withId(R.id.input_name))
         )
-      ).perform(typeText("123"))
+      ).perform(editTextInputAction.appendText("123"))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -274,7 +274,7 @@ class ProfileRenameActivityTest {
           withId(R.id.input),
           isDescendantOfA(withId(R.id.input_name))
         )
-      ).perform(typeText("123"))
+      ).perform(editTextInputAction.appendText("123"))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -303,7 +303,7 @@ class ProfileRenameActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
-        typeText("test"),
+        editTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -326,7 +326,7 @@ class ProfileRenameActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
-        typeText("Admin"),
+        editTextInputAction.appendText("Admin"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -363,6 +363,7 @@ class ProfileRenameActivityTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
