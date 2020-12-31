@@ -58,6 +58,7 @@ class ProfileInputView @JvmOverloads constructor(
     label.text = attributes.getString(R.styleable.ProfileInputView_label)
     input = bindingInterface.provideProfileInputViewBindingInput(profileInputView)
     input.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+    input.contentDescription = profileInputView.contentDescription
     errorText = bindingInterface.provideProfileInputViewBindingErrorText(profileInputView)
     orientation = VERTICAL
     if (
