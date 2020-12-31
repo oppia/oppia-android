@@ -156,7 +156,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_startActivityWithAdmin_inputPin_inputConfirmPin_pressImeActionButton_checkReturnsToProfileEditActivity() { // ktlint-disable max-line-length
+  fun testResetPin_startWithAdmin_inputPinAndConfirmPin_pressImeAction_checkReturnsToProfileEdit() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
