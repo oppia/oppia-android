@@ -1,10 +1,7 @@
 package org.oppia.android.app.profile
 
-import android.app.Activity
-import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
-import android.content.Context.ACTIVITY_SERVICE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -24,10 +21,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
-import androidx.test.runner.lifecycle.Stage
 import com.chaos.view.PinView
 import com.google.firebase.FirebaseApp
 import dagger.Component
@@ -84,9 +77,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val TIMEOUT = 1000L
-private const val CONDITION_CHECK_INTERVAL = 100L
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -712,27 +702,6 @@ class PinPasswordActivityTest {
       onView(withId(R.id.input_pin))
         .check(matches(withInputType(inputType)))
     }
-  }
-
-  private fun getCurrentActivity(): Activity? {
-    var currentActivity: Activity? = null
-    getInstrumentation().runOnMainSync {
-      run {
-        currentActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(
-          Stage.RESUMED
-        ).elementAtOrNull(0)
-      }
-    }
-    return currentActivity
-  }
-
-  private inline fun <reified T : Activity> isVisible(): Boolean {
-    val am =
-      InstrumentationRegistry.getInstrumentation().targetContext.getSystemService(
-        ACTIVITY_SERVICE
-      ) as ActivityManager
-    val visibleActivityName = this.getCurrentActivity()!!::class.java.name
-    return visibleActivityName == T::class.java.name
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
