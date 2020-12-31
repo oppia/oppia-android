@@ -27,7 +27,18 @@ Please follow these steps for initial setup of the project on your local machine
 
  or follow [Android Studio UI based Github workflow](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow)
 
+3. For Mac or Linux 
+     1. Open terminal
+     2. Move to `opensource/oppia-android/`
+     3. Run a script `bash scripts/setup.sh`
 
+   For Windows
+     1. Install [Git Bash Command Line](https://gitforwindows.org/)
+     2. Open gt bash command line 
+     3. Move to `opensource/oppia-android/`
+     4. Run a script `bash scripts/setup.sh`
+
+This will create a folder `opensource/oppia-android-tools`.
 
 ## Instructions for making a code change
 
