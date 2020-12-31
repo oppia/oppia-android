@@ -87,8 +87,9 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     }
 
     binding.profileResetInputPinEditText.setText(resetViewModel.inputPin.get().toString())
-    binding.profileResetInputConfirmPinEditText
-      .setText(resetViewModel.inputConfirmPin.get().toString())
+    binding.profileResetInputConfirmPinEditText.setText(
+      resetViewModel.inputConfirmPin.get().toString()
+    )
 
     binding.profileResetSaveButton.setOnClickListener {
       val pin = binding.profileResetInputPinEditText.text.toString()

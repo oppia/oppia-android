@@ -109,7 +109,7 @@
             android:layout_marginStart="168dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="168dp"
-            android:hint="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_pin_label : @string/profile_reset_pin_user_pin_label}"
+            android:hint="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_confirm_label : @string/profile_reset_pin_user_confirm_label}"
             app:errorMessage="@{viewModel.confirmErrorMsg}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
