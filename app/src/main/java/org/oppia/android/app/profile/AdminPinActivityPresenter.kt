@@ -47,7 +47,7 @@ class AdminPinActivityPresenter @Inject constructor(
       viewModel = adminViewModel
     }
 
-    binding.inputPinEditText.onTextChanged { pin ->
+    binding.adminPinInputPinEditText.onTextChanged { pin ->
       pin?.let {
         adminViewModel.pinErrorMsg.set("")
         adminViewModel.savedPin.set(it)
@@ -56,7 +56,7 @@ class AdminPinActivityPresenter @Inject constructor(
       }
     }
 
-    binding.inputConfirmPinEditText.onTextChanged { confirmPin ->
+    binding.adminPinInputConfirmPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
         adminViewModel.confirmPinErrorMsg.set("")
         adminViewModel.savedConfirmPin.set(it)
@@ -66,8 +66,8 @@ class AdminPinActivityPresenter @Inject constructor(
     }
 
     binding.submitButton.setOnClickListener {
-      val inputPin = binding.inputPinEditText.text.toString()
-      val confirmPin = binding.inputConfirmPinEditText.text.toString()
+      val inputPin = binding.adminPinInputPinEditText.text.toString()
+      val confirmPin = binding.adminPinInputConfirmPinEditText.text.toString()
       var failed = false
       if (inputPin.length < 5) {
         adminViewModel.pinErrorMsg.set(
@@ -123,7 +123,15 @@ class AdminPinActivityPresenter @Inject constructor(
       )
     }
 
-    binding.inputConfirmPinEditText.setOnEditorActionListener { _, actionId, event ->
+    binding.adminPinInputConfirmPinEditText.setOnEditorActionListener { _, actionId, event ->
+      if (actionId == EditorInfo.IME_ACTION_NEXT ||
+        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
+      ) {
+        binding.submitButton.callOnClick()
+      }
+      false
+    }
+    binding.adminPinInputPinEditText.setOnEditorActionListener { _, actionId, event ->
       if (actionId == EditorInfo.IME_ACTION_DONE ||
         (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
       ) {
@@ -131,16 +139,8 @@ class AdminPinActivityPresenter @Inject constructor(
       }
       false
     }
-    binding.inputPinEditText.setOnEditorActionListener { _, actionId, event ->
-      if (actionId == EditorInfo.IME_ACTION_DONE ||
-        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
-      ) {
-        binding.submitButton.callOnClick()
-      }
-      false
-    }
-    binding.inputPinEditText.setText(adminViewModel.savedPin.get().toString())
-    binding.inputConfirmPinEditText.setText(adminViewModel.savedConfirmPin.get().toString())
+    binding.adminPinInputPinEditText.setText(adminViewModel.savedPin.get().toString())
+    binding.adminPinInputConfirmPinEditText.setText(adminViewModel.savedConfirmPin.get().toString())
   }
 
   private fun setValidPin() {

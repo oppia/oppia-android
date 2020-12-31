@@ -137,8 +137,8 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -146,8 +146,8 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
@@ -172,8 +172,8 @@ class AdminPinActivityTest {
     ).use {
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -181,8 +181,8 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
@@ -208,8 +208,8 @@ class AdminPinActivityTest {
         testCoroutineDispatchers.runCurrent()
         onView(
           allOf(
-            withId(R.id.input_pin_edit_text),
-            isDescendantOfA(withId(R.id.input_pin))
+            withId(R.id.admin_pin_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.admin_pin_input_pin))
           )
         ).perform(
           editTextInputAction.appendText("12345"),
@@ -218,8 +218,8 @@ class AdminPinActivityTest {
         testCoroutineDispatchers.runCurrent()
         onView(
           allOf(
-            withId(R.id.input_confirm_pin_edit_text),
-            isDescendantOfA(withId(R.id.input_confirm_pin))
+            withId(R.id.admin_pin_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
           )
         ).perform(
           nestedScrollTo(),
@@ -246,8 +246,8 @@ class AdminPinActivityTest {
       .use {
         onView(
           allOf(
-            withId(R.id.input_pin_edit_text),
-            isDescendantOfA(withId(R.id.input_pin))
+            withId(R.id.admin_pin_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.admin_pin_input_pin))
           )
         ).perform(
           editTextInputAction.appendText("12345"),
@@ -255,8 +255,8 @@ class AdminPinActivityTest {
         )
         onView(
           allOf(
-            withId(R.id.input_confirm_pin_edit_text),
-            isDescendantOfA(withId(R.id.input_confirm_pin))
+            withId(R.id.admin_pin_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
           )
         ).perform(
           nestedScrollTo(),
@@ -280,8 +280,8 @@ class AdminPinActivityTest {
     ).use {
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
@@ -304,8 +304,8 @@ class AdminPinActivityTest {
     ).use {
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
@@ -314,14 +314,14 @@ class AdminPinActivityTest {
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("45"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.input_confirm_pin)).check(
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasNoErrorText()
         )
@@ -342,8 +342,8 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -352,8 +352,8 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("1234"),
@@ -361,7 +361,7 @@ class AdminPinActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
-      onView(withId(R.id.input_confirm_pin)).check(
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
             (R.string.admin_pin_error_pin_confirm_wrong)
@@ -383,8 +383,8 @@ class AdminPinActivityTest {
     ).use {
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -392,15 +392,15 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("1234"),
         pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.input_confirm_pin)).check(
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
             (R.string.admin_pin_error_pin_confirm_wrong)
@@ -422,8 +422,8 @@ class AdminPinActivityTest {
     ).use {
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -431,8 +431,8 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("1234"),
@@ -441,14 +441,14 @@ class AdminPinActivityTest {
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.input_confirm_pin)).check(
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasNoErrorText()
         )
@@ -468,8 +468,8 @@ class AdminPinActivityTest {
     ).use {
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -477,8 +477,8 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("1234"),
@@ -486,14 +486,14 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.input_confirm_pin)).check(
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasNoErrorText()
         )
@@ -516,8 +516,8 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -525,8 +525,8 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
@@ -554,8 +554,8 @@ class AdminPinActivityTest {
       closeSoftKeyboard()
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -563,8 +563,8 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
@@ -591,8 +591,8 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -601,8 +601,8 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
@@ -629,8 +629,8 @@ class AdminPinActivityTest {
       closeSoftKeyboard()
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -638,8 +638,8 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
@@ -664,8 +664,8 @@ class AdminPinActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
@@ -689,8 +689,8 @@ class AdminPinActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
@@ -699,14 +699,14 @@ class AdminPinActivityTest {
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("45"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.input_pin)).check(
+      onView(withId(R.id.admin_pin_input_pin)).check(
         matches(
           hasNoErrorText()
         )
@@ -728,8 +728,8 @@ class AdminPinActivityTest {
       closeSoftKeyboard()
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -737,8 +737,8 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
@@ -747,7 +747,7 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.input_confirm_pin)).check(
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
             (R.string.admin_pin_error_pin_confirm_wrong)
@@ -771,8 +771,8 @@ class AdminPinActivityTest {
       closeSoftKeyboard()
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -780,8 +780,8 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
@@ -789,7 +789,7 @@ class AdminPinActivityTest {
         pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.input_confirm_pin)).check(
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
             (R.string.admin_pin_error_pin_confirm_wrong)
@@ -813,8 +813,8 @@ class AdminPinActivityTest {
       closeSoftKeyboard()
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -822,8 +822,8 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
@@ -833,15 +833,15 @@ class AdminPinActivityTest {
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.input_confirm_pin)).check(
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasNoErrorText()
         )
@@ -863,8 +863,8 @@ class AdminPinActivityTest {
       closeSoftKeyboard()
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -872,8 +872,8 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
@@ -882,15 +882,15 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.input_confirm_pin)).check(
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasNoErrorText()
         )
@@ -911,8 +911,8 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -921,8 +921,8 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
@@ -933,7 +933,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.input_confirm_pin)).check(
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText((R.string.admin_pin_error_pin_confirm_wrong))
         )
@@ -953,8 +953,8 @@ class AdminPinActivityTest {
     ).use {
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
@@ -962,8 +962,8 @@ class AdminPinActivityTest {
       )
       onView(
         allOf(
-          withId(R.id.input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
       ).perform(
         nestedScrollTo(),
@@ -971,7 +971,7 @@ class AdminPinActivityTest {
         pressImeActionButton()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.input_confirm_pin)).check(
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText((R.string.admin_pin_error_pin_confirm_wrong))
         )
@@ -991,8 +991,8 @@ class AdminPinActivityTest {
     ).use {
       onView(
         allOf(
-          withId(R.id.input_pin_edit_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
