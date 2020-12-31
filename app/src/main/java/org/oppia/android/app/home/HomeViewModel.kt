@@ -159,35 +159,38 @@ class HomeViewModel(
   private fun computePromotedStoryViewModelList(
     recommendedStoryList: RecommendedStoryList
   ): List<PromotedStoryViewModel> {
-    val storyList = when {
-      recommendedStoryList.suggestedStoryCount != 0 -> {
-        if (recommendedStoryList.recentlyPlayedStoryCount != 0 ||
-          recommendedStoryList.olderPlayedStoryCount != 0
-        ) {
-          recommendedStoryList.recentlyPlayedStoryList +
-            recommendedStoryList.olderPlayedStoryList +
-            recommendedStoryList.suggestedStoryList
-        } else {
-          recommendedStoryList.suggestedStoryList
+    recommendedStoryList.let {
+      val storyList = when {
+        it.suggestedStoryCount != 0 -> {
+          if (it.recentlyPlayedStoryCount != 0 ||
+            it.olderPlayedStoryCount != 0
+          ) {
+            it.recentlyPlayedStoryList +
+              it.olderPlayedStoryList +
+              it.suggestedStoryList
+          } else {
+            it.suggestedStoryList
+          }
         }
+        it.recentlyPlayedStoryCount != 0 -> {
+          it.recentlyPlayedStoryList
+        }
+        else -> {
+          it.olderPlayedStoryList
+        }
+
       }
-      recommendedStoryList.recentlyPlayedStoryCount != 0 -> {
-        recommendedStoryList.recentlyPlayedStoryList
-      }
-      else -> {
-        recommendedStoryList.olderPlayedStoryList
-      }
+      return storyList.take(promotedStoryListLimit)
+        .map { promotedStory ->
+          PromotedStoryViewModel(
+            activity,
+            internalProfileId,
+            storyList.size,
+            storyEntityType,
+            promotedStory
+          )
+        }
     }
-    return storyList.take(promotedStoryListLimit)
-      .map { promotedStory ->
-        PromotedStoryViewModel(
-          activity,
-          internalProfileId,
-          storyList.size,
-          storyEntityType,
-          promotedStory
-        )
-      }
   }
 
   /**
@@ -198,7 +201,7 @@ class HomeViewModel(
   private fun computeComingSoonTopicViewModelList(
     comingSoonTopicList: ComingSoonTopicList
   ): List<ComingSoonTopicsViewModel> {
-    return comingSoonTopicList.upcomingTopicList.mapIndexed { topicIndex, topicSummary ->
+    return comingSoonTopicList.upcomingTopicList.map { topicSummary ->
       ComingSoonTopicsViewModel(
         topicSummary,
         topicEntityType

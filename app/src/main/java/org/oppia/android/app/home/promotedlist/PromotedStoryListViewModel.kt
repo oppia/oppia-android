@@ -28,13 +28,13 @@ class PromotedStoryListViewModel(
   fun getHeader(): String {
     recommendedActivityList.recommendedStoryList.let {
       return when {
-        it.suggestedStoryCount != 0 -> {
-          if (it.recentlyPlayedStoryCount != 0 || it.olderPlayedStoryCount != 0) {
+        it.suggestedStoryCount > 0 -> {
+          if (it.recentlyPlayedStoryCount > 0 || it.olderPlayedStoryCount > 0) {
             activity.getString(R.string.stories_for_you)
           } else
             activity.getString(R.string.recommended_stories)
         }
-        it.recentlyPlayedStoryCount != 0 -> {
+        it.recentlyPlayedStoryCount > 0 -> {
           activity.getString(R.string.recently_played_stories)
         }
         else -> {
@@ -49,8 +49,8 @@ class PromotedStoryListViewModel(
    */
   fun getButtonVisibility(): Int {
     recommendedActivityList.recommendedStoryList.let {
-      if (it.suggestedStoryCount != 0) {
-        return if (it.recentlyPlayedStoryCount != 0 || it.olderPlayedStoryCount != 0) {
+      if (it.suggestedStoryCount > 0) {
+        return if (it.recentlyPlayedStoryCount > 0 || it.olderPlayedStoryCount > 0) {
           View.VISIBLE
         } else
           View.INVISIBLE

@@ -136,7 +136,6 @@ class HomeActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     FirebaseApp.initializeApp(context)
   }
 
@@ -253,11 +252,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysRecentlyPlayedStoriesText() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -282,11 +281,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysViewAllText() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -305,7 +304,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysStoriesForYouText() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -330,11 +329,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysLastPlayedStoriesText() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -359,7 +358,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysRecommendedStoriesText() {
     storyProgressTestHelper.markFullProgressForSecondTopic(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -371,7 +370,7 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           1,
-          R.id.coming_soon_topic_text_view
+          R.id.recently_played_stories_text_view
         )
       ).check(
         matches(
@@ -384,7 +383,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_forRecommendedStories_hideViewAll() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -404,7 +403,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysComingSoonTopicsText() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -412,17 +411,28 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(1)
       )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          1,
+          R.id.coming_soon_text_view
+        )
+      ).check(
+        matches(
+          withText(R.string.coming_soon)
+        )
+      )
     }
   }
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensRecentlyPlayedActivity() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -442,11 +452,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_chapterNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -471,11 +481,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -494,11 +504,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_configurationChange_promotedCard_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -519,11 +529,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -541,8 +551,6 @@ class HomeActivityTest {
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), TEST_STORY_ID_0))
       intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
@@ -551,11 +559,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId,
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {

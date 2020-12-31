@@ -155,34 +155,22 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     suggestedStoryCount: Int
   ): RecyclerView.LayoutManager {
     val sectionTitle0Position = if (recentStoryCount == 0) {
-      // If recent story count is 0, that means that section title 0 will not be visible.
       -1
     } else {
       0
     }
     val sectionTitle1Position = when {
-      oldStoryCount == 0 -> {
-        // If old story count is 0, that means that section title 1 will not be visible.
-        -1
-      }
-      recentStoryCount == 0 -> {
-        0
-      }
-      else -> {
-        recentStoryCount + 1
-      }
+      // If old story count is 0, that means that section title 1 will not be visible.
+      oldStoryCount == 0 -> -1
+      recentStoryCount == 0 -> 0
+      else -> recentStoryCount + 1
+
     }
     val sectionTitle2Position = when {
-      suggestedStoryCount == 0 -> {
-        // If suggested story count is 0, that means that section title 2 will not be visible.
-        -1
-      }
-      recentStoryCount == 0 -> {
-        0
-      }
-      else -> {
-        recentStoryCount + 1
-      }
+      // If suggested story count is 0, that means that section title 2 will not be visible.
+      suggestedStoryCount == 0 -> -1
+      recentStoryCount == 0 -> 0
+      else -> recentStoryCount + 1
     }
 
     val spanCount = activity.resources.getInteger(R.integer.recently_played_span_count)
@@ -193,10 +181,12 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       override fun getSpanSize(position: Int): Int {
         return when (position) {
           sectionTitle0Position, sectionTitle1Position, sectionTitle2Position -> {
-            /* number of spaces this item should occupy = */ spanCount
+            /* number of spaces this item should occupy = */
+            spanCount
           }
           else -> {
-            /* number of spaces this item should occupy = */ 1
+            /* number of spaces this item should occupy = */
+            1
           }
         }
       }
