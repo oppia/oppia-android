@@ -123,7 +123,7 @@ class AddProfileActivityPresenter @Inject constructor(
 
     binding.addProfileActivityPinEditText.onTextChanged { pin ->
       pin?.let {
-        profileViewModel.inputPin.set(it.toString())
+        profileViewModel.inputPin.set(it)
         profileViewModel.pinErrorMsg.set("")
         inputtedPin = pin.isNotEmpty()
         setValidPin(binding)
@@ -132,7 +132,7 @@ class AddProfileActivityPresenter @Inject constructor(
 
     binding.addProfileActivityConfirmPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
-        profileViewModel.inputConfirmPin.set(it.toString())
+        profileViewModel.inputConfirmPin.set(it)
         profileViewModel.confirmPinErrorMsg.set("")
         inputtedConfirmPin = confirmPin.isNotEmpty()
         setValidPin(binding)
