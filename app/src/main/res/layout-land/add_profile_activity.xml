@@ -82,6 +82,7 @@
             android:layout_marginStart="28dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="28dp"
+            android:hint="@string/add_profile_input_name"
             app:errorMessage="@{viewModel.nameErrorMsg}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -92,10 +93,10 @@
               style="@style/TextInputEditText"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:hint="@string/add_profile_input_name"
               android:imeOptions="actionDone"
               android:maxLength="36"
-              android:singleLine="true" />
+              android:singleLine="true"
+              android:textDirection="locale" />
           </com.google.android.material.textfield.TextInputLayout>
 
           <CheckBox
@@ -135,6 +136,7 @@
               android:layout_marginStart="28dp"
               android:layout_marginTop="24dp"
               android:layout_marginEnd="28dp"
+              android:hint="@string/add_profile_input_pin"
               app:errorMessage="@{viewModel.pinErrorMsg}"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
@@ -145,10 +147,10 @@
                 style="@style/TextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/add_profile_input_pin"
                 android:imeOptions="actionNext"
                 android:inputType="numberPassword"
-                android:maxLength="3" />
+                android:maxLength="3"
+                android:textDirection="locale" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -159,6 +161,7 @@
               android:layout_marginStart="28dp"
               android:layout_marginTop="8dp"
               android:layout_marginEnd="28dp"
+              android:hint="@string/add_profile_input_confirm_pin"
               app:errorMessage="@{viewModel.confirmPinErrorMsg}"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
@@ -169,10 +172,10 @@
                 style="@style/TextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/add_profile_input_confirm_pin"
                 android:imeOptions="actionDone"
                 android:inputType="numberPassword"
-                android:maxLength="3" />
+                android:maxLength="3"
+                android:textDirection="locale" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
