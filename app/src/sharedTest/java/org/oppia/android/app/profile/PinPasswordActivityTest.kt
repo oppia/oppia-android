@@ -262,8 +262,8 @@ class PinPasswordActivityTest {
         .check(matches(hasErrorText(R.string.admin_settings_incorrect)))
       onView(
         allOf(
-          withId(R.id.admin_settings_input_pin),
-          isDescendantOfA(withId(R.id.admin_settings_input_pin_edit_text))
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("5"),
@@ -310,7 +310,7 @@ class PinPasswordActivityTest {
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
         .perform(click())
-      onView(withId(R.id.input_pin))
+      onView(withId(R.id.reset_pin_input_pin))
         .check(matches(hasErrorText(R.string.add_profile_error_pin_length)))
       onView(
         allOf(
@@ -561,7 +561,7 @@ class PinPasswordActivityTest {
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
         .perform(click())
-      onView(withId(R.id.input_pin))
+      onView(withId(R.id.admin_settings_input_pin))
         .check(matches(hasErrorText(R.string.admin_settings_incorrect)))
       onView(
         allOf(
@@ -571,12 +571,11 @@ class PinPasswordActivityTest {
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText("5"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.input_pin))
+      onView(withId(R.id.admin_settings_input_pin))
         .check(matches(hasNoErrorText()))
     }
   }
 
-  @Ignore
   @Test
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputIncorrectPin_clickSubmit_changeConfiguration_errorIsDisplayed() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
@@ -611,8 +610,7 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      // The Error is not displayed after landscape need help to solve this
-      onView(withId(R.id.input_pin))
+      onView(withId(R.id.reset_pin_input_pin))
         .check(matches(hasErrorText(R.string.add_profile_error_pin_length)))
     }
   }
