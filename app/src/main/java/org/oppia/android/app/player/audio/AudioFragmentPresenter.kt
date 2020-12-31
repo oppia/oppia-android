@@ -123,6 +123,7 @@ class AudioFragmentPresenter @Inject constructor(
       activity,
       Observer<String> { result ->
         viewModel.selectedLanguageCode = result
+        // viewModel.loadMainContentAudio(false)
       }
     )
   }
