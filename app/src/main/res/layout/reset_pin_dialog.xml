@@ -10,7 +10,6 @@
 
   <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:profile="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -32,8 +31,8 @@
         android:layout_height="wrap_content"
         android:imeOptions="actionDone"
         android:inputType="numberPassword"
-        android:maxLength="3" />
+        android:maxLength="3"
+        android:textDirection="locale" />
     </com.google.android.material.textfield.TextInputLayout>
-
   </RelativeLayout>
 </layout>

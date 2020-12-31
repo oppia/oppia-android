@@ -10,7 +10,6 @@
 
   <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:profile="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -23,6 +22,7 @@
       android:layout_marginTop="32dp"
       android:layout_marginEnd="24dp"
       android:layout_marginBottom="20dp"
+      android:hint="@string/admin_auth_pin"
       app:errorMessage="@{viewModel.errorMessage}">
 
       <com.google.android.material.textfield.TextInputEditText
@@ -30,11 +30,10 @@
         style="@style/TextInputEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/admin_auth_pin"
         android:imeOptions="actionDone"
         android:inputType="numberPassword"
-        android:maxLength="5" />
+        android:maxLength="5"
+        android:textDirection="locale" />
     </com.google.android.material.textfield.TextInputLayout>
-
   </RelativeLayout>
 </layout>

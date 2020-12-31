@@ -10,22 +10,8 @@
 
   <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:profile="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-<!--    <org.oppia.android.app.profile.ProfileInputView-->
-<!--      android:id="@+id/input_pin"-->
-<!--      android:layout_width="match_parent"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      android:layout_marginStart="24dp"-->
-<!--      android:layout_marginTop="32dp"-->
-<!--      android:layout_marginEnd="24dp"-->
-<!--      android:layout_marginBottom="20dp"-->
-<!--      app:inputLength="5"-->
-<!--      app:isPasswordInput="true"-->
-<!--      app:label="@string/admin_settings_label"-->
-<!--      profile:error="@{viewModel.errorMessage}" />-->
 
     <com.google.android.material.textfield.TextInputLayout
       android:id="@+id/input_pin"
@@ -35,6 +21,7 @@
       android:layout_marginStart="24dp"
       android:layout_marginTop="32dp"
       android:layout_marginEnd="24dp"
+      android:hint="@string/admin_auth_pin"
       android:layout_marginBottom="20dp"
       app:errorMessage="@{viewModel.errorMessage}">
 
@@ -43,7 +30,7 @@
         style="@style/TextInputEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/admin_auth_pin"
+        android:textDirection="locale"
         android:imeOptions="actionDone"
         android:inputType="numberPassword"
         android:maxLength="5" />
