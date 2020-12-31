@@ -58,7 +58,6 @@ import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.domain.classify.InteractionsModule
@@ -583,13 +582,6 @@ class AdministratorControlsActivityTest {
   private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       context,
-      profileId
-    )
-  }
-
-  private fun createNavigationDrawerActivityIntent(profileId: Int): Intent {
-    return NavigationDrawerTestActivity.createNavigationDrawerTestActivity(
-      ApplicationProvider.getApplicationContext(),
       profileId
     )
   }
