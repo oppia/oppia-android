@@ -1,10 +1,7 @@
 package org.oppia.android.app.profile
 
-import android.app.Activity
-import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
-import android.content.Context.ACTIVITY_SERVICE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -21,12 +18,10 @@ import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
-import androidx.test.runner.lifecycle.Stage
+import com.chaos.view.PinView
 import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.Matchers.allOf
@@ -82,9 +77,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val TIMEOUT = 1000L
-private const val CONDITION_CHECK_INTERVAL = 100L
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -689,36 +681,26 @@ class PinPasswordActivityTest {
     }
   }
 
-  private fun getCurrentActivity(): Activity? {
-    var currentActivity: Activity? = null
-    getInstrumentation().runOnMainSync {
-      run {
-        currentActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(
-          Stage.RESUMED
-        ).elementAtOrNull(0)
-      }
-    }
-    return currentActivity
-  }
+  @Test
+  fun testPinPasswordActivity_checkInputType_clickShowHidePassword_inputTypeIsSame() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        adminId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
 
-  private inline fun <reified T : Activity> isVisible(): Boolean {
-    val am =
-      InstrumentationRegistry.getInstrumentation().targetContext.getSystemService(
-        ACTIVITY_SERVICE
-      ) as ActivityManager
-    val visibleActivityName = this.getCurrentActivity()!!::class.java.name
-    return visibleActivityName == T::class.java.name
-  }
-
-  private inline fun <reified T : Activity> waitUntilActivityVisible() {
-    val startTime = System.currentTimeMillis()
-    while (!isVisible<T>()) {
-      Thread.sleep(CONDITION_CHECK_INTERVAL)
-      if (System.currentTimeMillis() - startTime >= TIMEOUT) {
-        throw AssertionError(
-          "Activity ${T::class.java.simpleName} not visible after $TIMEOUT milliseconds"
-        )
+      var inputType: Int = 0
+      it.onActivity {
+        inputType = it.findViewById<PinView>(R.id.input_pin).inputType
       }
+      onView(withId(R.id.input_pin))
+        .check(matches(withInputType(inputType)))
+      onView(withId(R.id.show_pin)).perform(click())
+      onView(withId(R.id.input_pin))
+        .check(matches(withInputType(inputType)))
     }
   }
 
