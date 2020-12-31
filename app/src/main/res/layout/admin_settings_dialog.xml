@@ -14,27 +14,26 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.textfield.TextInputLayout
-      android:id="@+id/input_pin"
+      android:id="@+id/admin_settings_input_pin"
       style="@style/TextInputLayout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginTop="32dp"
       android:layout_marginEnd="24dp"
-      android:hint="@string/admin_auth_pin"
       android:layout_marginBottom="20dp"
+      android:hint="@string/admin_auth_pin"
       app:errorMessage="@{viewModel.errorMessage}">
 
       <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/input_pin_edit_text"
+        android:id="@+id/admin_settings_input_pin_edit_text"
         style="@style/TextInputEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textDirection="locale"
         android:imeOptions="actionDone"
         android:inputType="numberPassword"
-        android:maxLength="5" />
+        android:maxLength="5"
+        android:textDirection="locale" />
     </com.google.android.material.textfield.TextInputLayout>
-
   </RelativeLayout>
 </layout>

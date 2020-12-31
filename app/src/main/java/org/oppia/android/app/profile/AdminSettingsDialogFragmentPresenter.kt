@@ -41,8 +41,10 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
       viewModel = adminViewModel
     }
 
-    binding.inputPinEditText.setText(adminViewModel.inputPin.get().toString())
-    binding.inputPinEditText.onTextChanged { confirmPin ->
+    binding.adminSettingsInputPinEditText.setText(adminViewModel.inputPin.get().toString())
+
+    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
+    binding.adminSettingsInputPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
         adminViewModel.inputPin.set(confirmPin.toString())
         adminViewModel.errorMessage.set("")
@@ -59,7 +61,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
       }
       .create()
 
-    binding.inputPinEditText.setOnEditorActionListener { _, actionId, event ->
+    binding.adminSettingsInputPinEditText.setOnEditorActionListener { _, actionId, event ->
       if (actionId == EditorInfo.IME_ACTION_DONE ||
         (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
       ) {
@@ -71,10 +73,10 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
     // This logic prevents the dialog from being dismissed. https://stackoverflow.com/a/7636468.
     dialog.setOnShowListener {
       dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-        if (binding.inputPinEditText.text?.isEmpty()!!) {
+        if (binding.adminSettingsInputPinEditText.text?.isEmpty()!!) {
           return@setOnClickListener
         }
-        if (binding.inputPinEditText.text.toString() == adminPin) {
+        if (binding.adminSettingsInputPinEditText.text.toString() == adminPin) {
           routeDialogInterface.routeToResetPinDialog()
         } else {
           adminViewModel.errorMessage.set(

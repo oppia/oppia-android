@@ -46,26 +46,17 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
       viewModel = resetViewModel
     }
 
-    binding.inputPinEditText.setText(resetViewModel.inputPin.get().toString())
-//    binding.inputPin.addTextChangedListener(object : TextWatcher {
-//      override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
-//        confirmPin?.let {
-//          resetViewModel.inputPin.set(confirmPin.toString())
-//          resetViewModel.errorMessage.set("")
-//        }
-//      }
-//
-//      override fun afterTextChanged(confirmPin: Editable?) {}
-//      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
-//    })
-    binding.inputPinEditText.onTextChanged { confirmPin ->
+    binding.resetPinInputPinEditText.setText(resetViewModel.inputPin.get().toString())
+
+    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
+    binding.resetPinInputPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
         resetViewModel.inputPin.set(confirmPin.toString())
         resetViewModel.errorMessage.set("")
       }
     }
 
-    binding.inputPin.hint = activity.resources
+    binding.resetPinInputPin.hint = activity.resources
       .getString(R.string.admin_settings_enter_user_new_pin, name)
 
     val dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
@@ -78,7 +69,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
       }
       .create()
 
-    binding.inputPinEditText.setOnEditorActionListener { _, actionId, event ->
+    binding.resetPinInputPinEditText.setOnEditorActionListener { _, actionId, event ->
       if (actionId == EditorInfo.IME_ACTION_DONE ||
         (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
       ) {
@@ -89,7 +80,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
 
     dialog.setOnShowListener {
       dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-        val input = binding.inputPinEditText.text.toString()
+        val input = binding.resetPinInputPinEditText.text.toString()
         if (input.isEmpty()) {
           return@setOnClickListener
         }

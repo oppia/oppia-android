@@ -14,7 +14,7 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.textfield.TextInputLayout
-      android:id="@+id/input_pin"
+      android:id="@+id/reset_pin_input_pin"
       style="@style/TextInputLayout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
       app:errorMessage="@{viewModel.errorMessage}">
 
       <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/input_pin_edit_text"
+        android:id="@+id/reset_pin_input_pin_edit_text"
         style="@style/TextInputEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
