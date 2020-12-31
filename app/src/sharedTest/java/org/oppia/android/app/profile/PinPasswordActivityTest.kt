@@ -29,6 +29,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
+import com.chaos.view.PinView
 import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.Matchers.allOf
@@ -692,7 +693,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivity_checkKeyboardType_clickShowHidePassword_keyboardTypeIsSame() {
+  fun testPinPasswordActivity_checkInputType_clickShowHidePassword_inputTypeIsSame() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
@@ -702,22 +703,15 @@ class PinPasswordActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      val inputType = InputType.TYPE_CLASS_NUMBER
-      onView(withId(R.id.input_pin)).check(
-        matches(
-          withInputType(
-            inputType
-          )
-        )
-      )
+      var inputType: Int = 0
+      it.onActivity {
+        inputType = it.findViewById<PinView>(R.id.input_pin).inputType
+      }
+      onView(withId(R.id.input_pin))
+        .check(matches(withInputType(inputType)))
       onView(withId(R.id.show_pin)).perform(click())
-      onView(withId(R.id.input_pin)).check(
-        matches(
-          withInputType(
-            inputType
-          )
-        )
-      )
+      onView(withId(R.id.input_pin))
+        .check(matches(withInputType(inputType)))
     }
   }
 
@@ -740,18 +734,6 @@ class PinPasswordActivityTest {
       ) as ActivityManager
     val visibleActivityName = this.getCurrentActivity()!!::class.java.name
     return visibleActivityName == T::class.java.name
-  }
-
-  private inline fun <reified T : Activity> waitUntilActivityVisible() {
-    val startTime = System.currentTimeMillis()
-    while (!isVisible<T>()) {
-      Thread.sleep(CONDITION_CHECK_INTERVAL)
-      if (System.currentTimeMillis() - startTime >= TIMEOUT) {
-        throw AssertionError(
-          "Activity ${T::class.java.simpleName} not visible after $TIMEOUT milliseconds"
-        )
-      }
-    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
