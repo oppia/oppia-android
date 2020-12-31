@@ -38,7 +38,7 @@ Please follow these steps for initial setup of the project on your local machine
      3. Move to `opensource/oppia-android/`
      4. Run a script `bash scripts/setup.sh`
 
-This will create a folder `opensource/oppia-android-tools`.
+This will create a folder `opensource/oppia-android-tools`. This will set up `ktlint` executable file which is used to validate Kotlin's file formatting when sending a pull request. 
 
 ## Instructions for making a code change
 
