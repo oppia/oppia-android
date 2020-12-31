@@ -49,10 +49,10 @@
       <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipToPadding="false"
         android:overScrollMode="never"
-        android:scrollbars="none"
         android:paddingBottom="168dp"
-        android:clipToPadding="false">
+        android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
@@ -95,7 +95,8 @@
               android:layout_height="wrap_content"
               android:imeOptions="actionNext"
               android:inputType="numberPassword"
-              android:maxLength="@{viewModel.isAdmin ? 5 : 3}" />
+              android:maxLength="@{viewModel.isAdmin ? 5 : 3}"
+              android:textDirection="locale" />
           </com.google.android.material.textfield.TextInputLayout>
 
           <com.google.android.material.textfield.TextInputLayout
@@ -119,7 +120,8 @@
               android:layout_height="wrap_content"
               android:imeOptions="actionDone"
               android:inputType="numberPassword"
-              android:maxLength="@{viewModel.isAdmin ? 5 : 3}" />
+              android:maxLength="@{viewModel.isAdmin ? 5 : 3}"
+              android:textDirection="locale" />
           </com.google.android.material.textfield.TextInputLayout>
 
           <Button
