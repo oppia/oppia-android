@@ -9,7 +9,7 @@ buildscript {
     gradlePluginPortal()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:4.0.1'
+    classpath 'com.android.tools.build:gradle:3.6.1'
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.12'
     classpath 'com.google.gms:google-services:4.3.3'
@@ -30,7 +30,7 @@ task clean(type: Delete) {
   delete rootProject.buildDir
 }
 
-subprojects{
+subprojects {
   afterEvaluate {
     // kapt doesn't propagate source version properly so even if we set JDK to be 9, if we
     // have a local JDK version of 9+, we see a dagger bug in generating annotations
