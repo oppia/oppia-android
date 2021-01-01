@@ -47,6 +47,7 @@ class AdminPinActivityPresenter @Inject constructor(
       viewModel = adminViewModel
     }
 
+    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminPinInputPinEditText.onTextChanged { pin ->
       pin?.let {
         adminViewModel.pinErrorMsg.set("")
@@ -56,6 +57,7 @@ class AdminPinActivityPresenter @Inject constructor(
       }
     }
 
+    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminPinInputConfirmPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
         adminViewModel.confirmPinErrorMsg.set("")
