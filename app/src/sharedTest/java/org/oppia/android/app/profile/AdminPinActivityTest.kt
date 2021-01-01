@@ -95,6 +95,7 @@ import javax.inject.Singleton
   application = AdminPinActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
+// fix
 class AdminPinActivityTest {
 
   @Inject
