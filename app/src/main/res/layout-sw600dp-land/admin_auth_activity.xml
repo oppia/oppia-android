@@ -67,7 +67,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
             android:maxLines="2"
-
             android:text="@string/admin_auth_heading"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
