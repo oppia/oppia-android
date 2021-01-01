@@ -30,7 +30,7 @@ task clean(type: Delete) {
   delete rootProject.buildDir
 }
 
-subprojects {
+subprojects{
   afterEvaluate {
     // kapt doesn't propagate source version properly so even if we set JDK to be 9, if we
     // have a local JDK version of 9+, we see a dagger bug in generating annotations
