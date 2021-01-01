@@ -96,6 +96,7 @@
             android:imeOptions="actionDone"
             android:inputType="numberPassword"
             android:maxLength="5"
+            android:textDirection="locale"
             app:textChangedListener="@{viewModel.inputPinTextWatcher}" />
         </com.google.android.material.textfield.TextInputLayout>
 
