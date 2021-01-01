@@ -124,7 +124,7 @@ class AdminPinActivityPresenter @Inject constructor(
     }
 
     binding.adminPinInputConfirmPinEditText.setOnEditorActionListener { _, actionId, event ->
-      if (actionId == EditorInfo.IME_ACTION_NEXT ||
+      if (actionId == EditorInfo.IME_ACTION_DONE ||
         (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
       ) {
         binding.submitButton.callOnClick()

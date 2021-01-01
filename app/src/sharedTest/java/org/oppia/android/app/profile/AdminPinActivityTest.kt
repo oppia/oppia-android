@@ -390,6 +390,7 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.admin_pin_input_confirm_pin_edit_text),
@@ -778,6 +779,7 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
+      testCoroutineDispatchers.advanceUntilIdle()
       onView(
         allOf(
           withId(R.id.admin_pin_input_confirm_pin_edit_text),
@@ -788,7 +790,7 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("1234"),
         pressImeActionButton()
       )
-      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.advanceUntilIdle()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
@@ -970,6 +972,7 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("54321"),
         pressImeActionButton()
       )
+      testCoroutineDispatchers.advanceUntilIdle()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
