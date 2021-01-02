@@ -536,34 +536,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveComingSoonTopicList_markFirstStoryOfEveryTopicDoneWithinLastSevenDays_comingSoonListIsCorrect() { // ktlint-disable max-line-length
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_1,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-
+  fun testRetrieveComingSoonTopicList_markFirstStoryOfRatiosTopicDoneWithinLastSevenDays_comingSoonListIsCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordCompletedChapter(
       profileId0,
       RATIOS_TOPIC_ID,
