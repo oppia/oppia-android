@@ -95,7 +95,6 @@ import javax.inject.Singleton
   application = AdminPinActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-
 class AdminPinActivityTest {
 
   @Inject
@@ -322,11 +321,8 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("45"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
-        matches(
-          hasNoErrorText()
-        )
-      )
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -362,13 +358,14 @@ class AdminPinActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
-      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
-        matches(
-          hasErrorText(
-            (R.string.admin_pin_error_pin_confirm_wrong)
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(
+          matches(
+            hasErrorText(
+              R.string.admin_pin_error_pin_confirm_wrong
+            )
           )
         )
-      )
     }
   }
 
@@ -405,7 +402,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            (R.string.admin_pin_error_pin_confirm_wrong)
+            R.string.admin_pin_error_pin_confirm_wrong
           )
         )
       )
@@ -450,11 +447,8 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
-        matches(
-          hasNoErrorText()
-        )
-      )
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -495,11 +489,8 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
-        matches(
-          hasNoErrorText()
-        )
-      )
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -708,11 +699,8 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("45"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.admin_pin_input_pin)).check(
-        matches(
-          hasNoErrorText()
-        )
-      )
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -752,7 +740,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            (R.string.admin_pin_error_pin_confirm_wrong)
+            R.string.admin_pin_error_pin_confirm_wrong
           )
         )
       )
@@ -795,7 +783,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            (R.string.admin_pin_error_pin_confirm_wrong)
+            R.string.admin_pin_error_pin_confirm_wrong
           )
         )
       )
@@ -844,11 +832,8 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
-        matches(
-          hasNoErrorText()
-        )
-      )
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -893,11 +878,8 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
-        matches(
-          hasNoErrorText()
-        )
-      )
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -911,7 +893,6 @@ class AdminPinActivityTest {
         0
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.admin_pin_input_pin_edit_text),
@@ -921,7 +902,6 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.admin_pin_input_confirm_pin_edit_text),
@@ -932,13 +912,15 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("54321"),
         closeSoftKeyboard()
       )
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText((R.string.admin_pin_error_pin_confirm_wrong))
+          hasErrorText(
+            R.string.admin_pin_error_pin_confirm_wrong
+          )
         )
       )
     }
@@ -973,11 +955,13 @@ class AdminPinActivityTest {
         editTextInputAction.appendText("54321"),
         pressImeActionButton()
       )
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText((R.string.admin_pin_error_pin_confirm_wrong))
+          hasErrorText(
+            R.string.admin_pin_error_pin_confirm_wrong
+          )
         )
       )
     }

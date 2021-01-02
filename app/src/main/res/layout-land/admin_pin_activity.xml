@@ -64,9 +64,9 @@
         android:layout_marginStart="168dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="168dp"
+        android:hint="@string/admin_pin_new_pin"
         app:errorMessage="@{viewModel.pinErrorMsg}"
         app:layout_constraintEnd_toEndOf="parent"
-        android:hint="@string/admin_pin_new_pin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/admin_pin_warning_text">
 
@@ -76,9 +76,10 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:imeOptions="actionNext"
-          android:textDirection="locale"
           android:inputType="numberPassword"
-          android:maxLength="5" />
+          android:maxLength="5"
+          android:text="@{viewModel.savedPin}"
+          android:textDirection="locale" />
       </com.google.android.material.textfield.TextInputLayout>
 
       <com.google.android.material.textfield.TextInputLayout
@@ -102,9 +103,10 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:imeOptions="actionDone"
-          android:textDirection="locale"
           android:inputType="numberPassword"
-          android:maxLength="5" />
+          android:maxLength="5"
+          android:text="@{viewModel.savedConfirmPin}"
+          android:textDirection="locale" />
       </com.google.android.material.textfield.TextInputLayout>
 
       <Button

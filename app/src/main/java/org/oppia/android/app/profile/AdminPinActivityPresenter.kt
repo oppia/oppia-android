@@ -141,8 +141,6 @@ class AdminPinActivityPresenter @Inject constructor(
       }
       false
     }
-    binding.adminPinInputPinEditText.setText(adminViewModel.savedPin.get().toString())
-    binding.adminPinInputConfirmPinEditText.setText(adminViewModel.savedConfirmPin.get().toString())
   }
 
   private fun setValidPin() {
