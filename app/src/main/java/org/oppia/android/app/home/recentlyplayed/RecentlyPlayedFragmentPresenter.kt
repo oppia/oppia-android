@@ -164,7 +164,6 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       oldStoryCount == 0 -> -1
       recentStoryCount == 0 -> 0
       else -> recentStoryCount + 1
-
     }
     val sectionTitle2Position = when {
       // If suggested story count is 0, that means that section title 2 will not be visible.

@@ -178,7 +178,6 @@ class HomeViewModel(
         else -> {
           it.olderPlayedStoryList
         }
-
       }
       return storyList.take(promotedStoryListLimit)
         .map { promotedStory ->
