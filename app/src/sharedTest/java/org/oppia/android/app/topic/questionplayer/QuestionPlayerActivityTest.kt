@@ -233,6 +233,22 @@ class QuestionPlayerActivityTest {
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Test
+  fun testQuestionPlayer_chooseCorrectAnswer_configurationChange_tickIsCompletelyVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Option 2 is the right answer and tick icon should be visible completely
+      selectMultipleChoiceOption(optionPosition = 2)
+      rotateToLandscape()
+      onView(withId(R.id.answer_tick)).check(
+        matches(
+          isCompletelyDisplayed()
+        )
+      )
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_phoneLand_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       rotateToLandscape()
