@@ -42,12 +42,17 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
     }
 
     binding.adminSettingsInputPinEditText.setText(adminViewModel.inputPin.get().toString())
+    var tempError = adminViewModel.errorMessage.get()
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminSettingsInputPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
         adminViewModel.inputPin.set(confirmPin.toString())
-        adminViewModel.errorMessage.set("")
+        if (tempError != "") {
+          tempError = ""
+        } else {
+          adminViewModel.errorMessage.set("")
+        }
       }
     }
 

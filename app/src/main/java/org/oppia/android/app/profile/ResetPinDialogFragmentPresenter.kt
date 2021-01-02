@@ -47,12 +47,17 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
     }
 
     binding.resetPinInputPinEditText.setText(resetViewModel.inputPin.get().toString())
+    var tempError = resetViewModel.errorMessage.get()
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.resetPinInputPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
         resetViewModel.inputPin.set(confirmPin.toString())
-        resetViewModel.errorMessage.set("")
+        if (tempError != "") {
+          tempError = ""
+        } else {
+          resetViewModel.errorMessage.set("")
+        }
       }
     }
 

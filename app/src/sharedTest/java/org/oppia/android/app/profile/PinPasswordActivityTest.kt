@@ -576,7 +576,37 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputIncorrectPin_clickSubmit_changeConfiguration_errorIsDisplayed() { // ktlint-disable max-line-length
+  fun testPinPasswordActivityWithUser_clickForgot_inputIncorrectAdminPin_clickSubmit_changeConfiguration_errorIsDisplayed() { // ktlint-disable max-line-length
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        userId
+      )
+    ).use {
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog())
+        .perform(editTextInputAction.appendText("1234"), closeSoftKeyboard())
+      onView(withText(context.getString(R.string.admin_settings_submit)))
+        .inRoot(isDialog())
+        .perform(click())
+      onView(withId(R.id.admin_settings_input_pin))
+        .check(matches(hasErrorText(R.string.admin_settings_incorrect)))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.admin_settings_input_pin))
+        .check(matches(hasErrorText(R.string.admin_settings_incorrect)))
+    }
+  }
+
+  @Test
+  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputInvalidPin_clickSubmit_changeConfiguration_errorIsDisplayed() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context,
