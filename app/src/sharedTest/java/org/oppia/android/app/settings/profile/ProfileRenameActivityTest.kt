@@ -123,8 +123,8 @@ class ProfileRenameActivityTest {
   fun testProfileRenameActivity_inputNewName_clickSave_checkProfileEditActivityIsOpen() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
-        context,
-        1
+        context = context,
+        profileId = 1
       )
     ).use {
       onView(
@@ -144,8 +144,8 @@ class ProfileRenameActivityTest {
   fun testProfileRenameActivity_inputNewName_clickImeActionButton_checkProfileEditActivityIsOpen() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
-        context,
-        1
+        context = context,
+        profileId = 1
       )
     ).use {
       onView(
@@ -166,8 +166,8 @@ class ProfileRenameActivityTest {
   fun testProfileRenameActivity_inputNewName_configurationChange_checkSaveIsEnabled() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
-        context,
-        1
+        context = context,
+        profileId = 1
       )
     ).use {
       onView(
@@ -187,8 +187,8 @@ class ProfileRenameActivityTest {
   fun testProfileRenameActivity_inputNewName_configurationChange_inputTextExists() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
-        context,
-        1
+        context = context,
+        profileId = 1
       )
     ).use {
       onView(
@@ -217,8 +217,8 @@ class ProfileRenameActivityTest {
   fun testProfileRenameActivity_inputOldName_clickSave_checkNameNotUniqueError() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
-        context,
-        1
+        context = context,
+        profileId = 1
       )
     ).use {
       onView(
@@ -238,8 +238,8 @@ class ProfileRenameActivityTest {
   fun testProfileRenameActivity_inputOldName_clickSave_inputName_checkErrorIsCleared() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
-        context,
-        1
+        context = context,
+        profileId = 1
       )
     ).use {
       onView(
@@ -265,8 +265,8 @@ class ProfileRenameActivityTest {
   fun testProfileRenameActivity_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
-        context,
-        1
+        context = context,
+        profileId = 1
       )
     ).use {
       onView(
@@ -287,8 +287,8 @@ class ProfileRenameActivityTest {
   fun testProfileRenameActivity_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
-        context,
-        1
+        context = context,
+        profileId = 1
       )
     ).use {
       onView(
@@ -316,8 +316,8 @@ class ProfileRenameActivityTest {
   fun testProfileRenameActivity_inputName_changeConfiguration_checkNameIsDisplayed() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
-        context,
-        1
+        context = context,
+        profileId = 1
       )
     ).use {
       onView(
@@ -349,8 +349,8 @@ class ProfileRenameActivityTest {
   fun testProfileRenameActivity_inputOldName_clickSave_changeConfiguration_errorIsVisible() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
-        context,
-        1
+        context = context,
+        profileId = 1
       )
     ).use {
       onView(
@@ -376,8 +376,8 @@ class ProfileRenameActivityTest {
   fun testProfileRenameActivity_clickSave_changeConfiguration_saveButtonIsNotClickable() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
-        context,
-        1
+        context = context,
+        profileId = 1
       )
     ).use {
       onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
