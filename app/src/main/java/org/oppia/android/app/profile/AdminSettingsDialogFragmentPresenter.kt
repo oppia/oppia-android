@@ -41,7 +41,6 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
       viewModel = adminViewModel
     }
 
-    binding.adminSettingsInputPinEditText.setText(adminViewModel.inputPin.get().toString())
     var tempError = adminViewModel.errorMessage.get()
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]

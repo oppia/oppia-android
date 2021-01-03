@@ -32,6 +32,7 @@
         android:imeOptions="actionDone"
         android:inputType="numberPassword"
         android:maxLength="3"
+        android:text="@{viewModel.inputPin}"
         android:textDirection="locale" />
     </com.google.android.material.textfield.TextInputLayout>
   </RelativeLayout>
