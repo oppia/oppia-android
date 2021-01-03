@@ -95,8 +95,6 @@ class ProfileRenameActivityPresenter @Inject constructor(
       }
       false
     }
-
-    binding.profileRenameInputEditText.setText(renameViewModel.inputName.get().toString())
   }
 
   private fun handleAddProfileResult(result: AsyncResult<Any?>, profileId: Int) {

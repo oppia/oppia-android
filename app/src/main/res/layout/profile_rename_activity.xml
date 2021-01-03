@@ -62,10 +62,10 @@
           android:layout_marginStart="28dp"
           android:layout_marginTop="28dp"
           android:layout_marginEnd="28dp"
+          android:hint="@string/profile_rename_label"
           app:errorMessage="@{viewModel.nameErrorMsg}"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
-          android:hint="@string/profile_rename_label"
           app:layout_constraintTop_toTopOf="parent">
 
           <com.google.android.material.textfield.TextInputEditText
@@ -74,9 +74,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionDone"
-            android:textDirection="locale"
             android:maxLength="36"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:text="@{viewModel.inputName}"
+            android:textDirection="locale" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
