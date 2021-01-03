@@ -128,10 +128,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfileActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        1
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 1
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -164,10 +164,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        1
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 1
       )
     ).use {
       onView(
@@ -198,10 +198,10 @@ class AdminPinActivityTest {
   fun testAdminAuthActivity_inputPin_inputConfirmPin_clickSubmit_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
     launch<AdminAuthActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     )
       .use {
@@ -237,10 +237,10 @@ class AdminPinActivityTest {
   fun testAdminAuthActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
     launch<AdminAuthActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     )
       .use {
@@ -272,10 +272,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputShortPin_clickIsDisabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(
@@ -296,10 +296,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(
@@ -330,10 +330,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -373,10 +373,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(
@@ -413,10 +413,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(
@@ -456,10 +456,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(
@@ -498,10 +498,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfileActivity() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        1
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 1
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -537,10 +537,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        1
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 1
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -573,10 +573,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -612,10 +612,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -648,10 +648,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputShortPin_clickSubmit_clickIsDisabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -673,10 +673,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -708,10 +708,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -751,10 +751,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -794,10 +794,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -841,10 +841,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -887,10 +887,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_configurationChange_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(
@@ -930,10 +930,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_configurationChange_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(
@@ -971,10 +971,10 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputShortPin_configurationChange_clicIsDisabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(
