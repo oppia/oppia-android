@@ -131,9 +131,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithAdmin_checkKeyboardIsVisibleByDefault() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        adminId
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
       )
     ).use {
       onView(withId(R.id.input_pin)).check(matches(hasFocus()))
@@ -144,9 +144,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithAdmin_inputCorrectPin_checkOpensHomeActivity() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        adminId
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -160,9 +160,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_inputCorrectPin_checkOpensHomeActivity() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        userId
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -176,9 +176,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithAdmin_inputWrongPin_checkIncorrectPinShows() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        adminId
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -197,9 +197,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_inputWrongPin_checkIncorrectPinShows() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        userId
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -218,9 +218,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithAdmin_clickForgot_checkOpensAdminForgotDialog() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        adminId
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -239,9 +239,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputWrongAdminPin_checkWrongAdminPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        userId
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
       )
     ).use {
       onView(withId(R.id.forgot_pin)).perform(click())
@@ -277,9 +277,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputShortPin_checkPinLengthError() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        userId
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
       )
     ).use {
       onView(withId(R.id.input_pin))
@@ -329,9 +329,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputNewPin_inputOldPin_checkWrongPinError() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        userId
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
       )
     ).use {
       onView(withId(R.id.input_pin))
@@ -377,9 +377,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputNewPin_inputNewPin_checkOpensHomeActivity() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        userId
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
       )
     ).use {
       onView(withId(R.id.input_pin))
@@ -422,9 +422,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_changeConfiguration_checkInputPinIsPresent() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        userId
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
       )
     ).use {
       onView(withId(R.id.input_pin))
@@ -452,9 +452,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_clickSubmit_changeConfiguration_restPinDialogIsDisplayed() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        userId
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
       )
     ).use {
       onView(withId(R.id.input_pin))
@@ -481,9 +481,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_clickSubmit_inputNewPin_changeConfiguration_clickSubmit_pinChangeIsSuccessful() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        userId
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
       )
     ).use {
       onView(withId(R.id.input_pin))
@@ -523,9 +523,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithAdmin_clickForgot_changeConfiguration_checkOpensAdminForgotDialog() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        adminId
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -542,9 +542,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputWrongAdminPin_changeConfiguration_checkWrongAdminPinError() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        userId
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
       )
     ).use {
       onView(withId(R.id.input_pin))
@@ -579,9 +579,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputIncorrectAdminPin_clickSubmit_changeConfiguration_errorIsDisplayed() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        userId
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
       )
     ).use {
       onView(withId(R.id.input_pin))
@@ -609,9 +609,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputInvalidPin_clickSubmit_changeConfiguration_errorIsDisplayed() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        userId
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
       )
     ).use {
       onView(withId(R.id.input_pin))
@@ -648,9 +648,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithAdmin_inputWrongPin_changeConfiguration_checkIncorrectPinShows() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        adminId
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -672,9 +672,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithAdmin_checkShowHidePassword_defaultText() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        adminId
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -687,9 +687,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithAdmin_checkShowHidePassword_defaultImage() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        adminId
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
       )
     ).use {
       onView(withId(R.id.show_hide_password_image_view))
@@ -707,9 +707,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_textChangesToHide() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        adminId
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -723,9 +723,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_imageChangesToHide() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        adminId
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -746,9 +746,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_changeConfiguration_hideViewIsShown() { // ktlint-disable max-line-length
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        adminId
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -771,9 +771,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivity_checkInputType_clickShowHidePassword_inputTypeIsSame() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
-        context,
-        adminPin,
-        adminId
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
