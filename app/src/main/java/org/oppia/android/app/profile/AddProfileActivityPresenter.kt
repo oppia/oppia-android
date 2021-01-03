@@ -148,15 +148,6 @@ class AddProfileActivityPresenter @Inject constructor(
       false
     }
 
-    binding.addProfileActivityUserNameEditText.setText(
-      profileViewModel.inputName.get().toString()
-    )
-    binding.addProfileActivityPinEditText.setText(
-      profileViewModel.inputPin.get().toString()
-    )
-    binding.addProfileActivityConfirmPinEditText.setText(
-      profileViewModel.inputConfirmPin.get().toString()
-    )
     if (profileViewModel.showInfoAlertPopup.get()!!) {
       showInfoDialog()
     }
