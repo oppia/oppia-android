@@ -1,5 +1,5 @@
 """
-Starlark rules (Macros) to setup the WORKSPACE in the Oppia-Android codebase.
+Central macros pertaining to setting up tests across the codebase.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")

@@ -11,7 +11,6 @@ order to build with Bazel.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_android//android:rules.bzl", "android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
@@ -87,8 +86,8 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/recyclerview/OnItemDragListener.kt",
     "src/main/java/org/oppia/android/app/story/ExplorationSelectionListener.kt",
     "src/main/java/org/oppia/android/app/topic/RouteToRevisionCardListener.kt",
-    "src/main/java/org/oppia/android/app/topic/lessons/StorySummarySelector.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/ChapterSummarySelector.kt",
+    "src/main/java/org/oppia/android/app/topic/lessons/StorySummarySelector.kt",
     "src/main/java/org/oppia/android/app/topic/revision/RevisionSubtopicSelector.kt",
     "src/main/java/org/oppia/android/app/topic/revisioncard/ReturnToTopicClickListener.kt",
     "src/main/java/org/oppia/android/app/utility/OnClickableAreaClickedListener.kt",
@@ -658,8 +657,7 @@ TEST_DEPS = [
     artifact("org.robolectric:annotations:4.3"),
 ]
 
-"""
-App module tests.
+# App module tests.
 
 # Note that if a test file imports resources or binding files, it must be wrapped by
 # test_with_resources().

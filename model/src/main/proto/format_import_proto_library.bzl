@@ -1,5 +1,5 @@
 """
-Macros for model module tests.
+Container for macros to fix proto files.
 """
 
 load("@rules_proto//proto:defs.bzl", "proto_library")

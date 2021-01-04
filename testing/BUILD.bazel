@@ -83,9 +83,9 @@ testing_test(
 
 kt_android_library(
     name = "assertion_helpers",
+    testonly = True,
     srcs = ["src/main/java/org/oppia/android/testing/AssertionHelpers.kt"],
     visibility = ["//visibility:public"],
-    testonly = True,
     deps = [
         artifact("org.jetbrains.kotlin:kotlin-reflect"),
         artifact("junit:junit:4.12"),

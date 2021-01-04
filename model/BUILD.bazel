@@ -6,7 +6,6 @@ The proto_library() rule creates a proto file library to be used in multiple lan
 The java_lite_proto_library() rule takes in a proto_library target and generates java code.
 """
 
-load("@rules_android//android:rules.bzl", "android_library")
 load("@rules_java//java:defs.bzl", "java_lite_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
 load("//model:src/main/proto/format_import_proto_library.bzl", "format_import_proto_library")
