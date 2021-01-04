@@ -116,9 +116,10 @@ class HomeViewModel(
   }
 
   /**
-   * Returns a [HomeItemViewModel] corresponding to the promoted stories[PromotedStoryListViewModel] and Upcoming topics
-   * [ComingSoonTopicListViewModel]  to be displayed for this learner or null if this profile does not have any promoted stories.
-   * Promoted stories are determined by any recent stories or suggested stories started by this profile.
+   * Returns a [HomeItemViewModel] corresponding to the promoted stories(Recommended, Recently-played and
+   * Last-played stories)[PromotedStoryListViewModel] and Upcoming topics [ComingSoonTopicListViewModel]
+   * to be displayed for this learner or null if this profile does not have any promoted stories.
+   * Promoted stories are determined by any recent stories last-played stories or suggested stories started by this profile.
    */
   private fun computeRecommendedActivityListViewModel(
     recommendedActivityList: RecommendedActivityList

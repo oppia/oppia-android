@@ -76,7 +76,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     getAssumedSuccessfulOngoingStoryList().observe(
       fragment,
       Observer<RecommendedActivityList> { it ->
-        if (it.recommendedStoryList.recentlyPlayedStoryCount > 0) {
+        if (it.recommendedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
           val recentSectionTitleViewModel =
             SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
           itemList.add(recentSectionTitleViewModel)
@@ -91,7 +91,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           }
         }
 
-        if (it.recommendedStoryList.olderPlayedStoryCount > 0) {
+        if (it.recommendedStoryList.olderPlayedStoryList.isNotEmpty()) {
           val showDivider = itemList.isNotEmpty()
           val olderSectionTitleViewModel =
             SectionTitleViewModel(
@@ -110,7 +110,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           }
         }
 
-        if (it.recommendedStoryList.suggestedStoryCount > 0) {
+        if (it.recommendedStoryList.suggestedStoryList.isNotEmpty()) {
           val showDivider = itemList.isNotEmpty()
           val recommendedSectionTitleViewModel =
             SectionTitleViewModel(
@@ -180,12 +180,10 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       override fun getSpanSize(position: Int): Int {
         return when (position) {
           sectionTitle0Position, sectionTitle1Position, sectionTitle2Position -> {
-            /* number of spaces this item should occupy = */
-            spanCount
+            /* number of spaces this item should occupy = */ spanCount
           }
           else -> {
-            /* number of spaces this item should occupy = */
-            1
+            /* number of spaces this item should occupy = */ 1
           }
         }
       }
