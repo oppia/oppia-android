@@ -30,7 +30,6 @@
       android:layout_height="48dp"
       android:layout_marginStart="8dp"
       android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
-      android:contentDescription="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @string/audio_pause_description : @string/audio_play_description}"
       android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"
       android:padding="8dp"
       android:src="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_white_24dp : @drawable/ic_play_circle_filled_white_24dp}"

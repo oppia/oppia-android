@@ -54,7 +54,6 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@drawable/submitted_answer_background"
-      android:contentDescription="@{accessibleAnswer ?? submittedAnswer}"
       android:paddingStart="12dp"
       android:paddingTop="@{viewModel.hasConversationView ? @dimen/submitted_answer_text_conversation_view_padding_top : @dimen/submitted_answer_text_non_conversation_view_padding_top}"
       android:paddingEnd="12dp"
