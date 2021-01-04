@@ -22,7 +22,6 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_margin : @dimen/space_0dp}">
 
     <LinearLayout
@@ -76,7 +75,7 @@
         android:id="@+id/profile_is_admin_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_4dp"
+        android:layout_marginTop="@dimen/profile_chooser_profile_view_is_admin_margin_top"
         android:fontFamily="sans-serif-light"
         android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:text="@string/profile_chooser_admin"

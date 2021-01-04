@@ -10,8 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/oppiaGreyBackground"
-      android:orientation="vertical">
+      android:background="@color/oppiaGreyBackground">
 
       <include
         android:id="@+id/administrator_controls_activity_toolbar"

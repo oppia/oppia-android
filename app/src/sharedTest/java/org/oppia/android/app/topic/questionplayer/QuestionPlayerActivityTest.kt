@@ -38,6 +38,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -75,6 +76,7 @@ import org.oppia.android.domain.question.QuestionTrainingSeed
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.CoroutineExecutorService
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -104,6 +106,9 @@ private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 class QuestionPlayerActivityTest {
   // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
   // TODO(#1273): add tests for Hints and Solution in Question Player.
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -210,7 +215,7 @@ class QuestionPlayerActivityTest {
   }
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
-  @RunOn(TestPlatform.ESPRESSO)
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_phonePort_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -225,7 +230,7 @@ class QuestionPlayerActivityTest {
   }
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
-  @RunOn(TestPlatform.ESPRESSO)
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_phoneLand_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -241,7 +246,7 @@ class QuestionPlayerActivityTest {
   }
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
-  @RunOn(TestPlatform.ESPRESSO)
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "sw600dp")
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_tabletPort_tickIsCompletelyVisible() {
@@ -257,7 +262,7 @@ class QuestionPlayerActivityTest {
   }
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
-  @RunOn(TestPlatform.ESPRESSO)
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "sw600dp")
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_tabletLand_tickIsCompletelyVisible() {
