@@ -26,7 +26,6 @@
         android:id="@+id/topic_thumbnail_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:importantForAccessibility="no"
         android:scaleType="centerInside"
         app:entityId="@{viewModel.topicSummary.topicId}"
         app:entityType="@{viewModel.entityType}"
