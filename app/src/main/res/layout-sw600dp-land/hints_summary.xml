@@ -25,10 +25,8 @@
       android:id="@+id/hint_title"
       style="@style/Heading2"
       android:layout_gravity="center"
-      android:layout_marginStart="128dp"
+      android:layout_marginStart="172dp"
       android:layout_marginTop="44dp"
-      android:layout_marginEnd="128dp"
-      android:layout_marginBottom="28dp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
