@@ -6,6 +6,7 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -56,6 +57,7 @@ class ProfileInputView @JvmOverloads constructor(
     label = bindingInterface.provideProfileInputViewBindingLabelText(profileInputView)
     label.text = attributes.getString(R.styleable.ProfileInputView_label)
     input = bindingInterface.provideProfileInputViewBindingInput(profileInputView)
+    input.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
     errorText = bindingInterface.provideProfileInputViewBindingErrorText(profileInputView)
     orientation = VERTICAL
     if (

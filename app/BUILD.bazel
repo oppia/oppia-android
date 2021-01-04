@@ -376,8 +376,10 @@ BINDING_ADAPTERS = [
     "src/main/java/org/oppia/android/app/databinding/EditTextBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/GuidelineBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/MarginBindingAdapters.java",
+    "src/main/java/org/oppia/android/app/databinding/PinViewBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/StateAssemblerMarginBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/StateAssemblerPaddingBindingAdapters.java",
+    "src/main/java/org/oppia/android/app/databinding/TextInputLayoutBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/ViewBindingAdapters.java",
     "src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java",
 ] + [
@@ -497,7 +499,7 @@ android_library(
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
         artifact("androidx.viewpager:viewpager:1.0.0"),
         artifact("androidx.viewpager2:viewpager2:1.0.0"),
-        artifact("com.chaos.view:pinview:1.4.3"),
+        artifact("com.chaos.view:pinview:1.4.4"),
         artifact("com.google.android.material:material"),
         artifact("de.hdodenhof:circleimageview:3.0.1"),
         artifact("javax.annotation:javax.annotation-api"),
@@ -591,6 +593,8 @@ android_library(
         artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
         artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
         artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
+        artifact("com.chaos.view.pinview:1.4.4"),
+        artifact("com.google.android.material:material"),
     ],
 )
 
