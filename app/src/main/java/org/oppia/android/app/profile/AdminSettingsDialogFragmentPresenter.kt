@@ -41,19 +41,17 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
       viewModel = adminViewModel
     }
 
-    var tempError = adminViewModel.errorMessage.get()
+    val previousErrorMessage = adminViewModel.errorMessage.get()
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminSettingsInputPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
         adminViewModel.inputPin.set(confirmPin.toString())
-        if (tempError != "") {
-          tempError = ""
-        } else {
-          adminViewModel.errorMessage.set("")
-        }
+        adminViewModel.errorMessage.set("")
       }
     }
+
+    adminViewModel.errorMessage.set(previousErrorMessage)
 
     val dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.admin_settings_heading)
