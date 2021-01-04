@@ -2,7 +2,7 @@
 Install `Ktlint` from [here](https://github.com/pinterest/ktlint#installation). Note that we specifically recommend using the command-line interface, not the Gradle integration.
 
 # Commands 
-* `ktlint --version` - Check the version of your installed ktlint. As of now on CircleCI we are using `0.37.0`.
+* `ktlint --version` - Check the version of your installed ktlint. As of now on CircleCI we are using `0.37.1`.
 
 * `ktlint --android "path/of/your/kotlin/file"` - Android Kotlin Style Guide using `--android`
 
