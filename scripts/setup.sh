@@ -21,3 +21,12 @@ cd ../oppia-android-tools
 curl -sSLOC - https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
 chmod a+x ktlint
 echo Ktlint file downloaded
+
+# Download buf
+BUFVERSION="v0.15.0"
+echo Using Bufbuild version $BUFVERSION
+mkdir -p ../oppia-android-tools
+cd ../oppia-android-tools
+curl -sSLOC - https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m)
+chmod a+x buf-$(uname -s)-$(uname -m)
+echo Buf file downloaded
