@@ -78,7 +78,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -135,6 +135,7 @@ class AudioFragmentTest {
     )
   }
 
+  @Ignore("Test incorrectly passes because AudioFragment is created with invalid audio language")
   @Test
   fun testAudioFragment_openFragment_profileWithEnglishAudioLanguage_showsEnglishAudioLanguage() {
     addMediaInfo()
@@ -148,6 +149,7 @@ class AudioFragmentTest {
     }
   }
 
+  @Ignore("Test incorrectly passes because AudioFragment is created with invalid audio language")
   @Test
   fun testAudioFragment_openFragment_showsEnglishAudioLanguageWhenDefaultAudioLanguageNotAvailable() { // ktlint-disable max-line-length
     addMediaInfo()
@@ -158,6 +160,20 @@ class AudioFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ivAudioLanguage)).check(matches(withContentDescription("en")))
+    }
+  }
+
+  @Ignore("Test fails because AudioFragment is always created with invalid audio language")
+  @Test
+  fun testAudioFragment_openFragment_showsDefaultAudioLanguageAsHindi() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(
+        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_HINDI
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.ivAudioLanguage)).check(matches(withContentDescription("hi")))
     }
   }
 
