@@ -31,7 +31,6 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   val isHintBulbVisible = ObservableField(false)
   val isHintOpenedAndUnRevealed = ObservableField(false)
 
-
   fun setHintBulbVisibility(hintBulbVisible: Boolean) {
     isHintBulbVisible.set(hintBulbVisible)
   }
