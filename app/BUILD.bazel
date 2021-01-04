@@ -11,7 +11,7 @@ order to build with Bazel.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@rules_android//android:rules.bzl", "android_library")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
