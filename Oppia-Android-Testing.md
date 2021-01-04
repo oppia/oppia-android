@@ -28,12 +28,12 @@ For Example:
 Use `assertThat()` instead of `assertEqual()`, `assertTrue()` / `assertFalse()`
 
 The first benefit is that `assertThat()` is more readable than the other assert methods. For example, take a look at the following `assertEquals()`:
-```
+```kotlin
 assertEquals(expected, actual)
 ```
 
 In the `assertEquals()`, you can easily get confused and interchange the actual and expected argument position.
-``` 
+``` kotlin
 assertThat(actual).isEqualTo(expected)
 ```
 
@@ -43,14 +43,14 @@ assertFalse(expected.equals(actual))
 ```
 
 Since there is no **assertNotEquals** (unless it’s custom coded) we have to use assertFalse and do an equals on the two variables. Here’s the much more readable new way with `assertThat()`:
-```
+```kotlin
 assertThat(actual).isNotEqualTo(expected)
 ```
 
 If we want to verify that two values are not equal, we have to write our assertion by invoking the isNotEqualTo() method.
 
 Some simple methods exist for truth testing:
-```
+```kotlin
 assertThat(logicalCondition).isTrue()
 assertThat(logicalCondition).isFalse()
 ```
@@ -72,7 +72,7 @@ If you follow this conversion, the Android build system runs your tests on the c
 
 ## Robolectric
 With [Robolectric](https://github.com/robolectric/robolectric) you can write tests like this:
-```
+```java
 @RunWith(AndroidJUnit4.class)
 public class MyActivityTest {
 
@@ -105,25 +105,31 @@ public class MyActivityTest {
 ## Espresso
 Use [Espresso](https://developer.android.com/training/testing/espresso) to write concise, beautiful, and reliable Android UI tests.
 Example JUnit4 test using Rules:
-```
-@RunWith(AndroidJUnit4::class)
-class SplashActivityTest {
 
- @get:Rule
- var activityTestRule: ActivityTestRule<SplashActivity> = ActivityTestRule(
-   SplashActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
- )
+```kotlin
+@RunWith(AndroidJUnit4::class)
+class PinPasswordActivityTest {
 
  @Before
  fun setUp() {
    Intents.init()
  }
 
- @Test
- fun testSplashActivity_initialOpen_routesToHomeActivity() {
-   activityTestRule.launchActivity(null)
-   intended(hasComponent(ProfileActivity::class.java.name))
- }
+  @Test
+  fun testPinPasswordActivityWithAdmin_inputCorrectPin_checkOpensHomeActivity() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        adminId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.input_pin)).perform(editTextInputAction.appendText("12345"))
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
 
  @After
  fun tearDown() {
@@ -135,12 +141,12 @@ class SplashActivityTest {
 ### How to use View Matchers, View Actions and View Assertions in Espresso?
 Espresso has many ViewMatcher options which are very effective in uniquely locate UI element. You can also combine and create a combination of View Matchers to find element uniquely. 
 
-The View Matcher is written like onView(ViewMatcher) which are commonly used. There are two types of actions that can be performed on View those are -
+The View Matcher is written like `onView(ViewMatcher)` which are commonly used. There are two types of actions that can be performed on View those are -
 
-onView(ViewMatcher).perform(ViewAction)
+`onView(ViewMatcher).perform(ViewAction)`
 
-onView(ViewMatcher).check(ViewAssertion)
-```
+`onView(ViewMatcher).check(ViewAssertion)`
+```kotlin
 // frequently used matchers
 // using resource id
 onView(withId(R.id.my_view))
@@ -153,7 +159,7 @@ onView(withHint("Sample_text"))
 //return TextView with links
 onView(hasLinks())
 
-//UI property matchers are mostly used in combination 
+// UI property matchers are mostly used in combination 
 // withId(R.id.my_view) is a ViewMatcher
 // click() is a ViewAction
 // matches(isDisplayed()) is a ViewAssertion
@@ -187,7 +193,7 @@ A test case can never be called complete without assertions and hence it is impo
 * Espresso release contains new left and right swiping actions: swipeLeft() and swipeRight(). They both are really useful when you'd like to swipe between activity fragments, tab layouts or any other UI elements.
 * At times, GeneralSwipeAction can become unreliable because of its calculation varies on different screen size or density, so it may not be suitable for ViewPager. Instead, we can use to scroll with [ViewPagerActions](https://developer.android.com/reference/android/support/test/espresso/contrib/ViewPagerActions)
 
-```
+```kotlin
 @Test
 fun testOnboardingFragment_checkSlide1Description_isCorrect() {
    launch(OnboardingActivity::class.java).use {
@@ -207,10 +213,13 @@ The espresso-contrib library provides a [RecyclerViewActions](https://github.com
 
 ### RecyclerViewMatcher
 Using the RecyclerViewMatcher under package ‘org.oppia.app.recyclerview’, you can perform actions on an item at a specific position in a RecyclerView, and also check that some content is contained within a descendant of a specific item.
-```
+```kotlin
 @Test
 fun testHomeActivity_recyclerViewIndex3_clickTopicSummary_opensTopicActivity() {
  launch(HomeActivity::class.java).use {
+   onView(withId(R.id.home_recycler_view)).perform(
+     scrollToPosition<RecyclerView.ViewHolder>(3)
+   )
    onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
    intended(hasComponent(TopicActivity::class.java.name))
    intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, TEST_TOPIC_ID_0))
@@ -249,12 +258,12 @@ Following are the different ways you can try to pass the test cases.
 
 ### Performance Exception/Runtime Exception Failure:
 
-```
+```console
 androidx.test.espresso.PerformException: Error performing 'single click' on view 'with id: org.oppia.app:id/profile_progress_list'.
 
 Caused by: java.lang.RuntimeException: Action will not be performed because the target view does not match one or more of the following constraints:
 at least 90 percent of the view's area is displayed to the user.
-````
+```
 1. Make ScrollView as a parent in XML file and use scrollTo() while performing click() in the test.
 
    **Example:** 
@@ -269,12 +278,12 @@ at least 90 percent of the view's area is displayed to the user.
    `@Config(application = ExplorationActivityTest.TestApplication::class)`
 
 4. We can inject `TestCoroutineDispatchers` and provide a delay as per the requirement. 
-```
+```kotlin
  @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 ```
 
-```
+```kotlin
   @Test
   @Config(application = ProfileProgressActivityTest.TestApplication::class , qualifiers = "port-xxhdpi")
   fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
@@ -303,7 +312,7 @@ at least 90 percent of the view's area is displayed to the user.
 
 - Apply the LooperMode(PAUSED) annotation to your test package/class/method [reference](http://robolectric.org/blog/2019/06/04/paused-looper/).
 
-```
+```kotlin
 @LooperMode(LooperMode.Mode.PAUSED)
   @Test
   fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileActivity() {
@@ -320,12 +329,12 @@ at least 90 percent of the view's area is displayed to the user.
 2. Choosing the right matcher to check your view.
  - The doesNotExist() view assertion checks if a view exists in the current view hierarchy.
 
-```
+```kotlin
 onView(withId(R.id.made_up_view_id)).check(doesNotExist())
 ```
 
  - We may have to test if the view is Visible or Gone and if `isDisplayed()` doesn't work, we make use of `withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))`. This matcher checks how the visibility of a view is set in the code.
 
-```
+```kotlin
 onView(allOf(withId(R.id.ivPlayPauseAudio),withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
 ```
