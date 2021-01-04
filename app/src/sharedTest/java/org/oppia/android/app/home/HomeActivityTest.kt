@@ -127,7 +127,6 @@ class HomeActivityTest {
 
   private val internalProfileId: Int = 1
   private lateinit var oppiaClock: OppiaClock
-  private lateinit var profileId: ProfileId
 
   @Before
   fun setUp() {
@@ -636,12 +635,12 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(4)
+        scrollToPosition<RecyclerView.ViewHolder>(3)
       )
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
-          4, R.id.lesson_count_text_view
+          3, R.id.lesson_count_text_view
         )
       ).check(
         matches(
@@ -657,12 +656,12 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(4)
+        scrollToPosition<RecyclerView.ViewHolder>(3)
       )
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
-          4, R.id.lesson_count_text_view
+          3, R.id.lesson_count_text_view
         )
       ).check(
         matches(
@@ -677,9 +676,9 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
+        scrollToPosition<RecyclerView.ViewHolder>(2)
       )
-      onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
+      onView(atPosition(R.id.home_recycler_view, 2)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
     }
@@ -853,12 +852,12 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(2)
+        scrollToPosition<RecyclerView.ViewHolder>(1)
       )
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
-          2,
+          1,
           R.id.all_topics_text_view
         )
       ).check(
