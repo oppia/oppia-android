@@ -117,6 +117,7 @@ import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.IsOnRobolectric
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -1390,6 +1391,7 @@ class StateFragmentTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
       ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,

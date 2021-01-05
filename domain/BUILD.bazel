@@ -254,6 +254,15 @@ domain_test(
 )
 
 domain_test(
+    name = "ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/itemselectioninput/ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
     name = "ItemsSelectionInputEqualsRuleClassifierProviderTest",
     srcs = [
         "src/test/java/org/oppia/android/domain/classify/rules/itemselectioninput/ItemsSelectionInputEqualsRuleClassifierProviderTest.kt",
