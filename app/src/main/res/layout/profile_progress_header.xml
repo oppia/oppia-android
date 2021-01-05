@@ -50,7 +50,6 @@
       android:text="@{viewModel.profile.name}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="20sp"
-      android:textAlignment="viewStart"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/profile_edit_image" />
