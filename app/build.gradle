@@ -37,11 +37,14 @@ android {
       shrinkResources true
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
+    debug {
+      pseudoLocalesEnabled true
+    }
   }
   splits {
     // See: https://developer.android.com/studio/build/configure-apk-splits
     density {
-      enable true
+      enable false
     }
   }
   dataBinding {
@@ -107,7 +110,7 @@ dependencies {
       'androidx.multidex:multidex:2.0.1',
       'androidx.recyclerview:recyclerview:1.0.0',
       'androidx.work:work-runtime-ktx:2.4.0',
-      'com.chaos.view:pinview:1.4.3',
+      'com.chaos.view:pinview:1.4.4',
       'com.github.bumptech.glide:glide:4.11.0',
       'com.google.android.material:material:1.2.0-alpha02',
       'com.google.dagger:dagger:2.24',
@@ -135,7 +138,6 @@ dependencies {
       'org.robolectric:robolectric:4.3',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
-      "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
       'org.mockito:mockito-core:2.7.22',
       project(":testing"),
   )

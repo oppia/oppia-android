@@ -31,8 +31,11 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
+import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -216,7 +219,30 @@ class TopicControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicFailed()
-    assertThat(topicResultCaptor.value!!.isFailure()).isTrue()
+  }
+
+  @Test
+  fun testRetrieveTopic_testTopic_published_returnsAsAvailable() {
+    topicController.getTopic(
+      profileId1, TEST_TOPIC_ID_0
+    ).toLiveData().observeForever(mockTopicObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetTopicSucceeded()
+    val topic = topicResultCaptor.value.getOrThrow()
+    assertThat(topic.topicPlayAvailability.availabilityCase).isEqualTo(AVAILABLE_TO_PLAY_NOW)
+  }
+
+  @Test
+  fun testRetrieveTopic_testTopic_unpublished_returnsAsAvailableInFuture() {
+    topicController.getTopic(
+      profileId1, TEST_TOPIC_ID_2
+    ).toLiveData().observeForever(mockTopicObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetTopicSucceeded()
+    val topic = topicResultCaptor.value.getOrThrow()
+    assertThat(topic.topicPlayAvailability.availabilityCase).isEqualTo(AVAILABLE_TO_PLAY_IN_FUTURE)
   }
 
   @Test
@@ -413,7 +439,7 @@ class TopicControllerTest {
   }
 
   @Test
-  fun testRetrieveStory_validSecondStory_returnsStoryWithProgress() {
+  fun testRetrieveStory_validSecondStory_returnsStoryWithoutProgress() {
     topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
@@ -424,8 +450,31 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(story.getChapter(1).chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(story.getChapter(1).missingPrerequisiteChapter.name)
+      .isEqualTo(story.getChapter(0).name)
     assertThat(story.getChapter(2).chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(story.getChapter(2).missingPrerequisiteChapter.name)
+      .isEqualTo(story.getChapter(1).name)
+  }
+
+  @Test
+  fun testRetrieveStory_validSecondStory_returnsStoryWithProgress() {
+    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
+      .observeForever(mockStorySummaryObserver)
+    markSecondStory1Chapter1AsCompleted()
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetStorySucceeded()
+    val story = storySummaryResultCaptor.value!!.getOrThrow()
+    assertThat(story.getChapter(0).chapterPlayState)
+      .isEqualTo(ChapterPlayState.COMPLETED)
+    assertThat(story.getChapter(1).chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(story.getChapter(2).chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(story.getChapter(2).missingPrerequisiteChapter.name)
+      .isEqualTo(story.getChapter(1).name)
   }
 
   @Test
@@ -884,6 +933,8 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(topic.storyList[0].chapterList[1].missingPrerequisiteChapter.name)
+      .isEqualTo(topic.storyList[0].chapterList[0].name)
   }
 
   @Test
@@ -927,6 +978,8 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(storySummary.chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(storySummary.chapterList[1].missingPrerequisiteChapter.name)
+      .isEqualTo(storySummary.chapterList[0].name)
   }
 
   @Test
@@ -1162,6 +1215,16 @@ class TopicControllerTest {
     ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 
+  private fun markSecondStory1Chapter1AsCompleted() {
+    storyProgressController.recordCompletedChapter(
+      profileId1,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_1,
+      TEST_EXPLORATION_ID_1,
+      currentTimestamp
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+  }
+
   private fun markRatiosStory0Chapter0AsCompleted() {
     storyProgressController.recordCompletedChapter(
       profileId1,
@@ -1263,7 +1326,7 @@ class TopicControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class
+      TestDispatcherModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

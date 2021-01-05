@@ -55,6 +55,7 @@
         android:paddingStart="12dp"
         android:paddingTop="8dp"
         android:paddingEnd="12dp"
+        android:textAlignment="viewStart"
         android:paddingBottom="16dp"
         android:text="@{viewModel.subtopic.title}"
         android:textColor="@color/white"

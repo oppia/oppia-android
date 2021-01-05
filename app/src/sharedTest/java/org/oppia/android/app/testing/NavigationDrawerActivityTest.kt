@@ -6,10 +6,10 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
-import androidx.recyclerview.widget.RecyclerView
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -20,14 +20,13 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.close
-import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
@@ -35,19 +34,16 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -59,12 +55,12 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
@@ -85,10 +81,14 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RobolectricModule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -97,23 +97,22 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
-import org.oppia.android.util.system.OppiaClock
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// Time: Wed Apr 24 2019 08:22:00
-private const val MORNING_TIMESTAMP = 1556094120000
-
 /** Tests for [NavigationDrawerTestActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = NavigationDrawerTestActivityTest.TestApplication::class,
+  application = NavigationDrawerActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class NavigationDrawerTestActivityTest {
+class NavigationDrawerActivityTest {
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -129,14 +128,12 @@ class NavigationDrawerTestActivityTest {
 
   private val internalProfileId = 0
   private val internalProfileId1 = 1
-  private lateinit var oppiaClock: OppiaClock
 
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
-    FirebaseApp.initializeApp(context)
     testCoroutineDispatchers.registerIdlingResource()
     storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
       ProfileId.newBuilder().setInternalId(
@@ -152,17 +149,9 @@ class NavigationDrawerTestActivityTest {
     Intents.release()
   }
 
-  private fun getApplicationDependencies() {
-    launch(HomeInjectionActivity::class.java).use {
-      it.onActivity { activity ->
-        oppiaClock = activity.oppiaClock
-      }
-    }
-  }
-
   private fun createNavigationDrawerActivityIntent(internalProfileId: Int): Intent {
     return NavigationDrawerTestActivity.createNavigationDrawerTestActivity(
-      ApplicationProvider.getApplicationContext(),
+      context,
       internalProfileId
     )
   }
@@ -172,16 +161,32 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
+  fun testNavigationDrawerTestActivity_openNavDrawer_navDrawerIsOpened() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_openNavDrawer_changeConfig_navDrawerIsDisplayed() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_withAdminProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isCompletelyDisplayed())
-      ).perform(click())
+      it.openNavigationDrawer()
       onView(
         allOf(
           withId(R.id.nav_header_profile_name),
@@ -192,16 +197,14 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_changeConfiguration_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
+  fun testNavigationDrawerTestActivity_withAdminProfile_changeConfig_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isCompletelyDisplayed())
-      ).perform(click())
+      it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
@@ -213,16 +216,14 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_checkProfileProgress_displayProfileProgressSuccessfully() { // ktlint-disable max-line-length
+  fun testNavigationDrawerTestActivity_openNavDrawer_profileProgressIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isCompletelyDisplayed())
-      ).perform(click())
+      it.openNavigationDrawer()
       onView(
         allOf(
           withId(R.id.profile_progress_text_view),
@@ -233,16 +234,14 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex1_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
+  fun testNavigationDrawerTestActivity_withUserProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId1
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isCompletelyDisplayed())
-      ).perform(click())
+      it.openNavigationDrawer()
       onView(
         allOf(
           withId(R.id.nav_header_profile_name),
@@ -253,18 +252,16 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  // TODO (#973): Fix HomeActivityTest
-  @Ignore
   fun testNavigationDrawerTestActivity_clickOnHeader_opensProfileProgressActivity() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
-        internalProfileId1
+        internalProfileId
       )
     ).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isCompletelyDisplayed())
-      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      it.openNavigationDrawer()
       onView(withId(R.id.nav_header_profile_name)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileProgressActivity::class.java.name))
       intended(
         hasExtra(
@@ -276,77 +273,21 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() { // ktlint-disable max-line-length
-    launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .check(
-          matches(
-            isCompletelyDisplayed()
-          )
-        )
-        .perform(click())
-      onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
-    }
-  }
-
-  @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_changeConfiguration_navigationDrawerIsOpenedSuccessfully() { // ktlint-disable max-line-length
-    launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .check(
-          matches(
-            isCompletelyDisplayed()
-          )
-        )
-        .perform(click())
-      onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
-    }
-  }
-
-  @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_openNavigationDrawerAndRotate_navigationDrawerIsNotClosedAfterRotationIsVerifiedSuccessfully() { // ktlint-disable max-line-length
-    launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
-    }
-  }
-
-  @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
-    launch(NavigationDrawerTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
-      onView(withId(R.id.home_activity_drawer_layout)).perform(close())
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
-    }
-  }
-
-  @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_checkAdministratorControlsDisplayed() { // ktlint-disable max-line-length
-    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+  fun testNavigationDrawerTestActivity_withAdminProfile_openNavDrawer_adminControlsIsDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_changeConfiguration_checkAdministratorControlsDisplayed() { // ktlint-disable max-line-length
-    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+  fun testNavigationDrawerTestActivity_withAdminProfile_changeConfig_adminControlsIsDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.drawer_nested_scroll_view)).perform(swipeUp())
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
@@ -354,15 +295,13 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_clickAdministratorControls_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
+  fun testNavigationDrawerTestActivity_withAdminProfile_adminMenu_opensAdminControlsActivity() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
       )
     ).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
         .check(matches(isDisplayed())).perform(click())
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
@@ -371,201 +310,130 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_withUserProfile_openNavigationDrawer_checkAdministratorControlsNotDisplayed() { // ktlint-disable max-line-length
+  fun testNavigationDrawerTestActivity_withUserProfile_adminControlsAreNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId1
       )
     ).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout))
-        .check(
-          matches(
-            not(
-              isDisplayed()
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_showsHelpFragmentSuccessfully() { // ktlint-disable max-line-length
-    launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
-      onView(withText(R.string.menu_help)).perform(click())
-      onView(
-        allOf(
-          instanceOf(TextView::class.java),
-          withParent(withId(R.id.help_activity_toolbar))
-        )
-      ).check(matches(withText(R.string.menu_help)))
+        .check(matches(not(isDisplayed())))
     }
   }
 
   // TODO(#1806): Enable this once lowfi implementation is done.
   @Test
   @Ignore("My Downloads is removed until we have full download support.")
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectMyDownloadsMenuInNavigationDrawer_showsMyDownloadsFragmentSuccessfully() { // ktlint-disable max-line-length
+  fun testNavigationDrawerTestActivity_myDownloadsMenu_myDownloadsFragmentIsDisplayed() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      it.openNavigationDrawer()
       onView(withText(R.string.menu_my_downloads)).perform(click())
       intended(hasComponent(MyDownloadsActivity::class.java.name))
     }
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog() { // ktlint-disable max-line-length
+  fun testNavigationDrawerTestActivity_switchProfileMenu_showsExitToProfileChooserDialog() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
+      onView(withText(R.string.home_activity_back_dialog_message))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickExit_checkOpensProfileChooserActivity() { // ktlint-disable max-line-length
+  fun testNavigationDrawerTestActivity_switchProfileMenu_clickExit_opensProfileChooserActivity() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
-      onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_message))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.home_activity_back_dialog_exit))
+        .inRoot(isDialog())
+        .perform(click())
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO)
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickCancel_checkDrawerIsClosed() { // ktlint-disable max-line-length
+  fun testNavigationDrawerTestActivity_openNavDrawerAndClose_navDrawerIsClosed() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
-      onView(withText(R.string.home_activity_back_dialog_cancel)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      it.openNavigationDrawer()
+      onView(withId(R.id.home_activity_drawer_layout)).perform(close())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
-      onView(
-        allOf(
-          instanceOf(TextView::class.java),
-          withParent(withId(R.id.home_activity_toolbar))
-        )
-      ).check(matches(withText(R.string.menu_home)))
+    }
+  }
+
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavigationDrawerTestActivity_selectSwitchProfileMenu_clickCancel_navDrawerIsClosed() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_message))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
     }
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_selectSwitchProfile_orientationChange_checkDialogVisible() {
+  fun testNavigationDrawerTestActivity_selectSwitchProfile_changeConfig_dialogIsVisible() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
+      onView(withText(R.string.home_activity_back_dialog_message))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
       onView(isRoot()).perform(orientationLandscape())
       onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_clickNavigationDrawerHamburger_navigationDrawerIsOpenedAndVerifiedSuccessfully() { // ktlint-disable max-line-length
+  fun testNavigationDrawerTestActivity_openNavDrawer_selectHelpMenu_opensHelpActivity() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      it.openNavigationDrawer()
       onView(withText(R.string.menu_help)).perform(click())
-      onView(
-        allOf(instanceOf(TextView::class.java), withParent(withId(R.id.help_activity_toolbar)))
-      ).check(matches(withText(R.string.menu_help)))
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .check(
-          matches(
-            isCompletelyDisplayed()
-          )
-        )
-        .perform(click())
-      onView(withId(R.id.help_activity_drawer_layout))
+      intended(hasComponent(HelpActivity::class.java.name))
     }
   }
 
-  @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_openingAndClosingOfDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
-    launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
-      onView(withText(R.string.menu_help)).perform(click())
-      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
-      onView(withId(R.id.help_activity_drawer_layout)).perform(close())
-      onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
-      onView(
-        allOf(
-          instanceOf(TextView::class.java),
-          withParent(withId(R.id.help_activity_toolbar))
-        )
-      ).check(matches(withText(R.string.menu_help)))
-      onView(withId(R.id.help_activity_drawer_layout)).perform(open())
-      onView(withId(R.id.help_activity_drawer_layout)).check(matches(isOpen()))
-    }
-  }
+  private fun ActivityScenario<NavigationDrawerTestActivity>.openNavigationDrawer() {
+    onView(withContentDescription(R.string.drawer_open_content_description))
+      .check(matches(isCompletelyDisplayed()))
+      .perform(click())
 
-  @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_navigationDrawerClosingIsVerifiedSuccessfully() { // ktlint-disable max-line-length
-    launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
-      onView(withText(R.string.menu_help)).perform(click())
-      onView(withId(R.id.help_activity_drawer_layout)).perform(open())
-      onView(
-        allOf(
-          instanceOf(TextView::class.java),
-          withParent(withId(R.id.help_activity_toolbar))
-        )
-      ).check(matches(withText(R.string.menu_help)))
-      onView(withId(R.id.help_activity_drawer_layout)).perform(close())
-      onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
+    // Force the drawer animation to start. See https://github.com/oppia/oppia-android/pull/2204 for
+    // background context.
+    onActivity { activity ->
+      val drawerLayout =
+        activity.findViewById<DrawerLayout>(R.id.home_activity_drawer_layout)
+      // Note that this only initiates a single computeScroll() in Robolectric. Normally, Android
+      // will compute several of these across multiple draw calls, but one seems sufficient for
+      // Robolectric. Note that Robolectric is also *supposed* to handle the animation loop one call
+      // to this method initiates in the view choreographer class, but it seems to not actually
+      // flush the choreographer per observation. In Espresso, this method is automatically called
+      // during draw (and a few other situations), but it's fine to call it directly once to kick it
+      // off (to avoid disparity between Espresso/Robolectric runs of the tests).
+      // NOTE TO DEVELOPERS: if this ever flakes, we can probably put this in a loop with fake time
+      // adjustments to simulate the render loop.
+      drawerLayout.computeScroll()
     }
-  }
 
-  @Test
-  // TODO(#973): Fix NavigationDrawerTestActivityTest
-  @Ignore
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_selectHomeMenuInNavigationDrawer_showsHomeFragmentSuccessfully() { // ktlint-disable max-line-length
-    getApplicationDependencies()
-    oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
-    launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
-      onView(withText(R.string.menu_help)).perform(click())
-      onView(withId(R.id.help_activity_drawer_layout)).perform(open())
-      onView(withText(R.string.menu_home)).perform(click())
-      onView(
-        allOf(
-          instanceOf(TextView::class.java),
-          withParent(withId(R.id.home_activity_toolbar))
-        )
-      ).check(matches(withText(R.string.menu_home)))
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Good morning,")))
-    }
+    // Wait for the drawer to fully open (mostly for Espresso since Robolectric should synchronously
+    // stabilize the drawer layout after the previous logic completes).
+    testCoroutineDispatchers.runCurrent()
   }
 
   /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from: https://stackoverflow.com/a/46037284/8860848 */
@@ -576,7 +444,7 @@ class NavigationDrawerTestActivityTest {
       }
 
       override fun getConstraints(): org.hamcrest.Matcher<View> {
-        return Matchers.allOf(
+        return allOf(
           isDescendantOfA(isAssignableFrom(NestedScrollView::class.java))
         )
       }
@@ -627,6 +495,7 @@ class NavigationDrawerTestActivityTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -646,18 +515,18 @@ class NavigationDrawerTestActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(navigationDrawerTestActivityTest: NavigationDrawerTestActivityTest)
+    fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerNavigationDrawerTestActivityTest_TestApplicationComponent.builder()
+      DaggerNavigationDrawerActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(navigationDrawerTestActivityTest: NavigationDrawerTestActivityTest) {
-      component.inject(navigationDrawerTestActivityTest)
+    fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest) {
+      component.inject(navigationDrawerActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

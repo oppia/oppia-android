@@ -20,6 +20,7 @@ import org.oppia.android.domain.oppialogger.analytics.TEST_SKILL_LIST_ID
 import org.oppia.android.domain.oppialogger.analytics.TEST_STORY_ID
 import org.oppia.android.domain.oppialogger.analytics.TEST_SUB_TOPIC_ID
 import org.oppia.android.domain.oppialogger.analytics.TEST_TOPIC_ID
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.logging.EnableConsoleLog
@@ -166,7 +167,8 @@ class OppiaLoggerTest {
       TestModule::class,
       TestLogReportingModule::class,
       TestLogStorageModule::class,
-      TestDispatcherModule::class
+      TestDispatcherModule::class,
+      RobolectricModule::class
     ]
   )
   interface TestApplicationComponent {
