@@ -18,10 +18,6 @@ load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//app:app_test.bzl", "app_test")
 load("//app:test_with_resources.bzl", "test_with_resources")
 
-package(default_visibility = ["//utility:__subpackages__"])
-
-exports_files(["src/main/AndroidManifest.xml"])
-
 # Source files for the annotations library. The files inside the annotations library are dependencies
 # for all other libraries in app module, except the listeners library.
 # Place your file here if:
@@ -1141,6 +1137,7 @@ android_library(
         artifact("com.google.firebase:firebase-analytics"),
         artifact("com.google.firebase:firebase-crashlytics"),
     ],
+    visibility = ["//utility:__subpackages__"],
 )
 
 dagger_rules()
