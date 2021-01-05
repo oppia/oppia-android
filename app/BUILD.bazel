@@ -594,8 +594,8 @@ android_library(
         artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
         artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
         artifact("com.chaos.view.pinview:1.4.4"),
-        artifact("com.google.android.material:material"),
         artifact("com.google.android:flexbox:2.0.1"),
+        artifact("com.google.android.material:material"),
     ],
 )
 
