@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -70,11 +71,13 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
       addOnScrollListener(object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
           super.onScrolled(recyclerView, dx, dy)
-          val firstVisibleItemPosition = walkthroughLayoutManager.findFirstVisibleItemPosition()
-          if (firstVisibleItemPosition >= 1) {
-            changeProgressBarVisibility(false)
-          } else {
-            changeProgressBarVisibility(true)
+          if (orientation == Configuration.ORIENTATION_LANDSCAPE && resources.getBoolean(R.bool.isTablet)) {
+            val firstVisibleItemPosition = walkthroughLayoutManager.findFirstVisibleItemPosition()
+            if (firstVisibleItemPosition >= 1) {
+              changeProgressBarVisibility(false)
+            } else {
+              changeProgressBarVisibility(true)
+            }
           }
         }
       })
