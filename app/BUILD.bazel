@@ -177,6 +177,8 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/onboarding/ViewPagerSlide.kt",
     "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicItemViewModel.kt",
     "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicListViewModel.kt",
+    "src/main/java/org/oppia/android/app/options/LanguageItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/options/LanguageSelectionViewModel.kt",
     "src/main/java/org/oppia/android/app/options/OptionControlsViewModel.kt",
     "src/main/java/org/oppia/android/app/options/OptionsAppLanguageViewModel.kt",
     "src/main/java/org/oppia/android/app/options/OptionsAudioLanguageViewModel.kt",
