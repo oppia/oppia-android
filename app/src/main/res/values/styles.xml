@@ -188,6 +188,7 @@
     <item name="boxStrokeWidth">@dimen/text_input_layout_stroke_width</item>
     <item name="errorEnabled">true</item>
     <item name="hintTextColor">@color/oppiaPrimaryText</item>
+    <item name="android:textAlignment">viewStart</item>
   </style>
 
   <style name="TextInputEditText" parent="Widget.AppCompat.EditText">
@@ -198,6 +199,7 @@
     <item name="android:textCursorDrawable">@color/oppiaPrimaryText</item>
     <item name="android:textSize">14sp</item>
     <item name="android:textStyle">normal</item>
+    <item name="android:textAlignment">viewStart</item>
   </style>
 
   <style name="Heading1" parent="TextView.Common1">
