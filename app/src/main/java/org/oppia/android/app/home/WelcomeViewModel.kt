@@ -17,4 +17,15 @@ class WelcomeViewModel(
     fragment.requireContext(),
     oppiaClock
   ).getGreetingMessage()
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
+      return true
+    }
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    val otherResult = other as WelcomeViewModel
+    return otherResult.profileName == this.profileName
+  }
 }

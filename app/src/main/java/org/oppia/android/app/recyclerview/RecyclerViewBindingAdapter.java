@@ -1,6 +1,8 @@
 package org.oppia.android.app.recyclerview;
 
 import android.graphics.drawable.Drawable;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.ObservableList;

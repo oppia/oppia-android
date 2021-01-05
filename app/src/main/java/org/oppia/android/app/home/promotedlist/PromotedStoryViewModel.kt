@@ -42,4 +42,16 @@ class PromotedStoryViewModel(
       promotedStory.storyId
     )
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
+      return true
+    }
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    val otherResult = other as PromotedStoryViewModel
+    return otherResult.internalProfileId == this.internalProfileId &&
+      otherResult.promotedStory == this.promotedStory
+  }
 }

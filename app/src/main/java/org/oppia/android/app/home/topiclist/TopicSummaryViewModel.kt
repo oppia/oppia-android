@@ -126,4 +126,16 @@ class TopicSummaryViewModel(
     hsv[2] = (hsv[2] * DARKEN_VALUE_MULTIPLIER).coerceIn(0f, 1f)
     return Color.HSVToColor(hsv)
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
+      return true
+    }
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    val otherResult = other as TopicSummaryViewModel
+    return otherResult.topicSummary == this.topicSummary &&
+      otherResult.position == this.position
+  }
 }

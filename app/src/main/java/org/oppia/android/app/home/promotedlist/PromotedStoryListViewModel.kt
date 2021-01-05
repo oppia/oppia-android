@@ -48,4 +48,15 @@ class PromotedStoryListViewModel(
   fun clickOnViewAll() {
     routeToRecentlyPlayedListener.routeToRecentlyPlayed()
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
+      return true
+    }
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    val otherResult = other as PromotedStoryListViewModel
+    return otherResult.promotedStoryList == this.promotedStoryList
+  }
 }
