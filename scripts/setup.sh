@@ -13,11 +13,20 @@
 # Move file from script folder to .git/hooks folder
 cp scripts/pre-push.sh .git/hooks/pre-push
 
+# Create a folder where all the set up files will be downloaded
+mkdir -p ../oppia-android-tools
+cd ../oppia-android-tools
+
 # Download ktlint
 KTLINT="0.37.1"
 echo Using Ktlint $KTLINT
-mkdir -p ../oppia-android-tools
-cd ../oppia-android-tools
 curl -sSLOC - https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
 chmod a+x ktlint
 echo Ktlint file downloaded
+
+# Download buildifier
+BUILDIFIER="3.4.0"
+echo Using Buildifier version $BUILDIFIER
+curl -sSLOC - https://github.com/bazelbuild/buildtools/releases/download/$BUILDIFIER/buildifier
+chmod a+x buildifier
+echo Buildifier file downloaded
