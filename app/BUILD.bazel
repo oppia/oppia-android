@@ -13,12 +13,10 @@ order to build with Bazel.
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
-load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//app:app_test.bzl", "app_test")
 load("//app:test_with_resources.bzl", "test_with_resources")
 
-package(default_visibility = ["//utility:__subpackages__"])
+exports_files(["src/main/AndroidManifest.xml"])
 
 # Source files for the annotations library. The files inside the annotations library are dependencies
 # for all other libraries in app module, except the listeners library.
@@ -1118,18 +1116,6 @@ app_test(
 # Package for all Firebase dependencies.
 # To reference these dependencies, add '//app:crashlytics' and '//app:crashlytics_deps'
 # to your build rule's dependency list.
-
-GOOGLE_SERVICES_RESOURCES = google_services_xml(
-    package_name = "org.oppia.android",
-    google_services_json = "google-services.json",
-)
-
-crashlytics_android_library(
-    name = "crashlytics",
-    package_name = "org.oppia.android",
-    build_id = "48fc9d17-e102-444c-8e0d-638d75ec0942",
-    resource_files = GOOGLE_SERVICES_RESOURCES,
-)
 
 android_library(
     name = "crashlytics_deps",
