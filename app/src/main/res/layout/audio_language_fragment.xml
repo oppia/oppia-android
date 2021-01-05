@@ -3,9 +3,10 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+
     <variable
       name="viewModel"
-      type="org.oppia.android.app.options.LanguageSelectionViewModel"/>
+      type="org.oppia.android.app.options.LanguageSelectionViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -51,13 +52,13 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="132dp"
-        app:list="@{viewModel.recyclerViewAudioLanguageList}"
         android:scrollbars="none"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_shadow_view" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar_shadow_view"
+        app:list="@{viewModel.recyclerViewAudioLanguageList}" />
 
       <View
         android:id="@+id/toolbar_shadow_view"
