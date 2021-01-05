@@ -5,6 +5,9 @@
       name="languageString"
       type="CharSequence" />
     <variable
+      name="isChecked"
+      type="Boolean" />
+    <variable
       name="viewModel"
       type="org.oppia.android.app.options.LanguageItemViewModel" />
   </data>
@@ -26,7 +29,7 @@
       android:layout_marginStart="24dp"
       android:layout_marginEnd="24dp"
       android:clickable="false"
-      android:checked="true"
+      android:checked="@{isChecked}"
       android:minWidth="20dp"
       android:minHeight="20dp" />
 

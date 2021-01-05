@@ -51,7 +51,7 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="132dp"
-        app:list="@{viewModel.recyclerViewAudioList}"
+        app:list="@{viewModel.recyclerViewAudioLanguageList}"
         android:scrollbars="none"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"

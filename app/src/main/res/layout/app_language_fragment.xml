@@ -2,6 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
+  <data>
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.options.LanguageSelectionViewModel"/>
+  </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -46,6 +52,7 @@
         android:overScrollMode="never"
         android:paddingBottom="132dp"
         android:scrollbars="none"
+        app:list="@{viewModel.recyclerViewAppLanguageList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

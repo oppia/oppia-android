@@ -5,13 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.topic.practice.TopicPracticeViewModel
-import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioLanguageFragmentBinding
 import org.oppia.android.databinding.LanguageItemsBinding
-import org.oppia.android.databinding.TopicPracticeSubtopicBinding
 import javax.inject.Inject
 
 /** The presenter for [AudioLanguageFragment]. */
@@ -21,8 +19,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
 ) {
 
   private lateinit var prefSummaryValue: String
-  private lateinit var languageSelectionAdapter: LanguageSelectionAdapter
-
+  private lateinit var languageSelectionViewModel: LanguageSelectionViewModel
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -34,17 +31,16 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    binding.viewModel = getLanguageSelectionViewModel()
+    languageSelectionViewModel = getLanguageSelectionViewModel()
+    binding.viewModel = languageSelectionViewModel
     prefSummaryValue = prefValue
-    languageSelectionAdapter = LanguageSelectionAdapter(prefKey) {
-      updateAudioLanguage(it)
-    }
+    languageSelectionViewModel.selectedLanguage.value = prefSummaryValue
     binding.audioLanguageRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }
 
     binding.audioLanguageToolbar?.setNavigationOnClickListener {
-      val message = languageSelectionAdapter.getSelectedLanguage()
+      val message = languageSelectionViewModel.selectedLanguage.value
       val intent = Intent()
       intent.putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, message)
       (fragment.activity as AudioLanguageActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
@@ -55,29 +51,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   }
 
   fun getLanguageSelected(): String {
-    return languageSelectionAdapter.getSelectedLanguage()
-  }
-
-  private fun updateAudioLanguage(audioLanguage: String) {
-    // The first branch of (when) will be used in the case of multipane
-    when (val parentActivity = fragment.activity) {
-      is OptionsActivity ->
-        parentActivity.optionActivityPresenter.updateAudioLanguage(audioLanguage)
-      is AudioLanguageActivity ->
-        parentActivity.audioLanguageActivityPresenter.setLanguageSelected(audioLanguage)
-    }
-  }
-
-  private fun createAdapter() {
-    // TODO(#669): Replace dummy list with actual language list from backend.
-    val languageList = ArrayList<String>()
-    languageList.add("No Audio")
-    languageList.add("English")
-    languageList.add("French")
-    languageList.add("Hindi")
-    languageList.add("Chinese")
-    languageSelectionAdapter.setLanguageList(languageList)
-    languageSelectionAdapter.setDefaultLanguageSelected(prefSummaryValue = prefSummaryValue)
+    return languageSelectionViewModel.selectedLanguage.value!!
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<LanguageItemViewModel> {
@@ -89,32 +63,32 @@ class AudioLanguageFragmentPresenter @Inject constructor(
         viewType = ViewType.VIEW_TYPE_LANGUAGE,
         inflateDataBinding = LanguageItemsBinding::inflate,
         setViewModel = this::bindSkillView,
-        transformViewModel = {it as LanguageSelectionViewModel}
+        transformViewModel = { it as LanguageItemViewModel }
       ).build()
   }
 
   private fun bindSkillView(
-    binding: TopicPracticeSubtopicBinding,
-    model: TopicPracticeSubtopicViewModel
+    binding: LanguageItemsBinding,
+    model: LanguageItemViewModel
   ) {
     binding.viewModel = model
-//    binding.isChecked = selectedSubtopicIdList.contains(model.subtopic.subtopicId)
-//    binding.subtopicCheckBox.setOnCheckedChangeListener { _, isChecked ->
-//      if (isChecked) {
-//        subtopicSelected(model.subtopic.subtopicId, model.subtopic.skillIdsList)
-//      } else {
-//        subtopicUnselected(model.subtopic.subtopicId, model.subtopic.skillIdsList)
-//      }
-//    }
+    binding.radioContainer.setOnClickListener {
+      prefSummaryValue = model.language
+      languageSelectionViewModel.selectedLanguage.value = model.language
+    }
+    languageSelectionViewModel.selectedLanguage.observe(
+      fragment,
+      Observer {
+        binding.isChecked = model.language == it
+      }
+    )
   }
-
 
   private enum class ViewType {
     VIEW_TYPE_LANGUAGE
   }
 
-  private fun getLanguageSelectionViewModel() : LanguageSelectionViewModel {
+  private fun getLanguageSelectionViewModel(): LanguageSelectionViewModel {
     return viewModelProvider.getForFragment(fragment, LanguageSelectionViewModel::class.java)
   }
-
 }
