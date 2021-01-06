@@ -13,7 +13,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.logging.ConsoleLogger
-import java.util.Date
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -56,6 +56,7 @@ private const val RECORD_RECENTLY_PLAYED_CHAPTER_PROVIDER_ID =
 class StoryProgressController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
+  private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger
 ) {
   // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype,
@@ -112,7 +113,9 @@ class StoryProgressController @Inject constructor(
         val storyProgress = storyProgressBuilder.build()
 
         val topicProgressBuilder =
-          TopicProgress.newBuilder().setTopicId(topicId).setLastPlayedTimestamp(Date().time)
+          TopicProgress.newBuilder()
+            .setTopicId(topicId)
+            .setLastPlayedTimestamp(oppiaClock.getCurrentCalendar().timeInMillis)
         if (topicProgressDatabase.topicProgressMap[topicId] != null) {
           topicProgressBuilder
             .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)

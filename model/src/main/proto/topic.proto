@@ -290,7 +290,7 @@ message ComingSoonTopicList {
   repeated UpcomingTopic upcoming_topic = 1;
 }
 
-// Represents upcoming topics
+// Represents topics not yet ready to be played by the learner.
 message UpcomingTopic {
   // The ID of the topic.
   string topic_id = 1;
