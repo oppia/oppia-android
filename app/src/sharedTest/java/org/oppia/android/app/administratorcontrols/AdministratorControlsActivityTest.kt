@@ -304,7 +304,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlFragment_loadFrag_topicUpdateWifiSwitchUncheck_autoUpdateTopicSwitchUncheck() {
+  fun testAdministratorControlsFragment_topicUpdateWifiSwitchUncheck_autoUpdateTopicSwitchUncheck() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -335,7 +335,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_topicUpdateOnWifiSwitchChecked_configChange_checkSwitchIsChecked() {
+  fun testAdministratorControlsFragment_topicUpdateOnWifiSwitchChecked_configChange_switchIsChecked() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -412,7 +412,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_clickEditProfile_checkOpensProfileListActivity() {
+  fun testAdministratorControlsFragment_loadFragment_clickEditProfile_opensProfileListActivity() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
