@@ -307,10 +307,10 @@ class StoryProgressTestHelper @Inject constructor(
     )
     storyProgressController.recordCompletedChapter(
       profileId,
-    RATIOS_TOPIC_ID,
-    RATIOS_STORY_ID_0,
-    RATIOS_EXPLORATION_ID_0,
-    timestamp
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      timestamp
     )
   }
 
