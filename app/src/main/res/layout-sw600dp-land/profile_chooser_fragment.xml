@@ -82,7 +82,7 @@
           app:data="@{viewModel.profiles}"
           app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_margin_end_profile_already_added : @dimen/space_0dp}"
           app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_margin_start_profile_already_added : @dimen/space_0dp}"
-          app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/space_84dp}"
+          app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_margin_top_profile_not_added}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"

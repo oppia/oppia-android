@@ -57,6 +57,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -165,7 +166,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_readingTextSize_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
-      resultDataIntent.putExtra(KEY_MESSAGE_READING_TEXT_SIZE, "Large")
+      resultDataIntent.putExtra(MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY, "Large")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
 
       val activityMonitor = getInstrumentation().addMonitor(
@@ -199,7 +200,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_audioLanguage_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
-      resultDataIntent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, "French")
+      resultDataIntent.putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
 
       val activityMonitor = getInstrumentation().addMonitor(
@@ -233,7 +234,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_appLanguage_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
-      resultDataIntent.putExtra(KEY_MESSAGE_APP_LANGUAGE, "French")
+      resultDataIntent.putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
 
       val activityMonitor = getInstrumentation().addMonitor(
@@ -314,6 +315,7 @@ class OptionsFragmentTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

@@ -24,8 +24,8 @@
     app:explorationSplitViewMarginTop="@{@dimen/previous_responses_item_exploration_split_view_margin_top}"
     app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:explorationViewMarginBottom="@{@dimen/space_0dp}"
-    app:explorationViewMarginEnd="@{@dimen/space_40dp}"
-    app:explorationViewMarginStart="@{@dimen/space_40dp}"
+    app:explorationViewMarginEnd="@{@dimen/previous_responses_item_exploration_view_margin_end}"
+    app:explorationViewMarginStart="@{@dimen/previous_responses_item_exploration_view_margin_start}"
     app:explorationViewMarginTop="@{@dimen/previous_responses_item_exploration_view_margin_top}"
     app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:questionSplitViewMarginBottom="@{@dimen/space_0dp}"
@@ -34,8 +34,8 @@
     app:questionSplitViewMarginTop="@{@dimen/previous_responses_item_question_split_view_margin_top}"
     app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:questionViewMarginBottom="@{@dimen/space_0dp}"
-    app:questionViewMarginEnd="@{@dimen/space_40dp}"
-    app:questionViewMarginStart="@{@dimen/space_40dp}"
+    app:questionViewMarginEnd="@{@dimen/previous_responses_item_question_view_margin_end}"
+    app:questionViewMarginStart="@{@dimen/previous_responses_item_question_view_margin_start}"
     app:questionViewMarginTop="@{@dimen/previous_responses_item_question_view_margin_top}">
 
     <FrameLayout

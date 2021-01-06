@@ -11,7 +11,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -26,7 +26,6 @@ import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -40,7 +39,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridColumnCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
@@ -65,6 +63,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -121,36 +120,18 @@ class TopicRevisionFragmentTest {
   fun testTopicRevisionFragment_loadFragment_displayRevisionTopics_isSuccessful() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
+      clickRevisionTab()
       onView(atPosition(R.id.revision_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
 
   @Test
-  // TODO(#973): Fix TopicRevisionFragmentTest
-  @Ignore
   fun testTopicRevisionFragment_loadFragment_selectRevisionTopics_opensRevisionCardActivity() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.revision_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
-      )
+      clickRevisionTab()
+      scrollToPosition(position = 0)
       onView(atPosition(R.id.revision_recycler_view, 0)).perform(click())
       intended(hasComponent(RevisionCardActivity::class.java.name))
     }
@@ -160,13 +141,7 @@ class TopicRevisionFragmentTest {
   fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
+      clickRevisionTab()
       onView(atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_image_view)).check(
         matches(
           withDrawable(
@@ -178,35 +153,11 @@ class TopicRevisionFragmentTest {
   }
 
   @Test
-  fun testTopicRevisionFragment_loadFragment_checkSpanCoun_isTwo() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(withId(R.id.revision_recycler_view))
-        .check(
-          hasGridColumnCount(
-            expectedColumnCount = 2
-          )
-        )
-    }
-  }
-
-  @Test
   fun testTopicPracticeFragment_loadFragment_configurationChange_revisionSubtopicsAreDisplayed() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
+      clickRevisionTab()
       onView(atPosition(R.id.revision_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
@@ -217,13 +168,7 @@ class TopicRevisionFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
+      clickRevisionTab()
       onView(atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_image_view)).check(
         matches(
           withDrawable(
@@ -231,28 +176,6 @@ class TopicRevisionFragmentTest {
           )
         )
       )
-    }
-  }
-
-  @Test
-  // TODO(#973): Fix TopicRevisionFragmentTest
-  @Ignore
-  fun testTopicRevisionFragment_loadFragment_configurationChange_checkSpanCount_isThree() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(withId(R.id.revision_recycler_view))
-        .check(
-          hasGridColumnCount(
-            expectedColumnCount = 3
-          )
-        )
     }
   }
 
@@ -269,11 +192,31 @@ class TopicRevisionFragmentTest {
     return launch(createTopicActivityIntent(internalProfileId, topicId))
   }
 
+  private fun clickRevisionTab() {
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(3).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun scrollToPosition(position: Int) {
+    onView(withId(R.id.revision_recycler_view)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        position
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

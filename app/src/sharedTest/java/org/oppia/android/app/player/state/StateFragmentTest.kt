@@ -117,6 +117,7 @@ import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.IsOnRobolectric
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -472,7 +473,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_worksCorrectly() {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
@@ -491,7 +491,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_invalidAnswer_correctItemCount() {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
@@ -535,7 +534,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_unlinkFirstItem_worksCorrectly() {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
@@ -555,7 +553,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickRegion6_submitButtonClickable() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -569,7 +566,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickRegion6_clickSubmit_receivesCorrectFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -588,7 +584,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_submitButtonDisabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -615,7 +610,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_submitButtonEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -629,7 +623,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -648,7 +641,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -667,7 +659,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_continueButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -682,7 +673,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun loadImageRegion_clickRegion6_clickedRegion5_region5Clicked_correctFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -821,7 +811,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   @Ignore("Currently failing due to a regression") // TODO(#1769): Re-enable.
   fun testStateFragment_loadExp_changeConfiguration_continueToEnd_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
@@ -853,7 +842,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   @Ignore("Currently failing due to a regression") // TODO(#1769): Re-enable.
   fun testStateFragment_loadExp_changeConfig_continueToEnd_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
@@ -1403,6 +1391,7 @@ class StateFragmentTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
       ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
