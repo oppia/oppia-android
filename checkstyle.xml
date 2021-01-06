@@ -22,7 +22,7 @@
   <!-- Helps in showing error when check runs -->
   <property name="severity" value="error"/>
 
-  <!-- extension of file which needs to check with this configuration file -->
+  <!-- Extension of file which needs to check with this configuration file -->
   <property name="fileExtensions" value="java"/>
 
   <!-- Checks for whitespace -->
@@ -31,6 +31,7 @@
     <property name="eachLine" value="true"/>
   </module>
 
+  <!-- Maximum line length should be 100 char long -->
   <module name="LineLength">
     <property name="max" value="100"/>
     <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
@@ -38,8 +39,10 @@
 
   <module name="TreeWalker">
 
+    <!-- Class name and file name should be same -->
     <module name="OuterTypeFilename"/>
 
+    <!-- Tokens text for matching an illegal pattern -->
     <module name="IllegalTokenText">
       <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
       <property name="format"
@@ -48,31 +51,37 @@
         value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
     </module>
 
+    <!-- No use of unicodes -->
     <module name="AvoidEscapedUnicodeCharacters">
       <property name="allowEscapesForControlCharacters" value="true"/>
       <property name="allowByTailComment" value="true"/>
       <property name="allowNonPrintableEscapes" value="true"/>
     </module>
 
+    <!-- No wildcard imports -->
     <module name="AvoidStarImport"/>
 
     <module name="OneTopLevelClass"/>
 
+    <!-- Statements are not line wrapped -->
     <module name="NoLineWrap">
       <property name="tokens" value="PACKAGE_DEF, IMPORT, STATIC_IMPORT"/>
     </module>
 
+    <!-- No blocks should be empty -->
     <module name="EmptyBlock">
       <property name="option" value="TEXT"/>
       <property name="tokens"
         value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
     </module>
 
+    <!-- Braces should be present for code blocks -->
     <module name="NeedBraces">
       <property name="tokens"
         value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_IF, LITERAL_WHILE"/>
     </module>
 
+    <!-- { should be on the same line as on code block -->
     <module name="LeftCurly">
       <property name="tokens"
         value="ANNOTATION_DEF, CLASS_DEF, CTOR_DEF, ENUM_CONSTANT_DEF, ENUM_DEF,
@@ -82,6 +91,7 @@
                     OBJBLOCK, STATIC_INIT, RECORD_DEF, COMPACT_CTOR_DEF"/>
     </module>
 
+    <!-- } should be on the line alone as after code block ends -->
     <module name="RightCurly">
       <property name="id" value="RightCurlySame"/>
       <property name="tokens"
