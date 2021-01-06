@@ -26,15 +26,15 @@ class PromotedStoryListViewModel(
 
   /** Determines and returns the visibility for the "View All" button. */
   fun getHeader(): String {
-    recommendedActivityList.recommendedStoryList.let {
+    with(recommendedActivityList.recommendedStoryList) {
       return when {
-        it.suggestedStoryList.isNotEmpty() -> {
-          if (it.recentlyPlayedStoryList.isNotEmpty() || it.olderPlayedStoryList.isNotEmpty()) {
+        suggestedStoryList.isNotEmpty() -> {
+          if (recentlyPlayedStoryList.isNotEmpty() || olderPlayedStoryList.isNotEmpty()) {
             activity.getString(R.string.stories_for_you)
           } else
             activity.getString(R.string.recommended_stories)
         }
-        it.recentlyPlayedStoryList.isNotEmpty() -> {
+        recentlyPlayedStoryList.isNotEmpty() -> {
           activity.getString(R.string.recently_played_stories)
         }
         else -> {
