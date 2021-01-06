@@ -73,6 +73,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
     binding.viewModel = model
     binding.radioContainer.setOnClickListener {
       languageSelectionViewModel.selectedLanguage.value = model.language
+      updateAppLanguage(model.language)
     }
     languageSelectionViewModel.selectedLanguage.observe(
       fragment,
@@ -80,6 +81,16 @@ class AppLanguageFragmentPresenter @Inject constructor(
         binding.isChecked = model.language == it
       }
     )
+  }
+
+  private fun updateAppLanguage(appLanguage: String) {
+    // The first branch of (when) will be used in the case of multipane
+    when (val parentActivity = fragment.activity) {
+      is OptionsActivity -> parentActivity.optionActivityPresenter.updateAppLanguage(appLanguage)
+      is AppLanguageActivity -> parentActivity.appLanguageActivityPresenter.setLanguageSelected(
+        appLanguage
+      )
+    }
   }
 
   private enum class ViewType {
