@@ -138,7 +138,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_displayGeneralAndProfileManagement() {
+  fun testAdministratorControlsFragment_displayGeneralAndProfileManagement() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -194,7 +194,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_displayDownloadPermissionsAndSettings() {
+  fun testAdministratorControlsFragment_displayDownloadPermissionsAndSettings() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -242,7 +242,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_displayApplicationSettings() {
+  fun testAdministratorControlsFragment_displayApplicationSettings() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
