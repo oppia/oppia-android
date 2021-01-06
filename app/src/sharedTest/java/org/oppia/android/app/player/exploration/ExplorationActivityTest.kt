@@ -37,7 +37,6 @@ import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
@@ -144,7 +143,6 @@ class ExplorationActivityTest {
     setUpTestApplicationComponent()
     context = ApplicationProvider.getApplicationContext()
     testCoroutineDispatchers.registerIdlingResource()
-    FirebaseApp.initializeApp(context)
   }
 
   @After

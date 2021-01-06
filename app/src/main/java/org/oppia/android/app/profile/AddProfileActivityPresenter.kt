@@ -7,9 +7,9 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
@@ -26,6 +26,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AddProfileActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -112,45 +113,41 @@ class AddProfileActivityPresenter @Inject constructor(
 
     addButtonListeners(binding)
 
-    binding.addProfileActivityUserNameProfileInputView.post {
-      addTextChangedListener(binding.addProfileActivityUserNameProfileInputView) { name ->
-        name?.let {
-          profileViewModel.isButtonActive.set(it.isNotEmpty())
-          profileViewModel.nameErrorMsg.set("")
-          profileViewModel.inputName.set(it.toString())
-        }
-      }
-    }
-    binding.addProfileActivityPinProfileInputView.post {
-      addTextChangedListener(binding.addProfileActivityPinProfileInputView) { pin ->
-        pin?.let {
-          profileViewModel.inputPin.set(it.toString())
-          profileViewModel.pinErrorMsg.set("")
-          inputtedPin = pin.isNotEmpty()
-          setValidPin(binding)
-        }
-      }
-    }
-    binding.addProfileActivityConfirmPinProfileInputView.post {
-      addTextChangedListener(binding.addProfileActivityConfirmPinProfileInputView) { confirmPin ->
-        confirmPin?.let {
-          profileViewModel.inputConfirmPin.set(it.toString())
-          profileViewModel.confirmPinErrorMsg.set("")
-          inputtedConfirmPin = confirmPin.isNotEmpty()
-          setValidPin(binding)
-        }
+    binding.addProfileActivityUserNameEditText.onTextChanged { name ->
+      name?.let {
+        profileViewModel.isButtonActive.set(it.isNotEmpty())
+        profileViewModel.nameErrorMsg.set("")
+        profileViewModel.inputName.set(it)
       }
     }
 
-    binding.addProfileActivityUserNameProfileInputView.setInput(
-      profileViewModel.inputName.get().toString()
-    )
-    binding.addProfileActivityPinProfileInputView.setInput(
-      profileViewModel.inputPin.get().toString()
-    )
-    binding.addProfileActivityConfirmPinProfileInputView.setInput(
-      profileViewModel.inputConfirmPin.get().toString()
-    )
+    binding.addProfileActivityPinEditText.onTextChanged { pin ->
+      pin?.let {
+        profileViewModel.inputPin.set(it)
+        profileViewModel.pinErrorMsg.set("")
+        inputtedPin = pin.isNotEmpty()
+        setValidPin(binding)
+      }
+    }
+
+    binding.addProfileActivityConfirmPinEditText.onTextChanged { confirmPin ->
+      confirmPin?.let {
+        profileViewModel.inputConfirmPin.set(it)
+        profileViewModel.confirmPinErrorMsg.set("")
+        inputtedConfirmPin = confirmPin.isNotEmpty()
+        setValidPin(binding)
+      }
+    }
+
+    binding.addProfileActivityConfirmPinEditText.setOnEditorActionListener { _, actionId, event ->
+      if (actionId == EditorInfo.IME_ACTION_DONE ||
+        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
+      ) {
+        binding.addProfileActivityCreateButton.callOnClick()
+      }
+      false
+    }
+
     if (profileViewModel.showInfoAlertPopup.get()!!) {
       showInfoDialog()
     }
@@ -194,12 +191,12 @@ class AddProfileActivityPresenter @Inject constructor(
       ) as? InputMethodManager
       imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
 
-      val name = binding.addProfileActivityUserNameProfileInputView.getInput()
+      val name = binding.addProfileActivityUserNameEditText.text.toString()
       var pin = ""
       var confirmPin = ""
       if (checkboxStateClicked) {
-        pin = binding.addProfileActivityPinProfileInputView.getInput()
-        confirmPin = binding.addProfileActivityConfirmPinProfileInputView.getInput()
+        pin = binding.addProfileActivityPinEditText.text.toString()
+        confirmPin = binding.addProfileActivityConfirmPinEditText.text.toString()
       }
 
       if (checkInputsAreValid(name, pin, confirmPin)) {
@@ -284,20 +281,6 @@ class AddProfileActivityPresenter @Inject constructor(
       }
       binding.addProfileActivityScrollView.smoothScrollTo(0, 0)
     }
-  }
-
-  private fun addTextChangedListener(
-    profileInputView: ProfileInputView,
-    onTextChanged: (CharSequence?) -> Unit
-  ) {
-    profileInputView.addTextChangedListener(object : TextWatcher {
-      override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        onTextChanged(p0)
-      }
-
-      override fun afterTextChanged(p0: Editable?) {}
-      override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-    })
   }
 
   private fun showInfoDialog() {

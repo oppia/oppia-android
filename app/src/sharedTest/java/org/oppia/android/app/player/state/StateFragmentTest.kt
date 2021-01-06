@@ -38,7 +38,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
-import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
@@ -172,7 +171,6 @@ class StateFragmentTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    FirebaseApp.initializeApp(context)
 
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
     // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
