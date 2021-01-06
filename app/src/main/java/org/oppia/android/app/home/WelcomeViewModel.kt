@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import org.oppia.android.util.datetime.DateTimeUtil
 import org.oppia.android.util.system.OppiaClock
+import java.util.Objects
 
 /** [ViewModel] for welcome text in home screen. */
 class WelcomeViewModel(
@@ -18,14 +19,13 @@ class WelcomeViewModel(
     oppiaClock
   ).getGreetingMessage()
 
+  // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
+  // only rebinds data when the actual data values in the HomeViewModel data list changes rather than
+  // the ViewModel object.
   override fun equals(other: Any?): Boolean {
-    if (this === other) {
-      return true
-    }
-    if (other == null || other.javaClass != javaClass) {
-      return false
-    }
-    val otherResult = other as WelcomeViewModel
-    return otherResult.profileName == this.profileName
+    return other is WelcomeViewModel && this.profileName == other.profileName &&
+      this.greeting == other.greeting
   }
+
+  override fun hashCode() = Objects.hash(this.profileName) + Objects.hash(this.greeting)
 }

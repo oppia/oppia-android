@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
+import java.util.Objects
 
 /** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
 class PromotedStoryListViewModel(
@@ -49,14 +50,13 @@ class PromotedStoryListViewModel(
     routeToRecentlyPlayedListener.routeToRecentlyPlayed()
   }
 
+  // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
+  // only rebinds data when the actual data values in the HomeViewModel data list changes rather than
+  // the ViewModel object.
   override fun equals(other: Any?): Boolean {
-    if (this === other) {
-      return true
-    }
-    if (other == null || other.javaClass != javaClass) {
-      return false
-    }
-    val otherResult = other as PromotedStoryListViewModel
-    return otherResult.promotedStoryList == this.promotedStoryList
+    return other is PromotedStoryListViewModel &&
+      other.promotedStoryList == this.promotedStoryList
   }
+
+  override fun hashCode() = Objects.hash(this.promotedStoryList)
 }
