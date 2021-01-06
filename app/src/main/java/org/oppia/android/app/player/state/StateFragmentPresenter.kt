@@ -328,6 +328,7 @@ class StateFragmentPresenter @Inject constructor(
         200
       )
     }
+    // assembler.show confetti
   }
 
   /**
