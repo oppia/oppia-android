@@ -580,6 +580,10 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_topicNameIsCorrect() {
+    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanAWeek = false
+    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -596,6 +600,10 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_lessonCountIsCorrect() {
+    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanAWeek = false
+    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -616,6 +624,10 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex4_topicSummary_topicNameIsCorrect() {
+    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanAWeek = false
+    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
