@@ -1,7 +1,6 @@
 package org.oppia.android.domain.topic
 
 import android.graphics.Color
-import android.util.Log
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
@@ -15,6 +14,7 @@ import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.RecommendedActivityList
 import org.oppia.android.app.model.RecommendedStoryList
 import org.oppia.android.app.model.StoryProgress
+import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicPlayAvailability
@@ -125,7 +125,7 @@ class TopicListController @Inject constructor(
    *
    * @param profileId the ID corresponding to the profile for which [PromotedStory] needs to be
    *    fetched.
-   * @return a [DataProvider] for an [OngoingStoryList].
+   * @return a [DataProvider] for an [RecommendedActivityList].
    */
   fun getRecommendedActivityList(profileId: ProfileId): DataProvider<RecommendedActivityList> {
     return storyProgressController.retrieveTopicProgressListDataProvider(profileId)
@@ -254,64 +254,100 @@ class TopicListController @Inject constructor(
 
           when {
             recentlyPlayerChapterProgress != null -> {
-              val recentlyPlayerChapterSummary: ChapterSummary? =
-                story.chapterList.find { chapterSummary ->
-                  recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
-                }
-              if (recentlyPlayerChapterSummary != null) {
-                val numberOfDaysPassed = (
-                  oppiaClock.getCurrentCalendar().timeInMillis -
-                    recentlyPlayerChapterProgress.lastPlayedTimestamp
-                  ) / ONE_DAY_IN_MS
-                val promotedStory = createPromotedStory(
-                  storyId,
-                  topic,
-                  completedChapterProgressList.size,
-                  story.chapterCount,
-                  recentlyPlayerChapterSummary.name,
-                  recentlyPlayerChapterSummary.explorationId
-                )
-                if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
-                  ongoingStoryListBuilder.addRecentStory(promotedStory)
-                } else {
-                  ongoingStoryListBuilder.addOlderStory(promotedStory)
-                }
-              }
+              createOngoingStoryListBasedOnRecentlyPlayed(
+                storyId,
+                story,
+                recentlyPlayerChapterProgress,
+                completedChapterProgressList,
+                topic,
+                ongoingStoryListBuilder
+              )
             }
             lastCompletedChapterProgress != null &&
               lastCompletedChapterProgress.explorationId !=
               story.chapterList.last().explorationId -> {
-              val lastChapterSummary: ChapterSummary? =
-                story.chapterList.find { chapterSummary ->
-                  lastCompletedChapterProgress.explorationId == chapterSummary.explorationId
-                }
-              val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
-              val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
-              if (nextChapterSummary != null) {
-                val numberOfDaysPassed = (
-                  oppiaClock.getCurrentCalendar().timeInMillis -
-                    lastCompletedChapterProgress.lastPlayedTimestamp
-                  ) / ONE_DAY_IN_MS
-                val promotedStory = createPromotedStory(
-                  storyId,
-                  topic,
-                  completedChapterProgressList.size,
-                  story.chapterCount,
-                  nextChapterSummary.name,
-                  nextChapterSummary.explorationId
-                )
-                if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
-                  ongoingStoryListBuilder.addRecentStory(promotedStory)
-                } else {
-                  ongoingStoryListBuilder.addOlderStory(promotedStory)
-                }
-              }
+              createOngoingStoryListBasedOnLastCompleted(
+                storyId,
+                story,
+                lastCompletedChapterProgress,
+                completedChapterProgressList,
+                topic,
+                ongoingStoryListBuilder
+              )
             }
           }
         }
       }
     }
     return ongoingStoryListBuilder.build()
+  }
+
+  private fun createOngoingStoryListBasedOnLastCompleted(
+    storyId: String,
+    story: StorySummary,
+    lastCompletedChapterProgress: ChapterProgress,
+    completedChapterProgressList: List<ChapterProgress>,
+    topic: Topic,
+    ongoingStoryListBuilder: OngoingStoryList.Builder
+  ) {
+    val lastChapterSummary: ChapterSummary? =
+      story.chapterList.find { chapterSummary ->
+        lastCompletedChapterProgress.explorationId == chapterSummary.explorationId
+      }
+    val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
+    val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
+    if (nextChapterSummary != null) {
+      val numberOfDaysPassed = (
+        oppiaClock.getCurrentCalendar().timeInMillis -
+          lastCompletedChapterProgress.lastPlayedTimestamp
+        ) / ONE_DAY_IN_MS
+      val promotedStory = createPromotedStory(
+        storyId,
+        topic,
+        completedChapterProgressList.size,
+        story.chapterCount,
+        nextChapterSummary.name,
+        nextChapterSummary.explorationId
+      )
+      if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
+        ongoingStoryListBuilder.addRecentStory(promotedStory)
+      } else {
+        ongoingStoryListBuilder.addOlderStory(promotedStory)
+      }
+    }
+  }
+
+  private fun createOngoingStoryListBasedOnRecentlyPlayed(
+    storyId: String,
+    story: StorySummary,
+    recentlyPlayerChapterProgress: ChapterProgress,
+    completedChapterProgressList: List<ChapterProgress>,
+    topic: Topic,
+    ongoingStoryListBuilder: OngoingStoryList.Builder
+  ) {
+    val recentlyPlayerChapterSummary: ChapterSummary? =
+      story.chapterList.find { chapterSummary ->
+        recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
+      }
+    if (recentlyPlayerChapterSummary != null) {
+      val numberOfDaysPassed = (
+        oppiaClock.getCurrentCalendar().timeInMillis -
+          recentlyPlayerChapterProgress.lastPlayedTimestamp
+        ) / ONE_DAY_IN_MS
+      val promotedStory = createPromotedStory(
+        storyId,
+        topic,
+        completedChapterProgressList.size,
+        story.chapterCount,
+        recentlyPlayerChapterSummary.name,
+        recentlyPlayerChapterSummary.explorationId
+      )
+      if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
+        ongoingStoryListBuilder.addRecentStory(promotedStory)
+      } else {
+        ongoingStoryListBuilder.addOlderStory(promotedStory)
+      }
+    }
   }
 
   private fun getStartedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> {
@@ -337,7 +373,6 @@ class TopicListController @Inject constructor(
   ): RecommendedActivityList {
     val recommendedActivityListBuilder = RecommendedActivityList.newBuilder()
 
-    Log.d("topic prog", "size - " + topicProgressList.size)
     if (topicProgressList.isNotEmpty()) {
       val recommendedStoryBuilder = RecommendedStoryList.newBuilder()
       if (topicProgressList.size == 1) {
@@ -349,6 +384,7 @@ class TopicListController @Inject constructor(
           )
         )
         recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
+
         if (recommendedStoryBuilder.suggestedStoryCount == 0 &&
           recommendedStoryBuilder.recentlyPlayedStoryCount == 0 &&
           recommendedStoryBuilder.olderPlayedStoryCount == 0

@@ -818,7 +818,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markFullProgressForSecondTopic_showRecommendedStories_storyListIsCorrect() { // ktlint-disable max-line-length
+  fun testProgressTestHelper_markFullProgressForSecondTopic_showRecommendedStories_listIsCorrect() {
     storyProgressTestHelper.markFullProgressForSecondTopic(
       profileId,
       /* timestampOlderThanAWeek= */ false
