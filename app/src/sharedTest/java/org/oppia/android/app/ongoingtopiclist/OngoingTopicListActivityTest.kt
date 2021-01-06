@@ -19,7 +19,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
@@ -102,7 +101,6 @@ class OngoingTopicListActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    FirebaseApp.initializeApp(context)
     storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false

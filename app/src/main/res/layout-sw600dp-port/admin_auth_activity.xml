@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:profile="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -32,7 +31,6 @@
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        android:textSize="20sp"
         app:navigationContentDescription="@string/admin_auth_close"
         app:navigationIcon="@drawable/ic_close_white_24dp"
         app:title="@string/admin_auth_toolbar"
@@ -78,21 +76,28 @@
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/admin_auth_heading_textview" />
 
-        <org.oppia.android.app.profile.ProfileInputView
+        <com.google.android.material.textfield.TextInputLayout
           android:id="@+id/admin_auth_input_pin"
+          style="@style/TextInputLayout"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_marginTop="40dp"
-          android:addTextChangedListener="@{viewModel.inputPinTextWatcher}"
-          android:imeOptions="actionDone"
-          app:inputLength="5"
-          app:isPasswordInput="true"
-          app:label="@string/admin_auth_pin"
+          android:hint="@string/admin_auth_pin"
+          app:errorMessage="@{viewModel.errorMessage}"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/admin_auth_sub_text"
-          profile:error="@{viewModel.errorMessage}"
-          profile:labelMargin="@{@dimen/admin_auth_input_pin_label_margin}" />
+          app:layout_constraintTop_toBottomOf="@id/admin_auth_sub_text">
+
+          <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/admin_auth_input_pin_edit_text"
+            style="@style/TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="numberPassword"
+            android:maxLength="5"
+            app:textChangedListener="@{viewModel.inputPinTextWatcher}" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
           android:id="@+id/admin_auth_submit_button"

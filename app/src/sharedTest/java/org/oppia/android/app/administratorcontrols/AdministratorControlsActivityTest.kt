@@ -8,7 +8,9 @@ import android.view.ViewParent
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -24,14 +26,15 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
@@ -54,7 +57,6 @@ import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.domain.classify.InteractionsModule
@@ -123,7 +125,6 @@ class AdministratorControlsActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -534,16 +535,51 @@ class AdministratorControlsActivityTest {
     }
   }
 
+  @Test
+  fun testAdministratorControls_selectAdminNavItem_displaysAdminControls() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        0
+      )
+    ).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
+        .perform(click())
+      onView(withText(context.getString(R.string.administrator_controls_edit_account)))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  private fun ActivityScenario<AdministratorControlsActivity>.openNavigationDrawer() {
+    onView(withContentDescription(R.string.drawer_open_content_description))
+      .check(matches(isCompletelyDisplayed()))
+      .perform(click())
+
+    // Force the drawer animation to start. See https://github.com/oppia/oppia-android/pull/2204 for
+    // background context.
+    onActivity { activity ->
+      val drawerLayout =
+        activity.findViewById<DrawerLayout>(R.id.administrator_controls_activity_drawer_layout)
+      // Note that this only initiates a single computeScroll() in Robolectric. Normally, Android
+      // will compute several of these across multiple draw calls, but one seems sufficient for
+      // Robolectric. Note that Robolectric is also *supposed* to handle the animation loop one call
+      // to this method initiates in the view choreographer class, but it seems to not actually
+      // flush the choreographer per observation. In Espresso, this method is automatically called
+      // during draw (and a few other situations), but it's fine to call it directly once to kick it
+      // off (to avoid disparity between Espresso/Robolectric runs of the tests).
+      // NOTE TO DEVELOPERS: if this ever flakes, we can probably put this in a loop with fake time
+      // adjustments to simulate the render loop.
+      drawerLayout.computeScroll()
+    }
+
+    // Wait for the drawer to fully open (mostly for Espresso since Robolectric should synchronously
+    // stabilize the drawer layout after the previous logic completes).
+    testCoroutineDispatchers.runCurrent()
+  }
+
   private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       context,
-      profileId
-    )
-  }
-
-  private fun createNavigationDrawerActivityIntent(profileId: Int): Intent {
-    return NavigationDrawerTestActivity.createNavigationDrawerTestActivity(
-      ApplicationProvider.getApplicationContext(),
       profileId
     )
   }
