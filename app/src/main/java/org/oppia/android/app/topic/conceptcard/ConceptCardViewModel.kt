@@ -18,8 +18,14 @@ class ConceptCardViewModel @Inject constructor(
 ) : ObservableViewModel() {
   private lateinit var skillId: String
 
-  val conceptCardLiveData: LiveData<ConceptCard> by lazy {
+  private val itemViewModelList: MutableList<ConceptCardItemViewModel> = ArrayList()
+
+  private val conceptCardLiveData: LiveData<ConceptCard> by lazy {
     processConceptCardLiveData()
+  }
+
+  val conceptCardItemsLiveData: LiveData<List<ConceptCardItemViewModel>> by lazy {
+    Transformations.map(conceptCardLiveData, ::processConceptCardItemList)
   }
 
   fun setSkillId(id: String) {
@@ -43,5 +49,22 @@ class ConceptCardViewModel @Inject constructor(
       )
     }
     return conceptCardResult.getOrDefault(ConceptCard.getDefaultInstance())
+  }
+
+  private fun processConceptCardItemList(conceptCard: ConceptCard): List<ConceptCardItemViewModel> {
+    itemViewModelList.clear()
+
+    itemViewModelList.add(ConceptCardHeadingItemViewModel(conceptCard.skillDescription))
+    conceptCard.workedExampleList.forEach { workedExample ->
+      itemViewModelList.add(
+        ConceptCardWorkedExampleItemViewModel(
+          workedExample.contentId,
+          workedExample.html
+        )
+      )
+    }
+    itemViewModelList.add(ConceptCardExplanationItemViewModel(conceptCard.explanation.html))
+
+    return itemViewModelList
   }
 }

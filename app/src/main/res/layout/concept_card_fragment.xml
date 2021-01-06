@@ -35,45 +35,15 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/concept_card_toolbar">
 
-      <ScrollView
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/concept_card_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
         android:overScrollMode="never"
+        app:data="@{viewModel.conceptCardItemsLiveData}"
         android:paddingBottom="108dp"
-        android:scrollbars="none">
-
-        <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="vertical">
-
-          <TextView
-            android:id="@+id/concept_card_heading_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="28dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="@{viewModel.conceptCardLiveData.skillDescription}"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textDirection="locale"
-            android:textSize="20sp" />
-
-          <TextView
-            android:id="@+id/concept_card_explanation_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="28dp"
-            android:layout_marginEnd="40dp"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textDirection="locale"
-            android:textSize="16sp" />
-        </LinearLayout>
-        <!--TODO(#352): Show worked examples in Concept Card.-->
-      </ScrollView>
+        android:scrollbars="none" />
 
       <View
         android:id="@+id/concept_card_shadow_view"

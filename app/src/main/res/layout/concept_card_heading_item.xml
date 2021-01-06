@@ -1,0 +1,24 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.topic.conceptcard.ConceptCardHeadingItemViewModel" />
+  </data>
+
+  <TextView
+    android:id="@+id/concept_card_heading_text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="28dp"
+    android:layout_marginTop="40dp"
+    android:layout_marginEnd="28dp"
+    android:fontFamily="sans-serif-medium"
+    android:text="@{viewModel.heading}"
+    android:textColor="@color/oppiaPrimaryText"
+    android:textDirection="locale"
+    android:textSize="20sp" />
+</layout>
