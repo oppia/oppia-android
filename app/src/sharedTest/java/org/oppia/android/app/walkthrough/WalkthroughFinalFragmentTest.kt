@@ -157,7 +157,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex2_topicSelected_configurationChanged_topicTitleIsCorrect() { // ktlint-disable max-line-length
+  fun testWalkthroughWelcomeFrag_recyclerViewIndex2_topicSelected_configChanged_topicTitleIsCrt() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -189,7 +189,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_yesNoButton_isDisplayedCorrectly() { // ktlint-disable max-line-length
+  fun testWalkthroughWelcomeFrag_recyclerViewIndex1_topicSelected_yesNoBtn_isDisplayedCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -212,7 +212,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_clickNoButton_worksCorrectly() { // ktlint-disable max-line-length
+  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_clickNoBtn_worksCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
