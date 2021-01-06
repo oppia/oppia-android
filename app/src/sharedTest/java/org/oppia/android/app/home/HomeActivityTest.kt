@@ -400,7 +400,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysComingSoonTopicsText() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProgressTestHelper.markLastChapterDoneOfFirstStoryTopicProgressForRatios(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
