@@ -201,10 +201,12 @@ class HomeViewModel(
   private fun computeComingSoonTopicViewModelList(
     comingSoonTopicList: ComingSoonTopicList
   ): List<ComingSoonTopicsViewModel> {
-    return comingSoonTopicList.upcomingTopicList.map { topicSummary ->
+    return comingSoonTopicList.upcomingTopicList.map{ topicSummary ->
       ComingSoonTopicsViewModel(
+        activity,
         topicSummary,
-        topicEntityType
+        topicEntityType,
+        comingSoonTopicList
       )
     }
   }

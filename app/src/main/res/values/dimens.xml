@@ -99,6 +99,8 @@
   <dimen name="enter_text_view_padding_start">60dp</dimen>
   <dimen name="enter_text_view_padding_end">60dp</dimen>
   <dimen name="promoted_story_card_width">280dp</dimen>
+  <dimen name="coming_soon_card_width">144dp</dimen>
+  <dimen name="coming_soon_card_width_portrait">160dp</dimen>
   <dimen name="home_padding_end">44dp</dimen>
   <dimen name="home_padding_start">20dp</dimen>
   <dimen name="home_outer_margin">28dp</dimen>
@@ -109,6 +111,8 @@
   <dimen name="recently_played_margin_min">8dp</dimen>
   <dimen name="recently_played_tablet_land_outer_margin">96dp</dimen>
   <dimen name="recently_played_tablet_port_outer_margin">120dp</dimen>
+  <dimen name="coming_soon_padding_end">16dp</dimen>
+  <dimen name="coming_soon_padding_start">12dp</dimen>
 
   <dimen name="default_reading_text_size">18sp</dimen>
   <dimen name="font_scale_content_text_size">20dp</dimen>

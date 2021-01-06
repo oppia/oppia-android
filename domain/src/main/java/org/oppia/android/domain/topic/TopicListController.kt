@@ -349,6 +349,7 @@ class TopicListController @Inject constructor(
           )
         )
         recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
+
         if (recommendedStoryBuilder.suggestedStoryCount == 0 &&
           recommendedStoryBuilder.recentlyPlayedStoryCount == 0 &&
           recommendedStoryBuilder.olderPlayedStoryCount == 0
