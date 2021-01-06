@@ -13,11 +13,13 @@
 # Move file from script folder to .git/hooks folder
 cp scripts/pre-push.sh .git/hooks/pre-push
 
+# Create a folder where all the set up files will be downloaded
+mkdir -p ../oppia-android-tools
+cd ../oppia-android-tools
+
 # Download ktlint
 KTLINT="0.37.1"
 echo Using Ktlint $KTLINT
-mkdir -p ../oppia-android-tools
-cd ../oppia-android-tools
 curl -sSLOC - https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
 chmod a+x ktlint
 echo Ktlint file downloaded
@@ -25,8 +27,6 @@ echo Ktlint file downloaded
 # Download buf
 BUFVERSION="v0.15.0"
 echo Using Bufbuild version $BUFVERSION
-mkdir -p ../oppia-android-tools
-cd ../oppia-android-tools
 curl -sSLOC - https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m)
 chmod a+x buf-$(uname -s)-$(uname -m)
 echo Buf file downloaded
