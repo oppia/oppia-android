@@ -50,7 +50,9 @@ class PromotedStoryListViewModel(
   fun getButtonVisibility(): Int {
     recommendedActivityList.recommendedStoryList.let {
       if (it.suggestedStoryList.isNotEmpty()) {
-        return if (it.recentlyPlayedStoryList.isNotEmpty() || it.olderPlayedStoryList.isNotEmpty()) {
+        return if (it.recentlyPlayedStoryList.isNotEmpty()
+          || it.olderPlayedStoryList.isNotEmpty()
+        ) {
           View.VISIBLE
         } else
           View.INVISIBLE

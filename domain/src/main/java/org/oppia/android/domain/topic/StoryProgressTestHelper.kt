@@ -267,7 +267,6 @@ class StoryProgressTestHelper @Inject constructor(
     } else {
       getOldTimestamp()
     }
-    
     storyProgressController.recordCompletedChapter(
       profileId,
       RATIOS_TOPIC_ID,
@@ -297,7 +296,6 @@ class StoryProgressTestHelper @Inject constructor(
       RATIOS_EXPLORATION_ID_0,
       timestamp
     )
-
     storyProgressController.recordCompletedChapter(
       profileId,
       RATIOS_TOPIC_ID,
