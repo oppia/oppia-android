@@ -71,7 +71,10 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
       addOnScrollListener(object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
           super.onScrolled(recyclerView, dx, dy)
-          if (orientation == Configuration.ORIENTATION_LANDSCAPE && resources.getBoolean(R.bool.isTablet)) {
+          if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE && !resources.getBoolean(
+              R.bool.isTablet
+            )
+          ) {
             val firstVisibleItemPosition = walkthroughLayoutManager.findFirstVisibleItemPosition()
             if (firstVisibleItemPosition >= 1) {
               changeProgressBarVisibility(false)
@@ -125,6 +128,14 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
 
   fun changeProgressBarVisibility(visibility: Boolean) {
     walkthroughVerticalScrollListener.changeProgressBarVisibility(visibility)
+    val view = binding.walkthroughTopicRecyclerView.getChildAt(0)
+    if (view.id == R.id.walkthrough_topic_header_text_view) {
+      if (!visibility) {
+        view.visibility = View.INVISIBLE
+      } else {
+        view.visibility = View.VISIBLE
+      }
+    }
   }
 
   fun changePage(topicSummary: TopicSummary) {
