@@ -11,14 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.CoordinatesProvider
-import androidx.test.espresso.action.GeneralClickAction
-import androidx.test.espresso.action.Press
-import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -27,6 +25,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -214,7 +213,6 @@ class AudioFragmentTest {
     }
   }
 
-  // TODO(#2417): clickSeekBar not working for espresso
   @Test
   fun testAudioFragment_invokePrepared_touchSeekBar_checkStillPaused() {
     addMediaInfo()
@@ -225,7 +223,7 @@ class AudioFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
+      onView(withId(R.id.sbAudioProgress)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ivPlayPauseAudio))
@@ -233,7 +231,7 @@ class AudioFragmentTest {
     }
   }
 
-  // TODO(#2417): clickSeekBar not working for espresso
+  // TODO(#2417): Need a fake audio library to run this test on espresso
   @Test
   fun testAudioFragment_invokePrepared_clickPlay_touchSeekBar_checkStillPlaying() {
     addMediaInfo()
@@ -246,7 +244,7 @@ class AudioFragmentTest {
 
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
+      onView(withId(R.id.sbAudioProgress)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ivPlayPauseAudio))
@@ -264,7 +262,7 @@ class AudioFragmentTest {
     ).use {
       invokePreparedListener(shadowMediaPlayer)
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
-      onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
+      onView(withId(R.id.sbAudioProgress)).perform(setProgress(100))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.ivPlayPauseAudio))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
@@ -284,7 +282,7 @@ class AudioFragmentTest {
 
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
+      onView(withId(R.id.sbAudioProgress)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.tvAudioLanguage)).perform(click())
@@ -314,27 +312,20 @@ class AudioFragmentTest {
     }
   }
 
-  private fun clickSeekBar(position: Int): ViewAction {
-    return GeneralClickAction(
-      Tap.SINGLE,
-      object : CoordinatesProvider {
-        override fun calculateCoordinates(view: View?): FloatArray {
-          val seekBar = view as SeekBar
-          val screenPos = IntArray(2)
-          seekBar.getLocationInWindow(screenPos)
-          val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
+  private fun setProgress(progress: Int): ViewAction {
+    return object : ViewAction {
+      override fun perform(uiController: UiController, view: View) {
+        (view as SeekBar).progress = progress
+      }
 
-          val percentagePos = (position.toFloat() / seekBar.max)
-          val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
-          val screenY = seekBar.height / 2f + screenPos[1]
-          val coordinates = FloatArray(2)
-          coordinates[0] = screenX
-          coordinates[1] = screenY
-          return coordinates
-        }
-      },
-      Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0
-    )
+      override fun getDescription(): String {
+        return "Set a progress on a SeekBar"
+      }
+
+      override fun getConstraints(): Matcher<View> {
+        return ViewMatchers.isAssignableFrom(SeekBar::class.java)
+      }
+    }
   }
 
   private fun setUpTestApplicationComponent() {
