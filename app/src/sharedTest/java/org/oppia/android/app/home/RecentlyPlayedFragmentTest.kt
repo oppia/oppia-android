@@ -377,7 +377,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedActivity_changeConfig_doesNotShowSectionDivider() {
+  fun testRecentlyPlayedTestActivity_changeConfig_doesNotShowSectionDivider() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -397,7 +397,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedActivity_changeConfig_showsLastWeekSectionTitle() {
+  fun testRecentlyPlayedTestActivity_changeConfig_showsLastWeekSectionTitle() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId

@@ -179,7 +179,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_displayGreetMessageBasedOnTime_goodMorningMessageDisplayed() {
+  fun testHomeActivity_morningTimestamp_goodMorningMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -198,7 +198,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_displayGreetMessageBasedOnTime_goodAfternoonMessageDisplayed() {
+  fun testHomeActivity_afternoonTimestamp_goodAfternoonMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -217,7 +217,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_displayGreetMessageBasedOnTime_goodEveningMessageDisplayed() {
+  fun testHomeActivity_eveningTimestamp_goodEveningMessageDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
