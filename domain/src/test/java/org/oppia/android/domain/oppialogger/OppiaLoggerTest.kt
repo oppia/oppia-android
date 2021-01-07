@@ -32,14 +32,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val TEST_TOPIC_ID = "test_topicId"
-private const val TEST_STORY_ID = "test_storyId"
-private const val TEST_EXPLORATION_ID = "test_explorationId"
-private const val TEST_QUESTION_ID = "test_questionId"
-private const val TEST_SKILL_ID = "test_skillId"
-private const val TEST_SKILL_LIST_ID = "test_skillListId"
-private const val TEST_SUB_TOPIC_ID = 1
-
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
