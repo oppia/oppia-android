@@ -56,6 +56,11 @@
   <color name="black_54">#8A000000</color>
   <color name="whiteLight">#F9F9F9</color>
   <color name="red">#FF0000</color>
+  <!--  CONFETTI COLORS -->
+  <color name="confetti_yellow">#fce18a</color>
+  <color name="confetti_orange">#ff726d</color>
+  <color name="confetti_purple">#b48def</color>
+  <color name="confetti_pink">#f4306d</color>
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
   <!-- PROFILE COMPONENT -->

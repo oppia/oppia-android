@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnswerOutcome
@@ -102,7 +103,8 @@ class StateFragmentPresenter @Inject constructor(
     )
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, entityType),
-      binding.congratulationsTextView
+      binding.congratulationsTextView,
+      binding.bannerConfettiView
     )
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
@@ -219,7 +221,8 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
-    congratulationsTextView: TextView
+    congratulationsTextView: TextView,
+    bannerConfettiView: KonfettiView
   ): StatePlayerRecyclerViewAssembler {
     return builder
       .hasConversationView(hasConversationView)
@@ -231,7 +234,7 @@ class StateFragmentPresenter @Inject constructor(
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
       .addReturnToTopicSupport()
-      .addCongratulationsForCorrectAnswers(congratulationsTextView)
+      .addCongratulationsForCorrectAnswers(congratulationsTextView, bannerConfettiView)
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(
         explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,

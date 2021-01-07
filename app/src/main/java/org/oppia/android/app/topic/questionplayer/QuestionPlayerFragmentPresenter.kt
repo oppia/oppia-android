@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
@@ -75,7 +76,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, "skill"),
-      binding.congratulationsTextView
+      binding.congratulationsTextView,
+      binding.bannerConfettiView
     )
 
     binding.apply {
@@ -397,7 +399,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
-    congratulationsTextView: TextView
+    congratulationsTextView: TextView,
+    bannerConfettiView: KonfettiView
   ): StatePlayerRecyclerViewAssembler {
     // TODO(#501): Add support early exit detection & message, which requires changes in the training progress
     //  controller & possibly the ephemeral question data model.
@@ -413,7 +416,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       .addReplayButtonSupport()
       .addReturnToTopicSupport()
       .addHintsAndSolutionsSupport()
-      .addCongratulationsForCorrectAnswers(congratulationsTextView)
+      .addCongratulationsForCorrectAnswers(congratulationsTextView, bannerConfettiView)
       .addConceptCardSupport()
       .build()
   }

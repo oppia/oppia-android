@@ -15,6 +15,10 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
+import nl.dionsegijn.konfetti.KonfettiView
+import nl.dionsegijn.konfetti.models.Shape
+import nl.dionsegijn.konfetti.models.Size
+import org.oppia.android.R
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
@@ -121,6 +125,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
   private val congratulationsTextView: TextView?,
+  private val bannerConfettiView: KonfettiView?,
   private val canSubmitAnswer: ObservableField<Boolean>?,
   private val audioActivityId: String?,
   private val currentStateName: ObservableField<String>?,
@@ -141,7 +146,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * answers header to help locate the items in the recycler view (when present).
    */
   private val previousAnswerViewModels: MutableList<StateItemViewModel> = mutableListOf()
-
   /**
    * Whether the previously submitted wrong answers should be expanded. This value is intentionally
    * not retained upon configuration changes since the user can just re-expand the list.
@@ -428,6 +432,21 @@ class StatePlayerRecyclerViewAssembler private constructor(
     check(playerFeatureSet.showCongratulationsOnCorrectAnswer) {
       "Cannot show congratulations message for assembler that doesn't support it"
     }
+    val confettiView = checkNotNull(bannerConfettiView) {
+      "Expected non-null reference to banner confetti view"
+    }
+    confettiView.build()
+      .addColors(listOf(R.color.confetti_yellow, R.color.confetti_orange, R.color.confetti_purple, R.color.confetti_pink))
+      .setDirection(0.0, 359.0)
+      .setSpeed(4f, 7f)
+      .setFadeOutEnabled(true)
+      .setTimeToLive(2000)
+      .addShapes(*arrayOf(Shape.Square, Shape.Circle))
+      .addSizes(Size(12), Size(16, 6f))
+      .setPosition(bannerConfettiView.x + bannerConfettiView.width / 2,
+        bannerConfettiView.y + bannerConfettiView.height / 3)
+      .burst(100)
+
     val textView = checkNotNull(congratulationsTextView) {
       "Expected non-null reference to congratulations text view"
     }
@@ -761,6 +780,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
+    private var bannerConfettiView: KonfettiView? = null
     private var hasConversationView: Boolean = true
     private var canSubmitAnswer: ObservableField<Boolean>? = null
     private var audioActivityId: String? = null
@@ -1104,8 +1124,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * Adds support for displaying a congratulations answer when the learner submits a correct
      * answer.
      */
-    fun addCongratulationsForCorrectAnswers(congratulationsTextView: TextView): Builder {
+    fun addCongratulationsForCorrectAnswers(
+      congratulationsTextView: TextView,
+      bannerConfettiView: KonfettiView
+    ): Builder {
       this.congratulationsTextView = congratulationsTextView
+      this.bannerConfettiView = bannerConfettiView
+      // TODO(jacqueli): showCongratulationsOnCorrectAnswer will update
       featureSets += PlayerFeatureSet(showCongratulationsOnCorrectAnswer = true)
       return this
     }
@@ -1173,6 +1198,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         playerFeatureSet,
         fragment,
         congratulationsTextView,
+        bannerConfettiView,
         canSubmitAnswer,
         audioActivityId,
         currentStateName,

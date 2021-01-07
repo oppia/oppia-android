@@ -116,7 +116,7 @@
 
     <FrameLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="108dp"
       android:layout_gravity="bottom"
       android:layout_marginStart="28dp"
       android:layout_marginTop="8dp"
@@ -129,6 +129,7 @@
         android:id="@+id/congratulations_text_view"
         android:layout_width="match_parent"
         android:layout_height="54dp"
+        android:layout_gravity="bottom"
         android:background="@drawable/congratulations_text_background_shadow"
         android:elevation="8dp"
         android:fontFamily="sans-serif-medium"
@@ -139,6 +140,11 @@
         android:textColor="@color/green_shade"
         android:textSize="20sp"
         android:visibility="invisible" />
+
+      <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/banner_confetti_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     </FrameLayout>
   </FrameLayout>
 </layout>
