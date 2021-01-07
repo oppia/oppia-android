@@ -177,7 +177,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem0_doesNotShowSectionDivider() {
+  fun testRecentlyPlayedTestActivity_doesNotShowSectionDivider() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -198,7 +198,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem0_showsLastWeekSectionTitle() {
+  fun testRecentlyPlayedTestActivity_showsLastWeekSectionTitle() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -214,7 +214,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem1_storyNameIsCorrect() {
+  fun testRecentlyPlayedTestActivity_storyNameIsCorrect() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -235,7 +235,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem1_topicNameIsCorrect() {
+  fun testRecentlyPlayedTestActivity_topicNameIsCorrect() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -256,7 +256,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem1_lessonThumbnailIsCorrect() {
+  fun testRecentlyPlayedTestActivity_lessonThumbnailIsCorrect() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -277,7 +277,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem1_clickStory_intentsToExplorationActivity() {
+  fun testRecentlyPlayedTestActivity_clickStory_intentsToExplorationActivity() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
