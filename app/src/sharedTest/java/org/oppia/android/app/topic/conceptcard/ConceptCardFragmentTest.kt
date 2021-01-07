@@ -158,7 +158,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testCCFragment_openDialogFragment0_checkSkillAndExplanationDisplayedWithoutRichText() {
+  fun testConceptCard_openDialog0_checkSkillAndExplanationAreDisplayedWithoutRichText() {
     launch(ConceptCardFragmentTestActivity::class.java).use {
       onView(withId(R.id.open_dialog_0)).perform(click())
       onView(withId(R.id.concept_card_heading_text))
@@ -186,7 +186,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testCCFragment_openDialogFragment1_checkSkillAndExplanationDisplayedWithRichText() {
+  fun testConceptCard_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() {
     launch(ConceptCardFragmentTestActivity::class.java).use {
       onView(withId(R.id.open_dialog_1)).perform(click())
       onView(withId(R.id.concept_card_heading_text))
@@ -214,7 +214,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testCCFragment_openDialogFragmentWithSkill2_afterConfigChange_workedExamplesDisplayed() {
+  fun testConceptCard_openDialogFragmentWithSkill2_afterConfigChange_workedExamplesAreDisplayed() {
     launch(ConceptCardFragmentTestActivity::class.java).use {
       onView(withId(R.id.open_dialog_1)).perform(click())
       onView(isRoot()).perform(orientationLandscape())

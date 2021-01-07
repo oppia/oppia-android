@@ -276,7 +276,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_clickExpandListIconIndex1then2_chapterListForIndex1NotDisplayed() {
+  fun testLessonsPlayFragment_clickExpandListIconIndex1Then2_chapterListForIndex1NotDisplayed() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       scrollToPosition(position = 1)
@@ -297,7 +297,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_clickExpandListIconIndex2then1_chapterListForIndex2NotDisplayed() {
+  fun testLessonsPlayFragment_clickExpandListIconIndex2Then1_chapterListForIndex2NotDisplayed() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       scrollToPosition(position = 2)

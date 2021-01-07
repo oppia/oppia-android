@@ -38,7 +38,6 @@ import org.oppia.android.app.parser.RichTextViewMatcher.Companion.containsRichTe
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -100,7 +99,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTest_overflowMenu_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -116,7 +115,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTest_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
     launch<ExplorationActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -138,7 +137,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTest_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
     launch<ExplorationActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -160,7 +159,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -175,7 +174,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -204,7 +203,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -225,7 +224,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevCardTestActivity_toolbarTitle_fractionSubtopicId1_displayedCorrectly() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -241,7 +240,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevCardTestActivity_fractionSubtopicId2_checkExpDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -271,7 +270,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonDispSuccessfully() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
