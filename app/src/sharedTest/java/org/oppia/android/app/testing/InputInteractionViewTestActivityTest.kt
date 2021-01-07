@@ -376,7 +376,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withMixedFractionNumber_clickSubmitButton_noErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withMixedFractionNumber_onSubmit_noErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
