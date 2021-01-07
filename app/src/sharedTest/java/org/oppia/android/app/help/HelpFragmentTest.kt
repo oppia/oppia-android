@@ -120,7 +120,7 @@ class HelpFragmentTest {
   }
 
   @Test
-   fun testHelpFragment_FAQListTitleIsDisplayed() {
+  fun testHelpFragment_FAQListTitleIsDisplayed() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)
