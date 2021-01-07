@@ -41,6 +41,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.AudioFragmentTestActivity
@@ -61,6 +63,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.IsOnRobolectric
@@ -69,7 +72,9 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -78,13 +83,9 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_HINDI = 0
-private const val PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH = 1
-private const val PROFILE_ID_INVALID_AUDIO_LANGUAGE = 2
 
 /**
  * TODO(#59): Make this test work with Espresso.
@@ -107,6 +108,12 @@ class AudioFragmentTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+
+  @Inject
   lateinit var audioPlayerController: AudioPlayerController
   private lateinit var shadowMediaPlayer: Any
 
@@ -116,6 +123,9 @@ class AudioFragmentTest {
   private val TEST_URL2 =
     "https://storage.googleapis.com/oppiaserver-resources/exploration/" +
       "2mzzFVDLuAj8/assets/audio/content-es-i0nhu49z0q.mp3"
+
+  private var internalProfileId = 0
+  private var profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Before
   fun setUp() {
@@ -137,11 +147,11 @@ class AudioFragmentTest {
 
   // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
   @Test
-  @Ignore
-  fun testAudioFragment_openFragment_profileWithEnglishAudioLanguage_showsEnglishAudioLanguage() {
+  fun testAudioFragment_withDefaultProfile_showsAudioLanguageAsEnglish() {
+    addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
       onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
@@ -150,26 +160,21 @@ class AudioFragmentTest {
 
   // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
   @Test
-  @Ignore
-  fun testAudioFragment_openFragment_showsDefaultAudioLanguageAsHindi() {
+  fun testAudioFragment_withHindiAudioLanguageProfile_showsHindiAudioLanguage() {
+    addMediaInfo()
+    profileTestHelper.addOnlyAdminProfile()
+    val data = profileManagementController.updateAudioLanguage(
+      profileId,
+      AudioLanguage.HINDI_AUDIO_LANGUAGE
+    ).toLiveData()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_HINDI
+        internalProfileId
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("HI")))
-    }
-  }
-
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
-  @Test
-  @Ignore
-  fun testAudioFragment_openFragment_showsEnglishAudioLanguageWhenDefaultAudioLanguageNotAvailable() { // ktlint-disable max-line-length
-    launch<AudioFragmentTestActivity>(
-      createAudioFragmentTestIntent(
-        PROFILE_ID_INVALID_AUDIO_LANGUAGE
-      )
-    ).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(data)
+      }
       onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
     }
   }
@@ -179,7 +184,7 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -190,12 +195,13 @@ class AudioFragmentTest {
     }
   }
 
+  // TODO(#2417): Need a fake audio library to run this test on espresso
   @Test
   fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -208,12 +214,13 @@ class AudioFragmentTest {
     }
   }
 
+  // TODO(#2417): clickSeekBar not working for espresso
   @Test
   fun testAudioFragment_invokePrepared_touchSeekBar_checkStillPaused() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -226,12 +233,13 @@ class AudioFragmentTest {
     }
   }
 
+  // TODO(#2417): clickSeekBar not working for espresso
   @Test
   fun testAudioFragment_invokePrepared_clickPlay_touchSeekBar_checkStillPlaying() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -251,7 +259,7 @@ class AudioFragmentTest {
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
       invokePreparedListener(shadowMediaPlayer)
@@ -269,7 +277,7 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
