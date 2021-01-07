@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="author_0">Rajat</string>
+  <string-array name="author_names">
+    <item>@string/author_0</item>
+  </string-array>
+</resources>
