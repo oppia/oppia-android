@@ -436,15 +436,28 @@ class StatePlayerRecyclerViewAssembler private constructor(
       "Expected non-null reference to banner confetti view"
     }
     confettiView.build()
-      .addColors(listOf(R.color.confetti_yellow, R.color.confetti_orange, R.color.confetti_purple, R.color.confetti_pink))
+      .addColors(
+        listOf(
+          R.color.confetti_yellow,
+          R.color.confetti_orange,
+          R.color.confetti_purple,
+          R.color.confetti_pink
+        )
+      )
       .setDirection(0.0, 359.0)
       .setSpeed(4f, 7f)
       .setFadeOutEnabled(true)
       .setTimeToLive(2000)
-      .addShapes(*arrayOf(Shape.Square, Shape.Circle))
-      .addSizes(Size(12), Size(16, 6f))
-      .setPosition(bannerConfettiView.x + bannerConfettiView.width / 2,
-        bannerConfettiView.y + bannerConfettiView.height / 3)
+      .addShapes(
+        *arrayOf(Shape.Square, Shape.Circle)
+      )
+      .addSizes(
+        Size(12), Size(16, 6f)
+      )
+      .setPosition(
+        bannerConfettiView.x + bannerConfettiView.width / 2,
+        bannerConfettiView.y + bannerConfettiView.height / 3
+      )
       .burst(100)
 
     val textView = checkNotNull(congratulationsTextView) {
