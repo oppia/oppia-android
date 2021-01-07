@@ -10,6 +10,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import junit.framework.Assert.assertTrue
 import org.json.JSONException
 import org.junit.Before
 import org.junit.Rule
@@ -452,10 +453,12 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     assertThat(story.getChapter(1).missingPrerequisiteChapter.name)
       .isEqualTo(story.getChapter(0).name)
+    assertTrue(story.getChapter(1).chapterThumbnail.isBlurred)
     assertThat(story.getChapter(2).chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     assertThat(story.getChapter(2).missingPrerequisiteChapter.name)
       .isEqualTo(story.getChapter(1).name)
+    assertTrue(story.getChapter(2).chapterThumbnail.isBlurred)
   }
 
   @Test
@@ -475,6 +478,7 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     assertThat(story.getChapter(2).missingPrerequisiteChapter.name)
       .isEqualTo(story.getChapter(1).name)
+    assertTrue(story.getChapter(2).chapterThumbnail.isBlurred)
   }
 
   @Test
@@ -935,6 +939,7 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     assertThat(topic.storyList[0].chapterList[1].missingPrerequisiteChapter.name)
       .isEqualTo(topic.storyList[0].chapterList[0].name)
+    assertTrue(topic.storyList[0].chapterList[1].chapterThumbnail.isBlurred)
   }
 
   @Test
@@ -980,6 +985,7 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     assertThat(storySummary.chapterList[1].missingPrerequisiteChapter.name)
       .isEqualTo(storySummary.chapterList[0].name)
+    assertTrue(storySummary.chapterList[1].chapterThumbnail.isBlurred)
   }
 
   @Test

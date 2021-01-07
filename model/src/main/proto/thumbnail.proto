@@ -15,6 +15,9 @@ message LessonThumbnail {
 
   // The background color for this thumbnail, in RGB (no alpha channel).
   int32 background_color_rgb = 3;
+
+  // Indicated whether the thumbnail is blurred. It is set to TRUE when the lesson is missing prerequisites.
+  bool is_blurred = 4;
 }
 
 // Corresponds to different types of thumbnails that may be used by a topic, story, or chapter. These currently only

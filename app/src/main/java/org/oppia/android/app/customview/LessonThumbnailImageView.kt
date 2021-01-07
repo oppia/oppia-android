@@ -1,15 +1,19 @@
 package org.oppia.android.app.customview
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.Transformation
 import org.oppia.android.R
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.shim.ViewComponentFactory
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.parser.BlurTransformation
 import org.oppia.android.util.parser.DefaultGcsPrefix
 import org.oppia.android.util.parser.ImageLoader
 import org.oppia.android.util.parser.ImageViewTarget
@@ -73,16 +77,26 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   }
 
   private fun loadLessonThumbnail() {
+    var transformations = if (lessonThumbnail.isBlurred) {
+      arrayOf(BlurTransformation(context))
+    } else {
+      arrayOf()
+    }
     if (lessonThumbnail.thumbnailFilename.isNotEmpty()) {
-      loadImage(lessonThumbnail.thumbnailFilename)
+      loadImage(lessonThumbnail.thumbnailFilename, *transformations)
     } else {
       imageView.setImageResource(getLessonDrawableResource(lessonThumbnail))
+      Glide.with(context)
+        .asBitmap()
+        .load(getLessonDrawableResource(lessonThumbnail))
+        .transform(*transformations)
+        .into(imageView)
     }
     imageView.setBackgroundColor(lessonThumbnail.backgroundColorRgb)
   }
 
   /** Loads an image using Glide from [filename]. */
-  private fun loadImage(filename: String) {
+  private fun loadImage(filename: String, vararg transformations: Transformation<Bitmap>) {
     val imageName = String.format(
       thumbnailDownloadUrlTemplate,
       entityType,
@@ -91,9 +105,9 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     )
     val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      imageLoader.loadSvg(imageUrl, ImageViewTarget(this))
+      imageLoader.loadSvg(imageUrl, ImageViewTarget(this), *transformations)
     } else {
-      imageLoader.loadBitmap(imageUrl, ImageViewTarget(this))
+      imageLoader.loadBitmap(imageUrl, ImageViewTarget(this), *transformations)
     }
   }
 
