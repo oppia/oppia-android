@@ -106,10 +106,12 @@ class WalkthroughTopicListFragmentTest {
     )
   }
 
+  @Config(qualifiers = "land-xxhdpi")
   @Test
-  fun testWalkthroughWelcomeFragment_portrait_recyclerViewIndex4__progressBarIsHidden() {
+  fun testWalkthroughWelcomeFragment_changeConfig_recyclerViewIndex4__progressBarIsHidden() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
@@ -117,7 +119,7 @@ class WalkthroughTopicListFragmentTest {
           4
         )
       )
-      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.advanceUntilIdle()
       onView(withId(R.id.walkthrough_progress_bar)).check(
         matches(
           withEffectiveVisibility(
@@ -128,18 +130,20 @@ class WalkthroughTopicListFragmentTest {
     }
   }
 
+  @Config(qualifiers = "land-xxhdpi")
   @Test
   fun testWalkthroughWelcomeFragment_changeConfig_recyclerViewIndex4_headerIsVisible() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
-      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.advanceUntilIdle()
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           4
         )
       )
-      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.advanceUntilIdle()
       onView(withId(R.id.walkthrough_activity_topic_header_text_view)).check(
         matches(
           withEffectiveVisibility(

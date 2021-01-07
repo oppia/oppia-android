@@ -72,8 +72,8 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
           super.onScrolled(recyclerView, dx, dy)
           if (
-            resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-            && !resources.getBoolean(R.bool.isTablet)
+            resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE &&
+            !resources.getBoolean(R.bool.isTablet)
           ) {
             val firstVisibleItemPosition = walkthroughLayoutManager.findFirstVisibleItemPosition()
             if (firstVisibleItemPosition >= 1) {
