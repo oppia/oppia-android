@@ -654,7 +654,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withNegSymbolAt0MoreThanOnce_numberFormatErrorIsDisplayed() {
+  fun testNumericInputInteractionView_withNegativeSignAt0MoreThan1_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
