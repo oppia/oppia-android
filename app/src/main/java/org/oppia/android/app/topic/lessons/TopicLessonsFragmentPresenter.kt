@@ -13,8 +13,12 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToStoryListener
+import org.oppia.android.databinding.SectionTitleBinding
 import org.oppia.android.databinding.TopicLessonsFragmentBinding
+import org.oppia.android.databinding.TopicLessonsStorySummaryBinding
+import org.oppia.android.databinding.TopicLessonsTitleBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
@@ -109,7 +113,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               currentExpandedChapterListIndex
             )
           binding.storySummaryRecyclerView.apply {
-            adapter = storySummaryAdapter
+//            adapter = storySummaryAdapter
           }
           if (storyId.isNotEmpty())
             binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(
@@ -122,6 +126,50 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   private fun getTopicList(): LiveData<Topic> {
     return Transformations.map(topicResultLiveData, ::processTopicResult)
+  }
+
+  private fun createRecyclerViewAdapter(): BindableAdapter<TopicLessonsItemViewModel> {
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<TopicLessonsItemViewModel, ViewType> { viewModel ->
+        when (viewModel) {
+          is TopicLessonsTitleViewModel -> ViewType.VIEW_TYPE_TITLE
+          is StorySummaryViewModel -> ViewType.VIEW_TYPE_STORY
+          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+        }
+      }
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_TITLE,
+        inflateDataBinding = TopicLessonsTitleBinding::inflate,
+        setViewModel = TopicLessonsTitleBinding::setViewModel,
+        transformViewModel = { it as SectionTitleBinding }
+      )
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_STORY,
+        inflateDataBinding = TopicLessonsStorySummaryBinding::inflate,
+        setViewModel = this::bindStorySummary,
+        transformViewModel = { it as StorySummaryViewModel }
+      )
+      .build()
+  }
+
+  private enum class ViewType {
+    VIEW_TYPE_TITLE,
+    VIEW_TYPE_STORY
+  }
+
+  private fun bindStorySummary(
+    binding: TopicLessonsStorySummaryBinding,
+    model: StorySummaryViewModel
+  ) {
+    binding.viewModel = model
+//    binding.isChecked = selectedSubtopicIdList.contains(model.subtopic.subtopicId)
+//    binding.subtopicCheckBox.setOnCheckedChangeListener { _, isChecked ->
+//      if (isChecked) {
+//        subtopicSelected(model.subtopic.subtopicId, model.subtopic.skillIdsList)
+//      } else {
+//        subtopicUnselected(model.subtopic.subtopicId, model.subtopic.skillIdsList)
+//      }
+//    }
   }
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
