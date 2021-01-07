@@ -13,6 +13,7 @@ import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
 class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
+
   @Inject
   lateinit var homeActivityPresenter: HomeActivityPresenter
   private var internalProfileId: Int = -1
