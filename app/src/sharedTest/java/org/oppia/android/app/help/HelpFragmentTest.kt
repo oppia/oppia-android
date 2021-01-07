@@ -3,7 +3,9 @@ package org.oppia.android.app.help
 import android.app.Application
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -159,9 +161,7 @@ class HelpFragmentTest {
   @Test
   fun openHelpActivity_openNavigationDrawer_navigationDrawerOpeningIsVerifiedSuccessfully() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isCompletelyDisplayed())
-      ).perform(click())
+      it.openNavigationDrawer()
       onView(withId(R.id.help_fragment_placeholder))
         .check(matches(isCompletelyDisplayed()))
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(isDisplayed()))
@@ -171,9 +171,32 @@ class HelpFragmentTest {
   @Test
   fun openHelpActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      it.openNavigationDrawer()
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
+    }
+  }
+
+  private fun ActivityScenario<HelpActivity>.openNavigationDrawer() {
+    onView(withContentDescription(R.string.drawer_open_content_description))
+      .check(matches(isCompletelyDisplayed()))
+      .perform(click())
+
+    // Force the drawer animation to start. See https://github.com/oppia/oppia-android/pull/2204 for
+    // background context.
+    onActivity { activity ->
+      val drawerLayout =
+        activity.findViewById<DrawerLayout>(R.id.help_activity_drawer_layout)
+      // Note that this only initiates a single computeScroll() in Robolectric. Normally, Android
+      // will compute several of these across multiple draw calls, but one seems sufficient for
+      // Robolectric. Note that Robolectric is also *supposed* to handle the animation loop one call
+      // to this method initiates in the view choreographer class, but it seems to not actually
+      // flush the choreographer per observation. In Espresso, this method is automatically called
+      // during draw (and a few other situations), but it's fine to call it directly once to kick it
+      // off (to avoid disparity between Espresso/Robolectric runs of the tests).
+      // NOTE TO DEVELOPERS: if this ever flakes, we can probably put this in a loop with fake time
+      // adjustments to simulate the render loop.
+      drawerLayout.computeScroll()
     }
   }
 
