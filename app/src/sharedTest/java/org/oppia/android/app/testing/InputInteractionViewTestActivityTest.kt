@@ -118,7 +118,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_inputtedNegativeNumberText_hasCorrectPendingAnswer() {
+  fun testFractionInputInteractionView_withNegativeNumberText_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -249,7 +249,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testFractionInputInteractionView_inputText_onConfigurationChange_hasCorrectPendingAnswer() {
+  fun testFractionInputInteractionView_withFractionInput_onConfigChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -267,7 +267,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_inputNegSymbolOtherThanAt0_numberFormatErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withNegSymbolOtherThanAt0_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -286,7 +286,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_inputNegSymbolAt0MoreThanOne_numberFormatErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withNegSymbolAt0MoreThanOne_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -305,7 +305,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_inputtedDividerMoreThanOnce_numberFormatErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withDividerMoreThanOnce_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -355,7 +355,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_inputPartialValue_onSubmit_numberFormatErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withPartialValue_onSubmit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -376,7 +376,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_inputtedValidValue_clickSubmitButton_noErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withMixedFractionNumber_clickSubmitButton_noErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -402,7 +402,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_inputDivideByZero_onSubmit_divideByZeroErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withDivideByZero_onSubmit_divideByZeroErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -423,7 +423,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_inputtedInvalidCharacter_invalidCharacterErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withInvalidCharacter_invalidCharacterErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
@@ -443,7 +443,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_inputtedLongNumber_onSubmit_numberTooLongErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withLongNumber_onSubmit_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
@@ -518,7 +518,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_inputNegDecimal_hasCorrectPendingAnswerWithDecimalValues() {
+  fun testNumericInputInteractionView_withNegDecimal_hasCorrectPendingAnswerWithDecimalValues() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -540,7 +540,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testNumberInputInteractionView_inputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
+  fun testNumberInputInteractionView_withText_onConfigurationChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -554,7 +554,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_inputtedInvalidCharacter_invalidCharacterErrorIsDisplayed() {
+  fun testNumericInputInteractionView_withInvalidCharacter_invalidCharacterErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -574,7 +574,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_inputLongNumber_onSubmit_numberTooLongErrorIsDisplayed() {
+  fun testNumericInputInteractionView_withLongNumber_onSubmit_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -596,7 +596,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_inputLongNonDecimalNum_onSubmit_numTooLongErrorIsDisplayed() {
+  fun testNumericInputInteractionView_withLongNonDecimalNum_onSubmit_numTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -618,7 +618,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_inputMinusSymbol_onSubmit_numberFormatErrorIsDisplayed() {
+  fun testNumericInputInteractionView_withMinusSymbol_onSubmit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -639,7 +639,7 @@ class InputInteractionViewTestActivityTest {
     }
   }
 
-  fun testNumericInputInteractionView_inputNegSymbolOtherThanAt0_numberFormatErrorIsDisplayed() {
+  fun testNumericInputInteractionView_withNegSymbolOtherThanAt0_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(editTextInputAction.appendText("55-"))
@@ -654,7 +654,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_inputNegSymbolAt0MoreThanOnce_numberFormatErrorIsDisplayed() {
+  fun testNumericInputInteractionView_withNegSymbolAt0MoreThanOnce_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
@@ -673,7 +673,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_inputFloatingPointMoreThanOnce_numFormatErrorIsDisplayed() {
+  fun testNumericInputInteractionView_withFloatingPointMoreThanOnce_numFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
@@ -692,7 +692,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_inputDecimalAtStart_numStartingWithFloatingPointError() {
+  fun testNumericInputInteractionView_withDecimalAtStart_numStartingWithFloatingPointError() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(editTextInputAction.appendText(".5"))
@@ -741,7 +741,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTextInputInteractionView_inputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
+  fun testTextInputInteractionView_withText_onConfigurationChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
