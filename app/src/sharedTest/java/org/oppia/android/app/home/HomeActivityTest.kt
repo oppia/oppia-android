@@ -30,7 +30,6 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -152,12 +151,30 @@ class HomeActivityTest {
   }
 
   @Test
-  @Ignore(
-    "This test case is incorrect as it depends on internalProfileId " +
-      "which is not guaranteed to be 0 for admin."
-  )
-  fun testHomeActivity_recyclerViewIndex0_withProfileId0_displayProfileName_profileNameDisplayedSuccessfully() { // ktlint-disable max-line-length
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_withAdminProfile_profileNameDisplayedSuccessfully() {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(withText("Admin!")))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_withAdminProfile_configChange_profileNameDisplayedSuccessfully() {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -222,24 +239,6 @@ class HomeActivityTest {
           R.id.welcome_text_view
         )
       ).check(matches(withText("Good evening,")))
-    }
-  }
-
-  @Test
-  fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysWelcomeMessageCorrectly() {
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.profile_name_textview
-        )
-      ).check(matches(withText("Admin!")))
     }
   }
 

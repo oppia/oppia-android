@@ -120,7 +120,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun openHelpActivity_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() {
+  fun testHelpFragment_faqListTitleIsDisplayed() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)
@@ -134,7 +134,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun openHelpActivity_configurationChanged_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() { // ktlint-disable max-line-length
+  fun testHelpFragment_configChanged_faqListTitleIsDisplayed() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
@@ -169,7 +169,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun openHelpActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
+  fun testHelpFragment_openNavDrawerAndClose_navDrawerIsClosed() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
