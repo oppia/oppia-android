@@ -120,7 +120,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun testHelpFragment_FAQListTitleIsDisplayed() {
+  fun testHelpFragment_faqListTitleIsDisplayed() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)
@@ -134,7 +134,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun testHelpFragment_configChanged_FAQListTitleIsDisplayed() {
+  fun testHelpFragment_configChanged_faqListTitleIsDisplayed() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
