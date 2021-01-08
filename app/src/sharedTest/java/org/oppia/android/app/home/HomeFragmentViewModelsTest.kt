@@ -101,7 +101,7 @@ class HomeFragmentViewModelsTest {
   }
 
   @Test
-  fun testWelcomeViewModel_sameProfileNameSameTime_isEqual() {
+  fun testWelcomeViewModelEquals_sameProfileNameSameTime_isTrue() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
@@ -109,14 +109,14 @@ class HomeFragmentViewModelsTest {
         val fragment = getTestFragment(it)
         val welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
         val copyWelcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
-        val isEqual = welcomeViewModelUser1Morning.equals(copyWelcomeViewModelUser1Morning)
-        assertThat(isEqual).isTrue()
+        val equal = welcomeViewModelUser1Morning.equals(copyWelcomeViewModelUser1Morning)
+        assertThat(equal).isTrue()
       }
     }
   }
 
   @Test
-  fun testWelcomeViewModel_differentProfileNameSameTime_isNotEqual() {
+  fun testWelcomeViewModelEquals_differentProfileNameSameTime_isFalse() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
@@ -124,14 +124,14 @@ class HomeFragmentViewModelsTest {
         val fragment = getTestFragment(it)
         val welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
         val welcomeViewModelUser2Morning = WelcomeViewModel(fragment, morningClock, "User 2")
-        val isEqual = welcomeViewModelUser1Morning.equals(welcomeViewModelUser2Morning)
-        assertThat(isEqual).isFalse()
+        val equal = welcomeViewModelUser1Morning.equals(welcomeViewModelUser2Morning)
+        assertThat(equal).isFalse()
       }
     }
   }
 
   @Test
-  fun testWelcomeViewModel_sameNameDifferentTimes_isNotEqual() {
+  fun testWelcomeViewModelEquals_sameNameDifferentTimes_isFalse() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
@@ -139,11 +139,29 @@ class HomeFragmentViewModelsTest {
         val fragment = getTestFragment(it)
         val welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
         val welcomeViewModelUser1Evening = WelcomeViewModel(fragment, eveningClock, "User 1")
-        val isEqual = welcomeViewModelUser1Morning.equals(welcomeViewModelUser1Evening)
-        assertThat(isEqual).isFalse()
+        val equal = welcomeViewModelUser1Morning.equals(welcomeViewModelUser1Evening)
+        assertThat(equal).isFalse()
       }
     }
   }
+
+//  @Test
+//  fun testPromotedStoryViewModelEquals_sameProfileSameStoryCountSameEntitySameStory_isTrue() {
+//    launch<HomeFragmentTestActivity>(
+//      createHomeFragmentTestActivity(context)
+//    ).use {
+//      it.onActivity {
+//        val promotedStoryViewModel = PromotedStoryViewModel(
+//          it, 1, 3, "", PromotedStory()
+//        )
+//        val copyPromotedStoryViewModel = PromotedStoryViewModel(
+//          it, 1, 3, "", PromotedStory()
+//        )
+//        val equal = promotedStoryViewModel.equals(copyPromotedStoryViewModel)
+//        assertThat(equal).isFalse()
+//      }
+//    }
+//  }
 
   @After
   fun tearDown() {
