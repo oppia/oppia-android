@@ -79,34 +79,19 @@ class HomeFragmentViewModelsTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Inject
-  lateinit var morningClock: OppiaClock
-
-  @Inject
-  lateinit var eveningClock: OppiaClock
-
-  //  private val fragment = Fragment()
-  private lateinit var welcomeViewModelUser1Morning: WelcomeViewModel
-  private lateinit var welcomeViewModelUser2Morning: WelcomeViewModel
-  private lateinit var welcomeViewModelUser2Evening: WelcomeViewModel
+  private var morningClock = OppiaClock()
+  private var eveningClock = OppiaClock()
 
   @Before
   fun setUp() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     setUpClocks()
-//    setUpWelcomeViewModels()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
   private fun setUpClocks() {
     morningClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     eveningClock.setCurrentTimeMs(EVENING_TIMESTAMP)
-  }
-
-  private fun setUpWelcomeViewModels() {
-//    welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
-//    welcomeViewModelUser2Morning = WelcomeViewModel(fragment, morningClock, "User 2")
-//    welcomeViewModelUser2Evening = WelcomeViewModel(fragment, eveningClock, "User 2")
   }
 
   private fun getTestFragment(activity: HomeFragmentTestActivity): HomeFragment {
@@ -116,15 +101,45 @@ class HomeFragmentViewModelsTest {
   }
 
   @Test
-  fun testWelcomeViewModel_differentProfileName_isNotEqual() {
+  fun testWelcomeViewModel_sameProfileNameSameTime_isEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         val fragment = getTestFragment(it)
-        welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
-        welcomeViewModelUser2Morning = WelcomeViewModel(fragment, morningClock, "User 2")
+        val welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
+        val copyWelcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
+        val isEqual = welcomeViewModelUser1Morning.equals(copyWelcomeViewModelUser1Morning)
+        assertThat(isEqual).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testWelcomeViewModel_differentProfileNameSameTime_isNotEqual() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
+        val welcomeViewModelUser2Morning = WelcomeViewModel(fragment, morningClock, "User 2")
         val isEqual = welcomeViewModelUser1Morning.equals(welcomeViewModelUser2Morning)
+        assertThat(isEqual).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testWelcomeViewModel_sameNameDifferentTimes_isNotEqual() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
+        val welcomeViewModelUser1Evening = WelcomeViewModel(fragment, eveningClock, "User 1")
+        val isEqual = welcomeViewModelUser1Morning.equals(welcomeViewModelUser1Evening)
         assertThat(isEqual).isFalse()
       }
     }

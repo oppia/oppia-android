@@ -23,7 +23,8 @@ class WelcomeViewModel(
   // only rebinds data when the actual data values in the HomeViewModel data list changes rather than
   // the ViewModel object.
   override fun equals(other: Any?): Boolean {
-    return other is WelcomeViewModel && this.profileName == other.profileName &&
+    return other is WelcomeViewModel &&
+      this.profileName == other.profileName &&
       this.greeting == other.greeting
   }
 

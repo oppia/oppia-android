@@ -5,17 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.HomeFragment
+import org.oppia.android.app.home.RouteToTopicListener
 
-/** Test Activity for testing view models on the HomeFragment */
-class HomeFragmentTestActivity : InjectableAppCompatActivity() {
-
-  private val homeFragment = HomeFragment()
+/**
+ * Test Activity for testing view models on the [HomeFragment]
+ * Must implement [RouteToTopicListener] so the test can access a [HomeFragmnet]
+ */
+class HomeFragmentTestActivity : RouteToTopicListener, InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     supportFragmentManager.beginTransaction().add(
-      homeFragment,
+      HomeFragment(),
       "home_fragment_test_activity"
     ).commitNow()
   }
@@ -26,4 +28,6 @@ class HomeFragmentTestActivity : InjectableAppCompatActivity() {
       return intent
     }
   }
+
+  override fun routeToTopic(internalProfileId: Int, topicId: String) {}
 }
