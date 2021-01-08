@@ -19,6 +19,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
+import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -101,67 +103,556 @@ class HomeFragmentViewModelsTest {
   }
 
   @Test
-  fun testWelcomeViewModelEquals_sameProfileNameSameTime_isTrue() {
+  fun testWelcomeViewModelEquals_reflexiveProfile1MorningAndProfile1Morning_isTrue() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         val fragment = getTestFragment(it)
-        val welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
-        val copyWelcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
-        val equal = welcomeViewModelUser1Morning.equals(copyWelcomeViewModelUser1Morning)
-        assertThat(equal).isTrue()
+        val welcomeViewModelProfile1Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 1"
+        )
+        assertThat(welcomeViewModelProfile1Morning.equals(welcomeViewModelProfile1Morning)).isTrue()
       }
     }
   }
 
   @Test
-  fun testWelcomeViewModelEquals_differentProfileNameSameTime_isFalse() {
+  fun testWelcomeViewModelEquals_symmetricProfile1MorningAndDifferentProfile1Morning_isTrue() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         val fragment = getTestFragment(it)
-        val welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
-        val welcomeViewModelUser2Morning = WelcomeViewModel(fragment, morningClock, "User 2")
-        val equal = welcomeViewModelUser1Morning.equals(welcomeViewModelUser2Morning)
+        val welcomeViewModelProfile1Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 1"
+        )
+        val copyWelcomeViewModelProfile1Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 1"
+        )
+        val isSymmetric =
+          welcomeViewModelProfile1Morning.equals(copyWelcomeViewModelProfile1Morning) &&
+            copyWelcomeViewModelProfile1Morning.equals(welcomeViewModelProfile1Morning)
+        assertThat(isSymmetric).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testWelcomeViewModelEquals_transitiveProfile1MorningAndTwoDifferentProfile1Morning_isTrue() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val welcomeViewModelProfile1Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 1"
+        )
+        val copy1WelcomeViewModelProfile1Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 1"
+        )
+        val copy2WelcomeVieModelProfile1Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 1"
+        )
+        val isTransitive =
+          welcomeViewModelProfile1Morning.equals(copy1WelcomeViewModelProfile1Morning) &&
+            copy1WelcomeViewModelProfile1Morning.equals(copy2WelcomeVieModelProfile1Morning) &&
+            copy2WelcomeVieModelProfile1Morning.equals(welcomeViewModelProfile1Morning)
+        assertThat(isTransitive).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testWelcomeViewModelEquals_consistentProfile1MorningAndDifferentProfile1Morning_isTrue() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val welcomeViewModelProfile1Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 1"
+        )
+        val copy1WelcomeViewModelProfile1Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 1"
+        )
+        val isConsistent =
+          welcomeViewModelProfile1Morning.equals(copy1WelcomeViewModelProfile1Morning) &&
+            welcomeViewModelProfile1Morning.equals(copy1WelcomeViewModelProfile1Morning)
+        assertThat(isConsistent).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testWelcomeViewModelEquals_profile1MorningAndNull_isFalse() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val welcomeViewModelProfile1Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 1"
+        )
+        assertThat(welcomeViewModelProfile1Morning.equals(null)).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testWelcomeViewModelEquals_profile1MorningAndProfile2Morning_isFalse() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val welcomeViewModelProfile1Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 1"
+        )
+        val welcomeViewModelProfile2Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 2"
+        )
+        assertThat(welcomeViewModelProfile1Morning.equals(welcomeViewModelProfile2Morning))
+          .isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testWelcomeViewModelEquals_profile1MorningAndProfile1Evening_isFalse() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val welcomeViewModelProfile1Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 1"
+        )
+        val welcomeViewModelProfile1Evening = WelcomeViewModel(
+          fragment,
+          eveningClock,
+          "Profile 1"
+        )
+        val equal = welcomeViewModelProfile1Morning.equals(welcomeViewModelProfile1Evening)
         assertThat(equal).isFalse()
       }
     }
   }
 
   @Test
-  fun testWelcomeViewModelEquals_sameNameDifferentTimes_isFalse() {
+  fun testWelcomeViewModelHashCode_viewModelsEqualHashCodesEqual_isTrue() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         val fragment = getTestFragment(it)
-        val welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
-        val welcomeViewModelUser1Evening = WelcomeViewModel(fragment, eveningClock, "User 1")
-        val equal = welcomeViewModelUser1Morning.equals(welcomeViewModelUser1Evening)
-        assertThat(equal).isFalse()
+        val welcomeViewModelProfile1Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 1"
+        )
+        val copyWelcomeViewModelProfile1Morning = WelcomeViewModel(
+          fragment,
+          morningClock,
+          "Profile 1"
+        )
+        assertThat(welcomeViewModelProfile1Morning.equals(copyWelcomeViewModelProfile1Morning))
+          .isTrue()
+
+        assertThat(
+          welcomeViewModelProfile1Morning.hashCode() ==
+            copyWelcomeViewModelProfile1Morning.hashCode()
+        ).isTrue()
       }
     }
   }
 
-//  @Test
-//  fun testPromotedStoryViewModelEquals_sameProfileSameStoryCountSameEntitySameStory_isTrue() {
-//    launch<HomeFragmentTestActivity>(
-//      createHomeFragmentTestActivity(context)
-//    ).use {
-//      it.onActivity {
-//        val promotedStoryViewModel = PromotedStoryViewModel(
-//          it, 1, 3, "", PromotedStory()
-//        )
-//        val copyPromotedStoryViewModel = PromotedStoryViewModel(
-//          it, 1, 3, "", PromotedStory()
-//        )
-//        val equal = promotedStoryViewModel.equals(copyPromotedStoryViewModel)
-//        assertThat(equal).isFalse()
-//      }
-//    }
-//  }
+  @Test
+  fun testPromotedStoryViewModelEquals_reflexiveProfile1StoryCount3EntityTypeEmptyStory1_isTrue() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val promotedStoryViewModel = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+
+        val isReflexive = promotedStoryViewModel.equals(promotedStoryViewModel)
+        assertThat(isReflexive).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testPromotedStoryViewModelEquals_symmetricProfile1StoryCount3EntityTypeEmptyStory1_isTrue() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val promotedStoryViewModel = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+        val copyPromotedStoryViewModel = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+
+        val isSymmetric = promotedStoryViewModel.equals(copyPromotedStoryViewModel) &&
+          copyPromotedStoryViewModel.equals(promotedStoryViewModel)
+        assertThat(isSymmetric).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testPromotedStoryViewModelEquals_transitiveProfile1StoryCount3EntityTypeEmptyStory1_isTrue() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val promotedStoryViewModel = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+        val copy1PromotedStoryViewModel = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+        val copy2PromotedStoryViewModel = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+
+        val isTransitive = promotedStoryViewModel.equals(copy1PromotedStoryViewModel) &&
+          copy1PromotedStoryViewModel.equals(copy2PromotedStoryViewModel) &&
+          copy2PromotedStoryViewModel.equals(promotedStoryViewModel)
+        assertThat(isTransitive).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testPromotedStoryViewModelEquals_consistentProfile1StoryCount3EntityTypeEmptyStory1_isTrue() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val promotedStoryViewModel = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+        val copyPromotedStoryViewModel = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+
+        val isConsistent = promotedStoryViewModel.equals(copyPromotedStoryViewModel) &&
+          promotedStoryViewModel.equals(copyPromotedStoryViewModel)
+        assertThat(isConsistent).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testPromotedStoryViewModelEquals_profile1StoryCount3EntityTypeEmptyStory1AndNull_isFalse() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val promotedStoryViewModel = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+
+        assertThat(promotedStoryViewModel.equals(null)).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testPromotedStoryViewModelEquals_profileId1AndProfileId2_isFalse() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val promotedStoryViewModelProfile1 = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+        val promotedStoryViewModelProfile2 = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */2,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+
+        assertThat(promotedStoryViewModelProfile1.equals(promotedStoryViewModelProfile2)).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testPromotedStoryViewModelEquals_storyCount2AndStoryCount3_isFalse() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val promotedStoryViewModelStoryCount2 = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */2,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+        val promotedStoryViewModelStoryCount3 = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+
+        assertThat(promotedStoryViewModelStoryCount2.equals(promotedStoryViewModelStoryCount3))
+          .isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testPromotedStoryViewModelEquals_entity1AndEntity2_isFalse() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val promotedStoryViewModelEntity1 = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"Entity 1",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+        val promotedStoryViewModelEntity2 = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"Entity 2",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+
+        assertThat(promotedStoryViewModelEntity1.equals(promotedStoryViewModelEntity2)).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testPromotedStoryViewModelEquals_story1AndStory2_isFalse() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val story1 = PromotedStory.newBuilder()
+          .setStoryId("id_1")
+          .setStoryName("Story 1")
+          .setTopicName("topic_name")
+          .setTotalChapterCount(1)
+          .build()
+        val story2 = PromotedStory.newBuilder()
+          .setStoryId("id_2")
+          .setStoryName("Story 2")
+          .setTopicName("topic_name")
+          .setTotalChapterCount(1)
+          .build()
+        assertThat(story1.equals(story2)).isFalse()
+
+        val promotedStoryViewModelStory1 = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"Entity 1",
+          story1
+        )
+        val promotedStoryViewModelStory2 = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"Entity 2",
+          story2
+        )
+
+        assertThat(promotedStoryViewModelStory1.equals(promotedStoryViewModelStory2)).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testPromotedStoryViewModelHashCode_viewModelsEqualHashCodesEqual_isTrue() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val promotedStoryViewModel = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+        val copyPromotedStoryViewModel = PromotedStoryViewModel(
+          /* activity = */ it,
+          /* internalProfileId = */1,
+          /* totalStoryCount = */3,
+          /* entytType = */"",
+          PromotedStory.newBuilder()
+            .setStoryId("id_1")
+            .setStoryName("Story 1")
+            .setTopicName("topic_name")
+            .setTotalChapterCount(1)
+            .build()
+        )
+        assertThat(promotedStoryViewModel.equals(copyPromotedStoryViewModel)).isTrue()
+
+        assertThat(promotedStoryViewModel.hashCode() == copyPromotedStoryViewModel.hashCode())
+          .isTrue()
+      }
+    }
+  }
 
   @After
   fun tearDown() {
