@@ -299,6 +299,15 @@ domain_test(
 )
 
 domain_test(
+    name = "ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/itemselectioninput/ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
     name = "MultipleChoiceInputEqualsRuleClassifierProviderTest",
     srcs = [
         "src/test/java/org/oppia/android/domain/classify/rules/multiplechoiceinput/MultipleChoiceInputEqualsRuleClassifierProviderTest.kt",
@@ -340,15 +349,6 @@ domain_test(
         "src/test/java/org/oppia/android/domain/classify/rules/textinput/TextInputContainsRuleClassifierProviderTest.kt",
     ],
     test_class = "org.oppia.android.domain.classify.rules.textinput.TextInputContainsRuleClassifierProviderTest",
-    deps = TEST_DEPS,
-)
-
-domain_test(
-    name = "ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
-    srcs = [
-        "src/test/java/org/oppia/android/domain/classify/rules/textinput/ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest.kt",
-    ],
-    test_class = "org.oppia.android.domain.classify.rules.textinput.ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
     deps = TEST_DEPS,
 )
 
