@@ -2,11 +2,13 @@ package org.oppia.android.app.home.promotedlist
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
-import org.oppia.android.databinding.ComingSoonTopicViewBinding
+import org.oppia.android.app.shim.ViewBindingShim
+import javax.inject.Inject
 
 /**
  * A custom [RecyclerView] for displaying a variable list of Upcoming topics that snaps to
@@ -18,14 +20,28 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
+  @Inject
+  lateinit var bindingInterface: ViewBindingShim
+
   init {
     (context.applicationContext as ApplicationInjectorProvider).getApplicationInjector()
       .injectComingSoonTopicsListView(this)
 
     adapter = BindableAdapter.SingleTypeBuilder.newBuilder<ComingSoonTopicsViewModel>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = ComingSoonTopicViewBinding::inflate,
-        setViewModel = ComingSoonTopicViewBinding::setViewModel
+      .registerViewBinder(
+        inflateView = { parent ->
+          bindingInterface.inflateComingSoonTopicsViewBinding(
+            inflater = LayoutInflater.from(context),
+            parent = parent,
+            attachToParent = false
+          )
+        },
+        bindView = { view, viewModel ->
+          bindingInterface.provideComingSoonTopicsViewModel(
+            view = view,
+            viewModel = viewModel
+          )
+        }
       ).build()
 
     /*
