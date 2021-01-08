@@ -418,7 +418,7 @@ class TopicListController @Inject constructor(
             )
             recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
 
-            // If user has completed all the topcs then add upcoming topics in
+            // If user has completed all the topics then add upcoming topics in
             // RecommendedActivityList.
             if (recommendedStoryBuilder.suggestedStoryCount == 0) {
               recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
