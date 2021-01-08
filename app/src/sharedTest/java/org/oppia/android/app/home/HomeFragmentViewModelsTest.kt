@@ -21,7 +21,9 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
+import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -46,7 +48,6 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -79,9 +80,6 @@ class HomeFragmentViewModelsTest {
   @Inject
   lateinit var context: Context
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
   private var morningClock = OppiaClock()
   private var eveningClock = OppiaClock()
   private val promotedStory1 = PromotedStory.newBuilder()
@@ -102,21 +100,25 @@ class HomeFragmentViewModelsTest {
     .setTopicName("topic_name")
     .setTotalChapterCount(1)
     .build()
-//  private val promotedStoryList2Stories = listOf(
-//    promotedStoryId1Story1,
-//    promotedStoryId2Story2
-//  )
-//  private val promotedStoryList3Stories = listOf(
-//    promotedStoryId1Story1,
-//    promotedStoryId2Story2,
-//    promotedStoryId3Story3
-//  )
+  private val topicSummary1 = TopicSummary.newBuilder()
+    .setTopicId("id_1")
+    .setName("topic_name")
+    .setTotalChapterCount(2)
+    .build()
+  private val topicSummary2 = TopicSummary.newBuilder()
+    .setTopicId("id_2")
+    .setName("topic_name")
+    .setTotalChapterCount(2)
+    .build()
 
   @Before
   fun setUp() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    setUpTestApplicationComponent()
     setUpClocks()
-    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun setUpClocks() {
@@ -311,10 +313,8 @@ class HomeFragmentViewModelsTest {
         assertThat(welcomeViewModelProfile1Morning.equals(copyWelcomeViewModelProfile1Morning))
           .isTrue()
 
-        assertThat(
-          welcomeViewModelProfile1Morning.hashCode() ==
-            copyWelcomeViewModelProfile1Morning.hashCode()
-        ).isTrue()
+        assertThat(welcomeViewModelProfile1Morning.hashCode())
+          .isEqualTo(copyWelcomeViewModelProfile1Morning.hashCode())
       }
     }
   }
@@ -584,8 +584,8 @@ class HomeFragmentViewModelsTest {
         )
         assertThat(promotedStoryViewModel.equals(copyPromotedStoryViewModel)).isTrue()
 
-        assertThat(promotedStoryViewModel.hashCode() == copyPromotedStoryViewModel.hashCode())
-          .isTrue()
+        assertThat(promotedStoryViewModel.hashCode())
+          .isEqualTo(copyPromotedStoryViewModel.hashCode())
       }
     }
   }
@@ -596,22 +596,25 @@ class HomeFragmentViewModelsTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val promotedStoryListViewModel = PromotedStoryListViewModel(it, listOf(
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory1
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory2
+        val promotedStoryListViewModel = PromotedStoryListViewModel(
+          it,
+          listOf(
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory1
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory2
+            )
           )
-        ))
+        )
 
         val isReflexive = promotedStoryListViewModel.equals(promotedStoryListViewModel)
         assertThat(isReflexive).isTrue()
@@ -625,38 +628,44 @@ class HomeFragmentViewModelsTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val promotedStoryListViewModel = PromotedStoryListViewModel(it, listOf(
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory1
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory2
+        val promotedStoryListViewModel = PromotedStoryListViewModel(
+          it,
+          listOf(
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory1
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory2
+            )
           )
-        ))
-        val copyPromotedStoryListViewModel = PromotedStoryListViewModel(it, listOf(
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory1
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory2
+        )
+        val copyPromotedStoryListViewModel = PromotedStoryListViewModel(
+          it,
+          listOf(
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory1
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory2
+            )
           )
-        ))
+        )
 
         val isSymmetric = promotedStoryListViewModel.equals(copyPromotedStoryListViewModel) &&
           copyPromotedStoryListViewModel.equals(promotedStoryListViewModel)
@@ -671,54 +680,63 @@ class HomeFragmentViewModelsTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val promotedStoryListViewModel = PromotedStoryListViewModel(it, listOf(
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory1
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory2
+        val promotedStoryListViewModel = PromotedStoryListViewModel(
+          it,
+          listOf(
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory1
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory2
+            )
           )
-        ))
-        val copy1PromotedStoryListViewModel = PromotedStoryListViewModel(it, listOf(
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory1
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory2
+        )
+        val copy1PromotedStoryListViewModel = PromotedStoryListViewModel(
+          it,
+          listOf(
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory1
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory2
+            )
           )
-        ))
-        val copy2PromotedStoryListViewModel = PromotedStoryListViewModel(it, listOf(
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory1
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory2
+        )
+        val copy2PromotedStoryListViewModel = PromotedStoryListViewModel(
+          it,
+          listOf(
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory1
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory2
+            )
           )
-        ))
+        )
 
         val isTransitive = promotedStoryListViewModel.equals(copy1PromotedStoryListViewModel) &&
           copy1PromotedStoryListViewModel.equals(copy2PromotedStoryListViewModel) &&
@@ -734,38 +752,44 @@ class HomeFragmentViewModelsTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val promotedStoryListViewModel = PromotedStoryListViewModel(it, listOf(
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory1
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory2
+        val promotedStoryListViewModel = PromotedStoryListViewModel(
+          it,
+          listOf(
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory1
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory2
+            )
           )
-        ))
-        val copyPromotedStoryListViewModel = PromotedStoryListViewModel(it, listOf(
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory1
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory2
+        )
+        val copyPromotedStoryListViewModel = PromotedStoryListViewModel(
+          it,
+          listOf(
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory1
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory2
+            )
           )
-        ))
+        )
 
         val isConsistent = promotedStoryListViewModel.equals(copyPromotedStoryListViewModel) &&
           promotedStoryListViewModel.equals(copyPromotedStoryListViewModel)
@@ -780,22 +804,25 @@ class HomeFragmentViewModelsTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val promotedStoryListViewModel = PromotedStoryListViewModel(it, listOf(
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory1
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory2
+        val promotedStoryListViewModel = PromotedStoryListViewModel(
+          it,
+          listOf(
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory1
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory2
+            )
           )
-        ))
+        )
 
         assertThat(promotedStoryListViewModel.equals(null)).isFalse()
       }
@@ -808,45 +835,51 @@ class HomeFragmentViewModelsTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val promotedStoryListViewModelOf2 = PromotedStoryListViewModel(it, listOf(
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory1
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory2
+        val promotedStoryListViewModelOf2 = PromotedStoryListViewModel(
+          it,
+          listOf(
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory1
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory2
+            )
           )
-        ))
-        val promotedStoryListViewModelOf3 = PromotedStoryListViewModel(it, listOf(
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory1
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory2
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory3
+        )
+        val promotedStoryListViewModelOf3 = PromotedStoryListViewModel(
+          it,
+          listOf(
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory1
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory2
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory3
+            )
           )
-        ))
+        )
 
         assertThat(promotedStoryListViewModelOf2.equals(promotedStoryListViewModelOf3)).isFalse()
       }
@@ -859,50 +892,298 @@ class HomeFragmentViewModelsTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val promotedStoryListViewModel = PromotedStoryListViewModel(it, listOf(
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory1
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory2
+        val promotedStoryListViewModel = PromotedStoryListViewModel(
+          it,
+          listOf(
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory1
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory2
+            )
           )
-        ))
-        val copyPromotedStoryListViewModel = PromotedStoryListViewModel(it, listOf(
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory1
-          ),
-          PromotedStoryViewModel(
-            /* activity = */ it,
-            /* internalProfileId = */1,
-            /* totalStoryCount = */3,
-            /* entytType = */"",
-            promotedStory2
+        )
+        val copyPromotedStoryListViewModel = PromotedStoryListViewModel(
+          it,
+          listOf(
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory1
+            ),
+            PromotedStoryViewModel(
+              /* activity = */ it,
+              /* internalProfileId = */1,
+              /* totalStoryCount = */3,
+              /* entytType = */"",
+              promotedStory2
+            )
           )
-        ))
+        )
         assertThat(promotedStoryListViewModel.equals(copyPromotedStoryListViewModel)).isTrue()
 
-        assertThat(
-          promotedStoryListViewModel.hashCode() == copyPromotedStoryListViewModel.hashCode()
-        ).isTrue()
+        assertThat(promotedStoryListViewModel.hashCode())
+          .isEqualTo(copyPromotedStoryListViewModel.hashCode())
+      }
+    }
+  }
+
+  @Test
+  fun testTopicSummaryViewModelEquals_reflexiveTopicSummary1Entity1Position5_isTrue() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val topicSummaryViewModel = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+        assertThat(topicSummaryViewModel.equals(topicSummaryViewModel)).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testTopicSummaryViewModelEquals_symmetricTopicSummary1Entity1Position5_isTrue() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val topicSummaryViewModel = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+        val copyTopicSummaryViewModel = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+
+        val isSymmetric = topicSummaryViewModel.equals(copyTopicSummaryViewModel) &&
+          copyTopicSummaryViewModel.equals(topicSummaryViewModel)
+        assertThat(isSymmetric).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testTopicSummaryViewModelEquals_transitiveTopicSummary1Entity1Position5_isTrue() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val topicSummaryViewModel = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+        val copy1TopicSummaryViewModel = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+        val copy2TopicSummaryViewModel = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+
+        val isTransitive = topicSummaryViewModel.equals(copy1TopicSummaryViewModel) &&
+          copy1TopicSummaryViewModel.equals(copy2TopicSummaryViewModel) &&
+          copy2TopicSummaryViewModel.equals(topicSummaryViewModel)
+        assertThat(isTransitive).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testTopicSummaryViewModelEquals_consistentTopicSummary1Entity1Position5_isTrue() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val topicSummaryViewModel = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+        val copyTopicSummaryViewModel = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+
+        val isConsistent = topicSummaryViewModel.equals(copyTopicSummaryViewModel) &&
+          topicSummaryViewModel.equals(copyTopicSummaryViewModel)
+        assertThat(isConsistent).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testTopicSummaryViewModelEquals_topicSummary1Entity1Position5AndNull_isFalse() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val topicSummaryViewModel = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+
+        assertThat(topicSummaryViewModel.equals(null)).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testTopicSummaryViewModelEquals_topicSummary1AndTopicSummary2_isFalse() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val topicSummaryViewModel1 = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+        val topicSummaryViewModel2 = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary2,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+
+        assertThat(topicSummaryViewModel1.equals(topicSummaryViewModel2)).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testTopicSummaryViewModelEquals_entity1AndEntity2_isFalse() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val topicSummaryViewModel1 = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+        val topicSummaryViewModel2 = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_2",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+
+        assertThat(topicSummaryViewModel1.equals(topicSummaryViewModel2)).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testTopicSummaryViewModelEquals_position4AndPosition5_isFalse() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val topicSummaryViewModel1 = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 4
+        )
+        val topicSummaryViewModel2 = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+
+        assertThat(topicSummaryViewModel1.equals(topicSummaryViewModel2)).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testTopicSummaryViewModelHashCode_viewModelsEqualHashCodesEqual_isTrue() {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        val topicSummaryViewModel = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+        val copyTopicSummaryViewModel = TopicSummaryViewModel(
+          /* activity = */ it,
+          topicSummary1,
+          /* entityType = */ "entity_1",
+          /* topicSummaryCLickListener = */ fragment,
+          /* position = */ 5
+        )
+        assertThat(topicSummaryViewModel.equals(copyTopicSummaryViewModel)).isTrue()
+
+        assertThat(topicSummaryViewModel.hashCode())
+          .isEqualTo(copyTopicSummaryViewModel.hashCode())
       }
     }
   }
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
