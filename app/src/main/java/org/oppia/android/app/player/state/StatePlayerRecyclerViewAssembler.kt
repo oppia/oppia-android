@@ -7,6 +7,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -182,6 +183,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   private val isSplitView = ObservableField<Boolean>(false)
+
+  private val confettiColors = listOf(
+    R.color.confetti_yellow,
+    R.color.confetti_orange,
+    R.color.confetti_purple,
+    R.color.confetti_pink
+  )
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
     ConceptCardFragment
@@ -437,28 +445,23 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     confettiView.build()
       .addColors(
-        listOf(
-          R.color.confetti_yellow,
-          R.color.confetti_orange,
-          R.color.confetti_purple,
-          R.color.confetti_pink
-        )
+        confettiColors.map { ContextCompat.getColor(confettiView.context, it) }
       )
       .setDirection(0.0, 359.0)
-      .setSpeed(4f, 7f)
+      .setSpeed(3f, 5f)
       .setFadeOutEnabled(true)
       .setTimeToLive(2000)
       .addShapes(
         *arrayOf(Shape.Square, Shape.Circle)
       )
       .addSizes(
-        Size(12), Size(16, 6f)
+        Size(8), Size(8, 3f)
       )
       .setPosition(
-        bannerConfettiView.x + bannerConfettiView.width / 2,
-        bannerConfettiView.y + bannerConfettiView.height / 3
+        bannerConfettiView.x + bannerConfettiView.width / 3,
+        R.dimen.state_fragment_banner_confetti_view_height.toFloat()
       )
-      .burst(100)
+      .burst(50)
 
     val textView = checkNotNull(congratulationsTextView) {
       "Expected non-null reference to congratulations text view"
