@@ -45,8 +45,8 @@ class PromotedStoryViewModel(
   }
 
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
-  // only rebinds data when the actual data values in the HomeViewModel data list changes rather than
-  // the ViewModel object.
+  // will only rebind when the actual data in the data list changes, rather than when the ViewModel
+  // object changes.
   override fun equals(other: Any?): Boolean {
     return other is PromotedStoryViewModel &&
       other.internalProfileId == this.internalProfileId &&
