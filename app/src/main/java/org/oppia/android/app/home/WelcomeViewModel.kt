@@ -28,5 +28,5 @@ class WelcomeViewModel(
       this.greeting == other.greeting
   }
 
-  override fun hashCode() = Objects.hash(this.profileName) + Objects.hash(this.greeting)
+  override fun hashCode() = Objects.hash(profileName, greeting)
 }

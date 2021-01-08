@@ -54,9 +54,8 @@ class PromotedStoryListViewModel(
   // will only rebind when the actual data in the data list changes, rather than when the ViewModel
   // object changes.
   override fun equals(other: Any?): Boolean {
-    return other is PromotedStoryListViewModel &&
-      other.promotedStoryList == this.promotedStoryList
+    return other is PromotedStoryListViewModel && other.promotedStoryList == this.promotedStoryList
   }
 
-  override fun hashCode() = Objects.hash(this.promotedStoryList)
+  override fun hashCode() = Objects.hash(promotedStoryList)
 }

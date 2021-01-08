@@ -80,8 +80,12 @@ class HomeFragmentViewModelsTest {
   @Inject
   lateinit var context: Context
 
-  private var morningClock = OppiaClock()
-  private var eveningClock = OppiaClock()
+  @Inject
+  lateinit var morningClock: OppiaClock
+
+  @Inject
+  lateinit var eveningClock: OppiaClock
+
   private val promotedStory1 = PromotedStory.newBuilder()
     .setStoryId("id_1")
     .setStoryName("Story 1")
@@ -114,15 +118,16 @@ class HomeFragmentViewModelsTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    setUpClocks()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun setUpClocks() {
+  private fun setUpDifferentClockTimes() {
+    morningClock = OppiaClock()
     morningClock.setCurrentTimeMs(MORNING_TIMESTAMP)
+    eveningClock = OppiaClock()
     eveningClock.setCurrentTimeMs(EVENING_TIMESTAMP)
   }
 
@@ -275,7 +280,9 @@ class HomeFragmentViewModelsTest {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
+
       it.onActivity {
+        setUpDifferentClockTimes()
         val fragment = getTestFragment(it)
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           fragment,

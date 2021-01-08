@@ -138,9 +138,5 @@ class TopicSummaryViewModel(
       other.position == this.position
   }
 
-  override fun hashCode(): Int {
-    return Objects.hash(this.topicSummary) +
-      Objects.hash(this.entityType) +
-      Objects.hash(this.position)
-  }
+  override fun hashCode() = Objects.hash(topicSummary, entityType, position)
 }

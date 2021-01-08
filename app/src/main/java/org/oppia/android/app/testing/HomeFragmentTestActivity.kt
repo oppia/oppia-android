@@ -30,8 +30,7 @@ class HomeFragmentTestActivity :
 
   companion object {
     fun createHomeFragmentTestActivity(context: Context): Intent {
-      val intent = Intent(context, HomeFragmentTestActivity::class.java)
-      return intent
+      return Intent(context, HomeFragmentTestActivity::class.java)
     }
   }
 

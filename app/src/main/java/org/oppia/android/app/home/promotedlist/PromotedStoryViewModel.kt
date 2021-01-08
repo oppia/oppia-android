@@ -55,10 +55,10 @@ class PromotedStoryViewModel(
       other.promotedStory == this.promotedStory
   }
 
-  override fun hashCode(): Int {
-    return Objects.hash(this.internalProfileId) +
-      Objects.hash(this.totalStoryCount) +
-      Objects.hash(this.entityType) +
-      Objects.hash(this.promotedStory)
-  }
+  override fun hashCode() = Objects.hash(
+    internalProfileId,
+    totalStoryCount,
+    entityType,
+    promotedStory
+  )
 }
