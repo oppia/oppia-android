@@ -55,14 +55,14 @@ class AppLanguageFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<LanguageItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<LanguageItemViewModel, ViewType> { viewModel ->
+      .newBuilder<LanguageItemViewModel, ViewType> {
         ViewType.VIEW_TYPE_LANGUAGE
       }
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_LANGUAGE,
         inflateDataBinding = LanguageItemsBinding::inflate,
         setViewModel = this::bindSkillView,
-        transformViewModel = { it as LanguageItemViewModel }
+        transformViewModel = { it }
       ).build()
   }
 

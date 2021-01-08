@@ -6,6 +6,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
+/** Language list view model for the recycler view in [AppLanguageFragment] and [AudioLanguageFragment]. */
 @FragmentScope
 class LanguageSelectionViewModel @Inject constructor(
   val activity: AppCompatActivity
@@ -13,13 +14,13 @@ class LanguageSelectionViewModel @Inject constructor(
 
   val selectedLanguage = MutableLiveData<String>()
 
-  val appLanguagesList = listOf<LanguageItemViewModel>(
+  private val appLanguagesList = listOf<LanguageItemViewModel>(
     LanguageItemViewModel("English"),
     LanguageItemViewModel("French"),
     LanguageItemViewModel("Hindi"),
     LanguageItemViewModel("Chinese")
   )
-  val audioLanguagesList = listOf<LanguageItemViewModel>(
+  private val audioLanguagesList = listOf<LanguageItemViewModel>(
     LanguageItemViewModel("No Audio"),
     LanguageItemViewModel("English"),
     LanguageItemViewModel("French"),

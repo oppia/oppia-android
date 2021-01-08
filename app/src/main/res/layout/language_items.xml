@@ -1,12 +1,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
   <data>
-    <variable
-      name="languageString"
-      type="CharSequence" />
+
     <variable
       name="isChecked"
       type="Boolean" />
+
     <variable
       name="viewModel"
       type="org.oppia.android.app.options.LanguageItemViewModel" />
@@ -28,8 +27,8 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginEnd="24dp"
-      android:clickable="false"
       android:checked="@{isChecked}"
+      android:clickable="false"
       android:minWidth="20dp"
       android:minHeight="20dp" />
 

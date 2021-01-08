@@ -46,7 +46,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       (fragment.activity as AudioLanguageActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
       (fragment.activity as AudioLanguageActivity).finish()
     }
-//    createAdapter()
+
     return binding.root
   }
 
@@ -63,7 +63,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
         viewType = ViewType.VIEW_TYPE_LANGUAGE,
         inflateDataBinding = LanguageItemsBinding::inflate,
         setViewModel = this::bindSkillView,
-        transformViewModel = { it as LanguageItemViewModel }
+        transformViewModel = { it }
       ).build()
   }
 
