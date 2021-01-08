@@ -236,7 +236,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_displaysRecentlyPlayedStoriesText() {
+  fun testHomeActivity_recentlyPlayedStoriesTextIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -257,7 +257,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_displaysViewAllText() {
+  fun testHomeActivity_viewAllTextIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -371,7 +371,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_topicSummary_topicNameIsCorrect() {
+  fun testHomeActivity_firstTestTopic_topicSummary_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -386,7 +386,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_topicSummary_lessonCountIsCorrect() {
+  fun testHomeActivity_fiveLessons_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -406,7 +406,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex4_topicSummary_topicNameIsCorrect() {
+  fun testHomeActivity_secondTestTopic_topicSummary_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -421,7 +421,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex4_topicSummary_lessonCountIsCorrect() {
+  fun testHomeActivity_oneLesson_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -441,7 +441,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_topicSummary_configurationChange_lessonCountIsCorrect() {
+  fun testHomeActivity_oneLesson_topicSummary_configChange_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -475,7 +475,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_onBackPressed_showsExitToProfileChooserDialog() {
+  fun testHomeActivity_onBackPressed_exitToProfileChooserDialogIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
@@ -486,7 +486,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_onBackPressed_orientationChange_showsExitToProfileChooserDialog() {
+  fun testHomeActivity_onBackPressed_configChange_exitToProfileChooserDialogIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
@@ -498,7 +498,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_onBackPressed_clickExit_checkOpensProfileActivity() {
+  fun testHomeActivity_onBackPressed_clickExit_opensProfileActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
