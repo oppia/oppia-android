@@ -75,7 +75,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     return PromotedStoryCardBinding.inflate(
       LayoutInflater.from(parent.context),
       parent,
-      /* attachToParent= */ attachToParent
+      attachToParent
     ).root
   }
 
