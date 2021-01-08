@@ -47,6 +47,7 @@
           android:scaleType="centerInside"
           app:entityId="@{viewModel.storyId}"
           app:entityType="@{viewModel.entityType}"
+          app:isBlurred="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
           app:layout_constraintDimensionRatio="16:9"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"

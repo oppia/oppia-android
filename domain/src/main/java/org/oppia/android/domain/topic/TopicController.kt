@@ -345,9 +345,6 @@ class TopicController @Inject constructor(
           } else {
             chapterBuilder.chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
             chapterBuilder.missingPrerequisiteChapter = prerequisiteChapter
-            chapterBuilder.setChapterThumbnail(
-              chapterBuilder.chapterThumbnail.toBuilder().setIsBlurred(true).build()
-            )
           }
         }
         storyBuilder.setChapter(chapterIndex, chapterBuilder)
@@ -389,9 +386,6 @@ class TopicController @Inject constructor(
         if (index != 0) {
           chapterBuilder.chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
           chapterBuilder.missingPrerequisiteChapter = storySummary.chapterList[index - 1]
-          chapterBuilder.setChapterThumbnail(
-            chapterBuilder.chapterThumbnail.toBuilder().setIsBlurred(true).build()
-          )
         } else {
           chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
         }

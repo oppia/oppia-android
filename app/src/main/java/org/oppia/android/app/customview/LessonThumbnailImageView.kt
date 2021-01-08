@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
@@ -28,6 +29,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
   private val imageView = this
+  private var isBlurred: Boolean = false
   private lateinit var lessonThumbnail: LessonThumbnail
   private lateinit var entityId: String
   private lateinit var entityType: String
@@ -63,6 +65,10 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     checkIfLoadingIsPossible()
   }
 
+  fun setIsBlurred(isBlurred: Boolean) {
+    this.isBlurred = isBlurred
+  }
+
   private fun checkIfLoadingIsPossible() {
     if (::entityId.isInitialized &&
       ::entityType.isInitialized &&
@@ -77,7 +83,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   }
 
   private fun loadLessonThumbnail() {
-    var transformations = if (lessonThumbnail.isBlurred) {
+    var transformations = if (isBlurred) {
       arrayOf(BlurTransformation(context))
     } else {
       arrayOf()
