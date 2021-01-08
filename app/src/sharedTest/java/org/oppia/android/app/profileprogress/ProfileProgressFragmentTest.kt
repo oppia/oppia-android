@@ -497,23 +497,31 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressActivity_changeConfiguration_recyclerViewItem1_storyNameIsCorrect() {
+    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      waitForTheView(withText("First Story"))
+      waitForTheView(withText("Fractions"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 1, R.id.story_name_text_view)
       ).check(
-        matches(withText(containsString("First Story")))
+        matches(withText(containsString("Matthew Goes to the Bakery")))
       )
     }
   }
 
   @Test
   fun testProfileProgressActivity_recyclerViewItem1_storyNameIsCorrect() {
+    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
@@ -521,20 +529,24 @@ class ProfileProgressFragmentTest {
           1
         )
       )
-      waitForTheView(withText("First Story"))
+      waitForTheView(withText("Matthew Goes to the Bakery"))
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
           1, R.id.story_name_text_view
         )
       ).check(
-        matches(withText(containsString("First Story")))
+        matches(withText(containsString("Matthew Goes to the Bakery")))
       )
     }
   }
 
   @Test
   fun testProfileProgressActivity_recyclerViewItem1_topicNameIsCorrect() {
+    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
@@ -542,14 +554,14 @@ class ProfileProgressFragmentTest {
           1
         )
       )
-      waitForTheView(withText("FIRST TEST TOPIC"))
+      waitForTheView(withText("FRACTIONS"))
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
           1, R.id.topic_name_text_view
         )
       ).check(
-        matches(withText(containsString("FIRST TEST TOPIC")))
+        matches(withText(containsString("FRACTIONS")))
       )
     }
   }

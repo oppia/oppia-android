@@ -249,7 +249,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem0_showsRecommendedSectionTitle() {
+  fun testRecentlyPlayedTestActivity_recyclerViewItem2_showsRecommendedSectionTitle() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -269,7 +269,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem1_recommendedSection_topicNameIsCorrect() {
+  fun testRecentlyPlayedTestActivity_recyclerViewItem3_recommendedSection_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -282,11 +282,11 @@ class RecentlyPlayedFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          2
+          3
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 2, R.id.story_name_text_view)
+        atPositionOnView(R.id.ongoing_story_recycler_view, 3, R.id.topic_name_text_view)
       ).check(
         matches(withText(containsString("Ratios and Proportional Reasoning")))
       )
