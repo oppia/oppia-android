@@ -16,7 +16,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
@@ -87,7 +86,6 @@ class StoryActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     Intents.init()
-    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 
   @After
