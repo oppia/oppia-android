@@ -24,7 +24,7 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   val progressPercentage = ObservableField(0)
   val isAtEndOfSession = ObservableBoolean(false)
   private val canSubmitAnswer = ObservableField(false)
-  var isAnswerCorrect = false
+  val isAnswerCorrect = ObservableField(false)
 
   var newAvailableHintIndex = -1
   var allHintsExhausted = false
@@ -38,6 +38,8 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   fun setHintOpenedAndUnRevealedVisibility(hintOpenedAndUnRevealedVisible: Boolean) {
     isHintOpenedAndUnRevealed.set(hintOpenedAndUnRevealedVisible)
   }
+
+  fun getIsAnswerCorrect(): Boolean = isAnswerCorrect.get() == true
 
   fun setCanSubmitAnswer(canSubmitAnswer: Boolean) = this.canSubmitAnswer.set(canSubmitAnswer)
 

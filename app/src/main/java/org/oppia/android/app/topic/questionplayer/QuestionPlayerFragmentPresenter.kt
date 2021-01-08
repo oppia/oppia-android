@@ -286,7 +286,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       fragment,
       Observer<AnsweredQuestionOutcome> { result ->
         recyclerViewAssembler.isCorrectAnswer.set(result.isCorrectAnswer)
-        questionViewModel.isAnswerCorrect = result.isCorrectAnswer
+        questionViewModel.isAnswerCorrect.set(result.isCorrectAnswer)
         if (result.isCorrectAnswer) {
           recyclerViewAssembler.stopHintsFromShowing()
           questionViewModel.setHintBulbVisibility(false)
@@ -416,7 +416,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       .addHintsAndSolutionsSupport()
       .addCongratulationsForCorrectAnswers(congratulationsTextView)
       .addConceptCardSupport()
-      .isAnswerCorrect(questionViewModel.isAnswerCorrect)
+      .isAnswerCorrect(questionViewModel.getIsAnswerCorrect())
       .build()
   }
 
