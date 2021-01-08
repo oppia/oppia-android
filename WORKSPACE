@@ -27,16 +27,14 @@ http_archive(
 )
 
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
-RULES_KOTLIN_VERSION = "legacy-1.4.0-rcx-oppia-exclusive-rc01"
+RULES_KOTLIN_VERSION = "v1.5.0-alpha-1"
 
 RULES_KOTLIN_SHA = "600f3d916eda5531dd70614ec96dc92b4ac24da0e1d815eb94559976e9bea8aa"
 
 http_archive(
     name = "io_bazel_rules_kotlin",
+    urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % RULES_KOTLIN_VERSION],
     sha256 = RULES_KOTLIN_SHA,
-    strip_prefix = "rules_kotlin-%s" % RULES_KOTLIN_VERSION,
-    type = "zip",
-    urls = ["https://github.com/oppia/rules_kotlin/archive/%s.zip" % RULES_KOTLIN_VERSION],
 )
 
 # TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
