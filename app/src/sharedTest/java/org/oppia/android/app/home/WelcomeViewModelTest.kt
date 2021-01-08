@@ -3,6 +3,7 @@ package org.oppia.android.app.home
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -63,6 +64,8 @@ private const val MORNING_TIMESTAMP = 1556094120000
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
 
+private const val TEST_FRAGMENT_TAG = "welcome_view_model_test_fragment"
+
 /** Tests for [WelcomeViewModel] data. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -80,6 +83,8 @@ class WelcomeViewModelTest {
   @Inject
   lateinit var eveningClock: OppiaClock
 
+  private val testFragment by lazy { Fragment() }
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -89,17 +94,15 @@ class WelcomeViewModelTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun setUpTestFragment(activity: HomeFragmentTestActivity) {
+    activity.supportFragmentManager.beginTransaction().add(testFragment, TEST_FRAGMENT_TAG).commitNow()
+  }
+
   private fun setUpDifferentClockTimes() {
     morningClock = OppiaClock()
     morningClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     eveningClock = OppiaClock()
     eveningClock.setCurrentTimeMs(EVENING_TIMESTAMP)
-  }
-
-  private fun getTestFragment(activity: HomeFragmentTestActivity): HomeFragment {
-    return activity.supportFragmentManager.findFragmentByTag(
-      "home_fragment_test_activity"
-    ) as HomeFragment
   }
 
   @Test
@@ -108,9 +111,9 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )
@@ -125,14 +128,14 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )
         val copyWelcomeViewModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )
@@ -150,19 +153,19 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )
         val copy1WelcomeViewModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )
         val copy2WelcomeVieModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )
@@ -181,14 +184,14 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )
         val copy1WelcomeViewModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )
@@ -206,9 +209,9 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )
@@ -223,14 +226,14 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )
         val welcomeViewModelProfile2Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 2"
         )
@@ -248,14 +251,14 @@ class WelcomeViewModelTest {
 
       it.onActivity {
         setUpDifferentClockTimes()
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )
         val welcomeViewModelProfile1Evening = WelcomeViewModel(
-          fragment,
+          testFragment,
           eveningClock,
           "Profile 1"
         )
@@ -271,14 +274,14 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )
         val copyWelcomeViewModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )
@@ -297,9 +300,9 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          fragment,
+          testFragment,
           morningClock,
           "Profile 1"
         )

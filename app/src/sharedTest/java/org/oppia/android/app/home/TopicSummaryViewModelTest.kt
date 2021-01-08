@@ -3,6 +3,7 @@ package org.oppia.android.app.home
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -57,6 +58,8 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TEST_FRAGMENT_TAG = "topic_summary_view_model_test_fragment"
+
 /** Tests for [HomeViewModel]s data. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -67,6 +70,8 @@ import javax.inject.Singleton
 class TopicSummaryViewModelTest {
   @Inject
   lateinit var context: Context
+
+  private val testFragment by lazy { HomeFragment() }
 
   private val topicSummary1 = TopicSummary.newBuilder()
     .setTopicId("id_1")
@@ -88,10 +93,8 @@ class TopicSummaryViewModelTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun getTestFragment(activity: HomeFragmentTestActivity): HomeFragment {
-    return activity.supportFragmentManager.findFragmentByTag(
-      "home_fragment_test_activity"
-    ) as HomeFragment
+  private fun setUpTestFragment(activity: HomeFragmentTestActivity) {
+    activity.supportFragmentManager.beginTransaction().add(testFragment, TEST_FRAGMENT_TAG).commitNow()
   }
 
   @Test
@@ -100,12 +103,12 @@ class TopicSummaryViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val topicSummaryViewModel = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
         assertThat(topicSummaryViewModel.equals(topicSummaryViewModel)).isTrue()
@@ -119,19 +122,19 @@ class TopicSummaryViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val topicSummaryViewModel = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
         val copyTopicSummaryViewModel = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
 
@@ -148,26 +151,26 @@ class TopicSummaryViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val topicSummaryViewModel = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
         val copy1TopicSummaryViewModel = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
         val copy2TopicSummaryViewModel = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
 
@@ -185,19 +188,19 @@ class TopicSummaryViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val topicSummaryViewModel = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
         val copyTopicSummaryViewModel = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
 
@@ -214,12 +217,12 @@ class TopicSummaryViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val topicSummaryViewModel = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
 
@@ -234,19 +237,19 @@ class TopicSummaryViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val topicSummaryViewModel1 = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
         val topicSummaryViewModel2 = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary2,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
 
@@ -261,19 +264,19 @@ class TopicSummaryViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val topicSummaryViewModel1 = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
         val topicSummaryViewModel2 = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_2",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
 
@@ -288,19 +291,19 @@ class TopicSummaryViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val topicSummaryViewModel1 = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 4
         )
         val topicSummaryViewModel2 = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
 
@@ -315,19 +318,19 @@ class TopicSummaryViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val topicSummaryViewModel = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
         val copyTopicSummaryViewModel = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
         assertThat(topicSummaryViewModel.equals(copyTopicSummaryViewModel)).isTrue()
@@ -344,12 +347,12 @@ class TopicSummaryViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val fragment = getTestFragment(it)
+        setUpTestFragment(it)
         val topicSummaryViewModel = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ fragment,
+          /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
         val firstHash = topicSummaryViewModel.hashCode()
