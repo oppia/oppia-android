@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:lesson="http://schemas.android.com/tools">
 
   <data>
 
@@ -26,14 +27,14 @@
       android:layout_height="92dp"
       android:importantForAccessibility="no"
       android:scaleType="centerInside"
-      app:entityId="@{viewModel.topicSummary.topicId}"
+      lesson:entityId="@{viewModel.topicSummary.topicId}"
+      lesson:entityType="topic"
       app:layout_constraintDimensionRatio="4:3"
-      android:src="@{viewModel.topicSummary.topicThumbnail.thumbnailGraphic}"
       app:layout_constraintBottom_toTopOf="@+id/bottom_container"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:lessonThumbnail="@{viewModel.topicSummary.topicThumbnail}" />
+      lesson:lessonThumbnail="@{viewModel.topicSummary.topicThumbnail}" />
 
     <FrameLayout
       android:id="@+id/bottom_container"
