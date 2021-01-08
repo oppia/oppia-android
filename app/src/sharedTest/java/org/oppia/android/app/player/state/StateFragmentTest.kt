@@ -551,6 +551,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickRegion6_submitButtonClickable() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -564,6 +565,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickRegion6_clickSubmit_receivesCorrectFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
