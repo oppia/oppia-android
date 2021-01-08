@@ -9,6 +9,7 @@ import org.oppia.android.R
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import java.util.Objects
 
 // TODO(#283): Add download status information to promoted-story-card.
 
@@ -41,5 +42,23 @@ class PromotedStoryViewModel(
       promotedStory.topicId,
       promotedStory.storyId
     )
+  }
+
+  // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
+  // only rebinds data when the actual data values in the HomeViewModel data list changes rather than
+  // the ViewModel object.
+  override fun equals(other: Any?): Boolean {
+    return other is PromotedStoryViewModel &&
+      other.internalProfileId == this.internalProfileId &&
+      other.totalStoryCount == this.totalStoryCount &&
+      other.entityType == this.entityType &&
+      other.promotedStory == this.promotedStory
+  }
+
+  override fun hashCode(): Int {
+    return Objects.hash(this.internalProfileId) +
+      Objects.hash(this.totalStoryCount) +
+      Objects.hash(this.entityType) +
+      Objects.hash(this.promotedStory)
   }
 }

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.TopicSummary
+import java.util.Objects
 
 // TODO(#206): Remove the color darkening computation and properly set up the topic thumbnails.
 // These values were roughly computed based on the mocks. They won't produce the same colors since darker colors in the
@@ -125,5 +126,21 @@ class TopicSummaryViewModel(
     hsv[1] = (hsv[1] * DARKEN_SATURATION_MULTIPLIER).coerceIn(0f, 1f)
     hsv[2] = (hsv[2] * DARKEN_VALUE_MULTIPLIER).coerceIn(0f, 1f)
     return Color.HSVToColor(hsv)
+  }
+
+  // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
+  // only rebinds data when the actual data values in the HomeViewModel data list changes rather than
+  // the ViewModel object.
+  override fun equals(other: Any?): Boolean {
+    return other is TopicSummaryViewModel &&
+      other.topicSummary == this.topicSummary &&
+      other.entityType == this.entityType &&
+      other.position == this.position
+  }
+
+  override fun hashCode(): Int {
+    return Objects.hash(this.topicSummary) +
+      Objects.hash(this.entityType) +
+      Objects.hash(this.position)
   }
 }

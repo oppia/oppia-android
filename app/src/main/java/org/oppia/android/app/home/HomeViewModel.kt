@@ -88,7 +88,7 @@ class HomeViewModel(
       if (itemListResult.isFailure()) {
         logger.e(
           "HomeFragment",
-          "No home fragment available -- failed to retrieve home fragment information.",
+          "No home fragment available -- failed to retrieve fragment data.",
           itemListResult.getErrorOrNull()
         )
       }
