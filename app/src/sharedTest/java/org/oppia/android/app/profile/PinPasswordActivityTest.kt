@@ -25,7 +25,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.chaos.view.PinView
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
