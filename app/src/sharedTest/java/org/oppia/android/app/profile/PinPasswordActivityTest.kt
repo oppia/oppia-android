@@ -114,7 +114,6 @@ class PinPasswordActivityTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
