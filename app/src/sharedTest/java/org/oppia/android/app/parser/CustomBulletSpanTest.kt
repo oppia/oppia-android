@@ -101,7 +101,7 @@ class CustomBulletSpanTest {
   }
 
   @Test
-  fun customBulletSpan_testReplaceBulletSpan_spannableStringWithBulletSpanIsNotSame() {
+  fun customBulletSpan_testReplaceBulletSpan_spannableStringWithBulletSpan_isNotSame() {
     val spannableString1 = testStringWithBulletSpan
     val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
       SpannableStringBuilder(spannableString1),
@@ -116,7 +116,7 @@ class CustomBulletSpanTest {
   }
 
   @Test
-  fun customBulletSpan_testReplaceBulletSpan_multipleBulletSpanAndUnderlineSpan_underlineSpan() {
+  fun customBulletSpan_testReplaceBulletSpan_includingUnderlineSpan_underlineSpanRemainsSame() {
     val spannableString1 = testStringWithMultipleBulletSpan
     val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
       SpannableStringBuilder(spannableString1),
@@ -132,7 +132,7 @@ class CustomBulletSpanTest {
   }
 
   @Test
-  fun customBulletSpan_testReplaceBulletSpan_customBulletSpans_RemainsSame() {
+  fun customBulletSpan_testReplaceBulletSpan_customBulletSpans_remainsSame() {
     val spannableString1 = testStringWithCustomBulletSpan
     val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
       SpannableStringBuilder(spannableString1),
