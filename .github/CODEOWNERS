@@ -55,8 +55,8 @@ gradlew.bat @BenHenning
 # All tests.
 *Test.kt @anandwana001
 
-# All layout files.
-layout*/*.xml @rt4914
+# All resource files.
+**/res/*.xml @rt4914
 
 # Proguard configurations.
 *.pro @BenHenning
