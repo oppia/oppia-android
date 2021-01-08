@@ -1,10 +1,10 @@
 package org.oppia.android.app.home
 
 import android.app.Application
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -22,6 +22,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.HomeFragmentTestActivity
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -41,6 +42,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -65,42 +67,69 @@ private const val EVENING_TIMESTAMP = 1556061720000
 /** Tests for [HomeViewModel]s data. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
-class HomeViewModelTest {
+@Config(
+  application = HomeFragmentViewModelsTest.TestApplication::class,
+  manifest = Config.NONE
+)
+class HomeFragmentViewModelsTest {
   @Inject
-  lateinit var fragment: Fragment
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var morningClock: OppiaClock
+
   @Inject
   lateinit var eveningClock: OppiaClock
+
+  //  private val fragment = Fragment()
   private lateinit var welcomeViewModelUser1Morning: WelcomeViewModel
   private lateinit var welcomeViewModelUser2Morning: WelcomeViewModel
   private lateinit var welcomeViewModelUser2Evening: WelcomeViewModel
 
   @Before
   fun setUp() {
-    Intents.init()
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    setUpClocks()
+//    setUpWelcomeViewModels()
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  private fun setUpClocks() {
     morningClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     eveningClock.setCurrentTimeMs(EVENING_TIMESTAMP)
-    setUpWelcomeViewModels()
   }
 
   private fun setUpWelcomeViewModels() {
-    welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
-    welcomeViewModelUser2Morning = WelcomeViewModel(fragment, morningClock, "User 2")
-    welcomeViewModelUser2Evening = WelcomeViewModel(fragment, eveningClock, "User 2")
+//    welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
+//    welcomeViewModelUser2Morning = WelcomeViewModel(fragment, morningClock, "User 2")
+//    welcomeViewModelUser2Evening = WelcomeViewModel(fragment, eveningClock, "User 2")
+  }
+
+  private fun getTestFragment(activity: HomeFragmentTestActivity): HomeFragment {
+    return activity.supportFragmentManager.findFragmentByTag(
+      "home_fragment_test_activity"
+    ) as HomeFragment
   }
 
   @Test
   fun testWelcomeViewModel_differentProfileName_isNotEqual() {
-    val isEqual = welcomeViewModelUser1Morning.equals(welcomeViewModelUser2Morning)
-    assertThat(isEqual).isFalse()
+    launch(HomeFragmentTestActivity::class.java).use {
+      it.onActivity {
+        val fragment = getTestFragment(it)
+        welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
+        welcomeViewModelUser2Morning = WelcomeViewModel(fragment, morningClock, "User 2")
+        val isEqual = welcomeViewModelUser1Morning.equals(welcomeViewModelUser2Morning)
+        assertThat(isEqual).isFalse()
+      }
+    }
   }
 
   @After
   fun tearDown() {
-    Intents.release()
+    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -127,18 +156,18 @@ class HomeViewModelTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(homeViewModelsTest: HomeViewModelsTest)
+    fun inject(homeFragmentViewModelsTest: HomeFragmentViewModelsTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerHomeViewModelsTest_TestApplicationComponent.builder()
+      DaggerHomeFragmentViewModelsTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(homeViewModelsTest: HomeViewModelsTest) {
-      component.inject(homeViewModelsTest)
+    fun inject(homeViewModelTest: HomeFragmentViewModelsTest) {
+      component.inject(homeViewModelTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
