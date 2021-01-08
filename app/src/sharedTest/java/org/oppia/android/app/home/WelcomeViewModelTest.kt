@@ -63,7 +63,7 @@ private const val MORNING_TIMESTAMP = 1556094120000
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
 
-/** Tests for [HomeViewModel]s data. */
+/** Tests for [WelcomeViewModel] data. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
