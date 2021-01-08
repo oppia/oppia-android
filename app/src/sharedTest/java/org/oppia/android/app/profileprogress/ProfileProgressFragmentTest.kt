@@ -83,6 +83,8 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
@@ -568,6 +570,10 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressActivity_clickRecyclerViewItem1_intentIsCorrect() {
+    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
@@ -575,7 +581,7 @@ class ProfileProgressFragmentTest {
           1
         )
       )
-      waitForTheView(withText("FIRST TEST TOPIC"))
+      waitForTheView(withText("FRACTIONS"))
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
@@ -585,8 +591,8 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), TEST_STORY_ID_0))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
+      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }
 

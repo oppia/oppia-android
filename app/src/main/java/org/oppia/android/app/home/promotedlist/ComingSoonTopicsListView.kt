@@ -3,6 +3,7 @@ package org.oppia.android.app.home.promotedlist
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.databinding.ComingSoonTopicViewBinding
@@ -18,6 +19,9 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
   init {
+    (context.applicationContext as ApplicationInjectorProvider).getApplicationInjector()
+      .injectComingSoonTopicsListView(this)
+
     adapter = BindableAdapter.SingleTypeBuilder.newBuilder<ComingSoonTopicsViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ComingSoonTopicViewBinding::inflate,
