@@ -96,7 +96,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     return ComingSoonTopicViewBinding.inflate(
       LayoutInflater.from(parent.context),
       parent,
-      /* attachToParent= */ attachToParent
+      attachToParent
     ).root
   }
 
