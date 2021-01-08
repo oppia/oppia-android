@@ -22,10 +22,6 @@ class HomeFragmentTestActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    supportFragmentManager.beginTransaction().add(
-      HomeFragment(),
-      "home_fragment_test_activity"
-    ).commitNow()
   }
 
   companion object {
