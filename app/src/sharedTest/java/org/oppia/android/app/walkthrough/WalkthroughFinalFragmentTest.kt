@@ -229,6 +229,7 @@ class WalkthroughFinalFragmentTest {
       ).perform(click())
       onView(withId(R.id.walkthrough_final_no_button)).perform(scrollTo())
         .perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
     }
   }
