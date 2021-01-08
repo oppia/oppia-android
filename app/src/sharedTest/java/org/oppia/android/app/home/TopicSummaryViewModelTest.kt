@@ -3,7 +3,6 @@ package org.oppia.android.app.home
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -94,7 +93,8 @@ class TopicSummaryViewModelTest {
   }
 
   private fun setUpTestFragment(activity: HomeFragmentTestActivity) {
-    activity.supportFragmentManager.beginTransaction().add(testFragment, TEST_FRAGMENT_TAG).commitNow()
+    activity.supportFragmentManager.beginTransaction().add(testFragment, TEST_FRAGMENT_TAG)
+      .commitNow()
   }
 
   @Test

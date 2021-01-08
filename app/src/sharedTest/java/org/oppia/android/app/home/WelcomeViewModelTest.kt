@@ -95,7 +95,8 @@ class WelcomeViewModelTest {
   }
 
   private fun setUpTestFragment(activity: HomeFragmentTestActivity) {
-    activity.supportFragmentManager.beginTransaction().add(testFragment, TEST_FRAGMENT_TAG).commitNow()
+    activity.supportFragmentManager.beginTransaction().add(testFragment, TEST_FRAGMENT_TAG)
+      .commitNow()
   }
 
   private fun setUpDifferentClockTimes() {
