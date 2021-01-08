@@ -37,11 +37,6 @@ http_archive(
     sha256 = RULES_KOTLIN_SHA,
 )
 
-# TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
-load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
-
-kt_download_local_dev_dependencies()
-
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
 
 kotlin_repositories()
@@ -54,7 +49,6 @@ module while helping us avoid the unnecessary compilation of protoc. Referecence
 - https://github.com/google/startup-os/blob/5f30a62/WORKSPACE#L179-L187
 - https://github.com/bazelbuild/bazel/issues/7095
 """
-
 bind(
     name = "proto_compiler",
     actual = "//tools:protoc",
@@ -63,6 +57,12 @@ bind(
 bind(
     name = "proto_java_toolchain",
     actual = "//tools:java_toolchain",
+)
+
+http_archive(
+    name = "rules_java",
+    url = "https://github.com/bazelbuild/rules_java/releases/download/0.1.1/rules_java-0.1.1.tar.gz",
+    sha256 = "220b87d8cfabd22d1c6d8e3cdb4249abd4c93dcc152e0667db061fb1b957ee68",
 )
 
 load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
