@@ -1,5 +1,7 @@
 package org.oppia.android.app.testing
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.HomeFragment
@@ -13,15 +15,15 @@ class HomeFragmentTestActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     supportFragmentManager.beginTransaction().add(
-      HomeFragment(),
+      homeFragment,
       "home_fragment_test_activity"
     ).commitNow()
   }
 
-//  companion object {
-//    fun createHomeFragmentTestActivity(context: Context): Intent {
-//      val intent = Intent(context, HomeFragmentTestActivity::class.java)
-//      return intent
-//    }
-//  }
+  companion object {
+    fun createHomeFragmentTestActivity(context: Context): Intent {
+      val intent = Intent(context, HomeFragmentTestActivity::class.java)
+      return intent
+    }
+  }
 }

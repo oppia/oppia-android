@@ -23,6 +23,7 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HomeFragmentTestActivity
+import org.oppia.android.app.testing.HomeFragmentTestActivity.Companion.createHomeFragmentTestActivity
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -116,7 +117,9 @@ class HomeFragmentViewModelsTest {
 
   @Test
   fun testWelcomeViewModel_differentProfileName_isNotEqual() {
-    launch(HomeFragmentTestActivity::class.java).use {
+    launch<HomeFragmentTestActivity>(
+      createHomeFragmentTestActivity(context)
+    ).use {
       it.onActivity {
         val fragment = getTestFragment(it)
         welcomeViewModelUser1Morning = WelcomeViewModel(fragment, morningClock, "User 1")
