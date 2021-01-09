@@ -25,7 +25,7 @@ class StoryProgressTestHelper @Inject constructor(
    *
    * @param profileId The profile we are setting partial progress of the fraction story for.
    * @param timestampOlderThanOneWeek If the timestamp for this topic progress is more
-   * than one week ago.
+   *    than one week ago.
    */
   fun markPartialStoryProgressForFractions(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
     val timestamp = if (!timestampOlderThanAWeek) {
@@ -47,7 +47,7 @@ class StoryProgressTestHelper @Inject constructor(
    *
    * @param profileId The profile we are setting partial progress of the fraction topic for.
    * @param timestampOlderThanOneWeek If the timestamp for this topic progress is more than
-   * one week ago.
+   *     one week ago.
    */
   fun markPartialTopicProgressForFractions(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
     val timestamp = if (!timestampOlderThanAWeek) {
@@ -137,7 +137,8 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks full topic progress on Test Topics for a particular profile.
    *
    * @param profileId The profile we are setting topic progress for.
-   * @param timestampOlderThanOneWeek If the timestamp for completing the topic is from more than one week ago.
+   * @param timestampOlderThanOneWeek If the timestamp for completing the topic is from more than
+   *     one week ago.
    */
   fun markFullTopicProgressForTestTopic(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     val timestamp = if (!timestampOlderThanOneWeek) {
@@ -145,8 +146,9 @@ class StoryProgressTestHelper @Inject constructor(
     } else {
       getOldTimestamp()
     }
-    // Stories and Explorations for "Test Topic"s are not in chronological order so we want to ensure
-    // that the combinations of Topic / Story / Exploration that are visible will be marked as completed.
+    // Stories and Explorations for "Test Topic"s are not in chronological order so we want to
+    // ensure that the combinations of Topic / Story / Exploration that are visible will be marked
+    // as completed.
     storyProgressController.recordCompletedChapter(
       profileId,
       TEST_TOPIC_ID_0,
@@ -233,15 +235,19 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
-  /** Marks full story progress for a particular profile. */
-  fun markFullProgressForSecondTopic(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
+  /**
+   * Marks full topic progress on SecondTestTopic for a particular profile.
+   *
+   * @param profileId The profile we are setting topic progress for.
+   * @param timestampOlderThanOneWeek If the timestamp for completing the topic is from more than
+   *     one week ago.
+   */
+  fun markFullProgressForSecondTestTopic(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
     val timestamp = if (!timestampOlderThanAWeek) {
       getCurrentTimestamp()
     } else {
       getOldTimestamp()
     }
-    // Stories and Explorations for "Test Topic"s are not in chronological order so we want to ensure
-    // that the combinations of Topic / Story / Exploration that are visible will be marked as completed.
     storyProgressController.recordCompletedChapter(
       profileId,
       TEST_TOPIC_ID_1,
@@ -252,10 +258,11 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks one story progress full in ratios exploration for a particular profile.
+   *  Marks one story progress fully complete in the ratios topic for a particular profile.
    *
    * @param profileId The profile we are setting topic progress on ratios for.
-   * @param timestampOlderThanOneWeek If the timestamp for this progress is from more than one week ago.
+   * @param timestampOlderThanOneWeek If the timestamp for this progress is from more than one week
+   *     ago.
    */
   fun markFullStoryPartialTopicProgressForRatios(
     profileId: ProfileId,
@@ -283,42 +290,11 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks one story progress full in ratios exploration for a particular profile.
-   *
-   * @param profileId The profile we are setting topic progress on ratios for.
-   * @param timestampOlderThanOneWeek If the timestamp for this progress is from more than one week ago.
-   */
-  fun markLastChapterDoneOfFirstStoryTopicProgressForRatios(
-    profileId: ProfileId,
-    timestampOlderThanAWeek: Boolean
-  ) {
-    val timestamp = if (!timestampOlderThanAWeek) {
-      getCurrentTimestamp()
-    } else {
-      getOldTimestamp()
-    }
-    storyProgressController.recordCompletedChapter(
-      profileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_1,
-      timestamp
-    )
-    storyProgressController.recordCompletedChapter(
-      profileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      timestamp
-    )
-  }
-
-  /**
    * Marks two partial story progress in ratios exploration for a particular profile.
    *
    * @param profileId The profile we are setting topic progress on ratios for.
-   * @param timestampOlderThanOneWeek If the timestamp for the progress on the two stories is from more than one week
-   *        ago.
+   * @param timestampOlderThanOneWeek If the timestamp for the progress on the two stories is from
+   *     more than one week ago.
    */
   fun markTwoPartialStoryProgressForRatios(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
     val timestamp = if (!timestampOlderThanAWeek) {
@@ -394,8 +370,8 @@ class StoryProgressTestHelper @Inject constructor(
    *  Marks first exploration in both stories of Ratios as recently played for a particular profile.
    *
    * @param profileId The profile we are setting recently played for.
-   * @param timestampOlderThanOneWeek If the timestamp for the recently played story and explorations is more than
-   *        a week ago.
+   * @param timestampOlderThanOneWeek If the timestamp for the recently played story and
+   *     explorations is more than a week ago.
    */
   fun markRecentlyPlayedForRatiosStory0Exploration0AndStory1Exploration2(
     profileId: ProfileId,

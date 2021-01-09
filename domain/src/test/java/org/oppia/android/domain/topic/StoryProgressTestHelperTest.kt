@@ -820,7 +820,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testProgressTestHelper_markFullProgressForSecondTopic_showRecommendedStories_listIsCorrect() {
-    storyProgressTestHelper.markFullProgressForSecondTopic(
+    storyProgressTestHelper.markFullProgressForSecondTestTopic(
       profileId,
       /* timestampOlderThanAWeek= */ false
     )
