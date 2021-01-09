@@ -22,7 +22,7 @@ class GlideImageLoader @Inject constructor(
   override fun loadBitmap(
     imageUrl: String,
     target: ImageTarget<Bitmap>,
-    vararg transformations: Transformation<Bitmap>
+    transformations: List<ImageTransformation>
   ) {
     val model: Any = if (cacheAssetsLocally) {
       object : ImageAssetFetcher {
@@ -31,17 +31,24 @@ class GlideImageLoader @Inject constructor(
         override fun getImageIdentifier(): String = imageUrl
       }
     } else imageUrl
+
+    val glideTransformations: Array<Transformation<Bitmap>> = transformations.map {
+      when (it) {
+        ImageTransformation.BLUR -> BlurTransformation(context)
+      }
+    }.toTypedArray()
+
     Glide.with(context)
       .asBitmap()
       .load(model)
-      .transform(*transformations)
+      .transform(*glideTransformations)
       .intoTarget(target)
   }
 
   override fun loadSvg(
     imageUrl: String,
     target: ImageTarget<PictureDrawable>,
-    vararg transformations: Transformation<Bitmap>
+    transformations: List<ImageTransformation>
   ) {
     val model: Any = if (cacheAssetsLocally) {
       object : ImageAssetFetcher {
@@ -50,6 +57,12 @@ class GlideImageLoader @Inject constructor(
         override fun getImageIdentifier(): String = imageUrl
       }
     } else imageUrl
+
+    val glideTransformations: Array<Transformation<Bitmap>> = transformations.map {
+      when (it) {
+        ImageTransformation.BLUR -> BlurTransformation(context)
+      }
+    }.toTypedArray()
 
     // TODO(#45): Ensure the image caching flow is properly hooked up.
     Glide.with(context)
@@ -57,7 +70,7 @@ class GlideImageLoader @Inject constructor(
       .fitCenter()
       .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
       .load(model)
-      .transform(*transformations)
+      .transform(*glideTransformations)
       .intoTarget(target)
   }
 

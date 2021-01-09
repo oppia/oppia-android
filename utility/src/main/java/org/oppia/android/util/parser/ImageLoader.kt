@@ -2,7 +2,10 @@ package org.oppia.android.util.parser
 
 import android.graphics.Bitmap
 import android.graphics.drawable.PictureDrawable
-import com.bumptech.glide.load.Transformation
+
+enum class ImageTransformation {
+  BLUR
+}
 
 /** Loads an image from the provided URL into the specified target, optionally caching it. */
 interface ImageLoader {
@@ -14,7 +17,7 @@ interface ImageLoader {
   fun loadBitmap(
     imageUrl: String,
     target: ImageTarget<Bitmap>,
-    vararg transformations: Transformation<Bitmap>
+    transformations: List<ImageTransformation> = listOf()
   )
 
   /**
@@ -25,6 +28,6 @@ interface ImageLoader {
   fun loadSvg(
     imageUrl: String,
     target: ImageTarget<PictureDrawable>,
-    vararg transformations: Transformation<Bitmap>
+    transformations: List<ImageTransformation> = listOf()
   )
 }

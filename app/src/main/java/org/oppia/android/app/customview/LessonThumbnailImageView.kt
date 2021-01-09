@@ -16,6 +16,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.BlurTransformation
 import org.oppia.android.util.parser.DefaultGcsPrefix
 import org.oppia.android.util.parser.ImageLoader
+import org.oppia.android.util.parser.ImageTransformation
 import org.oppia.android.util.parser.ImageViewTarget
 import org.oppia.android.util.parser.ThumbnailDownloadUrlTemplate
 import javax.inject.Inject
@@ -83,25 +84,32 @@ class LessonThumbnailImageView @JvmOverloads constructor(
 
   private fun loadLessonThumbnail() {
     var transformations = if (isBlurred) {
-      arrayOf(BlurTransformation(context))
+      listOf(ImageTransformation.BLUR)
     } else {
-      arrayOf()
+      listOf()
     }
     if (lessonThumbnail.thumbnailFilename.isNotEmpty()) {
-      loadImage(lessonThumbnail.thumbnailFilename, *transformations)
+      loadImage(lessonThumbnail.thumbnailFilename, transformations)
     } else {
       imageView.setImageResource(getLessonDrawableResource(lessonThumbnail))
+
+      val glideTransformations: Array<Transformation<Bitmap>> = transformations.map {
+        when (it) {
+          ImageTransformation.BLUR -> BlurTransformation(context)
+          else -> throw IllegalArgumentException("Invalid transformation")
+        }
+      }.toTypedArray()
       Glide.with(context)
         .asBitmap()
         .load(getLessonDrawableResource(lessonThumbnail))
-        .transform(*transformations)
+        .transform(*glideTransformations)
         .into(imageView)
     }
     imageView.setBackgroundColor(lessonThumbnail.backgroundColorRgb)
   }
 
   /** Loads an image using Glide from [filename]. */
-  private fun loadImage(filename: String, vararg transformations: Transformation<Bitmap>) {
+  private fun loadImage(filename: String, transformations: List<ImageTransformation>) {
     val imageName = String.format(
       thumbnailDownloadUrlTemplate,
       entityType,
@@ -110,9 +118,9 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     )
     val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      imageLoader.loadSvg(imageUrl, ImageViewTarget(this), *transformations)
+      imageLoader.loadSvg(imageUrl, ImageViewTarget(this), transformations)
     } else {
-      imageLoader.loadBitmap(imageUrl, ImageViewTarget(this), *transformations)
+      imageLoader.loadBitmap(imageUrl, ImageViewTarget(this), transformations)
     }
   }
 
