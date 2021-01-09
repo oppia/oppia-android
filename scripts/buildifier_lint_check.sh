@@ -4,7 +4,7 @@ echo "********************************"
 echo "Checking Bazel file formatting"
 echo "********************************"
 
-buildifier --lint=warn --mode=check --warnings=-native-android,+out-of-order-load,+unsorted-dict-items -r app data domain model testing utility tools BUILD.bazel WORKSPACE oppia_android_test.bzl
+../oppia_android_tools/buildifier --lint=warn --mode=check --warnings=-native-android,+out-of-order-load,+unsorted-dict-items -r app data domain model testing utility tools BUILD.bazel WORKSPACE oppia_android_test.bzl
 
 status=$?
 
