@@ -1,4 +1,4 @@
-package org.oppia.android.app.home
+package org.oppia.android.app.home.promotedlist
 
 import android.app.Application
 import android.content.Context
