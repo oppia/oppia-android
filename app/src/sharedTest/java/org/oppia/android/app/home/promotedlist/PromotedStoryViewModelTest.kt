@@ -102,7 +102,7 @@ class PromotedStoryViewModelTest {
   }
 
   @Test
-  fun testPromotedStoryViewModelEquals_reflexiveBasicPromotedStoryViewModel_isTrue() {
+  fun testPromotedStoryViewModelEquals_reflexiveBasicPromotedStoryViewModel_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -116,7 +116,7 @@ class PromotedStoryViewModelTest {
   }
 
   @Test
-  fun testPromotedStoryViewModelEquals_symmetricBasicPromotedStoryViewModels_isTrue() {
+  fun testPromotedStoryViewModelEquals_symmetricBasicPromotedStoryViewModels_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -132,7 +132,7 @@ class PromotedStoryViewModelTest {
   }
 
   @Test
-  fun testPromotedStoryViewModelEquals_transitiveBasicPromotedStoryViewModels_isTrue() {
+  fun testPromotedStoryViewModelEquals_transitiveBasicPromotedStoryViewModels_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -150,7 +150,7 @@ class PromotedStoryViewModelTest {
   }
 
   @Test
-  fun testPromotedStoryViewModelEquals_consistentBasicPromotedStoryViewModels_isTrue() {
+  fun testPromotedStoryViewModelEquals_consistentBasicPromotedStoryViewModels_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -167,7 +167,7 @@ class PromotedStoryViewModelTest {
   }
 
   @Test
-  fun testPromotedStoryViewModelEquals_basicPromotedStoryViewModelAndNull_isFalse() {
+  fun testPromotedStoryViewModelEquals_basicPromotedStoryViewModelAndNull_isNotEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -180,7 +180,7 @@ class PromotedStoryViewModelTest {
   }
 
   @Test
-  fun testPromotedStoryViewModelEquals_profileId1AndProfileId2_isFalse() {
+  fun testPromotedStoryViewModelEquals_profileId1AndProfileId2_isNotEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -206,7 +206,7 @@ class PromotedStoryViewModelTest {
   }
 
   @Test
-  fun testPromotedStoryViewModelEquals_storyCount2AndStoryCount3_isFalse() {
+  fun testPromotedStoryViewModelEquals_storyCount2AndStoryCount3_isNotEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -226,13 +226,14 @@ class PromotedStoryViewModelTest {
           promotedStory1
         )
 
-        assertThat(promotedStoryViewModelStoryCount2).isNotEqualTo(promotedStoryViewModelStoryCount3)
+        assertThat(promotedStoryViewModelStoryCount2)
+          .isNotEqualTo(promotedStoryViewModelStoryCount3)
       }
     }
   }
 
   @Test
-  fun testPromotedStoryViewModelEquals_entity1AndEntity2_isFalse() {
+  fun testPromotedStoryViewModelEquals_entity1AndEntity2_isNotEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -258,7 +259,7 @@ class PromotedStoryViewModelTest {
   }
 
   @Test
-  fun testPromotedStoryViewModelEquals_story1AndStory2_isFalse() {
+  fun testPromotedStoryViewModelEquals_story1AndStory2_isNotEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -286,7 +287,7 @@ class PromotedStoryViewModelTest {
   }
 
   @Test
-  fun testPromotedStoryViewModelHashCode_viewModelsEqualHashCodesEqual_isTrue() {
+  fun testPromotedStoryViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -303,7 +304,7 @@ class PromotedStoryViewModelTest {
   }
 
   @Test
-  fun testPromotedStoryViewModelHashCode_sameViewModelHashCodeDoesNotChange_isTrue() {
+  fun testPromotedStoryViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {

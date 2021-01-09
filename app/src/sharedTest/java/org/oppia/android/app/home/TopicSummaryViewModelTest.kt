@@ -108,7 +108,7 @@ class TopicSummaryViewModelTest {
   }
 
   @Test
-  fun testTopicSummaryViewModelEquals_reflexiveBasicTopicSummaryViewModel_isTrue() {
+  fun testTopicSummaryViewModelEquals_reflexiveBasicTopicSummaryViewModel_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -123,7 +123,7 @@ class TopicSummaryViewModelTest {
   }
 
   @Test
-  fun testTopicSummaryViewModelEquals_symmetricBasicTopicSummaryViewModel_isTrue() {
+  fun testTopicSummaryViewModelEquals_symmetricBasicTopicSummaryViewModel_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -140,7 +140,7 @@ class TopicSummaryViewModelTest {
   }
 
   @Test
-  fun testTopicSummaryViewModelEquals_transitiveBasicSummaryViewModel_isTrue() {
+  fun testTopicSummaryViewModelEquals_transitiveBasicSummaryViewModel_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -159,7 +159,7 @@ class TopicSummaryViewModelTest {
   }
 
   @Test
-  fun testTopicSummaryViewModelEquals_consistentBasicTopicSummaryViewModel_isTrue() {
+  fun testTopicSummaryViewModelEquals_consistentBasicTopicSummaryViewModel_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -177,7 +177,7 @@ class TopicSummaryViewModelTest {
   }
 
   @Test
-  fun testTopicSummaryViewModelEquals_basicTopicSummaryViewModelAndNull_isFalse() {
+  fun testTopicSummaryViewModelEquals_basicTopicSummaryViewModelAndNull_isNotEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -192,7 +192,7 @@ class TopicSummaryViewModelTest {
   }
 
   @Test
-  fun testTopicSummaryViewModelEquals_topicSummary1AndTopicSummary2_isFalse() {
+  fun testTopicSummaryViewModelEquals_topicSummary1AndTopicSummary2_isNotEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -219,7 +219,7 @@ class TopicSummaryViewModelTest {
   }
 
   @Test
-  fun testTopicSummaryViewModelEquals_entity1AndEntity2_isFalse() {
+  fun testTopicSummaryViewModelEquals_entity1AndEntity2_isNotEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -246,7 +246,7 @@ class TopicSummaryViewModelTest {
   }
 
   @Test
-  fun testTopicSummaryViewModelEquals_position4AndPosition5_isFalse() {
+  fun testTopicSummaryViewModelEquals_position4AndPosition5_isNotEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -273,7 +273,7 @@ class TopicSummaryViewModelTest {
   }
 
   @Test
-  fun testTopicSummaryViewModelHashCode_viewModelsEqualHashCodesEqual_isTrue() {
+  fun testTopicSummaryViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
@@ -290,7 +290,7 @@ class TopicSummaryViewModelTest {
   }
 
   @Test
-  fun testTopicSummaryViewModelHashCode_sameViewModelHashCodeDoesNotChange_isTrue() {
+  fun testTopicSummaryViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {

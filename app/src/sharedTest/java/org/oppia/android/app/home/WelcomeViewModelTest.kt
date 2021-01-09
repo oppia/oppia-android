@@ -115,7 +115,7 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun testWelcomeViewModelEquals_reflexiveBasicWelcomeViewModel_isTrue() {
+  fun testWelcomeViewModelEquals_reflexiveBasicWelcomeViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
@@ -130,7 +130,7 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun testWelcomeViewModelEquals_symmetricBasicWelcomeViewModels_isTrue() {
+  fun testWelcomeViewModelEquals_symmetricBasicWelcomeViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
@@ -147,7 +147,7 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun testWelcomeViewModelEquals_transitiveBasicWelcomeViewModels_isTrue() {
+  fun testWelcomeViewModelEquals_transitiveBasicWelcomeViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
@@ -172,7 +172,7 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun testWelcomeViewModelEquals_consistentBasicWelcomeViewModels_isTrue() {
+  fun testWelcomeViewModelEquals_consistentBasicWelcomeViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
@@ -190,7 +190,7 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun testWelcomeViewModelEquals_basicWelcomeViewModelAndNull_isFalse() {
+  fun testWelcomeViewModelEquals_basicWelcomeViewModelAndNull_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
@@ -205,7 +205,7 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun testWelcomeViewModelEquals_profile1MorningAndProfile2Morning_isFalse() {
+  fun testWelcomeViewModelEquals_profile1MorningAndProfile2Morning_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
@@ -228,7 +228,7 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun testWelcomeViewModelEquals_profile1MorningAndProfile1Evening_isFalse() {
+  fun testWelcomeViewModelEquals_profile1MorningAndProfile1Evening_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
@@ -252,7 +252,7 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun testWelcomeViewModelHashCode_viewModelsEqualHashCodesEqual_isTrue() {
+  fun testWelcomeViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
@@ -278,7 +278,7 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun testWelcomeViewModelHashCode_sameViewModelHashCodeDoesNotChange_isTrue() {
+  fun testWelcomeViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
