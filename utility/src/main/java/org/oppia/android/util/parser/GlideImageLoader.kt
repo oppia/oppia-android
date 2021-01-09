@@ -22,7 +22,7 @@ class GlideImageLoader @Inject constructor(
   /**
    * Converts List of [ImageTransformation] enums to the Array of Glide [Transformation]s.
    */
-  fun imageTransformationToGlideTransofmation(transformations: List<ImageTransformation>): Array<Transformation<Bitmap>> {
+  fun convertImageTransformationToGlideTransofmation(transformations: List<ImageTransformation>): Array<Transformation<Bitmap>> {
     return transformations.map {
       when (it) {
         ImageTransformation.BLUR -> BlurTransformation(context)
@@ -46,7 +46,7 @@ class GlideImageLoader @Inject constructor(
     Glide.with(context)
       .asBitmap()
       .load(model)
-      .transform(*imageTransformationToGlideTransofmation(transformations))
+      .transform(*convertImageTransformationToGlideTransofmation(transformations))
       .intoTarget(target)
   }
 
@@ -69,7 +69,7 @@ class GlideImageLoader @Inject constructor(
       .fitCenter()
       .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
       .load(model)
-      .transform(*imageTransformationToGlideTransofmation(transformations))
+      .transform(*convertImageTransformationToGlideTransofmation(transformations))
       .intoTarget(target)
   }
 
@@ -81,7 +81,7 @@ class GlideImageLoader @Inject constructor(
     Glide.with(context)
       .asBitmap()
       .load(imageDrawable)
-      .transform(*imageTransformationToGlideTransofmation(transformations))
+      .transform(*convertImageTransformationToGlideTransofmation(transformations))
       .intoTarget(target)
   }
 
