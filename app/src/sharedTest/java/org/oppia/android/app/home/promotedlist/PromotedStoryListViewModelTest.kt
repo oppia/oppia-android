@@ -263,7 +263,7 @@ class PromotedStoryListViewModelTest {
         )
         assertThat(promotedStoryListViewModel).isEqualTo(promotedStoryListCopy)
 
-        // If a == b, then a.hashCode == b.hashCode
+        // Verify that if a == b, then a.hashCode == b.hashCode
         assertThat(promotedStoryListViewModel.hashCode())
           .isEqualTo(promotedStoryListCopy.hashCode())
       }

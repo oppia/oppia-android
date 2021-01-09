@@ -107,18 +107,22 @@ class WelcomeViewModelTest {
     eveningClock.setCurrentTimeMs(EVENING_TIMESTAMP)
   }
 
+  private fun createBasicWelcomeViewModel(fragment: Fragment): WelcomeViewModel {
+    return WelcomeViewModel(
+      fragment,
+      morningClock,
+      "Profile 1"
+    )
+  }
+
   @Test
-  fun testWelcomeViewModelEquals_reflexiveProfile1MorningAndProfile1Morning_isTrue() {
+  fun testWelcomeViewModelEquals_reflexiveBasicWelcomeViewModel_isTrue() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          testFragment,
-          morningClock,
-          "Profile 1"
-        )
+        val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
 
         // Verify the reflexive property of equals(): a == a.
         assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1Morning)
@@ -127,22 +131,14 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun testWelcomeViewModelEquals_symmetricProfile1MorningAndDifferentProfile1Morning_isTrue() {
+  fun testWelcomeViewModelEquals_symmetricBasicWelcomeViewModels_isTrue() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          testFragment,
-          morningClock,
-          "Profile 1"
-        )
-        val copyWelcomeViewModelProfile1Morning = WelcomeViewModel(
-          testFragment,
-          morningClock,
-          "Profile 1"
-        )
+        val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
+        val copyWelcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
 
         // Verify the symmetric property of equals(): a == b iff b == a.
         assertThat(welcomeViewModelProfile1Morning).isEqualTo(copyWelcomeViewModelProfile1Morning)
@@ -152,27 +148,15 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun testWelcomeViewModelEquals_transitiveProfile1MorningAndTwoDifferentProfile1Morning_isTrue() {
+  fun testWelcomeViewModelEquals_transitiveBasicWelcomeViewModels_isTrue() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val welcomeViewModelProfile1MorningCopy1 = WelcomeViewModel(
-          testFragment,
-          morningClock,
-          "Profile 1"
-        )
-        val welcomeViewModelProfile1MorningCopy2 = WelcomeViewModel(
-          testFragment,
-          morningClock,
-          "Profile 1"
-        )
-        val welcomeViewModelProfile1MorningCopy3 = WelcomeViewModel(
-          testFragment,
-          morningClock,
-          "Profile 1"
-        )
+        val welcomeViewModelProfile1MorningCopy1 = createBasicWelcomeViewModel(testFragment)
+        val welcomeViewModelProfile1MorningCopy2 = createBasicWelcomeViewModel(testFragment)
+        val welcomeViewModelProfile1MorningCopy3 = createBasicWelcomeViewModel(testFragment)
         assertThat(welcomeViewModelProfile1MorningCopy1).isEqualTo(welcomeViewModelProfile1MorningCopy2)
         assertThat(welcomeViewModelProfile1MorningCopy2).isEqualTo(welcomeViewModelProfile1MorningCopy3)
 
@@ -183,22 +167,14 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun testWelcomeViewModelEquals_consistentProfile1MorningAndDifferentProfile1Morning_isTrue() {
+  fun testWelcomeViewModelEquals_consistentBasicWelcomeViewModels_isTrue() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          testFragment,
-          morningClock,
-          "Profile 1"
-        )
-        val copyWelcomeViewModelProfile1Morning = WelcomeViewModel(
-          testFragment,
-          morningClock,
-          "Profile 1"
-        )
+        val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
+        val copyWelcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
         assertThat(welcomeViewModelProfile1Morning).isEqualTo(copyWelcomeViewModelProfile1Morning)
 
         // Verify the consistent property of equals(): if neither object is modified, then a == b
@@ -209,17 +185,13 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun testWelcomeViewModelEquals_profile1MorningAndNull_isFalse() {
+  fun testWelcomeViewModelEquals_basicWelcomeViewModelAndNull_isFalse() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          testFragment,
-          morningClock,
-          "Profile 1"
-        )
+        val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
 
         // Verify the non-null property of equals(): for any non-null reference a, a != null
         assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(null)
@@ -293,7 +265,7 @@ class WelcomeViewModelTest {
         )
         assertThat(welcomeViewModelProfile1Morning).isEqualTo(copyWelcomeViewModelProfile1Morning)
 
-        // If a == b, then a.hashCode == b.hashCode
+        // Verify that if a == b, then a.hashCode == b.hashCode
         assertThat(welcomeViewModelProfile1Morning.hashCode())
           .isEqualTo(copyWelcomeViewModelProfile1Morning.hashCode())
       }
