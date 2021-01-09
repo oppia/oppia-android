@@ -19,6 +19,17 @@ class GlideImageLoader @Inject constructor(
   private val assetRepository: AssetRepository
 ) : ImageLoader {
 
+  /**
+   * Converts List of [ImageTransformation] enums to the Array of Glide [Transformation]s.
+   */
+  fun imageTransformationToGlideTransofmation(transformations: List<ImageTransformation>): Array<Transformation<Bitmap>> {
+    return transformations.map {
+      when (it) {
+        ImageTransformation.BLUR -> BlurTransformation(context)
+      }
+    }.toTypedArray()
+  }
+
   override fun loadBitmap(
     imageUrl: String,
     target: ImageTarget<Bitmap>,
@@ -32,16 +43,10 @@ class GlideImageLoader @Inject constructor(
       }
     } else imageUrl
 
-    val glideTransformations: Array<Transformation<Bitmap>> = transformations.map {
-      when (it) {
-        ImageTransformation.BLUR -> BlurTransformation(context)
-      }
-    }.toTypedArray()
-
     Glide.with(context)
       .asBitmap()
       .load(model)
-      .transform(*glideTransformations)
+      .transform(*imageTransformationToGlideTransofmation(transformations))
       .intoTarget(target)
   }
 
@@ -58,19 +63,25 @@ class GlideImageLoader @Inject constructor(
       }
     } else imageUrl
 
-    val glideTransformations: Array<Transformation<Bitmap>> = transformations.map {
-      when (it) {
-        ImageTransformation.BLUR -> BlurTransformation(context)
-      }
-    }.toTypedArray()
-
     // TODO(#45): Ensure the image caching flow is properly hooked up.
     Glide.with(context)
       .`as`(PictureDrawable::class.java)
       .fitCenter()
       .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
       .load(model)
-      .transform(*glideTransformations)
+      .transform(*imageTransformationToGlideTransofmation(transformations))
+      .intoTarget(target)
+  }
+
+  override fun loadDrawable(
+    imageDrawable: Int,
+    target: ImageTarget<Bitmap>,
+    transformations: List<ImageTransformation>
+  ) {
+    Glide.with(context)
+      .asBitmap()
+      .load(imageDrawable)
+      .transform(*imageTransformationToGlideTransofmation(transformations))
       .intoTarget(target)
   }
 

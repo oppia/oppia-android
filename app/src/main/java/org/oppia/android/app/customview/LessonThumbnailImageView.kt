@@ -1,19 +1,15 @@
 package org.oppia.android.app.customview
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.Transformation
 import org.oppia.android.R
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.shim.ViewComponentFactory
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.BlurTransformation
 import org.oppia.android.util.parser.DefaultGcsPrefix
 import org.oppia.android.util.parser.ImageLoader
 import org.oppia.android.util.parser.ImageTransformation
@@ -91,17 +87,11 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     if (lessonThumbnail.thumbnailFilename.isNotEmpty()) {
       loadImage(lessonThumbnail.thumbnailFilename, transformations)
     } else {
-      val glideTransformations: Array<Transformation<Bitmap>> = transformations.map {
-        when (it) {
-          ImageTransformation.BLUR -> BlurTransformation(context)
-          else -> throw IllegalArgumentException("Invalid transformation")
-        }
-      }.toTypedArray()
-      Glide.with(context)
-        .asBitmap()
-        .load(getLessonDrawableResource(lessonThumbnail))
-        .transform(*glideTransformations)
-        .into(imageView)
+      imageLoader.loadDrawable(
+        getLessonDrawableResource(lessonThumbnail),
+        ImageViewTarget(this),
+        transformations
+      )
     }
     imageView.setBackgroundColor(lessonThumbnail.backgroundColorRgb)
   }
