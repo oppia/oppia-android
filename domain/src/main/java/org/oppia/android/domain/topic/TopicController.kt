@@ -248,11 +248,6 @@ class TopicController @Inject constructor(
       )
     }
 
-    // If there is no completed chapter, it cannot be an ongoing-topic.
-    if (completedChapterProgressList.isEmpty()) {
-      return false
-    }
-
     // If there is at least 1 completed chapter and 1 not-completed chapter, it is definitely an
     // ongoing-topic.
     if (startedChapterProgressList.isNotEmpty()) {
@@ -273,6 +268,11 @@ class TopicController @Inject constructor(
           return true
         }
       }
+    }
+
+    // If there is no completed chapter, it cannot be an ongoing-topic.
+    if (completedChapterProgressList.isEmpty()) {
+      return false
     }
     return false
   }
