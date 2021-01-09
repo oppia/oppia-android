@@ -37,6 +37,11 @@ http_archive(
     sha256 = RULES_KOTLIN_SHA,
 )
 
+# TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
+load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
+
+kt_download_local_dev_dependencies()
+
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
 
 kotlin_repositories()
