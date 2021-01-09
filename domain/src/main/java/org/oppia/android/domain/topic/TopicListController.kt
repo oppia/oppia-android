@@ -322,7 +322,7 @@ class TopicListController @Inject constructor(
       val numberOfDaysPassed = (
         oppiaClock.getCurrentCalendar().timeInMillis -
           recentlyPlayerChapterProgress.lastPlayedTimestamp
-        ) / TimeUnit.MILLISECONDS.toDays(ONE_DAY_IN_MS.toLong())
+        ) / ONE_DAY_IN_MS
       val promotedStory = createPromotedStory(
         storyId,
         topic,
@@ -331,7 +331,7 @@ class TopicListController @Inject constructor(
         recentlyPlayerChapterSummary.name,
         recentlyPlayerChapterSummary.explorationId
       )
-      if (numberOfDaysPassed < TimeUnit.MILLISECONDS.toDays(ONE_WEEK_IN_DAYS.toLong())) {
+      if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
         ongoingStoryListBuilder.addRecentStory(promotedStory)
       } else {
         ongoingStoryListBuilder.addOlderStory(promotedStory)
@@ -357,7 +357,7 @@ class TopicListController @Inject constructor(
       val numberOfDaysPassed = (
         oppiaClock.getCurrentCalendar().timeInMillis -
           mostRecentCompletedChapterProgress.lastPlayedTimestamp
-        ) / TimeUnit.MILLISECONDS.toDays(ONE_DAY_IN_MS.toLong())
+        ) / ONE_DAY_IN_MS
       val promotedStory = createPromotedStory(
         storyId,
         topic,
@@ -366,7 +366,7 @@ class TopicListController @Inject constructor(
         nextChapterSummary.name,
         nextChapterSummary.explorationId
       )
-      if (numberOfDaysPassed < TimeUnit.MILLISECONDS.toDays(ONE_WEEK_IN_DAYS.toLong())) {
+      if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
         ongoingStoryListBuilder.addRecentStory(promotedStory)
       } else {
         ongoingStoryListBuilder.addOlderStory(promotedStory)
@@ -464,7 +464,7 @@ class TopicListController @Inject constructor(
               val numberOfDaysPassed = (
                 oppiaClock.getCurrentCalendar().timeInMillis -
                   recentlyPlayerChapterProgress.lastPlayedTimestamp
-                ) / (TimeUnit.MILLISECONDS.toDays(ONE_DAY_IN_MS.toLong()))
+                ) / (ONE_DAY_IN_MS)
               val promotedStory = createPromotedStory(
                 storyId,
                 topic,
@@ -473,7 +473,7 @@ class TopicListController @Inject constructor(
                 recentlyPlayerChapterSummary.name,
                 recentlyPlayerChapterSummary.explorationId
               )
-              if (numberOfDaysPassed < TimeUnit.MILLISECONDS.toDays(ONE_WEEK_IN_DAYS.toLong())) {
+              if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
                 recommendedStoryBuilder.addRecentlyPlayedStory(promotedStory)
               } else {
                 recommendedStoryBuilder.addOlderPlayedStory(promotedStory)
@@ -493,7 +493,7 @@ class TopicListController @Inject constructor(
                 val numberOfDaysPassed = (
                   oppiaClock.getCurrentCalendar().timeInMillis -
                     mostRecentCompletedChapterProgress.lastPlayedTimestamp
-                  ) / (TimeUnit.MILLISECONDS.toDays(ONE_DAY_IN_MS.toLong()))
+                  ) / (ONE_DAY_IN_MS)
                 val promotedStory = createPromotedStory(
                   storyId,
                   topic,
@@ -502,7 +502,7 @@ class TopicListController @Inject constructor(
                   nextChapterSummary.name,
                   nextChapterSummary.explorationId
                 )
-                if (numberOfDaysPassed < TimeUnit.MILLISECONDS.toDays(ONE_WEEK_IN_DAYS.toLong())) {
+                if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
                   recommendedStoryBuilder.addRecentlyPlayedStory(promotedStory)
                 } else {
                   recommendedStoryBuilder.addOlderPlayedStory(promotedStory)

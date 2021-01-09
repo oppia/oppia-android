@@ -115,7 +115,7 @@ class StoryProgressController @Inject constructor(
 
         val topicProgressBuilder =
           TopicProgress.newBuilder()
-            .setTopicId(topicId)
+            .setTopicId(topicId).setLastPlayedTimestamp(completionTimestamp)
         if (topicProgressDatabase.topicProgressMap[topicId] != null) {
           topicProgressBuilder
             .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)
@@ -123,15 +123,15 @@ class StoryProgressController @Inject constructor(
         topicProgressBuilder.putStoryProgress(storyId, storyProgress)
         val topicProgress = topicProgressBuilder.build()
 
-          val topicProgressStories = topicProgressBuilder.storyProgressMap.values
-          val topicProgressChapters = topicProgressStories.flatMap { it.chapterProgressMap.values }
-          val topicProgressLastPlayedTimes =
-            topicProgressChapters.map(ChapterProgress::getLastPlayedTimestamp)
-          val lastPlayedTimestamp =
-            topicProgressLastPlayedTimes.max() // Note this is null if there's no progress.
-          if (lastPlayedTimestamp != null) {
-            topicProgressBuilder.lastPlayedTimestamp = lastPlayedTimestamp
-        }
+//          val topicProgressStories = topicProgressBuilder.storyProgressMap.values
+//          val topicProgressChapters = topicProgressStories.flatMap { it.chapterProgressMap.values }
+//          val topicProgressLastPlayedTimes =
+//            topicProgressChapters.map(ChapterProgress::getLastPlayedTimestamp)
+//          val lastPlayedTimestamp =
+//            topicProgressLastPlayedTimes.max() // Note this is null if there's no progress.
+//          if (lastPlayedTimestamp != null) {
+//            topicProgressBuilder.lastPlayedTimestamp = lastPlayedTimestamp
+//        }
         val topicDatabaseBuilder =
           topicProgressDatabase.toBuilder().putTopicProgress(topicId, topicProgress)
         Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)
@@ -214,15 +214,15 @@ class StoryProgressController @Inject constructor(
         topicProgressBuilder.putStoryProgress(storyId, storyProgress)
         val topicProgress = topicProgressBuilder.build()
 
-        val topicProgressStories = topicProgressBuilder.storyProgressMap.values
-        val topicProgressChapters = topicProgressStories.flatMap { it.chapterProgressMap.values }
-        val topicProgressLastPlayedTimes =
-          topicProgressChapters.map(ChapterProgress::getLastPlayedTimestamp)
-        val computedLastPlayedTimestamp =
-          topicProgressLastPlayedTimes.max() // Note this is null if there's no progress.
-        if (computedLastPlayedTimestamp != null) {
-          topicProgressBuilder.lastPlayedTimestamp = computedLastPlayedTimestamp
-        }
+//        val topicProgressStories = topicProgressBuilder.storyProgressMap.values
+//        val topicProgressChapters = topicProgressStories.flatMap { it.chapterProgressMap.values }
+//        val topicProgressLastPlayedTimes =
+//          topicProgressChapters.map(ChapterProgress::getLastPlayedTimestamp)
+//        val computedLastPlayedTimestamp =
+//          topicProgressLastPlayedTimes.max() // Note this is null if there's no progress.
+//        if (computedLastPlayedTimestamp != null) {
+//          topicProgressBuilder.lastPlayedTimestamp = computedLastPlayedTimestamp
+//        }
         val topicDatabaseBuilder =
           topicProgressDatabase.toBuilder().putTopicProgress(topicId, topicProgress)
         Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)

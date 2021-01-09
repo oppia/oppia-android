@@ -491,7 +491,7 @@ class TopicListControllerTest {
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
     assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount)
-      .isEqualTo(0)
+      .isEqualTo(3)
     verifyOngoingStoryAsRatioStory0Exploration1(
       recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0]
     )
