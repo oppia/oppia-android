@@ -91,8 +91,6 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     if (lessonThumbnail.thumbnailFilename.isNotEmpty()) {
       loadImage(lessonThumbnail.thumbnailFilename, transformations)
     } else {
-      imageView.setImageResource(getLessonDrawableResource(lessonThumbnail))
-
       val glideTransformations: Array<Transformation<Bitmap>> = transformations.map {
         when (it) {
           ImageTransformation.BLUR -> BlurTransformation(context)
