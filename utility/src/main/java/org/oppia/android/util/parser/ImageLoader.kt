@@ -1,7 +1,6 @@
 package org.oppia.android.util.parser
 
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.PictureDrawable
 
 /**
