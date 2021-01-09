@@ -49,7 +49,9 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.resetPinInputPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
-        if (resetViewModel.errorMessage.get()?.isNotEmpty()!! && resetViewModel.inputPin.get() == it) {
+        if (
+          resetViewModel.errorMessage.get()?.isNotEmpty()!! && resetViewModel.inputPin.get() == it
+        ) {
           resetViewModel.inputPin.set(it)
         } else {
           resetViewModel.inputPin.set(it)
