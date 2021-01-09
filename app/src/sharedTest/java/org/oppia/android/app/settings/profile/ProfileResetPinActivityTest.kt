@@ -120,7 +120,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asAdmin_inputPinAndConfirmPin_clickSave_checkReturnsToProfileEdit() {
+  fun testProfileResetPin_withAdmin_inputBothPin_save_opensProfileEditActivity() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -154,7 +154,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asAdmin_inputPinAndConfirmPin_pressImeAction_checkReturnsToProfileEdit() {
+  fun testProfileResetPin_withAdmin_inputBothPin_imeAction_opensProfileEditActivity() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -187,7 +187,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asAdmin_changeConfig_inputFields_clickSave_checkReturnsToProfileEdit() {
+  fun testProfileResetPin_withAdmin_configChange_inputBothPin_save_opensProfileEditActivity() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -226,7 +226,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asUser_inputPinAndConfirmPin_clickSave_checkReturnsToProfileEdit() {
+  fun testProfileResetPin_withUser_inputBothPin_save_opensProfileEditActivity() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -259,7 +259,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asAdmin_inputShortPin_clickSave_checkPinLengthError() {
+  fun testProfileResetPin_withAdmin_inputShortPin_save_checkPinLengthError() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -293,7 +293,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asAdmin_inputShortPin_clickSave_changeConfig_checkPinLengthError() {
+  fun testProfileResetPin_withAdmin_inputShortPin_save_changeConfig_checkPinLengthError() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -328,7 +328,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asAdmin_inputShortPin_clickSave_inputPin_checkErrorIsCleared() {
+  fun testProfileResetPin_withAdmin_inputShortPin_save_inputPin_checkErrorIsCleared() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -361,7 +361,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asAdmin_inputShortPin_clickSave_inputPin_changeConfig_checkErrorIsCleared() {
+  fun testProfileResetPin_withAdmin_inputShortPin_save_inputPin_changeConfig_checkErrorIsCleared() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -395,7 +395,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asAdmin_inputWrongConfirmPin_clickSave_checkConfirmWrongError() {
+  fun testProfileResetPin_withAdmin_inputWrongConfirmPin_save_checkConfirmWrongError() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -429,7 +429,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asAdmin_inputWrongConfirmPin_clickSave_changeConfig_checkConfirmWrongError() {
+  fun testProfileResetPin_withAdmin_wrongConfirmPin_save_changeConfig_checkConfirmWrongError() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -465,7 +465,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_inputPinFields_changeConfig_inputAndConfirmInputExists_saveButtonIsClickable() {
+  fun testProfileResetPin_inputPinFields_changeConfig_inputFieldsExist_saveButtonIsClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -512,7 +512,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asAdmin_inputWrongConfirmPin_clickSave_inputConfirmPin_checkErrorIsCleared() {
+  fun testProfileResetPin_withAdmin_wrongConfirmPin_save_inputConfirmPin_checkErrorIsCleared() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -554,7 +554,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asUser_inputShortPin_clickSave_checkPinLengthError() {
+  fun testProfileResetPin_withUser_inputShortPin_save_checkPinLengthError() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -588,7 +588,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asUser_inputShortPin_clickSave_inputPin_checkErrorIsCleared() {
+  fun testProfileResetPin_withUser_inputShortPin_save_inputPin_checkErrorIsCleared() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -621,7 +621,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asUser_inputWrongConfirmPin_clickSave_checkConfirmWrongError() {
+  fun testProfileResetPin_withUser_inputWrongConfirmPin_save_checkConfirmWrongError() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -655,7 +655,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_asUser_inputWrongConfirmPin_clickSave_inputConfirmPin_checkErrorIsCleared() {
+  fun testProfileResetPin_withUser_inputWrongConfirmPin_save_inputConfirmPin_checkErrorIsCleared() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -697,7 +697,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_default_saveButtonIsNotClickable() {
+  fun testProfileResetPin_default_saveButtonIsNotClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -710,7 +710,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_default_changeConfiguration_saveButtonIsNotClickable() {
+  fun testProfileResetPin_default_changeConfiguration_saveButtonIsNotClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -725,7 +725,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_inputPin_saveButtonIsNotClickable() {
+  fun testProfileResetPin_inputPin_saveButtonIsNotClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -747,7 +747,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_inputPin_changeConfiguration_saveButtonIsNotClickable() {
+  fun testProfileResetPin_inputPin_changeConfig_saveButtonIsNotClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -771,7 +771,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_inputPin_inputConfirmPin_saveButtonIsClickable() {
+  fun testProfileResetPin_inputPin_inputConfirmPin_saveButtonIsClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -803,7 +803,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_inputPinFields_saveButtonIsClickable_clearPinField_saveButtonIsNotClickable() {
+  fun testProfileResetPin_inputPinField_clickableSaveButton_clearPinField_notClickableSaveButton() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -845,7 +845,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_inputPinFields_saveButtonIsClickable_clearConfirmPin_saveButtonIsNotClickable() {
+  fun testProfileResetPin_inputPinFields_clickableSaveButton_clearConfirmPin_notClickableSaveButton() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
@@ -887,7 +887,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testResetPin_inputPinFields_saveButtonIsClickable_clearConfirmPin_changeConfig_saveButtonIsNotClickable() { // ktlint-disable max-line-length
+  fun testProfileResetPin_inputPinFields_clickableSaveButton_clearConfirmPin_changeConfig_notClickableSaveButton() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
