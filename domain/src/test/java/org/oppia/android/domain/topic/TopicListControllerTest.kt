@@ -307,7 +307,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveRecommendedActivityList_markChapterCompletedFracStory0Exp0_recommendedStoryListIsCorrect() { // ktlint-disable max-line-length
+  fun testRetrieveRecommendedActivityList_markChapDoneFracStory0Exp1_storyListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -332,7 +332,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveSuggestedStoryList_markAllChaptersCompletedInFractions_suggestedStoryListIsCorrect() { // ktlint-disable max-line-length
+  fun testRetrieveSuggestedStoryList_markAllChapDoneInFractions_suggestedStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -364,7 +364,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveRecentStoryList_markAllChaptersCompletedInFractions_fromRecommendedList_playedFirstTopicStory0Exploration0_recentStoryListIsCorrect() { // ktlint-disable max-line-length
+  fun testRetrieveRecentStoryList_markAllChapDoneInFractions_playedFirstTopicStory0Exploration0_recentStoryListIsCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -408,7 +408,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveRecentStoryList_markChapDoneFracStory0Exp0_fromRecommendedStories_playedFracStory0Exp1_playedRatioStory0Exp0_recentStoryListCorrect() { // ktlint-disable max-line-length
+  fun testRetrieveRecentStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_playedRatioStory0Exp0_recentStoryListCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -491,7 +491,7 @@ class TopicListControllerTest {
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
     assertThat(recommendedActivityList.recommendedStoryList.recentlyPlayedStoryCount)
-      .isEqualTo(3)
+      .isEqualTo(0)
     verifyOngoingStoryAsRatioStory0Exploration1(
       recommendedActivityList.recommendedStoryList.recentlyPlayedStoryList[0]
     )
