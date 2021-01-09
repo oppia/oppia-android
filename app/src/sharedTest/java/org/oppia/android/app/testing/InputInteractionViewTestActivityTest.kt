@@ -136,7 +136,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedWholeNumberText_hasCorrectPendingAnswer() {
+  fun testFractionInputInteractionView_withWholeNumberText_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -154,7 +154,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedFractionText_hasCorrectPendingAnswer() {
+  fun testFractionInputInteractionView_withFractionText_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -200,7 +200,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedWholeNumberValue_hasCorrectPendingAnswer() {
+  fun testFractionInputInteractionView_withFractionWholeNumberValue_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -324,7 +324,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedDividerAtStart_numberFormatErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withDividerAtStart_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -390,7 +390,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedDivideByZero_errorIsNotDisplayed() {
+  fun testFractionInputInteractionView_withDivideByZero_errorIsNotDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -477,7 +477,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+  fun testNumericInputInteractionView_withRealNumberText_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -719,7 +719,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testTextInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+  fun testTextInputInteractionView_withCharText_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -771,7 +771,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+  fun testRatioInputInteractionView_withRatioOfNumberText_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -834,7 +834,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputInteractionView_withInputtedNegativeRatio_numberFormatErrorIsDisplayed() {
+  fun testRatioInputInteractionView_withNegativeRatioOfNumberText_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
