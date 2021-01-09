@@ -22,7 +22,9 @@ class GlideImageLoader @Inject constructor(
   /**
    * Converts List of [ImageTransformation] enums to the Array of Glide [Transformation]s.
    */
-  fun convertImageTransformationToGlideTransofmation(transformations: List<ImageTransformation>): Array<Transformation<Bitmap>> {
+  fun convertImageTransformationToGlideTransofmation(
+    transformations: List<ImageTransformation>
+  ): Array<Transformation<Bitmap>> {
     return transformations.map {
       when (it) {
         ImageTransformation.BLUR -> BlurTransformation(context)
