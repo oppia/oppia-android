@@ -10,11 +10,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToStoryListener
+import org.oppia.android.app.topic.practice.TopicPracticeViewModel
+import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.LessonsChapterViewBinding
 import org.oppia.android.databinding.SectionTitleBinding
 import org.oppia.android.databinding.TopicLessonsFragmentBinding
 import org.oppia.android.databinding.TopicLessonsStorySummaryBinding
@@ -33,7 +38,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val logger: ConsoleLogger,
   private val explorationDataController: ExplorationDataController,
-  private val topicController: TopicController
+  private val topicController: TopicController,
+  private val viewModelProvider: ViewModelProvider<TopicLessonsViewModel>
 ) : StorySummarySelector, ChapterSummarySelector {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
@@ -58,6 +64,11 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String
   ): View? {
+    val topicLessonsViewModel = getTopicLessonsViewModel()
+      .apply {
+        setInternalProfileId(internalProfileId)
+        setTopicId(topicId)
+      }
     this.internalProfileId = internalProfileId
     this.topicId = topicId
     this.storyId = storyId
@@ -68,10 +79,14 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    binding.let {
-      it.lifecycleOwner = fragment
+    binding.apply {
+      lifecycleOwner = fragment
+      viewModel = topicLessonsViewModel
     }
-    subscribeToTopicLiveData()
+    binding.storySummaryRecyclerView.apply {
+      adapter = createRecyclerViewAdapter()
+    }
+//    subscribeToTopicLiveData()
     return binding.root
   }
 
@@ -141,7 +156,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         viewType = ViewType.VIEW_TYPE_TITLE,
         inflateDataBinding = TopicLessonsTitleBinding::inflate,
         setViewModel = TopicLessonsTitleBinding::setViewModel,
-        transformViewModel = { it as SectionTitleBinding }
+        transformViewModel = { it as TopicLessonsTitleViewModel }
       )
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_STORY,
@@ -161,15 +176,39 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     binding: TopicLessonsStorySummaryBinding,
     model: StorySummaryViewModel
   ) {
-    binding.viewModel = model
-//    binding.isChecked = selectedSubtopicIdList.contains(model.subtopic.subtopicId)
-//    binding.subtopicCheckBox.setOnCheckedChangeListener { _, isChecked ->
-//      if (isChecked) {
-//        subtopicSelected(model.subtopic.subtopicId, model.subtopic.skillIdsList)
-//      } else {
-//        subtopicUnselected(model.subtopic.subtopicId, model.subtopic.skillIdsList)
-//      }
-//    }
+    var isChapterListVisible = false
+//    var position = 0
+    binding.isListExpanded = isChapterListVisible
+
+    val chapterSummaries = model
+      .storySummary.chapterList
+    val completedChapterCount =
+      chapterSummaries.map(ChapterSummary::getChapterPlayState)
+        .filter {
+          it == ChapterPlayState.COMPLETED
+        }
+        .size
+    val storyPercentage: Int =
+      (completedChapterCount * 100) / model.storySummary.chapterCount
+    binding.storyPercentage = storyPercentage
+    binding.storyProgressView.setStoryChapterDetails(
+      model.storySummary.chapterCount,
+      completedChapterCount
+    )
+    binding.topicPlayStoryDashedLineView.setLayerType(
+      View.LAYER_TYPE_SOFTWARE,
+      /* paint= */ null
+    )
+    binding.chapterRecyclerView.adapter = createRecyclerViewAdapter()
+  }
+
+  private fun createSubRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
+    return BindableAdapter.SingleTypeBuilder
+      .newBuilder<ChapterSummaryViewModel>()
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = LessonsChapterViewBinding::inflate,
+        setViewModel = LessonsChapterViewBinding::setViewModel
+      ).build()
   }
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
@@ -229,6 +268,10 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         }
       }
     )
+  }
+
+  private fun getTopicLessonsViewModel(): TopicLessonsViewModel {
+    return viewModelProvider.getForFragment(fragment, TopicLessonsViewModel::class.java)
   }
 
   fun storySummaryClicked(storySummary: StorySummary) {

@@ -1,5 +1,6 @@
 package org.oppia.android.app.topic.lessons
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.model.StorySummary
 
@@ -9,6 +10,8 @@ class StorySummaryViewModel(
   private val storySummarySelector: StorySummarySelector,
   private val chapterSummarySelector: ChapterSummarySelector
 ) : TopicLessonsItemViewModel() {
+
+  val selectedStoryIndex = MutableLiveData<Int>()
 
   val chapterSummaryItemList: List<ChapterSummaryViewModel> by lazy {
     computeChapterSummaryItemList()

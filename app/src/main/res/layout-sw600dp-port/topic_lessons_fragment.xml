@@ -15,6 +15,7 @@
       android:overScrollMode="never"
       android:paddingBottom="100dp"
       android:scrollbars="none"
+      app:data="@{viewModel.topicLessonsLiveData}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
