@@ -69,7 +69,7 @@ interface ViewBindingShim {
     attachToParent: Boolean
   ): View
 
-  /** Handles binding inflation for [ComingSoonTopicsListView] and returns the view model.*/
+  /** Handles binding inflation for [ComingSoonTopicsListView] and returns the view model. */
   fun provideComingSoonTopicsViewModel(
     view: View,
     viewModel: ComingSoonTopicsViewModel

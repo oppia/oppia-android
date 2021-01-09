@@ -28,7 +28,7 @@ class ComingSoonTopicsViewModel(
   /**
    * Returns the padding placed at the end of the coming soon topics list based on the number of coming soon topics.
    */
-  fun getEndPadding(): Int {
+  fun getEndMargin(): Int {
     return if (comingSoonTopicList.upcomingTopicCount > 2) {
       activity.resources.getDimensionPixelSize(R.dimen.coming_soon_padding_end)
     } else {

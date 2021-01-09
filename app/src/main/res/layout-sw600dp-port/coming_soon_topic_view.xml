@@ -13,7 +13,7 @@
     android:id="@+id/topic_container"
     android:layout_width="144dp"
     android:layout_height="wrap_content"
-    app:layoutMarginEnd="@{viewModel.endPadding}"
+    app:layoutMarginEnd="@{viewModel.endMargin}"
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
