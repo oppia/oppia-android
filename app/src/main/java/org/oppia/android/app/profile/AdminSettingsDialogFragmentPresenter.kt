@@ -44,7 +44,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminSettingsInputPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
-        if (adminViewModel.errorMessage.get() != "" && adminViewModel.inputPin.get() == it) {
+        if (adminViewModel.errorMessage.get()?.isNotEmpty()!! && adminViewModel.inputPin.get() == it) {
           adminViewModel.inputPin.set(it)
         } else {
           adminViewModel.inputPin.set(it)
