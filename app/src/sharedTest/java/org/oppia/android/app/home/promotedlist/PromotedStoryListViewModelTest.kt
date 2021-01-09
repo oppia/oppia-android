@@ -148,16 +148,14 @@ class PromotedStoryListViewModelTest {
           it,
           listOf(promotedStory1, promotedStory2)
         )
-        val promotedStoryListViewModelCopy = createPromotedStoryListViewModel(
+        val copyPromotedStoryListViewModel = createPromotedStoryListViewModel(
           it,
           listOf(promotedStory1, promotedStory2)
         )
-        val originalEqualsCopy = promotedStoryListViewModel == promotedStoryListViewModelCopy
-        val copyEqualsOriginal = promotedStoryListViewModelCopy == promotedStoryListViewModel
 
         // Verify the symmetric property of equals(): a == b iff b == a.
-        assertThat(originalEqualsCopy).isTrue()
-        assertThat(copyEqualsOriginal).isTrue()
+        assertThat(promotedStoryListViewModel).isEqualTo(copyPromotedStoryListViewModel)
+        assertThat(copyPromotedStoryListViewModel).isEqualTo(promotedStoryListViewModel)
       }
     }
   }
@@ -283,6 +281,7 @@ class PromotedStoryListViewModelTest {
           listOf(promotedStory1, promotedStory2)
         )
 
+        // Verify that hashCode consistently returns the same value.
         val firstHash = promotedStoryListViewModel.hashCode()
         val secondHash = promotedStoryListViewModel.hashCode()
         assertThat(firstHash).isEqualTo(secondHash)

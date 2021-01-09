@@ -1,5 +1,6 @@
 package org.oppia.android.app.home
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
@@ -118,7 +119,9 @@ class WelcomeViewModelTest {
           morningClock,
           "Profile 1"
         )
-        assertThat(welcomeViewModelProfile1Morning.equals(welcomeViewModelProfile1Morning)).isTrue()
+
+        // Verify the reflexive property of equals(): a == a.
+        assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1Morning)
       }
     }
   }
@@ -140,10 +143,10 @@ class WelcomeViewModelTest {
           morningClock,
           "Profile 1"
         )
-        val isSymmetric =
-          welcomeViewModelProfile1Morning.equals(copyWelcomeViewModelProfile1Morning) &&
-            copyWelcomeViewModelProfile1Morning.equals(welcomeViewModelProfile1Morning)
-        assertThat(isSymmetric).isTrue()
+
+        // Verify the symmetric property of equals(): a == b iff b == a.
+        assertThat(welcomeViewModelProfile1Morning).isEqualTo(copyWelcomeViewModelProfile1Morning)
+        assertThat(copyWelcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1Morning)
       }
     }
   }
@@ -155,26 +158,26 @@ class WelcomeViewModelTest {
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val welcomeViewModelProfile1Morning = WelcomeViewModel(
+        val welcomeViewModelProfile1MorningCopy1 = WelcomeViewModel(
           testFragment,
           morningClock,
           "Profile 1"
         )
-        val copy1WelcomeViewModelProfile1Morning = WelcomeViewModel(
+        val welcomeViewModelProfile1MorningCopy2 = WelcomeViewModel(
           testFragment,
           morningClock,
           "Profile 1"
         )
-        val copy2WelcomeVieModelProfile1Morning = WelcomeViewModel(
+        val welcomeViewModelProfile1MorningCopy3 = WelcomeViewModel(
           testFragment,
           morningClock,
           "Profile 1"
         )
-        val isTransitive =
-          welcomeViewModelProfile1Morning.equals(copy1WelcomeViewModelProfile1Morning) &&
-            copy1WelcomeViewModelProfile1Morning.equals(copy2WelcomeVieModelProfile1Morning) &&
-            copy2WelcomeVieModelProfile1Morning.equals(welcomeViewModelProfile1Morning)
-        assertThat(isTransitive).isTrue()
+        assertThat(welcomeViewModelProfile1MorningCopy1).isEqualTo(welcomeViewModelProfile1MorningCopy2)
+        assertThat(welcomeViewModelProfile1MorningCopy2).isEqualTo(welcomeViewModelProfile1MorningCopy3)
+
+        // Verify the transitive property of equals(): if a == b & b == c, then a == c
+        assertThat(welcomeViewModelProfile1MorningCopy1).isEqualTo(welcomeViewModelProfile1MorningCopy3)
       }
     }
   }
@@ -191,15 +194,16 @@ class WelcomeViewModelTest {
           morningClock,
           "Profile 1"
         )
-        val copy1WelcomeViewModelProfile1Morning = WelcomeViewModel(
+        val copyWelcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
           morningClock,
           "Profile 1"
         )
-        val isConsistent =
-          welcomeViewModelProfile1Morning.equals(copy1WelcomeViewModelProfile1Morning) &&
-            welcomeViewModelProfile1Morning.equals(copy1WelcomeViewModelProfile1Morning)
-        assertThat(isConsistent).isTrue()
+        assertThat(welcomeViewModelProfile1Morning).isEqualTo(copyWelcomeViewModelProfile1Morning)
+
+        // Verify the consistent property of equals(): if neither object is modified, then a == b
+        // for multiple invocations
+        assertThat(welcomeViewModelProfile1Morning).isEqualTo(copyWelcomeViewModelProfile1Morning)
       }
     }
   }
@@ -216,7 +220,9 @@ class WelcomeViewModelTest {
           morningClock,
           "Profile 1"
         )
-        assertThat(welcomeViewModelProfile1Morning.equals(null)).isFalse()
+
+        // Verify the non-null property of equals(): for any non-null reference a, a != null
+        assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(null)
       }
     }
   }
@@ -238,8 +244,8 @@ class WelcomeViewModelTest {
           morningClock,
           "Profile 2"
         )
-        assertThat(welcomeViewModelProfile1Morning.equals(welcomeViewModelProfile2Morning))
-          .isFalse()
+
+        assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(welcomeViewModelProfile2Morning)
       }
     }
   }
@@ -249,7 +255,6 @@ class WelcomeViewModelTest {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use {
-
       it.onActivity {
         setUpDifferentClockTimes()
         setUpTestFragment(it)
@@ -263,8 +268,8 @@ class WelcomeViewModelTest {
           eveningClock,
           "Profile 1"
         )
-        val equal = welcomeViewModelProfile1Morning.equals(welcomeViewModelProfile1Evening)
-        assertThat(equal).isFalse()
+
+        assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(welcomeViewModelProfile1Evening)
       }
     }
   }
@@ -286,9 +291,9 @@ class WelcomeViewModelTest {
           morningClock,
           "Profile 1"
         )
-        assertThat(welcomeViewModelProfile1Morning.equals(copyWelcomeViewModelProfile1Morning))
-          .isTrue()
+        assertThat(welcomeViewModelProfile1Morning).isEqualTo(copyWelcomeViewModelProfile1Morning)
 
+        // If a == b, then a.hashCode == b.hashCode
         assertThat(welcomeViewModelProfile1Morning.hashCode())
           .isEqualTo(copyWelcomeViewModelProfile1Morning.hashCode())
       }
@@ -307,9 +312,10 @@ class WelcomeViewModelTest {
           morningClock,
           "Profile 1"
         )
+
+        // Verify that hashCode consistently returns the same value.
         val firstHash = welcomeViewModelProfile1Morning.hashCode()
         val secondHash = welcomeViewModelProfile1Morning.hashCode()
-
         assertThat(firstHash).isEqualTo(secondHash)
       }
     }
