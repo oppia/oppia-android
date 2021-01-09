@@ -145,7 +145,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_withAdminProfile_displayProfileName_profileNameDisplayedSuccessfully() {
+  fun testHomeActivity_withAdminProfile_displayProfileName_profileNameIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -158,7 +158,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_withAdminProfile_configurationChange_profileNameDisplayedSuccessfully() {
+  fun testHomeActivity_withAdminProfile_configChange_profileNameIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -172,7 +172,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() {
+  fun testHomeActivity_displayGreetingMessageBasedOnTime_goodMorningMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -187,7 +187,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() {
+  fun testHomeActivity_displayGreetingMessageBasedOnTime_goodAfternoonMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -202,7 +202,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() {
+  fun testHomeActivity_displayGreetingMessageBasedOnTime_goodEveningMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -217,7 +217,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_displaysRecentlyPlayedStoriesText() {
+  fun testHomeActivity_recentlyPlayedStoriesTextIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -230,7 +230,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_userProfile_displaysViewAllText() {
+  fun testHomeActivity_userProfile_viewAllTextIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -287,7 +287,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_configurationChange_promotedCard_storyNameIsCorrect() {
+  fun testHomeActivity_configChange_promotedCard_storyNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -386,7 +386,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_topicSummary_configurationChange_lessonCountIsCorrect() {
+  fun testHomeActivity_topicSummary_configChange_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -466,7 +466,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_configurationChange_checkSpanForItem4_spanSizeIsOne() {
+  fun testHomeActivity_configChange_checkSpanForItem4_spanSizeIsOne() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())

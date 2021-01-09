@@ -18,7 +18,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -39,7 +38,6 @@ import org.oppia.android.app.parser.RichTextViewMatcher.Companion.containsRichTe
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent // ktlint-disable max-line-length
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -95,14 +93,13 @@ class RevisionCardFragmentTest {
   fun setUp() {
     Intents.init()
     context = ApplicationProvider.getApplicationContext()
-    FirebaseApp.initializeApp(context)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
   fun testRevisionCardTest_overflowMenu_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -118,7 +115,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTest_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
     launch<ExplorationActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -140,7 +137,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTest_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
     launch<ExplorationActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -162,7 +159,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -177,7 +174,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -204,9 +201,9 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() { // ktlint-disable max-line-length
+  fun testRevCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -225,9 +222,9 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_configurationChange_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() { // ktlint-disable max-line-length
+  fun testRevCardTestActivity_toolbarTitle_fractionSubtopicId1_displayedCorrectly() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -241,9 +238,9 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() { // ktlint-disable max-line-length
+  fun testRevCardTestActivity_fractionSubtopicId2_checkExpDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -271,9 +268,9 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() { // ktlint-disable max-line-length
+  fun testRevCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonDispSuccessfully() {
     launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(
+      RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,

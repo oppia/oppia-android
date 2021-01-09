@@ -20,7 +20,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
@@ -124,7 +123,6 @@ class TopicInfoFragmentTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    FirebaseApp.initializeApp(context)
     testCoroutineDispatchers.registerIdlingResource()
   }
 

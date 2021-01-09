@@ -130,7 +130,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_displayGeneralAndProfileManagement() {
+  fun testAdministratorControlsFragment_generalAndProfileManagementIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -159,7 +159,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_displayDownloadPermissionsAndSettings() {
+  fun testAdministratorControlsFragment_downloadPermissionsAndSettingsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -184,7 +184,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_displayApplicationSettings() {
+  fun testAdministratorControlsFragment_applicationSettingsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -214,7 +214,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsNotChecked() { // ktlint-disable max-line-length
+  fun testAdministratorControlsFragment_wifiSwitchIsUncheck_autoUpdateSwitchIsUncheck() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -240,7 +240,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_topicUpdateOnWifiSwitchIsChecked_configurationChange_checkIfSwitchIsChecked() { // ktlint-disable max-line-length
+  fun testAdministratorControlsFragment_clickWifiSwitch_configChange_wifiSwitchIsChecked() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -305,7 +305,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_clickEditProfile_checkOpensProfileListActivity() { // ktlint-disable max-line-length
+  fun testAdministratorControlsFragment_clickEditProfile_opensProfileListActivity() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -318,7 +318,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_clickLogoutButton_displaysLogoutDialog() {
+  fun testAdministratorControlsFragment_clickLogoutButton_logoutDialogIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -334,7 +334,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_changeConfiguration_clickLogout_displaysLogoutDialog() {
+  fun testAdministratorControlsFragment_configChange_clickLogout_logoutDialogIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -369,7 +369,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogDismissed() {
+  fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogIsDismissed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -399,7 +399,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControls_selectAdminNavItem_displaysAdminControls() {
+  fun testAdministratorControls_selectAdminNavItem_adminControlsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
