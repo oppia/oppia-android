@@ -97,136 +97,96 @@ class TopicSummaryViewModelTest {
       .commitNow()
   }
 
+  private fun createBasicTopicSummaryViewModel(activity: AppCompatActivity): TopicSummaryViewModel {
+    return TopicSummaryViewModel(
+      activity = activity,
+      topicSummary = topicSummary1,
+      entityType = "entity",
+      topicSummaryClickListener = testFragment,
+      position = 5
+    )
+  }
+
   @Test
-  fun testTopicSummaryViewModelEquals_reflexiveTopicSummary1Entity1Position5_isTrue() {
+  fun testTopicSummaryViewModelEquals_reflexiveBasicTopicSummaryViewModel_isTrue() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val topicSummaryViewModel = TopicSummaryViewModel(
-          /* activity = */ it,
-          topicSummary1,
-          /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ testFragment,
-          /* position = */ 5
-        )
-        assertThat(topicSummaryViewModel.equals(topicSummaryViewModel)).isTrue()
+        val topicSummaryViewModel = createBasicTopicSummaryViewModel(it)
+
+        // Verify the reflexive property of equals(): a == a.
+        assertThat(topicSummaryViewModel).isEqualTo(topicSummaryViewModel)
       }
     }
   }
 
   @Test
-  fun testTopicSummaryViewModelEquals_symmetricTopicSummary1Entity1Position5_isTrue() {
+  fun testTopicSummaryViewModelEquals_symmetricBasicTopicSummaryViewModel_isTrue() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val topicSummaryViewModel = TopicSummaryViewModel(
-          /* activity = */ it,
-          topicSummary1,
-          /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ testFragment,
-          /* position = */ 5
-        )
-        val copyTopicSummaryViewModel = TopicSummaryViewModel(
-          /* activity = */ it,
-          topicSummary1,
-          /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ testFragment,
-          /* position = */ 5
-        )
+        val topicSummaryViewModel = createBasicTopicSummaryViewModel(it)
+        val copyTopicSummaryViewModel = createBasicTopicSummaryViewModel(it)
 
-        val isSymmetric = topicSummaryViewModel.equals(copyTopicSummaryViewModel) &&
-          copyTopicSummaryViewModel.equals(topicSummaryViewModel)
-        assertThat(isSymmetric).isTrue()
+        // Verify the symmetric property of equals(): a == b iff b == a.
+        assertThat(topicSummaryViewModel).isEqualTo(copyTopicSummaryViewModel)
+        assertThat(copyTopicSummaryViewModel).isEqualTo(topicSummaryViewModel)
       }
     }
   }
 
   @Test
-  fun testTopicSummaryViewModelEquals_transitiveTopicSummary1Entity1Position5_isTrue() {
+  fun testTopicSummaryViewModelEquals_transitiveBasicSummaryViewModel_isTrue() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val topicSummaryViewModel = TopicSummaryViewModel(
-          /* activity = */ it,
-          topicSummary1,
-          /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ testFragment,
-          /* position = */ 5
-        )
-        val copy1TopicSummaryViewModel = TopicSummaryViewModel(
-          /* activity = */ it,
-          topicSummary1,
-          /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ testFragment,
-          /* position = */ 5
-        )
-        val copy2TopicSummaryViewModel = TopicSummaryViewModel(
-          /* activity = */ it,
-          topicSummary1,
-          /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ testFragment,
-          /* position = */ 5
-        )
+        val topicSummaryViewModelCopy1 = createBasicTopicSummaryViewModel(it)
+        val topicSummaryViewModelCopy2 = createBasicTopicSummaryViewModel(it)
+        val topicSummaryViewModelCopy3 = createBasicTopicSummaryViewModel(it)
+        assertThat(topicSummaryViewModelCopy1).isEqualTo(topicSummaryViewModelCopy2)
+        assertThat(topicSummaryViewModelCopy2).isEqualTo(topicSummaryViewModelCopy3)
 
-        val isTransitive = topicSummaryViewModel.equals(copy1TopicSummaryViewModel) &&
-          copy1TopicSummaryViewModel.equals(copy2TopicSummaryViewModel) &&
-          copy2TopicSummaryViewModel.equals(topicSummaryViewModel)
-        assertThat(isTransitive).isTrue()
+        // Verify the transitive property of equals(): if a == b & b == c, then a == c
+        assertThat(topicSummaryViewModelCopy1).isEqualTo(topicSummaryViewModelCopy3)
       }
     }
   }
 
   @Test
-  fun testTopicSummaryViewModelEquals_consistentTopicSummary1Entity1Position5_isTrue() {
+  fun testTopicSummaryViewModelEquals_consistentBasicTopicSummaryViewModel_isTrue() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val topicSummaryViewModel = TopicSummaryViewModel(
-          /* activity = */ it,
-          topicSummary1,
-          /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ testFragment,
-          /* position = */ 5
-        )
-        val copyTopicSummaryViewModel = TopicSummaryViewModel(
-          /* activity = */ it,
-          topicSummary1,
-          /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ testFragment,
-          /* position = */ 5
-        )
+        val topicSummaryViewModel = createBasicTopicSummaryViewModel(it)
+        val copyTopicSummaryViewModel = createBasicTopicSummaryViewModel(it)
+        assertThat(topicSummaryViewModel).isEqualTo(copyTopicSummaryViewModel)
 
-        val isConsistent = topicSummaryViewModel.equals(copyTopicSummaryViewModel) &&
-          topicSummaryViewModel.equals(copyTopicSummaryViewModel)
-        assertThat(isConsistent).isTrue()
+        // Verify the consistent property of equals(): if neither object is modified, then a == b
+        // for multiple invocations
+        assertThat(topicSummaryViewModel).isEqualTo(copyTopicSummaryViewModel)
       }
     }
   }
 
   @Test
-  fun testTopicSummaryViewModelEquals_topicSummary1Entity1Position5AndNull_isFalse() {
+  fun testTopicSummaryViewModelEquals_basicTopicSummaryViewModelAndNull_isFalse() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val topicSummaryViewModel = TopicSummaryViewModel(
-          /* activity = */ it,
-          topicSummary1,
-          /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ testFragment,
-          /* position = */ 5
-        )
+        val topicSummaryViewModel = createBasicTopicSummaryViewModel(it)
 
-        assertThat(topicSummaryViewModel.equals(null)).isFalse()
+        // Verify the non-null property of equals(): for any non-null reference a, a != null
+        assertThat(topicSummaryViewModel).isNotEqualTo(null)
       }
     }
   }
@@ -253,7 +213,7 @@ class TopicSummaryViewModelTest {
           /* position = */ 5
         )
 
-        assertThat(topicSummaryViewModel1.equals(topicSummaryViewModel2)).isFalse()
+        assertThat(topicSummaryViewModel1).isNotEqualTo(topicSummaryViewModel2)
       }
     }
   }
@@ -265,14 +225,14 @@ class TopicSummaryViewModelTest {
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val topicSummaryViewModel1 = TopicSummaryViewModel(
+        val topicSummaryViewModelEntity1 = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
           /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 5
         )
-        val topicSummaryViewModel2 = TopicSummaryViewModel(
+        val topicSummaryViewModelEntity2 = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_2",
@@ -280,7 +240,7 @@ class TopicSummaryViewModelTest {
           /* position = */ 5
         )
 
-        assertThat(topicSummaryViewModel1.equals(topicSummaryViewModel2)).isFalse()
+        assertThat(topicSummaryViewModelEntity1).isNotEqualTo(topicSummaryViewModelEntity2)
       }
     }
   }
@@ -292,14 +252,14 @@ class TopicSummaryViewModelTest {
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val topicSummaryViewModel1 = TopicSummaryViewModel(
+        val topicSummaryViewModelPosition4 = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
           /* topicSummaryCLickListener = */ testFragment,
           /* position = */ 4
         )
-        val topicSummaryViewModel2 = TopicSummaryViewModel(
+        val topicSummaryViewModelPosition5 = TopicSummaryViewModel(
           /* activity = */ it,
           topicSummary1,
           /* entityType = */ "entity_1",
@@ -307,7 +267,7 @@ class TopicSummaryViewModelTest {
           /* position = */ 5
         )
 
-        assertThat(topicSummaryViewModel1.equals(topicSummaryViewModel2)).isFalse()
+        assertThat(topicSummaryViewModelPosition4).isNotEqualTo(topicSummaryViewModelPosition5)
       }
     }
   }
@@ -319,24 +279,12 @@ class TopicSummaryViewModelTest {
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val topicSummaryViewModel = TopicSummaryViewModel(
-          /* activity = */ it,
-          topicSummary1,
-          /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ testFragment,
-          /* position = */ 5
-        )
-        val copyTopicSummaryViewModel = TopicSummaryViewModel(
-          /* activity = */ it,
-          topicSummary1,
-          /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ testFragment,
-          /* position = */ 5
-        )
-        assertThat(topicSummaryViewModel.equals(copyTopicSummaryViewModel)).isTrue()
+        val topicSummaryViewModel = createBasicTopicSummaryViewModel(it)
+        val copyTopicSummaryViewModel = createBasicTopicSummaryViewModel(it)
+        assertThat(topicSummaryViewModel).isEqualTo(copyTopicSummaryViewModel)
 
-        assertThat(topicSummaryViewModel.hashCode())
-          .isEqualTo(copyTopicSummaryViewModel.hashCode())
+        // Verify that if a == b, then a.hashCode == b.hashCode
+        assertThat(topicSummaryViewModel.hashCode()).isEqualTo(copyTopicSummaryViewModel.hashCode())
       }
     }
   }
@@ -348,16 +296,11 @@ class TopicSummaryViewModelTest {
     ).use {
       it.onActivity {
         setUpTestFragment(it)
-        val topicSummaryViewModel = TopicSummaryViewModel(
-          /* activity = */ it,
-          topicSummary1,
-          /* entityType = */ "entity_1",
-          /* topicSummaryCLickListener = */ testFragment,
-          /* position = */ 5
-        )
+        val topicSummaryViewModel = createBasicTopicSummaryViewModel(it)
+
+        // Verify that hashCode consistently returns the same value.
         val firstHash = topicSummaryViewModel.hashCode()
         val secondHash = topicSummaryViewModel.hashCode()
-
         assertThat(firstHash).isEqualTo(secondHash)
       }
     }

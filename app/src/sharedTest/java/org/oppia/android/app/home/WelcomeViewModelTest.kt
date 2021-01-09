@@ -1,6 +1,5 @@
 package org.oppia.android.app.home
 
-import android.app.Activity
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
@@ -157,11 +156,17 @@ class WelcomeViewModelTest {
         val welcomeViewModelProfile1MorningCopy1 = createBasicWelcomeViewModel(testFragment)
         val welcomeViewModelProfile1MorningCopy2 = createBasicWelcomeViewModel(testFragment)
         val welcomeViewModelProfile1MorningCopy3 = createBasicWelcomeViewModel(testFragment)
-        assertThat(welcomeViewModelProfile1MorningCopy1).isEqualTo(welcomeViewModelProfile1MorningCopy2)
-        assertThat(welcomeViewModelProfile1MorningCopy2).isEqualTo(welcomeViewModelProfile1MorningCopy3)
+        assertThat(welcomeViewModelProfile1MorningCopy1).isEqualTo(
+          welcomeViewModelProfile1MorningCopy2
+        )
+        assertThat(welcomeViewModelProfile1MorningCopy2).isEqualTo(
+          welcomeViewModelProfile1MorningCopy3
+        )
 
         // Verify the transitive property of equals(): if a == b & b == c, then a == c
-        assertThat(welcomeViewModelProfile1MorningCopy1).isEqualTo(welcomeViewModelProfile1MorningCopy3)
+        assertThat(welcomeViewModelProfile1MorningCopy1).isEqualTo(
+          welcomeViewModelProfile1MorningCopy3
+        )
       }
     }
   }
