@@ -63,8 +63,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="132dp"
-          android:layoutDirection="locale"
-          android:background="@color/white">
+          android:background="@color/white"
+          android:layoutDirection="locale">
 
           <TextView
             android:id="@+id/reading_text_size_small_textview"
@@ -137,8 +137,8 @@
               android:id="@+id/reading_text_size_seekBar"
               style="@style/ReadingTextSizeSeekBar"
               android:layout_width="match_parent"
-              android:contentDescription="@string/slide_seekbar_to_control_text_size"
               android:layout_height="match_parent"
+              android:contentDescription="@string/slide_seekbar_to_control_text_size"
               android:paddingStart="8dp"
               android:paddingEnd="8dp"
               android:thumb="@drawable/reading_text_size_seekbar_thumb" />
