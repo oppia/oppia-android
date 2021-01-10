@@ -4,8 +4,7 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layoutDirection="locale">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/reading_list_app_bar_layout"
@@ -64,6 +63,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="132dp"
+          android:layoutDirection="locale"
           android:background="@color/white">
 
           <TextView
