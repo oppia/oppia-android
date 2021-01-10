@@ -288,21 +288,22 @@ class TopicListController @Inject constructor(
     return ongoingStoryListBuilder.build()
   }
 
-  private fun getStartedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> {
-    return storyProgress.chapterProgressMap.values
-      .filter { chapterProgress ->
-        chapterProgress.chapterPlayState ==
-          ChapterPlayState.STARTED_NOT_COMPLETED
-      }
-      .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
-  }
+  private fun getStartedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> =
+    getSortedChapterProgressListByPlayState(
+      storyProgress, playState = ChapterPlayState.STARTED_NOT_COMPLETED
+    )
 
-  private fun getCompletedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> {
+  private fun getCompletedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> =
+    getSortedChapterProgressListByPlayState(
+      storyProgress, playState = ChapterPlayState.COMPLETED
+    )
+
+  private fun getSortedChapterProgressListByPlayState(
+    storyProgress: StoryProgress,
+    playState: ChapterPlayState
+  ): List<ChapterProgress> {
     return storyProgress.chapterProgressMap.values
-      .filter { chapterProgress ->
-        chapterProgress.chapterPlayState ==
-          ChapterPlayState.COMPLETED
-      }
+      .filter { chapterProgress -> chapterProgress.chapterPlayState == playState }
       .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
   }
 
