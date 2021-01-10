@@ -25,9 +25,9 @@ class PromotedStoryListViewModel(
       activity.resources.getDimensionPixelSize(R.dimen.home_padding_end)
     else activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
 
-  /** Determines and returns the visibility for the "View All" button. */
+  /** Determines and returns the header for the promoted stories. */
   fun getHeader(): String {
-    with(recommendedActivityList.recommendedStoryList) {
+    with (recommendedActivityList.recommendedStoryList) {
       return when {
         suggestedStoryList.isNotEmpty() -> {
           if (recentlyPlayedStoryList.isNotEmpty() || olderPlayedStoryList.isNotEmpty()) {
@@ -45,10 +45,8 @@ class PromotedStoryListViewModel(
     }
   }
 
-  /**
-   * Determines and returns the visibility for the "View All" button.
-   */
-  fun getButtonVisibility(): Int {
+  /** Returns the visibility for the "View All" button. */
+  fun getViewAllButtonVisibility(): Int {
     recommendedActivityList.recommendedStoryList.let {
       if (it.suggestedStoryList.isNotEmpty()) {
         return if (it.recentlyPlayedStoryList.isNotEmpty() ||

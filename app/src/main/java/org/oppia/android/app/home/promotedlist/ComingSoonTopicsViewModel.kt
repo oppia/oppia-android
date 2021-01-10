@@ -1,16 +1,13 @@
 package org.oppia.android.app.home.promotedlist
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.UpcomingTopic
 
-// TODO(#206): Remove the color darkening computation and properly set up the topic thumbnails.
-// These values were roughly computed based on the mocks. They won't produce the same colors since darker colors in the
-// mocks were not consistently darker. An alternative would be to specify both background colors together to ensure
-// proper contrast with readable elements.
-/** The view model corresponding to coming soon topic summaries in the topic summary RecyclerView. */
+/** [ViewModel] for displaying a coming soon topic summaries. */
 class ComingSoonTopicsViewModel(
   private val activity: AppCompatActivity,
   val topicSummary: UpcomingTopic,

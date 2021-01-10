@@ -143,7 +143,6 @@ class HomeViewModel(
         )
         return if (comingSoonTopicsList.isNotEmpty()) {
           return ComingSoonTopicListViewModel(
-            activity,
             comingSoonTopicsList
           )
         } else null

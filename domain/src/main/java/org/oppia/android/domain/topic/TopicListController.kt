@@ -272,7 +272,7 @@ class TopicListController @Inject constructor(
             mostRecentCompletedChapterProgress != null &&
               mostRecentCompletedChapterProgress.explorationId !=
               story.chapterList.last().explorationId -> {
-              createOngoingStoryListBasedOnLastCompleted(
+              createOngoingStoryListBasedOnMostRecentlyCompleted(
                 storyId,
                 story,
                 mostRecentCompletedChapterProgress,
@@ -339,7 +339,7 @@ class TopicListController @Inject constructor(
     }
   }
 
-  private fun createOngoingStoryListBasedOnLastCompleted(
+  private fun createOngoingStoryListBasedOnMostRecentlyCompleted(
     storyId: String,
     story: StorySummary,
     mostRecentCompletedChapterProgress: ChapterProgress,
