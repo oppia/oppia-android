@@ -105,7 +105,7 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex0_topicHeader_topicHeaderIsCorrect() {
+  fun testWalkthroughTopicList_recyclerViewIndex0_topicHeader_topicHeaderIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -125,7 +125,7 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_topicNameIsCorrect() {
+  fun testWalkthroughTopicList_recyclerViewIndex1_topicCard_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -151,7 +151,7 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFrag_recyclerViewIndex1_topicCard_configChanged_topicNameIsCorrect() {
+  fun testWalkthroughTopicList_recyclerViewIndex1_topicCard_configChanged_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())

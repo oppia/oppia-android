@@ -107,7 +107,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_topicTitleIsCorrect() {
+  fun testWalkthroughFinal_recyclerViewIndex1_topicSelected_topicTitleIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -132,7 +132,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex2_topicSelected_topicTitleIsCorrect() {
+  fun testWalkthroughFinal_recyclerViewIndex2_topicSelected_topicTitleIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -157,7 +157,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFrag_recyclerViewIndex2_topicSelected_configChanged_topicTitleIsCrt() {
+  fun testWalkthroughFinal_recyclerViewIndex2_topicSelected_configChanged_topicTitleIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -189,7 +189,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFrag_recyclerViewIndex1_topicSelected_yesNoBtn_isDisplayedCorrectly() {
+  fun testWalkthroughFinal_recyclerViewIndex1_topicSelected_yesNoButton_isDisplayedCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -212,7 +212,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_clickNoBtn_worksCorrectly() {
+  fun testWalkthroughFinal_recyclerViewIndex1_topicSelected_clickNoButton_worksCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))

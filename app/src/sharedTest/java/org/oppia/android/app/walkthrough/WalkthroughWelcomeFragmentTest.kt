@@ -117,7 +117,7 @@ class WalkthroughWelcomeFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_checkDescription_isCorrect() {
+  fun testWalkthroughWelcome_checkDescription_isCorrect() {
     launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
       onView(
         allOf(
@@ -129,7 +129,7 @@ class WalkthroughWelcomeFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_checkProfileName_isCorrect() {
+  fun testWalkthroughWelcome_checkProfileName_isCorrect() {
     launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -142,7 +142,7 @@ class WalkthroughWelcomeFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_checkProfileName_configurationChanged_isCorrect() {
+  fun testWalkthroughWelcome_checkProfileName_configurationChanged_isCorrect() {
     launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
