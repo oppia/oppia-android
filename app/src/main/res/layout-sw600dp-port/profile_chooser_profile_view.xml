@@ -39,8 +39,7 @@
       app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_margin_start_profile_already_added : @dimen/profile_view_not_added_margin}"
       app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_profile_view_margin_top_profile_not_added}"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      profile:ignore="RtlSymmetry">
+      app:layout_constraintTop_toTopOf="parent">
 
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_avatar_img"
