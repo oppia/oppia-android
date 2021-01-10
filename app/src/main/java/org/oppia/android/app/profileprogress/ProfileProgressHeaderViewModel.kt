@@ -16,6 +16,7 @@ class ProfileProgressHeaderViewModel(activity: AppCompatActivity, fragment: Frag
 
   val profile = ObservableField<Profile>(Profile.getDefaultInstance())
   val ongoingTopicCount = ObservableField(0)
+  val recentlyPlayedTopicCount = ObservableField(0)
   val completedStoryCount = ObservableField(0)
 
   fun setProfile(currentProfile: Profile) {
@@ -44,5 +45,9 @@ class ProfileProgressHeaderViewModel(activity: AppCompatActivity, fragment: Frag
 
   fun clickOnProfilePicture() {
     profilePictureEditListener.onProfilePictureClicked()
+  }
+
+  fun setRecentlyPlayedStoryCount(topicCount: Int) {
+    recentlyPlayedTopicCount.set(topicCount)
   }
 }

@@ -119,6 +119,7 @@ class ProfileProgressViewModel @Inject constructor(
   private fun processOngoingStoryList(
     ongoingStoryList: OngoingStoryList
   ): List<ProfileProgressItemViewModel> {
+    headerViewModel.setRecentlyPlayedStoryCount(ongoingStoryList.recentStoryList.size)
     limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
     val itemList = if (ongoingStoryList.recentStoryList.size > limit) {
       ongoingStoryList.recentStoryList.subList(0, limit)
