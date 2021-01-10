@@ -249,7 +249,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testFractionInputInteractionView_withFractionInput_onConfigChange_hasCorrectPendingAnswer() {
+  fun testFractionInputInteractionView_withFractionInput_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -355,7 +355,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withPartialValue_onSubmit_numberFormatErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withPartialValue_submit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -376,7 +376,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withMixedFractionNumber_onSubmit_noErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withMixedFractionNumber_submit_noErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -402,7 +402,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withDivideByZero_onSubmit_divideByZeroErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withDivideByZero_submit_divideByZeroErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -443,7 +443,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withLongNumber_onSubmit_numberTooLongErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withLongNumber_submit_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
@@ -540,7 +540,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testNumberInputInteractionView_withText_onConfigurationChange_hasCorrectPendingAnswer() {
+  fun testNumberInputInteractionView_withText_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -574,7 +574,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withLongNumber_onSubmit_numberTooLongErrorIsDisplayed() {
+  fun testNumericInputInteractionView_withLongNumber_submit_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -596,7 +596,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withLongInteger_onSubmit_numberTooLongErrorIsDisplayed() {
+  fun testNumericInputInteractionView_withLongInteger_submit_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -618,7 +618,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withMinusSymbol_onSubmit_numberFormatErrorIsDisplayed() {
+  fun testNumericInputInteractionView_withMinusSymbol_submit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -741,7 +741,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTextInputInteractionView_withText_onConfigurationChange_hasCorrectPendingAnswer() {
+  fun testTextInputInteractionView_withText_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -794,7 +794,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testRatioInputView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
+  fun testRatioInputView_withInputtedText_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -856,7 +856,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withZeroRatio_clickSubmitButton_numberWithZerosErrorIsDisplayed() {
+  fun testRatioInputView_withZeroRatio_submit_numberWithZerosErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -879,7 +879,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withInvalidRatioFormat_clickSubmitButton_numberFormatErrorIsDisplayed() {
+  fun testRatioInputView_withInvalidRatioFormat_submit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -904,7 +904,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withRatioHaving4Terms_clickSubmitButton_invalidSizeErrorIsDisplayed() {
+  fun testRatioInputView_withRatioHaving4Terms_submit_invalidSizeErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -928,7 +928,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withRatioHaving2Terms_clickSubmitButton_invalidSizeErrorIsDisplayed() {
+  fun testRatioInputView_withRatioHaving2Terms_submit_invalidSizeErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -952,7 +952,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withRatioHaving3Terms_clickSubmitButton_noErrorIsDisplayed() {
+  fun testRatioInputView_withRatioHaving3Terms_submit_noErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
