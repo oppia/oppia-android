@@ -33,7 +33,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val ONE_WEEK_IN_DAYS = 7
-private const val ONE_DAY_IN_MS = 24 * 60 * 60 * 1000
 
 private const val TOPIC_BG_COLOR = "#C6DCDA"
 
@@ -225,13 +224,23 @@ class TopicListController @Inject constructor(
     if (topicProgressList.isNotEmpty()) {
       val recommendedStoryBuilder = RecommendedStoryList.newBuilder()
       // If initially only one topic is in progress populate combination of Ongoing story
-      // and Suggested stories
+      // and Suggested stories.
       if (topicProgressList.size == 1) {
-        populateRecommendedStories(
-          topicProgressList,
-          recommendedStoryBuilder,
-          recommendedActivityListBuilder
+        recommendedStoryBuilder.addAllSuggestedStory(
+          createRecommendedStoryList(
+            topicProgressList,
+            recommendedActivityListBuilder,
+            recommendedStoryBuilder
+          )
         )
+        recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
+
+        if (recommendedStoryBuilder.suggestedStoryCount == 0 &&
+          recommendedStoryBuilder.recentlyPlayedStoryCount == 0 &&
+          recommendedStoryBuilder.olderPlayedStoryCount == 0
+        ) {
+          recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
+        }
       } else {
         // Add recently played stories or last played stories in RecommendedActivityList.
         populateRecentlyPlayedStories(
@@ -239,12 +248,17 @@ class TopicListController @Inject constructor(
           recommendedActivityListBuilder,
           recommendedStoryBuilder
         )
-        // If the above list is empty then populate Suggested stories or Upcoming stories
-        populateRecommendedStories(
-          topicProgressList,
-          recommendedStoryBuilder,
-          recommendedActivityListBuilder
-        )
+        // If the Recently-played or Older-played story list is empty then populate Suggested
+        // stories or Upcoming stories
+        if (recommendedStoryBuilder.recentlyPlayedStoryCount == 0 &&
+          recommendedStoryBuilder.olderPlayedStoryCount == 0 ){
+            populateRecommendedStories(
+              topicProgressList,
+              recommendedStoryBuilder,
+              recommendedActivityListBuilder
+            )
+          }
+
       }
     }
     return recommendedActivityListBuilder.build()
@@ -257,24 +271,19 @@ class TopicListController @Inject constructor(
   ) {
     // If no recently played stories or last played stories then set suggested stories
     // in RecommendedActivityList.
-    when {
-      recommendedStoryBuilder.recentlyPlayedStoryCount == 0 &&
-        recommendedStoryBuilder.olderPlayedStoryCount == 0 -> {
-        recommendedStoryBuilder.addAllSuggestedStory(
-          createRecommendedStoryList(
-            topicProgressList,
-            recommendedActivityListBuilder,
-            recommendedStoryBuilder
-          )
-        )
-        recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
+    recommendedStoryBuilder.addAllSuggestedStory(
+      createRecommendedStoryList(
+        topicProgressList,
+        recommendedActivityListBuilder,
+        recommendedStoryBuilder
+      )
+    )
+    recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
 
-        // If user has completed all the topics then add upcoming topics in
-        // RecommendedActivityList.
-        if (recommendedStoryBuilder.suggestedStoryCount == 0) {
-          recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
-        }
-      }
+    // If user has completed all the topics then add upcoming topics in
+    // RecommendedActivityList.
+    if (recommendedStoryBuilder.suggestedStoryCount == 0) {
+      recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
     }
   }
 
@@ -362,8 +371,7 @@ class TopicListController @Inject constructor(
         recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
       }
     if (recentlyPlayerChapterSummary != null) {
-      val numberOfDaysPassed =
-        (recentlyPlayerChapterProgress.getNumberOfDaysPassed()) / ONE_DAY_IN_MS
+      val numberOfDaysPassed = recentlyPlayerChapterProgress.getNumberOfDaysPassed()
       addPromotedStoryInRecommendedStoryList(
         numberOfDaysPassed,
         recommendedStoryBuilder,
@@ -390,25 +398,26 @@ class TopicListController @Inject constructor(
         mostRecentCompletedChapterProgress.explorationId == chapterSummary.explorationId
       }
     val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
-    val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
-    if (nextChapterSummary != null) {
-      val numberOfDaysPassed =
-        (mostRecentCompletedChapterProgress.getNumberOfDaysPassed()) / ONE_DAY_IN_MS
-      addPromotedStoryInRecommendedStoryList(
-        numberOfDaysPassed,
-        recommendedStoryBuilder,
-        storyId,
-        topic,
-        completedChapterProgressList.size,
-        story.chapterCount,
-        nextChapterSummary.name,
-        nextChapterSummary.explorationId
-      )
+    if(story.chapterList.size > nextChapterIndex) {
+      val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
+      if (nextChapterSummary != null) {
+        val numberOfDaysPassed = mostRecentCompletedChapterProgress.getNumberOfDaysPassed()
+        addPromotedStoryInRecommendedStoryList(
+          numberOfDaysPassed,
+          recommendedStoryBuilder,
+          storyId,
+          topic,
+          completedChapterProgressList.size,
+          story.chapterCount,
+          nextChapterSummary.name,
+          nextChapterSummary.explorationId
+        )
+      }
     }
   }
 
   private fun addPromotedStoryInRecommendedStoryList(
-    numberOfDaysPassed: Int,
+    numberOfDaysPassed: Long,
     recommendedStoryBuilder: RecommendedStoryList.Builder,
     storyId: String,
     topic: Topic,
@@ -432,10 +441,10 @@ class TopicListController @Inject constructor(
     }
   }
 
-  private fun ChapterProgress.getNumberOfDaysPassed(): Int {
+  private fun ChapterProgress.getNumberOfDaysPassed(): Long {
     return TimeUnit.MILLISECONDS.toDays(
       oppiaClock.getCurrentCalendar().timeInMillis - this.lastPlayedTimestamp
-    ).toInt()
+    )
   }
 
   private fun createRecommendedStoryList(
