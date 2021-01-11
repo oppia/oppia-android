@@ -11,21 +11,19 @@ import javax.inject.Inject
 /**
  * Provides the different scrolling options for RecyclerView
  *
- * This is needed because few Roboelectric tests require different
- * scrolling actions for the tests to be successful.
- * See https://github.com/oppia/oppia-android/issues/2209
- * for more information.
+ * This is needed because few Roboelectric tests require different scrolling actions for the tests
+ * to be successful.
+ * See https://github.com/oppia/oppia-android/issues/2209 for more information.
  */
 class RecyclerViewScrollingActions @Inject constructor(
   val testCoroutineDispatchers: TestCoroutineDispatchers
 ) {
 
   /**
-   * Use this when you want to scroll to a particular position, but the display of the recyclerview
-   * is not compulsory?
-   * Use this for all the standard tests
+   * Returns a [ViewAction] which scrolls RecyclerView to a position
+   * Usage : TODO
    */
-  fun scrollToPositionWithForAction(viewId: Int, position: Int) {
+  fun scrollToPosition(viewId: Int, position: Int) {
     onView(withId(viewId)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(
         position
@@ -35,9 +33,10 @@ class RecyclerViewScrollingActions @Inject constructor(
   }
 
   /**
-   * Particularly used for Roboelectric tests, when Complete display of the recycler view is
-   * required for the test to run successfully
-   *
+   * Performs a [ViewAction] on a view at position.
+   * 1) Scroll RecyclerView to position
+   * 2) Perform an action on the view at position
+   * Usage : TODO
    */
   fun scrollToPositionWithCompleteDisplayForAction(viewId: Int, position: Int) {
     onView(withId(viewId)).perform(
