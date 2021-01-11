@@ -358,6 +358,20 @@ class ProfileEditActivityTest {
   }
 
   @Test
+  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton_clickDelete_checkIfDialogRemains(){
+    ActivityScenario.launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context,
+        1
+      )
+    ).use {
+      onView(withId(R.id.profile_delete_button)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(R.string.profile_edit_delete_dialog_title)).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   // TODO(#973): Fix ProfileEditActivityTest
   @Ignore
   fun testProfileEditActivity_startActivityWithUserHasDownloadAccess_checkSwitchIsChecked() {
