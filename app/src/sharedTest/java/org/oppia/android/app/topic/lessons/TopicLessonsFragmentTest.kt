@@ -278,7 +278,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex2_chapterListForIndex1IsNotDisplayed() { // ktlint-disable max-line-length
+  fun testLessonsPlayFragment_clickExpandListIconIndex1Then2_chapterListForIndex1NotDisplayed() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       scrollToPosition(position = 1)
@@ -300,7 +300,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex2_clickExpandListIconIndex1_chapterListForIndex2IsNotDisplayed() { // ktlint-disable max-line-length
+  fun testLessonsPlayFragment_clickExpandListIconIndex2Then1_chapterListForIndex2NotDisplayed() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       scrollToPosition(position = 2)
@@ -319,7 +319,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationChange_chapterListIsVisible() { // ktlint-disable max-line-length
+  fun testLessonsPlayFragment_clickExpandListIconIndex1_configChange_chapterListIsVisible() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       onView(isRoot()).perform(orientationLandscape())
@@ -337,7 +337,7 @@ class TopicLessonsFragmentTest {
 
   @Test
   @Config(qualifiers = "land-xxhdpi")
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationLandscape_chapterListIsVisible() { // ktlint-disable max-line-length
+  fun testLessonsPlayFragment_clickExpandListIconIndex1_configLandscape_chapterListIsVisible() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
