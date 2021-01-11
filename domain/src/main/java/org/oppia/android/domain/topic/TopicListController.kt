@@ -398,19 +398,21 @@ class TopicListController @Inject constructor(
         mostRecentCompletedChapterProgress.explorationId == chapterSummary.explorationId
       }
     val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
-    val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
-    if (nextChapterSummary != null) {
-      val numberOfDaysPassed = mostRecentCompletedChapterProgress.getNumberOfDaysPassed()
-      addPromotedStoryInRecommendedStoryList(
-        numberOfDaysPassed,
-        recommendedStoryBuilder,
-        storyId,
-        topic,
-        completedChapterProgressList.size,
-        story.chapterCount,
-        nextChapterSummary.name,
-        nextChapterSummary.explorationId
-      )
+    if(story.chapterList.size > nextChapterIndex) {
+      val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
+      if (nextChapterSummary != null) {
+        val numberOfDaysPassed = mostRecentCompletedChapterProgress.getNumberOfDaysPassed()
+        addPromotedStoryInRecommendedStoryList(
+          numberOfDaysPassed,
+          recommendedStoryBuilder,
+          storyId,
+          topic,
+          completedChapterProgressList.size,
+          story.chapterCount,
+          nextChapterSummary.name,
+          nextChapterSummary.explorationId
+        )
+      }
     }
   }
 
