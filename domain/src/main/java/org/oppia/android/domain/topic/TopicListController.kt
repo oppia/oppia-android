@@ -33,7 +33,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val ONE_WEEK_IN_DAYS = 7
-private const val ONE_DAY_IN_MS = 24 * 60 * 60 * 1000
 
 private const val TOPIC_BG_COLOR = "#C6DCDA"
 
@@ -362,8 +361,7 @@ class TopicListController @Inject constructor(
         recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
       }
     if (recentlyPlayerChapterSummary != null) {
-      val numberOfDaysPassed =
-        (recentlyPlayerChapterProgress.getNumberOfDaysPassed()) / ONE_DAY_IN_MS
+      val numberOfDaysPassed = recentlyPlayerChapterProgress.getNumberOfDaysPassed()
       addPromotedStoryInRecommendedStoryList(
         numberOfDaysPassed,
         recommendedStoryBuilder,
@@ -392,8 +390,7 @@ class TopicListController @Inject constructor(
     val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
     val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
     if (nextChapterSummary != null) {
-      val numberOfDaysPassed =
-        (mostRecentCompletedChapterProgress.getNumberOfDaysPassed()) / ONE_DAY_IN_MS
+      val numberOfDaysPassed = mostRecentCompletedChapterProgress.getNumberOfDaysPassed()
       addPromotedStoryInRecommendedStoryList(
         numberOfDaysPassed,
         recommendedStoryBuilder,
@@ -408,7 +405,7 @@ class TopicListController @Inject constructor(
   }
 
   private fun addPromotedStoryInRecommendedStoryList(
-    numberOfDaysPassed: Int,
+    numberOfDaysPassed: Long,
     recommendedStoryBuilder: RecommendedStoryList.Builder,
     storyId: String,
     topic: Topic,
@@ -432,10 +429,10 @@ class TopicListController @Inject constructor(
     }
   }
 
-  private fun ChapterProgress.getNumberOfDaysPassed(): Int {
+  private fun ChapterProgress.getNumberOfDaysPassed(): Long {
     return TimeUnit.MILLISECONDS.toDays(
       oppiaClock.getCurrentCalendar().timeInMillis - this.lastPlayedTimestamp
-    ).toInt()
+    )
   }
 
   private fun createRecommendedStoryList(
