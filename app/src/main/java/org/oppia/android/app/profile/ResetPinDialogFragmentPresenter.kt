@@ -59,9 +59,10 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
         }
       }
     }
-
-    binding.resetPinInputPin.hint = activity.resources
-      .getString(R.string.admin_settings_enter_user_new_pin, name)
+    // This is set dynamically as the name is not passed to [ResetPinViewModel]
+    binding.resetPinInputPin.hint = activity.resources.getString(
+      R.string.admin_settings_enter_user_new_pin, name
+    )
 
     val dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.reset_pin_enter)
