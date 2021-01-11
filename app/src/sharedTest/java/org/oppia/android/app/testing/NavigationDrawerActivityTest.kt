@@ -17,51 +17,41 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.DrawerActions.close
-import androidx.test.espresso.contrib.DrawerMatchers.isClosed
-import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.navigation.NavigationView
 import dagger.Component
+import org.hamcrest.Description
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.help.HelpActivity
+import org.oppia.android.app.drawer.NavigationDrawerItem
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.mydownloads.MyDownloadsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.app.profile.ProfileChooserActivity
-import org.oppia.android.app.profileprogress.ProfileProgressActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
@@ -84,12 +74,10 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -284,7 +272,9 @@ class NavigationDrawerActivityTest {
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
-      onView(withId(R.id.nav_home)).check(matches(ViewMatchers.isChecked()))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
     }
   }
 
@@ -301,7 +291,9 @@ class NavigationDrawerActivityTest {
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_options)).check(matches(ViewMatchers.isChecked()))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.OPTIONS)))
     }
   }
 
@@ -318,7 +310,9 @@ class NavigationDrawerActivityTest {
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
-      onView(withText(R.string.menu_help)).check(matches(ViewMatchers.isChecked()))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HELP)))
     }
   }
 
@@ -335,7 +329,95 @@ class NavigationDrawerActivityTest {
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
-      onView(withText(R.string.administrator_controls)).check(matches(ViewMatchers.isChecked()))
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withText(R.string.administrator_controls),
+          withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)
+        )
+      ).check(matches(ViewMatchers.isChecked()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_clickSwitchProfile_changeConfig_clickCancel() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_goToOptions_clickSwitchProfile_clickCancel_changeConfig() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_options)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.OPTIONS)))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_goToHelp_clickSwitchProfile_clickCancel_changeConfig() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_help)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HELP)))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_goToAdmin_clickSwitchProfile_clickCancel_changeConfig() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.administrator_controls)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withText(R.string.administrator_controls),
+          withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)
+        )
+      ).check(matches(ViewMatchers.isChecked()))
     }
   }
 
@@ -556,6 +638,17 @@ class NavigationDrawerActivityTest {
   private fun findParent(view: ViewParent): ViewParent {
     return view.getParent()
   }
+
+  private fun checkNavigationViewItemStatus(item: NavigationDrawerItem) =
+    object : TypeSafeMatcher<View>() {
+      override fun describeTo(description: Description) {
+        description.appendText("NavigationViewItem is checked")
+      }
+
+      override fun matchesSafely(view: View): Boolean {
+        return (view as NavigationView).menu.getItem(item.ordinal).isChecked
+      }
+    }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
