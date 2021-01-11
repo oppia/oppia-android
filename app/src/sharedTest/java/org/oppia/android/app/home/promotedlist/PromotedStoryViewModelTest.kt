@@ -85,22 +85,6 @@ class PromotedStoryViewModelTest {
     setUpTestApplicationComponent()
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun createBasicPromotedStoryViewModel(
-    activity: AppCompatActivity
-  ): PromotedStoryViewModel {
-    return PromotedStoryViewModel(
-      activity = activity,
-      internalProfileId = 1,
-      totalStoryCount = 3,
-      entityType = "entity",
-      promotedStory = promotedStory1
-    )
-  }
-
   @Test
   fun testPromotedStoryViewModelEquals_reflexiveBasicPromotedStoryViewModel_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
@@ -317,6 +301,22 @@ class PromotedStoryViewModelTest {
         assertThat(firstHash).isEqualTo(secondHash)
       }
     }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun createBasicPromotedStoryViewModel(
+    activity: AppCompatActivity
+  ): PromotedStoryViewModel {
+    return PromotedStoryViewModel(
+      activity = activity,
+      internalProfileId = 1,
+      totalStoryCount = 3,
+      entityType = "entity",
+      promotedStory = promotedStory1
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

@@ -90,30 +90,6 @@ class WelcomeViewModelTest {
     setUpTestApplicationComponent()
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun setUpTestFragment(activity: HomeFragmentTestActivity) {
-    activity.supportFragmentManager.beginTransaction().add(testFragment, TEST_FRAGMENT_TAG)
-      .commitNow()
-  }
-
-  private fun setUpDifferentClockTimes() {
-    morningClock = OppiaClock()
-    morningClock.setCurrentTimeMs(MORNING_TIMESTAMP)
-    eveningClock = OppiaClock()
-    eveningClock.setCurrentTimeMs(EVENING_TIMESTAMP)
-  }
-
-  private fun createBasicWelcomeViewModel(fragment: Fragment): WelcomeViewModel {
-    return WelcomeViewModel(
-      fragment,
-      morningClock,
-      "Profile 1"
-    )
-  }
-
   @Test
   fun testWelcomeViewModelEquals_reflexiveBasicWelcomeViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
@@ -296,6 +272,30 @@ class WelcomeViewModelTest {
         assertThat(firstHash).isEqualTo(secondHash)
       }
     }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun setUpTestFragment(activity: HomeFragmentTestActivity) {
+    activity.supportFragmentManager.beginTransaction().add(testFragment, TEST_FRAGMENT_TAG)
+      .commitNow()
+  }
+
+  private fun setUpDifferentClockTimes() {
+    morningClock = OppiaClock()
+    morningClock.setCurrentTimeMs(MORNING_TIMESTAMP)
+    eveningClock = OppiaClock()
+    eveningClock.setCurrentTimeMs(EVENING_TIMESTAMP)
+  }
+
+  private fun createBasicWelcomeViewModel(fragment: Fragment): WelcomeViewModel {
+    return WelcomeViewModel(
+      fragment,
+      morningClock,
+      "Profile 1"
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

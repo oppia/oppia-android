@@ -91,35 +91,6 @@ class PromotedStoryListViewModelTest {
     setUpTestApplicationComponent()
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun createPromotedStoryViewModelList(
-    activity: AppCompatActivity,
-    promotedStoryList: List<PromotedStory>
-  ): List<PromotedStoryViewModel> {
-    return promotedStoryList.map {
-      PromotedStoryViewModel(
-        activity,
-        internalProfileId = 1,
-        totalStoryCount = promotedStoryList.size,
-        entityType = "entity",
-        promotedStory = it
-      )
-    }
-  }
-
-  private fun createPromotedStoryListViewModel(
-    activity: AppCompatActivity,
-    promotedStoryList: List<PromotedStory>
-  ): PromotedStoryListViewModel {
-    return PromotedStoryListViewModel(
-      activity,
-      createPromotedStoryViewModelList(activity, promotedStoryList)
-    )
-  }
-
   @Test
   fun testPromotedStoryListViewModelEquals_reflexiveStoryListOf2_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
@@ -285,6 +256,35 @@ class PromotedStoryListViewModelTest {
         assertThat(firstHash).isEqualTo(secondHash)
       }
     }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun createPromotedStoryViewModelList(
+    activity: AppCompatActivity,
+    promotedStoryList: List<PromotedStory>
+  ): List<PromotedStoryViewModel> {
+    return promotedStoryList.map {
+      PromotedStoryViewModel(
+        activity,
+        internalProfileId = 1,
+        totalStoryCount = promotedStoryList.size,
+        entityType = "entity",
+        promotedStory = it
+      )
+    }
+  }
+
+  private fun createPromotedStoryListViewModel(
+    activity: AppCompatActivity,
+    promotedStoryList: List<PromotedStory>
+  ): PromotedStoryListViewModel {
+    return PromotedStoryListViewModel(
+      activity,
+      createPromotedStoryViewModelList(activity, promotedStoryList)
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

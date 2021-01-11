@@ -88,25 +88,6 @@ class TopicSummaryViewModelTest {
     setUpTestApplicationComponent()
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun setUpTestFragment(activity: HomeFragmentTestActivity) {
-    activity.supportFragmentManager.beginTransaction().add(testFragment, TEST_FRAGMENT_TAG)
-      .commitNow()
-  }
-
-  private fun createBasicTopicSummaryViewModel(activity: AppCompatActivity): TopicSummaryViewModel {
-    return TopicSummaryViewModel(
-      activity = activity,
-      topicSummary = topicSummary1,
-      entityType = "entity",
-      topicSummaryClickListener = testFragment,
-      position = 5
-    )
-  }
-
   @Test
   fun testTopicSummaryViewModelEquals_reflexiveBasicTopicSummaryViewModel_isEqual() {
     ActivityScenario.launch<HomeFragmentTestActivity>(
@@ -304,6 +285,25 @@ class TopicSummaryViewModelTest {
         assertThat(firstHash).isEqualTo(secondHash)
       }
     }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun setUpTestFragment(activity: HomeFragmentTestActivity) {
+    activity.supportFragmentManager.beginTransaction().add(testFragment, TEST_FRAGMENT_TAG)
+      .commitNow()
+  }
+
+  private fun createBasicTopicSummaryViewModel(activity: AppCompatActivity): TopicSummaryViewModel {
+    return TopicSummaryViewModel(
+      activity = activity,
+      topicSummary = topicSummary1,
+      entityType = "entity",
+      topicSummaryClickListener = testFragment,
+      position = 5
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
