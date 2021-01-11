@@ -34,7 +34,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.utility.EspressoTestsMatchers
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -197,8 +197,8 @@ class WalkthroughTopicListFragmentTest {
         )
       ).check(
         matches(
-          EspressoTestsMatchers.withDrawable(
-            R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
+          withDrawable(
+            R.drawable.lesson_thumbnail_graphic_duck_and_chicken
           )
         )
       )
