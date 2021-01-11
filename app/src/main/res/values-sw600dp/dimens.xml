@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="profile_chooser_profile_view_circular_image_size">108dp</dimen>
+</resources>
