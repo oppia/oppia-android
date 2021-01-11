@@ -24,6 +24,7 @@ class ProfileEditViewModel @Inject constructor(
   private lateinit var profileId: ProfileId
 
   lateinit var profileName: String
+  var isProfileDeletionDialogShown = false
 
   val profile: LiveData<Profile> by lazy {
     Transformations.map(

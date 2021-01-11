@@ -13,6 +13,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 /** The presenter for [ProfileEditActivity]. */
 @ActivityScope
@@ -26,6 +27,8 @@ class ProfileEditActivityPresenter @Inject constructor(
     getProfileEditViewModel()
   }
 
+  private var profileId by Delegates.notNull<Int>()
+
   fun handleOnCreate() {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
@@ -34,7 +37,7 @@ class ProfileEditActivityPresenter @Inject constructor(
       activity,
       R.layout.profile_edit_activity
     )
-    val profileId = activity.intent.getIntExtra(KEY_PROFILE_EDIT_PROFILE_ID, 0)
+    profileId = activity.intent.getIntExtra(KEY_PROFILE_EDIT_PROFILE_ID, 0)
     editViewModel.setProfileId(profileId)
     binding.apply {
       viewModel = editViewModel
@@ -56,6 +59,7 @@ class ProfileEditActivityPresenter @Inject constructor(
     }
 
     binding.profileDeleteButton.setOnClickListener {
+      editViewModel.isProfileDeletionDialogShown = true
       showDeletionDialog(profileId)
     }
 
@@ -81,6 +85,9 @@ class ProfileEditActivityPresenter @Inject constructor(
   }
 
   fun handleOnRestoreSavedInstanceState() {
+    if (editViewModel.isProfileDeletionDialogShown){
+      showDeletionDialog(profileId)
+    }
     activity.title = editViewModel.profileName
   }
 
@@ -89,6 +96,7 @@ class ProfileEditActivityPresenter @Inject constructor(
       .setTitle(R.string.profile_edit_delete_dialog_title)
       .setMessage(R.string.profile_edit_delete_dialog_message)
       .setNegativeButton(R.string.profile_edit_delete_dialog_negative) { dialog, _ ->
+        editViewModel.isProfileDeletionDialogShown = false
         dialog.dismiss()
       }
       .setPositiveButton(R.string.profile_edit_delete_dialog_positive) { dialog, _ ->
