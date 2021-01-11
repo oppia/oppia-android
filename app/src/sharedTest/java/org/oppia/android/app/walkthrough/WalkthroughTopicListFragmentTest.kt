@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -32,7 +31,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -192,13 +190,17 @@ class WalkthroughTopicListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.walkthrough_topic_recycler_view,
+        atPositionOnView(
+          R.id.walkthrough_topic_recycler_view,
           4,
-          R.id.walkthrough_topic_thumbnail_image_view)
+          R.id.walkthrough_topic_thumbnail_image_view
+        )
       ).check(
-        matches(EspressoTestsMatchers.withDrawable(
-          R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
-        ))
+        matches(
+          EspressoTestsMatchers.withDrawable(
+            R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
+          )
+        )
       )
     }
   }
