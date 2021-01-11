@@ -9,10 +9,10 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.CompletedStoryList
-import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecommendedActivityList
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -82,60 +82,69 @@ class ProfileProgressViewModel @Inject constructor(
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
-  private val ongoingStoryListResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-    topicListController.getOngoingStoryList(profileId).toLiveData()
+  private val recommendedActivityListResultLiveData: LiveData<AsyncResult<RecommendedActivityList>> by lazy {
+    topicListController.getRecommendedActivityList(profileId).toLiveData()
   }
 
-  private val ongoingStoryListLiveData: LiveData<OngoingStoryList> by lazy {
-    Transformations.map(ongoingStoryListResultLiveData, ::processOngoingStoryResult)
+  private val recommendedActivityListLiveData: LiveData<RecommendedActivityList> by lazy {
+    Transformations.map(
+      recommendedActivityListResultLiveData,
+      ::processRecommendedActivityListResult
+    )
   }
 
-  var refreshedOngoingStoryListViewModelLiveData =
+  var refreshedRecommendedActivityListViewModelLiveData =
     MutableLiveData<List<ProfileProgressItemViewModel>>()
 
   /**
-   * Reprocesses the data of the [refreshedOngoingStoryListViewModelLiveData] so that we have the
+   * Reprocesses the data of the [refreshedRecommendedActivityListViewModelLiveData] so that we have the
    * correct number of items on configuration changes
    */
   fun handleOnConfigurationChange() {
     limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
-    refreshedOngoingStoryListViewModelLiveData =
-      Transformations.map(ongoingStoryListLiveData, ::processOngoingStoryList) as MutableLiveData
+    refreshedRecommendedActivityListViewModelLiveData =
+      Transformations.map(
+        recommendedActivityListLiveData,
+        ::processRecommendedActivityList
+      ) as MutableLiveData
   }
 
-  private fun processOngoingStoryResult(
-    ongoingStoryListResult: AsyncResult<OngoingStoryList>
-  ): OngoingStoryList {
-    if (ongoingStoryListResult.isFailure()) {
+  private fun processRecommendedActivityListResult(
+    recommendedActivityListResult: AsyncResult<RecommendedActivityList>
+  ): RecommendedActivityList {
+    if (recommendedActivityListResult.isFailure()) {
       logger.e(
         "ProfileProgressFragment",
         "Failed to retrieve ongoing story list: ",
-        ongoingStoryListResult.getErrorOrNull()!!
+        recommendedActivityListResult.getErrorOrNull()!!
       )
     }
-    return ongoingStoryListResult.getOrDefault(OngoingStoryList.getDefaultInstance())
+    return recommendedActivityListResult.getOrDefault(RecommendedActivityList.getDefaultInstance())
   }
 
-  private fun processOngoingStoryList(
-    ongoingStoryList: OngoingStoryList
+  private fun processRecommendedActivityList(
+    recommendedActivityList: RecommendedActivityList
   ): List<ProfileProgressItemViewModel> {
-    headerViewModel.setRecentlyPlayedStoryCount(ongoingStoryList.recentStoryList.size)
-    limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
-    val itemList = if (ongoingStoryList.recentStoryList.size > limit) {
-      ongoingStoryList.recentStoryList.subList(0, limit)
-    } else {
-      ongoingStoryList.recentStoryList
+    with(recommendedActivityList.recommendedStoryList) {
+      headerViewModel.setRecentlyPlayedStoryCount(recentlyPlayedStoryList.size)
+      limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
+      val itemList =
+        if (recentlyPlayedStoryList.size > limit) {
+          recentlyPlayedStoryList.subList(0, limit)
+        } else {
+          recentlyPlayedStoryList
+        }
+      itemViewModelList.clear()
+      itemViewModelList.add(headerViewModel as ProfileProgressItemViewModel)
+      itemViewModelList.addAll(
+        itemList.map { story ->
+          RecentlyPlayedStorySummaryViewModel(
+            activity, internalProfileId, story, entityType, intentFactoryShim
+          )
+        }
+      )
+      return itemViewModelList
     }
-    itemViewModelList.clear()
-    itemViewModelList.add(headerViewModel as ProfileProgressItemViewModel)
-    itemViewModelList.addAll(
-      itemList.map { story ->
-        RecentlyPlayedStorySummaryViewModel(
-          activity, internalProfileId, story, entityType, intentFactoryShim
-        )
-      }
-    )
-    return itemViewModelList
   }
 
   private fun subscribeToCompletedStoryListLiveData() {
