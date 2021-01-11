@@ -50,13 +50,13 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  fun getLanguageSelected(): String {
-    return languageSelectionViewModel.selectedLanguage.value!!
+  fun getLanguageSelected(): String? {
+    return languageSelectionViewModel.selectedLanguage.value
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<LanguageItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<LanguageItemViewModel, ViewType> { viewModel ->
+      .newBuilder<LanguageItemViewModel, ViewType> {
         ViewType.VIEW_TYPE_LANGUAGE
       }
       .registerViewDataBinder(
