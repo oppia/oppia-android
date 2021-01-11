@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -108,7 +109,7 @@ class WalkthroughTopicListFragmentTest {
 
   @Config(qualifiers = "land-xxhdpi")
   @Test
-  fun testWalkthroughWelcomeFragment_changeConfig_recyclerViewIndex4__progressBarIsHidden() {
+  fun testWalkthroughWelcomeFragment_land_recyclerViewIndex4__progressBarIsHidden() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()
@@ -132,7 +133,7 @@ class WalkthroughTopicListFragmentTest {
 
   @Config(qualifiers = "land-xxhdpi")
   @Test
-  fun testWalkthroughWelcomeFragment_changeConfig_recyclerViewIndex4_headerIsVisible() {
+  fun testWalkthroughWelcomeFragment_land_recyclerViewIndex4_headerIsVisible() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()
@@ -145,6 +146,31 @@ class WalkthroughTopicListFragmentTest {
       )
       testCoroutineDispatchers.advanceUntilIdle()
       onView(withId(R.id.walkthrough_activity_topic_header_text_view)).check(
+        matches(
+          withEffectiveVisibility(
+            Visibility.VISIBLE
+          )
+        )
+      )
+    }
+  }
+
+  @Config(qualifiers = "land-xxhdpi")
+  @Test
+  fun testWalkthroughWelcomeFragment_land_recyclerViewIndex4_pressBack_checkProgressBarIsVisible() {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          4
+        )
+      )
+      testCoroutineDispatchers.advanceUntilIdle()
+      pressBack()
+      onView(withId(R.id.walkthrough_progress_bar)).check(
         matches(
           withEffectiveVisibility(
             Visibility.VISIBLE
