@@ -1,6 +1,5 @@
 package org.oppia.android.testing
 
-import android.os.Build
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -83,12 +82,5 @@ class TestDispatcherModule {
     espressoFactoryProvider: Provider<TestCoroutineDispatcherEspressoImpl.FactoryImpl>
   ): TestCoroutineDispatcher.Factory {
     return if (isOnRobolectric) robolectricFactoryProvider.get() else espressoFactoryProvider.get()
-  }
-
-  @Provides
-  @IsOnRobolectric
-  @Singleton
-  fun provideIsOnRobolectric(): Boolean {
-    return Build.FINGERPRINT.contains("robolectric", ignoreCase = true)
   }
 }

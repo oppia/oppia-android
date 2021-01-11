@@ -18,7 +18,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
@@ -57,6 +56,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -88,7 +88,6 @@ class ConceptCardFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -159,7 +158,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testConceptCardFragment_openDialogFragment0_checkSkillAndExplanationAreDisplayedWithoutRichText() { // ktlint-disable max-line-length
+  fun testConceptCard_openDialog0_checkSkillAndExplanationAreDisplayedWithoutRichText() {
     launch(ConceptCardFragmentTestActivity::class.java).use {
       onView(withId(R.id.open_dialog_0)).perform(click())
       onView(withId(R.id.concept_card_heading_text))
@@ -187,7 +186,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testConceptCardFragment_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() { // ktlint-disable max-line-length
+  fun testConceptCard_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() {
     launch(ConceptCardFragmentTestActivity::class.java).use {
       onView(withId(R.id.open_dialog_1)).perform(click())
       onView(withId(R.id.concept_card_heading_text))
@@ -215,7 +214,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() { // ktlint-disable max-line-length
+  fun testConceptCard_openDialogFragmentWithSkill2_afterConfigChange_workedExamplesAreDisplayed() {
     launch(ConceptCardFragmentTestActivity::class.java).use {
       onView(withId(R.id.open_dialog_1)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
@@ -248,6 +247,7 @@ class ConceptCardFragmentTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

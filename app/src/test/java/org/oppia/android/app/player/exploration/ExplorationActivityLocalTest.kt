@@ -8,8 +8,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
@@ -47,7 +47,9 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -63,9 +65,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
-private const val TEST_STORY_ID = "GJ2rLXRKD5hw"
-
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -77,6 +76,9 @@ class ExplorationActivityLocalTest {
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   private lateinit var networkConnectionUtil: NetworkConnectionUtil
   private lateinit var explorationDataController: ExplorationDataController
   private val internalProfileId: Int = 0
@@ -84,11 +86,15 @@ class ExplorationActivityLocalTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   @Test
-  // TODO(#973): Fix ExplorationActivityLocalTest
-  @Ignore
   fun testExploration_onLaunch_logsEvent() {
     getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(
@@ -99,7 +105,7 @@ class ExplorationActivityLocalTest {
         TEST_EXPLORATION_ID_2
       )
     ).use {
-
+      testCoroutineDispatchers.runCurrent()
       val event = fakeEventLogger.getMostRecentEvent()
 
       assertThat(event.context.activityContextCase).isEqualTo(EXPLORATION_CONTEXT)
@@ -132,8 +138,8 @@ class ExplorationActivityLocalTest {
       internalProfileId,
       topicId,
       storyId,
-      explorationId, /* backflowScreen= */
-      null
+      explorationId,
+      backflowScreen = null
     )
   }
 
@@ -146,7 +152,7 @@ class ExplorationActivityLocalTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class,
+      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,

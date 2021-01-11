@@ -97,7 +97,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   fun handleOnSaveInstanceState(outState: Bundle) {
     val titleTextView = binding.extraControlsTitle
     if (titleTextView != null) {
-      outState.putString(SELECTED_CONTROLS_TITLE_KEY, titleTextView.text.toString())
+      outState.putString(SELECTED_CONTROLS_TITLE_SAVED_KEY, titleTextView.text.toString())
     }
     outState.putString(LAST_LOADED_FRAGMENT_KEY, lastLoadedFragment)
   }

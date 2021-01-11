@@ -1,13 +1,13 @@
 package org.oppia.android.app.settings.profile
 
 import android.content.Intent
-import android.widget.Switch
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileEditActivityBinding
@@ -25,8 +25,9 @@ class ProfileEditActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<ProfileEditViewModel>
 ) {
-  private val editViewModel: ProfileEditViewModel by lazy {
-    getProfileEditViewModel()
+
+  private val profileEditViewModel: ProfileEditViewModel by lazy {
+    getProfileEditViewModelFromFactory()
   }
 
   private var profileId by Delegates.notNull<Int>()
@@ -39,13 +40,11 @@ class ProfileEditActivityPresenter @Inject constructor(
       activity,
       R.layout.profile_edit_activity
     )
-    profileId = activity.intent.getIntExtra(KEY_PROFILE_EDIT_PROFILE_ID, 0)
-    editViewModel.setProfileId(
-      profileId,
-      activity.findViewById<Switch>(R.id.profile_edit_allow_download_switch)
-    )
+    profileId = activity.intent.getIntExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, 0)
+    profileEditViewModel.setProfileId(profileId)
+
     binding.apply {
-      viewModel = editViewModel
+      viewModel = profileEditViewModel
       lifecycleOwner = activity
     }
 
@@ -53,20 +52,40 @@ class ProfileEditActivityPresenter @Inject constructor(
       activity.startActivity(ProfileRenameActivity.createProfileRenameActivity(activity, profileId))
     }
 
+    profileEditViewModel.isProfileDeletionDialogShown.observe(activity, Observer {
+      if (it) {
+        showDeletionDialog(profileId)
+      }
+    })
+
     binding.profileResetButton.setOnClickListener {
       activity.startActivity(
         ProfileResetPinActivity.createProfileResetPinActivity(
           activity,
           profileId,
-          editViewModel.isAdmin
+          profileEditViewModel.isAdmin
         )
       )
     }
 
     binding.profileDeleteButton.setOnClickListener {
-      editViewModel.isProfileDeletionDialogShown = true
-      showDeletionDialog(profileId)
+      profileEditViewModel.isProfileDeletionDialogShown.postValue(true)
+//      showDeletionDialog(profileId)
     }
+
+    profileEditViewModel.profile.observe(
+      activity,
+      Observer {
+        activity.title = it.name
+      }
+    )
+
+    profileEditViewModel.isAllowedDownloadAccess.observe(
+      activity,
+      Observer {
+        binding.profileEditAllowDownloadSwitch.isChecked = it
+      }
+    )
 
     binding.profileEditAllowDownloadSwitch.setOnCheckedChangeListener { compoundButton, checked ->
       if (compoundButton.isPressed) {
@@ -89,19 +108,11 @@ class ProfileEditActivityPresenter @Inject constructor(
     }
   }
 
-  fun handleOnRestoreSavedInstanceState() {
-    if (editViewModel.isProfileDeletionDialogShown){
-      showDeletionDialog(profileId)
-    }
-    activity.title = editViewModel.profileName
-  }
-
   private fun showDeletionDialog(profileId: Int) {
     AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.profile_edit_delete_dialog_title)
       .setMessage(R.string.profile_edit_delete_dialog_message)
       .setNegativeButton(R.string.profile_edit_delete_dialog_negative) { dialog, _ ->
-        editViewModel.isProfileDeletionDialogShown = false
         dialog.dismiss()
       }
       .setPositiveButton(R.string.profile_edit_delete_dialog_positive) { dialog, _ ->
@@ -111,16 +122,24 @@ class ProfileEditActivityPresenter @Inject constructor(
             activity,
             Observer {
               if (it.isSuccess()) {
-                val intent = Intent(activity, ProfileListActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                activity.startActivity(intent)
+                if (activity.resources.getBoolean(R.bool.isTablet)) {
+                  val intent = Intent(activity, AdministratorControlsActivity::class.java)
+                  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                  activity.startActivity(intent)
+                } else {
+                  val intent = Intent(activity, ProfileListActivity::class.java)
+                  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                  activity.startActivity(intent)
+                }
               }
             }
           )
+      }.setOnDismissListener {
+        profileEditViewModel.isProfileDeletionDialogShown.postValue(false)
       }.create().show()
   }
 
-  private fun getProfileEditViewModel(): ProfileEditViewModel {
+  private fun getProfileEditViewModelFromFactory(): ProfileEditViewModel {
     return viewModelProvider.getForActivity(activity, ProfileEditViewModel::class.java)
   }
 }

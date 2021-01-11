@@ -60,8 +60,8 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -73,27 +73,22 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HelpFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class HelpFragmentTest {
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
     Intents.init()
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -125,7 +120,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun openHelpActivity_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() {
+  fun testHelpFragment_faqListTitleIsDisplayed() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)
@@ -139,7 +134,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun openHelpActivity_configurationChanged_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() { // ktlint-disable max-line-length
+  fun testHelpFragment_configChanged_faqListTitleIsDisplayed() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
@@ -174,7 +169,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun openHelpActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
+  fun testHelpFragment_openNavDrawerAndClose_navDrawerIsClosed() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
@@ -191,6 +186,7 @@ class HelpFragmentTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

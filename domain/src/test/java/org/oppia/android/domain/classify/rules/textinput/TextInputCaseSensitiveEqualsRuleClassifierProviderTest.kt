@@ -9,23 +9,25 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
+import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 
 /** Tests for [TextInputCaseSensitiveEqualsRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
-  private val STRING_VALUE_TEST_UPPERCASE = createString(value = "TEST")
-  private val STRING_VALUE_TEST_LOWERCASE = createString(value = "test")
-  private val STRING_VALUE_RANDOM = createString(value = "random")
+
+  private val STRING_VALUE_TEST_UPPERCASE =
+    InteractionObjectTestBuilder.createString(value = "TEST")
+  private val STRING_VALUE_TEST_LOWERCASE =
+    InteractionObjectTestBuilder.createString(value = "test")
+  private val STRING_VALUE_TEST_RANDOM =
+    InteractionObjectTestBuilder.createString(value = "random")
 
   @Inject
   internal lateinit var textInputCaseSensitiveEqualsRuleClassifierProvider:
@@ -68,7 +70,7 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
 
   @Test
   fun testUppercaseStringAnswer_stringRandomInput_differentString_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to STRING_VALUE_RANDOM)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_RANDOM)
 
     val matches =
       inputCaseSensitiveEqualsRuleClassifier.matches(
@@ -100,24 +102,6 @@ class TextInputCaseSensitiveEqualsRuleClassifierProviderTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
-  }
-
-  // TODO(#89): Move to a common test library.
-  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
-    try {
-      operation()
-      fail("Expected to encounter exception of $type")
-    } catch (t: Throwable) {
-      if (type.isInstance(t)) {
-        return type.cast(t)
-      }
-      // Unexpected exception; throw it.
-      throw t
-    }
   }
 
   // TODO(#89): Move this to a common test application component.

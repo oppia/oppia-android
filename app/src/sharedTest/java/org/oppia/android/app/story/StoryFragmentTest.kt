@@ -22,7 +22,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
@@ -65,6 +64,9 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
+import org.oppia.android.domain.topic.TEST_STORY_ID_1
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -115,12 +117,7 @@ class StoryFragmentTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    FirebaseApp.initializeApp(context)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
-      profileId,
-      timestampOlderThanAWeek = false
-    )
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -130,18 +127,9 @@ class StoryFragmentTest {
     Intents.release()
   }
 
-  private fun createStoryActivityIntent(): Intent {
-    return StoryActivity.createStoryActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
-    )
-  }
-
   @Test
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
-    activityTestRule.launchActivity(createStoryActivityIntent())
+    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
     onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
     assertThat(activityTestRule.activity.isFinishing).isTrue()
@@ -149,7 +137,7 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_toolbarTitle_isDisplayedSuccessfully() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.story_toolbar_title))
         .check(matches(withText("Matthew Goes to the Bakery")))
@@ -158,7 +146,8 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_correctStoryCountLoadedInHeader() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    setStoryPartialProgressForFractions()
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       val headerString: String =
         getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
@@ -183,7 +172,7 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_correctNumberOfStoriesLoadedInRecyclerView() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.story_chapter_list)).check(hasItemCount(3))
     }
@@ -191,7 +180,7 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_textViewIsShownCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
@@ -199,7 +188,13 @@ class StoryFragmentTest {
           1
         )
       )
-      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_title)).check(
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_title
+        )
+      ).check(
         matches(
           withText("Chapter 1: What is a Fraction?")
         )
@@ -209,14 +204,20 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_chapterSummaryIsShownCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
         )
       )
-      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_summary)).check(
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_summary
+        )
+      ).check(
         matches(
           withText("This is outline/summary for What is a Fraction?")
         )
@@ -226,7 +227,7 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_chapterSummaryIsShownCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
@@ -234,7 +235,13 @@ class StoryFragmentTest {
           1
         )
       )
-      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_summary)).check(
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_summary
+        )
+      ).check(
         matches(
           withText("This is outline/summary for What is a Fraction?")
         )
@@ -243,8 +250,110 @@ class StoryFragmentTest {
   }
 
   @Test
+  fun testStoryFragment_chapterLongSummaryIsShownCorrectly() {
+    launch<StoryActivity>(createTestStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_summary
+        )
+      ).check(
+        matches(
+          withText(
+            "This is outline/summary for Second Exploration. It is very long but " +
+              "it has to be fully visible. You wil be learning about oppia app in Second Story. " +
+              "Learn about oppia app via testing in second exploration."
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_chapterLongSummaryIsShownCorrectly() {
+    launch<StoryActivity>(createTestStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          1,
+          R.id.chapter_summary
+        )
+      ).check(
+        matches(
+          withText(
+            "This is outline/summary for Second Exploration. It is very long but " +
+              "it has to be fully visible. You wil be learning about oppia app in Second Story. " +
+              "Learn about oppia app via testing in second exploration."
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_chapterMissingPrerequisiteIsShownCorrectly() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          2,
+          R.id.chapter_summary
+        )
+      ).check(
+        matches(
+          withText("Complete Chapter 1: What is a Fraction? to unlock this chapter.")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_chapterMissingPrerequisiteIsShownCorrectly() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          2,
+          R.id.chapter_summary
+        )
+      ).check(
+        matches(
+          withText("Complete Chapter 1: What is a Fraction? to unlock this chapter.")
+        )
+      )
+    }
+  }
+
+  @Test
   fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
@@ -262,7 +371,8 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_correctStoryCountInHeader() {
-    launch<StoryActivity>(createStoryActivityIntent()).use {
+    setStoryPartialProgressForFractions()
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       val headerString: String =
@@ -291,6 +401,31 @@ class StoryFragmentTest {
     }
   }
 
+  private fun createFractionsStoryActivityIntent(): Intent {
+    return StoryActivity.createStoryActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    )
+  }
+
+  private fun createTestStoryActivityIntent(): Intent {
+    return StoryActivity.createStoryActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_1
+    )
+  }
+
+  private fun setStoryPartialProgressForFractions() {
+    storyProgressTestHelper.markPartialStoryProgressForFractions(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -304,6 +439,7 @@ class StoryFragmentTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
