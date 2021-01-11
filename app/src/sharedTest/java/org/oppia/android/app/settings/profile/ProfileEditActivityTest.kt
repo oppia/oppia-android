@@ -12,6 +12,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -339,6 +340,20 @@ class ProfileEditActivityTest {
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
       intended(hasComponent(ProfileListActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton_clickDelete_checkIfDialogRemains(){
+    ActivityScenario.launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context,
+        1
+      )
+    ).use {
+      onView(withId(R.id.profile_delete_button)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(R.string.profile_edit_delete_dialog_title)).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
 
