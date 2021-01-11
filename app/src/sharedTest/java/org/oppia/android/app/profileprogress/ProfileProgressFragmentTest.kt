@@ -183,7 +183,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_openProfilePictureEditDialog() {
+  fun testProfileProgressFragment_profilePictureEditDialogIsDisplayed() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Admin"))
@@ -248,7 +248,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_imageSelectAvatar_changeOrientation_checkGalleryIntent() {
+  fun testProfileProgressFragment_imageSelectAvatar_configChange_checkGalleryIntent() {
     val expectedIntent: Matcher<Intent> = allOf(
       hasAction(Intent.ACTION_PICK),
       hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -495,7 +495,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivity_changeConfiguration_recyclerViewItem1_storyNameIsCorrect() {
+  fun testProfileProgressFragment_configChange_firstStory_storyNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -512,7 +512,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivity_recyclerViewItem1_storyNameIsCorrect() {
+  fun testProfileProgressFragment_firstStory_storyNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
@@ -533,7 +533,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivity_recyclerViewItem1_topicNameIsCorrect() {
+  fun testProfileProgressFragment_firstStory_topicNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
@@ -554,7 +554,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivity_clickRecyclerViewItem1_intentIsCorrect() {
+  fun testProfileProgressFragment_clickFirstStory_opensTopicActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
@@ -578,7 +578,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
+  fun testProfileProgressFragment_clickViewAll_opensRecentlyPlayedActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Admin"))
@@ -599,7 +599,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivityNoProgress_recyclerViewIndex0_clickTopicCount_isNotClickable() {
+  fun testProfileProgressFragment_noProgress_topicCountIsNotClickable() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.topics_in_progress))
@@ -615,7 +615,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivityNoProgress_recyclerViewIndex0_clickStoryCount_isNotClickable() {
+  fun testProfileProgressFragment_noProgress_storyCountIsNotClickable() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.stories_completed))
@@ -631,7 +631,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgNoProg_rVIndex0_changeConfig_clickStoryCount_isNotClickable() {
+  fun testProfileProgressFragment_configChange_noProgress_storyCountIsNotClickable() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -649,7 +649,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgWithProg_rVIndex0_clickTopicCount_opensOngoingTopicListActivity() {
+  fun testProfileProgressFragment_clickTopicCount_opensOngoingTopicListActivity() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -681,7 +681,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgWithProg_rVIndex0_clickStoryCount_opensCompletedStoryListActivity() {
+  fun testProfileProgressFragment_clickStoryCount_opensCompletedStoryListActivity() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false
