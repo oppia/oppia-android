@@ -49,8 +49,8 @@ class AppLanguageFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  fun getLanguageSelected(): String {
-    return languageSelectionViewModel.selectedLanguage.value!!
+  fun getLanguageSelected(): String? {
+    return languageSelectionViewModel.selectedLanguage.value
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<LanguageItemViewModel> {
