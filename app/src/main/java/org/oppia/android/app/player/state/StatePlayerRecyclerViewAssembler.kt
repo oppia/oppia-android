@@ -459,7 +459,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       )
       .setPosition(
         bannerConfettiView.x + bannerConfettiView.width / 3,
-        R.dimen.state_fragment_banner_confetti_view_height.toFloat()
+        bannerConfettiView.y + bannerConfettiView.height / 2
+//        R.dimen.state_fragment_banner_confetti_view_height.toFloat()
       )
       .burst(50)
 
