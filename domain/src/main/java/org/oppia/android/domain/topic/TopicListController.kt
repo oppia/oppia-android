@@ -224,13 +224,23 @@ class TopicListController @Inject constructor(
     if (topicProgressList.isNotEmpty()) {
       val recommendedStoryBuilder = RecommendedStoryList.newBuilder()
       // If initially only one topic is in progress populate combination of Ongoing story
-      // and Suggested stories
+      // and Suggested stories.
       if (topicProgressList.size == 1) {
-        populateRecommendedStories(
-          topicProgressList,
-          recommendedStoryBuilder,
-          recommendedActivityListBuilder
+        recommendedStoryBuilder.addAllSuggestedStory(
+          createRecommendedStoryList(
+            topicProgressList,
+            recommendedActivityListBuilder,
+            recommendedStoryBuilder
+          )
         )
+        recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
+
+        if (recommendedStoryBuilder.suggestedStoryCount == 0 &&
+          recommendedStoryBuilder.recentlyPlayedStoryCount == 0 &&
+          recommendedStoryBuilder.olderPlayedStoryCount == 0
+        ) {
+          recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
+        }
       } else {
         // Add recently played stories or last played stories in RecommendedActivityList.
         populateRecentlyPlayedStories(
@@ -238,12 +248,17 @@ class TopicListController @Inject constructor(
           recommendedActivityListBuilder,
           recommendedStoryBuilder
         )
-        // If the above list is empty then populate Suggested stories or Upcoming stories
-        populateRecommendedStories(
-          topicProgressList,
-          recommendedStoryBuilder,
-          recommendedActivityListBuilder
-        )
+        // If the Recently-played or Older-played story list is empty then populate Suggested
+        // stories or Upcoming stories
+        if (recommendedStoryBuilder.recentlyPlayedStoryCount == 0 &&
+          recommendedStoryBuilder.olderPlayedStoryCount == 0 ){
+            populateRecommendedStories(
+              topicProgressList,
+              recommendedStoryBuilder,
+              recommendedActivityListBuilder
+            )
+          }
+
       }
     }
     return recommendedActivityListBuilder.build()
@@ -256,24 +271,19 @@ class TopicListController @Inject constructor(
   ) {
     // If no recently played stories or last played stories then set suggested stories
     // in RecommendedActivityList.
-    when {
-      recommendedStoryBuilder.recentlyPlayedStoryCount == 0 &&
-        recommendedStoryBuilder.olderPlayedStoryCount == 0 -> {
-        recommendedStoryBuilder.addAllSuggestedStory(
-          createRecommendedStoryList(
-            topicProgressList,
-            recommendedActivityListBuilder,
-            recommendedStoryBuilder
-          )
-        )
-        recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
+    recommendedStoryBuilder.addAllSuggestedStory(
+      createRecommendedStoryList(
+        topicProgressList,
+        recommendedActivityListBuilder,
+        recommendedStoryBuilder
+      )
+    )
+    recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
 
-        // If user has completed all the topics then add upcoming topics in
-        // RecommendedActivityList.
-        if (recommendedStoryBuilder.suggestedStoryCount == 0) {
-          recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
-        }
-      }
+    // If user has completed all the topics then add upcoming topics in
+    // RecommendedActivityList.
+    if (recommendedStoryBuilder.suggestedStoryCount == 0) {
+      recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
     }
   }
 

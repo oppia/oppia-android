@@ -353,7 +353,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysRecommendedStoriesText() {
-    storyProgressTestHelper.markFullProgressForSecondTopic(
+    storyProgressTestHelper.markFullProgressForSecondTestTopic(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
@@ -398,7 +398,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysComingSoonTopicsText() {
-    storyProgressTestHelper.markLastChapterDoneOfFirstStoryTopicProgressForRatios(
+    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )

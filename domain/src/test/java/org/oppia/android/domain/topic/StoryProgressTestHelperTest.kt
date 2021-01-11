@@ -720,7 +720,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markTwoPartialStoryProgressForRatios_getCompletedStoryListIsCorrect() {
+  fun testProgressTestHelper_markTwoPartialStoryProgressForRatios_getCompletedStoryListIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
       profileId,
       /* timestampOlderThanAWeek= */ false
@@ -738,7 +738,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markRecentlyPlayed_fractionsStory0Exp0_getRecommendedActivityListIsCorrect() {
+  fun testProgressTestHelper_markRecentlyPlayed_fractionsStory0Exp0_getRecommendedActivityListIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       /* timestampOlderThanAWeek= */ false
@@ -763,7 +763,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markRecentlyPlayed_ratiosStory0Exp0_getRecommendedActivityListIsCorrect() {
+  fun testProgressTestHelper_markRecentlyPlayed_ratiosStory0Exp0_getRecommendedActivityListIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
       /* timestampOlderThanAWeek= */ false
@@ -817,7 +817,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markFullProgressForSecondTopic_showRecommendedStories_listIsCorrect() {
+  fun testProgressTestHelper_markFullProgressForSecondTestTopic_showRecommendedStories_listIsCorrect() {
     storyProgressTestHelper.markFullProgressForSecondTestTopic(
       profileId,
       /* timestampOlderThanAWeek= */ false
