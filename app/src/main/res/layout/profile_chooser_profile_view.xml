@@ -39,8 +39,8 @@
 
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_avatar_img"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:layout_width="@dimen/profile_chooser_profile_view_circular_image_size"
+        android:layout_height="@dimen/profile_chooser_profile_view_circular_image_size"
         app:civ_border_color="@color/avatarBorder"
         app:civ_border_width="1dp"
         profile:src="@{viewModel.profile.avatar}" />
