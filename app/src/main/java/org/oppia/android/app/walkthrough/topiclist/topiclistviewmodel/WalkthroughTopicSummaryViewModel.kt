@@ -18,6 +18,7 @@ private const val DARKEN_SATURATION_MULTIPLIER: Float = 1.2f
 
 /** [ViewModel] corresponding to topic summaries in [WalkthroughTopicListFragment] RecyclerView.. */
 class WalkthroughTopicSummaryViewModel(
+  var topicEntityType: String,
   val topicSummary: TopicSummary,
   private val topicSummaryClickListener: TopicSummaryClickListener
 ) : WalkthroughTopicItemViewModel() {
