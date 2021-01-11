@@ -117,14 +117,14 @@ class PromotedStoryListViewModelTest {
           it,
           listOf(promotedStory1, promotedStory2)
         )
-        val copyPromotedStoryListViewModel = createPromotedStoryListViewModel(
+        val promotedStoryListViewModelCopy = createPromotedStoryListViewModel(
           it,
           listOf(promotedStory1, promotedStory2)
         )
 
         // Verify the symmetric property of equals(): a == b iff b == a.
-        assertThat(promotedStoryListViewModel).isEqualTo(copyPromotedStoryListViewModel)
-        assertThat(copyPromotedStoryListViewModel).isEqualTo(promotedStoryListViewModel)
+        assertThat(promotedStoryListViewModel).isEqualTo(promotedStoryListViewModelCopy)
+        assertThat(promotedStoryListViewModelCopy).isEqualTo(promotedStoryListViewModel)
       }
     }
   }

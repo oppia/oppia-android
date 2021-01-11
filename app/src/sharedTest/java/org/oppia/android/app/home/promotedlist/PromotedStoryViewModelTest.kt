@@ -106,11 +106,11 @@ class PromotedStoryViewModelTest {
     ).use {
       it.onActivity {
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(it)
-        val copyPromotedStoryViewModel = createBasicPromotedStoryViewModel(it)
+        val promotedStoryViewModelCopy = createBasicPromotedStoryViewModel(it)
 
         // Verify the symmetric property of equals(): a == b iff b == a.
-        assertThat(promotedStoryViewModel).isEqualTo(copyPromotedStoryViewModel)
-        assertThat(copyPromotedStoryViewModel).isEqualTo(promotedStoryViewModel)
+        assertThat(promotedStoryViewModel).isEqualTo(promotedStoryViewModelCopy)
+        assertThat(promotedStoryViewModelCopy).isEqualTo(promotedStoryViewModel)
       }
     }
   }
@@ -140,12 +140,12 @@ class PromotedStoryViewModelTest {
     ).use {
       it.onActivity {
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(it)
-        val copyPromotedStoryViewModel = createBasicPromotedStoryViewModel(it)
-        assertThat(promotedStoryViewModel).isEqualTo(copyPromotedStoryViewModel)
+        val promotedStoryViewModelCopy = createBasicPromotedStoryViewModel(it)
+        assertThat(promotedStoryViewModel).isEqualTo(promotedStoryViewModelCopy)
 
         // Verify the consistent property of equals(): if neither object is modified, then a == b
         // for multiple invocations
-        assertThat(promotedStoryViewModel).isEqualTo(copyPromotedStoryViewModel)
+        assertThat(promotedStoryViewModel).isEqualTo(promotedStoryViewModelCopy)
       }
     }
   }
@@ -170,18 +170,18 @@ class PromotedStoryViewModelTest {
     ).use {
       it.onActivity {
         val promotedStoryViewModelProfile1 = PromotedStoryViewModel(
-          /* activity = */ it,
-          /* internalProfileId = */1,
-          /* totalStoryCount = */3,
-          /* entytType = */"entity",
-          promotedStory1
+          activity = it,
+          internalProfileId = 1,
+          totalStoryCount = 3,
+          entityType = "entity",
+          promotedStory = promotedStory1
         )
         val promotedStoryViewModelProfile2 = PromotedStoryViewModel(
-          /* activity = */ it,
-          /* internalProfileId = */2,
-          /* totalStoryCount = */3,
-          /* entytType = */"entity",
-          promotedStory1
+          activity = it,
+          internalProfileId = 2,
+          totalStoryCount = 3,
+          entityType = "entity",
+          promotedStory = promotedStory1
         )
 
         assertThat(promotedStoryViewModelProfile1).isNotEqualTo(promotedStoryViewModelProfile2)
@@ -196,18 +196,18 @@ class PromotedStoryViewModelTest {
     ).use {
       it.onActivity {
         val promotedStoryViewModelStoryCount2 = PromotedStoryViewModel(
-          /* activity = */ it,
-          /* internalProfileId = */1,
-          /* totalStoryCount = */2,
-          /* entytType = */"entity",
-          promotedStory1
+          activity = it,
+          internalProfileId = 1,
+          totalStoryCount = 2,
+          entityType = "entity",
+          promotedStory = promotedStory1
         )
         val promotedStoryViewModelStoryCount3 = PromotedStoryViewModel(
-          /* activity = */ it,
-          /* internalProfileId = */1,
-          /* totalStoryCount = */3,
-          /* entytType = */"entity",
-          promotedStory1
+          activity = it,
+          internalProfileId = 1,
+          totalStoryCount = 3,
+          entityType = "entity",
+          promotedStory = promotedStory1
         )
 
         assertThat(promotedStoryViewModelStoryCount2)
@@ -223,18 +223,18 @@ class PromotedStoryViewModelTest {
     ).use {
       it.onActivity {
         val promotedStoryViewModelEntity1 = PromotedStoryViewModel(
-          /* activity = */ it,
-          /* internalProfileId = */1,
-          /* totalStoryCount = */3,
-          /* entytType = */"entity_1",
-          promotedStory1
+          activity = it,
+          internalProfileId = 1,
+          totalStoryCount = 3,
+          entityType = "entity_1",
+          promotedStory = promotedStory1
         )
         val promotedStoryViewModelEntity2 = PromotedStoryViewModel(
-          /* activity = */ it,
-          /* internalProfileId = */1,
-          /* totalStoryCount = */3,
-          /* entytType = */"entity_2",
-          promotedStory1
+          activity = it,
+          internalProfileId = 1,
+          totalStoryCount = 3,
+          entityType = "entity_2",
+          promotedStory = promotedStory1
         )
 
         assertThat(promotedStoryViewModelEntity1).isNotEqualTo(promotedStoryViewModelEntity2)
@@ -251,18 +251,18 @@ class PromotedStoryViewModelTest {
         assertThat(promotedStory1.equals(promotedStory2)).isFalse()
 
         val promotedStoryViewModelStory1 = PromotedStoryViewModel(
-          /* activity = */ it,
-          /* internalProfileId = */1,
-          /* totalStoryCount = */3,
-          /* entytType = */"entity_1",
-          promotedStory1
+          activity = it,
+          internalProfileId = 1,
+          totalStoryCount = 3,
+          entityType = "entity",
+          promotedStory = promotedStory1
         )
         val promotedStoryViewModelStory2 = PromotedStoryViewModel(
-          /* activity = */ it,
-          /* internalProfileId = */1,
-          /* totalStoryCount = */3,
-          /* entytType = */"entity_2",
-          promotedStory2
+          activity = it,
+          internalProfileId = 1,
+          totalStoryCount = 3,
+          entityType = "entity",
+          promotedStory = promotedStory2
         )
 
         assertThat(promotedStoryViewModelStory1).isNotEqualTo(promotedStoryViewModelStory2)
@@ -277,12 +277,12 @@ class PromotedStoryViewModelTest {
     ).use {
       it.onActivity {
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(it)
-        val copyPromotedStoryViewModel = createBasicPromotedStoryViewModel(it)
-        assertThat(promotedStoryViewModel).isEqualTo(copyPromotedStoryViewModel)
+        val promotedStoryViewModelCopy = createBasicPromotedStoryViewModel(it)
+        assertThat(promotedStoryViewModel).isEqualTo(promotedStoryViewModelCopy)
 
         // Verify that if a == b, then a.hashCode == b.hashCode
         assertThat(promotedStoryViewModel.hashCode())
-          .isEqualTo(copyPromotedStoryViewModel.hashCode())
+          .isEqualTo(promotedStoryViewModelCopy.hashCode())
       }
     }
   }

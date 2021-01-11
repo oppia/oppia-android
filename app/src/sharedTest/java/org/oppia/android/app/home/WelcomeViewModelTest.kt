@@ -113,11 +113,11 @@ class WelcomeViewModelTest {
       it.onActivity {
         setUpTestFragment(it)
         val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
-        val copyWelcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
+        val welcomeViewModelProfile1MorningCopy = createBasicWelcomeViewModel(testFragment)
 
         // Verify the symmetric property of equals(): a == b iff b == a.
-        assertThat(welcomeViewModelProfile1Morning).isEqualTo(copyWelcomeViewModelProfile1Morning)
-        assertThat(copyWelcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1Morning)
+        assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1MorningCopy)
+        assertThat(welcomeViewModelProfile1MorningCopy).isEqualTo(welcomeViewModelProfile1Morning)
       }
     }
   }
@@ -155,12 +155,12 @@ class WelcomeViewModelTest {
       it.onActivity {
         setUpTestFragment(it)
         val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
-        val copyWelcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
-        assertThat(welcomeViewModelProfile1Morning).isEqualTo(copyWelcomeViewModelProfile1Morning)
+        val welcomeViewModelProfile1MorningCopy = createBasicWelcomeViewModel(testFragment)
+        assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1MorningCopy)
 
         // Verify the consistent property of equals(): if neither object is modified, then a == b
         // for multiple invocations
-        assertThat(welcomeViewModelProfile1Morning).isEqualTo(copyWelcomeViewModelProfile1Morning)
+        assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1MorningCopy)
       }
     }
   }
@@ -239,16 +239,16 @@ class WelcomeViewModelTest {
           morningClock,
           "Profile 1"
         )
-        val copyWelcomeViewModelProfile1Morning = WelcomeViewModel(
+        val welcomeViewModelProfile1MorningCopy = WelcomeViewModel(
           testFragment,
           morningClock,
           "Profile 1"
         )
-        assertThat(welcomeViewModelProfile1Morning).isEqualTo(copyWelcomeViewModelProfile1Morning)
+        assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1MorningCopy)
 
         // Verify that if a == b, then a.hashCode == b.hashCode
         assertThat(welcomeViewModelProfile1Morning.hashCode())
-          .isEqualTo(copyWelcomeViewModelProfile1Morning.hashCode())
+          .isEqualTo(welcomeViewModelProfile1MorningCopy.hashCode())
       }
     }
   }
