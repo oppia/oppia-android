@@ -21,6 +21,7 @@ import org.oppia.android.util.parser.HtmlParser
  */
 // TODO(#1619): Remove file post-Gradle
 interface ViewBindingShim {
+
   /**
    * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
    * returns the binding's root.

@@ -49,6 +49,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.resetPinInputPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
+        // To avoid disappearing Error message due to orientation change.
         if (
           resetViewModel.errorMessage.get()?.isNotEmpty()!! && resetViewModel.inputPin.get() == it
         ) {
@@ -59,10 +60,6 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
         }
       }
     }
-    // This is set dynamically as the name is not passed to [ResetPinViewModel]
-    binding.resetPinInputPin.hint = activity.resources.getString(
-      R.string.admin_settings_enter_user_new_pin, name
-    )
 
     val dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.reset_pin_enter)
