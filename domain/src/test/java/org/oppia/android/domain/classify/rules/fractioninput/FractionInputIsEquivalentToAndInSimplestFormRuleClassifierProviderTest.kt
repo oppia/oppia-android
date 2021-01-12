@@ -124,7 +124,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquivalentAndSimplest_wholeNumber2Answer_negativeWholeNumber2Input_doesNotMatch() {
+  fun testEquivalentAndSimplest_wholeNumber2Answer_negativeIntegerNumber2Input_doesNotMatch() {
     val inputs = mapOf("f" to NEGATIVE_INTEGER_VALUE_TEST_2)
     val answer = WHOLE_NUMBER_VALUE_TEST_2
 
