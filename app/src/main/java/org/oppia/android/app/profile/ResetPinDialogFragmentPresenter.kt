@@ -45,6 +45,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
       lifecycleOwner = fragment
       viewModel = resetViewModel
     }
+    resetViewModel.name.set(name)
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.resetPinInputPinEditText.onTextChanged { confirmPin ->
