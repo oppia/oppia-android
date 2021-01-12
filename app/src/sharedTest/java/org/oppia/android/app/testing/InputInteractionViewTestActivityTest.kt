@@ -795,7 +795,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testRatioInputView_withRatio_configChange_hasCorrectPendingAnswer() {
+  fun testRatioInput_withRatio_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -813,7 +813,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() {
+  fun testRatioInput_withTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -857,7 +857,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withZeroRatio_submit_numberWithZerosErrorIsDisplayed() {
+  fun testRatioInput_withZeroRatio_submit_numberWithZerosErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -880,7 +880,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withInvalidRatio_submit_numberFormatErrorIsDisplayed() {
+  fun testRatioInput_withInvalidRatio_submit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -905,7 +905,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withRatioHaving4Terms_submit_invalidSizeErrorIsDisplayed() {
+  fun testRatioInput_withRatioHaving4Terms_submit_invalidSizeErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -929,7 +929,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withRatioHaving2Terms_submit_invalidSizeErrorIsDisplayed() {
+  fun testRatioInput_withRatioHaving2Terms_submit_invalidSizeErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -953,7 +953,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withRatioHaving3Terms_submit_noErrorIsDisplayed() {
+  fun testRatioInput_withRatioHaving3Terms_submit_noErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
