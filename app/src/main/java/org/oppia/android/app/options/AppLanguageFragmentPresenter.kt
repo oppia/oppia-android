@@ -68,12 +68,12 @@ class AppLanguageFragmentPresenter @Inject constructor(
   ) {
     binding.radioContainer.setOnClickListener {
       languageSelectionViewModel.selectedLanguage.value = model.language
+      updateAppLanguage(model.language)
     }
     languageSelectionViewModel.selectedLanguage.observe(
       fragment,
       Observer {
         binding.isChecked = model.language == it
-        updateAppLanguage(model.language)
       }
     )
   }
