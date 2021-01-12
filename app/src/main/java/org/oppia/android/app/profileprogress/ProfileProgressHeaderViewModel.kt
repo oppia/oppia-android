@@ -1,8 +1,12 @@
 package org.oppia.android.app.profileprogress
 
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
+import org.oppia.android.R
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.model.Profile
 
@@ -16,8 +20,9 @@ class ProfileProgressHeaderViewModel(activity: AppCompatActivity, fragment: Frag
 
   val profile = ObservableField<Profile>(Profile.getDefaultInstance())
   val ongoingTopicCount = ObservableField(0)
-  val recentlyPlayedTopicCount = ObservableField(0)
   val completedStoryCount = ObservableField(0)
+
+  private var recentlyPlayedTopicCount: Int = 0
 
   fun setProfile(currentProfile: Profile) {
     profile.set(currentProfile)
@@ -48,6 +53,22 @@ class ProfileProgressHeaderViewModel(activity: AppCompatActivity, fragment: Frag
   }
 
   fun setRecentlyPlayedStoryCount(topicCount: Int) {
-    recentlyPlayedTopicCount.set(topicCount)
+    recentlyPlayedTopicCount = topicCount
+  }
+
+  /** Returns the visibility for the "View All" button. */
+  fun getViewAllButtonVisibility(): Int {
+    return if (recentlyPlayedTopicCount > 0) {
+      View.VISIBLE
+    } else
+      View.INVISIBLE
+  }
+
+  /** Returns the visibility for the header "Recently-played Stories" text. */
+  fun getHeaderTextVisibility(): Int {
+    return if (recentlyPlayedTopicCount > 0) {
+      View.VISIBLE
+    } else
+      View.INVISIBLE
   }
 }
