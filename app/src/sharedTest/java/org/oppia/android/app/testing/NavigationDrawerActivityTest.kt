@@ -17,13 +17,21 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.DrawerActions.close
+import androidx.test.espresso.contrib.DrawerMatchers.isClosed
+import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -34,14 +42,17 @@ import com.google.android.material.navigation.NavigationView
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
@@ -49,8 +60,12 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.drawer.NavigationDrawerItem
+import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.mydownloads.MyDownloadsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.profile.ProfileChooserActivity
+import org.oppia.android.app.profileprogress.ProfileProgressActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
@@ -73,10 +88,12 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RobolectricModule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -148,117 +165,117 @@ class NavigationDrawerActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-//  @Test
-//  fun testNavigationDrawerTestActivity_openNavDrawer_navDrawerIsOpened() {
-//    launch(NavigationDrawerTestActivity::class.java).use {
-//      it.openNavigationDrawer()
-//      onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
-//      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
-//    }
-//  }
-//
-//  @Test
-//  fun testNavigationDrawerTestActivity_openNavDrawer_changeConfig_navDrawerIsDisplayed() {
-//    launch(NavigationDrawerTestActivity::class.java).use {
-//      it.openNavigationDrawer()
-//      onView(isRoot()).perform(orientationLandscape())
-//      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
-//    }
-//  }
-//
-//  @Test
-//  fun testNavigationDrawerTestActivity_withAdminProfile_openNavDrawer_profileNameIsDisplayed() {
-//    launch<NavigationDrawerTestActivity>(
-//      createNavigationDrawerActivityIntent(
-//        internalProfileId
-//      )
-//    ).use {
-//      testCoroutineDispatchers.runCurrent()
-//      it.openNavigationDrawer()
-//      onView(
-//        allOf(
-//          withId(R.id.nav_header_profile_name),
-//          isDescendantOfA(withId(R.id.header_linear_layout))
-//        )
-//      ).check(matches(withText("Admin")))
-//    }
-//  }
-//
-//  @Test
-//  fun testNavigationDrawerTestActivity_withAdminProfile_changeConfig_profileNameIsDisplayed() {
-//    launch<NavigationDrawerTestActivity>(
-//      createNavigationDrawerActivityIntent(
-//        internalProfileId
-//      )
-//    ).use {
-//      testCoroutineDispatchers.runCurrent()
-//      it.openNavigationDrawer()
-//      onView(isRoot()).perform(orientationLandscape())
-//      onView(
-//        allOf(
-//          withId(R.id.nav_header_profile_name),
-//          isDescendantOfA(withId(R.id.header_linear_layout))
-//        )
-//      ).check(matches(withText("Admin")))
-//    }
-//  }
-//
-//  @Test
-//  fun testNavigationDrawerTestActivity_openNavDrawer_profileProgressIsDisplayed() {
-//    launch<NavigationDrawerTestActivity>(
-//      createNavigationDrawerActivityIntent(
-//        internalProfileId
-//      )
-//    ).use {
-//      testCoroutineDispatchers.runCurrent()
-//      it.openNavigationDrawer()
-//      onView(
-//        allOf(
-//          withId(R.id.profile_progress_text_view),
-//          isDescendantOfA(withId(R.id.header_linear_layout))
-//        )
-//      ).check(matches(withText("1 Story Completed | 1 Topic in Progress")))
-//    }
-//  }
-//
-//  @Test
-//  fun testNavigationDrawerTestActivity_withUserProfile_openNavDrawer_profileNameIsDisplayed() {
-//    launch<NavigationDrawerTestActivity>(
-//      createNavigationDrawerActivityIntent(
-//        internalProfileId1
-//      )
-//    ).use {
-//      testCoroutineDispatchers.runCurrent()
-//      it.openNavigationDrawer()
-//      onView(
-//        allOf(
-//          withId(R.id.nav_header_profile_name),
-//          isDescendantOfA(withId(R.id.header_linear_layout))
-//        )
-//      ).check(matches(withText("Ben")))
-//    }
-//  }
-//
-//  @Test
-//  fun testNavigationDrawerTestActivity_clickOnHeader_opensProfileProgressActivity() {
-//    launch<NavigationDrawerTestActivity>(
-//      createNavigationDrawerActivityIntent(
-//        internalProfileId
-//      )
-//    ).use {
-//      testCoroutineDispatchers.runCurrent()
-//      it.openNavigationDrawer()
-//      onView(withId(R.id.nav_header_profile_name)).perform(click())
-//      testCoroutineDispatchers.runCurrent()
-//      intended(hasComponent(ProfileProgressActivity::class.java.name))
-//      intended(
-//        hasExtra(
-//          ProfileProgressActivity.PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY,
-//          internalProfileId
-//        )
-//      )
-//    }
-//  }
+  @Test
+  fun testNavigationDrawerTestActivity_openNavDrawer_navDrawerIsOpened() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_openNavDrawer_changeConfig_navDrawerIsDisplayed() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_withAdminProfile_openNavDrawer_profileNameIsDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      it.openNavigationDrawer()
+      onView(
+        allOf(
+          withId(R.id.nav_header_profile_name),
+          isDescendantOfA(withId(R.id.header_linear_layout))
+        )
+      ).check(matches(withText("Admin")))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_withAdminProfile_changeConfig_profileNameIsDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withId(R.id.nav_header_profile_name),
+          isDescendantOfA(withId(R.id.header_linear_layout))
+        )
+      ).check(matches(withText("Admin")))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_openNavDrawer_profileProgressIsDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      it.openNavigationDrawer()
+      onView(
+        allOf(
+          withId(R.id.profile_progress_text_view),
+          isDescendantOfA(withId(R.id.header_linear_layout))
+        )
+      ).check(matches(withText("1 Story Completed | 1 Topic in Progress")))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_withUserProfile_openNavDrawer_profileNameIsDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(
+        internalProfileId1
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      it.openNavigationDrawer()
+      onView(
+        allOf(
+          withId(R.id.nav_header_profile_name),
+          isDescendantOfA(withId(R.id.header_linear_layout))
+        )
+      ).check(matches(withText("Ben")))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_clickOnHeader_opensProfileProgressActivity() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      it.openNavigationDrawer()
+      onView(withId(R.id.nav_header_profile_name)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileProgressActivity::class.java.name))
+      intended(
+        hasExtra(
+          ProfileProgressActivity.PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY,
+          internalProfileId
+        )
+      )
+    }
+  }
 
   @Test
   fun testNavigationDrawerTestActivity_openNavDrawer_clickSwitchProfile_clickCancel() {
@@ -421,142 +438,142 @@ class NavigationDrawerActivityTest {
     }
   }
 
-//  @Test
-//  fun testNavigationDrawerTestActivity_withAdminProfile_openNavDrawer_adminControlsIsDisplayed() {
-//    launch<NavigationDrawerTestActivity>(
-//      createNavigationDrawerActivityIntent(internalProfileId)
-//    ).use {
-//      it.openNavigationDrawer()
-//      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
-//    }
-//  }
+  @Test
+  fun testNavigationDrawerTestActivity_withAdminProfile_openNavDrawer_adminControlsIsDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
+    }
+  }
 
-//  @Test
-//  fun testNavigationDrawerTestActivity_withAdminProfile_changeConfig_adminControlsIsDisplayed() {
-//    launch<NavigationDrawerTestActivity>(
-//      createNavigationDrawerActivityIntent(internalProfileId)
-//    ).use {
-//      it.openNavigationDrawer()
-//      onView(isRoot()).perform(orientationLandscape())
-//      onView(withId(R.id.drawer_nested_scroll_view)).perform(swipeUp())
-//      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
-//    }
-//  }
-//
-//  @Test
-//  fun testNavigationDrawerTestActivity_withAdminProfile_adminMenu_opensAdminControlsActivity() {
-//    launch<NavigationDrawerTestActivity>(
-//      createNavigationDrawerActivityIntent(
-//        internalProfileId
-//      )
-//    ).use {
-//      it.openNavigationDrawer()
-//      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
-//        .check(matches(isDisplayed())).perform(click())
-//      intended(hasComponent(AdministratorControlsActivity::class.java.name))
-//      intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
-//    }
-//  }
-//
-//  @Test
-//  fun testNavigationDrawerTestActivity_withUserProfile_adminControlsAreNotDisplayed() {
-//    launch<NavigationDrawerTestActivity>(
-//      createNavigationDrawerActivityIntent(
-//        internalProfileId1
-//      )
-//    ).use {
-//      it.openNavigationDrawer()
-//      onView(withId(R.id.administrator_controls_linear_layout))
-//        .check(matches(not(isDisplayed())))
-//    }
-//  }
-//
-//  // TODO(#1806): Enable this once lowfi implementation is done.
-//  @Test
-//  @Ignore("My Downloads is removed until we have full download support.")
-//  fun testNavigationDrawerTestActivity_myDownloadsMenu_myDownloadsFragmentIsDisplayed() {
-//    launch(NavigationDrawerTestActivity::class.java).use {
-//      it.openNavigationDrawer()
-//      onView(withText(R.string.menu_my_downloads)).perform(click())
-//      intended(hasComponent(MyDownloadsActivity::class.java.name))
-//    }
-//  }
-//
-//  @Test
-//  fun testNavigationDrawerTestActivity_switchProfileMenu_showsExitToProfileChooserDialog() {
-//    launch(NavigationDrawerTestActivity::class.java).use {
-//      it.openNavigationDrawer()
-//      onView(withText(R.string.menu_switch_profile)).perform(click())
-//      onView(withText(R.string.home_activity_back_dialog_message))
-//        .inRoot(isDialog())
-//        .check(matches(isDisplayed()))
-//    }
-//  }
-//
-//  @Test
-//  fun testNavigationDrawerTestActivity_switchProfileMenu_clickExit_opensProfileChooserActivity() {
-//    launch(NavigationDrawerTestActivity::class.java).use {
-//      it.openNavigationDrawer()
-//      onView(withText(R.string.menu_switch_profile)).perform(click())
-//      onView(withText(R.string.home_activity_back_dialog_message))
-//        .inRoot(isDialog())
-//        .check(matches(isDisplayed()))
-//      onView(withText(R.string.home_activity_back_dialog_exit))
-//        .inRoot(isDialog())
-//        .perform(click())
-//      intended(hasComponent(ProfileChooserActivity::class.java.name))
-//    }
-//  }
-//
-//  @RunOn(TestPlatform.ESPRESSO)
-//  @Test
-//  fun testNavigationDrawerTestActivity_openNavDrawerAndClose_navDrawerIsClosed() {
-//    launch(NavigationDrawerTestActivity::class.java).use {
-//      testCoroutineDispatchers.runCurrent()
-//      it.openNavigationDrawer()
-//      onView(withId(R.id.home_activity_drawer_layout)).perform(close())
-//      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
-//    }
-//  }
-//
-//  @RunOn(TestPlatform.ESPRESSO)
-//  @Test
-//  fun testNavigationDrawerTestActivity_selectSwitchProfileMenu_clickCancel_navDrawerIsClosed() {
-//    launch(NavigationDrawerTestActivity::class.java).use {
-//      it.openNavigationDrawer()
-//      onView(withText(R.string.menu_switch_profile)).perform(click())
-//      onView(withText(R.string.home_activity_back_dialog_message))
-//        .inRoot(isDialog())
-//        .check(matches(isDisplayed()))
-//      onView(withText(R.string.home_activity_back_dialog_cancel))
-//        .inRoot(isDialog())
-//        .perform(click())
-//      testCoroutineDispatchers.runCurrent()
-//      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
-//    }
-//  }
-//
-//  @Test
-//  fun testNavigationDrawerTestActivity_selectSwitchProfile_changeConfig_dialogIsVisible() {
-//    launch(NavigationDrawerTestActivity::class.java).use {
-//      it.openNavigationDrawer()
-//      onView(withText(R.string.menu_switch_profile)).perform(click())
-//      onView(withText(R.string.home_activity_back_dialog_message))
-//        .inRoot(isDialog())
-//        .check(matches(isDisplayed()))
-//      onView(isRoot()).perform(orientationLandscape())
-//      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
-//    }
-//  }
-//
-//  @Test
-//  fun testNavigationDrawerTestActivity_openNavDrawer_selectHelpMenu_opensHelpActivity() {
-//    launch(NavigationDrawerTestActivity::class.java).use {
-//      it.openNavigationDrawer()
-//      onView(withText(R.string.menu_help)).perform(click())
-//      intended(hasComponent(HelpActivity::class.java.name))
-//    }
-//  }
+  @Test
+  fun testNavigationDrawerTestActivity_withAdminProfile_changeConfig_adminControlsIsDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.drawer_nested_scroll_view)).perform(swipeUp())
+      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_withAdminProfile_adminMenu_opensAdminControlsActivity() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
+        .check(matches(isDisplayed())).perform(click())
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_withUserProfile_adminControlsAreNotDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(
+        internalProfileId1
+      )
+    ).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.administrator_controls_linear_layout))
+        .check(matches(not(isDisplayed())))
+    }
+  }
+
+  // TODO(#1806): Enable this once lowfi implementation is done.
+  @Test
+  @Ignore("My Downloads is removed until we have full download support.")
+  fun testNavigationDrawerTestActivity_myDownloadsMenu_myDownloadsFragmentIsDisplayed() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_my_downloads)).perform(click())
+      intended(hasComponent(MyDownloadsActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_switchProfileMenu_showsExitToProfileChooserDialog() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_message))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_switchProfileMenu_clickExit_opensProfileChooserActivity() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_message))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.home_activity_back_dialog_exit))
+        .inRoot(isDialog())
+        .perform(click())
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavigationDrawerTestActivity_openNavDrawerAndClose_navDrawerIsClosed() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      it.openNavigationDrawer()
+      onView(withId(R.id.home_activity_drawer_layout)).perform(close())
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
+    }
+  }
+
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavigationDrawerTestActivity_selectSwitchProfileMenu_clickCancel_navDrawerIsClosed() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_message))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_selectSwitchProfile_changeConfig_dialogIsVisible() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_message))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_openNavDrawer_selectHelpMenu_opensHelpActivity() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_help)).perform(click())
+      intended(hasComponent(HelpActivity::class.java.name))
+    }
+  }
 
   private fun ActivityScenario<NavigationDrawerTestActivity>.openNavigationDrawer() {
     onView(withContentDescription(R.string.drawer_open_content_description))
