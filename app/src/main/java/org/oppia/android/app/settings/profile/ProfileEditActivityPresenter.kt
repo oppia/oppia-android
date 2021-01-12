@@ -26,8 +26,8 @@ class ProfileEditActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileEditViewModel>
 ) {
 
-  private val profileEditViewModel: ProfileEditViewModel by lazy {
-    getProfileEditViewModelFromFactory()
+  private val viewModel: ProfileEditViewModel by lazy {
+    getProfileEditViewModel()
   }
 
   private var profileId by Delegates.notNull<Int>()
@@ -41,10 +41,10 @@ class ProfileEditActivityPresenter @Inject constructor(
       R.layout.profile_edit_activity
     )
     profileId = activity.intent.getIntExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, 0)
-    profileEditViewModel.setProfileId(profileId)
+    viewModel.setProfileId(profileId)
 
     binding.apply {
-      viewModel = profileEditViewModel
+      viewModel = viewModel
       lifecycleOwner = activity
     }
 
@@ -57,30 +57,30 @@ class ProfileEditActivityPresenter @Inject constructor(
         ProfileResetPinActivity.createProfileResetPinActivity(
           activity,
           profileId,
-          profileEditViewModel.isAdmin
+          viewModel.isAdmin
         )
       )
     }
 
     binding.profileDeleteButton.setOnClickListener {
-      profileEditViewModel.isProfileDeletionDialogShown.postValue(true)
+      viewModel.isProfileDeletionDialogShown.postValue(true)
     }
 
-    profileEditViewModel.profile.observe(
+    viewModel.profile.observe(
       activity,
       Observer {
         activity.title = it.name
       }
     )
 
-    profileEditViewModel.isAllowedDownloadAccess.observe(
+    viewModel.isAllowedDownloadAccess.observe(
       activity,
       Observer {
         binding.profileEditAllowDownloadSwitch.isChecked = it
       }
     )
 
-    profileEditViewModel.isProfileDeletionDialogShown.observe(
+    viewModel.isProfileDeletionDialogShown.observe(
       activity,
       Observer {
         if (it) {
@@ -137,11 +137,11 @@ class ProfileEditActivityPresenter @Inject constructor(
             }
           )
       }.setOnDismissListener {
-        profileEditViewModel.isProfileDeletionDialogShown.postValue(false)
+        viewModel.isProfileDeletionDialogShown.postValue(false)
       }.create().show()
   }
 
-  private fun getProfileEditViewModelFromFactory(): ProfileEditViewModel {
+  private fun getProfileEditViewModel(): ProfileEditViewModel {
     return viewModelProvider.getForActivity(activity, ProfileEditViewModel::class.java)
   }
 }
