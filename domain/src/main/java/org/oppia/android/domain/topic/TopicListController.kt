@@ -10,7 +10,7 @@ import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
-import org.oppia.android.app.model.RecommendedActivityList
+import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.RecommendedStoryList
 import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.StorySummary
@@ -111,9 +111,9 @@ class TopicListController @Inject constructor(
    *
    * @param profileId the ID corresponding to the profile for which [PromotedStory] needs to be
    *    fetched.
-   * @return a [DataProvider] for an [RecommendedActivityList].
+   * @return a [DataProvider] for an [PromotedActivityList].
    */
-  fun getRecommendedActivityList(profileId: ProfileId): DataProvider<RecommendedActivityList> {
+  fun getPromotedActivityList(profileId: ProfileId): DataProvider<PromotedActivityList> {
     return storyProgressController.retrieveTopicProgressListDataProvider(profileId)
       .transformAsync(GET_RECOMMENDED_ACTIVITY_LIST_PROVIDER_ID) {
         val recommendedActivityList = createRecommendedActivityList(it)
@@ -218,8 +218,8 @@ class TopicListController @Inject constructor(
 
   private fun createRecommendedActivityList(
     topicProgressList: List<TopicProgress>
-  ): RecommendedActivityList {
-    val recommendedActivityListBuilder = RecommendedActivityList.newBuilder()
+  ): PromotedActivityList {
+    val recommendedActivityListBuilder = PromotedActivityList.newBuilder()
 
     if (topicProgressList.isNotEmpty()) {
       val recommendedStoryBuilder = RecommendedStoryList.newBuilder()
@@ -268,29 +268,29 @@ class TopicListController @Inject constructor(
   private fun populateRecommendedStories(
     topicProgressList: List<TopicProgress>,
     recommendedStoryBuilder: RecommendedStoryList.Builder,
-    recommendedActivityListBuilder: RecommendedActivityList.Builder
+    promotedActivityListBuilder: PromotedActivityList.Builder
   ) {
     // If no recently played stories or last played stories then set suggested stories
     // in RecommendedActivityList.
     recommendedStoryBuilder.addAllSuggestedStory(
       createRecommendedStoryList(
         topicProgressList,
-        recommendedActivityListBuilder,
+        promotedActivityListBuilder,
         recommendedStoryBuilder
       )
     )
-    recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
+    promotedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
 
     // If user has completed all the topics then add upcoming topics in
     // RecommendedActivityList.
     if (recommendedStoryBuilder.suggestedStoryCount == 0) {
-      recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
+      promotedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
     }
   }
 
   private fun populateRecentlyPlayedStories(
     topicProgressList: List<TopicProgress>,
-    recommendedActivityListBuilder: RecommendedActivityList.Builder,
+    promotedActivityListBuilder: PromotedActivityList.Builder,
     recommendedStoryBuilder: RecommendedStoryList.Builder
   ) {
     val sortedTopicProgressList =
@@ -336,7 +336,7 @@ class TopicListController @Inject constructor(
           }
         }
       }
-      recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
+      promotedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
     }
   }
 
@@ -450,14 +450,14 @@ class TopicListController @Inject constructor(
 
   private fun createRecommendedStoryList(
     topicProgressList: List<TopicProgress>,
-    recommendedActivityListBuilder: RecommendedActivityList.Builder,
+    promotedActivityListBuilder: PromotedActivityList.Builder,
     recommendedStoryBuilder: RecommendedStoryList.Builder
   ): List<PromotedStory> {
     val recommendedStories = mutableListOf<PromotedStory>()
 
     populateRecentlyPlayedStories(
       topicProgressList,
-      recommendedActivityListBuilder,
+      promotedActivityListBuilder,
       recommendedStoryBuilder
     )
 

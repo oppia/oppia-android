@@ -12,7 +12,7 @@ import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.RecommendedActivityList
+import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -82,48 +82,48 @@ class ProfileProgressViewModel @Inject constructor(
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
-  private val recommendedActivityListResultLiveData: LiveData<AsyncResult<RecommendedActivityList>> by lazy {
-    topicListController.getRecommendedActivityList(profileId).toLiveData()
+  private val promotedActivityListResultLiveData: LiveData<AsyncResult<PromotedActivityList>> by lazy {
+    topicListController.getPromotedActivityList(profileId).toLiveData()
   }
 
-  private val recommendedActivityListLiveData: LiveData<RecommendedActivityList> by lazy {
+  private val promotedActivityListLiveData: LiveData<PromotedActivityList> by lazy {
     Transformations.map(
-      recommendedActivityListResultLiveData,
-      ::processRecommendedActivityListResult
+      promotedActivityListResultLiveData,
+      ::processPromotedActivityListResult
     )
   }
 
-  var refreshedRecommendedActivityListViewModelLiveData =
+  var refreshedPromotedActivityListViewModelLiveData =
     MutableLiveData<List<ProfileProgressItemViewModel>>()
 
   /**
-   * Reprocesses the data of the [refreshedRecommendedActivityListViewModelLiveData] so that we have the
+   * Reprocesses the data of the [refreshedPromotedActivityListViewModelLiveData] so that we have the
    * correct number of items on configuration changes
    */
   fun handleOnConfigurationChange() {
     limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
-    refreshedRecommendedActivityListViewModelLiveData =
+    refreshedPromotedActivityListViewModelLiveData =
       Transformations.map(
-        recommendedActivityListLiveData,
-        ::processRecommendedActivityList
+        promotedActivityListLiveData,
+        ::processPromotedActivityList
       ) as MutableLiveData
   }
 
-  private fun processRecommendedActivityListResult(
-    recommendedActivityListResult: AsyncResult<RecommendedActivityList>
-  ): RecommendedActivityList {
-    if (recommendedActivityListResult.isFailure()) {
+  private fun processPromotedActivityListResult(
+    promotedActivityListtResult: AsyncResult<PromotedActivityList>
+  ): PromotedActivityList {
+    if (promotedActivityListtResult.isFailure()) {
       logger.e(
         "ProfileProgressFragment",
-        "Failed to retrieve ongoing story list: ",
-        recommendedActivityListResult.getErrorOrNull()!!
+        "Failed to retrieve promoted story list: ",
+        promotedActivityListtResult.getErrorOrNull()!!
       )
     }
-    return recommendedActivityListResult.getOrDefault(RecommendedActivityList.getDefaultInstance())
+    return promotedActivityListtResult.getOrDefault(PromotedActivityList.getDefaultInstance())
   }
 
-  private fun processRecommendedActivityList(
-    recommendedActivityList: RecommendedActivityList
+  private fun processPromotedActivityList(
+    recommendedActivityList: PromotedActivityList
   ): List<ProfileProgressItemViewModel> {
     with(recommendedActivityList.recommendedStoryList) {
       headerViewModel.setRecentlyPlayedStoryCount(recentlyPlayedStoryList.size)

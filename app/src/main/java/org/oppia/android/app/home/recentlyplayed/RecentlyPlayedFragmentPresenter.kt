@@ -15,7 +15,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
-import org.oppia.android.app.model.RecommendedActivityList
+import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.databinding.RecentlyPlayedFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.topic.TopicListController
@@ -65,9 +65,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   private val ongoingStoryListSummaryResultLiveData:
-    LiveData<AsyncResult<RecommendedActivityList>>
+    LiveData<AsyncResult<PromotedActivityList>>
     by lazy {
-      topicListController.getRecommendedActivityList(
+      topicListController.getPromotedActivityList(
         ProfileId.newBuilder().setInternalId(internalProfileId).build()
       ).toLiveData()
     }
@@ -75,7 +75,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private fun subscribeToOngoingStoryList() {
     getAssumedSuccessfulOngoingStoryList().observe(
       fragment,
-      Observer<RecommendedActivityList> { it ->
+      Observer<PromotedActivityList> { it ->
         if (it.recommendedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
           val recentSectionTitleViewModel =
             SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
@@ -140,11 +140,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun getAssumedSuccessfulOngoingStoryList(): LiveData<RecommendedActivityList> {
+  private fun getAssumedSuccessfulOngoingStoryList(): LiveData<PromotedActivityList> {
     // If there's an error loading the data, assume the default.
     return Transformations.map(ongoingStoryListSummaryResultLiveData) {
       it.getOrDefault(
-        RecommendedActivityList.getDefaultInstance()
+        PromotedActivityList.getDefaultInstance()
       )
     }
   }

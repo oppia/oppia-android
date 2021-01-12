@@ -256,7 +256,7 @@ message TopicProgress {
 // A structure corresponding to the promoted stories. This structure is set up
 // to properly account for recently played stories, recommended stories
 // and coming soon topics.
-message RecommendedActivityList {
+message PromotedActivityList {
   oneof recommendation_type {
     RecommendedStoryList recommended_story_list = 1;
     ComingSoonTopicList coming_soon_topic_list = 2;

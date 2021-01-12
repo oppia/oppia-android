@@ -23,7 +23,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.CompletedStoryList
-import org.oppia.android.app.model.RecommendedActivityList
+import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
@@ -79,11 +79,11 @@ class StoryProgressTestHelperTest {
   lateinit var completedStoryListResultCaptor: ArgumentCaptor<AsyncResult<CompletedStoryList>>
 
   @Mock
-  lateinit var mockRecommendedActivityListObserver: Observer<AsyncResult<RecommendedActivityList>>
+  lateinit var mockPromotedActivityListObserver: Observer<AsyncResult<PromotedActivityList>>
 
   @Captor
-  lateinit var recommendedActivityListResultCaptor:
-    ArgumentCaptor<AsyncResult<RecommendedActivityList>>
+  lateinit var promotedActivityListResultCaptor:
+    ArgumentCaptor<AsyncResult<PromotedActivityList>>
 
   @Mock
   lateinit var mockOngoingTopicListObserver: Observer<AsyncResult<OngoingTopicList>>
@@ -745,13 +745,13 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getRecommendedActivityList(profileId).toLiveData()
-      .observeForever(mockRecommendedActivityListObserver)
+    topicListController.getPromotedActivityList(profileId).toLiveData()
+      .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetRecommendedActivityListSucceeded()
 
-    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    val recommendedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
     with(recommendedActivityList.recommendedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(1)
       assertThat(olderPlayedStoryCount).isEqualTo(0)
@@ -770,13 +770,13 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getRecommendedActivityList(profileId).toLiveData()
-      .observeForever(mockRecommendedActivityListObserver)
+    topicListController.getPromotedActivityList(profileId).toLiveData()
+      .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetRecommendedActivityListSucceeded()
 
-    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    val recommendedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
     with(recommendedActivityList.recommendedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(1)
       assertThat(olderPlayedStoryCount).isEqualTo(0)
@@ -795,13 +795,13 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getRecommendedActivityList(profileId).toLiveData()
-      .observeForever(mockRecommendedActivityListObserver)
+    topicListController.getPromotedActivityList(profileId).toLiveData()
+      .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetRecommendedActivityListSucceeded()
 
-    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    val recommendedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
     with(recommendedActivityList.recommendedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(2)
       assertThat(olderPlayedStoryCount).isEqualTo(0)
@@ -824,13 +824,13 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getRecommendedActivityList(profileId).toLiveData()
-      .observeForever(mockRecommendedActivityListObserver)
+    topicListController.getPromotedActivityList(profileId).toLiveData()
+      .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetRecommendedActivityListSucceeded()
 
-    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    val recommendedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
     with(recommendedActivityList.recommendedStoryList) {
       assertThat(recentlyPlayedStoryCount)
         .isEqualTo(0)
@@ -851,13 +851,13 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getRecommendedActivityList(profileId).toLiveData()
-      .observeForever(mockRecommendedActivityListObserver)
+    topicListController.getPromotedActivityList(profileId).toLiveData()
+      .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetRecommendedActivityListSucceeded()
 
-    val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
+    val recommendedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
     with(recommendedActivityList.recommendedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(0)
       assertThat(olderPlayedStoryCount).isEqualTo(3)
@@ -908,10 +908,10 @@ class StoryProgressTestHelperTest {
 
   private fun verifyGetRecommendedActivityListSucceeded() {
     verify(
-      mockRecommendedActivityListObserver,
+      mockPromotedActivityListObserver,
       atLeastOnce()
-    ).onChanged(recommendedActivityListResultCaptor.capture())
-    assertThat(recommendedActivityListResultCaptor.value.isSuccess()).isTrue()
+    ).onChanged(promotedActivityListResultCaptor.capture())
+    assertThat(promotedActivityListResultCaptor.value.isSuccess()).isTrue()
   }
 
   private fun verifyGetTopicListSucceeded() {

@@ -17,7 +17,7 @@ import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.RecommendedActivityList
+import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.RecommendedStoryList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -32,9 +32,9 @@ import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 
 private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
-  "profile+recommendedActivityList"
+  "profile+promotedActivityList"
 private const val HOME_FRAGMENT_COMBINED_PROVIDER_ID =
-  "profile+recommendedActivityList+topicListProvider"
+  "profile+promotedActivityList+topicListProvider"
 
 /** [ViewModel] for layouts in home fragment . */
 @FragmentScope
@@ -59,8 +59,8 @@ class HomeViewModel(
     profileManagementController.getProfile(profileId)
   }
 
-  private val recommendedActivityListSummaryDataProvider: DataProvider<RecommendedActivityList> by lazy {
-    topicListController.getRecommendedActivityList(profileId)
+  private val promotedActivityListSummaryDataProvider: DataProvider<PromotedActivityList> by lazy {
+    topicListController.getPromotedActivityList(profileId)
   }
 
   private val topicListSummaryDataProvider: DataProvider<TopicList> by lazy {
@@ -72,12 +72,12 @@ class HomeViewModel(
     // instances). If any of the data providers are pending or failed, the combined result will also
     // be pending or failed.
     profileDataProvider.combineWith(
-      recommendedActivityListSummaryDataProvider,
+      promotedActivityListSummaryDataProvider,
       PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID
-    ) { profile, recommendedActivityList ->
+    ) { profile, promotedActivityList ->
       listOfNotNull(
         computeWelcomeViewModel(profile),
-        computeRecommendedActivityListViewModel(recommendedActivityList)
+        computePromotedActivityListViewModel(promotedActivityList)
       )
     }.combineWith(
       topicListSummaryDataProvider,
@@ -121,25 +121,25 @@ class HomeViewModel(
    * to be displayed for this learner or null if this profile does not have any promoted stories.
    * Promoted stories are determined by any recent stories last-played stories or suggested stories started by this profile.
    */
-  private fun computeRecommendedActivityListViewModel(
-    recommendedActivityList: RecommendedActivityList
+  private fun computePromotedActivityListViewModel(
+    promotedActivityList: PromotedActivityList
   ): HomeItemViewModel? {
-    when (recommendedActivityList.recommendationTypeCase) {
-      RecommendedActivityList.RecommendationTypeCase.RECOMMENDED_STORY_LIST -> {
+    when (promotedActivityList.recommendationTypeCase) {
+      PromotedActivityList.RecommendationTypeCase.RECOMMENDED_STORY_LIST -> {
         val storyViewModelList = computePromotedStoryViewModelList(
-          recommendedActivityList.recommendedStoryList
+          promotedActivityList.recommendedStoryList
         )
         return if (storyViewModelList.isNotEmpty()) {
           return PromotedStoryListViewModel(
             activity,
             storyViewModelList,
-            recommendedActivityList
+            promotedActivityList
           )
         } else null
       }
-      RecommendedActivityList.RecommendationTypeCase.COMING_SOON_TOPIC_LIST -> {
+      PromotedActivityList.RecommendationTypeCase.COMING_SOON_TOPIC_LIST -> {
         val comingSoonTopicsList = computeComingSoonTopicViewModelList(
-          recommendedActivityList.comingSoonTopicList
+          promotedActivityList.comingSoonTopicList
         )
         return if (comingSoonTopicsList.isNotEmpty()) {
           return ComingSoonTopicListViewModel(

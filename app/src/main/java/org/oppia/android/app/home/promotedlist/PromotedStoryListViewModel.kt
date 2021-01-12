@@ -8,14 +8,14 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
-import org.oppia.android.app.model.RecommendedActivityList
+import org.oppia.android.app.model.PromotedActivityList
 import java.util.Objects
 
 /** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
 class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
   val promotedStoryList: List<PromotedStoryViewModel>,
-  private val recommendedActivityList: RecommendedActivityList
+  private val promotedActivityList: PromotedActivityList
 ) : HomeItemViewModel() {
   private val routeToRecentlyPlayedListener = activity as RouteToRecentlyPlayedListener
 
@@ -27,7 +27,7 @@ class PromotedStoryListViewModel(
 
   /** Determines and returns the header for the promoted stories. */
   fun getHeader(): String {
-    with (recommendedActivityList.recommendedStoryList) {
+    with (promotedActivityList.recommendedStoryList) {
       return when {
         suggestedStoryList.isNotEmpty() -> {
           if (recentlyPlayedStoryList.isNotEmpty() || olderPlayedStoryList.isNotEmpty()) {
@@ -47,7 +47,7 @@ class PromotedStoryListViewModel(
 
   /** Returns the visibility for the "View All" button. */
   fun getViewAllButtonVisibility(): Int {
-    recommendedActivityList.recommendedStoryList.let {
+    promotedActivityList.recommendedStoryList.let {
       if (it.suggestedStoryList.isNotEmpty()) {
         return if (it.recentlyPlayedStoryList.isNotEmpty() ||
           it.olderPlayedStoryList.isNotEmpty()
