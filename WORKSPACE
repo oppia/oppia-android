@@ -64,9 +64,20 @@ bind(
     actual = "//tools:java_toolchain",
 )
 
+# The rules_java contains the java_lite_proto_library rule used in the model module.
+http_archive(
+    name = "rules_java",
+    url = "https://github.com/bazelbuild/rules_java/releases/download/0.1.1/rules_java-0.1.1.tar.gz",
+    sha256 = "220b87d8cfabd22d1c6d8e3cdb4249abd4c93dcc152e0667db061fb1b957ee68",
+)
 
-# The rules_proto contains the javalite_toolchain needed for the java_lite_proto_library rule used in the
-# model module.
+load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
+
+rules_java_dependencies()
+
+rules_java_toolchains()
+
+# The rules_proto contains the proto_library rule used in the gitmodel module.
 http_archive(
     name = "rules_proto",
     sha256 = "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",
