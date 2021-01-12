@@ -123,9 +123,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithAdmin_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        0,
-        true
+        context = context,
+        profileId = 0,
+        isAdmin = true
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -157,9 +157,9 @@ class ProfileResetPinActivityTest {
   fun testResetPin_startWithAdmin_inputPinAndConfirmPin_pressImeAction_checkReturnsToProfileEdit() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        0,
-        true
+        context = context,
+        profileId = 0,
+        isAdmin = true
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -190,9 +190,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithAdmin_changeConfiguration_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        0,
-        true
+        context = context,
+        profileId = 0,
+        isAdmin = true
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -229,9 +229,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithUser_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        1,
-        false
+        context = context,
+        profileId = 1,
+        isAdmin = false
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -262,9 +262,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_checkPinLengthError() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        0,
-        true
+        context = context,
+        profileId = 0,
+        isAdmin = true
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -296,9 +296,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_changeConfiguration_checkPinLengthError() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        0,
-        true
+        context = context,
+        profileId = 0,
+        isAdmin = true
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -331,9 +331,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_inputPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        0,
-        true
+        context = context,
+        profileId = 0,
+        isAdmin = true
       )
     ).use {
       onView(
@@ -364,9 +364,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_inputPin_configurationChange_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        0,
-        true
+        context = context,
+        profileId = 0,
+        isAdmin = true
       )
     ).use {
       onView(
@@ -398,9 +398,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithAdmin_inputWrongConfirmPin_clickSave_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        0,
-        true
+        context = context,
+        profileId = 0,
+        isAdmin = true
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -432,9 +432,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithAdmin_inputWrongConfirmPin_clickSave_changeConfiguration_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        0,
-        true
+        context = context,
+        profileId = 0,
+        isAdmin = true
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -468,9 +468,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_changeConfiguration_inputPinExists_confirmInputPinExists_saveButtonIsClickable() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        0,
-        true
+        context = context,
+        profileId = 0,
+        isAdmin = true
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -515,9 +515,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithAdmin_inputWrongConfirmPin_clickSave_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        0,
-        true
+        context = context,
+        profileId = 0,
+        isAdmin = true
       )
     ).use {
       onView(
@@ -557,9 +557,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithUser_inputShortPin_clickSave_checkPinLengthError() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        1,
-        false
+        context = context,
+        profileId = 1,
+        isAdmin = false
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -591,9 +591,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithUser_inputShortPin_clickSave_inputPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        1,
-        false
+        context = context,
+        profileId = 1,
+        isAdmin = false
       )
     ).use {
       onView(
@@ -624,9 +624,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithUser_inputWrongConfirmPin_clickSave_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        1,
-        false
+        context = context,
+        profileId = 1,
+        isAdmin = false
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -658,9 +658,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_startActivityWithUser_inputWrongConfirmPin_clickSave_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        1,
-        false
+        context = context,
+        profileId = 1,
+        isAdmin = false
       )
     ).use {
       onView(
@@ -700,9 +700,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_default_saveButtonIsNotClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        1,
-        false
+        context = context,
+        profileId = 1,
+        isAdmin = false
       )
     ).use {
       onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
@@ -713,9 +713,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_default_changeConfiguration_saveButtonIsNotClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        1,
-        false
+        context = context,
+        profileId = 1,
+        isAdmin = false
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -728,9 +728,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_inputPin_saveButtonIsNotClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        1,
-        false
+        context = context,
+        profileId = 1,
+        isAdmin = false
       )
     ).use {
       onView(
@@ -750,9 +750,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_inputPin_changeConfiguration_saveButtonIsNotClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        1,
-        false
+        context = context,
+        profileId = 1,
+        isAdmin = false
       )
     ).use {
       onView(
@@ -774,9 +774,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        1,
-        false
+        context = context,
+        profileId = 1,
+        isAdmin = false
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -806,9 +806,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable_clearInputPin_saveButtonIsNotClickable() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        1,
-        false
+        context = context,
+        profileId = 1,
+        isAdmin = false
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -848,9 +848,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable_clearConfirmInputPin_saveButtonIsNotClickable() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        1,
-        false
+        context = context,
+        profileId = 1,
+        isAdmin = false
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -890,9 +890,9 @@ class ProfileResetPinActivityTest {
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable_clearConfirmInputPin_changeConfiguration_saveButtonIsNotClickable() { // ktlint-disable max-line-length
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
-        context,
-        1,
-        false
+        context = context,
+        profileId = 1,
+        isAdmin = false
       )
     ).use {
       testCoroutineDispatchers.runCurrent()

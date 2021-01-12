@@ -3,11 +3,9 @@ package org.oppia.android.app.shim
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
@@ -23,28 +21,6 @@ import org.oppia.android.util.parser.HtmlParser
  */
 // TODO(#1619): Remove file post-Gradle
 interface ViewBindingShim {
-
-  /** Handles binding inflation for [ProfileInputView] */
-  fun inflateProfileInputView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View
-
-  /** Returns [ProfileInputView] binding's label text. */
-  fun provideProfileInputViewBindingLabelText(
-    profileInputView: View
-  ): TextView
-
-  /** Returns [ProfileInputView] binding's input. */
-  fun provideProfileInputViewBindingInput(
-    profileInputView: View
-  ): EditText
-
-  /** Returns [ProfileInputView] binding's error text. */
-  fun provideProfileInputViewBindingErrorText(
-    profileInputView: View
-  ): TextView
 
   /**
    * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
