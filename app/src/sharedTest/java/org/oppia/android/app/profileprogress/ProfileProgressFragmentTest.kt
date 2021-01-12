@@ -365,7 +365,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_twoPartialStoryProgress_checkOngoingTopicDescriptionIsCorrect() {
+  fun testProfileProgressFragment_twoPartialStoryProgress_ongoingTopicDescriptionIsCorrect() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -390,7 +390,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_configChange_checkOngoingTopicDescriptionIsCorrect() {
+  fun testProfileProgressFragment_configChange_ongoingTopicDescriptionIsCorrect() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -417,7 +417,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_noProgress_checkCompletedStoriesCountIsZero() {
+  fun testProfileProgressFragment_noProgress_completedStoriesCountIsZero() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("0"))
@@ -430,7 +430,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_twoPartialStoryProgress_checkCompletedStoriesCountIsTwo() {
+  fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesCountIsTwo() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false
@@ -452,7 +452,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_noProgress_checkCompletedStoriesDescriptionIsCorrect() {
+  fun testProfileProgressFragment_noProgress_completedStoriesDescriptionIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.stories_completed))
@@ -469,7 +469,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_twoPartialStoryProgress_checkCompletedStoriesDescriptionIsCorrect() {
+  fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesDescriptionIsCorrect() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false
