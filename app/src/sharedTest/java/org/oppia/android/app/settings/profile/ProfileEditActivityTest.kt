@@ -303,6 +303,26 @@ class ProfileEditActivityTest {
   }
 
   @Test
+  fun testProfileEdit_startWithUserProfile_clickDelete_configChange_checkIfDialogRemains() {
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context,
+        1
+      )
+    ).use {
+      onView(withId(R.id.profile_delete_button)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(R.string.profile_edit_delete_dialog_title))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            isDisplayed()
+          )
+        )
+    }
+  }
+
+  @Test
   fun testProfileEdit_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(

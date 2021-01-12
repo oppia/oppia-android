@@ -26,6 +26,8 @@ class ProfileEditViewModel @Inject constructor(
   /** Specifies whether download access has been enabled by the user. */
   val isAllowedDownloadAccess: LiveData<Boolean> = isAllowedDownloadAccessMutableLiveData
 
+  val isProfileDeletionDialogShown = MutableLiveData<Boolean>()
+
   val profile: LiveData<Profile> by lazy {
     Transformations.map(
       profileManagementController.getProfile(profileId).toLiveData(),

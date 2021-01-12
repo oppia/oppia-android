@@ -9,22 +9,28 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileEditActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 /** The presenter for [ProfileEditActivity]. */
 @ActivityScope
 class ProfileEditActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val logger: ConsoleLogger,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  private val viewModelProvider: ViewModelProvider<ProfileEditViewModel>
 ) {
 
-  @Inject
-  lateinit var profileEditViewModel: ProfileEditViewModel
+  private val profileEditViewModel: ProfileEditViewModel by lazy {
+    getProfileEditViewModelFromFactory()
+  }
+
+  private var profileId by Delegates.notNull<Int>()
 
   fun handleOnCreate() {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -34,7 +40,7 @@ class ProfileEditActivityPresenter @Inject constructor(
       activity,
       R.layout.profile_edit_activity
     )
-    val profileId = activity.intent.getIntExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, 0)
+    profileId = activity.intent.getIntExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, 0)
     profileEditViewModel.setProfileId(profileId)
 
     binding.apply {
@@ -57,7 +63,7 @@ class ProfileEditActivityPresenter @Inject constructor(
     }
 
     binding.profileDeleteButton.setOnClickListener {
-      showDeletionDialog(profileId)
+      profileEditViewModel.isProfileDeletionDialogShown.postValue(true)
     }
 
     profileEditViewModel.profile.observe(
@@ -71,6 +77,15 @@ class ProfileEditActivityPresenter @Inject constructor(
       activity,
       Observer {
         binding.profileEditAllowDownloadSwitch.isChecked = it
+      }
+    )
+
+    profileEditViewModel.isProfileDeletionDialogShown.observe(
+      activity,
+      Observer {
+        if (it) {
+          showDeletionDialog(profileId)
+        }
       }
     )
 
@@ -121,6 +136,12 @@ class ProfileEditActivityPresenter @Inject constructor(
               }
             }
           )
+      }.setOnDismissListener {
+        profileEditViewModel.isProfileDeletionDialogShown.postValue(false)
       }.create().show()
+  }
+
+  private fun getProfileEditViewModelFromFactory(): ProfileEditViewModel {
+    return viewModelProvider.getForActivity(activity, ProfileEditViewModel::class.java)
   }
 }
