@@ -12,7 +12,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
@@ -100,7 +99,6 @@ class ImageRegionSelectionInteractionViewTest {
   fun setUp() {
     setUpTestApplicationComponent()
     MockitoAnnotations.initMocks(this)
-    FirebaseApp.initializeApp(context)
   }
 
   private fun setUpTestApplicationComponent() {
