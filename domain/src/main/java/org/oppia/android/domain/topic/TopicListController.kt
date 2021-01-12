@@ -251,13 +251,14 @@ class TopicListController @Inject constructor(
         // If the Recently-played or Older-played story list is empty then populate Suggested
         // stories or Upcoming stories
         if (recommendedStoryBuilder.recentlyPlayedStoryCount == 0 &&
-          recommendedStoryBuilder.olderPlayedStoryCount == 0 ){
-            populateRecommendedStories(
-              topicProgressList,
-              recommendedStoryBuilder,
-              recommendedActivityListBuilder
-            )
-          }
+          recommendedStoryBuilder.olderPlayedStoryCount == 0
+        ) {
+          populateRecommendedStories(
+            topicProgressList,
+            recommendedStoryBuilder,
+            recommendedActivityListBuilder
+          )
+        }
 
       }
     }
@@ -306,7 +307,6 @@ class TopicListController @Inject constructor(
           completedChapterProgressList.firstOrNull()
 
         val startedChapterProgressList = getStartedChapterProgressList(storyProgress)
-
         val recentlyPlayerChapterProgress: ChapterProgress? =
           startedChapterProgressList.firstOrNull()
 
@@ -398,7 +398,7 @@ class TopicListController @Inject constructor(
         mostRecentCompletedChapterProgress.explorationId == chapterSummary.explorationId
       }
     val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
-    if(story.chapterList.size > nextChapterIndex) {
+    if (story.chapterList.size > nextChapterIndex) {
       val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
       if (nextChapterSummary != null) {
         val numberOfDaysPassed = mostRecentCompletedChapterProgress.getNumberOfDaysPassed()
