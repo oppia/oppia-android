@@ -54,7 +54,7 @@ class PromotedStoryListView @JvmOverloads constructor(
      * after scrolling.
      */
     val snapHelper = StartSnapHelper()
-    this.setOnFlingListener(null)
+    this.onFlingListener = null
     snapHelper.attachToRecyclerView(this)
   }
 }
