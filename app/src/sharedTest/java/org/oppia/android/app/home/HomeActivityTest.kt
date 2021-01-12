@@ -145,7 +145,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_withAdminProfile_profileNameIsDisplayed() {
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)
@@ -162,7 +162,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_withAdminProfile_configChange_profileNameIsDisplayed() {
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_recycler_view)).perform(
