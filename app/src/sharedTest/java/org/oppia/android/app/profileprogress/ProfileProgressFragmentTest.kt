@@ -169,7 +169,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_configurationChange_checkProfileName_profileNameIsCorrect() {
+  fun testProfileProgressFragment_configChange_checkProfileName_profileNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -390,7 +390,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_changeConfig_checkOngoingTopicDescriptionIsCorrect() {
+  fun testProfileProgressFragment_configChange_checkOngoingTopicDescriptionIsCorrect() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
