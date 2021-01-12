@@ -469,7 +469,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgress_twoPartialStoryProgress_checkCompletedStoriesDescriptionIsCorrect() {
+  fun testProfileProgressFragment_twoPartialStoryProgress_checkCompletedStoriesDescriptionIsCorrect() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false
