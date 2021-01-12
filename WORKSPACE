@@ -61,7 +61,7 @@ bind(
 )
 
 """
-The rules_proto contains the javalite_toolchain needed for java_lite_proto_library rule used in the
+The rules_proto contains the javalite_toolchain needed for the java_lite_proto_library rule used in the
 model module.
 """
 http_archive(
