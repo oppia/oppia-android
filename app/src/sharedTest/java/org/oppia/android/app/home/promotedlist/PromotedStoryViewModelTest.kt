@@ -3,7 +3,7 @@ package org.oppia.android.app.home.promotedlist
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -87,7 +87,7 @@ class PromotedStoryViewModelTest {
 
   @Test
   fun testPromotedStoryViewModelEquals_reflexiveBasicPromotedStoryViewModel_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -101,7 +101,7 @@ class PromotedStoryViewModelTest {
 
   @Test
   fun testPromotedStoryViewModelEquals_symmetricBasicPromotedStoryViewModels_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -117,7 +117,7 @@ class PromotedStoryViewModelTest {
 
   @Test
   fun testPromotedStoryViewModelEquals_transitiveBasicPromotedStoryViewModels_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -135,7 +135,7 @@ class PromotedStoryViewModelTest {
 
   @Test
   fun testPromotedStoryViewModelEquals_consistentBasicPromotedStoryViewModels_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -152,7 +152,7 @@ class PromotedStoryViewModelTest {
 
   @Test
   fun testPromotedStoryViewModelEquals_basicPromotedStoryViewModelAndNull_isNotEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -165,7 +165,7 @@ class PromotedStoryViewModelTest {
 
   @Test
   fun testPromotedStoryViewModelEquals_profileId1AndProfileId2_isNotEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -191,7 +191,7 @@ class PromotedStoryViewModelTest {
 
   @Test
   fun testPromotedStoryViewModelEquals_storyCount2AndStoryCount3_isNotEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -218,7 +218,7 @@ class PromotedStoryViewModelTest {
 
   @Test
   fun testPromotedStoryViewModelEquals_entity1AndEntity2_isNotEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -244,7 +244,7 @@ class PromotedStoryViewModelTest {
 
   @Test
   fun testPromotedStoryViewModelEquals_story1AndStory2_isNotEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -272,7 +272,7 @@ class PromotedStoryViewModelTest {
 
   @Test
   fun testPromotedStoryViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -289,7 +289,7 @@ class PromotedStoryViewModelTest {
 
   @Test
   fun testPromotedStoryViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {

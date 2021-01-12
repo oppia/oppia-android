@@ -3,7 +3,7 @@ package org.oppia.android.app.home.promotedlist
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -93,7 +93,7 @@ class PromotedStoryListViewModelTest {
 
   @Test
   fun testPromotedStoryListViewModelEquals_reflexiveStoryListOf2_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -109,7 +109,7 @@ class PromotedStoryListViewModelTest {
 
   @Test
   fun testPromotedStoryListViewModelEquals_symmetricStoryListOf2_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -131,7 +131,7 @@ class PromotedStoryListViewModelTest {
 
   @Test
   fun testPromotedStoryListViewModelEquals_transitiveStoryListOf2_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -158,7 +158,7 @@ class PromotedStoryListViewModelTest {
 
   @Test
   fun testPromotedStoryListViewModelEquals_consistentStoryListOf2_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -181,7 +181,7 @@ class PromotedStoryListViewModelTest {
 
   @Test
   fun testPromotedStoryListViewModelEquals_storyListOf2AndNull_isNotEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -198,7 +198,7 @@ class PromotedStoryListViewModelTest {
 
   @Test
   fun testPromotedStoryListViewModelEquals_storyListOf2AndStoryListOf3_isNotEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -218,7 +218,7 @@ class PromotedStoryListViewModelTest {
 
   @Test
   fun testPromotedStoryListViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -241,7 +241,7 @@ class PromotedStoryListViewModelTest {
 
   @Test
   fun testPromotedStoryListViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -268,7 +268,7 @@ class PromotedStoryListViewModelTest {
   ): List<PromotedStoryViewModel> {
     return promotedStoryList.map {
       PromotedStoryViewModel(
-        activity,
+        activity = activity,
         internalProfileId = 1,
         totalStoryCount = promotedStoryList.size,
         entityType = "entity",
