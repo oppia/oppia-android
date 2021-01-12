@@ -9,11 +9,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import javax.inject.Inject
 
 /**
- * Provides the different scrolling options for RecyclerView
+ * Provides different scrolling actions for [RecyclerView]s.
  *
- * This is needed because few Roboelectric tests require different scrolling actions for the tests
- * to be successful.
- * See https://github.com/oppia/oppia-android/issues/2209 for more information.
+ * This is needed because different testing scenarios in Roboelectric tests potentially require
+ * different scrolling actions for the tests to be successful.
+ * See #2209 for more information.
  */
 class RecyclerViewScrollingActions @Inject constructor(
   val testCoroutineDispatchers: TestCoroutineDispatchers
@@ -38,7 +38,7 @@ class RecyclerViewScrollingActions @Inject constructor(
    * 2) Perform an action on the view at position
    * Usage : TODO
    */
-  fun scrollToPositionWithCompleteDisplayForAction(viewId: Int, position: Int) {
+  fun scrollToPositionAndPerformAction(viewId: Int, position: Int) {
     onView(withId(viewId)).perform(
       actionOnItemAtPosition<RecyclerView.ViewHolder>(
         position,

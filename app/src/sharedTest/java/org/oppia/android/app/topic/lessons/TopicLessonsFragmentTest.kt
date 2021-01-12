@@ -283,7 +283,7 @@ class TopicLessonsFragmentTest {
       clickLessonTab()
       scrollToPosition(position = 1)
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
-      recyclerViewScrollingActions.scrollToPositionWithCompleteDisplayForAction(
+      recyclerViewScrollingActions.scrollToPositionAndPerformAction(
         R.id.story_summary_recycler_view,
         2
       )
