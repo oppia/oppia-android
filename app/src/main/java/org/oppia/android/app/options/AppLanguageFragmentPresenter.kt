@@ -54,15 +54,11 @@ class AppLanguageFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<LanguageItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<LanguageItemViewModel, ViewType> {
-        ViewType.VIEW_TYPE_LANGUAGE
-      }
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_LANGUAGE,
+    return BindableAdapter.SingleTypeBuilder
+      .newBuilder<LanguageItemViewModel>()
+      .registerViewDataBinderWithSameModelType(
         inflateDataBinding = LanguageItemsBinding::inflate,
-        setViewModel = this::bindSkillView,
-        transformViewModel = { it }
+        setViewModel = this::bindSkillView
       ).build()
   }
 
@@ -70,7 +66,6 @@ class AppLanguageFragmentPresenter @Inject constructor(
     binding: LanguageItemsBinding,
     model: LanguageItemViewModel
   ) {
-    binding.viewModel = model
     binding.radioContainer.setOnClickListener {
       languageSelectionViewModel.selectedLanguage.value = model.language
       updateAppLanguage(model.language)
@@ -91,10 +86,6 @@ class AppLanguageFragmentPresenter @Inject constructor(
         appLanguage
       )
     }
-  }
-
-  private enum class ViewType {
-    VIEW_TYPE_LANGUAGE
   }
 
   private fun getLanguageSelectionViewModel(): LanguageSelectionViewModel {
