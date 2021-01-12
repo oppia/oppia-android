@@ -112,7 +112,6 @@ class StoryProgressController @Inject constructor(
         storyProgressBuilder.putChapterProgress(explorationId, chapterProgress)
         val storyProgress = storyProgressBuilder.build()
 
-
         val topicProgressBuilder =
           TopicProgress.newBuilder()
             .setTopicId(topicId).setLastPlayedTimestamp(completionTimestamp)

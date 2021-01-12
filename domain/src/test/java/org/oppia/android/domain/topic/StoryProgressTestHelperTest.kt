@@ -738,7 +738,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markRecentlyPlayed_fractionsStory0Exp0_getRecommendedActivityListIsCorrect() { // ktlint-disable max-line-length
+  fun testProgressTestHelper_markRecentlyPlayed_fractionsStory0Exp0_recentlyPlayedStoryListIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       /* timestampOlderThanAWeek= */ false
@@ -752,7 +752,7 @@ class StoryProgressTestHelperTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    with (recommendedActivityList.recommendedStoryList) {
+    with(recommendedActivityList.recommendedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(1)
       assertThat(olderPlayedStoryCount).isEqualTo(0)
       assertThat(recentlyPlayedStoryList[0].explorationId).isEqualTo(
@@ -777,7 +777,7 @@ class StoryProgressTestHelperTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    with (recommendedActivityList.recommendedStoryList) {
+    with(recommendedActivityList.recommendedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(1)
       assertThat(olderPlayedStoryCount).isEqualTo(0)
       assertThat(recentlyPlayedStoryList[0].explorationId).isEqualTo(
@@ -802,7 +802,7 @@ class StoryProgressTestHelperTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    with (recommendedActivityList.recommendedStoryList) {
+    with(recommendedActivityList.recommendedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(2)
       assertThat(olderPlayedStoryCount).isEqualTo(0)
       assertThat(recentlyPlayedStoryList[0].explorationId).isEqualTo(
@@ -831,7 +831,7 @@ class StoryProgressTestHelperTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    with (recommendedActivityList.recommendedStoryList) {
+    with(recommendedActivityList.recommendedStoryList) {
       assertThat(recentlyPlayedStoryCount)
         .isEqualTo(0)
       assertThat(olderPlayedStoryCount)
@@ -844,7 +844,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testHelper_recentlyPlayed_firstExpInAllFracRatio_asOldStories_RecommendedActivityListCorrect() {
+  fun testProgressTestHelper_markRecentlyPlayedfirstExpInAllFracRatio_asOldStories_olderPlayedStoryListCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId,
       /* timestampOlderThanAWeek= */ true
@@ -858,25 +858,25 @@ class StoryProgressTestHelperTest {
     verifyGetRecommendedActivityListSucceeded()
 
     val recommendedActivityList = recommendedActivityListResultCaptor.value.getOrThrow()
-    with (recommendedActivityList.recommendedStoryList){
-    assertThat(recentlyPlayedStoryCount).isEqualTo(0)
-    assertThat(olderPlayedStoryCount).isEqualTo(3)
+    with(recommendedActivityList.recommendedStoryList) {
+      assertThat(recentlyPlayedStoryCount).isEqualTo(0)
+      assertThat(olderPlayedStoryCount).isEqualTo(3)
 
-    assertThat(olderPlayedStoryList[0].explorationId).isEqualTo(
-      FRACTIONS_EXPLORATION_ID_0
-    )
-    assertThat(olderPlayedStoryList[0].completedChapterCount)
-      .isEqualTo(0)
+      assertThat(olderPlayedStoryList[0].explorationId).isEqualTo(
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      assertThat(olderPlayedStoryList[0].completedChapterCount)
+        .isEqualTo(0)
 
-    assertThat(olderPlayedStoryList[1].explorationId)
-      .isEqualTo(RATIOS_EXPLORATION_ID_0)
-    assertThat(olderPlayedStoryList[1].completedChapterCount)
-      .isEqualTo(0)
+      assertThat(olderPlayedStoryList[1].explorationId)
+        .isEqualTo(RATIOS_EXPLORATION_ID_0)
+      assertThat(olderPlayedStoryList[1].completedChapterCount)
+        .isEqualTo(0)
 
-    assertThat(olderPlayedStoryList[2].explorationId)
-      .isEqualTo(RATIOS_EXPLORATION_ID_2)
-    assertThat(olderPlayedStoryList[2].completedChapterCount)
-      .isEqualTo(0)
+      assertThat(olderPlayedStoryList[2].explorationId)
+        .isEqualTo(RATIOS_EXPLORATION_ID_2)
+      assertThat(olderPlayedStoryList[2].completedChapterCount)
+        .isEqualTo(0)
     }
   }
 

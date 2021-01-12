@@ -31,7 +31,7 @@ import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 
-private const val PROFILE_AND_Recommended_Activity_COMBINED_PROVIDER_ID =
+private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
   "profile+recommendedActivityList"
 private const val HOME_FRAGMENT_COMBINED_PROVIDER_ID =
   "profile+recommendedActivityList+topicListProvider"
@@ -59,7 +59,7 @@ class HomeViewModel(
     profileManagementController.getProfile(profileId)
   }
 
-  private val ongoingStoryListSummaryDataProvider: DataProvider<RecommendedActivityList> by lazy {
+  private val recommendedActivityListSummaryDataProvider: DataProvider<RecommendedActivityList> by lazy {
     topicListController.getRecommendedActivityList(profileId)
   }
 
@@ -72,8 +72,8 @@ class HomeViewModel(
     // instances). If any of the data providers are pending or failed, the combined result will also
     // be pending or failed.
     profileDataProvider.combineWith(
-      ongoingStoryListSummaryDataProvider,
-      PROFILE_AND_Recommended_Activity_COMBINED_PROVIDER_ID
+      recommendedActivityListSummaryDataProvider,
+      PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID
     ) { profile, recommendedActivityList ->
       listOfNotNull(
         computeWelcomeViewModel(profile),
