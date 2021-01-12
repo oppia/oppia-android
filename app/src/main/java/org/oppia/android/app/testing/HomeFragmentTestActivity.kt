@@ -11,7 +11,7 @@ import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 
 /**
  * Test Activity for testing view models on the [HomeFragment].
- * This activity must implement listeners so the test can use it as a  [HomeFragmnet].
+ * This activity must implement listeners so the tests can use it as a [HomeFragment].
  */
 class HomeFragmentTestActivity :
   RouteToTopicListener,

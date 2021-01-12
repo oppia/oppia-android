@@ -48,14 +48,14 @@ interface ViewBindingShim {
     profileInputView: View
   ): TextView
 
-  /** Handles binding inflation for [PromotedStoryListView] */
+  /** Handles binding inflation for [PromotedStoryListView]. */
   fun inflatePromotedStoryCardBinding(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
   ): View
 
-  /** Handles binding inflation for [PromotedStoryListView] and returns the view model.*/
+  /** Handles binding inflation for [PromotedStoryListView] and returns the view model. */
   fun providePromotedStoryViewModel(
     view: View,
     viewModel: PromotedStoryViewModel
