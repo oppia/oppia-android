@@ -53,7 +53,7 @@ jobs:
         chmod a+x buf
 
     - name: Java lint check
-      run: bash scripts/checkstyle_lint_check.sh
+      run: bash scripts/checkstyle_lint_check_github_action.sh
 
     - name: Kotlin lint check
       run: ./ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt && echo "Lint completed successfully"
