@@ -12,7 +12,7 @@ public final class ViewBindingAdapters {
   /** Adapter to set the height of a view. */
   @BindingAdapter("android:layout_height")
   public static void setLayoutHeight(@NonNull View view, float height) {
-    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+      ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
     layoutParams.height = (int) height;
     view.setLayoutParams(layoutParams);
   }
