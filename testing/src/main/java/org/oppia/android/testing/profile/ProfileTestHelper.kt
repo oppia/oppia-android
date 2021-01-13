@@ -99,7 +99,10 @@ class ProfileTestHelper @Inject constructor(
   /** Login to user profile. */
   fun loginToUser() = logIntoProfile(internalProfileId = 1)
 
-  /** Login to a new user profile, since profile #2 is not used as a default user anywhere in this helper. */
+  /**
+   * Login to a new user profile that has no progress for any topics or stories. This relies on other
+   * tests utilizing profile 1 as the default user profile so that profile 2 never has any progress.
+   */
   fun loginToNewUser() = logIntoProfile(internalProfileId = 2)
 
   private fun logIntoProfile(internalProfileId: Int): LiveData<AsyncResult<Any?>> {

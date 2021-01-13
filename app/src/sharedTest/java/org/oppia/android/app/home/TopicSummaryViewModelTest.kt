@@ -3,7 +3,7 @@ package org.oppia.android.app.home
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -67,6 +67,7 @@ private const val TEST_FRAGMENT_TAG = "topic_summary_view_model_test_fragment"
   manifest = Config.NONE
 )
 class TopicSummaryViewModelTest {
+
   @Inject
   lateinit var context: Context
 
@@ -90,7 +91,7 @@ class TopicSummaryViewModelTest {
 
   @Test
   fun testTopicSummaryViewModelEquals_reflexiveBasicTopicSummaryViewModel_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -105,7 +106,7 @@ class TopicSummaryViewModelTest {
 
   @Test
   fun testTopicSummaryViewModelEquals_symmetricBasicTopicSummaryViewModel_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -122,7 +123,7 @@ class TopicSummaryViewModelTest {
 
   @Test
   fun testTopicSummaryViewModelEquals_transitiveBasicSummaryViewModel_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -141,7 +142,7 @@ class TopicSummaryViewModelTest {
 
   @Test
   fun testTopicSummaryViewModelEquals_consistentBasicTopicSummaryViewModel_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -159,7 +160,7 @@ class TopicSummaryViewModelTest {
 
   @Test
   fun testTopicSummaryViewModelEquals_basicTopicSummaryViewModelAndNull_isNotEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -174,7 +175,7 @@ class TopicSummaryViewModelTest {
 
   @Test
   fun testTopicSummaryViewModelEquals_topicSummary1AndTopicSummary2_isNotEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -202,7 +203,7 @@ class TopicSummaryViewModelTest {
 
   @Test
   fun testTopicSummaryViewModelEquals_entity1AndEntity2_isNotEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -229,7 +230,7 @@ class TopicSummaryViewModelTest {
 
   @Test
   fun testTopicSummaryViewModelEquals_position4AndPosition5_isNotEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -256,7 +257,7 @@ class TopicSummaryViewModelTest {
 
   @Test
   fun testTopicSummaryViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
@@ -273,7 +274,7 @@ class TopicSummaryViewModelTest {
 
   @Test
   fun testTopicSummaryViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
-    ActivityScenario.launch<HomeFragmentTestActivity>(
+    launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {

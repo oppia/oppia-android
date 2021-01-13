@@ -167,7 +167,7 @@ class HomeViewModel(
         position = topicIndex
       )
     }
-    return if (!allTopicsList.isEmpty()) {
+    return if (allTopicsList.isNotEmpty()) {
       listOf(AllTopicsViewModel) + allTopicsList
     } else emptyList()
   }

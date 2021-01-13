@@ -123,9 +123,9 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/help/HelpListViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/FAQListViewModel.kt",
     "src/main/java/org/oppia/android/app/home/HomeViewModel.kt",
-    "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryViewModel.kt",
+    "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboadingSlideViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingViewModel.kt",
     "src/main/java/org/oppia/android/app/parser/StringToFractionParser.kt",
@@ -294,7 +294,6 @@ Place your file here if:
 VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
-    "src/main/java/org/oppia/android/app/profile/ProfileInputView.kt",
     "src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt",
 ]
 

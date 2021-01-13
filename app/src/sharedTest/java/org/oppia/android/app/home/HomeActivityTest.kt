@@ -484,16 +484,13 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_allTopicsCompleted_hidesPromotedStories() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      getProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
-
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
+      scrollToPosition(position = 1)
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -506,31 +503,23 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_partialProgressForFractionsAndRatios_showsRecentlyPlayedStories() {
+    val profileId = getProfileId(internalProfileId)
     storyProgressTestHelper.markPartialTopicProgressForFractions(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
-
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          1,
-          R.id.recently_played_stories_text_view
-        )
-      ).check(
-        matches(
-          withText(R.string.recently_played_stories)
-        )
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.recently_played_stories)
       )
     }
   }
@@ -538,23 +527,17 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicsHeader() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = getProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(2)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          2,
-          R.id.all_topics_text_view
-        )
-      ).check(
-        matches(withText(R.string.all_topics))
+      scrollToPosition(position = 2)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 2,
+        targetViewId = R.id.all_topics_text_view,
+        stringToMatch = context.getString((R.string.all_topics))
       )
     }
   }
@@ -562,15 +545,13 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicCards() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = getProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
-      )
+      scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view)).check(
         // The "All Topics" section currently should display the four test topics in two rows.
         hasGridColumnCount(2)
@@ -584,33 +565,45 @@ class HomeActivityTest {
     profileTestHelper.loginToNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(2)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          2,
-          R.id.all_topics_text_view
-        )
-      ).check(
-        matches(withText(R.string.all_topics))
+      scrollToPosition(position = 2)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 2,
+        targetViewId = R.id.all_topics_text_view,
+        stringToMatch = context.getString((R.string.all_topics))
       )
     }
   }
 
   @Test
-  fun testHomeActivity_noTopicsStarted_displaysAllTopicCards() {
+  fun testHomeActivity_noTopicsStarted_displaysAllTopicCardsInPortrait() {
     // Only new users will have no progress for any topics.
     profileTestHelper.loginToNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
-      )
+      scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view)).check(
-        // The "All Topics" section currently should display the four test topics in two rows.
-        hasGridColumnCount(2)
+        // The "All Topics" section currently should display all four test topics in two rows.
+        hasGridColumnCount(expectedColumnCount = 2)
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_noTopicsStarted_displaysAllTopicCardsInLandscape() {
+    // Only new users will have no progress for any topics.
+    profileTestHelper.loginToNewUser()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 3)
+      var rowsUsed = 2
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        // A landscape tablet can display the four test topics in one row.
+        rowsUsed = 1
+      }
+      onView(withId(R.id.home_recycler_view)).check(
+        // The "All Topics" section currently should display all four test topics.
+        hasGridColumnCount(expectedColumnCount = rowsUsed)
       )
     }
   }
@@ -653,6 +646,10 @@ class HomeActivityTest {
         targetViewId
       )
     ).check(matches(withText(stringToMatch)))
+  }
+
+  private fun getProfileId(internalProfileId: Int): ProfileId {
+    return ProfileId.newBuilder().setInternalId(internalProfileId).build()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
