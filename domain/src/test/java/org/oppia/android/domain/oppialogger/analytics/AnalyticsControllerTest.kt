@@ -35,6 +35,7 @@ import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -644,9 +645,8 @@ class AnalyticsControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class,
+      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class
-
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -147,6 +147,7 @@ class ExplorationActivityPresenter @Inject constructor(
           internalProfileId,
           /* isFromNavigationDrawer= */ false
         )
+        fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
         context.startActivity(intent)
         true
       }
@@ -155,6 +156,7 @@ class ExplorationActivityPresenter @Inject constructor(
           activity, internalProfileId,
           /* isFromNavigationDrawer= */false
         )
+        fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
         context.startActivity(intent)
         true
       }

@@ -1,7 +1,6 @@
 package org.oppia.android.app.topic
 
 import android.app.Application
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -22,8 +21,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -60,6 +59,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -76,6 +76,11 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val INFO_TAB_POSITION = 0
+private const val LESSON_TAB_POSITION = 1
+private const val PRACTICE_TAB_POSITION = 2
+private const val REVISION_TAB_POSITION = 3
+
 /** Tests for [TopicFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -89,9 +94,6 @@ class TopicFragmentTest {
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
     TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
-
-  @Inject
-  lateinit var context: Context
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -149,13 +151,7 @@ class TopicFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_tabs_viewpager)).check(matches(isDisplayed()))
       onView(withId(R.id.topic_tabs_viewpager)).perform(swipeLeft())
-      onView(withId(R.id.topic_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            TopicTab.getTabForPosition(1).name
-          )
-        )
-      )
+      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
     }
   }
 
@@ -177,13 +173,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_defaultTabIsInfo_isSuccessful() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(withId(R.id.topic_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            TopicTab.getTabForPosition(0).name
-          )
-        )
-      )
+      verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
     }
   }
 
@@ -202,19 +192,8 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_clickOnLessonsTab_showsPlayTabSelected() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(withId(R.id.topic_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            TopicTab.getTabForPosition(1).name
-          )
-        )
-      )
+      clickTabAtPosition(position = LESSON_TAB_POSITION)
+      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
     }
   }
 
@@ -222,26 +201,13 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnLessonsTab_showsPlayTabWithContentMatched() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.story_summary_recycler_view,
-          1,
-          R.id.story_name_text_view
-        )
-      ).check(
-        matches(
-          withText(
-            containsString(
-              "Matthew Goes to the Bakery"
-            )
-          )
-        )
+      clickTabAtPosition(position = LESSON_TAB_POSITION)
+      testCoroutineDispatchers.runCurrent()
+      matchStringOnListItem(
+        recyclerView = R.id.story_summary_recycler_view,
+        itemPosition = 1,
+        targetViewId = R.id.story_name_text_view,
+        stringToMatch = "Matthew Goes to the Bakery"
       )
     }
   }
@@ -249,19 +215,8 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_clickOnPracticeTab_showsPracticeTabSelected() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(withId(R.id.topic_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            TopicTab.getTabForPosition(2).name
-          )
-        )
-      )
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
+      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
     }
   }
 
@@ -269,27 +224,13 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnPracticeTab_showsPracticeTabWithContentMatched() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          R.id.topic_practice_skill_list,
-          0,
-          R.id.master_skills_text_view
-        )
-      ).check(
-        matches(
-          withText(
-            containsString(
-              "Master These Skills"
-            )
-          )
-        )
+      matchStringOnListItem(
+        recyclerView = R.id.topic_practice_skill_list,
+        itemPosition = 0,
+        targetViewId = R.id.master_skills_text_view,
+        stringToMatch = "Master These Skills"
       )
     }
   }
@@ -297,19 +238,8 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_clickOnReviewTab_showsReviewTabSelected() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(withId(R.id.topic_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            TopicTab.getTabForPosition(3).name
-          )
-        )
-      )
+      clickTabAtPosition(position = REVISION_TAB_POSITION)
+      verifyTabTitleAtPosition(position = REVISION_TAB_POSITION)
     }
   }
 
@@ -317,21 +247,13 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnReviewTab_showsReviewTabWithContentMatched() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
+      clickTabAtPosition(position = REVISION_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_title)).check(
-        matches(
-          withText(
-            containsString(
-              "What is a Fraction?"
-            )
-          )
-        )
+      matchStringOnListItem(
+        recyclerView = R.id.revision_recycler_view,
+        itemPosition = 0,
+        targetViewId = R.id.subtopic_title,
+        stringToMatch = "What is a Fraction?"
       )
     }
   }
@@ -339,23 +261,9 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_clickOnReviewTab_thenInfoTab_showsInfoTab() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(0).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(withId(R.id.topic_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(TopicTab.getTabForPosition(0).name)
-        )
-      )
+      clickTabAtPosition(position = REVISION_TAB_POSITION)
+      clickTabAtPosition(position = INFO_TAB_POSITION)
+      verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
     }
   }
 
@@ -363,18 +271,10 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnReviewTab_thenInfoTab_showsInfoTabWithContentMatched() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(0).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
+      clickTabAtPosition(position = REVISION_TAB_POSITION)
+      testCoroutineDispatchers.runCurrent()
+      clickTabAtPosition(position = INFO_TAB_POSITION)
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
           withText(containsString(TOPIC_NAME))
@@ -387,34 +287,15 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnLessonsTab_configurationChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(1).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
+      clickTabAtPosition(position = LESSON_TAB_POSITION)
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.topic_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            TopicTab.getTabForPosition(1).name
-          )
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.story_summary_recycler_view,
-          1,
-          R.id.story_name_text_view
-        )
-      ).check(
-        matches(
-          withText(
-            containsString(
-              "Matthew Goes to the Bakery"
-            )
-          )
-        )
+      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
+      matchStringOnListItem(
+        recyclerView = R.id.story_summary_recycler_view,
+        itemPosition = 1,
+        targetViewId = R.id.story_name_text_view,
+        stringToMatch = "Matthew Goes to the Bakery"
       )
     }
   }
@@ -423,51 +304,22 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnPracticeTab_configurationChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          R.id.topic_practice_skill_list,
-          0,
-          R.id.master_skills_text_view
-        )
-      ).check(
-        matches(
-          withText(
-            containsString(
-              "Master These Skills"
-            )
-          )
-        )
+      matchStringOnListItem(
+        recyclerView = R.id.topic_practice_skill_list,
+        itemPosition = 0,
+        targetViewId = R.id.master_skills_text_view,
+        stringToMatch = "Master These Skills"
       )
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.topic_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            TopicTab.getTabForPosition(2).name
-          )
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.topic_practice_skill_list,
-          0,
-          R.id.master_skills_text_view
-        )
-      ).check(
-        matches(
-          withText(
-            containsString(
-              "Master These Skills"
-            )
-          )
-        )
+      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
+      matchStringOnListItem(
+        recyclerView = R.id.topic_practice_skill_list,
+        itemPosition = 0,
+        targetViewId = R.id.master_skills_text_view,
+        stringToMatch = "Master These Skills"
       )
     }
   }
@@ -476,31 +328,15 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnReviewTab_configurationChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
+      clickTabAtPosition(position = REVISION_TAB_POSITION)
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.topic_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            TopicTab.getTabForPosition(3).name
-          )
-        )
-      )
-      onView(
-        atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_title)
-      ).check(
-        matches(
-          withText(
-            containsString(
-              "What is a Fraction?"
-            )
-          )
-        )
+      verifyTabTitleAtPosition(position = REVISION_TAB_POSITION)
+      matchStringOnListItem(
+        recyclerView = R.id.revision_recycler_view,
+        itemPosition = 0,
+        targetViewId = R.id.subtopic_title,
+        stringToMatch = "What is a Fraction?"
       )
     }
   }
@@ -510,13 +346,7 @@ class TopicFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.topic_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            TopicTab.getTabForPosition(0).name
-          )
-        )
-      )
+      verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
           withText(
@@ -540,11 +370,55 @@ class TopicFragmentTest {
     return launch(createTopicActivityIntent(internalProfileId, topicId))
   }
 
+  private fun clickTabAtPosition(position: Int) {
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(position).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
+  }
+
+  private fun verifyTabTitleAtPosition(position: Int) {
+    onView(withId(R.id.topic_tabs_container)).check(
+      matches(
+        matchCurrentTabTitle(
+          TopicTab.getTabForPosition(position).name
+        )
+      )
+    )
+  }
+
+  // TODO(#2208): Create helper function in Test for RecyclerView
+  private fun matchStringOnListItem(
+    recyclerView: Int,
+    itemPosition: Int,
+    targetViewId: Int,
+    stringToMatch: String
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerView,
+        itemPosition,
+        targetViewId
+      )
+    ).check(
+      matches(
+        withText(
+          containsString(
+            stringToMatch
+          )
+        )
+      )
+    )
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

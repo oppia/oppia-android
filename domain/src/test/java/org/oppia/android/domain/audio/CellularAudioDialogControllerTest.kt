@@ -24,6 +24,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.CellularDataPreference
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -186,6 +187,7 @@ class CellularAudioDialogControllerTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class,
       TestModule::class,
       TestLogStorageModule::class,

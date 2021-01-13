@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
-import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
@@ -95,12 +94,17 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           itemList.clear()
           itemList.add(TopicLessonsTitleViewModel())
           for (storySummary in it.storyList) {
-            itemList.add(StorySummaryViewModel(storySummary, fragment as StorySummarySelector))
+            itemList.add(
+              StorySummaryViewModel(
+                storySummary,
+                fragment as StorySummarySelector,
+                this as ChapterSummarySelector
+              )
+            )
           }
           val storySummaryAdapter =
             StorySummaryAdapter(
               itemList,
-              this as ChapterSummarySelector,
               expandedChapterListIndexListener,
               currentExpandedChapterListIndex
             )
@@ -135,12 +139,12 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
   }
 
-  override fun selectChapterSummary(storyId: String, chapterSummary: ChapterSummary) {
+  override fun selectChapterSummary(storyId: String, explorationId: String) {
     playExploration(
       internalProfileId,
       topicId,
       storyId,
-      chapterSummary.explorationId,
+      explorationId,
       /* backflowScreen= */ 0
     )
   }

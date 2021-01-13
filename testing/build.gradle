@@ -55,6 +55,7 @@ dependencies {
       'com.google.dagger:dagger:2.24',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.robolectric:robolectric:4.3',
+      'org.jetbrains.kotlin:kotlin-reflect:$kotlin_version',
       project(":domain"),
       project(":utility"),
   )

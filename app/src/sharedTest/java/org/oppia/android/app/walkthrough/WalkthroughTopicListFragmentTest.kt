@@ -52,6 +52,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -106,7 +107,9 @@ class WalkthroughTopicListFragmentTest {
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex0_topicHeader_topicHeaderIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
@@ -124,7 +127,9 @@ class WalkthroughTopicListFragmentTest {
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -146,9 +151,11 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_configurationChanged_topicNameIsCorrect() { // ktlint-disable max-line-length
+  fun testWalkthroughWelcomeFragment_rVIndex1_topicCard_configChanged_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -179,6 +186,7 @@ class WalkthroughTopicListFragmentTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

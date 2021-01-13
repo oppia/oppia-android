@@ -10,13 +10,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
+import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 
 /** Tests for [TextInputStartsWithRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
@@ -24,23 +22,23 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class TextInputStartsWithRuleClassifierProviderTest {
 
-  private val STRING_VALUE_TESTSTRING_LOWERCASE =
+  private val STRING_VALUE_TEST_STRING_LOWERCASE =
     InteractionObjectTestBuilder.createString("test string")
-  private val STRING_VALUE_TESTSTRING_LOWERCASE_EXTRA_SPACES =
+  private val STRING_VALUE_TEST_STRING_LOWERCASE_EXTRA_SPACES =
     InteractionObjectTestBuilder.createString("test  string")
   private val STRING_VALUE_TEST_LOWERCASE =
     InteractionObjectTestBuilder.createString("test")
   private val STRING_VALUE_STRING_LOWERCASE =
     InteractionObjectTestBuilder.createString("string")
-  private val STRING_VALUE_TESTSTRING_UPPERCASE =
+  private val STRING_VALUE_TEST_STRING_UPPERCASE =
     InteractionObjectTestBuilder.createString("TEST STRING")
-  private val STRING_VALUE_TESTSTRING_UPPERCASE_NO_SPACES =
+  private val STRING_VALUE_TEST_STRING_UPPERCASE_NO_SPACES =
     InteractionObjectTestBuilder.createString("TESTSTRING")
   private val STRING_VALUE_TEST_UPPERCASE =
     InteractionObjectTestBuilder.createString("TEST")
-  private val EMPTY_STRING =
+  private val STRING_VALUE_TEST_NULL =
     InteractionObjectTestBuilder.createString(value = "")
-  private val NON_NEGATIVE_INT =
+  private val NON_NEGATIVE_TEST_VALUE_1 =
     InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
 
   @Inject
@@ -61,7 +59,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TESTSTRING_LOWERCASE,
+      answer = STRING_VALUE_TEST_STRING_LOWERCASE,
       inputs = inputs
     )
 
@@ -73,7 +71,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_STRING_LOWERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TESTSTRING_LOWERCASE,
+      answer = STRING_VALUE_TEST_STRING_LOWERCASE,
       inputs = inputs
     )
 
@@ -82,7 +80,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testLowercaseStringAns_lowercaseStringInput_inputStartsWithAns_verifyAnsDoesNotStartsWith() {
-    val inputs = mapOf("x" to STRING_VALUE_TESTSTRING_LOWERCASE)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_STRING_LOWERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_LOWERCASE,
@@ -94,10 +92,10 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testLowercaseStringAns_uppercaseStringInput_sameCaseInsensitive_verifyAnsDoesNotStartWith() {
-    val inputs = mapOf("x" to STRING_VALUE_TESTSTRING_UPPERCASE)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_STRING_UPPERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TESTSTRING_LOWERCASE,
+      answer = STRING_VALUE_TEST_STRING_LOWERCASE,
       inputs = inputs
     )
 
@@ -106,10 +104,10 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testLowercaseStringAns_lowercaseStringInput_extraSpaces_verifyAnsStartWith() {
-    val inputs = mapOf("x" to STRING_VALUE_TESTSTRING_LOWERCASE_EXTRA_SPACES)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_STRING_LOWERCASE_EXTRA_SPACES)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TESTSTRING_LOWERCASE,
+      answer = STRING_VALUE_TEST_STRING_LOWERCASE,
       inputs = inputs
     )
 
@@ -121,7 +119,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TEST_UPPERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TESTSTRING_LOWERCASE,
+      answer = STRING_VALUE_TEST_STRING_LOWERCASE,
       inputs = inputs
     )
 
@@ -130,10 +128,10 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testLowercaseStringAns_emptyStringInput_differentStrings_verifyAnsStartsWith() {
-    val inputs = mapOf("x" to EMPTY_STRING)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_NULL)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TESTSTRING_LOWERCASE,
+      answer = STRING_VALUE_TEST_STRING_LOWERCASE,
       inputs = inputs
     )
 
@@ -142,7 +140,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testUppercaseStringAns_uppercaseStringInput_inputStartWithAns_verifyAnsDoesNotStartsWith() {
-    val inputs = mapOf("x" to STRING_VALUE_TESTSTRING_UPPERCASE)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_STRING_UPPERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_UPPERCASE,
@@ -154,7 +152,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testUppercaseStringAns_uppercaseStringInput_noSpaces_verifyAnsDoesNotStartsWith() {
-    val inputs = mapOf("x" to STRING_VALUE_TESTSTRING_UPPERCASE_NO_SPACES)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_STRING_UPPERCASE_NO_SPACES)
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_UPPERCASE,
@@ -166,10 +164,10 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testUppercaseStringAns_emptyStringInput_differentStrings_verifyAnsStartWith() {
-    val inputs = mapOf("x" to EMPTY_STRING)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_NULL)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TESTSTRING_UPPERCASE,
+      answer = STRING_VALUE_TEST_STRING_UPPERCASE,
       inputs = inputs
     )
 
@@ -178,10 +176,10 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testEmptyStringAns_lowercaseStringInput_differentStrings_verifyAnsDoesNotStartsWith() {
-    val inputs = mapOf("x" to STRING_VALUE_TESTSTRING_LOWERCASE)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_STRING_LOWERCASE)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = EMPTY_STRING,
+      answer = STRING_VALUE_TEST_NULL,
       inputs = inputs
     )
 
@@ -190,10 +188,10 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testEmptyStringAns_emptyStringInput_exactSameStrings_verifyAnsStartsWith() {
-    val inputs = mapOf("x" to EMPTY_STRING)
+    val inputs = mapOf("x" to STRING_VALUE_TEST_NULL)
 
     val matches = inputStartsWithRuleClassifier.matches(
-      answer = EMPTY_STRING,
+      answer = STRING_VALUE_TEST_NULL,
       inputs = inputs
     )
 
@@ -202,11 +200,11 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testStringAns_missingInput_throwsException() {
-    val inputs = mapOf("y" to STRING_VALUE_TESTSTRING_LOWERCASE)
+    val inputs = mapOf("y" to STRING_VALUE_TEST_STRING_LOWERCASE)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputStartsWithRuleClassifier.matches(
-        answer = STRING_VALUE_TESTSTRING_LOWERCASE,
+        answer = STRING_VALUE_TEST_STRING_LOWERCASE,
         inputs = inputs
       )
     }
@@ -218,11 +216,11 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Test
   fun testStringAns_nonNegativeIntInput_throwsException() {
-    val inputs = mapOf("x" to NON_NEGATIVE_INT)
+    val inputs = mapOf("x" to NON_NEGATIVE_TEST_VALUE_1)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputStartsWithRuleClassifier.matches(
-        answer = STRING_VALUE_TESTSTRING_LOWERCASE,
+        answer = STRING_VALUE_TEST_STRING_LOWERCASE,
         inputs = inputs
       )
     }
@@ -237,20 +235,6 @@ class TextInputStartsWithRuleClassifierProviderTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
-  }
-
-  // TODO(#89): Move to a common test library.
-  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
-    try {
-      operation()
-      fail("Expected to encounter exception of $type")
-    } catch (t: Throwable) {
-      if (type.isInstance(t)) {
-        return type.cast(t)
-      }
-      // Unexpected exception; throw it.
-      throw t
-    }
   }
 
   // TODO(#89): Move this to a common test application component.
