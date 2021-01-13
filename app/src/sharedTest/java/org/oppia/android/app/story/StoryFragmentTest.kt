@@ -344,10 +344,11 @@ class StoryFragmentTest {
             capture(listArg)
           )
         }
-        assertThat(intArg.captured == R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework)
+        assertThat(
+          intArg.captured == R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
+        )
         assertThat((ImageTransformation.BLUR in listArg.captured))
       }
-
     }
   }
 
