@@ -39,7 +39,7 @@ NOTE: This does not guarantee 100% formatting of code as per guidelines but will
 ## Layout files
 - Each layout file should be named according to how they are used, where all layouts fall in the following buckets:
   - Activities: _screen\_name\_activity.xml_ (all end with ``_activity.xml``)
-  - Fragments: _subscreen\_name\_fragment.xml_ (all end with ``fragment.xml``)
+  - Fragments: _subscreen\_name\_fragment.xml_ (all end with ``_fragment.xml``)
   - Custom views: _custom\_widget\_name\_view.xml_ (all end with ``_view.xml``)
   - RecyclerView items: _element\_name\_item.xml_ (all end with ``_item.xml``)
   - Toolbars: _screen\_location\_toolbar.xml_ (all end with ``_toolbar.xml``)
