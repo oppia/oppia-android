@@ -24,12 +24,20 @@ import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.Component
+import dagger.Module
+import dagger.Provides
+import io.mockk.every
+import io.mockk.slot
+import kotlinx.android.synthetic.main.story_chapter_view.view.*
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.spy
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -77,9 +85,10 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.ImageLoader
 import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.ImageTransformation
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -90,6 +99,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StoryFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StoryFragmentTest {
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -307,6 +319,39 @@ class StoryFragmentTest {
   }
 
   @Test
+  fun testStoryFragment_chapterMissingPrerequisiteThumbnailIsBlurred() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          2,
+          R.id.chapter_thumbnail
+        )
+      ).check { view, noViewFoundException ->
+        val intArg = slot<Int>()
+        val listArg = slot<List<ImageTransformation>>()
+        every {
+          view.chapter_thumbnail.imageLoader.loadDrawable(
+            capture(intArg),
+            any(),
+            capture(listArg)
+          )
+        }
+        assertThat(intArg.captured == R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework)
+        assertThat((ImageTransformation.BLUR in listArg.captured))
+      }
+
+    }
+  }
+
+  @Test
   fun testStoryFragment_chapterMissingPrerequisiteIsShownCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -447,7 +492,7 @@ class StoryFragmentTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      GcsResourceModule::class, TestModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
@@ -480,5 +525,12 @@ class StoryFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  @Module
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideMockLoader() = spy(ImageLoader::class.java)
   }
 }
