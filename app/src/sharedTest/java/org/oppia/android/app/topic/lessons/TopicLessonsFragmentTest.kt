@@ -280,7 +280,7 @@ class TopicLessonsFragmentTest {
       clickLessonTab()
       scrollToPosition(position = 1)
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       clickStoryItem(position = 2, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
       onView(
