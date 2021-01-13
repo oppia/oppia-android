@@ -53,7 +53,7 @@ jobs:
         chmod a+x buf
 
     - name: Java lint check
-      run: java -jar checkstyle-8.37-all.jar -c=checkstyle.xml app/src/ data/src/ domain/src/ utility/src/ testing/src/ && echo "Lint completed successfully"
+      run: bash scripts/checkstyle_lint_check.sh
 
     - name: Kotlin lint check
       run: ./ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt && echo "Lint completed successfully"
