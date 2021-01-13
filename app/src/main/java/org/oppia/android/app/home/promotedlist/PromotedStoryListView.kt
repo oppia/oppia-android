@@ -24,29 +24,13 @@ class PromotedStoryListView @JvmOverloads constructor(
 
   @Inject
   lateinit var bindingInterface: ViewBindingShim
+  private lateinit var listType: PromotedActivityType
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
     (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
       .createViewComponent(this).inject(this)
-
-    adapter = BindableAdapter.SingleTypeBuilder.newBuilder<PromotedStoryViewModel>()
-      .registerViewBinder(
-        inflateView = { parent ->
-          bindingInterface.inflatePromotedStoryCardBinding(
-            inflater = LayoutInflater.from(context),
-            parent = parent,
-            attachToParent = false
-          )
-        },
-        bindView = { view, viewModel ->
-          bindingInterface.providePromotedStoryViewModel(
-            view = view,
-            viewModel = viewModel
-          )
-        }
-      ).build()
 
     /*
      * The StartSnapHelper is used to snap between items rather than smooth scrolling, so that
@@ -56,5 +40,29 @@ class PromotedStoryListView @JvmOverloads constructor(
     val snapHelper = StartSnapHelper()
     this.onFlingListener = null
     snapHelper.attachToRecyclerView(this)
+  }
+
+  private fun createAdapter(): BindableAdapter<PromotedStoryViewModel> {
+    return BindableAdapter.SingleTypeBuilder.newBuilder<PromotedStoryViewModel>()
+      .registerViewBinder(
+        inflateView = { parent ->
+          bindingInterface.providePromotedStoryCardInflatedView(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          )
+        },
+        bindView = { view, viewModel ->
+          bindingInterface.providePromotedStoryViewModel(
+            view,
+            viewModel
+          )
+        }
+      ).build()
+  }
+
+  fun setListType(type: PromotedActivityType) {
+    this.listType = type
+    adapter = createAdapter()
   }
 }

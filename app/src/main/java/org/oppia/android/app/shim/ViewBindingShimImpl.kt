@@ -31,15 +31,13 @@ import javax.inject.Inject
 // TODO(#1619): Remove file post-Gradle
 class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
 
-  override fun inflatePromotedStoryCardBinding(
+  override fun providePromotedStoryCardInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
   ): View {
     return PromotedStoryCardBinding.inflate(
-      LayoutInflater.from(parent.context),
-      parent,
-      attachToParent
+      LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
     ).root
   }
 

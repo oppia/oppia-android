@@ -89,7 +89,7 @@ interface ViewBindingShim {
   fun getDefaultRegion(parentView: FrameLayout): View
 
   /** Handles binding inflation for [PromotedStoryListView]. */
-  fun inflatePromotedStoryCardBinding(
+  fun providePromotedStoryCardInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
@@ -100,6 +100,7 @@ interface ViewBindingShim {
     view: View,
     viewModel: PromotedStoryViewModel
   )
+
   /**
    * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
    * returns the binding's root.
