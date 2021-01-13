@@ -130,7 +130,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_createOpensProfileChooserActivity() {
+  fun testAddProfileActivity_inputName_opensProfileChooserActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -149,7 +149,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_configChange_inputName_createOpensProfileChooserActivity() {
+  fun testAddProfileActivity_configChange_inputName_opensProfileChooserActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
@@ -170,7 +170,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_clickOnCheckbox_createPin_checkIsDisplayed() {
+  fun testAddProfileActivity_clickOnCheckbox_inputPinIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(click())
       onView(withId(R.id.add_profile_activity_pin)).check(
@@ -182,7 +182,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_configChange_clickOnCheckbox_createPin_checkIsDisplayed() {
+  fun testAddProfileActivity_configChange_clickOnCheckbox_inputPinIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
@@ -197,7 +197,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_createPin_checkNotVisible() {
+  fun testAddProfileActivity_inputPinIsNotDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin)).check(
         matches(
@@ -210,7 +210,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_configChange_createPin_checkNotVisible() {
+  fun testAddProfileActivity_configChange_inputPinIsNotDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin)).check(
@@ -224,7 +224,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_inputPin_createOpensProfileActivity() {
+  fun testAddProfileActivity_inputName_inputPin_opensProfileActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -272,7 +272,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_configChange_inputNameAndPin_createOpensProfileActivity() {
+  fun testAddProfileActivity_configChange_inputNameAndPin_opensProfileActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
@@ -1284,7 +1284,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputNameAndPin_deselectPIN_createOpensProfileActivity() {
+  fun testAddProfileActivity_inputNameAndPin_deselectPIN_opensProfileActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
