@@ -145,7 +145,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_withAdminProfile_displayProfileName_profileNameIsDisplayed() {
+  fun testHomeActivity_withAdminProfile_profileNameIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -172,7 +172,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_displayGreetingMessageBasedOnTime_goodMorningMessageIsDisplayed() {
+  fun testHomeActivity_morningTimestamp_goodMorningMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -187,7 +187,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_displayGreetingMessageBasedOnTime_goodAfternoonMessageIsDisplayed() {
+  fun testHomeActivity_afternoonTimestamp_goodAfternoonMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -202,7 +202,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_displayGreetingMessageBasedOnTime_goodEveningMessageIsDisplayed() {
+  fun testHomeActivity_eveningTimestamp_goodEveningMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -230,7 +230,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_userProfile_viewAllTextIsDisplayed() {
+  fun testHomeActivity_viewAllTextIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -334,7 +334,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_topicSummaryCard_topicNameIsCorrect() {
+  fun testHomeActivity_firstTestTopic_topicSummary_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
@@ -347,7 +347,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_topicSummaryCard_lessonCountIsCorrect() {
+  fun testHomeActivity_fiveLessons_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
@@ -360,7 +360,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_topicSummarySecondCard_topicNameIsCorrect() {
+  fun testHomeActivity_secondTestTopic_topicSummary_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
@@ -373,7 +373,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_topicSummarySecondCard_lessonCountIsCorrect() {
+  fun testHomeActivity_oneLesson_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
@@ -386,7 +386,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_topicSummary_configChange_lessonCountIsCorrect() {
+  fun testHomeActivity_oneLesson_topicSummary_configChange_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -411,7 +411,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_onBackPressed_showsExitToProfileChooserDialog() {
+  fun testHomeActivity_onBackPressed_exitToProfileChooserDialogIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
@@ -422,8 +422,9 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_onBackPressed_orientationChange_showsExitToProfileChooserDialog() {
+  fun testHomeActivity_onBackPressed_configChange_exitToProfileChooserDialogIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(isRoot()).perform(orientationLandscape())
@@ -434,7 +435,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_onBackPressed_clickExit_checkOpensProfileActivity() {
+  fun testHomeActivity_onBackPressed_clickExit_opensProfileActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
