@@ -294,7 +294,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun uncheckAllMenuItemsWhenAdministratorControlsIsChecked() {
     binding.fragmentDrawerNavView.menu.forEach { item ->
-      item.isChecked = false;
+      item.isChecked = false
     }
   }
 
