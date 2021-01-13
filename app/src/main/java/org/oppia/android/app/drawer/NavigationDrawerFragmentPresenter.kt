@@ -247,7 +247,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             .newInstance(
               isFromNavigationDrawer = true,
               isAdministratorControlsSelected =
-                getFooterViewModel().isAdministratorControlsSelected.get() ?: false,
+              getFooterViewModel().isAdministratorControlsSelected.get() ?: false,
               lastCheckedItemId = previousMenuItemId ?: -1
             )
           dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
@@ -270,6 +270,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   fun markLastCheckedItemCloseDrawer(lastCheckedItemId: Int, isAdminSelected: Boolean) {
     if (isAdminSelected) {
       getFooterViewModel().isAdministratorControlsSelected.set(true)
+      uncheckAllMenuItemsWhenAdministratorControlsIsChecked()
     } else if (lastCheckedItemId != -1) {
       val checkedItemPosition =
         when (lastCheckedItemId) {
@@ -289,6 +290,12 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       NavigationDrawerItem.SWITCH_PROFILE.ordinal
     ).isChecked =
       false
+  }
+
+  private fun uncheckAllMenuItemsWhenAdministratorControlsIsChecked() {
+    binding.fragmentDrawerNavView.menu.forEach { item ->
+      item.isChecked = false;
+    }
   }
 
   /**
@@ -365,9 +372,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     } else {
       // For showing navigation drawer in AdministratorControlsActivity
       getFooterViewModel().isAdministratorControlsSelected.set(true)
-      binding.fragmentDrawerNavView.menu.forEach {
-        it.isCheckable = false
-      }
+      uncheckAllMenuItemsWhenAdministratorControlsIsChecked()
       this.drawerLayout = drawerLayout
       drawerToggle = object : ActionBarDrawerToggle(
         fragment.activity,
