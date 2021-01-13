@@ -63,7 +63,6 @@
       android:paddingStart="@dimen/home_padding_start"
       android:paddingEnd="@{viewModel.endPadding}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-      app:listType="@{viewModel.getListType()}"
-      app:list="@{viewModel.promotedStoryList}" />
+      app:dataList="@{viewModel.promotedStoryList}" />
   </LinearLayout>
 </layout>
