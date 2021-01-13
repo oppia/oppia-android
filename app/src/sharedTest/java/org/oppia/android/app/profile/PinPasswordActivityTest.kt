@@ -447,7 +447,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithUser_forgot_inputAdminPin_submit_configChange_resetPinIsDisplayed(){
+  fun testPinPasswordActivityWithUser_forgot_inputAdminPin_submit_configChange_resetPinDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -537,7 +537,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithUser_forgot_inputWrongAdminPin_configChange_wrongAdminPinError(){
+  fun testPinPasswordActivityWithUser_forgot_inputWrongAdminPin_configChange_wrongAdminPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -604,7 +604,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputInvalidPin_clickSubmit_changeConfiguration_errorIsDisplayed() { // ktlint-disable max-line-length
+  fun testPinPasswordActivityWithUser_forgot_inputAdminPinAndInvalidPin_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -718,7 +718,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithAdmin_showHidePassword_imageChangesToHide(){
+  fun testPinPasswordActivityWithAdmin_showHidePassword_imageChangesToHide() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
