@@ -16,7 +16,7 @@
     android:paddingEnd="@dimen/home_tablet_land_outer_margin">
 
     <com.google.android.flexbox.FlexboxLayout
-      android:id="@+id/flex_layout"
+      android:id="@+id/welcome_message_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:alignContent="flex_start"
@@ -53,7 +53,7 @@
       android:layout_height="6dp"
       android:layout_marginTop="4dp"
       android:background="@color/oppiaLightBrown"
-      app:layout_constraintStart_toStartOf="@+id/flex_layout"
-      app:layout_constraintTop_toBottomOf="@+id/flex_layout" />
+      app:layout_constraintStart_toStartOf="@+id/welcome_message_container"
+      app:layout_constraintTop_toBottomOf="@+id/welcome_message_container" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
