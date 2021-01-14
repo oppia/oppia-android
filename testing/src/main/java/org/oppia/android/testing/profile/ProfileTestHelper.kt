@@ -101,22 +101,6 @@ class ProfileTestHelper @Inject constructor(
     testCoroutineDispatchers.runCurrent()
   }
 
-  fun addProfileWithALongName(name: String): LiveData<AsyncResult<Any?>> {
-    profileManagementController.addProfile(
-      name = name,
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = false,
-      colorRgb = -10710042,
-      isAdmin = false
-    )
-    val result = profileManagementController.loginToProfile(
-      ProfileId.newBuilder().setInternalId(10101).build()
-    ).toLiveData()
-    testCoroutineDispatchers.runCurrent()
-    return result
-  }
-
   /** Login to admin profile. */
   fun loginToAdmin() = logIntoProfile(internalProfileId = 0)
 
