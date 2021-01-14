@@ -46,6 +46,10 @@ class HomeViewModel(
 
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
+  private val promotedStoryListLimit = activity.resources.getInteger(
+    R.integer.promoted_story_list_limit
+  )
+
   private val profileDataProvider: DataProvider<Profile> by lazy {
     profileManagementController.getProfile(profileId)
   }
@@ -137,7 +141,7 @@ class HomeViewModel(
       // TODO(#936): Optimise this as part of recommended stories.
       ongoingStoryList.olderStoryList
     }
-    return storyList.take(R.integer.promoted_story_list_limit)
+    return storyList.take(promotedStoryListLimit)
       .map { promotedStory ->
         PromotedStoryViewModel(
           activity,
