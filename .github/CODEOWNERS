@@ -53,7 +53,7 @@ gradlew.bat @BenHenning
 *Test.kt @anandwana001
 
 # All resource files.
-app/src/main/res/**/res/*.xml @rt4914
+app/src/main/res/**/*.xml @rt4914
 
 # Proguard configurations.
 *.pro @BenHenning
