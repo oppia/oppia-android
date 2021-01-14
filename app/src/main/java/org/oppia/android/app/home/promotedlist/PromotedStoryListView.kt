@@ -3,7 +3,6 @@ package org.oppia.android.app.home.promotedlist
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,7 +42,11 @@ class PromotedStoryListView @JvmOverloads constructor(
     snapHelper.attachToRecyclerView(this)
   }
 
-  /* Sets the list of promoted stories that this view shows to the learner. */
+  /**
+   * Sets the list of promoted stories that this view shows to the learner.
+   *
+   * @param newDataList the new list of stories to present
+   */
   fun setDataList(newDataList: List<PromotedStoryViewModel>) {
     // Update the adapter and the story list only if the list is new. The parent presenter should
     // not render promoted stories if the list is empty, but default to showing the last list.
@@ -73,13 +76,3 @@ class PromotedStoryListView @JvmOverloads constructor(
       ).build()
   }
 }
-
-/**
- * Sets the list of promoted items for a specific [PromotedStoryListView] to show to the learner
- * via data-binding.
- * */
-@BindingAdapter("dataList")
-fun setDataList(
-  promotedStoryListView: PromotedStoryListView,
-  newDataList: List<PromotedStoryViewModel>
-) = promotedStoryListView.setDataList(newDataList)
