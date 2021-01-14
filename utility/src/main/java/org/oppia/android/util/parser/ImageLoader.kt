@@ -1,7 +1,9 @@
 package org.oppia.android.util.parser
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.PictureDrawable
+import androidx.annotation.DrawableRes
 
 /**
  * [ImageTransformation] Represents transformations on an image.
@@ -42,8 +44,8 @@ interface ImageLoader {
    * Optional [transformations] may be applied to the image.
    */
   fun loadDrawable(
-    imageDrawable: Int,
-    target: ImageTarget<Bitmap>,
+    @DrawableRes imageDrawable: Int,
+    target: ImageTarget<Drawable>,
     transformations: List<ImageTransformation> = listOf()
   )
 }

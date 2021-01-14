@@ -26,8 +26,6 @@ import com.google.firebase.FirebaseApp
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import io.mockk.every
-import io.mockk.slot
 import kotlinx.android.synthetic.main.story_chapter_view.view.*
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
@@ -35,7 +33,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.spy
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.Captor
+import org.mockito.Mockito
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.R
@@ -53,6 +56,8 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.app.utility.anyOrNull
+import org.oppia.android.app.utility.capture
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -114,6 +119,9 @@ class StoryFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Captor
+  lateinit var listCaptor: ArgumentCaptor<List<ImageTransformation>>
 
   @get:Rule
   var activityTestRule: ActivityTestRule<StoryActivity> = ActivityTestRule(
@@ -335,19 +343,40 @@ class StoryFragmentTest {
           R.id.chapter_thumbnail
         )
       ).check { view, noViewFoundException ->
-        val intArg = slot<Int>()
-        val listArg = slot<List<ImageTransformation>>()
-        every {
-          view.chapter_thumbnail.imageLoader.loadDrawable(
-            capture(intArg),
-            any(),
-            capture(listArg)
-          )
-        }
-        assertThat(
-          intArg.captured == R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
+        Mockito.verify(view.chapter_thumbnail.imageLoader, times(2)).loadDrawable(
+          anyInt(),
+          anyOrNull(),
+          capture(listCaptor)
         )
-        assertThat((ImageTransformation.BLUR in listArg.captured))
+        assertThat(ImageTransformation.BLUR).isIn(listCaptor.value)
+      }
+    }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_chapterMissingPrerequisiteThumbnailIsBlurred() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          2,
+          R.id.chapter_thumbnail
+        )
+      ).check { view, noViewFoundException ->
+        Mockito.verify(view.chapter_thumbnail.imageLoader, times(2)).loadDrawable(
+          anyInt(),
+          anyOrNull(),
+          capture(listCaptor)
+        )
+        assertThat(ImageTransformation.BLUR).isIn(listCaptor.value)
       }
     }
   }
@@ -532,6 +561,6 @@ class StoryFragmentTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideMockLoader() = spy(ImageLoader::class.java)
+    fun provideMockLoader() = mock(ImageLoader::class.java)
   }
 }

@@ -2,6 +2,7 @@ package org.oppia.android.util.parser
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.PictureDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
@@ -18,19 +19,6 @@ class GlideImageLoader @Inject constructor(
   @CacheAssetsLocally private val cacheAssetsLocally: Boolean,
   private val assetRepository: AssetRepository
 ) : ImageLoader {
-
-  /**
-   * Converts List of [ImageTransformation] enums to the Array of Glide [Transformation]s.
-   */
-  fun convertImageTransformationToGlideTransofmation(
-    transformations: List<ImageTransformation>
-  ): Array<Transformation<Bitmap>> {
-    return transformations.map {
-      when (it) {
-        ImageTransformation.BLUR -> BlurTransformation(context)
-      }
-    }.toTypedArray()
-  }
 
   override fun loadBitmap(
     imageUrl: String,
@@ -77,11 +65,11 @@ class GlideImageLoader @Inject constructor(
 
   override fun loadDrawable(
     imageDrawable: Int,
-    target: ImageTarget<Bitmap>,
+    target: ImageTarget<Drawable>,
     transformations: List<ImageTransformation>
   ) {
     Glide.with(context)
-      .asBitmap()
+      .asDrawable()
       .load(imageDrawable)
       .transform(*convertImageTransformationToGlideTransofmation(transformations))
       .intoTarget(target)
@@ -92,5 +80,15 @@ class GlideImageLoader @Inject constructor(
       is CustomImageTarget -> into(target.customTarget)
       is ImageViewTarget -> into(target.imageView)
     }
+  }
+
+  private fun convertImageTransformationToGlideTransofmation(
+    transformations: List<ImageTransformation>
+  ): Array<Transformation<Bitmap>> {
+    return transformations.map {
+      when (it) {
+        ImageTransformation.BLUR -> BlurTransformation(context)
+      }
+    }.toTypedArray()
   }
 }
