@@ -21,7 +21,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import java.util.Date
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -31,6 +31,11 @@ private const val ONE_WEEK_IN_DAYS = 7
 private const val ONE_DAY_IN_MS = 24 * 60 * 60 * 1000
 
 private const val TOPIC_BG_COLOR = "#C6DCDA"
+
+private const val CHAPTER_BG_COLOR_1 = "#F8BF74"
+private const val CHAPTER_BG_COLOR_2 = "#D68F78"
+private const val CHAPTER_BG_COLOR_3 = "#8EBBB6"
+private const val CHAPTER_BG_COLOR_4 = "#B3D8F1"
 
 const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 const val TEST_TOPIC_ID_1 = "test_topic_id_1"
@@ -418,69 +423,69 @@ internal fun createStoryThumbnail5(): LessonThumbnail {
 internal fun createChapterThumbnail0(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-    .setBackgroundColorRgb(0xa5d3ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
     .build()
 }
 
 internal fun createChapterThumbnail1(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(0xf7bf73)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
 
 internal fun createChapterThumbnail2(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.PERSON_WITH_PIE_CHART)
-    .setBackgroundColorRgb(0xd3a5ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_3))
     .build()
 }
 
 internal fun createChapterThumbnail3(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
-    .setBackgroundColorRgb(0xa5d3ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_4))
     .build()
 }
 
 internal fun createChapterThumbnail4(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(0xa5ecd3)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
     .build()
 }
 
 internal fun createChapterThumbnail5(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(0xd3a5ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
 
 internal fun createChapterThumbnail6(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(0xd325ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_3))
     .build()
 }
 
 internal fun createChapterThumbnail7(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.PERSON_WITH_PIE_CHART)
-    .setBackgroundColorRgb(0xd985ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_4))
     .build()
 }
 
 internal fun createChapterThumbnail8(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(0xd3aa2c)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
     .build()
 }
 
 internal fun createChapterThumbnail9(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-    .setBackgroundColorRgb(0xd3a67ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
