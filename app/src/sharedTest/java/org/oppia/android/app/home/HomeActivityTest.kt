@@ -131,6 +131,7 @@ class HomeActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
+    profileTestHelper.addLongNameProfile()
   }
 
   @After
