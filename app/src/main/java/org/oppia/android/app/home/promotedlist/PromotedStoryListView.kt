@@ -14,6 +14,8 @@ import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.shim.ViewComponentFactory
 import javax.inject.Inject
 
+const val PROMOTED_STORY_LIST_VIEW_TAG = "PromotedStoryListView"
+
 /**
  * A custom [RecyclerView] for displaying a variable list of promoted lesson stories that snaps to
  * a fixed position when being scrolled.
@@ -23,7 +25,6 @@ class PromotedStoryListView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
-  private val TAG = "PromotedStoryListView"
 
   @Inject
   lateinit var bindingInterface: ViewBindingShim
@@ -52,13 +53,13 @@ class PromotedStoryListView @JvmOverloads constructor(
     // check for the adapter; when using an existing [RecyclerViewBindingAdapter] there is no reliable
     // way to check that the adapter is created.
     // This ensures that the adapter will only be created once and correctly rebinds the data.
-    // For more context:  https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462
+    // For more context: https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462
     if (adapter == null) {
       adapter = createAdapter()
     }
 
     if (newDataList == null || newDataList.isEmpty()) {
-      Log.w(TAG, ": failed to resolve new story list data")
+      Log.w(PROMOTED_STORY_LIST_VIEW_TAG, ": failed to resolve new story list data")
     } else {
       // Only re-bind and display the data if it's a valid list of promoted items for learners
       (adapter as BindableAdapter<PromotedStoryViewModel>).setDataUnchecked(newDataList)
