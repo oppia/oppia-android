@@ -144,13 +144,9 @@ LICENSE @BenHenning
 #                                  testing module                                   #
 #####################################################################################
 
-# Global testing module code ownership (secondary).
-/testing/**/*.kt @anandwana001
-/testing/**/*.java @anandwana001
-
-# Global testing module code ownership (primary).
-/testing/**/*.kt @BenHenning
-/testing/**/*.java @BenHenning
+# Global testing module code ownership.
+/testing/**/*.kt @anandwana001 @BenHenning
+/testing/**/*.java @anandwana001 @BenHenning
 
 #####################################################################################
 #                                    data module                                    #
@@ -192,8 +188,5 @@ LICENSE @BenHenning
 # Global proto file ownership (for protos outside the model directory since all protos should belong in models).
 *.proto @BenHenning @vinitamurthi
 
-# Global model ownership (secondary).
-/model/ @vinitamurthi
-
-# Global model ownership (primary).
-/model/ @BenHenning
+# Global model ownership.
+/model/ @vinitamurthi @BenHenning
