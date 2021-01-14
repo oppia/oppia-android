@@ -17,7 +17,6 @@ on:
 jobs:
   linters:
     name: Lint Tests
-    if: "false"
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -48,7 +47,6 @@ jobs:
      
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
-    if: "false"
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -106,7 +104,6 @@ jobs:
   
   app_tests:
     name: Robolectric Tests - App Module (Non-Flaky)
-    if: "false"
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -137,7 +134,6 @@ jobs:
 
   bazel_build_app:
     name: Build Binary with Bazel
-    if: "false"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
