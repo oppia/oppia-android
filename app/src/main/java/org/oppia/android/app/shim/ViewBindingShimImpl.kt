@@ -37,7 +37,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     attachToParent: Boolean
   ): View {
     return PromotedStoryCardBinding.inflate(
-      LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+      LayoutInflater.from(parent.context), parent, attachToParent
     ).root
   }
 

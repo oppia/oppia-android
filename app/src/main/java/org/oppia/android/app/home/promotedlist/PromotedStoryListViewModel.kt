@@ -10,10 +10,6 @@ import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import java.util.Objects
 
-enum class PromotedActivityType {
-  RECENTLY_PLAYED
-}
-
 /** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
 class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
@@ -31,12 +27,6 @@ class PromotedStoryListViewModel(
     if (promotedStoryList.size > 1)
       activity.resources.getDimensionPixelSize(R.dimen.home_padding_end)
     else activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
-
-  /** Returns the type of PromotedActivity shown to the learner. */
-  fun getListType(): PromotedActivityType {
-    // TODO: Update this when more activity types are implemented.
-    return PromotedActivityType.RECENTLY_PLAYED
-  }
 
   /** Determines and returns the visibility for the "View All" button. */
   fun getButtonVisibility(): Int {
