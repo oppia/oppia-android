@@ -643,12 +643,13 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onScrollDown_promotedStoryListViewStillShows() {
-    // This test is to catch a bug introduced and then fixed in #2246.
+    // This test is to catch a bug introduced and then fixed in #2246
+    // (see https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462)
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = createProfileId(internalProfileId),
       timestampOlderThanAWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 6)
 
