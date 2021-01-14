@@ -341,6 +341,13 @@ class HomeActivityTest {
           withText(R.string.recently_played_stories)
         )
       )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText("Good morning,")))
     }
   }
 
@@ -356,6 +363,13 @@ class HomeActivityTest {
           withText(R.string.view_all)
         )
       )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText("Good afternoon,")))
     }
   }
 
@@ -402,6 +416,31 @@ class HomeActivityTest {
           withText(containsString("First Story"))
         )
       )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText("Good evening,")))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysWelcomeMessageCorrectly() {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(withText("Admin!")))
     }
   }
 
