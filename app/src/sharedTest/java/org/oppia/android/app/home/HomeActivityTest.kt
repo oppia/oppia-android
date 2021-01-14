@@ -485,7 +485,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_allTopicsCompleted_hidesPromotedStories() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      getProfileId(internalProfileId),
+      profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
@@ -504,7 +504,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_partialProgressForFractionsAndRatios_showsRecentlyPlayedStories() {
-    val profileId = getProfileId(internalProfileId)
+    val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId = profileId,
       timestampOlderThanAWeek = false
@@ -528,7 +528,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicsHeader() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      profileId = getProfileId(internalProfileId),
+      profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
@@ -546,7 +546,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicCards() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      profileId = getProfileId(internalProfileId),
+      profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
@@ -563,7 +563,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_noTopicsCompleted_displaysAllTopicsHeader() {
     // Only new users will have no progress for any topics.
-    profileTestHelper.loginToNewUser()
+    profileTestHelper.logIntoNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -575,36 +575,59 @@ class HomeActivityTest {
     }
   }
 
+  @Config(qualifiers = "port")
   @Test
-  fun testHomeActivity_noTopicsStarted_displaysAllTopicCardsInPortrait() {
+  fun testHomeActivity_noTopicsStarted_mobilePortraitDisplaysTopicsIn2Columns() {
     // Only new users will have no progress for any topics.
-    profileTestHelper.loginToNewUser()
+    profileTestHelper.logIntoNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view)).check(
-        // The "All Topics" section currently should display all four test topics in two rows.
         hasGridColumnCount(expectedColumnCount = 2)
       )
     }
   }
 
+  @Config(qualifiers = "land")
   @Test
-  fun testHomeActivity_noTopicsStarted_displaysAllTopicCardsInLandscape() {
+  fun testHomeActivity_noTopicsStarted_mobileLandspaceDisplaysTopicsIn3Columns() {
     // Only new users will have no progress for any topics.
-    profileTestHelper.loginToNewUser()
+    profileTestHelper.logIntoNewUser()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 3)
+      onView(withId(R.id.home_recycler_view)).check(
+        hasGridColumnCount(expectedColumnCount = 3)
+      )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testHomeActivity_noTopicsStarted_tabletPortraitDisplaysTopicsIn3Columns() {
+    // Only new users will have no progress for any topics.
+    profileTestHelper.logIntoNewUser()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 3)
+      onView(withId(R.id.home_recycler_view)).check(
+        hasGridColumnCount(expectedColumnCount = 3)
+      )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testHomeActivity_noTopicsStarted_tabletLandscapeDisplaysTopicsIn4Columns() {
+    // Only new users will have no progress for any topics.
+    profileTestHelper.logIntoNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 3)
-      var rowsUsed = 2
-      if (context.resources.getBoolean(R.bool.isTablet)) {
-        // A landscape tablet can display the four test topics in one row.
-        rowsUsed = 1
-      }
       onView(withId(R.id.home_recycler_view)).check(
-        // The "All Topics" section currently should display all four test topics.
-        hasGridColumnCount(expectedColumnCount = rowsUsed)
+        hasGridColumnCount(expectedColumnCount = 4)
       )
     }
   }
@@ -649,7 +672,7 @@ class HomeActivityTest {
     ).check(matches(withText(stringToMatch)))
   }
 
-  private fun getProfileId(internalProfileId: Int): ProfileId {
+  private fun createProfileId(internalProfileId: Int): ProfileId {
     return ProfileId.newBuilder().setInternalId(internalProfileId).build()
   }
 
