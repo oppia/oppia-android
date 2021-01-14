@@ -53,23 +53,31 @@ gradlew.bat @BenHenning
 *Test.kt @anandwana001
 
 # All resource files.
-app/src/main/res/**/*.xml @rt4914
+res/**/*.xml @rt4914
+res/**/*.png @rt4914
 
-# Proguard configurations.
+# Proguard configuration.
 *.pro @BenHenning
 
 # Lesson assets.
 /domain/src/main/assets/ @BenHenning @rt4914
 
-# Android manifests.
+# Android manifests and top-level app configuration.
 *Manifest.xml @BenHenning
+/app/src/main/ic_launcher-web.png @BenHenning
 
-# Linter configurations.
+# Linter configuration.
 buf.yaml @anandwana001
 
 # IDEA IDE configuration.
 .editorconfig @BenHenning
 /.idea/ @BenHenning
+
+# Robolectric configuration.
+robolectric.properties @BenHenning
+
+# Firebase configuration.
+/app/google-services.json @BenHenning
 
 # Important codebase files.
 LICENSE @BenHenning
@@ -150,6 +158,7 @@ LICENSE @BenHenning
 # Global data module code ownership.
 /data/**/*.kt @BenHenning
 /data/**/*.java @BenHenning
+/data/src/test/**/*.json @BenHenning
 
 #####################################################################################
 #                                  utility module                                   #
