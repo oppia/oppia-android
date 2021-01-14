@@ -3,6 +3,9 @@ package org.oppia.android.app.home
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.text.Layout
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -11,11 +14,14 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.TypeSafeMatcher
+import org.hamcrest.core.IsNot.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -32,6 +38,7 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HomeInjectionActivity
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -222,8 +229,9 @@ class HomeActivityTest {
 //    }
 //  }
 
+  @Config(qualifiers = "port-mdpi")
   @Test
-  fun testHomeActivity_recyclerViewIndex0_longProfileName_displaysWelcomeMessageCorrectly() {
+  fun testHomeActivity_phonePort_longProfileName_displaysWelcomeMessageCorrectly() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).perform(
@@ -235,7 +243,63 @@ class HomeActivityTest {
           0,
           R.id.profile_name_textview
         )
-      ).check(matches(withText("$LONG_PROFILE_NAME!")))
+      ).check(matches(not(isEllipsized())))
+    }
+  }
+
+  @Config(qualifiers = "land-mdpi")
+  @Test
+  fun testHomeActivity_phoneLand_longProfileName_displaysWelcomeMessageCorrectly() {
+    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(not(isEllipsized())))
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testHomeActivity_tabletPort_longProfileName_displaysWelcomeMessageCorrectly() {
+    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(not(isEllipsized())))
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testHomeActivity_tabletLand_longProfileName_displaysWelcomeMessageCorrectly() {
+    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(not(isEllipsized())))
     }
   }
 
@@ -544,6 +608,27 @@ class HomeActivityTest {
 
   private fun createHomeActivityIntent(profileId: Int): Intent {
     return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
+  }
+
+  private fun isEllipsized() = object : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description) {
+      description.appendText("with ellipsized text")
+    }
+
+    override fun matchesSafely(view: View): Boolean {
+      if (view !is TextView) {
+        return false
+      }
+      val textView: TextView = view
+      val layout: Layout = textView.layout
+      val lineCount = layout.lineCount
+      if (lineCount > 0) {
+        if (layout.getEllipsisCount(lineCount - 1) > 0) {
+          return true
+        }
+      }
+      return false
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
