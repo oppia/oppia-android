@@ -48,6 +48,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridColumnCount
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HomeInjectionActivity
 import org.oppia.android.app.topic.TopicActivity
@@ -637,6 +638,23 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).check(
         hasGridItemCount(spanCount = 1, position = 3)
       )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_onScrollDown_promotedStoryListViewStillShows() {
+    // This test is to catch a bug introduced and then fixed in #2246.
+    storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
+      profileId = createProfileId(internalProfileId),
+      timestampOlderThanAWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 6)
+
+      scrollToPosition(position = 0)
+      onView(withId(R.id.promoted_story_list_recycler_view))
+        .check(hasItemCount(count = 3))
     }
   }
 

@@ -64,6 +64,7 @@ import javax.inject.Singleton
   manifest = Config.NONE
 )
 class PromotedStoryViewModelTest {
+
   @Inject
   lateinit var context: Context
 
