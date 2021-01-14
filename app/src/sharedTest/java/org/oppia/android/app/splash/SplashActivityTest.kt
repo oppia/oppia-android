@@ -18,7 +18,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import org.junit.After
@@ -74,7 +73,8 @@ import org.robolectric.annotation.LooperMode
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -241,7 +241,6 @@ class SplashActivityTest {
   private fun initializeTestApplication() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
-    FirebaseApp.initializeApp(context)
     setAutoAppExpirationEnabled(enabled = false) // Default to disabled.
   }
 
