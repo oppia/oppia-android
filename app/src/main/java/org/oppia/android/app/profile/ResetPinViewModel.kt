@@ -8,6 +8,7 @@ import javax.inject.Inject
 /** The ViewModel for [ResetPinDialogFragment]. */
 @FragmentScope
 class ResetPinViewModel @Inject constructor() : ObservableViewModel() {
+  val name = ObservableField("")
   val inputPin = ObservableField("")
   val errorMessage = ObservableField("")
 }

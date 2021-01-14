@@ -127,8 +127,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markPartialStoryProgressForFractions_getTopicIsCorrect() {
     storyProgressTestHelper.markPartialStoryProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -150,8 +150,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markPartialStoryProgressForFractions_getStoryIsCorrect() {
     storyProgressTestHelper.markPartialStoryProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -172,8 +172,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markPartialStoryProgressForFractions_getOngoingTopicListIsCorrect() {
     storyProgressTestHelper.markPartialStoryProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -192,8 +192,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markPartialStoryProgressForFractions_getCompletedStoryListIsCorrect() {
     storyProgressTestHelper.markPartialStoryProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -210,8 +210,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markPartialTopicProgressForFractions_getTopicIsCorrect() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -233,8 +233,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markPartialTopicProgressForFractions_getStoryIsCorrect() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -255,8 +255,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markPartialTopicProgressForFractions_getOngoingTopicListIsCorrect() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -275,8 +275,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markPartialTopicProgressForFractions_getCompletedStoryListIsCorrect() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -293,8 +293,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullStoryProgressForFractions_getTopicIsCorrect() {
     storyProgressTestHelper.markFullStoryProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -316,8 +316,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullStoryProgressForFractions_getStoryIsCorrect() {
     storyProgressTestHelper.markFullStoryProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -336,8 +336,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullStoryProgressForFractions_getOngoingTopicListIsCorrect() {
     storyProgressTestHelper.markFullStoryProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -355,8 +355,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullStoryProgressForFractions_getCompletedStoryListIsCorrect() {
     storyProgressTestHelper.markFullStoryProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -374,8 +374,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullTopicProgressForFractions_getTopicIsCorrect() {
     storyProgressTestHelper.markFullTopicProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -397,8 +397,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullTopicProgressForFractions_getStoryIsCorrect() {
     storyProgressTestHelper.markFullTopicProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -417,8 +417,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullTopicProgressForFractions_getOngoingTopicListIsCorrect() {
     storyProgressTestHelper.markFullTopicProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -436,8 +436,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullTopicProgressForFractions_getCompletedStoryListIsCorrect() {
     storyProgressTestHelper.markFullTopicProgressForFractions(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -455,8 +455,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullStoryPartialTopicProgressForRatios_getTopicIsCorrect() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -483,8 +483,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullStoryPartialTopicProgressForRatios_getStoryIsCorrect() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -503,8 +503,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullProgressForAllTopicsMoreThanOneWeek_ongoingTopicListEmpty() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      profileId,
-      /* timestampOlderThanOneWeek= */ true
+      profileId = profileId,
+      timestampOlderThanOneWeek = true
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -522,8 +522,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullProgressForAllTopicsLessThanOneWeek_ongoingTopicListEmpty() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      profileId,
-      /* timestampOlderThanOneWeek= */ false
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -541,8 +541,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_fullProgressAllTopicsMoreThanOneWk_completedStoryListHasSixStories() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      profileId,
-      /* timestampOlderThanOneWeek= */ true
+      profileId = profileId,
+      timestampOlderThanOneWeek = true
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -559,8 +559,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_fullProgressAllTopicsLessThanOneWk_completedStoryListHasSixStories() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      profileId,
-      /* timestampOlderThanOneWeek= */ false
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -577,8 +577,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullProgressForAllTopicsMoreThanOneWeek_topicListHasFourStories() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      profileId,
-      /* timestampOlderThanOneWeek= */ true
+      profileId = profileId,
+      timestampOlderThanOneWeek = true
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -595,8 +595,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullProgressForAllTopicsLessThanOneWeek_topicListHasFourStories() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      profileId,
-      /* timestampOlderThanOneWeek= */ false
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -613,8 +613,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markPartialTopicProgressForRatios_getOngoingTopicListIsCorrect() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -633,8 +633,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markPartialTopicProgressForRatios_getCompletedStoryListIsCorrect() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -652,8 +652,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markTwoPartialStoryProgressForRatios_getTopicIsCorrect() {
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -679,8 +679,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markTwoPartialStoryProgressForRatios_getStoryIsCorrect() {
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -702,8 +702,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markTwoPartialStoryProgressForRatios_getOngoingTopicListIsCorrect() {
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -722,8 +722,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markTwoPartialStoryProgressForRatios_getCompletedStoryListIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -740,8 +740,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markRecentlyPlayed_fractionsStory0Exp0_recentlyPlayedStoryListIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -765,8 +765,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markRecentlyPlayed_ratiosStory0Exp0_getRecommendedActivityListIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -790,8 +790,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markRecentlyPlayed_ratiosStory0Exp0AndStory1Exp2_storyListIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0AndStory1Exploration2(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -846,8 +846,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markRecentlyPlayedfirstExpInAllFracRatio_asOldStories_olderPlayedStoryListCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
-      profileId,
-      /* timestampOlderThanAWeek= */ true
+      profileId = profileId,
+      timestampOlderThanAWeek = true
     )
     testCoroutineDispatchers.runCurrent()
 

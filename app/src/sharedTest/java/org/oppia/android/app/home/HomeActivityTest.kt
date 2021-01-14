@@ -124,7 +124,8 @@ class HomeActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val internalProfileId: Int = 1
+  private val internalProfileId: Int = 0
+  private val internalProfileId1: Int = 1
   private lateinit var oppiaClock: OppiaClock
 
   @Before
@@ -154,99 +155,79 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_withAdminProfile_profileNameDisplayedSuccessfully() {
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+  fun testHomeActivity_withAdminProfile_profileNameIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+      scrollToPosition(position = 0)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.profile_name_textview,
+        stringToMatch = "Admin!"
       )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.profile_name_textview
-        )
-      ).check(matches(withText("Admin!")))
     }
   }
 
   @Test
-  fun testHomeActivity_withAdminProfile_configChange_profileNameDisplayedSuccessfully() {
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+  fun testHomeActivity_withAdminProfile_configChange_profileNameIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+      scrollToPosition(position = 0)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.profile_name_textview,
+        stringToMatch = "Admin!"
       )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.profile_name_textview
-        )
-      ).check(matches(withText("Admin!")))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() { // ktlint-disable max-line-length
+  fun testHomeActivity_morningTimestamp_goodMorningMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+      scrollToPosition(position = 0)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.welcome_text_view,
+        stringToMatch = "Good morning,"
       )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Good morning,")))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() { // ktlint-disable max-line-length
+  fun testHomeActivity_afternoonTimestamp_goodAfternoonMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+      scrollToPosition(position = 0)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.welcome_text_view,
+        stringToMatch = "Good afternoon,"
       )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Good afternoon,")))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() { // ktlint-disable max-line-length
+  fun testHomeActivity_eveningTimestamp_goodEveningMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+      scrollToPosition(position = 0)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.welcome_text_view,
+        stringToMatch = "Good evening,"
       )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Good evening,")))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_displaysRecentlyPlayedStoriesText() {
+  fun testHomeActivity_recentlyPlayedStoriesTextIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
@@ -255,27 +236,19 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          1,
-          R.id.recently_played_stories_text_view
-        )
-      ).check(
-        matches(
-          withText(R.string.recently_played_stories)
-        )
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.recently_played_stories)
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_displaysViewAllText() {
+  fun testHomeActivity_viewAllTextIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
@@ -284,15 +257,13 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).check(
-        matches(
-          withText(R.string.view_all)
-        )
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.view_all_text_view,
+        stringToMatch = context.getString(R.string.view_all)
       )
     }
   }
@@ -422,7 +393,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensRecentlyPlayedActivity() {
+  fun testHomeActivity_clickViewAll_opensRecentlyPlayedActivity() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
@@ -431,14 +402,14 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
+      scrollToPosition(position = 1)
       onView(
         atPositionOnView(
-          R.id.home_recycler_view, 1, R.id.view_all_text_view
+          R.id.home_recycler_view,
+          1,
+          R.id.view_all_text_view
         )
       ).perform(click())
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
@@ -446,7 +417,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_promotedCard_chapterNameIsCorrect() {
+  fun testHomeActivity_promotedCard_chapterNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
@@ -455,7 +426,7 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
@@ -475,7 +446,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
+  fun testHomeActivity_promotedCard_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
@@ -484,21 +455,19 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
-        matches(
-          withText(containsString("Matthew Goes to the Bakery"))
-        )
+      scrollToPosition(position = 1)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.story_name_text_view,
+        stringToMatch = "Matthew Goes to the Bakery"
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_configurationChange_promotedCard_storyNameIsCorrect() {
+  fun testHomeActivity_configChange_promotedCard_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
@@ -507,23 +476,20 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
+      scrollToPosition(position = 1)
       onView(isRoot()).perform(orientationLandscape())
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view))
-        .check(
-          matches(
-            withText(containsString("Matthew Goes to the Bakery"))
-          )
-        )
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.story_name_text_view,
+        stringToMatch = "Matthew Goes to the Bakery"
+      )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
+  fun testHomeActivity_clickPromotedStory_opensTopicActivity() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
@@ -532,11 +498,9 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
+      scrollToPosition(position = 1)
       onView(
         allOf(
           withId(R.id.promoted_story_list_recycler_view),
@@ -553,7 +517,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_promotedCard_topicNameIsCorrect() {
+  fun testHomeActivity_promotedCard_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
@@ -562,132 +526,96 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+      scrollToPosition(position = 1)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Fractions"
       )
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view))
-        .check(
-          matches(
-            withText(containsString("Fractions"))
-          )
-        )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex3_topicSummary_topicNameIsCorrect() {
+  fun testHomeActivity_firstTestTopic_topicSummary_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
+      scrollToPosition(position = 3)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 3,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "First Test Topic"
       )
-      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view))
-        .check(
-          matches(
-            withText(containsString("First Test Topic"))
-          )
-        )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex3_topicSummary_lessonCountIsCorrect() {
+  fun testHomeActivity_fiveLessons_topicSummary_lessonCountIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 3)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 3,
+        targetViewId = R.id.lesson_count_text_view,
+        stringToMatch = "5 Lessons"
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_secondTestTopic_topicSummary_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          3, R.id.lesson_count_text_view
-        )
-      ).check(
-        matches(
-          withText(containsString("5 Lessons"))
-        )
+      scrollToPosition(position = 4)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 4,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Second Test Topic"
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex4_topicSummary_topicNameIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      timestampOlderThanAWeek = false
-    )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_oneLesson_topicSummary_lessonCountIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(4)
-      )
-      onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.topic_name_text_view))
-        .check(
-          matches(
-            withText(containsString("Second Test Topic"))
-          )
-        )
-    }
-  }
-
-  @Test
-  fun testHomeActivity_recyclerViewIndex4_topicSummary_lessonCountIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          3, R.id.lesson_count_text_view
-        )
-      ).check(
-        matches(
-          withText(containsString("1 Lesson"))
-        )
+      scrollToPosition(position = 3)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 3,
+        targetViewId = R.id.lesson_count_text_view,
+        stringToMatch = "1 Lesson"
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex4_topicSummary_configurationChange_lessonCountIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_oneLesson_topicSummary_configChange_lessonCountIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          3, R.id.lesson_count_text_view
-        )
-      ).check(
-        matches(
-          withText(containsString("1 Lesson"))
-        )
+      scrollToPosition(position = 3)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 3,
+        targetViewId = R.id.lesson_count_text_view,
+        stringToMatch = "1 Lesson"
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex3_clickTopicSummary_opensTopicActivity() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_clickTopicSummary_opensTopicActivity() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(2)
-      )
+      scrollToPosition(position = 2)
       onView(atPosition(R.id.home_recycler_view, 2)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
@@ -695,8 +623,8 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_onBackPressed_showsExitToProfileChooserDialog() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_onBackPressed_exitToProfileChooserDialogIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_message))
@@ -706,8 +634,9 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_onBackPressed_orientationChange_showsExitToProfileChooserDialog() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_onBackPressed_configChange_exitToProfileChooserDialogIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(isRoot()).perform(orientationLandscape())
@@ -718,8 +647,8 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_onBackPressed_clickExit_checkOpensProfileActivity() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_onBackPressed_clickExit_opensProfileActivity() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_exit))
@@ -731,7 +660,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_checkSpanForItem0_spanSizeIsTwoOrThree() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
         onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
@@ -743,15 +672,15 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_checkSpanForItem4_spanSizeIsOne() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
     }
   }
 
   @Test
-  fun testHomeActivity_configurationChange_checkSpanForItem4_spanSizeIsOne() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_configChange_checkSpanForItem4_spanSizeIsOne() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
@@ -761,16 +690,13 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_allTopicsCompleted_hidesPromotedStories() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      getProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
-
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
+      scrollToPosition(position = 1)
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -783,31 +709,23 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_partialProgressForFractionsAndRatios_showsRecentlyPlayedStories() {
+    val profileId = getProfileId(internalProfileId)
     storyProgressTestHelper.markPartialTopicProgressForFractions(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = profileId,
       timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
-
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          1,
-          R.id.recently_played_stories_text_view
-        )
-      ).check(
-        matches(
-          withText(R.string.recently_played_stories)
-        )
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.recently_played_stories)
       )
     }
   }
@@ -815,23 +733,17 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicsHeader() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = getProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(2)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          2,
-          R.id.all_topics_text_view
-        )
-      ).check(
-        matches(withText(R.string.all_topics))
+      scrollToPosition(position = 2)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 2,
+        targetViewId = R.id.all_topics_text_view,
+        stringToMatch = context.getString((R.string.all_topics))
       )
     }
   }
@@ -839,15 +751,13 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicCards() {
     storyProgressTestHelper.markFullProgressForAllTopics(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = getProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
-      )
+      scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view)).check(
         // The "All Topics" section currently should display the four test topics in two rows.
         hasGridColumnCount(2)
@@ -861,39 +771,91 @@ class HomeActivityTest {
     profileTestHelper.loginToNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          1,
-          R.id.all_topics_text_view
-        )
-      ).check(
-        matches(withText(R.string.all_topics))
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.all_topics_text_view,
+        stringToMatch = context.getString((R.string.all_topics))
       )
     }
   }
 
   @Test
-  fun testHomeActivity_noTopicsStarted_displaysAllTopicCards() {
+  fun testHomeActivity_noTopicsStarted_displaysAllTopicCardsInPortrait() {
     // Only new users will have no progress for any topics.
     profileTestHelper.loginToNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
-      )
+      scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view)).check(
-        // The "All Topics" section currently should display the four test topics in two rows.
-        hasGridColumnCount(2)
+        // The "All Topics" section currently should display all four test topics in two rows.
+        hasGridColumnCount(expectedColumnCount = 2)
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_noTopicsStarted_displaysAllTopicCardsInLandscape() {
+    // Only new users will have no progress for any topics.
+    profileTestHelper.loginToNewUser()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 3)
+      var rowsUsed = 2
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        // A landscape tablet can display the four test topics in one row.
+        rowsUsed = 1
+      }
+      onView(withId(R.id.home_recycler_view)).check(
+        // The "All Topics" section currently should display all four test topics.
+        hasGridColumnCount(expectedColumnCount = rowsUsed)
       )
     }
   }
 
   private fun createHomeActivityIntent(profileId: Int): Intent {
-    return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
+    return HomeActivity.createHomeActivity(context, profileId)
+  }
+
+  private fun scrollToPosition(position: Int) {
+    onView(withId(R.id.home_recycler_view)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        position
+      )
+    )
+  }
+
+  private fun verifyTextOnHomeListItemAtPosition(
+    itemPosition: Int,
+    targetViewId: Int,
+    stringToMatch: String
+  ) {
+    onView(
+      atPositionOnView(
+        R.id.home_recycler_view,
+        itemPosition,
+        targetViewId
+      )
+    ).check(matches(withText(containsString(stringToMatch))))
+  }
+
+  private fun verifyExactTextOnHomeListItemAtPosition(
+    itemPosition: Int,
+    targetViewId: Int,
+    stringToMatch: String
+  ) {
+    onView(
+      atPositionOnView(
+        R.id.home_recycler_view,
+        itemPosition,
+        targetViewId
+      )
+    ).check(matches(withText(stringToMatch)))
+  }
+
+  private fun getProfileId(internalProfileId: Int): ProfileId {
+    return ProfileId.newBuilder().setInternalId(internalProfileId).build()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

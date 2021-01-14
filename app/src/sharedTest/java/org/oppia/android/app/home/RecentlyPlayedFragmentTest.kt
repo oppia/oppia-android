@@ -159,7 +159,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_toolbarTitle_isDisplayedSuccessfully() {
+  fun testRecentlyPlayedTestActivity_toolbarTitleIsDisplayed() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -177,7 +177,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem0_doesNotShowSectionDivider() {
+  fun testRecentlyPlayedTestActivity_sectionDividerIsNotDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -207,7 +207,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem0_showsLastWeekSectionTitle() {
+  fun testRecentlyPlayedTestActivity_lastWeekSectionTitleIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -301,7 +301,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem1_storyNameIsCorrect() {
+  fun testRecentlyPlayedTestActivity_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -330,7 +330,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem1_topicNameIsCorrect() {
+  fun testRecentlyPlayedTestActivity_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -359,7 +359,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem1_lessonThumbnailIsCorrect() {
+  fun testRecentlyPlayedTestActivity_lessonThumbnailIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -388,7 +388,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem1_clickStory_intentsToExplorationActivity() {
+  fun testRecentlyPlayedTestActivity_clickStory_opensExplorationActivity() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -436,7 +436,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem2_showsLastMonthSectionTitle() {
+  fun testRecentlyPlayedTestActivity_lastMonthSectionTitleIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -465,7 +465,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem2_showsSectionDivider() {
+  fun testRecentlyPlayedTestActivity_sectionDividerIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -496,7 +496,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_changeConfiguration_toolbarTitle_isDisplayedSuccessfully() {
+  fun testRecentlyPlayedTestActivity_configChange_toolbarTitleIsDisplayed() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -512,7 +512,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem0_doesNotShowSectionDivider() { // ktlint-disable max-line-length
+  fun testRecentlyPlayedTestActivity_configChange_sectionDividerIsNotDisplayed() { // ktlint-disable max-line-length
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -540,7 +540,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem0_showsLastWeekSectionTitle() { // ktlint-disable max-line-length
+  fun testRecentlyPlayedTestActivity_configChange_lastWeekSectionTitleIsDisplayed() { // ktlint-disable max-line-length
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -570,7 +570,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem1_storyNameIsCorrect() {
+  fun testRecentlyPlayedTestActivity_configChange_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -600,7 +600,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem1_topicNameIsCorrect() {
+  fun testRecentlyPlayedTestActivity_configChange_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -630,7 +630,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem1_lessonThumbnailIsCorrect() { // ktlint-disable max-line-length
+  fun testRecentlyPlayedTestActivity_configChange_lessonThumbnailIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -660,7 +660,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem2_showsLastMonthSectionTitle() { // ktlint-disable max-line-length
+  fun testRecentlyPlayedTestActivity_configChange_lastMonthSectionTitleIsDisplayed() { // ktlint-disable max-line-length
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -748,7 +748,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_configurationChange_checkSpanForItem1_spanSizeIsOne() {
+  fun testRecentlyPlayedTestActivity_configChange_checkSpanForItem1_spanSizeIsOne() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -778,7 +778,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_configurationChange_checkSpanForItem3_spanSizeIsOne() {
+  fun testRecentlyPlayedTestActivity_configChange_checkSpanForItem3_spanSizeIsOne() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false

@@ -9,8 +9,8 @@ import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.PromotedActivityList
+import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.RecommendedStoryList
 import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.StorySummary
@@ -116,8 +116,8 @@ class TopicListController @Inject constructor(
   fun getPromotedActivityList(profileId: ProfileId): DataProvider<PromotedActivityList> {
     return storyProgressController.retrieveTopicProgressListDataProvider(profileId)
       .transformAsync(GET_RECOMMENDED_ACTIVITY_LIST_PROVIDER_ID) {
-        val recommendedActivityList = createRecommendedActivityList(it)
-        AsyncResult.success(recommendedActivityList)
+        val PromotedActivityList = createPromotedActivityList(it)
+        AsyncResult.success(PromotedActivityList)
       }
   }
 
@@ -216,7 +216,7 @@ class TopicListController @Inject constructor(
       .build()
   }
 
-  private fun createRecommendedActivityList(
+  private fun createPromotedActivityList(
     topicProgressList: List<TopicProgress>
   ): PromotedActivityList {
     val recommendedActivityListBuilder = PromotedActivityList.newBuilder()
@@ -224,7 +224,7 @@ class TopicListController @Inject constructor(
     if (topicProgressList.isNotEmpty()) {
       val recommendedStoryBuilder = RecommendedStoryList.newBuilder()
       // If initially only one topic is in progress populate combination of Ongoing story
-      // and Suggested stories.
+      // and Suggested stories
       if (topicProgressList.size == 1) {
         recommendedStoryBuilder.addAllSuggestedStory(
           createRecommendedStoryList(
@@ -298,8 +298,7 @@ class TopicListController @Inject constructor(
 
     sortedTopicProgressList.forEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
-      val sortedStoryList = topicProgress.storyProgressMap.toSortedMap()
-      sortedStoryList.values.forEach { storyProgress ->
+      topicProgress.storyProgressMap.values.forEach { storyProgress ->
         val storyId = storyProgress.storyId
         val story = topicController.retrieveStory(topic.topicId, storyId)
 

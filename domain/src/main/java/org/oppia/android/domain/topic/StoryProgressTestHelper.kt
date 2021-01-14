@@ -236,7 +236,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks full topic progress on SecondTestTopic for a particular profile.
+   * Marks full topic progress on the second test topic for a particular profile.
    *
    * @param profileId The profile we are setting topic progress for.
    * @param timestampOlderThanOneWeek If the timestamp for completing the topic is from more than
