@@ -126,7 +126,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
   private val congratulationsTextView: TextView?,
-  private val bannerConfettiView: KonfettiView?,
+  private val confettiView: KonfettiView?,
   private val canSubmitAnswer: ObservableField<Boolean>?,
   private val audioActivityId: String?,
   private val currentStateName: ObservableField<String>?,
@@ -185,10 +185,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val isSplitView = ObservableField<Boolean>(false)
 
   private val confettiColors = listOf(
+    R.color.confetti_red,
     R.color.confetti_yellow,
-    R.color.confetti_orange,
-    R.color.confetti_purple,
-    R.color.confetti_pink
+    R.color.confetti_evergreen,
+    R.color.confetti_blue
   )
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
@@ -436,13 +436,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   /** Shows a congratulations message due to the learner having submitted a correct answer. */
-  fun showCongratulationMessageOnCorrectAnswer() {
-    check(playerFeatureSet.showCongratulationsOnCorrectAnswer) {
+  fun showCelebrationOnCorrectAnswer() {
+    check(playerFeatureSet.showCelebrationOnCorrectAnswer) {
       "Cannot show congratulations message for assembler that doesn't support it"
     }
-    val confettiView = checkNotNull(bannerConfettiView) {
+    val confettiView = checkNotNull(confettiView) {
       "Expected non-null reference to banner confetti view"
     }
+    val textView = checkNotNull(congratulationsTextView) {
+      "Expected non-null reference to congratulations text view"
+    }
+
     confettiView.build()
       .addColors(
         confettiColors.map { ContextCompat.getColor(confettiView.context, it) }
@@ -458,15 +462,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
         Size(8), Size(8, 3f)
       )
       .setPosition(
-        bannerConfettiView.x + bannerConfettiView.width / 3,
-        bannerConfettiView.y + bannerConfettiView.height / 2
-//        R.dimen.state_fragment_banner_confetti_view_height.toFloat()
+        congratulationsTextView.x + congratulationsTextView.width / 3,
+        congratulationsTextView.y + congratulationsTextView.height / 2
       )
       .burst(50)
 
-    val textView = checkNotNull(congratulationsTextView) {
-      "Expected non-null reference to congratulations text view"
-    }
     textView.visibility = View.VISIBLE
 
     val fadeIn = AlphaAnimation(0f, 1f)
@@ -797,7 +797,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
-    private var bannerConfettiView: KonfettiView? = null
+    private var confettiView: KonfettiView? = null
     private var hasConversationView: Boolean = true
     private var canSubmitAnswer: ObservableField<Boolean>? = null
     private var audioActivityId: String? = null
@@ -1143,12 +1143,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     fun addCongratulationsForCorrectAnswers(
       congratulationsTextView: TextView,
-      bannerConfettiView: KonfettiView
+      confettiView: KonfettiView
     ): Builder {
       this.congratulationsTextView = congratulationsTextView
-      this.bannerConfettiView = bannerConfettiView
-      // TODO(jacqueli): showCongratulationsOnCorrectAnswer will update
-      featureSets += PlayerFeatureSet(showCongratulationsOnCorrectAnswer = true)
+      this.confettiView = confettiView
+      featureSets += PlayerFeatureSet(showCelebrationOnCorrectAnswer = true)
       return this
     }
 
@@ -1157,7 +1156,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     fun hasConversationView(hasConversationView: Boolean): Builder {
       this.hasConversationView = hasConversationView
-      featureSets += PlayerFeatureSet(showCongratulationsOnCorrectAnswer = true)
+      featureSets += PlayerFeatureSet(showCelebrationOnCorrectAnswer = true)
       return this
     }
 
@@ -1215,7 +1214,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         playerFeatureSet,
         fragment,
         congratulationsTextView,
-        bannerConfettiView,
+        confettiView,
         canSubmitAnswer,
         audioActivityId,
         currentStateName,
@@ -1276,7 +1275,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val forwardNavigation: Boolean = false,
     val replaySupport: Boolean = false,
     val returnToTopicNavigation: Boolean = false,
-    val showCongratulationsOnCorrectAnswer: Boolean = false,
+    val showCelebrationOnCorrectAnswer: Boolean = false,
     val hintsAndSolutionsSupport: Boolean = false,
     val supportAudioVoiceovers: Boolean = false,
     val conceptCardSupport: Boolean = false
@@ -1296,8 +1295,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         forwardNavigation = forwardNavigation || other.forwardNavigation,
         replaySupport = replaySupport || other.replaySupport,
         returnToTopicNavigation = returnToTopicNavigation || other.returnToTopicNavigation,
-        showCongratulationsOnCorrectAnswer = showCongratulationsOnCorrectAnswer ||
-          other.showCongratulationsOnCorrectAnswer,
+        showCelebrationOnCorrectAnswer = showCelebrationOnCorrectAnswer ||
+          other.showCelebrationOnCorrectAnswer,
         hintsAndSolutionsSupport = hintsAndSolutionsSupport || other.hintsAndSolutionsSupport,
         supportAudioVoiceovers = supportAudioVoiceovers || other.supportAudioVoiceovers,
         conceptCardSupport = conceptCardSupport || other.conceptCardSupport

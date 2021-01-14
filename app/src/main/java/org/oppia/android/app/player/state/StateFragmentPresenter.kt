@@ -104,7 +104,7 @@ class StateFragmentPresenter @Inject constructor(
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, entityType),
       binding.congratulationsTextView,
-      binding.bannerConfettiView
+      binding.confettiView
     )
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
@@ -222,7 +222,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
     congratulationsTextView: TextView,
-    bannerConfettiView: KonfettiView
+    confettiView: KonfettiView
   ): StatePlayerRecyclerViewAssembler {
     return builder
       .hasConversationView(hasConversationView)
@@ -234,7 +234,7 @@ class StateFragmentPresenter @Inject constructor(
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
       .addReturnToTopicSupport()
-      .addCongratulationsForCorrectAnswers(congratulationsTextView, bannerConfettiView)
+      .addCongratulationsForCorrectAnswers(congratulationsTextView, confettiView)
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(
         explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
