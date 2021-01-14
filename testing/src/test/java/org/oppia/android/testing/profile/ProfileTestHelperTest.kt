@@ -24,6 +24,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.Profile
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -182,7 +183,7 @@ class ProfileTestHelperTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class
+      TestDispatcherModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

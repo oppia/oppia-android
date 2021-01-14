@@ -19,8 +19,170 @@
 # be superseded by the relevant codeowners mentioned elsewhere in this file.
 # (Reference: https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners)
 
-/WORKSPACE @BenHenning
-*.bazel @BenHenning
+#####################################################################################
+#                                 Blanket ownership                                 #
+#####################################################################################
 
-# TODO(#2223): Remove this and replace with segmented ownership.
-* @BenHenning
+# Codeowners ownership (for adding/changing/removing code owners).
+.github/CODEOWNERS @oppia/owners
+
+# Bazel build files.
+WORKSPACE @BenHenning
+*.bzl @BenHenning
+*.bazel @BenHenning
+.bazelrc @BenHenning
+/tools/android/ @BenHenning
+
+# Gradle build files.
+*.gradle @BenHenning
+gradle.properties @BenHenning
+gradlew @BenHenning
+gradlew.bat @BenHenning
+/gradle/ @BenHenning
+
+# GitHub configuration files.
+.gitignore @BenHenning
+/.github/*.md @BenHenning
+/.github/ISSUE_TEMPLATE @BenHenning
+
+# CI configuration.
+/.github/workflows/ @BenHenning
+
+# All tests.
+*Test.kt @anandwana001
+
+# All resource files.
+/app/src/main/res/**/*.xml @rt4914
+/utility/src/main/res/**/*.xml @rt4914
+
+# Proguard configuration.
+*.pro @BenHenning
+
+# Lesson assets.
+/domain/src/main/assets/ @BenHenning @rt4914
+
+# Android manifests and top-level app configuration.
+*Manifest.xml @BenHenning
+
+# Linter configuration.
+buf.yaml @anandwana001
+
+# IDEA IDE configuration.
+.editorconfig @BenHenning
+/.idea/ @BenHenning
+
+# Robolectric configuration.
+*.properties @BenHenning
+
+# Firebase configuration.
+/app/google-services.json @BenHenning
+
+# Binary files.
+*.png @BenHenning
+
+# Important codebase files.
+LICENSE @BenHenning
+
+#####################################################################################
+#                                    app module                                     #
+#####################################################################################
+
+# Global app module code ownership.
+/app/**/*.kt @rt4914
+/app/**/*.java @rt4914
+
+# State players.
+/app/src/*/java/org/oppia/android/app/player/ @BenHenning
+
+# Bindable adapter utilities.
+/app/src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.kt @BenHenning
+/app/src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java @BenHenning
+/app/src/sharedTest/java/org/oppia/android/app/recyclerview/BindableAdapterTest.kt @BenHenning
+
+# Dagger configuration.
+/app/src/main/java/org/oppia/android/app/activity/ @BenHenning
+/app/src/main/java/org/oppia/android/app/application/ @BenHenning
+/app/src/main/java/org/oppia/android/app/fragment/ @BenHenning
+/app/src/main/java/org/oppia/android/app/view/ @BenHenning
+
+# Databinding adapters.
+/app/src/main/java/org/oppia/android/app/databinding/ @BenHenning
+
+# App deprecation functionality.
+/app/src/*/java/org/oppia/android/app/deprecation/ @BenHenning
+
+# Parsing functionality needed for interactions.
+/app/src/*/java/org/oppia/android/app/parser/ @BenHenning
+
+# Bazel/data-binding shims.
+/app/src/*/java/org/oppia/android/app/shim/ @BenHenning
+
+# Splash screen.
+/app/src/*/java/org/oppia/android/app/splash/ @BenHenning
+
+# View model infrastructure.
+/app/src/*/java/org/oppia/android/app/viewmodel/ @BenHenning
+
+# App testing infrastructure.
+/app/src/*/java/org/oppia/android/app/testing/ @anandwana001
+
+#####################################################################################
+#                                  domain module                                    #
+#####################################################################################
+
+# Global domain module code ownership.
+/domain/**/*.kt @BenHenning
+
+# Questions support.
+/domain/src/*/java/org/oppia/android/domain/question/ @vinitamurthi
+
+# Oppia logging support.
+/domain/src/main/java/org/oppia/android/domain/oppialogger/ @vinitamurthi
+
+#####################################################################################
+#                                  testing module                                   #
+#####################################################################################
+
+# Global testing module code ownership.
+/testing/**/*.kt @anandwana001 @BenHenning
+
+#####################################################################################
+#                                    data module                                    #
+#####################################################################################
+
+# Global data module code ownership.
+/data/**/*.kt @BenHenning
+/data/src/test/**/*.json @BenHenning
+
+#####################################################################################
+#                                  utility module                                   #
+#####################################################################################
+
+# Global utility module code ownership.
+/utility/**/*.kt @BenHenning
+
+# Accessibility utilities.
+/utility/src/*/java/org/oppia/android/util/accessibility/ @rt4914
+
+# Core logging infrastructure.
+/utility/src/*/java/org/oppia/android/util/logging/ @vinitamurthi
+
+# Miscellaneous statusbar UI utilities.
+/utility/src/*/java/org/oppia/android/util/statusbar/ @rt4914
+
+#####################################################################################
+#                                     scripts                                       #
+#####################################################################################
+
+# Global scripts code ownership.
+/scripts/ @anandwana001 @BenHenning
+
+#####################################################################################
+#                                      model                                        #
+#####################################################################################
+
+# Global proto file ownership (for protos outside the model directory since all protos should belong in models).
+*.proto @BenHenning @vinitamurthi
+
+# Global model ownership.
+/model/ @vinitamurthi @BenHenning

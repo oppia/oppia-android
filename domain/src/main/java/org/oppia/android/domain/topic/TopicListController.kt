@@ -12,6 +12,8 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicList
+import org.oppia.android.app.model.TopicPlayAvailability
+import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.domain.util.JsonAssetRetriever
@@ -30,8 +32,14 @@ private const val ONE_DAY_IN_MS = 24 * 60 * 60 * 1000
 
 private const val TOPIC_BG_COLOR = "#C6DCDA"
 
+private const val CHAPTER_BG_COLOR_1 = "#F8BF74"
+private const val CHAPTER_BG_COLOR_2 = "#D68F78"
+private const val CHAPTER_BG_COLOR_3 = "#8EBBB6"
+private const val CHAPTER_BG_COLOR_4 = "#B3D8F1"
+
 const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 const val TEST_TOPIC_ID_1 = "test_topic_id_1"
+const val TEST_TOPIC_ID_2 = "test_topic_id_2"
 const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
 const val SUBTOPIC_TOPIC_ID = 1
 const val SUBTOPIC_TOPIC_ID_2 = 2
@@ -114,7 +122,11 @@ class TopicListController @Inject constructor(
       .getJSONArray("topic_id_list")
     val topicListBuilder = TopicList.newBuilder()
     for (i in 0 until topicIdJsonArray.length()) {
-      topicListBuilder.addTopicSummary(createTopicSummary(topicIdJsonArray.optString(i)!!))
+      val topicSummary = createTopicSummary(topicIdJsonArray.optString(i)!!)
+      // Only include topics currently playable in the topic list.
+      if (topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW) {
+        topicListBuilder.addTopicSummary(topicSummary)
+      }
     }
     return topicListBuilder.build()
   }
@@ -134,12 +146,18 @@ class TopicListController @Inject constructor(
         .getJSONArray("node_titles")
         .length()
     }
+    val topicPlayAvailability = if (jsonObject.getBoolean("published")) {
+      TopicPlayAvailability.newBuilder().setAvailableToPlayNow(true).build()
+    } else {
+      TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
+    }
     return TopicSummary.newBuilder()
       .setTopicId(topicId)
       .setName(jsonObject.getString("topic_name"))
       .setVersion(jsonObject.optInt("version"))
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(createTopicThumbnail(jsonObject))
+      .setTopicPlayAvailability(topicPlayAvailability)
       .build()
   }
 
@@ -236,13 +254,19 @@ class TopicListController @Inject constructor(
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
     for (i in 0 until topicIdJsonArray.length()) {
-      recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[i].toString()))
+      createRecommendedStoryFromAssets(topicIdJsonArray[i].toString())?.let {
+        recommendedStories.add(it)
+      }
     }
     return recommendedStories
   }
 
-  private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory {
+  private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory? {
     val topicJson = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
+    if (!topicJson.getBoolean("published")) {
+      // Do not recommend unpublished topics.
+      return null
+    }
 
     val storyData = topicJson.getJSONArray("canonical_story_dicts")
     if (storyData.length() == 0) {
@@ -399,69 +423,69 @@ internal fun createStoryThumbnail5(): LessonThumbnail {
 internal fun createChapterThumbnail0(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-    .setBackgroundColorRgb(0xa5d3ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
     .build()
 }
 
 internal fun createChapterThumbnail1(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(0xf7bf73)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
 
 internal fun createChapterThumbnail2(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.PERSON_WITH_PIE_CHART)
-    .setBackgroundColorRgb(0xd3a5ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_3))
     .build()
 }
 
 internal fun createChapterThumbnail3(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
-    .setBackgroundColorRgb(0xa5d3ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_4))
     .build()
 }
 
 internal fun createChapterThumbnail4(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(0xa5ecd3)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
     .build()
 }
 
 internal fun createChapterThumbnail5(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(0xd3a5ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
 
 internal fun createChapterThumbnail6(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(0xd325ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_3))
     .build()
 }
 
 internal fun createChapterThumbnail7(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.PERSON_WITH_PIE_CHART)
-    .setBackgroundColorRgb(0xd985ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_4))
     .build()
 }
 
 internal fun createChapterThumbnail8(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(0xd3aa2c)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
     .build()
 }
 
 internal fun createChapterThumbnail9(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-    .setBackgroundColorRgb(0xd3a67ec)
+    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
