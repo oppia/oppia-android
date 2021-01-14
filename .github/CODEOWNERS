@@ -53,7 +53,6 @@ gradlew.bat @BenHenning
 
 # All resource files.
 /app/src/main/res/**/*.xml @rt4914
-/app/src/main/res/**/*.png @rt4914
 /utility/src/main/res/**/*.xml @rt4914
 
 # Proguard configuration.
@@ -64,7 +63,6 @@ gradlew.bat @BenHenning
 
 # Android manifests and top-level app configuration.
 *Manifest.xml @BenHenning
-/app/src/main/ic_launcher-web.png @BenHenning
 
 # Linter configuration.
 buf.yaml @anandwana001
@@ -78,6 +76,9 @@ buf.yaml @anandwana001
 
 # Firebase configuration.
 /app/google-services.json @BenHenning
+
+# Binary files.
+*.png @BenHenning
 
 # Important codebase files.
 LICENSE @BenHenning
