@@ -96,6 +96,7 @@
   <dimen name="feedback_item_exploration_view_padding_bottom">16dp</dimen>
   <dimen name="feedback_item_exploration_view_padding_top">16dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_start_profile_already_added">16dp</dimen>
+  <dimen name="profile_chooser_profile_view_margin_top_profile_already_added">0dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_end_profile_already_added">16dp</dimen>
   <dimen name="profile_chooser_profile_view_margin">16dp</dimen>
 
