@@ -27,10 +27,9 @@
 .github/CODEOWNERS @oppia/owners
 
 # Bazel build files.
-/WORKSPACE @BenHenning
+WORKSPACE @BenHenning
 *.bzl @BenHenning
 *.bazel @BenHenning
-BUILD @BenHenning
 .bazelrc @BenHenning
 /tools/android/ @BenHenning
 
@@ -75,7 +74,7 @@ buf.yaml @anandwana001
 /.idea/ @BenHenning
 
 # Robolectric configuration.
-robolectric.properties @BenHenning
+*.properties @BenHenning
 
 # Firebase configuration.
 /app/google-services.json @BenHenning
@@ -95,7 +94,7 @@ LICENSE @BenHenning
 /app/src/*/java/org/oppia/android/app/player/ @BenHenning
 
 # Bindable adapter utilities.
-/app/src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.java @BenHenning
+/app/src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.kt @BenHenning
 /app/src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java @BenHenning
 /app/src/sharedTest/java/org/oppia/android/app/recyclerview/BindableAdapterTest.kt @BenHenning
 
@@ -132,7 +131,6 @@ LICENSE @BenHenning
 
 # Global domain module code ownership.
 /domain/**/*.kt @BenHenning
-/domain/**/*.java @BenHenning
 
 # Questions support.
 /domain/src/*/java/org/oppia/android/domain/question/ @vinitamurthi
@@ -146,7 +144,6 @@ LICENSE @BenHenning
 
 # Global testing module code ownership.
 /testing/**/*.kt @anandwana001 @BenHenning
-/testing/**/*.java @anandwana001 @BenHenning
 
 #####################################################################################
 #                                    data module                                    #
@@ -154,7 +151,6 @@ LICENSE @BenHenning
 
 # Global data module code ownership.
 /data/**/*.kt @BenHenning
-/data/**/*.java @BenHenning
 /data/src/test/**/*.json @BenHenning
 
 #####################################################################################
@@ -163,7 +159,6 @@ LICENSE @BenHenning
 
 # Global utility module code ownership.
 /utility/**/*.kt @BenHenning
-/utility/**/*.java @BenHenning
 
 # Accessibility utilities.
 /utility/src/*/java/org/oppia/android/util/accessibility/ @rt4914
