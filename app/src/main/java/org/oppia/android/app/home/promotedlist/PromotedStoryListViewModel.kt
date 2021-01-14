@@ -10,6 +10,10 @@ import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import java.util.Objects
 
+enum class PromotedActivityType {
+  RECENTLY_PLAYED
+}
+
 /** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
 class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
@@ -27,6 +31,12 @@ class PromotedStoryListViewModel(
     if (promotedStoryList.size > 1)
       activity.resources.getDimensionPixelSize(R.dimen.home_padding_end)
     else activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
+
+  /** Returns the type of PromotedActivity shown to the learner. */
+  fun getListType(): PromotedActivityType {
+    // TODO: Update this when more activity types are implemented.
+    return PromotedActivityType.RECENTLY_PLAYED
+  }
 
   /** Determines and returns the visibility for the "View All" button. */
   fun getButtonVisibility(): Int {
@@ -51,12 +61,11 @@ class PromotedStoryListViewModel(
   }
 
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
-  // only rebinds data when the actual data values in the HomeViewModel data list changes rather than
-  // the ViewModel object.
+  // will only rebind when the actual data in the data list changes, rather than when the ViewModel
+  // object changes.
   override fun equals(other: Any?): Boolean {
-    return other is PromotedStoryListViewModel &&
-      other.promotedStoryList == this.promotedStoryList
+    return other is PromotedStoryListViewModel && other.promotedStoryList == this.promotedStoryList
   }
 
-  override fun hashCode() = Objects.hash(this.promotedStoryList)
+  override fun hashCode() = Objects.hash(promotedStoryList)
 }

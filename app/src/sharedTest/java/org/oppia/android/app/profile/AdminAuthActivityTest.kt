@@ -118,11 +118,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_inputCorrectPassword_opensAddProfileActivity() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADD_PROFILE.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
     ).use {
       onView(
@@ -143,11 +143,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddProfileActivity() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADD_PROFILE.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
     ).use {
       onView(
@@ -167,11 +167,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_inputCorrectPassword_opensAddAdministratorControlsActivity() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(
@@ -192,11 +192,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddAdministratorControlsActivity() { // ktlint-disable max-line-length
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(
@@ -216,11 +216,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_inputIncorrectPassword_checkError() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(
@@ -242,11 +242,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_inputIncorrectPassword_clickImeActionButton_checkError() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(
@@ -267,11 +267,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_checkErrorIsGone() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(
@@ -302,11 +302,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_clickImeActionButton_checkErrorIsGone() { // ktlint-disable max-line-length
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(
@@ -336,11 +336,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_buttonState_configurationChanged_buttonStateIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(
@@ -361,11 +361,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_openedFromAdminControls_configurationChanged_checkHeadingSubHeadingIsPreserved() { // ktlint-disable max-line-length
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(withId(R.id.admin_auth_heading_textview)).check(
@@ -412,11 +412,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_openedFromProfile_configurationChanged_checkHeadingSubHeadingIsPreserved() { // ktlint-disable max-line-length
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADD_PROFILE.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
     ).use {
       onView(withId(R.id.admin_auth_heading_textview)).check(
@@ -465,11 +465,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_inputText_configurationChanged_inputTextIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(
@@ -499,11 +499,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_inputIncorrectPasswordLandscape_checkError() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(
@@ -529,11 +529,11 @@ class AdminAuthActivityTest {
   fun testAdminAuthActivity_inputIncorrectPasswordLandscape_clickImeActionButton_checkError() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        internalProfileId,
-        -10710042,
-        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(
