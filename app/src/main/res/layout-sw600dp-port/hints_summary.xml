@@ -62,10 +62,10 @@
       app:isRotationAnimationClockwise="@{isListExpanded}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.766"
+      app:layout_constraintHorizontal_bias="0.7628"
       app:layout_constraintStart_toEndOf="@+id/hint_title"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.0"
+      app:layout_constraintVertical_bias="0.008"
       app:rotationAnimationAngle="@{180f}" />
 
     <TextView
@@ -75,9 +75,9 @@
       android:layout_height="wrap_content"
       android:layout_gravity="start"
       android:layout_marginStart="128dp"
-      android:layout_marginTop="40dp"
+      android:layout_marginTop="32dp"
       android:layout_marginEnd="128dp"
-      android:layout_marginBottom="16dp"
+      android:layout_marginBottom="28dp"
       android:orientation="vertical"
       android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}"
       app:layout_constraintBottom_toBottomOf="parent"
