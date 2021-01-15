@@ -19,7 +19,7 @@ import javax.inject.Inject
  * */
 class RecyclerViewScrollingActions @Inject constructor(
   val testCoroutineDispatchers: TestCoroutineDispatchers
-){
+) {
 
   /**
    * Performs scrolling action to particular RecyclerView at a required position

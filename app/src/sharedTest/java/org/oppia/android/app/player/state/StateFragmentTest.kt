@@ -1443,5 +1443,4 @@ class StateFragmentTest {
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
-
 }
