@@ -51,7 +51,6 @@ class OnboardingFragmentPresenter @Inject constructor(
     binding.onboardingSlideViewPager.registerOnPageChangeCallback(
       object : ViewPager2.OnPageChangeCallback() {
         override fun onPageScrollStateChanged(state: Int) {
-
         }
 
         override fun onPageScrolled(

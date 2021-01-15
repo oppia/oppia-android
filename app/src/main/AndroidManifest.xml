@@ -47,8 +47,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.onboarding.OnboardingActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" >
-    </activity>
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.ongoingtopiclist.OngoingTopicListActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
