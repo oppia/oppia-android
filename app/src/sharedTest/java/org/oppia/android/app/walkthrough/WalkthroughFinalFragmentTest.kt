@@ -107,11 +107,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-<<<<<<< HEAD
   fun testWalkthroughFinalFragment_topicSelected_topicTitle_firstTestTopic_isDisplayed() {
-=======
-  fun testWalkthroughFinal_recyclerViewIndex1_topicSelected_topicTitleIsCorrect() {
->>>>>>> 5e496ab61b9b984e5fe3120c9b6cb46fccf2491b
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -136,11 +132,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-<<<<<<< HEAD
   fun testWalkthroughFinalFragment_topicSelected_topicTitle_secondTestTopic_isDisplayed() {
-=======
-  fun testWalkthroughFinal_recyclerViewIndex2_topicSelected_topicTitleIsCorrect() {
->>>>>>> 5e496ab61b9b984e5fe3120c9b6cb46fccf2491b
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -165,11 +157,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-<<<<<<< HEAD
   fun testWalkthroughFinalFragment_topicTitle_secondTestTopic_isDisplayed() {
-=======
-  fun testWalkthroughFinal_recyclerViewIndex2_topicSelected_configChanged_topicTitleIsCorrect() {
->>>>>>> 5e496ab61b9b984e5fe3120c9b6cb46fccf2491b
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -201,11 +189,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-<<<<<<< HEAD
   fun testWalkthroughFinalFragment_yesNoButton_isDisplayed() {
-=======
-  fun testWalkthroughFinal_recyclerViewIndex1_topicSelected_yesNoButton_isDisplayedCorrectly() {
->>>>>>> 5e496ab61b9b984e5fe3120c9b6cb46fccf2491b
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -228,11 +212,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-<<<<<<< HEAD
   fun testWalkthroughFinalFragment_clickNoButton_worksCorrectly() {
-=======
-  fun testWalkthroughFinal_recyclerViewIndex1_topicSelected_clickNoButton_worksCorrectly() {
->>>>>>> 5e496ab61b9b984e5fe3120c9b6cb46fccf2491b
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
