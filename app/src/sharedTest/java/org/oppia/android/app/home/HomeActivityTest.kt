@@ -583,7 +583,7 @@ class HomeActivityTest {
     profileTestHelper.logIntoNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      verifyNumberOfGridColumns(columnCount = 2)
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
 
       scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view))
@@ -599,7 +599,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      verifyNumberOfGridColumns(columnCount = 3)
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
 
       scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view))
@@ -614,7 +614,7 @@ class HomeActivityTest {
     profileTestHelper.logIntoNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      verifyNumberOfGridColumns(columnCount = 3)
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
 
       scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view))
@@ -771,7 +771,7 @@ class HomeActivityTest {
     ).check(matches(withText(stringToMatch)))
   }
 
-  private fun verifyNumberOfGridColumns(columnCount: Int) {
+  private fun verifyHomeRecyclerViewHasGridColumnCount(columnCount: Int) {
     onView(withId(R.id.home_recycler_view)).check(hasGridColumnCount(columnCount))
   }
 

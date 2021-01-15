@@ -10,7 +10,6 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.shim.ViewComponentFactory
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 private const val PROMOTED_STORY_LIST_VIEW_TAG = "PromotedStoryListView"
@@ -27,9 +26,6 @@ class PromotedStoryListView @JvmOverloads constructor(
 
   @Inject
   lateinit var bindingInterface: ViewBindingShim
-
-  @Inject
-  lateinit var logger: ConsoleLogger
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -59,8 +55,7 @@ class PromotedStoryListView @JvmOverloads constructor(
     if (adapter == null) {
       adapter = createAdapter()
     }
-
-    (adapter as BindableAdapter<PromotedStoryViewModel>).setDataUnchecked(newDataList)
+    (adapter as BindableAdapter<*>).setDataUnchecked(newDataList)
   }
 
   private fun createAdapter(): BindableAdapter<PromotedStoryViewModel> {
