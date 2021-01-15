@@ -106,7 +106,11 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
+<<<<<<< HEAD
   fun testWalkthroughTopicListFragment_topicHeader_whatDoYouWantToLearn_IsCorrect() {
+=======
+  fun testWalkthroughTopicList_recyclerViewIndex0_topicHeader_topicHeaderIsCorrect() {
+>>>>>>> 5e496ab61b9b984e5fe3120c9b6cb46fccf2491b
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -126,7 +130,11 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
+<<<<<<< HEAD
   fun testWalkthroughTopicListFragment_topicCard_topicNameIsCorrect() {
+=======
+  fun testWalkthroughTopicList_recyclerViewIndex1_topicCard_topicNameIsCorrect() {
+>>>>>>> 5e496ab61b9b984e5fe3120c9b6cb46fccf2491b
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -152,7 +160,11 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
+<<<<<<< HEAD
   fun testWalkthroughTopicListFragment_topicCard_configChanged_topicNameIsCorrect() {
+=======
+  fun testWalkthroughTopicList_recyclerViewIndex1_topicCard_configChanged_topicNameIsCorrect() {
+>>>>>>> 5e496ab61b9b984e5fe3120c9b6cb46fccf2491b
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
