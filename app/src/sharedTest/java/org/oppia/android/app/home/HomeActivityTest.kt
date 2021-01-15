@@ -696,7 +696,7 @@ class HomeActivityTest {
     ).check(matches(withText(stringToMatch)))
   }
 
-  private fun verifyNumberOfGridColumns(columnCount: Int, ) {
+  private fun verifyNumberOfGridColumns(columnCount: Int) {
     onView(withId(R.id.home_recycler_view)).check(hasGridColumnCount(columnCount))
   }
 
