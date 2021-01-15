@@ -1,7 +1,7 @@
 package org.oppia.android.domain.topic
 
 import org.oppia.android.app.model.ProfileId
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
 private const val EIGHT_DAYS_IN_MS = 8 * 24 * 60 * 60 * 1000
@@ -412,6 +412,37 @@ class StoryProgressTestHelper @Inject constructor(
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_1,
       RATIOS_EXPLORATION_ID_2,
+      timestamp
+    )
+  }
+
+  /**
+   * Marks one explorations in each of the two two test topics as recently played for a particular profile.
+   *
+   * @param profileId The profile we are setting recently played for.
+   * @param timestampOlderThanOneWeek If the timestamp for the recently played story is more than a week ago.
+   */
+  fun markRecentlyPlayedForOneExplorationInTestTopics1And2(
+    profileId: ProfileId,
+    timestampOlderThanAWeek: Boolean
+  ) {
+    val timestamp = if (!timestampOlderThanAWeek) {
+      getCurrentTimestamp()
+    } else {
+      getOldTimestamp()
+    }
+    storyProgressController.recordRecentlyPlayedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      timestamp
+    )
+    storyProgressController.recordRecentlyPlayedChapter(
+      profileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_4,
       timestamp
     )
   }
