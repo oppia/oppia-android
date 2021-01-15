@@ -630,7 +630,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      verifyNumberOfGridColumns(columnCount = 4)
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 4)
 
       scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view))
