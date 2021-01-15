@@ -1,7 +1,3 @@
-/**
-Fix the naming, format and if there is any tweak. Not working properly on landscape mode
- */
-
 package org.oppia.android.app.onboarding
 
 import android.content.Context
