@@ -140,7 +140,7 @@ class WalkthroughWelcomeFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_checkProfileName_configurationChanged_isCorrect() {
+  fun testWalkthroughWelcomeFragment_checkProfileName_configChange_isCorrect() {
     launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
