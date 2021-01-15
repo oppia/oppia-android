@@ -15,7 +15,8 @@ private const val VIEW_TYPE_TITLE_TEXT = 1
 private const val VIEW_TYPE_STORY_ITEM = 2
 
 class OnboardingPagerAdapter(
-  val context: Context
+  val context: Context,
+  val onboardingSlideFinalViewModel: OnboardingSlideFinalViewModel
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -27,7 +28,7 @@ class OnboardingPagerAdapter(
           parent,
           false
         )
-        OnboardinSlideViewHolder(binding)
+        OnboardingSlideViewHolder(binding)
       }
       VIEW_TYPE_STORY_ITEM -> {
         val binding =
@@ -36,7 +37,7 @@ class OnboardingPagerAdapter(
             parent,
             false
           )
-        OnboardinSlideFinalViewHolder(binding)
+        OnboardingSlideFinalViewHolder(binding)
       }
       else -> throw IllegalArgumentException("Invalid view type: $viewType")
     }
@@ -59,25 +60,27 @@ class OnboardingPagerAdapter(
       VIEW_TYPE_TITLE_TEXT -> {
         val onboardingSlideViewModel =
           OnboardingSlideViewModel(context, ViewPagerSlide.getSlideForPosition(position))
-        (holder as OnboardinSlideViewHolder).bind(onboardingSlideViewModel)
+        (holder as OnboardingSlideViewHolder).bind(onboardingSlideViewModel)
       }
       VIEW_TYPE_STORY_ITEM -> {
-        (holder as OnboardinSlideFinalViewHolder).bind()
+        (holder as OnboardingSlideFinalViewHolder).bind(onboardingSlideFinalViewModel)
       }
     }
   }
 
-  private class OnboardinSlideViewHolder(
+  inner class OnboardingSlideViewHolder(
     private val binding: OnboardingSlideBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(onboardingSlideViewModel: OnboardingSlideViewModel) {
+    fun bind(onboardingSlideViewModel: OnboardingSlideViewModel) {
       binding.viewModel = onboardingSlideViewModel
     }
   }
 
-  private class OnboardinSlideFinalViewHolder(
-    binding: OnboardingSlideFinalBinding
+  inner class OnboardingSlideFinalViewHolder(
+    private val binding: OnboardingSlideFinalBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind() {}
+    fun bind(onboardingSlideFinalViewModel: OnboardingSlideFinalViewModel) {
+      binding.viewModel = onboardingSlideFinalViewModel
+    }
   }
 }

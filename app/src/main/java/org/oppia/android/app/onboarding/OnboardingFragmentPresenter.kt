@@ -45,7 +45,8 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager() {
-    val adapter = OnboardingPagerAdapter(fragment.requireContext())
+    val adapter =
+      OnboardingPagerAdapter(fragment.requireContext(), getOnboardingSlideFinalViewModel())
     binding.onboardingSlideViewPager.adapter = adapter
     binding.onboardingSlideViewPager.registerOnPageChangeCallback(
       object : ViewPager2.OnPageChangeCallback() {
