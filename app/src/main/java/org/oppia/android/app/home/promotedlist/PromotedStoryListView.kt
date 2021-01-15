@@ -51,7 +51,7 @@ class PromotedStoryListView @JvmOverloads constructor(
    *
    * @param newDataList the new list of stories to present
    */
-  fun setPromotedStoryList(@Nullable newDataList: List<PromotedStoryViewModel>) {
+  fun setPromotedStoryList(newDataList: List<PromotedStoryViewModel>) {
     // To reliably bind data only after the adapter is created, we manually set the data so we can first
     // check for the adapter; when using an existing [RecyclerViewBindingAdapter] there is no reliable
     // way to check that the adapter is created.
@@ -61,12 +61,7 @@ class PromotedStoryListView @JvmOverloads constructor(
       adapter = createAdapter()
     }
 
-    if (newDataList == null) {
-      logger.w(PROMOTED_STORY_LIST_VIEW_TAG, "Failed to resolve new story list data")
-    } else {
-      // Only re-bind and display the data if it's a valid list of promoted items for learners
-      (adapter as BindableAdapter<PromotedStoryViewModel>).setDataUnchecked(newDataList)
-    }
+    (adapter as BindableAdapter<PromotedStoryViewModel>).setDataUnchecked(newDataList)
   }
 
   private fun createAdapter(): BindableAdapter<PromotedStoryViewModel> {
