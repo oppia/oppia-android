@@ -182,9 +182,13 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
-      testCoroutineDispatchers.advanceUntilIdle()
-      onView(withId(R.id.slide_title_text_view))
-        .check(matches(withText(R.string.onboarding_slide_3_title)))
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withId(R.id.slide_title_text_view),
+          isDisplayed()
+        )
+      ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
 
@@ -215,7 +219,7 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isDisplayed()
+          isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_1_title)))
     }
@@ -225,11 +229,10 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide1Description_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.advanceUntilIdle()
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
-          isDisplayed()
+          isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_1_description)))
     }
@@ -239,9 +242,12 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide1Image_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.advanceUntilIdle()
-      onView(withId(R.id.slide_image_view))
-        .check(matches(withContentDescription(R.string.onboarding_slide_1_title)))
+      onView(
+        allOf(
+          withId(R.id.slide_image_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withContentDescription(R.string.onboarding_slide_1_title)))
     }
   }
 
@@ -280,7 +286,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide1_skipButtonIsVisible() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).check(matches(isDisplayed()))
     }
   }
@@ -288,12 +293,17 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide1_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.slide_title_text_view))
-        .check(matches(withText(R.string.onboarding_slide_3_title)))
+      testCoroutineDispatchers.advanceUntilIdle()
+      onView(
+        allOf(
+          withId(R.id.slide_title_text_view),
+          isDisplayed()
+        )
+      ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
 
@@ -301,7 +311,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide1_getStartedButtonIsNotVisible() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.get_started_button)).check(doesNotExist())
     }
   }
@@ -311,9 +320,12 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeRight())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.slide_title_text_view))
-        .check(matches(withText(R.string.onboarding_slide_0_title)))
+      onView(
+        allOf(
+          withId(R.id.slide_title_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText(R.string.onboarding_slide_0_title)))
     }
   }
 
@@ -322,11 +334,10 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isDisplayed()
+          isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_2_title)))
     }
@@ -337,11 +348,10 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
-          isDisplayed()
+          isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_2_description)))
     }
@@ -352,9 +362,12 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.slide_image_view))
-        .check(matches(withContentDescription(R.string.onboarding_slide_2_title)))
+      onView(
+        allOf(
+          withId(R.id.slide_image_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withContentDescription(R.string.onboarding_slide_2_title)))
     }
   }
 
@@ -395,7 +408,6 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).check(matches(isDisplayed()))
     }
   }
@@ -403,32 +415,11 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide2_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.slide_title_text_view))
-        .check(matches(withText(R.string.onboarding_slide_3_title)))
-    }
-  }
-
-  @Test
-  fun testOnboardingFragment_checkSlide2_getStartedButtonIsNotVisible() {
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.get_started_button)).check(doesNotExist())
-    }
-  }
-
-  @Test
-  fun testOnboardingFragment_checkSlide3Title_isCorrect() {
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
@@ -440,16 +431,39 @@ class OnboardingFragmentTest {
   }
 
   @Test
+  fun testOnboardingFragment_checkSlide2_getStartedButtonIsNotVisible() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.get_started_button)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_checkSlide3Title_isCorrect() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(
+        allOf(
+          withId(R.id.slide_title_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText(R.string.onboarding_slide_3_title)))
+    }
+  }
+
+  @Test
   fun testOnboardingFragment_checkSlide3Description_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
-          isDisplayed()
+          isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_3_description)))
     }
@@ -461,9 +475,12 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.slide_image_view))
-        .check(matches(withContentDescription(R.string.onboarding_slide_3_title)))
+      onView(
+        allOf(
+          withId(R.id.slide_image_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withContentDescription(R.string.onboarding_slide_3_title)))
     }
   }
 
@@ -473,7 +490,6 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).check(matches(not(isDisplayed())))
     }
   }
@@ -484,7 +500,6 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.get_started_button)).check(matches(isDisplayed()))
     }
   }
@@ -495,9 +510,7 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.get_started_button)).perform(scrollTo(), click())
-      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
@@ -509,9 +522,12 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.slide_title_text_view))
-        .check(matches(withText(R.string.onboarding_slide_3_title)))
+      onView(
+        allOf(
+          withId(R.id.slide_title_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
 
@@ -519,8 +535,12 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_slide0Title_changeOrientation_titleIsCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.slide_title_text_view))
-        .check(matches(withText(R.string.onboarding_slide_0_title)))
+      onView(
+        allOf(
+          withId(R.id.slide_title_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText(R.string.onboarding_slide_0_title)))
     }
   }
 
@@ -529,24 +549,14 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.slide_title_text_view))
-        .check(matches(withText(R.string.onboarding_slide_1_title)))
+      onView(
+        allOf(
+          withId(R.id.slide_title_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText(R.string.onboarding_slide_1_title)))
     }
   }
-
-//  private fun swipeLeftBy(times: Int) {
-//    for (i in 0 until times) {
-//      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-//      testCoroutineDispatchers.runCurrent()
-//    }
-//  }
-//
-//  private fun swipeRightBy(times: Int) {
-//    for (i in 0 until times) {
-//      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeRight())
-//      testCoroutineDispatchers.runCurrent()
-//    }
-//  }
 
   @Test
   fun testOnboardingFragment_clickOnSkip_changeOrientation_titleIsCorrect() {
