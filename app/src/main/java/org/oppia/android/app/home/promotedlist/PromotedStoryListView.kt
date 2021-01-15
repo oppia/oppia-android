@@ -2,7 +2,6 @@ package org.oppia.android.app.home.promotedlist
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
@@ -12,9 +11,10 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-const val PROMOTED_STORY_LIST_VIEW_TAG = "PromotedStoryListView"
+private const val PROMOTED_STORY_LIST_VIEW_TAG = "PromotedStoryListView"
 
 /**
  * A custom [RecyclerView] for displaying a variable list of promoted lesson stories that snaps to
@@ -28,6 +28,9 @@ class PromotedStoryListView @JvmOverloads constructor(
 
   @Inject
   lateinit var bindingInterface: ViewBindingShim
+
+  @Inject
+  lateinit var logger: ConsoleLogger
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -58,8 +61,8 @@ class PromotedStoryListView @JvmOverloads constructor(
       adapter = createAdapter()
     }
 
-    if (newDataList == null || newDataList.isEmpty()) {
-      Log.w(PROMOTED_STORY_LIST_VIEW_TAG, ": failed to resolve new story list data")
+    if (newDataList == null) {
+      logger.w(PROMOTED_STORY_LIST_VIEW_TAG, "Failed to resolve new story list data")
     } else {
       // Only re-bind and display the data if it's a valid list of promoted items for learners
       (adapter as BindableAdapter<PromotedStoryViewModel>).setDataUnchecked(newDataList)
