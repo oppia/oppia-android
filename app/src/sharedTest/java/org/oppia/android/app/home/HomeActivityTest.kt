@@ -3,7 +3,6 @@ package org.oppia.android.app.home
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.text.Layout
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -133,7 +132,6 @@ class HomeActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    profileTestHelper.addLongNameProfile()
   }
 
   @After
@@ -399,12 +397,10 @@ class HomeActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "port-mdpi")
   @Test
-  fun testHomeActivity_phonePort_longProfileName_displaysWelcomeMessageCorrectly() {
+  fun testHomeActivity_phonePort_longProfileName_welcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
-      )
+      scrollToPosition(0)
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -419,13 +415,11 @@ class HomeActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "land-mdpi")
   @Test
-  fun testHomeActivity_phoneLand_longProfileName_displaysWelcomeMessageCorrectly() {
+  fun testHomeActivity_phone_changeConfig_longProfileName_welcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
-      )
+      scrollToPosition(0)
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -440,12 +434,10 @@ class HomeActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "sw600dp-port")
   @Test
-  fun testHomeActivity_tabletPort_longProfileName_displaysWelcomeMessageCorrectly() {
+  fun testHomeActivity_tabletPort_longProfileName_welcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
-      )
+      scrollToPosition(0)
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -460,13 +452,11 @@ class HomeActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "sw600dp-land")
   @Test
-  fun testHomeActivity_tabletLand_longProfileName_displaysWelcomeMessageCorrectly() {
+  fun testHomeActivity_tablet_changeConfig_longProfileName_welcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
-      )
+      scrollToPosition(0)
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -575,19 +565,12 @@ class HomeActivityTest {
     override fun describeTo(description: Description) {
       description.appendText("with ellipsized text")
     }
-    override fun matchesSafely(view: View): Boolean {
-      if (view !is TextView) {
+
+    override fun matchesSafely(textView: View): Boolean {
+      if (textView !is TextView) {
         return false
       }
-      val textView: TextView = view
-      val layout: Layout = textView.layout
-      val lineCount = layout.lineCount
-      if (lineCount > 0) {
-        if (layout.getEllipsisCount(lineCount - 1) > 0) {
-          return true
-        }
-      }
-      return false
+      return with(textView.layout) { lineCount > 0 && getEllipsisCount(lineCount - 1) > 0 }
     }
   }
 

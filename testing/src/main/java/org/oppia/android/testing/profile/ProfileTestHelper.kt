@@ -48,15 +48,6 @@ class ProfileTestHelper @Inject constructor(
       colorRgb = -10710042,
       isAdmin = false
     )
-    val result = profileManagementController.loginToProfile(
-      ProfileId.newBuilder().setInternalId(0)
-        .build()
-    ).toLiveData()
-    testCoroutineDispatchers.runCurrent()
-    return result
-  }
-
-  fun addLongNameProfile(): LiveData<AsyncResult<Any?>> {
     profileManagementController.addProfile(
       name = "Natrajan Subramanniyam Balaguruswamy",
       pin = "123",
