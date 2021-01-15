@@ -38,6 +38,7 @@ import org.oppia.android.app.parser.RichTextViewMatcher.Companion.containsRichTe
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent // ktlint-disable max-line-length
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -99,7 +100,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTest_overflowMenu_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
-      RevisionCardActivity.createRevisionCardActivityIntent(
+      createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -115,7 +116,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTest_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
     launch<ExplorationActivity>(
-      RevisionCardActivity.createRevisionCardActivityIntent(
+      createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -137,7 +138,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTest_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
     launch<ExplorationActivity>(
-      RevisionCardActivity.createRevisionCardActivityIntent(
+      createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -159,7 +160,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() {
     launch<RevisionCardActivity>(
-      RevisionCardActivity.createRevisionCardActivityIntent(
+      createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -174,7 +175,7 @@ class RevisionCardFragmentTest {
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
-      RevisionCardActivity.createRevisionCardActivityIntent(
+      createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -201,9 +202,9 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonDisplayedSuccessfully() {
+  fun testRevisionCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
-      RevisionCardActivity.createRevisionCardActivityIntent(
+      createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -222,9 +223,9 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevCardTestActivity_toolbarTitle_fractionSubtopicId1_displayedCorrectly() {
+  fun testRevisionCardTestActivity_configurationChange_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
-      RevisionCardActivity.createRevisionCardActivityIntent(
+      createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -238,9 +239,9 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevCardTestActivity_fractionSubtopicId2_checkExpDisplayedSuccessfully() {
+  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
-      RevisionCardActivity.createRevisionCardActivityIntent(
+      createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
@@ -268,9 +269,9 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonDispSuccessfully() {
+  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
-      RevisionCardActivity.createRevisionCardActivityIntent(
+      createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
