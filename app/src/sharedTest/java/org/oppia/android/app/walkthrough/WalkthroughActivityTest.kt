@@ -78,7 +78,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testWalkthroughActivity_checkFrameLayout_backButton_progressBar_IsVisible() {
+  fun testWalkthroughActivity_checkFrameLayout_backBtn_progressBarIsVisible() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_fragment_placeholder)).check(matches(isDisplayed()))
       onView(withId(R.id.back_button)).check(matches(isDisplayed()))
@@ -87,7 +87,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testWalkthroughActivity_increaseProgress_worksCorrectly() {
+  fun testWalkthroughActivity_incProgress_worksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
@@ -95,7 +95,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testWalkthroughActivity_increaseProgress_configChange_worksCorrectly() {
+  fun testWalkthroughActivity_incProgress_configChange_worksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
@@ -130,7 +130,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testWalkthroughActivity_increaseProgress_decreaseProgress_progressWorksCorrectly() {
+  fun testWalkthroughActivity_incProgress_decProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
