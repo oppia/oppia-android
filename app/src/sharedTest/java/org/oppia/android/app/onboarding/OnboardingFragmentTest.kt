@@ -435,7 +435,7 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      onView(withId(R.id.get_started_button)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.get_started_button)).check(doesNotExist())
     }
   }
 
