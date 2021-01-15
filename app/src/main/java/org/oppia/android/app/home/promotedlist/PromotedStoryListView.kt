@@ -60,7 +60,7 @@ class PromotedStoryListView @JvmOverloads constructor(
       adapter = createAdapter()
     }
     if (newDataList == null) {
-      logger.w(PROMOTED_STORY_LIST_VIEW_TAG, ": failed to resolve new story list data")
+      logger.w(PROMOTED_STORY_LIST_VIEW_TAG, "Failed to resolve new story list data")
     } else {
       (adapter as BindableAdapter<*>).setDataUnchecked(newDataList)
     }
