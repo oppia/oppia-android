@@ -243,12 +243,20 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           if (previousFragment != null) {
             fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
           }
+          val lastCheckedItemId: Int
+          val isAdministratorControlsSelected: Boolean
+          if (getFooterViewModel().isAdministratorControlsSelected.get() == true) {
+            isAdministratorControlsSelected = true
+            lastCheckedItemId = -1
+          } else {
+            isAdministratorControlsSelected = false
+            lastCheckedItemId = previousMenuItemId ?: -1
+          }
           val dialogFragment = ExitProfileDialogFragment
             .newInstance(
               isFromNavigationDrawer = true,
-              isAdministratorControlsSelected =
-                getFooterViewModel().isAdministratorControlsSelected.get() ?: false,
-              lastCheckedItemId = previousMenuItemId ?: -1
+              isAdministratorControlsSelected = isAdministratorControlsSelected,
+              lastCheckedItemId = lastCheckedItemId
             )
           dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
         }
@@ -272,6 +280,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       getFooterViewModel().isAdministratorControlsSelected.set(true)
       uncheckAllMenuItemsWhenAdministratorControlsIsChecked()
     } else if (lastCheckedItemId != -1) {
+      getFooterViewModel().isAdministratorControlsSelected.set(false)
       val checkedItemPosition =
         when (lastCheckedItemId) {
           NavigationDrawerItem.HOME.value -> 0
