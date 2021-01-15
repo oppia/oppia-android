@@ -27,16 +27,14 @@ http_archive(
 )
 
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
-RULES_KOTLIN_VERSION = "legacy-1.4.0-rcx-oppia-exclusive-rc01"
+RULES_KOTLIN_VERSION = "v1.5.0-alpha-2"
 
-RULES_KOTLIN_SHA = "600f3d916eda5531dd70614ec96dc92b4ac24da0e1d815eb94559976e9bea8aa"
+RULES_KOTLIN_SHA = "6194a864280e1989b6d8118a4aee03bb50edeeae4076e5bc30eef8a98dcd4f07"
 
 http_archive(
     name = "io_bazel_rules_kotlin",
     sha256 = RULES_KOTLIN_SHA,
-    strip_prefix = "rules_kotlin-%s" % RULES_KOTLIN_VERSION,
-    type = "zip",
-    urls = ["https://github.com/oppia/rules_kotlin/archive/%s.zip" % RULES_KOTLIN_VERSION],
+    urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % RULES_KOTLIN_VERSION],
 )
 
 # TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
@@ -56,7 +54,6 @@ module while helping us avoid the unnecessary compilation of protoc. Referecence
 - https://github.com/google/startup-os/blob/5f30a62/WORKSPACE#L179-L187
 - https://github.com/bazelbuild/bazel/issues/7095
 """
-
 bind(
     name = "proto_compiler",
     actual = "//tools:protoc",
@@ -67,11 +64,32 @@ bind(
     actual = "//tools:java_toolchain",
 )
 
+# The rules_java contains the java_lite_proto_library rule used in the model module.
+http_archive(
+    name = "rules_java",
+    sha256 = "220b87d8cfabd22d1c6d8e3cdb4249abd4c93dcc152e0667db061fb1b957ee68",
+    url = "https://github.com/bazelbuild/rules_java/releases/download/0.1.1/rules_java-0.1.1.tar.gz",
+)
+
 load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
 
 rules_java_dependencies()
 
 rules_java_toolchains()
+
+# The rules_proto contains the proto_library rule used in the gitmodel module.
+http_archive(
+    name = "rules_proto",
+    sha256 = "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",
+    strip_prefix = "rules_proto-97d8af4dc474595af3900dd85cb3a29ad28cc313",
+    urls = ["https://github.com/bazelbuild/rules_proto/archive/97d8af4dc474595af3900dd85cb3a29ad28cc313.tar.gz"],
+)
+
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+
+rules_proto_dependencies()
+
+rules_proto_toolchains()
 
 # Add support for Dagger
 DAGGER_TAG = "2.28.1"
@@ -158,7 +176,7 @@ maven_install(
         "androidx.work:work-testing:2.4.0",
         "com.android.support:support-annotations:28.0.0",
         "com.caverock:androidsvg-aar:1.4",
-        "com.chaos.view:pinview:1.4.3",
+        "com.chaos.view:pinview:1.4.4",
         "com.crashlytics.sdk.android:crashlytics:2.9.8",
         "com.github.bumptech.glide:glide:4.11.0",
         "com.github.bumptech.glide:mocks:4.11.0",
