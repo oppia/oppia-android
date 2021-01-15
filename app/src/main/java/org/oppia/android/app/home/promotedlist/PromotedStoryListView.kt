@@ -10,6 +10,7 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 private const val PROMOTED_STORY_LIST_VIEW_TAG = "PromotedStoryListView"
@@ -26,6 +27,9 @@ class PromotedStoryListView @JvmOverloads constructor(
 
   @Inject
   lateinit var bindingInterface: ViewBindingShim
+
+  @Inject
+  lateinit var logger: ConsoleLogger
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -46,7 +50,7 @@ class PromotedStoryListView @JvmOverloads constructor(
    *
    * @param newDataList the new list of stories to present
    */
-  fun setPromotedStoryList(newDataList: List<PromotedStoryViewModel>) {
+  fun setPromotedStoryList(newDataList: List<PromotedStoryViewModel>?) {
     // To reliably bind data only after the adapter is created, we manually set the data so we can first
     // check for the adapter; when using an existing [RecyclerViewBindingAdapter] there is no reliable
     // way to check that the adapter is created.
@@ -55,7 +59,11 @@ class PromotedStoryListView @JvmOverloads constructor(
     if (adapter == null) {
       adapter = createAdapter()
     }
-    (adapter as BindableAdapter<*>).setDataUnchecked(newDataList)
+    if (newDataList == null) {
+      logger.w(PROMOTED_STORY_LIST_VIEW_TAG, ": failed to resolve new story list data")
+    } else {
+      (adapter as BindableAdapter<*>).setDataUnchecked(newDataList)
+    }
   }
 
   private fun createAdapter(): BindableAdapter<PromotedStoryViewModel> {
