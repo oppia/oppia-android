@@ -46,6 +46,6 @@
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintStart_toStartOf="@+id/coming_soon_topic_text_view"
       app:layout_constraintTop_toBottomOf="@+id/coming_soon_topic_text_view"
-      app:list="@{viewModel.comingSoonTopicsList}" />
+      app:list="@{viewModel.comingSoonTopicList}" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

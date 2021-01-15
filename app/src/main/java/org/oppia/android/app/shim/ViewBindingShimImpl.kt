@@ -52,19 +52,20 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     binding.viewModel = viewModel
   }
 
-  override fun inflateComingSoonTopicsViewBinding(
+  override fun provideComingSoonTopicViewInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
   ): View {
     return ComingSoonTopicViewBinding.inflate(
-      LayoutInflater.from(parent.context),
-      parent,
-      attachToParent
+      LayoutInflater.from(parent.context), parent, attachToParent
     ).root
   }
 
-  override fun provideComingSoonTopicsViewModel(view: View, viewModel: ComingSoonTopicsViewModel) {
+  override fun provideComingSoonTopicsViewViewModel(
+    view: View,
+    viewModel: ComingSoonTopicsViewModel
+  ) {
     val binding =
       DataBindingUtil.findBinding<ComingSoonTopicViewBinding>(view)!!
     binding.viewModel = viewModel

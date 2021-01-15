@@ -30,10 +30,10 @@ class PromotedStoryListViewModel(
     with (promotedActivityList.recommendedStoryList) {
       return when {
         suggestedStoryList.isNotEmpty() -> {
-          if (recentlyPlayedStoryList.isNotEmpty() || olderPlayedStoryList.isNotEmpty()) {
-            activity.getString(R.string.stories_for_you)
-          } else
+          if (recentlyPlayedStoryList.isEmpty() && olderPlayedStoryList.isEmpty()) {
             activity.getString(R.string.recommended_stories)
+          } else
+            activity.getString(R.string.stories_for_you)
         }
         recentlyPlayedStoryList.isNotEmpty() -> {
           activity.getString(R.string.recently_played_stories)

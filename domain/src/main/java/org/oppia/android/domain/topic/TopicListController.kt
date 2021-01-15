@@ -1,6 +1,7 @@
 package org.oppia.android.domain.topic
 
 import android.graphics.Color
+import android.util.Log
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
@@ -79,7 +80,7 @@ val EXPLORATION_THUMBNAILS = mapOf(
 )
 
 private const val GET_TOPIC_LIST_PROVIDER_ID = "get_topic_list_provider_id"
-private const val GET_RECOMMENDED_ACTIVITY_LIST_PROVIDER_ID =
+private const val GET_PROMOTED_ACTIVITY_LIST_PROVIDER_ID =
   "get_recommended_actvity_list_provider_id"
 
 private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
@@ -93,6 +94,9 @@ class TopicListController @Inject constructor(
   private val dataProviders: DataProviders,
   private val oppiaClock: OppiaClock
 ) {
+
+  private lateinit var storyCompletedTopicId: String
+
   /**
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
@@ -115,9 +119,9 @@ class TopicListController @Inject constructor(
    */
   fun getPromotedActivityList(profileId: ProfileId): DataProvider<PromotedActivityList> {
     return storyProgressController.retrieveTopicProgressListDataProvider(profileId)
-      .transformAsync(GET_RECOMMENDED_ACTIVITY_LIST_PROVIDER_ID) {
-        val PromotedActivityList = createPromotedActivityList(it)
-        AsyncResult.success(PromotedActivityList)
+      .transformAsync(GET_PROMOTED_ACTIVITY_LIST_PROVIDER_ID) {
+        val promotedActivityList = computePromotedActivityList(it)
+        AsyncResult.success(promotedActivityList)
       }
   }
 
@@ -136,7 +140,7 @@ class TopicListController @Inject constructor(
     return topicListBuilder.build()
   }
 
-  private fun createComingSoonTopicList(): ComingSoonTopicList {
+  private fun computeComingSoonTopicList(): ComingSoonTopicList {
     val topicIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
@@ -216,83 +220,81 @@ class TopicListController @Inject constructor(
       .build()
   }
 
-  private fun createPromotedActivityList(
-    topicProgressList: List<TopicProgress>
-  ): PromotedActivityList {
-    val recommendedActivityListBuilder = PromotedActivityList.newBuilder()
-
+  private fun computePromotedActivityList(topicProgressList: List<TopicProgress>): PromotedActivityList {
+    val promotedActivityListBuilder = PromotedActivityList.newBuilder()
     if (topicProgressList.isNotEmpty()) {
-      val recommendedStoryBuilder = RecommendedStoryList.newBuilder()
-      // If initially only one topic is in progress populate combination of Ongoing story
-      // and Suggested stories
-      if (topicProgressList.size == 1) {
-        recommendedStoryBuilder.addAllSuggestedStory(
-          createRecommendedStoryList(
-            topicProgressList,
-            recommendedActivityListBuilder,
-            recommendedStoryBuilder
-          )
-        )
-        recommendedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
-
-        if (recommendedStoryBuilder.suggestedStoryCount == 0 &&
-          recommendedStoryBuilder.recentlyPlayedStoryCount == 0 &&
-          recommendedStoryBuilder.olderPlayedStoryCount == 0
-        ) {
-          recommendedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
-        }
-      } else {
-        // Add recently played stories or last played stories in RecommendedActivityList.
-        populateRecentlyPlayedStories(
-          topicProgressList,
-          recommendedActivityListBuilder,
-          recommendedStoryBuilder
-        )
-        // If the Recently-played or Older-played story list is empty then populate Suggested
-        // stories or Upcoming stories
-        if (recommendedStoryBuilder.recentlyPlayedStoryCount == 0 &&
-          recommendedStoryBuilder.olderPlayedStoryCount == 0
-        ) {
-          populateRecommendedStories(
-            topicProgressList,
-            recommendedStoryBuilder,
-            recommendedActivityListBuilder
-          )
-        }
-
+      promotedActivityListBuilder.recommendedStoryList = computePromotedStoryList(topicProgressList)
+      if (promotedActivityListBuilder.recommendedStoryList.getTotalPromotedStoryCount() == 0) {
+        promotedActivityListBuilder.comingSoonTopicList = computeComingSoonTopicList()
       }
     }
-    return recommendedActivityListBuilder.build()
+    return promotedActivityListBuilder.build()
   }
 
-  private fun populateRecommendedStories(
-    topicProgressList: List<TopicProgress>,
-    recommendedStoryBuilder: RecommendedStoryList.Builder,
-    promotedActivityListBuilder: PromotedActivityList.Builder
-  ) {
-    // If no recently played stories or last played stories then set suggested stories
-    // in RecommendedActivityList.
-    recommendedStoryBuilder.addAllSuggestedStory(
-      createRecommendedStoryList(
-        topicProgressList,
-        promotedActivityListBuilder,
-        recommendedStoryBuilder
-      )
-    )
-    promotedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
+  private fun computePromotedStoryList(topicProgressList: List<TopicProgress>): RecommendedStoryList {
+    val recommendedStoryBuilder = RecommendedStoryList.newBuilder()
+      recommendedStoryBuilder
+        .addAllUpTo(
+          populateRecentlyPlayedStories(topicProgressList),
+          RecommendedStoryList.Builder::addAllRecentlyPlayedStory,
+          limit = 3
+        )
+        .addAllUpTo(
+          populateOlderPlayedStories(topicProgressList),
+          RecommendedStoryList.Builder::addAllOlderPlayedStory,
+          limit = 3
+        )
+        .addAllUpTo(
+          computeSuggestedStories(topicProgressList),
+          RecommendedStoryList.Builder::addAllSuggestedStory,
+          limit = 3
+        )
+    return recommendedStoryBuilder.build()
+  }
 
-    // If user has completed all the topics then add upcoming topics in
-    // RecommendedActivityList.
-    if (recommendedStoryBuilder.suggestedStoryCount == 0) {
-      promotedActivityListBuilder.comingSoonTopicList = createComingSoonTopicList()
-    }
+  private fun RecommendedStoryList.getTotalPromotedStoryCount(): Int {
+    return recentlyPlayedStoryList.size + olderPlayedStoryList.size + suggestedStoryList.size
+  }
+
+  private fun RecommendedStoryList.Builder.getTotalPromotedStoryCount(): Int {
+    return recentlyPlayedStoryList.size + olderPlayedStoryList.size + suggestedStoryList.size
+  }
+
+  private fun RecommendedStoryList.Builder.addAllUpTo(
+    iterable: Iterable<PromotedStory>,
+    addAll: RecommendedStoryList.Builder.(Iterable<PromotedStory>) -> RecommendedStoryList.Builder,
+    limit: Int
+  ): RecommendedStoryList.Builder {
+    return this.addAll(iterable.take(limit - this.getTotalPromotedStoryCount()))
   }
 
   private fun populateRecentlyPlayedStories(
-    topicProgressList: List<TopicProgress>,
-    promotedActivityListBuilder: PromotedActivityList.Builder,
-    recommendedStoryBuilder: RecommendedStoryList.Builder
-  ) {
+    topicProgressList: List<TopicProgress>
+  ): List<PromotedStory> {
+    computePromotedStories(topicProgressList).let {
+      Pair(it.first, it.second)
+      if (it.second < ONE_WEEK_IN_DAYS)
+        return it.first
+    }
+    return emptyList()
+  }
+
+  private fun populateOlderPlayedStories(
+    topicProgressList: List<TopicProgress>
+  ): List<PromotedStory> {
+    computePromotedStories(topicProgressList).let {
+      Pair(it.first, it.second)
+      if (it.second > ONE_WEEK_IN_DAYS)
+        return it.first
+    }
+    return emptyList()
+  }
+
+  private fun computePromotedStories(
+    topicProgressList: List<TopicProgress>
+  ): Pair<List<PromotedStory>, Long> {
+    var numberOfDaysPassed = 0L
+    val recentlyPlayedPromotedStoryList = mutableListOf<PromotedStory>()
     val sortedTopicProgressList =
       topicProgressList.sortedByDescending { it.lastPlayedTimestamp }
 
@@ -317,9 +319,12 @@ class TopicListController @Inject constructor(
               story,
               recentlyPlayerChapterProgress,
               completedChapterProgressList,
-              topic,
-              recommendedStoryBuilder
-            )
+              topic
+            ).let {
+              Pair(it.first, it.second)
+              numberOfDaysPassed = it.second
+              it.first?.let { it1 -> recentlyPlayedPromotedStoryList.add(it1) }
+            }
           }
           mostRecentCompletedChapterProgress != null &&
             mostRecentCompletedChapterProgress.explorationId !=
@@ -329,14 +334,22 @@ class TopicListController @Inject constructor(
               story,
               mostRecentCompletedChapterProgress,
               completedChapterProgressList,
-              topic,
-              recommendedStoryBuilder
-            )
+              topic
+            ).let {
+              Pair(it.first, it.second)
+              numberOfDaysPassed = it.second
+              it.first?.let { it1 -> recentlyPlayedPromotedStoryList.add(it1) }
+            }
+            if(story.chapterList.last().chapterPlayState.equals(ChapterPlayState.COMPLETED))
+            { 
+              storyCompletedTopicId = topic.topicId
+            }
           }
+
         }
       }
-      promotedActivityListBuilder.setRecommendedStoryList(recommendedStoryBuilder)
     }
+    return Pair(recentlyPlayedPromotedStoryList, numberOfDaysPassed)
   }
 
   private fun getStartedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> =
@@ -363,26 +376,27 @@ class TopicListController @Inject constructor(
     story: StorySummary,
     recentlyPlayerChapterProgress: ChapterProgress,
     completedChapterProgressList: List<ChapterProgress>,
-    topic: Topic,
-    recommendedStoryBuilder: RecommendedStoryList.Builder
-  ) {
+    topic: Topic
+  ): Pair<PromotedStory?, Long> {
+
     val recentlyPlayerChapterSummary: ChapterSummary? =
       story.chapterList.find { chapterSummary ->
         recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
       }
     if (recentlyPlayerChapterSummary != null) {
       val numberOfDaysPassed = recentlyPlayerChapterProgress.getNumberOfDaysPassed()
-      addPromotedStoryInRecommendedStoryList(
-        numberOfDaysPassed,
-        recommendedStoryBuilder,
-        storyId,
-        topic,
-        completedChapterProgressList.size,
-        story.chapterCount,
-        recentlyPlayerChapterSummary.name,
-        recentlyPlayerChapterSummary.explorationId
+      return Pair(
+        addPromotedStoryInRecommendedStoryList(
+          storyId,
+          topic,
+          completedChapterProgressList.size,
+          story.chapterCount,
+          recentlyPlayerChapterSummary.name,
+          recentlyPlayerChapterSummary.explorationId
+        ), numberOfDaysPassed
       )
     }
+    return Pair(null, 0)
   }
 
   private fun createOngoingStoryListBasedOnMostRecentlyCompleted(
@@ -390,9 +404,9 @@ class TopicListController @Inject constructor(
     story: StorySummary,
     mostRecentCompletedChapterProgress: ChapterProgress,
     completedChapterProgressList: List<ChapterProgress>,
-    topic: Topic,
-    recommendedStoryBuilder: RecommendedStoryList.Builder
-  ) {
+    topic: Topic
+  ): Pair<PromotedStory?, Long> {
+
     val lastChapterSummary: ChapterSummary? =
       story.chapterList.find { chapterSummary ->
         mostRecentCompletedChapterProgress.explorationId == chapterSummary.explorationId
@@ -402,30 +416,29 @@ class TopicListController @Inject constructor(
       val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
       if (nextChapterSummary != null) {
         val numberOfDaysPassed = mostRecentCompletedChapterProgress.getNumberOfDaysPassed()
-        addPromotedStoryInRecommendedStoryList(
-          numberOfDaysPassed,
-          recommendedStoryBuilder,
-          storyId,
-          topic,
-          completedChapterProgressList.size,
-          story.chapterCount,
-          nextChapterSummary.name,
-          nextChapterSummary.explorationId
+        return Pair(
+          addPromotedStoryInRecommendedStoryList(
+            storyId,
+            topic,
+            completedChapterProgressList.size,
+            story.chapterCount,
+            nextChapterSummary.name,
+            nextChapterSummary.explorationId
+          ), numberOfDaysPassed
         )
       }
     }
+    return Pair(null, 0)
   }
 
   private fun addPromotedStoryInRecommendedStoryList(
-    numberOfDaysPassed: Long,
-    recommendedStoryBuilder: RecommendedStoryList.Builder,
     storyId: String,
     topic: Topic,
     completedChapterProgressListSize: Int,
     chapterCount: Int,
     chapterSummaryName: String,
     chapterSummaryExplorationId: String
-  ) {
+  ): PromotedStory {
     val promotedStory = createPromotedStory(
       storyId,
       topic,
@@ -434,11 +447,7 @@ class TopicListController @Inject constructor(
       chapterSummaryName,
       chapterSummaryExplorationId
     )
-    if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
-      recommendedStoryBuilder.addRecentlyPlayedStory(promotedStory)
-    } else {
-      recommendedStoryBuilder.addOlderPlayedStory(promotedStory)
-    }
+    return promotedStory
   }
 
   private fun ChapterProgress.getNumberOfDaysPassed(): Long {
@@ -447,18 +456,10 @@ class TopicListController @Inject constructor(
     )
   }
 
-  private fun createRecommendedStoryList(
-    topicProgressList: List<TopicProgress>,
-    promotedActivityListBuilder: PromotedActivityList.Builder,
-    recommendedStoryBuilder: RecommendedStoryList.Builder
+  private fun computeSuggestedStories(
+    topicProgressList: List<TopicProgress>
   ): List<PromotedStory> {
     val recommendedStories = mutableListOf<PromotedStory>()
-
-    populateRecentlyPlayedStories(
-      topicProgressList,
-      promotedActivityListBuilder,
-      recommendedStoryBuilder
-    )
 
     val topicIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("topics.json")!!
@@ -473,6 +474,7 @@ class TopicListController @Inject constructor(
         createRecommendedStoryFromAssets(topicIdJsonArray[i].toString()) != null
       ) {
         recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[i].toString())!!)
+        Log.d("topic", "==" + topicIdJsonArray[i])
       }
     }
     return recommendedStories

@@ -102,15 +102,15 @@ interface ViewBindingShim {
     viewModel: PromotedStoryViewModel
   )
 
-  /** Handles binding inflation for [ComingSoonTopicsListView] */
-  fun inflateComingSoonTopicsViewBinding(
+  /** Handles binding inflation for [ComingSoonTopicsListView]. */
+  fun provideComingSoonTopicViewInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
   ): View
 
   /** Handles binding inflation for [ComingSoonTopicsListView] and returns the view model. */
-  fun provideComingSoonTopicsViewModel(
+  fun provideComingSoonTopicsViewViewModel(
     view: View,
     viewModel: ComingSoonTopicsViewModel
   )
