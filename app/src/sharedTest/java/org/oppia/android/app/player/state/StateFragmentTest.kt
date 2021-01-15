@@ -116,6 +116,7 @@ import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.IsOnRobolectric
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RecyclerViewScrollingActions
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
@@ -158,6 +159,9 @@ class StateFragmentTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
+
+  @Inject
+  lateinit var recyclerViewScrollingActions: RecyclerViewScrollingActions
 
   @Inject
   @field:BackgroundDispatcher
@@ -253,7 +257,10 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
-      scrollToViewType(CONTINUE_INTERACTION)
+      recyclerViewScrollingActions.scrollToViewType(
+        R.id.state_recycler_view,
+        StateViewHolderTypeMatcher(CONTINUE_INTERACTION)
+      )
 
       onView(withId(R.id.continue_button)).check(matches(isDisplayed()))
     }
@@ -1436,4 +1443,5 @@ class StateFragmentTest {
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
+
 }
