@@ -223,7 +223,7 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  fun testTopicPracticeFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() {
+  fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() { // ktlint-disable max-line-length
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
     clickPracticeTab()
     clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
