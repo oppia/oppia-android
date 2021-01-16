@@ -82,7 +82,7 @@
         android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="italic"
-        android:visibility="@{viewModel.profile.isAdmin &amp;&amp; hasProfileEverBeenAddedValue ? View.VISIBLE : View.GONE}"
+        android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}"
         app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_view_already_added_margin}" />
     </LinearLayout>
 
