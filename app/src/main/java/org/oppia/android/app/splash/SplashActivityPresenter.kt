@@ -87,6 +87,7 @@ class SplashActivityPresenter @Inject constructor(
     startupStateResult: AsyncResult<AppStartupState>
   ): StartupMode {
     if (startupStateResult.isFailure()) {
+      
       logger.e(
         "SplashActivity",
         "Failed to retrieve startup state",
