@@ -106,7 +106,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           }
 
           binding.fragmentDrawerNavView.menu.forEach { menuItem ->
-            menuItem.isCheckable = false
+            menuItem.isChecked = false
           }
 
           drawerLayout.closeDrawers()
@@ -246,6 +246,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           val lastCheckedItemId: Int
           val isAdministratorControlsSelected: Boolean
           if (getFooterViewModel().isAdministratorControlsSelected.get() == true) {
+            getFooterViewModel().isAdministratorControlsSelected.set(false)
             isAdministratorControlsSelected = true
             lastCheckedItemId = -1
           } else {
@@ -314,7 +315,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
     previousMenuItemId = if (activity is TopicActivity) null else menuItemId
     if (menuItemId != 0) {
-      getFooterViewModel().isAdministratorControlsSelected.set(false)
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
           binding.fragmentDrawerNavView.menu.getItem(
