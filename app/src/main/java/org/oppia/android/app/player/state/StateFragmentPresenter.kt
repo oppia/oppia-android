@@ -39,7 +39,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
-import java.util.Date
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -104,7 +103,7 @@ class StateFragmentPresenter @Inject constructor(
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, entityType),
       binding.congratulationsTextView,
-      binding.confettiView
+      binding.bannerConfettiView
     )
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
@@ -234,7 +233,7 @@ class StateFragmentPresenter @Inject constructor(
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
       .addReturnToTopicSupport()
-      .addCongratulationsForCorrectAnswers(congratulationsTextView, confettiView)
+      .addCelebrationForCorrectAnswers(congratulationsTextView, confettiView)
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(
         explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
@@ -393,7 +392,7 @@ class StateFragmentPresenter @Inject constructor(
           if (result.labelledAsCorrectAnswer) {
             recyclerViewAssembler.stopHintsFromShowing()
             viewModel.setHintBulbVisibility(false)
-            recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+            recyclerViewAssembler.showCelebrationOnCorrectAnswer()
           } else {
             viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
           }

@@ -352,7 +352,6 @@
   <dimen name="ratio_input_interaction_item_non_conversation_view_margin_end">32dp</dimen>
   <dimen name="selection_interaction_item_non_conversation_view_margin_start">32dp</dimen>
   <dimen name="selection_interaction_item_non_conversation_view_margin_end">32dp</dimen>
-  <dimen name="state_fragment_banner_confetti_view_height">32dp</dimen>
   <dimen name="state_fragment_split_view_margin_start">32dp</dimen>
   <dimen name="state_fragment_split_view_margin_end">32dp</dimen>
   <dimen name="submitted_answer_item_question_split_view_margin_end">32dp</dimen>

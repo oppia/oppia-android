@@ -126,7 +126,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
   private val congratulationsTextView: TextView?,
-  private val confettiView: KonfettiView?,
+  private val bannerConfettiView: KonfettiView?,
   private val canSubmitAnswer: ObservableField<Boolean>?,
   private val audioActivityId: String?,
   private val currentStateName: ObservableField<String>?,
@@ -147,6 +147,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * answers header to help locate the items in the recycler view (when present).
    */
   private val previousAnswerViewModels: MutableList<StateItemViewModel> = mutableListOf()
+
   /**
    * Whether the previously submitted wrong answers should be expanded. This value is intentionally
    * not retained upon configuration changes since the user can just re-expand the list.
@@ -440,32 +441,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
     check(playerFeatureSet.showCelebrationOnCorrectAnswer) {
       "Cannot show congratulations message for assembler that doesn't support it"
     }
-    val confettiView = checkNotNull(confettiView) {
-      "Expected non-null reference to banner confetti view"
-    }
     val textView = checkNotNull(congratulationsTextView) {
       "Expected non-null reference to congratulations text view"
     }
+    checkNotNull(bannerConfettiView) {
+      "Expected non-null reference to confetti view"
+    }
 
-    confettiView.build()
-      .addColors(
-        confettiColors.map { ContextCompat.getColor(confettiView.context, it) }
-      )
-      .setDirection(0.0, 359.0)
-      .setSpeed(3f, 5f)
-      .setFadeOutEnabled(true)
-      .setTimeToLive(2000)
-      .addShapes(
-        *arrayOf(Shape.Square, Shape.Circle)
-      )
-      .addSizes(
-        Size(8), Size(8, 3f)
-      )
-      .setPosition(
-        congratulationsTextView.x + congratulationsTextView.width / 3,
-        congratulationsTextView.y + congratulationsTextView.height / 2
-      )
-      .burst(50)
+    createBannerConfetti()
 
     textView.visibility = View.VISIBLE
 
@@ -744,6 +727,49 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
+  private fun createBannerConfetti() {
+    val x = bannerConfettiView!!.width / 3
+    val y = bannerConfettiView!!.height / 2
+
+    bannerConfettiView!!.build()
+      .addColors(
+        confettiColors.map { ContextCompat.getColor(bannerConfettiView.context, it) }
+      )
+      .setDirection(180.0, 270.0)
+      .setSpeed(1f, 3f)
+      .setFadeOutEnabled(true)
+      .setTimeToLive(2100)
+      .addShapes(
+        *arrayOf(Shape.Square, Shape.Circle)
+      )
+      .addSizes(
+        Size(8), Size(8, 3f)
+      ).setPosition(
+        x = x.toFloat(),
+        y = y.toFloat()
+      ).burst(10)
+
+    bannerConfettiView!!.build()
+      .addColors(
+        confettiColors.map { ContextCompat.getColor(bannerConfettiView.context, it) }
+      )
+      .setDirection(270.0, 360.0)
+      .setSpeed(1f, 3f)
+      .setFadeOutEnabled(true)
+      .setTimeToLive(2100)
+      .addShapes(
+        *arrayOf(Shape.Square, Shape.Circle)
+      )
+      .addSizes(
+        Size(8), Size(8, 3f)
+      )
+      .setPosition(
+        x = (2 * x).toFloat(),
+        y = y.toFloat()
+      )
+      .burst(10)
+  }
+
   /**
    * Returns whether there is currently a pending interaction that requires an additional user
    * action to submit the answer.
@@ -797,7 +823,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
-    private var confettiView: KonfettiView? = null
+    private var bannerConfettiView: KonfettiView? = null
     private var hasConversationView: Boolean = true
     private var canSubmitAnswer: ObservableField<Boolean>? = null
     private var audioActivityId: String? = null
@@ -1141,12 +1167,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * Adds support for displaying a congratulations answer when the learner submits a correct
      * answer.
      */
-    fun addCongratulationsForCorrectAnswers(
+    fun addCelebrationForCorrectAnswers(
       congratulationsTextView: TextView,
       confettiView: KonfettiView
     ): Builder {
       this.congratulationsTextView = congratulationsTextView
-      this.confettiView = confettiView
+      this.bannerConfettiView = confettiView
       featureSets += PlayerFeatureSet(showCelebrationOnCorrectAnswer = true)
       return this
     }
@@ -1214,7 +1240,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         playerFeatureSet,
         fragment,
         congratulationsTextView,
-        confettiView,
+        bannerConfettiView,
         canSubmitAnswer,
         audioActivityId,
         currentStateName,
