@@ -228,6 +228,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         )
       }
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
+      isCorrectAnswer.set(true)
       addPreviousAnswers(
         conversationPendingItemList,
         extraInteractionPendingItemList,
