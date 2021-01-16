@@ -20,7 +20,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -103,7 +102,6 @@ class OptionsFragmentTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
