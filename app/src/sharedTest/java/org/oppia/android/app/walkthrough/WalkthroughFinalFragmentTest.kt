@@ -189,7 +189,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughFinalFragment_yesNoBtn_isDisplayed() {
+  fun testWalkthroughFinalFragment_yesNoBtnIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
