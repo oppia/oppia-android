@@ -213,7 +213,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_allow_download_heading_text_view"
                 app:layout_constraintWidth_percent=".8" />
 
-              <Switch
+              <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/add_profile_activity_allow_download_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
