@@ -336,6 +336,7 @@ class StoryFragmentTest {
         )
       )
 
+      testCoroutineDispatchers.advanceUntilIdle()
       onView(
         atPositionOnView(
           R.id.story_chapter_list,
@@ -364,6 +365,7 @@ class StoryFragmentTest {
         )
       )
 
+      testCoroutineDispatchers.advanceUntilIdle()
       onView(
         atPositionOnView(
           R.id.story_chapter_list,
