@@ -45,13 +45,12 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
     binding.adminSettingsInputPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
         if (
-          adminViewModel.errorMessage.get()?.isNotEmpty()!! && adminViewModel.inputPin.get() == it
+          adminViewModel.errorMessage.get().isNullOrEmpty() &&
+          adminViewModel.inputPin.get() == it
         ) {
-          adminViewModel.inputPin.set(it)
-        } else {
-          adminViewModel.inputPin.set(it)
           adminViewModel.errorMessage.set("")
         }
+        adminViewModel.inputPin.set(it)
       }
     }
 

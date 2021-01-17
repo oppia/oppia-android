@@ -52,13 +52,12 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
       confirmPin?.let {
         // To avoid disappearing Error message due to orientation change.
         if (
-          resetViewModel.errorMessage.get()?.isNotEmpty()!! && resetViewModel.inputPin.get() == it
+          resetViewModel.errorMessage.get().isNullOrEmpty() &&
+          resetViewModel.inputPin.get() == it
         ) {
-          resetViewModel.inputPin.set(it)
-        } else {
-          resetViewModel.inputPin.set(it)
           resetViewModel.errorMessage.set("")
         }
+        resetViewModel.inputPin.set(it)
       }
     }
 

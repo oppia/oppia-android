@@ -122,8 +122,8 @@ class AddProfileActivityPresenter @Inject constructor(
         ) {
           profileViewModel.isButtonActive.set(it.isNotEmpty())
           profileViewModel.nameErrorMsg.set("")
-          profileViewModel.inputName.set(it)
         }
+        profileViewModel.inputName.set(it)
       }
     }
 
@@ -134,11 +134,11 @@ class AddProfileActivityPresenter @Inject constructor(
           profileViewModel.pinErrorMsg.get().isNullOrEmpty() &&
           profileViewModel.inputPin.get() != it
         ) {
-          profileViewModel.inputPin.set(it)
           profileViewModel.pinErrorMsg.set("")
           inputtedPin = pin.isNotEmpty()
           setValidPin(binding)
         }
+        profileViewModel.inputPin.set(it)
       }
     }
 
@@ -149,11 +149,11 @@ class AddProfileActivityPresenter @Inject constructor(
           profileViewModel.confirmPinErrorMsg.get().isNullOrEmpty() &&
           profileViewModel.inputConfirmPin.get() != it
         ) {
-          profileViewModel.inputConfirmPin.set(it)
           profileViewModel.confirmPinErrorMsg.set("")
           inputtedConfirmPin = confirmPin.isNotEmpty()
           setValidPin(binding)
         }
+        profileViewModel.inputConfirmPin.set(it)
       }
     }
 

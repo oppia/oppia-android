@@ -64,11 +64,11 @@ class ProfileResetPinActivityPresenter @Inject constructor(
           resetViewModel.inputPin.get().isNullOrEmpty() &&
           resetViewModel.pinErrorMsg.get() != it
         ) {
-          resetViewModel.inputPin.set(it)
           resetViewModel.pinErrorMsg.set("")
           inputtedPin = pin.isNotEmpty()
           setValidPin()
         }
+        resetViewModel.inputPin.set(it)
       }
     }
 

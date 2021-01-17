@@ -83,9 +83,9 @@ class ProfileRenameActivityPresenter @Inject constructor(
           renameViewModel.nameErrorMsg.get().isNullOrEmpty() &&
           renameViewModel.inputName.get() != it
         ) {
-          renameViewModel.nameErrorMsg.set("")
           renameViewModel.inputName.set(it)
         }
+        renameViewModel.nameErrorMsg.set("")
       }
     }
 
