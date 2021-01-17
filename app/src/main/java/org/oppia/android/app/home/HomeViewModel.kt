@@ -180,9 +180,9 @@ class HomeViewModel(
           it.olderPlayedStoryList
         }
       }
-      val topicStoryIsCompleted = storyList.any { promotedStory -> promotedStory.storyIsCompleted }
-      if (topicStoryIsCompleted) {
-        Collections.swap(storyList, 0, 2)
+      val topicIsCompleted = storyList.any{ promotedStory -> promotedStory.topicId == promotedStory.completedStoryTopicID }
+      if(topicIsCompleted) {
+        Collections.swap(storyList,0,2)
       }
 
       return storyList.take(promotedStoryListLimit)
