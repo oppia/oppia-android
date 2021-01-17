@@ -268,7 +268,7 @@ class AudioFragmentTest {
         internalProfileId
       )
     ).use {
-      //invokePreparedListener(shadowMediaPlayer)
+      invokePreparedListener(shadowMediaPlayer)
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
       onView(withId(R.id.sbAudioProgress)).perform(setProgress(100))
       onView(isRoot()).perform(orientationLandscape())
