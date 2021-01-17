@@ -60,20 +60,30 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.profileResetInputPinEditText.onTextChanged { pin ->
       pin?.let {
-        resetViewModel.inputPin.set(it)
-        resetViewModel.pinErrorMsg.set("")
-        inputtedPin = pin.isNotEmpty()
-        setValidPin()
+        if (
+          resetViewModel.inputPin.get().isNullOrEmpty() &&
+          resetViewModel.pinErrorMsg.get() != it
+        ) {
+          resetViewModel.inputPin.set(it)
+          resetViewModel.pinErrorMsg.set("")
+          inputtedPin = pin.isNotEmpty()
+          setValidPin()
+        }
       }
     }
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.profileResetInputConfirmPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
-        resetViewModel.inputConfirmPin.set(it)
-        resetViewModel.confirmErrorMsg.set("")
-        inputtedConfirmPin = confirmPin.isNotEmpty()
-        setValidPin()
+        if (
+          resetViewModel.inputConfirmPin.get().isNullOrEmpty() &&
+          resetViewModel.confirmErrorMsg.get() != it
+        ) {
+          resetViewModel.inputConfirmPin.set(it)
+          resetViewModel.confirmErrorMsg.set("")
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+          setValidPin()
+        }
       }
     }
 

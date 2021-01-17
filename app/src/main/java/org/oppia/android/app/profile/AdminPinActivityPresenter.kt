@@ -50,20 +50,29 @@ class AdminPinActivityPresenter @Inject constructor(
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminPinInputPinEditText.onTextChanged { pin ->
       pin?.let {
-        adminViewModel.pinErrorMsg.set("")
-        adminViewModel.savedPin.set(it)
-        inputtedPin = pin.isNotEmpty()
-        setValidPin()
+        if (
+          adminViewModel.pinErrorMsg.get().isNullOrEmpty() &&
+          adminViewModel.savedPin.get() != it
+        ) {
+          adminViewModel.pinErrorMsg.set("")
+          adminViewModel.savedPin.set(it)
+          inputtedPin = pin.isNotEmpty()
+          setValidPin()
+        }
       }
     }
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminPinInputConfirmPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
-        adminViewModel.confirmPinErrorMsg.set("")
-        adminViewModel.savedConfirmPin.set(it)
-        inputtedConfirmPin = confirmPin.isNotEmpty()
-        setValidPin()
+        if (adminViewModel.confirmPinErrorMsg.get().isNullOrEmpty() &&
+          adminViewModel.savedConfirmPin.get() != it
+        ) {
+          adminViewModel.confirmPinErrorMsg.set("")
+          adminViewModel.savedConfirmPin.set(it)
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+          setValidPin()
+        }
       }
     }
 
