@@ -86,7 +86,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -151,7 +151,6 @@ class AudioFragmentTest {
     )
   }
 
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
   @Test
   fun testAudioFragment_withDefaultProfile_showsAudioLanguageAsEnglish() {
     addMediaInfo()
@@ -160,11 +159,11 @@ class AudioFragmentTest {
         internalProfileId
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
+      onView(withId(R.id.ivAudioLanguage)).check(matches(withContentDescription("en")))
     }
   }
 
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
+  @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testAudioFragment_withHindiAudioLanguageProfile_showsHindiAudioLanguage() {
     addMediaInfo()
@@ -181,7 +180,7 @@ class AudioFragmentTest {
       it.onActivity {
         profileTestHelper.waitForOperationToComplete(data)
       }
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
+      onView(withId(R.id.ivAudioLanguage)).check(matches(withContentDescription("hi")))
     }
   }
 
@@ -269,7 +268,7 @@ class AudioFragmentTest {
         internalProfileId
       )
     ).use {
-      invokePreparedListener(shadowMediaPlayer)
+      //invokePreparedListener(shadowMediaPlayer)
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
       onView(withId(R.id.sbAudioProgress)).perform(setProgress(100))
       onView(isRoot()).perform(orientationLandscape())
@@ -278,7 +277,6 @@ class AudioFragmentTest {
     }
   }
 
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to update this test
   @Test
   fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
     addMediaInfo()
@@ -294,7 +292,7 @@ class AudioFragmentTest {
       onView(withId(R.id.sbAudioProgress)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.tvAudioLanguage)).perform(click())
+      onView(withId(R.id.ivAudioLanguage)).perform(click())
 
       val locale = Locale("es")
 

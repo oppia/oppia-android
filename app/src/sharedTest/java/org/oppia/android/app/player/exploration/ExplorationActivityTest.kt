@@ -544,7 +544,7 @@ class ExplorationActivityTest {
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       )
-      onView(allOf(withText("EN"), withEffectiveVisibility(Visibility.VISIBLE)))
+      onView(allOf(withId(R.id.ivAudioLanguage), withEffectiveVisibility(Visibility.VISIBLE)))
       waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
       onView(withId(R.id.ivPlayPauseAudio)).check(
         matches(
@@ -581,7 +581,7 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
         allOf(
-          withText("EN"),
+          withId(R.id.ivAudioLanguage),
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       ).perform(click())
@@ -599,7 +599,7 @@ class ExplorationActivityTest {
         )
       )
       onView(withId(R.id.continue_button)).perform(click())
-      onView(withText("HI-EN")).check(matches(isDisplayed()))
+      onView(withId(R.id.ivAudioLanguage)).check(matches(withContentDescription("hi-en")))
     }
     explorationDataController.stopPlayingExploration()
   }
