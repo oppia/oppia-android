@@ -21,6 +21,7 @@ import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionRetriever
@@ -406,6 +407,11 @@ class TopicController @Inject constructor(
       createSubtopicListFromJsonArray(topicData.optJSONArray("subtopics"))
     val storySummaryList: List<StorySummary> =
       createStorySummaryListFromJsonArray(topicId, topicData.optJSONArray("canonical_story_dicts"))
+    val topicPlayAvailability = if (topicData.getBoolean("published")) {
+      TopicPlayAvailability.newBuilder().setAvailableToPlayNow(true).build()
+    } else {
+      TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
+    }
     return Topic.newBuilder()
       .setTopicId(topicId)
       .setName(topicData.getString("topic_name"))
@@ -414,6 +420,7 @@ class TopicController @Inject constructor(
       .setTopicThumbnail(createTopicThumbnail(topicData))
       .setDiskSizeBytes(computeTopicSizeBytes(getAssetFileNameList(topicId)))
       .addAllSubtopic(subtopicList)
+      .setTopicPlayAvailability(topicPlayAvailability)
       .build()
   }
 
