@@ -20,7 +20,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -103,7 +102,6 @@ class ReadingTextSizeFragmentTest {
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
-    FirebaseApp.initializeApp(context)
     profileTestHelper.initializeProfiles()
   }
 
