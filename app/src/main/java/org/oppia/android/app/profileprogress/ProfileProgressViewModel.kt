@@ -125,7 +125,7 @@ class ProfileProgressViewModel @Inject constructor(
   private fun processPromotedActivityList(
     recommendedActivityList: PromotedActivityList
   ): List<ProfileProgressItemViewModel> {
-    with(recommendedActivityList.recommendedStoryList) {
+    with(recommendedActivityList.promotedStoryList) {
       headerViewModel.setRecentlyPlayedStoryCount(recentlyPlayedStoryList.size)
       limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
       val itemList =

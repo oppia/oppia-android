@@ -194,6 +194,9 @@ message PromotedStory {
 
   // The thumbnail that should be displayed for this promoted story.
   LessonThumbnail lesson_thumbnail = 9;
+
+  // The indicator to handle if story is completed.
+  bool storyIsCompleted = 10;
 }
 
 // A homescreen summary of a topic.
@@ -258,13 +261,13 @@ message TopicProgress {
 // and coming soon topics.
 message PromotedActivityList {
   oneof recommendation_type {
-    RecommendedStoryList recommended_story_list = 1;
+    PromotedStoryList promoted_story_list = 1;
     ComingSoonTopicList coming_soon_topic_list = 2;
   }
 }
 
 // Corresponds to the list of stories the player is currently playing across all topics and recommended stories.
-message RecommendedStoryList {
+message PromotedStoryList {
   // Ongoing stories from within the last 7 days.
   repeated PromotedStory recently_played_story   = 1;
 

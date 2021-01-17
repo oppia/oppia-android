@@ -27,7 +27,7 @@ class PromotedStoryListViewModel(
 
   /** Determines and returns the header for the promoted stories. */
   fun getHeader(): String {
-    with (promotedActivityList.recommendedStoryList) {
+    with (promotedActivityList.promotedStoryList) {
       return when {
         suggestedStoryList.isNotEmpty() -> {
           if (recentlyPlayedStoryList.isEmpty() && olderPlayedStoryList.isEmpty()) {
@@ -47,7 +47,7 @@ class PromotedStoryListViewModel(
 
   /** Returns the visibility for the "View All" button. */
   fun getViewAllButtonVisibility(): Int {
-    promotedActivityList.recommendedStoryList.let {
+    promotedActivityList.promotedStoryList.let {
       if (it.suggestedStoryList.isNotEmpty()) {
         return if (it.recentlyPlayedStoryList.isNotEmpty() ||
           it.olderPlayedStoryList.isNotEmpty()

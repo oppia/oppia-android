@@ -18,7 +18,7 @@ import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
-import org.oppia.android.app.model.RecommendedStoryList
+import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -30,6 +30,7 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
+import java.util.*
 
 private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
   "profile+promotedActivityList"
@@ -125,9 +126,9 @@ class HomeViewModel(
     promotedActivityList: PromotedActivityList
   ): HomeItemViewModel? {
     when (promotedActivityList.recommendationTypeCase) {
-      PromotedActivityList.RecommendationTypeCase.RECOMMENDED_STORY_LIST -> {
+      PromotedActivityList.RecommendationTypeCase.PROMOTED_STORY_LIST -> {
         val storyViewModelList = computePromotedStoryViewModelList(
-          promotedActivityList.recommendedStoryList
+          promotedActivityList.promotedStoryList
         )
         return if (storyViewModelList.isNotEmpty()) {
           return PromotedStoryListViewModel(
@@ -157,9 +158,9 @@ class HomeViewModel(
    * ongoing stories at all.
    */
   private fun computePromotedStoryViewModelList(
-    recommendedStoryList: RecommendedStoryList
+    promotedStoryList: PromotedStoryList
   ): List<PromotedStoryViewModel> {
-    recommendedStoryList.let {
+    promotedStoryList.let {
       val storyList = when {
         it.suggestedStoryCount != 0 -> {
           if (it.recentlyPlayedStoryCount != 0 ||
@@ -179,6 +180,11 @@ class HomeViewModel(
           it.olderPlayedStoryList
         }
       }
+      val topicStoryIsCompleted = storyList.any { promotedStory -> promotedStory.storyIsCompleted }
+      if (topicStoryIsCompleted) {
+        Collections.swap(storyList, 0, 2)
+      }
+
       return storyList.take(promotedStoryListLimit)
         .map { promotedStory ->
           PromotedStoryViewModel(

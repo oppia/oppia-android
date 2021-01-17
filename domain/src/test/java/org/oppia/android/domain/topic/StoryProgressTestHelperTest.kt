@@ -749,10 +749,10 @@ class StoryProgressTestHelperTest {
       .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetRecommendedActivityListSucceeded()
+    verifyGetPromotedActivityListSucceeded()
 
-    val recommendedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
-    with(recommendedActivityList.recommendedStoryList) {
+    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
+    with(promotedActivityList.promotedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(1)
       assertThat(olderPlayedStoryCount).isEqualTo(0)
       assertThat(recentlyPlayedStoryList[0].explorationId).isEqualTo(
@@ -763,7 +763,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markRecentlyPlayed_ratiosStory0Exp0_getRecommendedActivityListIsCorrect() { // ktlint-disable max-line-length
+  fun testProgressTestHelper_markRecentlyPlayed_ratiosStory0Exp0_getpromotedActivityListIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = profileId,
       timestampOlderThanAWeek = false
@@ -774,10 +774,10 @@ class StoryProgressTestHelperTest {
       .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetRecommendedActivityListSucceeded()
+    verifyGetPromotedActivityListSucceeded()
 
-    val recommendedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
-    with(recommendedActivityList.recommendedStoryList) {
+    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
+    with(promotedActivityList.promotedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(1)
       assertThat(olderPlayedStoryCount).isEqualTo(0)
       assertThat(recentlyPlayedStoryList[0].explorationId).isEqualTo(
@@ -799,10 +799,10 @@ class StoryProgressTestHelperTest {
       .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetRecommendedActivityListSucceeded()
+    verifyGetPromotedActivityListSucceeded()
 
-    val recommendedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
-    with(recommendedActivityList.recommendedStoryList) {
+    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
+    with(promotedActivityList.promotedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(2)
       assertThat(olderPlayedStoryCount).isEqualTo(0)
       assertThat(recentlyPlayedStoryList[0].explorationId).isEqualTo(
@@ -828,10 +828,10 @@ class StoryProgressTestHelperTest {
       .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetRecommendedActivityListSucceeded()
+    verifyGetPromotedActivityListSucceeded()
 
-    val recommendedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
-    with(recommendedActivityList.recommendedStoryList) {
+    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
+    with(promotedActivityList.promotedStoryList) {
       assertThat(recentlyPlayedStoryCount)
         .isEqualTo(0)
       assertThat(olderPlayedStoryCount)
@@ -855,10 +855,10 @@ class StoryProgressTestHelperTest {
       .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetRecommendedActivityListSucceeded()
+    verifyGetPromotedActivityListSucceeded()
 
-    val recommendedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
-    with(recommendedActivityList.recommendedStoryList) {
+    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
+    with(promotedActivityList.promotedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(0)
       assertThat(olderPlayedStoryCount).isEqualTo(3)
 
@@ -906,7 +906,7 @@ class StoryProgressTestHelperTest {
     assertThat(completedStoryListResultCaptor.value.isSuccess()).isTrue()
   }
 
-  private fun verifyGetRecommendedActivityListSucceeded() {
+  private fun verifyGetPromotedActivityListSucceeded() {
     verify(
       mockPromotedActivityListObserver,
       atLeastOnce()

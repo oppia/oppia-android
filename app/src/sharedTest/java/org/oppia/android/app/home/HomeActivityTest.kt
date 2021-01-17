@@ -494,10 +494,6 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      timestampOlderThanAWeek = true
-    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)

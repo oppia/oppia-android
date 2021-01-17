@@ -76,11 +76,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     getAssumedSuccessfulOngoingStoryList().observe(
       fragment,
       Observer<PromotedActivityList> { it ->
-        if (it.recommendedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
+        if (it.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
           val recentSectionTitleViewModel =
             SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
           itemList.add(recentSectionTitleViewModel)
-          for (promotedStory in it.recommendedStoryList.recentlyPlayedStoryList) {
+          for (promotedStory in it.promotedStoryList.recentlyPlayedStoryList) {
             val ongoingStoryViewModel =
               OngoingStoryViewModel(
                 promotedStory,
@@ -91,7 +91,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           }
         }
 
-        if (it.recommendedStoryList.olderPlayedStoryList.isNotEmpty()) {
+        if (it.promotedStoryList.olderPlayedStoryList.isNotEmpty()) {
           val showDivider = itemList.isNotEmpty()
           val olderSectionTitleViewModel =
             SectionTitleViewModel(
@@ -99,7 +99,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
               showDivider
             )
           itemList.add(olderSectionTitleViewModel)
-          for (promotedStory in it.recommendedStoryList.olderPlayedStoryList) {
+          for (promotedStory in it.promotedStoryList.olderPlayedStoryList) {
             val ongoingStoryViewModel =
               OngoingStoryViewModel(
                 promotedStory,
@@ -110,7 +110,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           }
         }
 
-        if (it.recommendedStoryList.suggestedStoryList.isNotEmpty()) {
+        if (it.promotedStoryList.suggestedStoryList.isNotEmpty()) {
           val showDivider = itemList.isNotEmpty()
           val recommendedSectionTitleViewModel =
             SectionTitleViewModel(
@@ -118,7 +118,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
               showDivider
             )
           itemList.add(recommendedSectionTitleViewModel)
-          for (suggestedStory in it.recommendedStoryList.suggestedStoryList) {
+          for (suggestedStory in it.promotedStoryList.suggestedStoryList) {
             val ongoingStoryViewModel =
               OngoingStoryViewModel(
                 suggestedStory,
@@ -131,9 +131,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
         binding.ongoingStoryRecyclerView.layoutManager =
           createLayoutManager(
-            it.recommendedStoryList.recentlyPlayedStoryCount,
-            it.recommendedStoryList.olderPlayedStoryCount,
-            it.recommendedStoryList.suggestedStoryCount
+            it.promotedStoryList.recentlyPlayedStoryCount,
+            it.promotedStoryList.olderPlayedStoryCount,
+            it.promotedStoryList.suggestedStoryCount
           )
         ongoingListAdapter.notifyDataSetChanged()
       }
