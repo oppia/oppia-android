@@ -54,11 +54,11 @@ class AdminPinActivityPresenter @Inject constructor(
           adminViewModel.pinErrorMsg.get().isNullOrEmpty() &&
           adminViewModel.savedPin.get() != it
         ) {
-          adminViewModel.pinErrorMsg.set("")
           adminViewModel.savedPin.set(it)
           inputtedPin = pin.isNotEmpty()
           setValidPin()
         }
+        adminViewModel.pinErrorMsg.set("")
       }
     }
 
@@ -68,11 +68,11 @@ class AdminPinActivityPresenter @Inject constructor(
         if (adminViewModel.confirmPinErrorMsg.get().isNullOrEmpty() &&
           adminViewModel.savedConfirmPin.get() != it
         ) {
-          adminViewModel.confirmPinErrorMsg.set("")
           adminViewModel.savedConfirmPin.set(it)
           inputtedConfirmPin = confirmPin.isNotEmpty()
           setValidPin()
         }
+        adminViewModel.confirmPinErrorMsg.set("")
       }
     }
 
