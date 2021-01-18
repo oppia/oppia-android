@@ -155,6 +155,38 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  fun testWalkthroughFinalFragment_topicSelected_configChange_checkTopicTitleIsCorrect() {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.walkthrough_welcome_next_button))
+        .perform(scrollTo(), click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.walkthrough_topic_recycler_view))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(
+        atPositionOnView(
+          R.id.walkthrough_topic_recycler_view,
+          2,
+          R.id.walkthrough_topic_name_text_view
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.walkthrough_final_topic_text_view)).check(
+        matches(
+          withText(containsString("Second Test Topic"))
+        )
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.walkthrough_final_topic_text_view)).check(
+        matches(
+          withText(containsString("Second Test Topic"))
+        )
+      )
+    }
+  }
+
+  @Test
   fun testWalkthroughFinalFragment_checkYesNoBtnIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
