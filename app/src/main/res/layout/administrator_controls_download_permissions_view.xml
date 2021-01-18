@@ -59,7 +59,7 @@
         style="@style/Subtitle2"
         android:background="@color/white"
         android:text="@string/administrator_controls_update_on_wifi_message"
-        android:textColor="#555555"
+        android:textColor="@color/accessible_light_grey"
         app:layout_constraintEnd_toStartOf="@id/topic_update_on_wifi_switch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topic_update_on_wifi_title_text_view" />
