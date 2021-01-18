@@ -27,6 +27,7 @@ import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicSummary
+import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -229,17 +230,16 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveOngoingStoryList_defaultLesson_hasCorrectInfo() {
+  fun testretrievePromotedActivityList_defaultLesson_hasCorrectInfo() {
     topicListController.getPromotedActivityList(profileId0).toLiveData()
       .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifygetPromotedActivityListSucceeded()
-    verifyDefaultOngoingStoryListSucceeded()
   }
 
   @Test
-  fun testRetrieveOngoingStoryList_markRecentlyPlayedFracStory0Exp0_ongoingStoryListIsCorrect() {
+  fun testRetrievePromotedActivityList_markRecentlyPlayedFracStory0Exp0_promotedActivityListIsCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -247,16 +247,19 @@ class TopicListControllerTest {
       FRACTIONS_EXPLORATION_ID_0,
       getCurrentTimestamp()
     )
+    testCoroutineDispatchers.runCurrent()
 
-    val promotedStoryList = retrieveOngoingStoryList()
-    with(promotedStoryList.recommendedStoryList) {
+    val promotedActivityList = retrievePromotedActivityList()
+    with(promotedActivityList.promotedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(1)
       verifyPromotedStoryAsFractionStory0Exploration0(recentlyPlayedStoryList[0])
+      assertThat(suggestedStoryCount).isEqualTo(1)
+      verifyOngoingStoryAsRatioStory0Exploration0(suggestedStoryList[0])
     }
   }
 
   @Test
-  fun testRetrieveOngoingStoryList_markChapterCompletedFracStory0Exp0_ongoingStoryListIsCorrect() {
+  fun testRetrievePromotedActivityList_markChapDoneFracStory0Exp0_promotedStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -264,16 +267,17 @@ class TopicListControllerTest {
       FRACTIONS_EXPLORATION_ID_0,
       getCurrentTimestamp()
     )
+    testCoroutineDispatchers.runCurrent()
 
-    val promotedStoryList = retrieveOngoingStoryList()
-    with(promotedStoryList.recommendedStoryList) {
+    val promotedActivityList = retrievePromotedActivityList()
+    with(promotedActivityList.promotedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(1)
       verifyOngoingStoryAsFractionStory0Exploration1(recentlyPlayedStoryList[0])
     }
   }
 
   @Test
-  fun testRetrieveStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_ongoingListCorrect() {
+  fun testRetrieveStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_promotedStoryListCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -290,16 +294,17 @@ class TopicListControllerTest {
       FRACTIONS_EXPLORATION_ID_1,
       getCurrentTimestamp()
     )
+    testCoroutineDispatchers.runCurrent()
 
-    val promotedStoryList = retrieveOngoingStoryList()
-    with(promotedStoryList.recommendedStoryList) {
+    val promotedActivityList = retrievePromotedActivityList()
+    with(promotedActivityList.promotedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(1)
       verifyOngoingStoryAsFractionStory0Exploration1(recentlyPlayedStoryList[0])
     }
   }
 
   @Test
-  fun testRetrieveOngoingStoryList_markAllChaptersCompletedInFractions_ongoingStoryListIsCorrect() {
+  fun testRetrievePromotedActivityList_markAllChapsDoneInFractions_promotedStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -316,16 +321,17 @@ class TopicListControllerTest {
       FRACTIONS_EXPLORATION_ID_1,
       getCurrentTimestamp()
     )
+    testCoroutineDispatchers.runCurrent()
 
-    val promotedStoryList = retrieveOngoingStoryList()
-    with(promotedStoryList.recommendedStoryList) {
-      assertThat(recentlyPlayedStoryCount).isEqualTo(4)
-      verifyDefaultOngoingStoryListSucceeded()
+    val promotedActivityList = retrievePromotedActivityList()
+    with(promotedActivityList.promotedStoryList) {
+      assertThat(recentlyPlayedStoryCount).isEqualTo(0)
+      assertThat(suggestedStoryCount).isEqualTo(1)
     }
   }
 
   @Test
-  fun testRetrieveStoryList_markRecentPlayedFirstChapInAllStoriesInRatios_ongoingListIsCorrect() {
+  fun testRetrieveStoryList_markRecentPlayedFirstChapInAllStoriesInRatios_promotedStoryListIsCorrect() { // ktlint-disable max-line-length
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
       RATIOS_TOPIC_ID,
@@ -342,10 +348,13 @@ class TopicListControllerTest {
       RATIOS_EXPLORATION_ID_2,
       getCurrentTimestamp()
     )
+    testCoroutineDispatchers.runCurrent()
 
-    val promotedStoryList = retrieveOngoingStoryList()
-    with(promotedStoryList.recommendedStoryList) {
+    val promotedActivityList = retrievePromotedActivityList()
+    with(promotedActivityList.promotedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(2)
+      assertThat(olderPlayedStoryCount).isEqualTo(0)
+      assertThat(suggestedStoryCount).isEqualTo(0)
       verifyOngoingStoryAsRatioStory0Exploration0(recentlyPlayedStoryList[0])
       verifyOngoingStoryAsRatioStory1Exploration2(recentlyPlayedStoryList[1])
     }
@@ -369,12 +378,45 @@ class TopicListControllerTest {
       RATIOS_EXPLORATION_ID_2,
       getCurrentTimestamp()
     )
+    testCoroutineDispatchers.runCurrent()
 
-    val promotedStoryList = retrieveOngoingStoryList()
-    with(promotedStoryList.recommendedStoryList) {
+    val promotedActivityList = retrievePromotedActivityList()
+    with(promotedActivityList.promotedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(2)
       verifyOngoingStoryAsRatioStory0Exploration1(recentlyPlayedStoryList[0])
       verifyOngoingStoryAsRatioStory1Exploration2(recentlyPlayedStoryList[1])
+    }
+  }
+
+  @Test
+  fun testRetrieveStoryList_markAllChapDoneInRatios_comingSoonTopicListIsCorrect() {
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_1,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val promotedActivityList = retrievePromotedActivityList()
+    with(promotedActivityList.promotedStoryList) {
+      assertThat(recentlyPlayedStoryCount).isEqualTo(0)
+      assertThat(olderPlayedStoryCount).isEqualTo(0)
+      assertThat(suggestedStoryCount).isEqualTo(0)
+    }
+    with(promotedActivityList.comingSoonTopicList) {
+      assertThat(upcomingTopicCount).isEqualTo(1)
+      verifyUpcomingTopic1(upcomingTopicList[0])
     }
   }
 
@@ -406,12 +448,12 @@ class TopicListControllerTest {
       getCurrentTimestamp()
     )
 
-    val promotedStoryList = retrieveOngoingStoryList()
-    with(promotedStoryList.recommendedStoryList) {
+    val promotedActivityList = retrievePromotedActivityList()
+    with(promotedActivityList.promotedStoryList) {
       assertThat(recentlyPlayedStoryCount).isEqualTo(3)
-      verifyOngoingStoryAsFractionStory0Exploration1(recentlyPlayedStoryList[0])
-      verifyOngoingStoryAsRatioStory0Exploration1(recentlyPlayedStoryList[1])
-      verifyOngoingStoryAsRatioStory1Exploration3(recentlyPlayedStoryList[2])
+      verifyOngoingStoryAsRatioStory0Exploration1(recentlyPlayedStoryList[0])
+      verifyOngoingStoryAsRatioStory1Exploration3(recentlyPlayedStoryList[1])
+      verifyOngoingStoryAsFractionStory0Exploration1(recentlyPlayedStoryList[2])
     }
   }
 
@@ -440,16 +482,17 @@ class TopicListControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_1,
       RATIOS_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+      getOldTimestamp()
     )
 
-    val promotedStoryList = retrieveOngoingStoryList()
-    with(promotedStoryList.recommendedStoryList) {
-      assertThat(recentlyPlayedStoryCount).isEqualTo(1)
-      assertThat(olderPlayedStoryCount).isEqualTo(2)
-      verifyOngoingStoryAsFractionStory0Exploration1(olderPlayedStoryList[0])
-      verifyOngoingStoryAsRatioStory0Exploration1(olderPlayedStoryList[1])
-      verifyOngoingStoryAsRatioStory1Exploration3(recentlyPlayedStoryList[0])
+    val promotedActivityList = retrievePromotedActivityList()
+    with(promotedActivityList.promotedStoryList) {
+      assertThat(recentlyPlayedStoryCount).isEqualTo(0)
+      assertThat(olderPlayedStoryCount).isEqualTo(3)
+
+      verifyOngoingStoryAsRatioStory0Exploration1(olderPlayedStoryList[0])
+      verifyOngoingStoryAsRatioStory1Exploration3(olderPlayedStoryList[1])
+      verifyOngoingStoryAsFractionStory0Exploration1(olderPlayedStoryList[2])
     }
   }
 
@@ -461,15 +504,15 @@ class TopicListControllerTest {
     assertThat(promotedActivityListResultCaptor.value.isSuccess()).isTrue()
   }
 
-  private fun verifyDefaultOngoingStoryListSucceeded() {
-    val promotedStoryList = promotedActivityListResultCaptor.value.getOrThrow()
-    with(promotedStoryList.recommendedStoryList) {
-    assertThat(recentlyPlayedStoryCount).isEqualTo(4)
-    verifyOngoingStoryAsFirstTopicStory0Exploration0(recentlyPlayedStoryList[0])
-    verifyOngoingStoryAsSecondTopicStory0Exploration0(recentlyPlayedStoryList[1])
-    verifyPromotedStoryAsFractionStory0Exploration0(recentlyPlayedStoryList[2])
-    verifyOngoingStoryAsRatioStory0Exploration0(recentlyPlayedStoryList[3])
-  }
+  private fun verifyDefaultPromotedActivityListSucceeded() {
+    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
+    with(promotedActivityList.promotedStoryList) {
+      assertThat(recentlyPlayedStoryCount).isEqualTo(4)
+      verifyOngoingStoryAsFirstTopicStory0Exploration0(recentlyPlayedStoryList[0])
+      verifyOngoingStoryAsSecondTopicStory0Exploration0(recentlyPlayedStoryList[1])
+      verifyPromotedStoryAsFractionStory0Exploration0(recentlyPlayedStoryList[2])
+      verifyOngoingStoryAsRatioStory0Exploration0(recentlyPlayedStoryList[3])
+    }
   }
 
   private fun verifyOngoingStoryAsFirstTopicStory0Exploration0(promotedStory: PromotedStory) {
@@ -483,6 +526,7 @@ class TopicListControllerTest {
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
+
   private fun verifyOngoingStoryAsSecondTopicStory0Exploration0(promotedStory: PromotedStory) {
     assertThat(promotedStory.explorationId).isEqualTo(TEST_EXPLORATION_ID_4)
     assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_2)
@@ -542,7 +586,14 @@ class TopicListControllerTest {
     assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
-  
+
+  private fun verifyUpcomingTopic1(upcomingTopic: UpcomingTopic) {
+    assertThat(upcomingTopic.topicId).isEqualTo(UPCOMING_TOPIC_ID_1)
+    assertThat(upcomingTopic.name).isEqualTo("Third Test Topic")
+    assertThat(upcomingTopic.lessonThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+  }
+
   private fun verifyOngoingStoryAsRatioStory1Exploration2(promotedStory: PromotedStory) {
     assertThat(promotedStory.explorationId).isEqualTo(RATIOS_EXPLORATION_ID_2)
     assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_1)
@@ -584,7 +635,7 @@ class TopicListControllerTest {
     return topicListResultCaptor.value.getOrThrow()
   }
 
-  private fun retrieveOngoingStoryList(): PromotedActivityList {
+  private fun retrievePromotedActivityList(): PromotedActivityList {
     testCoroutineDispatchers.runCurrent()
     topicListController.getPromotedActivityList(profileId0).toLiveData()
       .observeForever(mockPromotedActivityListObserver)
