@@ -59,13 +59,13 @@ jobs:
         chmod a+x buf
 
     - name: Java lint check
-      run: bash scripts/checkstyle_lint_check.sh
+      run: java -jar $HOME/oppia-android-tools/checkstyle-8.37-all.jar -c /google_checks.xml app/src/ data/src/ domain/src/ utility/src/ testing/src/
 
     - name: Kotlin lint check
-      run: ../oppia-android-tools/ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt && echo "Lint completed successfully"
+      run: $HOME/oppia-android-tools/ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt && echo "Lint completed successfully"
 
     - name: Protobuf lint check
-      run: ../oppia-android-tools/buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
+      run: $HOME/oppia-android-tools/buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
 
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
