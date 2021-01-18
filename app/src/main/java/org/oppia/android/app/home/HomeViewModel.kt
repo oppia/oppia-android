@@ -30,7 +30,7 @@ import org.oppia.android.util.system.OppiaClock
 private const val PROFILE_AND_ONGOING_STORY_COMBINED_PROVIDER_ID = "profile+ongoingStoryList"
 private const val HOME_FRAGMENT_COMBINED_PROVIDER_ID = "profile+ongoingStoryList+topicListProvider"
 
-/** [ViewModel] for layouts in home fragment . */
+/** [ViewModel] for layouts in home fragment. */
 @FragmentScope
 class HomeViewModel(
   private val activity: AppCompatActivity,

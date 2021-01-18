@@ -844,6 +844,34 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
+  fun testProgressTestHelper_markRecentlyPlayed_firstStoryInTestTopic1And2_storyListIsCorrect() {
+    storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
+      profileId = profileId,
+      timestampOlderThanAWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    topicListController.getOngoingStoryList(profileId).toLiveData()
+      .observeForever(mockOngoingStoryListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetOngoingStoryListSucceeded()
+
+    val ongoingStoryList = ongoingStoryListResultCaptor.value.getOrThrow()
+    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(2)
+    assertThat(ongoingStoryList.olderStoryCount).isEqualTo(0)
+    assertThat(ongoingStoryList.recentStoryList[0].explorationId).isEqualTo(
+      TEST_EXPLORATION_ID_2
+    )
+    assertThat(ongoingStoryList.recentStoryList[0].completedChapterCount).isEqualTo(0)
+
+    assertThat(ongoingStoryList.recentStoryList[1].explorationId).isEqualTo(
+      TEST_EXPLORATION_ID_4
+    )
+    assertThat(ongoingStoryList.recentStoryList[1].completedChapterCount).isEqualTo(0)
+  }
+
+  @Test
   fun testHelper_recentlyPlayed_firstExpInAllFracRatio_asOldStories_RecommendedActivityListCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = profileId,
@@ -912,6 +940,14 @@ class StoryProgressTestHelperTest {
       atLeastOnce()
     ).onChanged(recommendedActivityListResultCaptor.capture())
     assertThat(recommendedActivityListResultCaptor.value.isSuccess()).isTrue()
+  }
+
+  private fun verifyGetTopicListSucceeded() {
+    verify(
+      mockTopicListObserver,
+      atLeastOnce()
+    ).onChanged(topicListResultCaptor.capture())
+    assertThat(topicListResultCaptor.value.isSuccess()).isTrue()
   }
 
   private fun verifyGetTopicListSucceeded() {

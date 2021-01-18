@@ -1,0 +1,22 @@
+# Contains jobs corresponding to static checks (such as syntax correctness & prohibited patterns).
+
+name: Static Checks
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:    
+      - develop
+      
+jobs:
+  check_codeowners:
+    name: Check CODEOWNERS & Repository files
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: mszostok/codeowners-validator@v0.5.1
+        with:
+          checks: "duppatterns,files,syntax"
+          experimental_checks: "notowned"

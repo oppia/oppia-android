@@ -131,10 +131,10 @@ class ProfileTestHelperTest {
   }
 
   @Test
-  fun testLoginToAdmin_initializeProfiles_loginToAdmin_checkIsSuccessful() {
+  fun testLogIntoAdmin_initializeProfiles_logIntoAdmin_checkIsSuccessful() {
     profileTestHelper.initializeProfiles()
 
-    profileTestHelper.loginToAdmin().observeForever(mockUpdateResultObserver)
+    profileTestHelper.logIntoAdmin().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
@@ -143,10 +143,10 @@ class ProfileTestHelperTest {
   }
 
   @Test
-  fun testLoginToUser_initializeProfiles_loginToUser_checkIsSuccessful() {
+  fun testLogIntoUser_initializeProfiles_logIntoUser_checkIsSuccessful() {
     profileTestHelper.initializeProfiles()
 
-    profileTestHelper.loginToUser().observeForever(mockUpdateResultObserver)
+    profileTestHelper.logIntoUser().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
@@ -155,10 +155,10 @@ class ProfileTestHelperTest {
   }
 
   @Test
-  fun testLogingToNewUser_initializeProfiles_loginToUser_checkIsSuccessful() {
+  fun testLogIntoNewUser_initializeProfiles_logIntoUser_checkIsSuccessful() {
     profileTestHelper.initializeProfiles()
 
-    profileTestHelper.loginToNewUser().observeForever(mockUpdateResultObserver)
+    profileTestHelper.logIntoNewUser().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())

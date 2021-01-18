@@ -93,8 +93,7 @@
               android:layout_height="wrap_content"
               android:imeOptions="actionNext"
               android:inputType="numberPassword"
-              android:maxLength="@{viewModel.isAdmin ? 5 : 3}"
-              android:textDirection="locale" />
+              android:maxLength="@{viewModel.isAdmin ? 5 : 3}" />
           </com.google.android.material.textfield.TextInputLayout>
 
           <com.google.android.material.textfield.TextInputLayout
@@ -118,8 +117,7 @@
               android:layout_height="wrap_content"
               android:imeOptions="actionDone"
               android:inputType="numberPassword"
-              android:maxLength="@{viewModel.isAdmin ? 5 : 3}"
-              android:textDirection="locale" />
+              android:maxLength="@{viewModel.isAdmin ? 5 : 3}" />
           </com.google.android.material.textfield.TextInputLayout>
 
           <Button
