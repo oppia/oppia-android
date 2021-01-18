@@ -107,7 +107,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughFinalFragment_topicSelected_checkTopicTitleFirstTestTopicIsDisplayed() {
+  fun testWalkthroughFinalFragment_topicSelected_topicTitleFirstTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -132,7 +132,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughFinalFragment_topicSelected_checkTopicTitleSecondTestTopicIsDisplayed() {
+  fun testWalkthroughFinalFragment_topicSelected_topicTitleSecondTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -157,7 +157,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughFinalFragment_topicSelected_configChange_checkTopicTitleIsCorrect() {
+  fun testWalkthroughFinalFragment_topicSelected_configChange_topicTitleIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -189,7 +189,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughFinalFragment_checkYesNoBtnIsDisplayed() {
+  fun testWalkthroughFinalFragment_yesNoBtnIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -212,7 +212,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughFinalFragment_clickNoBtn_checkNoBtnWorksCorrectly() {
+  fun testWalkthroughFinalFragment_clickNoBtn_noBtnWorksCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
