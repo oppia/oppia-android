@@ -313,7 +313,7 @@ class TopicListController @Inject constructor(
         val recentlyPlayerChapterProgress: ChapterProgress? =
           startedChapterProgressList.firstOrNull()
 
-         checkIfStoryIsCompleted(topic.topicId, mostRecentCompletedChapterProgress, story)
+        checkIfStoryIsCompleted(topic.topicId, mostRecentCompletedChapterProgress, story)
 
         when {
           recentlyPlayerChapterProgress != null -> {
@@ -357,10 +357,11 @@ class TopicListController @Inject constructor(
     mostRecentCompletedChapterProgress: ChapterProgress?,
     story: StorySummary
   ) {
-    if(mostRecentCompletedChapterProgress != null &&
+    if (mostRecentCompletedChapterProgress != null &&
       mostRecentCompletedChapterProgress.explorationId ==
-      story.chapterList.last().explorationId) {
-             completedStoryTopicId = topicId
+      story.chapterList.last().explorationId
+    ) {
+      completedStoryTopicId = topicId
     }
   }
 
