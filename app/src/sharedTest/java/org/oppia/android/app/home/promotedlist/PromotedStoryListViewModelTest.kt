@@ -89,14 +89,14 @@ class PromotedStoryListViewModelTest {
     .build()
 
   private val promotedActivityList1 = PromotedActivityList.newBuilder()
-    .setRecommendedStoryList(
+    .setPromotedStoryList(
       PromotedStoryList.newBuilder()
         .addRecentlyPlayedStory(promotedStory1)
         .addOlderPlayedStory(promotedStory2).build()
     ).build()
 
   private val promotedActivityList2 = PromotedActivityList.newBuilder()
-    .setRecommendedStoryList(
+    .setPromotedStoryList(
       PromotedStoryList.newBuilder()
         .addRecentlyPlayedStory(promotedStory1)
         .addSuggestedStory(promotedStory2)

@@ -182,17 +182,16 @@ class HomeViewModel(
       }
 
       storyList.take(promotedStoryListLimit).mapIndexed { index, promotedStory ->
-        if (promotedStory.topicId == promotedStory.completedStoryTopicID) {
+        if (promotedStory.topicId == promotedStory.completedStoryTopicID && suggestedStoryCount != 0) {
           when {
             index == 0 && suggestedStoryCount > 1 -> {
-                Collections.swap(storyList, 0, 1)
+              Collections.swap(storyList, 0, 1)
             }
-            index == 0 && suggestedStoryCount != 0 -> {
-              if (recentlyPlayedStoryCount > 1 || olderPlayedStoryCount > 1) {
-                Collections.swap(storyList, 0, 1)
-              } else {
+            recentlyPlayedStoryCount > 1 || olderPlayedStoryCount > 1 -> {
+              if (index == 0)
                 Collections.swap(storyList, 0, 2)
-              }
+              else
+                Collections.swap(storyList, 1, 2)
             }
           }
         }
