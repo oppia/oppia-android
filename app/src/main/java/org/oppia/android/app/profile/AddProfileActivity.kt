@@ -44,4 +44,14 @@ class AddProfileActivity : InjectableAppCompatActivity() {
     super.onDestroy()
     addProfileFragmentPresenter.dismissAlertDialog()
   }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    addProfileFragmentPresenter.handleOnSavedInstanceState(outState)
+    super.onSaveInstanceState(outState)
+  }
+
+  override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    super.onRestoreInstanceState(savedInstanceState)
+    addProfileFragmentPresenter.handleOnRestoreInstanceState(savedInstanceState!!)
+  }
 }
