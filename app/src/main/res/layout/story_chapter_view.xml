@@ -76,6 +76,7 @@
             android:text="@{String.format(@string/chapter_name, (viewModel.index + 1), viewModel.name)}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="18sp"
+            android:importantForAccessibility="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? 1:2}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
