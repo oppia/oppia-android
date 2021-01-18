@@ -70,24 +70,37 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class WalkthroughActivityTest {
+
   @Test
-  fun testWalkthroughActivity_defaultProgress_worksCorrectly() {
+  fun testWalkthroughActivity_checkDefaultProgressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
     }
   }
 
   @Test
-  fun testWalkthroughActivity_checkFrameLayout_backBtn_progressBarIsVisible() {
+  fun testWalkthroughActivity_checkFrameLayoutIsVisible() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_fragment_placeholder)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testWalkthroughActivity__checkBackBtnIsVisible() {
+    launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.back_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testWalkthroughActivity_checkProgressBarIsVisible() {
+    launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testWalkthroughActivity_incProgress_worksCorrectly() {
+  fun testWalkthroughActivity_incProgress_checkProgressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
@@ -95,7 +108,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testWalkthroughActivity_incProgress_configChange_worksCorrectly() {
+  fun testWalkthroughActivity_incProgress_configChange_checkProgressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
@@ -105,7 +118,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testWalkthroughActivity_nextBtn_configChange_backBtn_worksCorrectly() {
+  fun testWalkthroughActivity_pressNextBtn_configChange_pressBackBtn_checkBackBtnWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(isRoot()).perform(orientationLandscape())
@@ -120,7 +133,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testWalkthroughActivity_incProgress_onBackPress_decProgress_progressWorksCorrectly() {
+  fun testWalkthroughActivity_incProgress_onBackPress_decProgress_checkProgressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
@@ -130,7 +143,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testWalkthroughActivity_incProgress_decProgress_progressWorksCorrectly() {
+  fun testWalkthroughActivity_incProgress_pressBackBtn_decProgress_checkProgressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
