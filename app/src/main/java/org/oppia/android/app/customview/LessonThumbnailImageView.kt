@@ -10,6 +10,7 @@ import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.shim.ViewComponentFactory
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.DefaultGcsPrefix
 import org.oppia.android.util.parser.ImageLoader
 import org.oppia.android.util.parser.ImageViewTarget
@@ -44,6 +45,9 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   @field:DefaultGcsPrefix
   lateinit var gcsPrefix: String
 
+  @Inject
+  lateinit var logger: ConsoleLogger
+
   fun setEntityId(entityId: String) {
     this.entityId = entityId
     checkIfLoadingIsPossible()
@@ -66,7 +70,8 @@ class LessonThumbnailImageView @JvmOverloads constructor(
       ::thumbnailDownloadUrlTemplate.isInitialized &&
       ::resourceBucketName.isInitialized &&
       ::gcsPrefix.isInitialized &&
-      ::imageLoader.isInitialized
+      ::imageLoader.isInitialized &&
+      ::logger.isInitialized
     ) {
       loadLessonThumbnail()
     }
@@ -98,9 +103,18 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   }
 
   override fun onAttachedToWindow() {
-    super.onAttachedToWindow()
-    (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
-      .createViewComponent(this).inject(this)
+    try {
+      super.onAttachedToWindow()
+      (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
+        .createViewComponent(this).inject(this)
+    } catch (e: IllegalStateException) {
+      if (::logger.isInitialized)
+        logger.e(
+          "LessonThumbnailImageView",
+          "Throws exception on attach to window",
+          e
+        )
+    }
   }
 
   private fun getLessonDrawableResource(lessonThumbnail: LessonThumbnail): Int {
