@@ -186,7 +186,7 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isDisplayed()
+          isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
@@ -301,7 +301,7 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isDisplayed()
+          isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
@@ -424,7 +424,7 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isDisplayed()
+          isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
@@ -568,7 +568,7 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isDisplayed()
+          isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
