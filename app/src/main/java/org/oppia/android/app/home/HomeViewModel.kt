@@ -160,29 +160,42 @@ class HomeViewModel(
   private fun computePromotedStoryViewModelList(
     promotedStoryList: PromotedStoryList
   ): List<PromotedStoryViewModel> {
-    promotedStoryList.let {
+    with(promotedStoryList) {
       val storyList = when {
-        it.suggestedStoryCount != 0 -> {
-          if (it.recentlyPlayedStoryCount != 0 ||
-            it.olderPlayedStoryCount != 0
+        suggestedStoryCount != 0 -> {
+          if (recentlyPlayedStoryCount != 0 ||
+            olderPlayedStoryCount != 0
           ) {
-            it.recentlyPlayedStoryList +
-              it.olderPlayedStoryList +
-              it.suggestedStoryList
+            recentlyPlayedStoryList +
+              olderPlayedStoryList +
+              suggestedStoryList
           } else {
-            it.suggestedStoryList
+            suggestedStoryList
           }
         }
-        it.recentlyPlayedStoryCount != 0 -> {
-          it.recentlyPlayedStoryList
+        recentlyPlayedStoryCount != 0 -> {
+          recentlyPlayedStoryList
         }
         else -> {
-          it.olderPlayedStoryList
+          olderPlayedStoryList
         }
       }
-      val topicIsCompleted = storyList.any{ promotedStory -> promotedStory.topicId == promotedStory.completedStoryTopicID }
-      if(topicIsCompleted) {
-        Collections.swap(storyList,0,2)
+
+      storyList.take(promotedStoryListLimit).mapIndexed { index, promotedStory ->
+        if (promotedStory.topicId == promotedStory.completedStoryTopicID) {
+          when {
+            index == 0 && suggestedStoryCount > 1 -> {
+                Collections.swap(storyList, 0, 1)
+            }
+            index == 0 && suggestedStoryCount != 0 -> {
+              if (recentlyPlayedStoryCount > 1 || olderPlayedStoryCount > 1) {
+                Collections.swap(storyList, 0, 1)
+              } else {
+                Collections.swap(storyList, 0, 2)
+              }
+            }
+          }
+        }
       }
 
       return storyList.take(promotedStoryListLimit)
