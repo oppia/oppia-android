@@ -20,16 +20,12 @@ Please follow these steps for initial setup of the project on your local machine
 
 1. Create a new, empty folder called `opensource/` within your home folder. Navigate to it (`cd opensource`), then [fork and clone](https://github.com/oppia/oppia-android/wiki/Fork-and-Clone-Oppia-Android) the Oppia-Android repo. This will create a new folder named `opensource/oppia-android`. Note that contributors who have write access to the repository may either create branches directly on oppia/oppia-android or use a fork.
 
-2. Navigate to `opensource/oppia-android/` and run the project in Android Studio.
-
- or follow [Android Studio UI based Github workflow](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow)
+2. Navigate to `opensource/oppia-android/` and run the project in Android Studio. or follow [Android Studio UI based Github workflow](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow)
 
 3. For Mac or Linux 
      1. Open terminal
      2. Move to `opensource/oppia-android/`
      3. Run a script `bash scripts/setup.sh`
-
-If you find any error related to `cURL`, please set up `cURL` at your machine. For Linux, you can use `sudo apt install curl`.
 
    For Windows
      1. Install [Git Bash Command Line](https://gitforwindows.org/)
@@ -37,6 +33,7 @@ If you find any error related to `cURL`, please set up `cURL` at your machine. F
      3. Move to `opensource/oppia-android/`
      4. Run a script `bash scripts/setup.sh`
 
+If you find any error related to `cURL`, please set up `cURL` at your machine. For Linux, you can use `sudo apt install curl`. No need to set up `cURL` for Windows as you are using git bash command line.<br>
 If you find any error which says `java: command not found`, please check you have Java installed correctly in your machine and environment path variable is also set up. 
 
 This will create a folder `opensource/oppia-android-tools`. This will set up `ktlint` executable file which is used to validate Kotlin's file formatting when sending a pull request. 
