@@ -6,14 +6,32 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
-/** Holds all custom binding adapters that set miscellaneous values. */
+/**
+ * Holds all custom binding adapters that set miscellaneous values.
+ */
 public final class ViewBindingAdapters {
 
-  /** Adapter to set the height of a view. */
+  /**
+   * BindingAdapter to set the height of a View. If this value is calculated in data fetching, the
+   * layout will require a default value since binding adapters aren't called until after initial
+   * view measurements and layouts are formatted.
+   */
   @BindingAdapter("android:layout_height")
   public static void setLayoutHeight(@NonNull View view, float height) {
     ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
     layoutParams.height = (int) height;
+    view.setLayoutParams(layoutParams);
+  }
+
+  /**
+   * BindingAdapter to set the width of a View. If this value is calculated in data fetching, the
+   * layout will require a default value since binding adapters aren't called until after initial
+   * view measurements and layouts are formatted.
+   */
+  @BindingAdapter("android:layout_width")
+  public static void setLayoutWidth(@NonNull View view, float width) {
+    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+    layoutParams.width = (int) width;
     view.setLayoutParams(layoutParams);
   }
 

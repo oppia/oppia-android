@@ -12,7 +12,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -84,7 +83,6 @@ class ProfilePictureActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -104,7 +102,7 @@ class ProfilePictureActivityTest {
   }
 
   @Test
-  fun testProfilePictureActivity_userImage_isDisplayedSuccessfully() {
+  fun testProfilePictureActivity_userImageIsDisplayed() {
     launch<ProfilePictureActivity>(createProfilePictureActivityIntent(internalProfileId)).use {
       onView(withId(R.id.profile_picture_image_view)).check(matches(isDisplayed()))
     }
