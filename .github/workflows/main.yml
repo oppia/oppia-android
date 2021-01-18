@@ -33,6 +33,7 @@ jobs:
 
     - name: Download Checkstyle
       run: |
+        cd $HOME/oppia-android-tools
         CHECKSTYLE="8.37"
         echo Using Checkstyle version $CHECKSTYLE
         curl -sSLO https://github.com/checkstyle/checkstyle/releases/download/checkstyle-$CHECKSTYLE/checkstyle-$CHECKSTYLE-all.jar
@@ -40,6 +41,7 @@ jobs:
 
     - name: Download Ktlint
       run: |
+        cd $HOME/oppia-android-tools
         KTLINT="0.37.1"
         echo Using Ktlint $KTLINT
         curl -sSLO https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
@@ -47,19 +49,20 @@ jobs:
 
     - name: Download buf
       run: |
+        cd $HOME/oppia-android-tools
         BUFVERSION="v0.15.0"
         echo Using Bufbuild version $BUFVERSION
         curl -sSL https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m) > buf
         chmod a+x buf
 
     - name: Java lint check
-      run: bash scripts/checkstyle_lint_check_github_action.sh
+      run: bash scripts/checkstyle_lint_check.sh
 
     - name: Kotlin lint check
-      run: ./ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt && echo "Lint completed successfully"
+      run: ../oppia-android-tools/ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt && echo "Lint completed successfully"
 
     - name: Protobuf lint check
-      run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
+      run: ../oppia-android-tools/buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
 
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
