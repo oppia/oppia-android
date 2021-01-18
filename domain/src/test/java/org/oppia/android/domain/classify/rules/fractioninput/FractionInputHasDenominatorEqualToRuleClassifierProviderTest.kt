@@ -25,7 +25,6 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
 
   private val WHOLE_NUMBER_VALUE_TEST_123 =
     InteractionObjectTestBuilder.createWholeNumber(
-      isNegative = false,
       value = 123
     )
   private val FRACTION_VALUE_TEST_1_OVER_2 =

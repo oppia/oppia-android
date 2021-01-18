@@ -24,12 +24,10 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
 
   private val WHOLE_NUMBER_VALUE_TEST_5 =
     InteractionObjectTestBuilder.createWholeNumber(
-      isNegative = false,
       value = 5
     )
   private val WHOLE_NUMBER_VALUE_TEST_2 =
     InteractionObjectTestBuilder.createWholeNumber(
-      isNegative = false,
       value = 2
     )
   private val NEGATIVE_INTEGER_VALUE_TEST_2 =

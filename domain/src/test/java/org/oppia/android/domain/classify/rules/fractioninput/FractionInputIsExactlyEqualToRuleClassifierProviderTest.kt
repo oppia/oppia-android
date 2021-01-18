@@ -29,12 +29,10 @@ class FractionInputIsExactlyEqualToRuleClassifierProviderTest {
     )
   private val WHOLE_NUMBER_VALUE_TEST_123 =
     InteractionObjectTestBuilder.createWholeNumber(
-      isNegative = false,
       value = 123
     )
   private val WHOLE_NUMBER_VALUE_TEST_321 =
     InteractionObjectTestBuilder.createWholeNumber(
-      isNegative = false,
       value = 321
     )
   private val FRACTION_VALUE_TEST_2_OVER_4 =

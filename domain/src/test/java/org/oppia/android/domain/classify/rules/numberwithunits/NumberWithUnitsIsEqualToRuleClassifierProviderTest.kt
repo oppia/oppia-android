@@ -24,7 +24,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
 
   private val WHOLE_NUMBER_VALUE_9 =
     InteractionObjectTestBuilder.createWholeNumber(
-      isNegative = false, value = 9
+      value = 9
     )
   private val FRACTION_VALUE_TEST_2_OVER_5 =
     InteractionObjectTestBuilder.createFraction(
