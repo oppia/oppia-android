@@ -9,12 +9,14 @@ import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
+import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.android.databinding.DragDropInteractionItemsBinding
 import org.oppia.android.databinding.DragDropSingleItemBinding
 import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
+import org.oppia.android.databinding.PromotedStoryCardBinding
 import org.oppia.android.util.parser.HtmlParser
 import javax.inject.Inject
 
@@ -28,6 +30,25 @@ import javax.inject.Inject
  */
 // TODO(#1619): Remove file post-Gradle
 class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
+
+  override fun providePromotedStoryCardInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View {
+    return PromotedStoryCardBinding.inflate(
+      LayoutInflater.from(parent.context), parent, attachToParent
+    ).root
+  }
+
+  override fun providePromotedStoryViewModel(
+    view: View,
+    viewModel: PromotedStoryViewModel
+  ) {
+    val binding =
+      DataBindingUtil.findBinding<PromotedStoryCardBinding>(view)!!
+    binding.viewModel = viewModel
+  }
 
   override fun provideSelectionInteractionViewInflatedView(
     inflater: LayoutInflater,
