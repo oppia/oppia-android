@@ -219,7 +219,9 @@ class TopicListController @Inject constructor(
       .build()
   }
 
-  private fun computePromotedActivityList(topicProgressList: List<TopicProgress>): PromotedActivityList {
+  private fun computePromotedActivityList(
+    topicProgressList: List<TopicProgress>
+  ): PromotedActivityList {
     val promotedActivityListBuilder = PromotedActivityList.newBuilder()
     if (topicProgressList.isNotEmpty()) {
       promotedActivityListBuilder.promotedStoryList = computePromotedStoryList(topicProgressList)
@@ -408,7 +410,8 @@ class TopicListController @Inject constructor(
           recentlyPlayerChapterSummary.name,
           recentlyPlayerChapterSummary.explorationId,
           completedStoryTopicId
-        ), numberOfDaysPassed
+        ),
+        numberOfDaysPassed
       )
     }
     return Pair(null, 0)
@@ -441,7 +444,8 @@ class TopicListController @Inject constructor(
             nextChapterSummary.name,
             nextChapterSummary.explorationId,
             completedStoryTopicId
-          ), numberOfDaysPassed
+          ),
+          numberOfDaysPassed
         )
       }
     }
