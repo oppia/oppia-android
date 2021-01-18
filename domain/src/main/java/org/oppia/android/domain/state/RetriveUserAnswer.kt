@@ -2,7 +2,7 @@ package org.oppia.android.domain.state
 
 import org.oppia.android.app.model.UserAnswer
 
-object InputInteraction {
+object RetriveUserAnswer {
   // text and error message for fraction [FractionInteractionView.kt]
   // list of check boxes as a string and back to check box [SelectionInteractionView.kt]
   // text and error msg for [NumericInputInteractionView.kt]
