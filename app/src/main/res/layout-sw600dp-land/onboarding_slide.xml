@@ -28,6 +28,7 @@
         android:adjustViewBounds="true"
         android:contentDescription="@{viewModel.contentDescription}"
         android:src="@{viewModel.slideImage}"
+        android:importantForAccessibility="no"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="40:39"
         app:layout_constraintStart_toStartOf="parent"

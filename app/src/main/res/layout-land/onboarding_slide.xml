@@ -29,6 +29,7 @@
         android:contentDescription="@{viewModel.contentDescription}"
         android:scaleType="fitXY"
         android:src="@{viewModel.slideImage}"
+        android:importantForAccessibility="no"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="H, 10:9"
         app:layout_constraintStart_toStartOf="parent"
