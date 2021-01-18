@@ -720,7 +720,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markTwoPartialStoryProgressForRatios_getCompletedStoryListIsCorrect() { // ktlint-disable max-line-length
+  fun testProgressTestHelper_markTwoPartialStoryProgressForRatios_getCompletedStoryListIsCorrect() {
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
       profileId = profileId,
       timestampOlderThanAWeek = false
@@ -738,7 +738,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markRecentlyPlayed_fractionsStory0Exp0_recentlyPlayedStoryListIsCorrect() { // ktlint-disable max-line-length
+  fun testProgressTestHelper_markRecentlyPlayed_fractionsStory0Exp0_promotedStoryListIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId,
       timestampOlderThanAWeek = false
@@ -763,7 +763,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markRecentlyPlayed_ratiosStory0Exp0_getpromotedActivityListIsCorrect() { // ktlint-disable max-line-length
+  fun testProgressTestHelper_markRecentlyPlayed_ratiosStory0Exp0_promotedStoryListIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = profileId,
       timestampOlderThanAWeek = false
@@ -817,7 +817,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markFullProgressForSecondTestTopic_showRecommendedStories_listIsCorrect() {
+  fun testProgressTestHelper_markFullProgressForSecondTestTopic_promotedStoryListIsCorrect() {
     storyProgressTestHelper.markFullProgressForSecondTestTopic(
       profileId,
       /* timestampOlderThanAWeek= */ false
@@ -844,7 +844,36 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markRecentlyPlayedfirstExpInAllFracRatio_asOldStories_olderPlayedStoryListCorrect() { // ktlint-disable max-line-length
+  fun testProgressTestHelper_markRecentlyPlayed_firstStoryInTestTopic1And2_promotedStoryListIsCorrect() { // ktlint-disable max-line-length
+    storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
+      profileId = profileId,
+      timestampOlderThanAWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    topicListController.getPromotedActivityList(profileId).toLiveData()
+      .observeForever(mockPromotedActivityListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetPromotedActivityListSucceeded()
+
+    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
+    with(promotedActivityList.promotedStoryList) {
+      assertThat(recentlyPlayedStoryCount).isEqualTo(2)
+      assertThat(olderPlayedStoryCount).isEqualTo(0)
+      assertThat(recentlyPlayedStoryList[0].explorationId).isEqualTo(
+        TEST_EXPLORATION_ID_2
+      )
+      assertThat(recentlyPlayedStoryList[0].completedChapterCount).isEqualTo(0)
+      assertThat(recentlyPlayedStoryList[1].explorationId).isEqualTo(
+        TEST_EXPLORATION_ID_4
+      )
+      assertThat(recentlyPlayedStoryList[1].completedChapterCount).isEqualTo(0)
+    }
+  }
+
+  @Test
+  fun testHelper_recentlyPlayed_firstExpInAllFracRatio_asOldStories_PromotedActivityListCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = profileId,
       timestampOlderThanAWeek = true
@@ -867,12 +896,10 @@ class StoryProgressTestHelperTest {
       )
       assertThat(olderPlayedStoryList[0].completedChapterCount)
         .isEqualTo(0)
-
       assertThat(olderPlayedStoryList[1].explorationId)
         .isEqualTo(RATIOS_EXPLORATION_ID_0)
       assertThat(olderPlayedStoryList[1].completedChapterCount)
         .isEqualTo(0)
-
       assertThat(olderPlayedStoryList[2].explorationId)
         .isEqualTo(RATIOS_EXPLORATION_ID_2)
       assertThat(olderPlayedStoryList[2].completedChapterCount)

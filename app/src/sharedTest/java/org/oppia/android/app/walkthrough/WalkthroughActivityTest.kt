@@ -120,7 +120,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testWalkthroughFragment_incProgress_onBackPress_decProgress_progressWorksCorrectly() {
+  fun testWalkthroughFragment_increaseProgress_onBackPressed_decreaseProgress_progressWorksCorrectly() { // ktlint-disable max-line-length
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))

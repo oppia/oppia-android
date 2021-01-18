@@ -37,7 +37,7 @@ private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
 private const val HOME_FRAGMENT_COMBINED_PROVIDER_ID =
   "profile+promotedActivityList+topicListProvider"
 
-/** [ViewModel] for layouts in home fragment . */
+/** [ViewModel] for layouts in home fragment. */
 @FragmentScope
 class HomeViewModel(
   private val activity: AppCompatActivity,

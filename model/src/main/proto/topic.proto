@@ -164,6 +164,15 @@ message CompletedStory {
   LessonThumbnail lesson_thumbnail = 5;
 }
 
+// Corresponds to the list of stories the player is currently playing across all topics.
+message OngoingStoryList {
+  // Ongoing stories from within the last 7 days.
+  repeated PromotedStory recent_story = 1;
+
+  // Other ongoing stories from longer than 7 days ago.
+  repeated PromotedStory older_story = 2;
+}
+
 // The summary of a story that should be promoted, either because it's been started and not yet completed by the player,
 // or because they have completed all other lessons and may find this one interesting.
 message PromotedStory {

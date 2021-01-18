@@ -59,7 +59,7 @@ import javax.inject.Singleton
 
 private const val TEST_FRAGMENT_TAG = "topic_summary_view_model_test_fragment"
 
-/** Tests for [HomeViewModel]s data. */
+/** Tests for [TopicSummaryViewModel] data. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
