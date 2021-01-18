@@ -395,7 +395,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPin_withAdmin_inputWrongConfirmPin_save_checkConfirmWrongErrorIsShown() {
+  fun testProfileResetPin_withAdmin_inputWrongConfirmPin_save_confirmWrongErrorIsShown() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context,
