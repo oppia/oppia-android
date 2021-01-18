@@ -1,11 +1,13 @@
 package org.oppia.android.app.recyclerview;
 
 import android.graphics.drawable.Drawable;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.ObservableList;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 /** Holds all custom binding adapters that bind to [RecyclerView]. */

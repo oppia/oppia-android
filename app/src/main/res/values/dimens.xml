@@ -93,9 +93,7 @@
   <dimen name="profile_chooser_profile_view_is_admin_margin_top">4dp</dimen>
   <dimen name="profile_chooser_profile_view_last_visited_margin_top_profile_not_added">4dp</dimen>
   <dimen name="continue_navigation_item_button_non_split_view_margin">4dp</dimen>
-
   <dimen name="space_0dp">0dp</dimen>
-
   <dimen name="dot_width_height">12dp</dimen>
   <dimen name="dot_gap">12dp</dimen>
   <dimen name="enter_text_view_padding_start">60dp</dimen>
@@ -103,15 +101,14 @@
   <dimen name="promoted_story_card_width">280dp</dimen>
   <dimen name="home_padding_end">44dp</dimen>
   <dimen name="home_padding_start">20dp</dimen>
-  <dimen name="home_margin_max">28dp</dimen>
-  <dimen name="home_margin_min">8dp</dimen>
+  <dimen name="home_outer_margin">28dp</dimen>
+  <dimen name="home_inner_margin">8dp</dimen>
   <dimen name="home_tablet_land_outer_margin">96dp</dimen>
   <dimen name="home_tablet_port_outer_margin">120dp</dimen>
   <dimen name="recently_played_margin_max">28dp</dimen>
   <dimen name="recently_played_margin_min">8dp</dimen>
   <dimen name="recently_played_tablet_land_outer_margin">96dp</dimen>
   <dimen name="recently_played_tablet_port_outer_margin">120dp</dimen>
-
   <dimen name="default_reading_text_size">18sp</dimen>
   <dimen name="font_scale_content_text_size">20dp</dimen>
   <dimen name="profile_view_already_added_margin">20dp</dimen>
