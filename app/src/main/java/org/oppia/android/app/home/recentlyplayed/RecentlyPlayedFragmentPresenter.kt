@@ -168,8 +168,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     val sectionTitle2Position = when {
       // If suggested story count is 0, that means that section title 2 will not be visible.
       suggestedStoryCount == 0 -> -1
-      recentStoryCount == 0 -> 0
-      else -> recentStoryCount + 1
+      recentStoryCount == 0 || oldStoryCount == 0 -> 0
+      else -> recentStoryCount + oldStoryCount + 1
     }
 
     val spanCount = activity.resources.getInteger(R.integer.recently_played_span_count)
