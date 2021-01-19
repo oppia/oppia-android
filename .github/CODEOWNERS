@@ -23,17 +23,13 @@
 #                                 Blanket ownership                                 #
 #####################################################################################
 
-# Global ownership (only for cases when new files are added & no other matches occur).
-* @BenHenning
-
 # Codeowners ownership (for adding/changing/removing code owners).
 .github/CODEOWNERS @oppia/owners
 
 # Bazel build files.
-/WORKSPACE @BenHenning
+WORKSPACE @BenHenning
 *.bzl @BenHenning
 *.bazel @BenHenning
-BUILD @BenHenning
 .bazelrc @BenHenning
 /tools/android/ @BenHenning
 
@@ -56,23 +52,33 @@ gradlew.bat @BenHenning
 *Test.kt @anandwana001
 
 # All resource files.
-**/res/*.xml @rt4914
+/app/src/main/res/**/*.xml @rt4914
+/utility/src/main/res/**/*.xml @rt4914
 
-# Proguard configurations.
+# Proguard configuration.
 *.pro @BenHenning
 
 # Lesson assets.
 /domain/src/main/assets/ @BenHenning @rt4914
 
-# Android manifests.
+# Android manifests and top-level app configuration.
 *Manifest.xml @BenHenning
 
-# Linter configurations.
+# Linter configuration.
 buf.yaml @anandwana001
 
 # IDEA IDE configuration.
 .editorconfig @BenHenning
 /.idea/ @BenHenning
+
+# Robolectric configuration.
+*.properties @BenHenning
+
+# Firebase configuration.
+/app/google-services.json @BenHenning
+
+# Binary files.
+*.png @BenHenning
 
 # Important codebase files.
 LICENSE @BenHenning
@@ -89,7 +95,7 @@ LICENSE @BenHenning
 /app/src/*/java/org/oppia/android/app/player/ @BenHenning
 
 # Bindable adapter utilities.
-/app/src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.java @BenHenning
+/app/src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.kt @BenHenning
 /app/src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java @BenHenning
 /app/src/sharedTest/java/org/oppia/android/app/recyclerview/BindableAdapterTest.kt @BenHenning
 
@@ -126,7 +132,6 @@ LICENSE @BenHenning
 
 # Global domain module code ownership.
 /domain/**/*.kt @BenHenning
-/domain/**/*.java @BenHenning
 
 # Questions support.
 /domain/src/*/java/org/oppia/android/domain/question/ @vinitamurthi
@@ -138,13 +143,8 @@ LICENSE @BenHenning
 #                                  testing module                                   #
 #####################################################################################
 
-# Global testing module code ownership (secondary).
-/testing/**/*.kt @anandwana001
-/testing/**/*.java @anandwana001
-
-# Global testing module code ownership (primary).
-/testing/**/*.kt @BenHenning
-/testing/**/*.java @BenHenning
+# Global testing module code ownership.
+/testing/**/*.kt @anandwana001 @BenHenning
 
 #####################################################################################
 #                                    data module                                    #
@@ -152,7 +152,7 @@ LICENSE @BenHenning
 
 # Global data module code ownership.
 /data/**/*.kt @BenHenning
-/data/**/*.java @BenHenning
+/data/src/test/**/*.json @BenHenning
 
 #####################################################################################
 #                                  utility module                                   #
@@ -160,7 +160,6 @@ LICENSE @BenHenning
 
 # Global utility module code ownership.
 /utility/**/*.kt @BenHenning
-/utility/**/*.java @BenHenning
 
 # Accessibility utilities.
 /utility/src/*/java/org/oppia/android/util/accessibility/ @rt4914
@@ -185,8 +184,5 @@ LICENSE @BenHenning
 # Global proto file ownership (for protos outside the model directory since all protos should belong in models).
 *.proto @BenHenning @vinitamurthi
 
-# Global model ownership (secondary).
-/model/ @vinitamurthi
-
-# Global model ownership (primary).
-/model/ @BenHenning
+# Global model ownership.
+/model/ @vinitamurthi @BenHenning
