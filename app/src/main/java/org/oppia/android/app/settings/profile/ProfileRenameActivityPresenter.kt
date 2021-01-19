@@ -2,7 +2,6 @@ package org.oppia.android.app.settings.profile
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -19,9 +18,6 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-
-const val KEY_PROFILE_RENAME_NAME_ERROR_MESSAGE = "PROFILE_RENAME_NAME_ERROR_MESSAGE"
-const val KEY_PROFILE_RENAME_INPUT_NAME = "PROFILE_RENAME_INPUT_NAME"
 
 /** The presenter for [ProfileRenameActivity]. */
 @ActivityScope
@@ -83,8 +79,15 @@ class ProfileRenameActivityPresenter @Inject constructor(
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.profileRenameInputEditText.onTextChanged { name ->
       name?.let {
-        renameViewModel.nameErrorMsg.set("")
-        renameViewModel.inputName.set(it)
+        if (
+          renameViewModel.nameErrorMsg.get()?.isNotEmpty()!! &&
+          renameViewModel.inputName.get() == it
+        ) {
+          renameViewModel.inputName.set(it)
+        } else {
+          renameViewModel.nameErrorMsg.set("")
+          renameViewModel.inputName.set(it)
+        }
       }
     }
 
@@ -118,28 +121,6 @@ class ProfileRenameActivityPresenter @Inject constructor(
             )
           )
       }
-    }
-  }
-
-  fun handleOnSavedInstanceState(bundle: Bundle) {
-    bundle.putString(
-      KEY_PROFILE_RENAME_NAME_ERROR_MESSAGE,
-      renameViewModel.nameErrorMsg.get()
-    )
-    bundle.putString(
-      KEY_PROFILE_RENAME_INPUT_NAME,
-      renameViewModel.inputName.get()
-    )
-  }
-
-  fun handleOnRestoreInstanceState(bundle: Bundle) {
-    val name = bundle.getString(KEY_PROFILE_RENAME_INPUT_NAME)
-    val nameErrorMsg = bundle.getString(KEY_PROFILE_RENAME_NAME_ERROR_MESSAGE)
-    if (!name.isNullOrEmpty()) {
-      renameViewModel.inputName.set(name)
-    }
-    if (!nameErrorMsg.isNullOrEmpty()) {
-      renameViewModel.nameErrorMsg.set(nameErrorMsg)
     }
   }
 

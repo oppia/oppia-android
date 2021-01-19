@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Bundle
 import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.View
@@ -36,12 +35,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
-const val KEY_ADD_PROFILE_NAME_ERROR_MESSAGE = "ADD_PROFILE_INPUT_NAME_ERROR_MESSAGE"
-const val KEY_ADD_PROFILE_INPUT_NAME = "ADD_PROFILE_INPUT_NAME"
-const val KEY_ADD_PROFILE_PIN_ERROR_MESSAGE = "ADD_PROFILE_INPUT_PIN_ERROR_MESSAGE"
-const val KEY_ADD_PROFILE_INPUT_PIN = "ADD_PROFILE_INPUT_PIN"
-const val KEY_ADD_PROFILE_CONFIRM_PIN_ERROR_MESSAGE = "ADD_PROFILE_CONFIRM_PIN_ERROR_MESSAGE"
-const val KEY_ADD_PROFILE_INPUT_CONFIRM_PIN = "ADD_PROFILE_CONFIRM_PIN"
 
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
@@ -122,27 +115,48 @@ class AddProfileActivityPresenter @Inject constructor(
 
     binding.addProfileActivityUserNameEditText.onTextChanged { name ->
       name?.let {
-        profileViewModel.isButtonActive.set(it.isNotEmpty())
-        profileViewModel.nameErrorMsg.set("")
-        profileViewModel.inputName.set(it)
+        if (
+          profileViewModel.nameErrorMsg.get()?.isNotEmpty()!! &&
+          profileViewModel.inputName.get() == it
+        ) {
+          profileViewModel.inputName.set(it)
+          profileViewModel.isButtonActive.set(it.isNotEmpty())
+        } else {
+          profileViewModel.isButtonActive.set(it.isNotEmpty())
+          profileViewModel.nameErrorMsg.set("")
+          profileViewModel.inputName.set(it)
+        }
       }
     }
 
     binding.addProfileActivityPinEditText.onTextChanged { pin ->
       pin?.let {
-        profileViewModel.inputPin.set(it)
-        profileViewModel.pinErrorMsg.set("")
-        inputtedPin = pin.isNotEmpty()
-        setValidPin(binding)
+        if (profileViewModel.pinErrorMsg.get()?.isNotEmpty()!! &&
+          profileViewModel.inputPin.get() == it
+        ) {
+          profileViewModel.inputPin.set(it)
+        } else {
+          profileViewModel.inputPin.set(it)
+          profileViewModel.pinErrorMsg.set("")
+          inputtedPin = pin.isNotEmpty()
+          setValidPin(binding)
+        }
       }
     }
 
     binding.addProfileActivityConfirmPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
-        profileViewModel.inputConfirmPin.set(it)
-        profileViewModel.confirmPinErrorMsg.set("")
-        inputtedConfirmPin = confirmPin.isNotEmpty()
-        setValidPin(binding)
+        if (
+          profileViewModel.confirmPinErrorMsg.get()?.isNotEmpty()!! &&
+          profileViewModel.inputConfirmPin.get() == it
+        ) {
+          profileViewModel.inputConfirmPin.set(it)
+        } else {
+          profileViewModel.inputConfirmPin.set(it)
+          profileViewModel.confirmPinErrorMsg.set("")
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+          setValidPin(binding)
+        }
       }
     }
 
@@ -306,60 +320,6 @@ class AddProfileActivityPresenter @Inject constructor(
   fun dismissAlertDialog() {
     if (::alertDialog.isInitialized && alertDialog.isShowing) {
       alertDialog.dismiss()
-    }
-  }
-
-  fun handleOnSavedInstanceState(bundle: Bundle) {
-    bundle.putString(
-      KEY_ADD_PROFILE_NAME_ERROR_MESSAGE,
-      profileViewModel.nameErrorMsg.get()
-    )
-    bundle.putString(
-      KEY_ADD_PROFILE_INPUT_NAME,
-      profileViewModel.inputName.get()
-    )
-    bundle.putString(
-      KEY_ADD_PROFILE_PIN_ERROR_MESSAGE,
-      profileViewModel.pinErrorMsg.get()
-    )
-    bundle.putString(
-      KEY_ADD_PROFILE_INPUT_PIN,
-      profileViewModel.inputPin.get()
-    )
-    bundle.putString(
-      KEY_ADD_PROFILE_CONFIRM_PIN_ERROR_MESSAGE,
-      profileViewModel.confirmPinErrorMsg.get()
-    )
-    bundle.putString(
-      KEY_ADD_PROFILE_INPUT_CONFIRM_PIN,
-      profileViewModel.inputConfirmPin.get()
-    )
-  }
-
-  fun handleOnRestoreInstanceState(bundle: Bundle) {
-    val name = bundle.getString(KEY_ADD_PROFILE_INPUT_NAME)
-    val nameErrorMsg = bundle.getString(KEY_ADD_PROFILE_NAME_ERROR_MESSAGE)
-    val pin = bundle.getString(KEY_ADD_PROFILE_INPUT_PIN)
-    val pinErrorMsg = bundle.getString(KEY_ADD_PROFILE_PIN_ERROR_MESSAGE)
-    val confirmPin = bundle.getString(KEY_ADD_PROFILE_INPUT_CONFIRM_PIN)
-    val confirmPinErrorMsg = bundle.getString(KEY_ADD_PROFILE_CONFIRM_PIN_ERROR_MESSAGE)
-    if (!name.isNullOrEmpty()) {
-      profileViewModel.inputName.set(name)
-    }
-    if (!nameErrorMsg.isNullOrEmpty()) {
-      profileViewModel.nameErrorMsg.set(nameErrorMsg)
-    }
-    if (!pin.isNullOrEmpty()) {
-      profileViewModel.inputPin.set(pin)
-    }
-    if (!pinErrorMsg.isNullOrEmpty()) {
-      profileViewModel.pinErrorMsg.set(pinErrorMsg)
-    }
-    if (!confirmPin.isNullOrEmpty()) {
-      profileViewModel.inputConfirmPin.set(confirmPin)
-    }
-    if (!confirmPinErrorMsg.isNullOrEmpty()) {
-      profileViewModel.confirmPinErrorMsg.set(confirmPinErrorMsg)
     }
   }
 

@@ -31,14 +31,4 @@ class ProfileRenameActivity : InjectableAppCompatActivity() {
     finish()
     return false
   }
-
-  override fun onSaveInstanceState(outState: Bundle) {
-    profileRenameActivityPresenter.handleOnSavedInstanceState(outState)
-    super.onSaveInstanceState(outState)
-  }
-
-  override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-    super.onRestoreInstanceState(savedInstanceState)
-    profileRenameActivityPresenter.handleOnRestoreInstanceState(savedInstanceState!!)
-  }
 }
