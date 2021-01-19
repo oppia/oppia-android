@@ -25,7 +25,7 @@
 
     <LinearLayout
       android:id="@+id/profile_chooser_item"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/profile_chooser_profile_view_margin_start"
       android:layout_marginEnd="@dimen/profile_chooser_profile_view_margin_end"
