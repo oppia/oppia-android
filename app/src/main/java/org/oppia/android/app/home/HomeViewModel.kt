@@ -182,7 +182,7 @@ class HomeViewModel(
       }
 
       storyList.take(promotedStoryListLimit).mapIndexed { index, promotedStory ->
-        if (promotedStory.topicId == promotedStory.completedStoryTopicID &&
+        if (promotedStory.topicId == promotedStory.completedStoryTopicId &&
           suggestedStoryCount != 0
         ) {
           when {
