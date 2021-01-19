@@ -166,7 +166,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_openNavDrawer_navDrawerIsOpened() {
+  fun testNavDrawer_openNavDrawer_navDrawerIsOpened() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
       onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
@@ -175,7 +175,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_openNavDrawer_changeConfig_navDrawerIsDisplayed() {
+  fun testNavDrawer_openNavDrawer_changeConfig_navDrawerIsDisplayed() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -184,7 +184,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_withAdminProfile_openNavDrawer_profileNameIsDisplayed() {
+  fun testNavDrawer_withAdminProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -202,7 +202,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_withAdminProfile_changeConfig_profileNameIsDisplayed() {
+  fun testNavDrawer_withAdminProfile_changeConfig_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -221,7 +221,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_openNavDrawer_profileProgressIsDisplayed() {
+  fun testNavDrawer_openNavDrawer_profileProgressIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -239,7 +239,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_withUserProfile_openNavDrawer_profileNameIsDisplayed() {
+  fun testNavDrawer_withUserProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId1
@@ -257,7 +257,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickOnHeader_opensProfileProgressActivity() {
+  fun testNavDrawer_clickOnHeader_opensProfileProgressActivity() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -278,7 +278,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_openNavDrawer_clickSwitchProfile_clickCancel() {
+  fun testNavDrawer_openNavDrawer_clickSwitchProfile_clickCancel() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -295,7 +295,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_goToOptions_openNavDrawer_clickSwitchProfile_clickCancel() {
+  fun testNavDrawer_goToOptions_openNavDrawer_clickSwitchProfile_clickCancel() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -314,7 +314,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_goToHelp_openNavDrawer_clickSwitchProfile_clickCancel() {
+  fun testNavDrawer_goToHelp_openNavDrawer_clickSwitchProfile_clickCancel() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -333,7 +333,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_goToAdmin_openNavDrawer_clickSwitchProfile_clickCancel() {
+  fun testNavDrawer_goToAdmin_openNavDrawer_clickSwitchProfile_clickCancel() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -356,7 +356,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickSwitchProfile_clickCancel_changeConfig() {
+  fun testNavDrawer_clickSwitchProfile_clickCancel_changeConfig() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -374,7 +374,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_goToOptions_clickSwitchProfile_clickCancel_changeConfig() {
+  fun testNavDrawer_goToOptions_clickSwitchProfile_clickCancel_changeConfig() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -394,7 +394,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_goToHelp_clickSwitchProfile_clickCancel_changeConfig() {
+  fun testNavDrawer_goToHelp_clickSwitchProfile_clickCancel_changeConfig() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -414,7 +414,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_goToAdmin_clickSwitchProfile_clickCancel_changeConfig() {
+  fun testNavDrawer_goToAdmin_clickSwitchProfile_clickCancel_changeConfig() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -439,7 +439,64 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_withAdminProfile_openNavDrawer_adminControlsIsDisplayed() {
+  fun testNavDrawer_clickSwitchProfile_clickCancel_checkHomeItemColor() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.administrator_controls)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.menu_home))
+        .check(matches(ViewMatchers.hasTextColor(R.color.highlightedNavMenuItem)))
+    }
+  }
+
+  @Test
+  fun testNavDrawer_goToOptions_clickSwitchProfile_clickCancel_checkOptionsItemColor() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.administrator_controls)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.menu_options))
+        .check(matches(ViewMatchers.hasTextColor(R.color.highlightedNavMenuItem)))
+    }
+  }
+
+  @Test
+  fun testNavDrawer_goToHelp_clickSwitchProfile_clickCancel_checkHelpItemColor() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.administrator_controls)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.menu_help))
+        .check(matches(ViewMatchers.hasTextColor(R.color.highlightedNavMenuItem)))
+    }
+  }
+
+  @Test
+  fun testNavDrawer_withAdminProfile_openNavDrawer_adminControlsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -449,7 +506,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_withAdminProfile_changeConfig_adminControlsIsDisplayed() {
+  fun testNavDrawer_withAdminProfile_changeConfig_adminControlsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -461,7 +518,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_withAdminProfile_adminMenu_opensAdminControlsActivity() {
+  fun testNavDrawer_withAdminProfile_adminMenu_opensAdminControlsActivity() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -476,7 +533,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_withUserProfile_adminControlsAreNotDisplayed() {
+  fun testNavDrawer_withUserProfile_adminControlsAreNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId1
@@ -491,7 +548,7 @@ class NavigationDrawerActivityTest {
   // TODO(#1806): Enable this once lowfi implementation is done.
   @Test
   @Ignore("My Downloads is removed until we have full download support.")
-  fun testNavigationDrawerTestActivity_myDownloadsMenu_myDownloadsFragmentIsDisplayed() {
+  fun testNavDrawer_myDownloadsMenu_myDownloadsFragmentIsDisplayed() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_my_downloads)).perform(click())
@@ -500,7 +557,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_switchProfileMenu_showsExitToProfileChooserDialog() {
+  fun testNavDrawer_switchProfileMenu_showsExitToProfileChooserDialog() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -511,7 +568,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_switchProfileMenu_clickExit_opensProfileChooserActivity() {
+  fun testNavDrawer_switchProfileMenu_clickExit_opensProfileChooserActivity() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -527,7 +584,7 @@ class NavigationDrawerActivityTest {
 
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavigationDrawerTestActivity_openNavDrawerAndClose_navDrawerIsClosed() {
+  fun testNavDrawer_openNavDrawerAndClose_navDrawerIsClosed() {
     launch(NavigationDrawerTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -538,7 +595,7 @@ class NavigationDrawerActivityTest {
 
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavigationDrawerTestActivity_selectSwitchProfileMenu_clickCancel_navDrawerIsClosed() {
+  fun testNavDrawer_selectSwitchProfileMenu_clickCancel_navDrawerIsClosed() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -554,7 +611,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_selectSwitchProfile_changeConfig_dialogIsVisible() {
+  fun testNavDrawer_selectSwitchProfile_changeConfig_dialogIsVisible() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -567,7 +624,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_openNavDrawer_selectHelpMenu_opensHelpActivity() {
+  fun testNavDrawer_openNavDrawer_selectHelpMenu_opensHelpActivity() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_help)).perform(click())

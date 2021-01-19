@@ -105,7 +105,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             return@setOnClickListener
           }
 
-          unmarkSwitchProfileItemCloseDrawer()
+          uncheckAllMenuItemsWhenAdministratorControlsIsChecked()
 
           drawerLayout.closeDrawers()
           getFooterViewModel().isAdministratorControlsSelected.set(true)
@@ -251,6 +251,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             isAdministratorControlsSelected = false
             lastCheckedItemId = previousMenuItemId ?: -1
           }
+          binding.fragmentDrawerNavView.menu.getItem(
+            NavigationDrawerItem.SWITCH_PROFILE.ordinal
+          ).isChecked = true
           val dialogFragment = ExitProfileDialogFragment
             .newInstance(
               isFromNavigationDrawer = true,
@@ -274,8 +277,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     )
   }
 
-  fun markLastCheckedItemCloseDrawer(lastCheckedItemId: Int, isAdminSelected: Boolean) {
-    if (isAdminSelected) {
+  fun checkLastCheckedItemCloseDrawer(
+    lastCheckedItemId: Int,
+    isAdministratorControlsSelected: Boolean
+  ) {
+    if (isAdministratorControlsSelected) {
       getFooterViewModel().isAdministratorControlsSelected.set(true)
       uncheckAllMenuItemsWhenAdministratorControlsIsChecked()
     } else if (lastCheckedItemId != -1) {
@@ -288,12 +294,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           NavigationDrawerItem.DOWNLOADS.value -> 3
           else -> 4
         }
-      binding.fragmentDrawerNavView.menu.getItem(checkedItemPosition).isChecked = true
+      if (checkedItemPosition != 4) {
+        binding.fragmentDrawerNavView.menu.getItem(checkedItemPosition).isChecked = true
+      }
     }
     drawerLayout.closeDrawers()
   }
 
-  fun unmarkSwitchProfileItemCloseDrawer() {
+  fun uncheckSwitchProfileItemCloseDrawer() {
     binding.fragmentDrawerNavView.menu.getItem(
       NavigationDrawerItem.SWITCH_PROFILE.ordinal
     ).isChecked =
@@ -302,7 +310,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun uncheckAllMenuItemsWhenAdministratorControlsIsChecked() {
     binding.fragmentDrawerNavView.menu.forEach { item ->
-      item.isChecked = false
+      item.isCheckable = false
     }
   }
 
