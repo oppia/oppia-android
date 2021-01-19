@@ -900,7 +900,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_inputRatio_submit_correctAnswerDisplayed() {
+  fun testStateFragment_inputRatio_correctAnswerSubmitted_correctAnswerDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_6).use {
       startPlayingExploration()
       typeRatioExpression("4:5")
@@ -913,7 +913,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_inputRatio_submit_correctTextBannerDisplayed() {
+  fun testStateFragment_inputRatio_correctAnswerSubmitted_correctTextBannerDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_6).use {
       startPlayingExploration()
       typeRatioExpression("4:5")
@@ -926,7 +926,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_inputRatio_submit_confettiDisplayed() {
+  fun testStateFragment_inputRatio_correctAnswerSubmitted_confettiDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_6).use {
       startPlayingExploration()
       typeRatioExpression("4:5")
