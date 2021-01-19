@@ -730,44 +730,35 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private fun createBannerConfetti() {
     val x = bannerConfettiView!!.width / 3
     val y = bannerConfettiView!!.height / 2
+    val colorsList = confettiColors.map { ContextCompat.getColor(bannerConfettiView.context, it) }
+    val speedMin = 1f
+    val speedMax = 3f
+    val timeToLive = 2000
+    val shapesArray = arrayOf(Shape.Square, Shape.Circle)
+    val size = Size(7)
+    val sizeWithMass = Size(7, 3f)
+    val numPieces = 7
 
     bannerConfettiView!!.build()
-      .addColors(
-        confettiColors.map { ContextCompat.getColor(bannerConfettiView.context, it) }
-      )
+      .addColors(colorsList)
       .setDirection(180.0, 270.0)
-      .setSpeed(1f, 3f)
+      .setSpeed(speedMin, speedMax)
       .setFadeOutEnabled(true)
-      .setTimeToLive(2100)
-      .addShapes(
-        *arrayOf(Shape.Square, Shape.Circle)
-      )
-      .addSizes(
-        Size(8), Size(8, 3f)
-      ).setPosition(
-        x = x.toFloat(),
-        y = y.toFloat()
-      ).burst(10)
-
+      .setTimeToLive(timeToLive.toLong())
+      .addShapes(*shapesArray)
+      .addSizes(size, sizeWithMass)
+      .setPosition(x.toFloat(), y.toFloat())
+      .burst(numPieces)
     bannerConfettiView!!.build()
-      .addColors(
-        confettiColors.map { ContextCompat.getColor(bannerConfettiView.context, it) }
-      )
+      .addColors(colorsList)
       .setDirection(270.0, 360.0)
-      .setSpeed(1f, 3f)
+      .setSpeed(speedMin, speedMax)
       .setFadeOutEnabled(true)
-      .setTimeToLive(2100)
-      .addShapes(
-        *arrayOf(Shape.Square, Shape.Circle)
-      )
-      .addSizes(
-        Size(8), Size(8, 3f)
-      )
-      .setPosition(
-        x = (2 * x).toFloat(),
-        y = y.toFloat()
-      )
-      .burst(10)
+      .setTimeToLive(timeToLive.toLong())
+      .addShapes(*shapesArray)
+      .addSizes(size, sizeWithMass)
+      .setPosition((2 * x).toFloat(), y.toFloat())
+      .burst(numPieces)
   }
 
   /**

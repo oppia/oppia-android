@@ -148,7 +148,7 @@
 
     <FrameLayout
       android:layout_width="match_parent"
-      android:layout_height="86dp"
+      android:layout_height="124dp"
       android:layout_gravity="bottom"
       android:layout_marginTop="8dp"
       android:elevation="8dp"
@@ -160,7 +160,8 @@
         android:layout_height="54dp"
         android:layout_marginStart="52dp"
         android:layout_marginEnd="52dp"
-        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="bottom"
         android:background="@drawable/congratulations_text_background_shadow"
         android:elevation="8dp"
         android:fontFamily="sans-serif-medium"
