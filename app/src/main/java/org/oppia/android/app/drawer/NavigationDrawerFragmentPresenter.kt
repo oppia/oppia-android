@@ -321,6 +321,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
     previousMenuItemId = if (activity is TopicActivity) null else menuItemId
     if (menuItemId != 0) {
+      getFooterViewModel().isAdministratorControlsSelected.set(false)
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
           binding.fragmentDrawerNavView.menu.getItem(
