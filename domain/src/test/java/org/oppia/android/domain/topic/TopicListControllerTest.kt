@@ -11,7 +11,6 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -117,25 +116,13 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_providesListOfMultipleTopics() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicList = retrieveTopicList()
     assertThat(topicList.topicSummaryCount).isGreaterThan(1)
   }
 
   @Test
   fun testRetrieveTopicList_firstTopic_hasCorrectTopicInfo() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicList = retrieveTopicList()
     val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
     assertThat(firstTopic.name).isEqualTo("First Test Topic")
@@ -143,13 +130,7 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_firstTopic_hasCorrectThumbnail() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicList = retrieveTopicList()
     val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.topicThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.ADDING_AND_SUBTRACTING_FRACTIONS)
@@ -157,26 +138,14 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_firstTopic_hasCorrectLessonCount() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicList = retrieveTopicList()
     val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.totalChapterCount).isEqualTo(5)
   }
 
   @Test
   fun testRetrieveTopicList_secondTopic_hasCorrectTopicInfo() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicList = retrieveTopicList()
     val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.topicId).isEqualTo(TEST_TOPIC_ID_1)
     assertThat(secondTopic.name).isEqualTo("Second Test Topic")
@@ -184,13 +153,7 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_secondTopic_hasCorrectThumbnail() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicList = retrieveTopicList()
     val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.topicThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.BAKER)
@@ -198,26 +161,14 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_secondTopic_hasCorrectLessonCount() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicList = retrieveTopicList()
     val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.totalChapterCount).isEqualTo(1)
   }
 
   @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectTopicInfo() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicList = retrieveTopicList()
     val fractionsTopic = topicList.getTopicSummary(2)
     assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(fractionsTopic.name).isEqualTo("Fractions")
@@ -225,13 +176,7 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectThumbnail() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicList = retrieveTopicList()
     val fractionsTopic = topicList.getTopicSummary(2)
     assertThat(fractionsTopic.topicThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
@@ -239,26 +184,14 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectLessonCount() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicList = retrieveTopicList()
     val fractionsTopic = topicList.getTopicSummary(2)
     assertThat(fractionsTopic.totalChapterCount).isEqualTo(2)
   }
 
   @Test
   fun testRetrieveTopicList_ratiosTopic_hasCorrectTopicInfo() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicList = retrieveTopicList()
     val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(ratiosTopic.name).isEqualTo("Ratios and Proportional Reasoning")
@@ -266,13 +199,7 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_ratiosTopic_hasCorrectThumbnail() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicList = retrieveTopicList()
     val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.topicThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
@@ -280,13 +207,7 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveTopicList_ratiosTopic_hasCorrectLessonCount() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
+    val topicList = retrieveTopicList()
     val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.totalChapterCount).isEqualTo(4)
   }
@@ -317,7 +238,6 @@ class TopicListControllerTest {
   }
 
   @Test
-  @Ignore("Failing on Circle CI.")
   fun testRetrieveOngoingStoryList_markRecentlyPlayedFracStory0Exp0_ongoingStoryListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
@@ -326,15 +246,8 @@ class TopicListControllerTest {
       FRACTIONS_EXPLORATION_ID_0,
       getCurrentTimestamp()
     )
-    testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetOngoingStoryListSucceeded()
-
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    val ongoingTopicList = retrieveOngoingStoryList()
     assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
     verifyOngoingStoryAsFractionStory0Exploration0(ongoingTopicList.recentStoryList[0])
   }
@@ -348,15 +261,8 @@ class TopicListControllerTest {
       FRACTIONS_EXPLORATION_ID_0,
       getCurrentTimestamp()
     )
-    testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetOngoingStoryListSucceeded()
-
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    val ongoingTopicList = retrieveOngoingStoryList()
     assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
     verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[0])
   }
@@ -379,21 +285,13 @@ class TopicListControllerTest {
       FRACTIONS_EXPLORATION_ID_1,
       getCurrentTimestamp()
     )
-    testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetOngoingStoryListSucceeded()
-
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    val ongoingTopicList = retrieveOngoingStoryList()
     assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
     verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[0])
   }
 
   @Test
-  @Ignore("Failing on Circle CI.")
   fun testRetrieveOngoingStoryList_markAllChaptersCompletedInFractions_ongoingStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
@@ -411,16 +309,9 @@ class TopicListControllerTest {
       FRACTIONS_EXPLORATION_ID_1,
       getCurrentTimestamp()
     )
-    testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetOngoingStoryListSucceeded()
-
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
+    val ongoingTopicList = retrieveOngoingStoryList()
+    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(4)
     verifyDefaultOngoingStoryListSucceeded()
   }
 
@@ -442,15 +333,8 @@ class TopicListControllerTest {
       RATIOS_EXPLORATION_ID_2,
       getCurrentTimestamp()
     )
-    testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetOngoingStoryListSucceeded()
-
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    val ongoingTopicList = retrieveOngoingStoryList()
     assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
     verifyOngoingStoryAsRatioStory0Exploration0(ongoingTopicList.recentStoryList[0])
     verifyOngoingStoryAsRatioStory1Exploration2(ongoingTopicList.recentStoryList[1])
@@ -474,15 +358,8 @@ class TopicListControllerTest {
       RATIOS_EXPLORATION_ID_2,
       getCurrentTimestamp()
     )
-    testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetOngoingStoryListSucceeded()
-
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    val ongoingTopicList = retrieveOngoingStoryList()
     assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
     verifyOngoingStoryAsRatioStory0Exploration1(ongoingTopicList.recentStoryList[0])
     verifyOngoingStoryAsRatioStory1Exploration2(ongoingTopicList.recentStoryList[1])
@@ -515,15 +392,8 @@ class TopicListControllerTest {
       RATIOS_EXPLORATION_ID_2,
       getCurrentTimestamp()
     )
-    testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetOngoingStoryListSucceeded()
-
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    val ongoingTopicList = retrieveOngoingStoryList()
     assertThat(ongoingTopicList.recentStoryCount).isEqualTo(3)
     verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[0])
     verifyOngoingStoryAsRatioStory0Exploration1(ongoingTopicList.recentStoryList[1])
@@ -557,15 +427,8 @@ class TopicListControllerTest {
       RATIOS_EXPLORATION_ID_2,
       getCurrentTimestamp()
     )
-    testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetOngoingStoryListSucceeded()
-
-    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    val ongoingTopicList = retrieveOngoingStoryList()
     assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
     assertThat(ongoingTopicList.olderStoryCount).isEqualTo(2)
     verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.olderStoryList[0])
@@ -693,6 +556,23 @@ class TopicListControllerTest {
   // Returns a timestamp which is atleast a week older than current timestamp.
   private fun getOldTimestamp(): Long {
     return Date().time - NINE_DAYS_IN_MS
+  }
+
+  private fun retrieveTopicList(): TopicList {
+    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    topicListLiveData.observeForever(mockTopicListObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
+    return topicListResultCaptor.value.getOrThrow()
+  }
+
+  private fun retrieveOngoingStoryList(): OngoingStoryList {
+    testCoroutineDispatchers.runCurrent()
+    topicListController.getOngoingStoryList(profileId0).toLiveData()
+      .observeForever(mockOngoingStoryListObserver)
+    testCoroutineDispatchers.runCurrent()
+    verifyGetOngoingStoryListSucceeded()
+    return ongoingStoryListResultCaptor.value.getOrThrow()
   }
 
   // TODO(#89): Move this to a common test application component.
