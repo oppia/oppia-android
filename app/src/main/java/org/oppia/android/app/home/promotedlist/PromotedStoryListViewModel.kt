@@ -27,7 +27,7 @@ class PromotedStoryListViewModel(
 
   /** Determines and returns the header for the promoted stories. */
   fun getHeader(): String {
-    with (promotedActivityList.promotedStoryList) {
+    with(promotedActivityList.promotedStoryList) {
       return when {
         suggestedStoryList.isNotEmpty() -> {
           if (recentlyPlayedStoryList.isEmpty() && olderPlayedStoryList.isEmpty()) {

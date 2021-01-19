@@ -82,7 +82,8 @@ class ProfileProgressViewModel @Inject constructor(
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
-  private val promotedActivityListResultLiveData: LiveData<AsyncResult<PromotedActivityList>> by lazy {
+  private val promotedActivityListResultLiveData
+    : LiveData<AsyncResult<PromotedActivityList>> by lazy {
     topicListController.getPromotedActivityList(profileId).toLiveData()
   }
 

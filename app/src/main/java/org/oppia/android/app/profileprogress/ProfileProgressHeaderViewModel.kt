@@ -1,12 +1,9 @@
 package org.oppia.android.app.profileprogress
 
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
-import org.oppia.android.R
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.model.Profile
 

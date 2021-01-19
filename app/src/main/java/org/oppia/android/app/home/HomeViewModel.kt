@@ -30,7 +30,7 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
-import java.util.*
+import java.util.Collections
 
 private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
   "profile+promotedActivityList"
@@ -182,7 +182,8 @@ class HomeViewModel(
       }
 
       storyList.take(promotedStoryListLimit).mapIndexed { index, promotedStory ->
-        if (promotedStory.topicId == promotedStory.completedStoryTopicID && suggestedStoryCount != 0) {
+        if (promotedStory.topicId == promotedStory.completedStoryTopicID &&
+          suggestedStoryCount != 0) {
           when {
             index == 0 && suggestedStoryCount > 1 -> {
               Collections.swap(storyList, 0, 1)
