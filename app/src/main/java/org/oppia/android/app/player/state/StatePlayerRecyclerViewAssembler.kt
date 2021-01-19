@@ -731,8 +731,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val x = bannerConfettiView!!.width / 3
     val y = bannerConfettiView!!.height / 2
     val colorsList = confettiColors.map { ContextCompat.getColor(bannerConfettiView.context, it) }
-    val speedMin = 1f
-    val speedMax = 3f
+    val speedMin = 2f
+    val speedMax = 4f
     val timeToLive = 2000
     val shapesArray = arrayOf(Shape.Square, Shape.Circle)
     val size = Size(7)
@@ -748,6 +748,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       .addShapes(*shapesArray)
       .addSizes(size, sizeWithMass)
       .setPosition(x.toFloat(), y.toFloat())
+      .setRotationEnabled(false)
       .burst(numPieces)
     bannerConfettiView!!.build()
       .addColors(colorsList)
@@ -758,6 +759,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       .addShapes(*shapesArray)
       .addSizes(size, sizeWithMass)
       .setPosition((2 * x).toFloat(), y.toFloat())
+      .setRotationEnabled(false)
       .burst(numPieces)
   }
 
