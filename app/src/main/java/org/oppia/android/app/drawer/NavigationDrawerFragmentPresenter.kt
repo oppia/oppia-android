@@ -105,9 +105,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             return@setOnClickListener
           }
 
-          binding.fragmentDrawerNavView.menu.forEach { menuItem ->
-            menuItem.isChecked = false
-          }
+          unmarkSwitchProfileItemCloseDrawer()
 
           drawerLayout.closeDrawers()
           getFooterViewModel().isAdministratorControlsSelected.set(true)
