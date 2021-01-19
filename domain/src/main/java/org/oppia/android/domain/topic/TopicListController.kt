@@ -552,7 +552,7 @@ class TopicListController @Inject constructor(
       .setTopicName(topic.name)
       .setCompletedChapterCount(completedChapterCount)
       .setTotalChapterCount(totalChapterCount)
-      .setCompletedStoryTopicID(completedStoryTopicId)
+      .setCompletedStoryTopicId(completedStoryTopicId)
     if (nextChapterName != null && explorationId != null) {
       promotedStoryBuilder.nextChapterName = nextChapterName
       promotedStoryBuilder.explorationId = explorationId
