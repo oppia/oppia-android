@@ -11,15 +11,20 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -30,7 +35,9 @@ import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
+import nl.dionsegijn.konfetti.KonfettiView
 import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
@@ -262,6 +269,33 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_nextState_submitCorrectAnswer_correctTextBannerIsDisplayed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      // Submit correct answer
+      submitFractionAnswer(answerText = "3/4")
+
+      onView(withId(R.id.congratulations_text_view))
+        .check(matches(withEffectiveVisibility(VISIBLE)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_nextState_submitCorrectAnswer_confettiIsDisplayed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      // Submit correct answer
+      submitFractionAnswer(answerText = "3/4")
+
+      onView(withId(R.id.banner_confetti_view)).check(hasActiveConfetti())
     }
   }
 
@@ -1253,6 +1287,27 @@ class StateFragmentLocalTest {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
     onView(withId(R.id.next_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
+  }
+
+  // Returns a matcher that matches for active confetti.
+  private fun hasActiveConfetti(): ViewAssertion {
+    return StateFragmentActiveConfettiAssertion()
+  }
+
+  // Custom class to check if a KonfettiView isActive().
+  private class StateFragmentActiveConfettiAssertion() : ViewAssertion {
+    override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
+      if (noViewFoundException != null) {
+        throw noViewFoundException
+      }
+      check(view is KonfettiView) { "The asserted view is not KonfettiView" }
+
+      assertThat(
+        "KonfettiView particle system",
+        view.isActive(),
+        `is`(true)
+      )
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
