@@ -183,7 +183,8 @@ class HomeViewModel(
 
       storyList.take(promotedStoryListLimit).mapIndexed { index, promotedStory ->
         if (promotedStory.topicId == promotedStory.completedStoryTopicID &&
-          suggestedStoryCount != 0) {
+          suggestedStoryCount != 0
+        ) {
           when {
             index == 0 && suggestedStoryCount > 1 -> {
               Collections.swap(storyList, 0, 1)

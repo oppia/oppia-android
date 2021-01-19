@@ -82,10 +82,10 @@ class ProfileProgressViewModel @Inject constructor(
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
-  private val promotedActivityListResultLiveData
-    : LiveData<AsyncResult<PromotedActivityList>> by lazy {
-    topicListController.getPromotedActivityList(profileId).toLiveData()
-  }
+  private val promotedActivityListResultLiveData:
+    LiveData<AsyncResult<PromotedActivityList>> by lazy {
+      topicListController.getPromotedActivityList(profileId).toLiveData()
+    }
 
   private val promotedActivityListLiveData: LiveData<PromotedActivityList> by lazy {
     Transformations.map(
@@ -105,9 +105,9 @@ class ProfileProgressViewModel @Inject constructor(
     limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
     refreshedPromotedActivityListViewModelLiveData =
       Transformations.map(
-        promotedActivityListLiveData,
-        ::processPromotedActivityList
-      ) as MutableLiveData
+      promotedActivityListLiveData,
+      ::processPromotedActivityList
+    ) as MutableLiveData
   }
 
   private fun processPromotedActivityListResult(

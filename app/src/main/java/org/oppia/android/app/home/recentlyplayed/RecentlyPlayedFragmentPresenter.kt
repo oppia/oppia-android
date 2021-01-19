@@ -14,8 +14,8 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.PromotedActivityList
+import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.databinding.RecentlyPlayedFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.topic.TopicListController
