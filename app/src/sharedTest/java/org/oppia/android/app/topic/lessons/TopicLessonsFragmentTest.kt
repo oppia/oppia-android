@@ -8,8 +8,10 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -70,7 +72,6 @@ import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.StoryProgressTestHelper
-import org.oppia.android.testing.RecyclerViewScrollingActions
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -102,9 +103,6 @@ class TopicLessonsFragmentTest {
 
   @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var recyclerViewScrollingActions: RecyclerViewScrollingActions
 
   private val internalProfileId = 0
 
@@ -283,9 +281,8 @@ class TopicLessonsFragmentTest {
       clickLessonTab()
       scrollToPosition(position = 1)
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
-      recyclerViewScrollingActions.scrollToPosition(
-        R.id.story_summary_recycler_view,
-        2
+      onView(withId(R.id.story_summary_recycler_view)).perform(
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(2, scrollTo())
       )
       clickStoryItem(position = 2, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)

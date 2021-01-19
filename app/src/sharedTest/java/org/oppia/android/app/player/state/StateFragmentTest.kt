@@ -22,6 +22,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
@@ -115,7 +116,6 @@ import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.IsOnRobolectric
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RecyclerViewScrollingActions
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
@@ -158,9 +158,6 @@ class StateFragmentTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
-
-  @Inject
-  lateinit var recyclerViewScrollingActions: RecyclerViewScrollingActions
 
   @Inject
   @field:BackgroundDispatcher
@@ -1245,10 +1242,10 @@ class StateFragmentTest {
   }
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
-    recyclerViewScrollingActions.scrollToViewType(
-      R.id.state_recycler_view,
-      StateViewHolderTypeMatcher(viewType)
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToHolder(StateViewHolderTypeMatcher(viewType))
     )
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
