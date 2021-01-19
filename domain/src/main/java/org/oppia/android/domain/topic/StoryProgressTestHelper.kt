@@ -299,7 +299,6 @@ class StoryProgressTestHelper @Inject constructor(
     } else {
       getOldTimestamp()
     }
-
     storyProgressController.recordCompletedChapter(
       profileId,
       RATIOS_TOPIC_ID,
