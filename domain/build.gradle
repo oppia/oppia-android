@@ -127,7 +127,6 @@ configurations {
 tasks.withType(Test) {
   jacoco.includeNoLocationClasses = true
 }
-
 task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
 
   reports {
@@ -135,9 +134,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
     html.enabled = true
     csv.enabled false
   }
-
   def mainSrc = "$project.projectDir/src/main/kotlin"
-  
+
   sourceDirectories.setFrom(files([mainSrc]))
   executionData.setFrom(fileTree(dir: project.buildDir, includes: [
       'jacoco/testDebugUnitTest.exec', 'outputs/code_coverage/debugAndroidTest/connected/**/*.ec'
