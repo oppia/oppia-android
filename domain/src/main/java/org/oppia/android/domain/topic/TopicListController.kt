@@ -394,13 +394,13 @@ class TopicListController @Inject constructor(
     topic: Topic,
     completedStoryTopicId: String
   ): Pair<PromotedStory?, Long> {
-
+    var numberOfDaysPassed = 0L
     val recentlyPlayerChapterSummary: ChapterSummary? =
       story.chapterList.find { chapterSummary ->
         recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
       }
     if (recentlyPlayerChapterSummary != null) {
-      val numberOfDaysPassed = recentlyPlayerChapterProgress.getNumberOfDaysPassed()
+      numberOfDaysPassed = recentlyPlayerChapterProgress.getNumberOfDaysPassed()
       return Pair(
         addPromotedStoryInRecommendedStoryList(
           storyId,
@@ -414,7 +414,7 @@ class TopicListController @Inject constructor(
         numberOfDaysPassed
       )
     }
-    return Pair(null, 0)
+    return Pair(null, numberOfDaysPassed)
   }
 
   private fun createOngoingStoryListBasedOnMostRecentlyCompleted(
@@ -425,7 +425,7 @@ class TopicListController @Inject constructor(
     topic: Topic,
     completedStoryTopicId: String
   ): Pair<PromotedStory?, Long> {
-
+    var numberOfDaysPassed = 0L
     val lastChapterSummary: ChapterSummary? =
       story.chapterList.find { chapterSummary ->
         mostRecentCompletedChapterProgress.explorationId == chapterSummary.explorationId
@@ -434,7 +434,7 @@ class TopicListController @Inject constructor(
     if (story.chapterList.size > nextChapterIndex) {
       val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
       if (nextChapterSummary != null) {
-        val numberOfDaysPassed = mostRecentCompletedChapterProgress.getNumberOfDaysPassed()
+        numberOfDaysPassed = mostRecentCompletedChapterProgress.getNumberOfDaysPassed()
         return Pair(
           addPromotedStoryInRecommendedStoryList(
             storyId,
@@ -449,7 +449,7 @@ class TopicListController @Inject constructor(
         )
       }
     }
-    return Pair(null, 0)
+    return Pair(null, numberOfDaysPassed)
   }
 
   private fun addPromotedStoryInRecommendedStoryList(
