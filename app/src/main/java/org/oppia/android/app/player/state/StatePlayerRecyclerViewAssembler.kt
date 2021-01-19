@@ -7,7 +7,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -17,7 +17,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
-import nl.dionsegijn.konfetti.models.Shape
+import nl.dionsegijn.konfetti.models.Shape.Circle
+import nl.dionsegijn.konfetti.models.Shape.Square
 import nl.dionsegijn.konfetti.models.Size
 import org.oppia.android.R
 import org.oppia.android.app.model.AnswerAndResponse
@@ -730,11 +731,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private fun createBannerConfetti() {
     val x = bannerConfettiView!!.width / 3
     val y = bannerConfettiView!!.height / 2
-    val colorsList = confettiColors.map { ContextCompat.getColor(bannerConfettiView.context, it) }
+    val colorsList = confettiColors.map { getColor(bannerConfettiView.context, it) }
     val speedMin = 2f
     val speedMax = 4f
     val timeToLive = 2000
-    val shapesArray = arrayOf(Shape.Square, Shape.Circle)
+    val shapesArray = arrayOf(Square, Circle)
     val size = Size(7)
     val sizeWithMass = Size(7, 3f)
     val numPieces = 7
