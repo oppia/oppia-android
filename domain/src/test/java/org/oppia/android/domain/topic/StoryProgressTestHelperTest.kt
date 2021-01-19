@@ -819,8 +819,8 @@ class StoryProgressTestHelperTest {
   @Test
   fun testProgressTestHelper_markFullProgressForSecondTestTopic_promotedStoryListIsCorrect() {
     storyProgressTestHelper.markFullProgressForSecondTestTopic(
-      profileId,
-      /* timestampOlderThanAWeek= */ false
+      profileId = profileId,
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
