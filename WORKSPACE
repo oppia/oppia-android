@@ -73,11 +73,7 @@ http_archive(
 
 load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
 
-rules_java_dependencies()
-
-rules_java_toolchains()
-
-# The rules_proto contains the proto_library rule used in the gitmodel module.
+# The rules_proto contains the proto_library rule used in the model module.
 http_archive(
     name = "rules_proto",
     sha256 = "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",

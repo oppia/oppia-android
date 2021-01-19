@@ -407,6 +407,12 @@ in order to keep Gradle building.
      """,
 ) for file in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS]
 
+CONFETTI = [
+    "src/main/java/org/oppia/android/app/player/state/StateFragmentPresenter.kt",
+    "src/main/java/org/oppia/android/app/player/state/StatePlayerRecyclerViewAssembler.kt",
+    "src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerFragmentPresenter.kt",
+    ]
+
 SNAP_HELPER = ["src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper.kt"]
 
 """
@@ -419,7 +425,7 @@ built by the following libraries:
 - binding_adapters
 """
 
-EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS + SNAP_HELPER
+EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS + SNAP_HELPER + CONFETTI
 
 """
 Files to be built by the app library. All of these files are assumed to have resource imports and
@@ -583,6 +589,14 @@ kt_android_library(
     srcs = SNAP_HELPER,
     custom_package = "org.oppia.android.app.recyclerview",
     deps = [artifact("androidx.recyclerview:recyclerview:1.0.0"),],
+)
+
+# Library for snap helper used to build views.
+kt_android_library(
+    name = "confetti",
+    srcs = CONFETTI,
+    custom_package = "org.oppia.android.app",
+    deps = [artifact("nl.dionsegijn:konfetti:1.2.5"),],
 )
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
