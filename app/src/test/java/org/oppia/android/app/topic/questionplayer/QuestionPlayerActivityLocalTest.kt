@@ -2,21 +2,29 @@ package org.oppia.android.app.topic.questionplayer
 
 import android.app.Application
 import android.content.Context
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
+import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import nl.dionsegijn.konfetti.KonfettiView
 import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Description
 import org.junit.Before
 import org.junit.Test
@@ -101,6 +109,33 @@ class QuestionPlayerActivityLocalTest {
   fun setUp() {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+  }
+
+  @Test
+  fun testQuestionPlayer_submitCorrectAnswer_correctTextBannerIsDisplayed() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      // Submit correct answer
+      submitCorrectAnswerToQuestionPlayerFractionInput()
+
+      onView(withId(R.id.congratulations_text_view))
+        .check(matches(withEffectiveVisibility(VISIBLE)))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_submitCorrectAnswer_confettiIsDisplayed() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      // Submit correct answer
+      submitCorrectAnswerToQuestionPlayerFractionInput()
+
+      onView(withId(R.id.banner_confetti_view)).check(hasActiveConfetti())
+    }
   }
 
   @Test
@@ -195,6 +230,18 @@ class QuestionPlayerActivityLocalTest {
     )
   }
 
+  private fun submitCorrectAnswerToQuestionPlayerFractionInput() {
+    onView(withId(R.id.question_recycler_view))
+      .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
+    onView(withId(R.id.text_input_interaction_view)).perform(editTextInputAction.appendText("1/2"))
+    testCoroutineDispatchers.runCurrent()
+
+    onView(withId(R.id.question_recycler_view))
+      .perform(scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON))
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
   private fun submitTwoWrongAnswersToQuestionPlayer() {
     submitWrongAnswerToQuestionPlayerFractionInput()
     submitWrongAnswerToQuestionPlayerFractionInput()
@@ -214,6 +261,27 @@ class QuestionPlayerActivityLocalTest {
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {
     return scrollToHolder(StateViewHolderTypeMatcher(viewType))
+  }
+
+  // Returns a matcher that matches for active confetti.
+  private fun hasActiveConfetti(): ViewAssertion {
+    return StateFragmentActiveConfettiAssertion()
+  }
+
+  // Custom class to check if a KonfettiView isActive().
+  private class StateFragmentActiveConfettiAssertion() : ViewAssertion {
+    override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
+      if (noViewFoundException != null) {
+        throw noViewFoundException
+      }
+      check(view is KonfettiView) { "The asserted view is not KonfettiView" }
+
+      assertThat(
+        "KonfettiView particle system",
+        view.isActive(),
+        `is`(true)
+      )
+    }
   }
 
   /**
