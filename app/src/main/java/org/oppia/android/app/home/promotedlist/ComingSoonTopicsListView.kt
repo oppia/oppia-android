@@ -2,9 +2,7 @@ package org.oppia.android.app.home.promotedlist
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
-import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +10,10 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
+
+private const val COMING_SOON_TOPIC_LIST_VIEW_TAG = "ComingSoonTopicsListView"
 
 /**
  * A custom [RecyclerView] for displaying a variable list of Upcoming topics that snaps to
@@ -23,10 +24,12 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
-  private val TAG = "ComingSoonTopicsListView"
 
   @Inject
   lateinit var bindingInterface: ViewBindingShim
+
+  @Inject
+  lateinit var logger: ConsoleLogger
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -47,7 +50,7 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
    *
    * @param newDataList the new list of topics to present
    */
-  fun setComingSoonTopicList(@Nullable newDataList: List<ComingSoonTopicsViewModel>) {
+  fun setComingSoonTopicList(newDataList: List<ComingSoonTopicsViewModel>?) {
     // To reliably bind data only after the adapter is created, we manually set the data so we can first
     // check for the adapter; when using an existing [RecyclerViewBindingAdapter] there is no reliable
     // way to check that the adapter is created.
@@ -56,12 +59,10 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
     if (adapter == null) {
       adapter = createAdapter()
     }
-
-    if (newDataList == null || newDataList.isEmpty()) {
-      Log.w(TAG, ": failed to resolve new story list data")
+    if (newDataList == null) {
+      logger.w(COMING_SOON_TOPIC_LIST_VIEW_TAG, "Failed to resolve upcoming topic list data")
     } else {
-      // Only re-bind and display the data if it's a valid list of promoted items for learners
-      (adapter as BindableAdapter<ComingSoonTopicsViewModel>).setDataUnchecked(newDataList)
+      (adapter as BindableAdapter<*>).setDataUnchecked(newDataList)
     }
   }
 

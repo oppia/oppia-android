@@ -275,6 +275,30 @@ class StoryProgressTestHelper @Inject constructor(
       RATIOS_EXPLORATION_ID_0,
       timestamp
     )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_1,
+      timestamp
+    )
+  }
+
+  /**
+   * Marks one story progress full in ratios exploration for a particular profile.
+   *
+   * @param profileId the profile we are setting topic progress on ratios for
+   * @param timestampOlderThanOneWeek if the timestamp for this progress is from more than one week ago
+   */
+  fun markLastChapDoneOfRatiosStory0(
+    profileId: ProfileId,
+    timestampOlderThanAWeek: Boolean
+  ) {
+    val timestamp = if (!timestampOlderThanAWeek) {
+      getCurrentTimestamp()
+    } else {
+      getOldTimestamp()
+    }
 
     storyProgressController.recordCompletedChapter(
       profileId,
