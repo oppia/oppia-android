@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AppLanguageFragmentBinding
@@ -72,7 +71,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
     }
   }
 
-  fun onLanguageSelected(selectedLanguage: String){
+  fun onLanguageSelected(selectedLanguage: String) {
     languageSelectionViewModel.selectedLanguage.value = selectedLanguage
   }
 

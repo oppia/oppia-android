@@ -16,8 +16,7 @@ private const val SELECTED_LANGUAGE_SAVED_KEY = "AppLanguageFragment.selected_la
 /** The fragment to change the language of the app. */
 class AppLanguageFragment :
   InjectableFragment(),
-  LanguageRadioButtonListener
-{
+  LanguageRadioButtonListener {
 
   @Inject
   lateinit var appLanguageFragmentPresenter: AppLanguageFragmentPresenter
