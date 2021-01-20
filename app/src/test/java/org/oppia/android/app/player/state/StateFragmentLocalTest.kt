@@ -19,12 +19,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -282,7 +281,7 @@ class StateFragmentLocalTest {
       submitFractionAnswer(answerText = "3/4")
 
       onView(withId(R.id.congratulations_text_view))
-        .check(matches(withEffectiveVisibility(VISIBLE)))
+        .check(matches(isCompletelyDisplayed()))
     }
   }
 
@@ -295,7 +294,7 @@ class StateFragmentLocalTest {
       // Submit correct answer
       submitFractionAnswer(answerText = "3/4")
 
-      onView(withId(R.id.banner_confetti_view)).check(hasActiveConfetti())
+      onView(withId(R.id.congratulations_text_confetti_view)).check(hasActiveConfetti())
     }
   }
 

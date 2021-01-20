@@ -14,11 +14,10 @@ import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
-import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
@@ -121,7 +120,7 @@ class QuestionPlayerActivityLocalTest {
       submitCorrectAnswerToQuestionPlayerFractionInput()
 
       onView(withId(R.id.congratulations_text_view))
-        .check(matches(withEffectiveVisibility(VISIBLE)))
+        .check(matches(isCompletelyDisplayed()))
     }
   }
 
@@ -134,7 +133,7 @@ class QuestionPlayerActivityLocalTest {
       // Submit correct answer
       submitCorrectAnswerToQuestionPlayerFractionInput()
 
-      onView(withId(R.id.banner_confetti_view)).check(hasActiveConfetti())
+      onView(withId(R.id.congratulations_text_confetti_view)).check(hasActiveConfetti())
     }
   }
 

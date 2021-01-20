@@ -7,7 +7,6 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getColor
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -18,9 +17,7 @@ import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
 import nl.dionsegijn.konfetti.models.Shape.Circle
-import nl.dionsegijn.konfetti.models.Shape.Square
 import nl.dionsegijn.konfetti.models.Size
-import org.oppia.android.R
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
@@ -127,7 +124,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
   private val congratulationsTextView: TextView?,
-  private val bannerConfettiView: KonfettiView?,
+  private val congratulationsTextConfettiView: KonfettiView?,
   private val canSubmitAnswer: ObservableField<Boolean>?,
   private val audioActivityId: String?,
   private val currentStateName: ObservableField<String>?,
@@ -185,13 +182,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   private val isSplitView = ObservableField<Boolean>(false)
-
-  private val confettiColors = listOf(
-    R.color.confetti_red,
-    R.color.confetti_yellow,
-    R.color.confetti_evergreen,
-    R.color.confetti_blue
-  )
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
     ConceptCardFragment
@@ -438,18 +428,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   /** Shows a congratulations message due to the learner having submitted a correct answer. */
-  fun showCelebrationOnCorrectAnswer() {
+  fun showCelebrationOnCorrectAnswer(confettiColors: List<Int>) {
     check(playerFeatureSet.showCelebrationOnCorrectAnswer) {
       "Cannot show congratulations message for assembler that doesn't support it"
     }
     val textView = checkNotNull(congratulationsTextView) {
       "Expected non-null reference to congratulations text view"
     }
-    checkNotNull(bannerConfettiView) {
+    checkNotNull(congratulationsTextConfettiView) {
       "Expected non-null reference to confetti view"
     }
 
-    createBannerConfetti()
+    createBannerConfetti(congratulationsTextConfettiView, confettiColors)
 
     textView.visibility = View.VISIBLE
 
@@ -728,37 +718,36 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
-  private fun createBannerConfetti() {
-    val x = bannerConfettiView!!.width / 3
-    val y = bannerConfettiView!!.height / 2
-    val colorsList = confettiColors.map { getColor(bannerConfettiView.context, it) }
+  private fun createBannerConfetti(bannerConfettiView: KonfettiView, colorsList: List<Int>) {
+    val x = bannerConfettiView.width / 3
+    val y = bannerConfettiView.height / 2
     val speedMin = 2f
     val speedMax = 4f
-    val timeToLive = 2000
-    val shapesArray = arrayOf(Square, Circle)
-    val size = Size(7)
-    val sizeWithMass = Size(7, 3f)
+    val timeToLiveMs = 2000
+    val shapesArray = arrayOf(Circle)
+    val sizeInDp = Size(sizeInDp = 7)
+    val sizeWithMass = Size(sizeInDp = 7, mass = 3f)
     val numPieces = 7
 
-    bannerConfettiView!!.build()
+    bannerConfettiView.build()
       .addColors(colorsList)
-      .setDirection(180.0, 270.0)
+      .setDirection(minDegrees = 180.0, maxDegrees = 270.0)
       .setSpeed(speedMin, speedMax)
       .setFadeOutEnabled(true)
-      .setTimeToLive(timeToLive.toLong())
+      .setTimeToLive(timeToLiveMs.toLong())
       .addShapes(*shapesArray)
-      .addSizes(size, sizeWithMass)
+      .addSizes(sizeInDp, sizeWithMass)
       .setPosition(x.toFloat(), y.toFloat())
       .setRotationEnabled(false)
       .burst(numPieces)
-    bannerConfettiView!!.build()
+    bannerConfettiView.build()
       .addColors(colorsList)
-      .setDirection(270.0, 360.0)
+      .setDirection(minDegrees = 270.0, maxDegrees = 360.0)
       .setSpeed(speedMin, speedMax)
       .setFadeOutEnabled(true)
-      .setTimeToLive(timeToLive.toLong())
+      .setTimeToLive(timeToLiveMs.toLong())
       .addShapes(*shapesArray)
-      .addSizes(size, sizeWithMass)
+      .addSizes(sizeInDp, sizeWithMass)
       .setPosition((2 * x).toFloat(), y.toFloat())
       .setRotationEnabled(false)
       .burst(numPieces)
@@ -817,7 +806,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
-    private var bannerConfettiView: KonfettiView? = null
+    private var congratulationsTextConfettiView: KonfettiView? = null
     private var hasConversationView: Boolean = true
     private var canSubmitAnswer: ObservableField<Boolean>? = null
     private var audioActivityId: String? = null
@@ -1166,7 +1155,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       confettiView: KonfettiView
     ): Builder {
       this.congratulationsTextView = congratulationsTextView
-      this.bannerConfettiView = confettiView
+      this.congratulationsTextConfettiView = confettiView
       featureSets += PlayerFeatureSet(showCelebrationOnCorrectAnswer = true)
       return this
     }
@@ -1176,7 +1165,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     fun hasConversationView(hasConversationView: Boolean): Builder {
       this.hasConversationView = hasConversationView
-      featureSets += PlayerFeatureSet(showCelebrationOnCorrectAnswer = true)
       return this
     }
 
@@ -1234,7 +1222,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         playerFeatureSet,
         fragment,
         congratulationsTextView,
-        bannerConfettiView,
+        congratulationsTextConfettiView,
         canSubmitAnswer,
         audioActivityId,
         currentStateName,
