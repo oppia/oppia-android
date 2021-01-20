@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -71,7 +71,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     R.color.confetti_yellow,
     R.color.confetti_evergreen,
     R.color.confetti_blue
-  )
+  ).map { getColor(context, it) }
 
   private lateinit var binding: QuestionPlayerFragmentBinding
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
@@ -303,7 +303,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
           recyclerViewAssembler.stopHintsFromShowing()
           questionViewModel.setHintBulbVisibility(false)
           recyclerViewAssembler.showCelebrationOnCorrectAnswer(
-            confettiColors.map { ContextCompat.getColor(context, it) }
+            confettiColors
           )
         } else {
           questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)

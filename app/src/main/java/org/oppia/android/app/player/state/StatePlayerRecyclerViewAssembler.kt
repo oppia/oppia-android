@@ -198,7 +198,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   fun compute(
     ephemeralState: EphemeralState,
     gcsEntityId: String,
-    isSplitView: Boolean
+    isSplitView: Boolean,
+    confettiColorsList: List<Int> = listOf()
   ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
     this.isSplitView.set(isSplitView)
 
@@ -252,6 +253,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
         hasGeneralContinueButton = true
       } else if (ephemeralState.completedState.answerList.size > 0 && ephemeralState.hasNextState) {
         canContinueToNextState = true
+      }
+      if (playerFeatureSet.showCelebrationAtEndOfExplorationSession) {
+        checkNotNull(confettiColorsList)
+        showCelebrationForEndOfExplorationSession(confettiColorsList)
       }
     }
 
@@ -465,6 +470,19 @@ class StatePlayerRecyclerViewAssembler private constructor(
         textView.visibility = View.INVISIBLE
       }
     )
+  }
+
+  /** Shows a congratulations message due to the learner having submitted a correct answer. */
+  fun showCelebrationForEndOfExplorationSession(confettiColors: List<Int>) {
+    val confettiView = checkNotNull(fullScreenConfettiView) {
+      "Expected non-null reference to confetti view"
+    }
+
+    confettiView.build()
+      .addShapes(Circle)
+      .addColors(confettiColors)
+      .setDelay(delay = 1000.toLong())
+      .streamFor(particlesPerSecond = 12, emittingTime = 3000.toLong())
   }
 
   /**

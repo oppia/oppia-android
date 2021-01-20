@@ -90,7 +90,7 @@ class StateFragmentPresenter @Inject constructor(
     R.color.confetti_yellow,
     R.color.confetti_evergreen,
     R.color.confetti_blue
-  )
+  ).map { getColor(context, it) }
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -329,7 +329,8 @@ class StateFragmentPresenter @Inject constructor(
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,
       explorationId,
-      shouldSplit
+      shouldSplit,
+      confettiColors
     )
 
     viewModel.itemList.clear()
@@ -406,7 +407,7 @@ class StateFragmentPresenter @Inject constructor(
             recyclerViewAssembler.stopHintsFromShowing()
             viewModel.setHintBulbVisibility(false)
             recyclerViewAssembler.showCelebrationOnCorrectAnswer(
-              confettiColors.map { getColor(context, it) }
+              confettiColors
             )
           } else {
             viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
