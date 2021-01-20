@@ -586,7 +586,7 @@ kt_android_library(
     deps = [artifact("androidx.recyclerview:recyclerview:1.0.0"),],
 )
 
-# Library for confetti used to create confetti animations in fragments.
+# Library for files using confetti animations.
 kt_android_library(
     name = "confetti",
     srcs = [
@@ -595,8 +595,7 @@ kt_android_library(
        "src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerFragmentPresenter.kt",
     ],
     custom_package = "org.oppia.android.app",
-    deps = [        artifact("nl.dionsegijn:konfetti:1.2.5"),
-    ],
+    deps = [artifact("nl.dionsegijn:konfetti:1.2.5"),],
 )
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
