@@ -89,8 +89,10 @@ class SplashActivityTest {
 
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
 
