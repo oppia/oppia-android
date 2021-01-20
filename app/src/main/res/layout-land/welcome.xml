@@ -17,14 +17,13 @@
 
     <com.google.android.flexbox.FlexboxLayout
       android:id="@+id/welcome_message_container"
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       app:alignContent="flex_start"
       app:alignItems="flex_start"
       app:flexDirection="row"
       app:flexWrap="wrap"
       app:justifyContent="flex_start"
-      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
@@ -49,10 +48,12 @@
     </com.google.android.flexbox.FlexboxLayout>
 
     <View
-      android:layout_width="172dp"
+      android:layout_width="0dp"
       android:layout_height="6dp"
       android:layout_marginTop="4dp"
       android:background="@color/oppiaLightBrown"
+      app:layout_constraintEnd_toEndOf="@id/welcome_message_container"
+      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="@+id/welcome_message_container"
       app:layout_constraintTop_toBottomOf="@+id/welcome_message_container" />
   </androidx.constraintlayout.widget.ConstraintLayout>
