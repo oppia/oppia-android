@@ -19,7 +19,7 @@ class RecyclerViewMatcher {
      * This function returns a Matcher for an item inside RecyclerView from a specified position.
      */
     fun atPosition(recyclerViewId: Int, position: Int): Matcher<View> {
-      return atPositionOnView(recyclerViewId, position, -1)
+      return atPositionOnView(recyclerViewId, position, targetViewId = -1)
     }
 
     /**

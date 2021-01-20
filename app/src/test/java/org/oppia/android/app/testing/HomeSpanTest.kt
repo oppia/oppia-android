@@ -75,7 +75,7 @@ class HomeSpanTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(homeSpanTest = this)
   }
 
   @Config(qualifiers = "port")

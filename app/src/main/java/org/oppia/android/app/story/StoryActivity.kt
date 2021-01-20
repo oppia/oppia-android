@@ -38,7 +38,7 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
-        this,
+        context = this,
         internalProfileId,
         topicId,
         storyId,

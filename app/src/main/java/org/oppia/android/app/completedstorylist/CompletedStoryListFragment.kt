@@ -31,7 +31,7 @@ class CompletedStoryListFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(completedStoryListFragment = this)
   }
 
   override fun onCreateView(

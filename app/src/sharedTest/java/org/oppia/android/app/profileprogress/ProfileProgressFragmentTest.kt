@@ -140,7 +140,7 @@ class ProfileProgressFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(profileProgressFragmentTest = this)
   }
 
   private fun createProfileProgressActivityIntent(profileId: Int): Intent {
@@ -435,7 +435,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_firstStory_storyNameIsCorrect() {
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(profileId = 0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -512,7 +512,7 @@ class ProfileProgressFragmentTest {
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
-          0,
+          position = 0,
           R.id.ongoing_topics_container
         )
       ).check(matches(not(isClickable())))
@@ -526,7 +526,7 @@ class ProfileProgressFragmentTest {
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
-          0,
+          position = 0,
           R.id.completed_stories_container
         )
       ).check(matches(not(isClickable())))
@@ -542,7 +542,7 @@ class ProfileProgressFragmentTest {
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
-          0,
+          position = 0,
           R.id.completed_stories_container
         )
       ).check(matches(not(isClickable())))

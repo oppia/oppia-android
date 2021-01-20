@@ -171,7 +171,7 @@ class AudioViewModel @Inject constructor(
         PlayStatus.PLAYING -> UiAudioPlayStatus.PLAYING
         PlayStatus.PAUSED -> UiAudioPlayStatus.PAUSED
         PlayStatus.COMPLETED -> {
-          if (hasFeedback) loadAudio(null, false)
+          if (hasFeedback) loadAudio(contentId = null, allowAutoPlay = false)
           hasFeedback = false
           UiAudioPlayStatus.COMPLETED
         }

@@ -116,7 +116,7 @@ class TopicFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(topicFragmentTest = this)
   }
 
   @Test
@@ -158,7 +158,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_infoTopicTab_isDisplayedInTabLayout() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(withText(TopicTab.getTabForPosition(0).name)).check(
+      onView(withText(TopicTab.getTabForPosition(position = 0).name)).check(
         matches(
           isDescendantOfA(
             withId(

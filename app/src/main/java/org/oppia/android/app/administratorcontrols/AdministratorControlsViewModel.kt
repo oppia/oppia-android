@@ -52,8 +52,8 @@ class AdministratorControlsViewModel @Inject constructor(
   ): DeviceSettings {
     if (deviceSettingsResult.isFailure()) {
       logger.e(
-        "AdministratorControlsFragment",
-        "Failed to retrieve profile",
+        tag = "AdministratorControlsFragment",
+        msg = "Failed to retrieve profile",
         deviceSettingsResult.getErrorOrNull()!!
       )
     }

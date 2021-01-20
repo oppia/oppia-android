@@ -47,8 +47,8 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
   ): ReadingTextSize {
     if (readingTextSizeResult.isFailure()) {
       logger.e(
-        "ExplorationManagerFragment",
-        "Failed to retrieve profile",
+        tag = "ExplorationManagerFragment",
+        msg = "Failed to retrieve profile",
         readingTextSizeResult.getErrorOrNull()!!
       )
     }

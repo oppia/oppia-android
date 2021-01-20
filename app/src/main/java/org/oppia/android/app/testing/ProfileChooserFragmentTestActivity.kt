@@ -13,7 +13,7 @@ class ProfileChooserFragmentTestActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(profileChooserFragmentTestActivity = this)
     profileChooserFragmentTestActivityPresenter.handleOnCreate()
   }
 

@@ -305,7 +305,7 @@ class PromotedStoryViewModelTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(promotedStoryViewModelTest = this)
   }
 
   private fun createBasicPromotedStoryViewModel(

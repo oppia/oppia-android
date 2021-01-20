@@ -15,7 +15,7 @@ class ExplorationManagerFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(explorationManagerFragment = this)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

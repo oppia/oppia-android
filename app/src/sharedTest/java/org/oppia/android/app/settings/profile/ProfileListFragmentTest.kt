@@ -117,12 +117,12 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 0, R.id.profile_list_name)
       ).check(
         matches(withText("Admin"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_admin_text)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 0, R.id.profile_list_admin_text)
       ).check(
         matches(withText(context.getString(R.string.profile_chooser_admin)))
       )
@@ -132,12 +132,12 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 1, R.id.profile_list_name)
       ).check(
         matches(withText("Ben"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_admin_text)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 1, R.id.profile_list_admin_text)
       ).check(
         matches(not(isDisplayed()))
       )
@@ -156,12 +156,12 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 0, R.id.profile_list_name)
       ).check(
         matches(withText("Admin"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_admin_text)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 0, R.id.profile_list_admin_text)
       ).check(
         matches(withText(context.getString(R.string.profile_chooser_admin)))
       )
@@ -171,12 +171,12 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 1, R.id.profile_list_name)
       ).check(
         matches(withText("Ben"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_admin_text)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 1, R.id.profile_list_admin_text)
       ).check(
         matches(not(isDisplayed()))
       )
@@ -186,7 +186,7 @@ class ProfileListFragmentTest {
   @Test
   fun testProfileListFragment_addManyProfiles_checkProfilesAreSorted() {
     profileTestHelper.initializeProfiles()
-    profileTestHelper.addMoreProfiles(5)
+    profileTestHelper.addMoreProfiles(numProfiles = 5)
     launch(ProfileListActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_list_recycler_view)).perform(
@@ -195,7 +195,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 0, R.id.profile_list_name)
       ).check(
         matches(withText("Admin"))
       )
@@ -205,7 +205,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 1, R.id.profile_list_name)
       ).check(
         matches(withText("A"))
       )
@@ -215,7 +215,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 2, R.id.profile_list_name)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 2, R.id.profile_list_name)
       ).check(
         matches(withText("B"))
       )
@@ -225,7 +225,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 3, R.id.profile_list_name)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 3, R.id.profile_list_name)
       ).check(
         matches(withText("Ben"))
       )
@@ -235,7 +235,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 4, R.id.profile_list_name)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 4, R.id.profile_list_name)
       ).check(
         matches(withText("C"))
       )
@@ -245,7 +245,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 5, R.id.profile_list_name)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 5, R.id.profile_list_name)
       ).check(
         matches(withText("D"))
       )
@@ -255,7 +255,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 6, R.id.profile_list_name)
+        atPositionOnView(R.id.profile_list_recycler_view, position = 6, R.id.profile_list_name)
       ).check(
         matches(withText("E"))
       )
@@ -267,7 +267,7 @@ class ProfileListFragmentTest {
     profileTestHelper.initializeProfiles()
     launch(ProfileListActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPosition(R.id.profile_list_recycler_view, 0)).perform(click())
+      onView(atPosition(R.id.profile_list_recycler_view, position = 0)).perform(click())
       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }

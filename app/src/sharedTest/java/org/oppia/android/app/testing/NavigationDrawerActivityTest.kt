@@ -157,7 +157,7 @@ class NavigationDrawerActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(navigationDrawerActivityTest = this)
   }
 
   @Test
@@ -324,7 +324,7 @@ class NavigationDrawerActivityTest {
 
   // TODO(#1806): Enable this once lowfi implementation is done.
   @Test
-  @Ignore("My Downloads is removed until we have full download support.")
+  @Ignore(value = "My Downloads is removed until we have full download support.")
   fun testNavigationDrawerTestActivity_myDownloadsMenu_myDownloadsFragmentIsDisplayed() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()

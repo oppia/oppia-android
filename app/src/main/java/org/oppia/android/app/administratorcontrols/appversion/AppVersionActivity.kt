@@ -14,7 +14,7 @@ class AppVersionActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(appVersionActivity = this)
     appVersionActivityPresenter.handleOnCreate()
   }
 

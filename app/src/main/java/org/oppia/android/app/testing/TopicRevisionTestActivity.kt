@@ -15,14 +15,14 @@ class TopicRevisionTestActivity : InjectableAppCompatActivity(), RouteToRevision
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(topicRevisionTestActivity = this)
     topicRevisionTestActivityPresenter.handleOnCreate()
   }
 
   override fun routeToRevisionCard(internalProfileId: Int, topicId: String, subtopicId: Int) {
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
-        this,
+        context = this,
         internalProfileId,
         topicId,
         subtopicId

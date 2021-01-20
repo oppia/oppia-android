@@ -37,8 +37,8 @@ class WalkthroughTopicViewModel @Inject constructor(
   private fun processTopicListResult(topicSummaryListResult: AsyncResult<TopicList>): TopicList {
     if (topicSummaryListResult.isFailure()) {
       logger.e(
-        "WalkthroughTopicSummaryListFragment",
-        "Failed to retrieve TopicSummary list: ",
+        tag = "WalkthroughTopicSummaryListFragment",
+        msg = "Failed to retrieve TopicSummary list: ",
         topicSummaryListResult.getErrorOrNull()!!
       )
     }

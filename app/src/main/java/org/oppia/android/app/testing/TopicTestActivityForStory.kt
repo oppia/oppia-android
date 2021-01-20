@@ -29,7 +29,7 @@ class TopicTestActivityForStory :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(topicTestActivityForStory = this)
     topicActivityPresenter.handleOnCreate(
       internalProfileId = 0,
       topicId = TEST_TOPIC_ID_0,
@@ -40,7 +40,7 @@ class TopicTestActivityForStory :
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        this, skillIdList
+        context = this, skillIdList
       )
     )
   }
@@ -48,7 +48,7 @@ class TopicTestActivityForStory :
   override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
     startActivity(
       StoryActivity.createStoryActivityIntent(
-        this,
+        context = this,
         internalProfileId,
         topicId,
         storyId
@@ -65,7 +65,7 @@ class TopicTestActivityForStory :
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
-        this,
+        context = this,
         profileId,
         topicId,
         storyId,
@@ -78,7 +78,7 @@ class TopicTestActivityForStory :
   override fun routeToRevisionCard(internalProfileId: Int, topicId: String, subtopicId: Int) {
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
-        this, internalProfileId, topicId, subtopicId
+        context = this, internalProfileId, topicId, subtopicId
       )
     )
   }

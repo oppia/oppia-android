@@ -25,7 +25,7 @@ class TabMatcher {
             ?: throw PerformException.Builder()
               .withCause(IllegalStateException("No tab at index ${tabLayout.selectedTabPosition}"))
               .build()
-          return tabAtIndex.text.toString().contains(tabTitle, true)
+          return tabAtIndex.text.toString().contains(tabTitle, ignoreCase = true)
         }
       }
     }

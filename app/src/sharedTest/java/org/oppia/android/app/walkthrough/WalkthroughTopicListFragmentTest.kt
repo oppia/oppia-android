@@ -107,14 +107,14 @@ class WalkthroughTopicListFragmentTest {
 
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex0_topicHeader_topicHeaderIsCorrect() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId = 0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
-          0,
+          position = 0,
           R.id.walkthrough_topic_header_text_view
         )
       ).check(
@@ -127,7 +127,7 @@ class WalkthroughTopicListFragmentTest {
 
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_topicNameIsCorrect() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId = 0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()
@@ -140,7 +140,7 @@ class WalkthroughTopicListFragmentTest {
       onView(
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
-          1,
+          position = 1,
           R.id.walkthrough_topic_name_text_view
         )
       ).check(
@@ -153,7 +153,7 @@ class WalkthroughTopicListFragmentTest {
 
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_configurationChanged_topicNameIsCorrect() { // ktlint-disable max-line-length
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId = 0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()
@@ -167,7 +167,7 @@ class WalkthroughTopicListFragmentTest {
       onView(
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
-          1,
+          position = 1,
           R.id.walkthrough_topic_name_text_view
         )
       ).check(
@@ -180,7 +180,7 @@ class WalkthroughTopicListFragmentTest {
 
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex4_lessonThumbnailIsCorrect() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId = 0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()
@@ -192,7 +192,7 @@ class WalkthroughTopicListFragmentTest {
       onView(
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
-          4,
+          position = 4,
           R.id.walkthrough_topic_thumbnail_image_view
         )
       ).check(
@@ -206,7 +206,7 @@ class WalkthroughTopicListFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(walkthroughTopicListFragmentTest = this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

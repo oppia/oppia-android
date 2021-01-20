@@ -35,14 +35,14 @@ class PromotedStoryListView @JvmOverloads constructor(
     super.onAttachedToWindow()
 
     (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
-      .createViewComponent(this).inject(this)
+      .createViewComponent(this).inject(promotedStoryListView = this)
 
     // The StartSnapHelper is used to snap between items rather than smooth scrolling, so that
     // the item is completely visible in [HomeFragment] as soon as learner lifts the finger
     // after scrolling.
     val snapHelper = StartSnapHelper()
     onFlingListener = null
-    snapHelper.attachToRecyclerView(this)
+    snapHelper.attachToRecyclerView(recyclerView = this)
   }
 
   /**

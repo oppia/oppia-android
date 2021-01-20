@@ -15,14 +15,14 @@ class ObservableArrayList<T> : ArrayList<T>(), ObservableList<T> {
 
   override fun add(index: Int, element: T) {
     super.add(index, element)
-    notifyAdd(index, 1)
+    notifyAdd(index, count = 1)
   }
 
   override fun addAll(elements: Collection<T>): Boolean {
     val oldSize = size
     val added = super.addAll(elements)
     if (added) {
-      notifyAdd(oldSize, size - oldSize)
+      notifyAdd(oldSize, count = size - oldSize)
     }
     return added
   }
@@ -48,7 +48,7 @@ class ObservableArrayList<T> : ArrayList<T>(), ObservableList<T> {
     val oldSize = size
     super.clear()
     if (oldSize != 0) {
-      notifyRemove(0, oldSize)
+      notifyRemove(start = 0, oldSize)
     }
   }
 
@@ -60,7 +60,7 @@ class ObservableArrayList<T> : ArrayList<T>(), ObservableList<T> {
 
   override fun removeRange(fromIndex: Int, toIndex: Int) {
     super.removeRange(fromIndex, toIndex)
-    notifyRemove(fromIndex, toIndex - fromIndex)
+    notifyRemove(fromIndex, count = toIndex - fromIndex)
   }
 
   override fun addOnListChangedCallback(

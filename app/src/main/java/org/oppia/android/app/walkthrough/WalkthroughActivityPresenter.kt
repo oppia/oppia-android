@@ -29,8 +29,8 @@ class WalkthroughActivityPresenter @Inject constructor(
       presenter = this@WalkthroughActivityPresenter
       lifecycleOwner = activity
     }
-    StatusBarColor.statusBarColorUpdate(R.color.walkthroughStatusBar, activity, true)
-    val currentFragmentIndex = getWalkthroughViewModel().currentProgress.get()?.minus(1)
+    StatusBarColor.statusBarColorUpdate(R.color.walkthroughStatusBar, activity, statusBarLight = true)
+    val currentFragmentIndex = getWalkthroughViewModel().currentProgress.get()?.minus(other = 1)
 
     if (currentFragmentIndex == -1 && getWalkthroughWelcomeFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
@@ -70,7 +70,7 @@ class WalkthroughActivityPresenter @Inject constructor(
     if (currentProgress == 1)
       activity.finish()
     else {
-      changePage(currentProgress - 2)
+      changePage(pageNumber = currentProgress - 2)
     }
   }
 
@@ -132,7 +132,7 @@ class WalkthroughActivityPresenter @Inject constructor(
   }
 
   fun handleSystemBack() {
-    moveToPreviousPage(getWalkthroughViewModel().currentProgress.get() ?: 1)
+    moveToPreviousPage(currentProgress = getWalkthroughViewModel().currentProgress.get() ?: 1)
   }
 
   fun setTopicId(topicId: String) {

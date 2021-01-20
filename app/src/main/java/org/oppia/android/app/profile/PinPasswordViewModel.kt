@@ -41,8 +41,8 @@ class PinPasswordViewModel @Inject constructor(
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
       logger.e(
-        "PinPasswordActivity",
-        "Failed to retrieve profile",
+        tag = "PinPasswordActivity",
+        msg = "Failed to retrieve profile",
         profileResult.getErrorOrNull()!!
       )
     }

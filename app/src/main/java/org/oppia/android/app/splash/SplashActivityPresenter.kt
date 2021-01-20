@@ -88,8 +88,8 @@ class SplashActivityPresenter @Inject constructor(
   ): StartupMode {
     if (startupStateResult.isFailure()) {
       logger.e(
-        "SplashActivity",
-        "Failed to retrieve startup state",
+        tag = "SplashActivity",
+        msg = "Failed to retrieve startup state",
         startupStateResult.getErrorOrNull()
       )
     }

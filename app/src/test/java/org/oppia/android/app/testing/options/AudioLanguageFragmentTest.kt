@@ -106,7 +106,7 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testAudioLanguage_changeLanguageToHindi_changeConfiguration_checkHindiLanguageIsSelected() {
-    launch<AudioLanguageActivity>(createDefaultAudioActivityIntent("French")).use {
+    launch<AudioLanguageActivity>(createDefaultAudioActivityIntent(summaryValue = "French")).use {
       selectLanguage(HINDI)
       rotateToLandscape()
       checkSelectedLanguage(HINDI)
@@ -116,11 +116,11 @@ class AudioLanguageFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAudioLanguage_loadFragment_changeAudioLanguage_checkOptionsFragmentIsUpdatedCorrectly() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
       testCoroutineDispatchers.runCurrent()
       selectChangeAudioLanguage()
       selectLanguage(CHINESE)
-      checkAudioLanguage("Chinese")
+      checkAudioLanguage(audioLanguage = "Chinese")
     }
   }
 
@@ -176,7 +176,7 @@ class AudioLanguageFragmentTest {
     onView(
       atPositionOnView(
         R.id.options_recyclerview,
-        2,
+        position = 2,
         R.id.audio_laguage_item_layout
       )
     ).perform(
@@ -189,7 +189,7 @@ class AudioLanguageFragmentTest {
     onView(
       atPositionOnView(
         R.id.options_recyclerview,
-        2,
+        position = 2,
         R.id.audio_language_text_view
       )
     ).check(
@@ -198,7 +198,7 @@ class AudioLanguageFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(audioLanguageFragmentTest = this)
   }
 
   @Module

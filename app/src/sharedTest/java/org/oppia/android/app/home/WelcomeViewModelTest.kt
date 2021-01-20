@@ -190,12 +190,12 @@ class WelcomeViewModelTest {
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
           morningClock,
-          "Profile 1"
+          profileName = "Profile 1"
         )
         val welcomeViewModelProfile2Morning = WelcomeViewModel(
           testFragment,
           morningClock,
-          "Profile 2"
+          profileName = "Profile 2"
         )
 
         assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(welcomeViewModelProfile2Morning)
@@ -214,12 +214,12 @@ class WelcomeViewModelTest {
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
           morningClock,
-          "Profile 1"
+          profileName = "Profile 1"
         )
         val welcomeViewModelProfile1Evening = WelcomeViewModel(
           testFragment,
           eveningClock,
-          "Profile 1"
+          profileName = "Profile 1"
         )
 
         assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(welcomeViewModelProfile1Evening)
@@ -237,12 +237,12 @@ class WelcomeViewModelTest {
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
           morningClock,
-          "Profile 1"
+          profileName = "Profile 1"
         )
         val welcomeViewModelProfile1MorningCopy = WelcomeViewModel(
           testFragment,
           morningClock,
-          "Profile 1"
+          profileName = "Profile 1"
         )
         assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1MorningCopy)
 
@@ -263,7 +263,7 @@ class WelcomeViewModelTest {
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
           morningClock,
-          "Profile 1"
+          profileName = "Profile 1"
         )
 
         // Verify that hashCode consistently returns the same value.
@@ -275,7 +275,7 @@ class WelcomeViewModelTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(welcomeViewModelTest = this)
   }
 
   private fun setUpTestFragment(activity: HomeFragmentTestActivity) {
@@ -294,7 +294,7 @@ class WelcomeViewModelTest {
     return WelcomeViewModel(
       fragment,
       morningClock,
-      "Profile 1"
+      profileName = "Profile 1"
     )
   }
 

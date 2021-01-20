@@ -32,7 +32,7 @@ class TopicActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(topicActivity = this)
     internalProfileId = intent?.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)!!
     topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in intent for TopicActivity."
@@ -44,7 +44,7 @@ class TopicActivity :
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        this,
+        context = this,
         skillIdList
       )
     )
@@ -53,7 +53,7 @@ class TopicActivity :
   override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
     startActivity(
       StoryActivity.createStoryActivityIntent(
-        this,
+        context = this,
         internalProfileId,
         topicId,
         storyId
@@ -64,7 +64,7 @@ class TopicActivity :
   override fun routeToRevisionCard(internalProfileId: Int, topicId: String, subtopicId: Int) {
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
-        this,
+        context = this,
         internalProfileId,
         topicId,
         subtopicId
@@ -81,7 +81,7 @@ class TopicActivity :
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
-        this,
+        context = this,
         internalProfileId,
         topicId,
         storyId,

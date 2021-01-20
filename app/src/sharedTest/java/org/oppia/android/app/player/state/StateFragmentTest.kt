@@ -865,7 +865,7 @@ class StateFragmentTest {
         "Hi, welcome to Oppia! is a tool that helps you create interactive learning " +
           "activities that can be continually improved over time.\n\nIncidentally, do you " +
           "know where the name 'Oppia' comes from?"
-      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+      onView(atPositionOnView(R.id.state_recycler_view, position = 0, R.id.content_text_view)).check(
         matches(
           withText(htmlResult)
         )
@@ -884,7 +884,7 @@ class StateFragmentTest {
         "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities " +
           "that can be continually improved over time.\n\nIncidentally, do you know where " +
           "the name 'Oppia' comes from?"
-      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+      onView(atPositionOnView(R.id.state_recycler_view, position = 0, R.id.content_text_view)).check(
         matches(
           withText(htmlResult)
         )
@@ -1254,7 +1254,7 @@ class StateFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(stateFragmentTest = this)
   }
 
   private fun isOnRobolectric(): Boolean {

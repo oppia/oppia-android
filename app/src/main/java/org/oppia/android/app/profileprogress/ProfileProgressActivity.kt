@@ -32,7 +32,7 @@ class ProfileProgressActivity :
   override fun routeToRecentlyPlayed() {
     startActivity(
       RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-        this,
+        context = this,
         internalProfileId
       )
     )
@@ -41,7 +41,7 @@ class ProfileProgressActivity :
   override fun routeToCompletedStory() {
     startActivity(
       CompletedStoryListActivity.createCompletedStoryListActivityIntent(
-        this,
+        context = this,
         internalProfileId
       )
     )
@@ -50,7 +50,7 @@ class ProfileProgressActivity :
   override fun routeToOngoingTopic() {
     startActivity(
       OngoingTopicListActivity.createOngoingTopicListActivityIntent(
-        this,
+        context = this,
         internalProfileId
       )
     )
@@ -71,7 +71,7 @@ class ProfileProgressActivity :
   override fun showProfilePicture() {
     startActivity(
       ProfilePictureActivity.createProfilePictureActivityIntent(
-        this,
+        context = this,
         internalProfileId
       )
     )

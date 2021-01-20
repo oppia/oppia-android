@@ -176,7 +176,7 @@ class AppVersionActivityTest {
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       launchAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()

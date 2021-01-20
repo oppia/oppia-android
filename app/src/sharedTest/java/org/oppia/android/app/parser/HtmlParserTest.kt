@@ -112,12 +112,12 @@ class HtmlParserTest {
     ) as TextView
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
-      /* entityType= */ "",
-      /* entityId= */ "",
-      /* imageCenterAlign= */ true
+      /* entityType= */ entityType = "",
+      /* entityId= */ entityId = "",
+      /* imageCenterAlign= */ imageCenterAlign = true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a " +
+      rawString = "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a " +
         "pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia-noninteractive-image " +
         "alt-with-value=\"\u0026amp;quot;Pineapple" +
         " cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;" +
@@ -141,12 +141,12 @@ class HtmlParserTest {
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
-      /* entityType= */ "",
-      /* entityId= */ "",
-      /* imageCenterAlign= */ true
+      /* entityType= */ entityType = "",
+      /* entityId= */ entityId = "",
+      /* imageCenterAlign= */ imageCenterAlign = true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a " +
+      rawString = "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a " +
         "pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia--image " +
         "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries." +
         "\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
@@ -168,12 +168,12 @@ class HtmlParserTest {
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
-      /* entityType= */ "",
-      /* entityId= */ "",
-      /* imageCenterAlign= */ true
+      /* entityType= */ entityType = "",
+      /* entityId= */ entityId = "",
+      /* imageCenterAlign= */ imageCenterAlign = true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      "<p>You should know the following before going on:<br></p>" +
+      rawString = "<p>You should know the following before going on:<br></p>" +
         "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
         "<li>How to tell whether one counting number is bigger or " +
         "smaller than another<br></li></ul>",
@@ -199,7 +199,7 @@ class HtmlParserTest {
     )
     val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
 
-    val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
+    val bulletSpan0Margin = bulletSpan0.getLeadingMargin(first = true)
     assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
 
     val bulletSpan1 = bulletSpans[1] as CustomBulletSpan
@@ -212,12 +212,12 @@ class HtmlParserTest {
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
-      /* entityType= */ "",
-      /* entityId= */ "",
-      /* imageCenterAlign= */ true
+      /* entityType= */ entityType = "",
+      /* entityId= */ entityId = "",
+      /* imageCenterAlign= */ imageCenterAlign = true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      "<oppia-noninteractive-image filepath-with-value=\"test.png\"></oppia-noninteractive-image>",
+      rawString = "<oppia-noninteractive-image filepath-with-value=\"test.png\"></oppia-noninteractive-image>",
       textView
     )
 
@@ -239,12 +239,12 @@ class HtmlParserTest {
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
-      /* entityType= */ "",
-      /* entityId= */ "",
-      /* imageCenterAlign= */ true
+      /* entityType= */ entityType = "",
+      /* entityId= */ entityId = "",
+      /* imageCenterAlign= */ imageCenterAlign = true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      "A<oppia-noninteractive-image filepath-with-value=\"test.png\"></oppia-noninteractive-image>",
+      rawString = "A<oppia-noninteractive-image filepath-with-value=\"test.png\"></oppia-noninteractive-image>",
       textView
     )
 
@@ -261,7 +261,7 @@ class HtmlParserTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(htmlParserTest = this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

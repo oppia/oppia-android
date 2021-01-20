@@ -17,7 +17,7 @@ fun clickPoint(pointX: Float, pointY: Float): ViewAction {
   return GeneralClickAction(
     Tap.SINGLE,
     CoordinatesProvider { view ->
-      val screenPos = IntArray(2)
+      val screenPos = IntArray(size = 2)
       view.getLocationOnScreen(screenPos)
       val w = view.width
       val h = view.height

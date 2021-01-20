@@ -95,7 +95,7 @@ class OnboardingFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(onboardingFragmentTest = this)
   }
 
   @Test

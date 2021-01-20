@@ -74,8 +74,8 @@ class ProfileProgressViewModel @Inject constructor(
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
       logger.e(
-        "ProfileProgressFragment",
-        "Failed to retrieve profile",
+        tag = "ProfileProgressFragment",
+        msg = "Failed to retrieve profile",
         profileResult.getErrorOrNull()!!
       )
     }
@@ -108,8 +108,8 @@ class ProfileProgressViewModel @Inject constructor(
   ): OngoingStoryList {
     if (ongoingStoryListResult.isFailure()) {
       logger.e(
-        "ProfileProgressFragment",
-        "Failed to retrieve ongoing story list: ",
+        tag = "ProfileProgressFragment",
+        msg = "Failed to retrieve ongoing story list: ",
         ongoingStoryListResult.getErrorOrNull()!!
       )
     }
@@ -158,8 +158,8 @@ class ProfileProgressViewModel @Inject constructor(
   ): CompletedStoryList {
     if (completedStoryListResult.isFailure()) {
       logger.e(
-        "ProfileProgressFragment",
-        "Failed to retrieve completed story list",
+        tag = "ProfileProgressFragment",
+        msg = "Failed to retrieve completed story list",
         completedStoryListResult.getErrorOrNull()!!
       )
     }
@@ -187,8 +187,8 @@ class ProfileProgressViewModel @Inject constructor(
   ): OngoingTopicList {
     if (ongoingTopicListResult.isFailure()) {
       logger.e(
-        "ProfileProgressFragment",
-        "Failed to retrieve ongoing topic list",
+        tag = "ProfileProgressFragment",
+        msg = "Failed to retrieve ongoing topic list",
         ongoingTopicListResult.getErrorOrNull()!!
       )
     }

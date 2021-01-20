@@ -63,7 +63,7 @@ class OptionsFragmentPresenter @Inject constructor(
     isFirstOpen: Boolean,
     selectedFragment: String
   ): View? {
-    viewModel.isUIInitialized(false)
+    viewModel.isUIInitialized(isInitialized = false)
     viewModel.isFirstOpen(isFirstOpen)
     viewModel.isMultipane.set(isMultipane)
     binding = OptionsFragmentBinding.inflate(
@@ -86,7 +86,7 @@ class OptionsFragmentPresenter @Inject constructor(
       it.viewModel = viewModel
     }
     setSelectedFragment(selectedFragment)
-    viewModel.isUIInitialized(true)
+    viewModel.isUIInitialized(isInitialized = true)
     return binding.root
   }
 
@@ -196,7 +196,7 @@ class OptionsFragmentPresenter @Inject constructor(
             } else {
               consoleLogger.e(
                 READING_TEXT_SIZE_TAG,
-                "$READING_TEXT_SIZE_ERROR: small text size",
+                msg = "$READING_TEXT_SIZE_ERROR: small text size",
                 it.getErrorOrNull()
               )
             }
@@ -215,7 +215,7 @@ class OptionsFragmentPresenter @Inject constructor(
             } else {
               consoleLogger.e(
                 READING_TEXT_SIZE_TAG,
-                "$READING_TEXT_SIZE_ERROR: medium text size",
+                msg = "$READING_TEXT_SIZE_ERROR: medium text size",
                 it.getErrorOrNull()
               )
             }
@@ -234,7 +234,7 @@ class OptionsFragmentPresenter @Inject constructor(
             } else {
               consoleLogger.e(
                 READING_TEXT_SIZE_TAG,
-                "$READING_TEXT_SIZE_ERROR: large text size",
+                msg = "$READING_TEXT_SIZE_ERROR: large text size",
                 it.getErrorOrNull()
               )
             }
@@ -254,7 +254,7 @@ class OptionsFragmentPresenter @Inject constructor(
             } else {
               consoleLogger.e(
                 READING_TEXT_SIZE_TAG,
-                "$READING_TEXT_SIZE_ERROR: extra large text size",
+                msg = "$READING_TEXT_SIZE_ERROR: extra large text size",
                 it.getErrorOrNull()
               )
             }
@@ -279,7 +279,7 @@ class OptionsFragmentPresenter @Inject constructor(
             } else {
               consoleLogger.e(
                 APP_LANGUAGE_TAG,
-                "$APP_LANGUAGE_ERROR: English",
+                msg = "$APP_LANGUAGE_ERROR: English",
                 it.getErrorOrNull()
               )
             }
@@ -298,7 +298,7 @@ class OptionsFragmentPresenter @Inject constructor(
             } else {
               consoleLogger.e(
                 APP_LANGUAGE_TAG,
-                "$APP_LANGUAGE_ERROR: Hindi",
+                msg = "$APP_LANGUAGE_ERROR: Hindi",
                 it.getErrorOrNull()
               )
             }
@@ -317,7 +317,7 @@ class OptionsFragmentPresenter @Inject constructor(
             } else {
               consoleLogger.e(
                 APP_LANGUAGE_TAG,
-                "$APP_LANGUAGE_ERROR: Chinese",
+                msg = "$APP_LANGUAGE_ERROR: Chinese",
                 it.getErrorOrNull()
               )
             }
@@ -336,7 +336,7 @@ class OptionsFragmentPresenter @Inject constructor(
             } else {
               consoleLogger.e(
                 APP_LANGUAGE_TAG,
-                "$APP_LANGUAGE_ERROR: French",
+                msg = "$APP_LANGUAGE_ERROR: French",
                 it.getErrorOrNull()
               )
             }
@@ -362,7 +362,7 @@ class OptionsFragmentPresenter @Inject constructor(
             } else {
               consoleLogger.e(
                 AUDIO_LANGUAGE_TAG,
-                "$AUDIO_LANGUAGE_ERROR: No Audio",
+                msg = "$AUDIO_LANGUAGE_ERROR: No Audio",
                 it.getErrorOrNull()
               )
             }
@@ -381,7 +381,7 @@ class OptionsFragmentPresenter @Inject constructor(
             } else {
               consoleLogger.e(
                 AUDIO_LANGUAGE_TAG,
-                "$AUDIO_LANGUAGE_ERROR: English",
+                msg = "$AUDIO_LANGUAGE_ERROR: English",
                 it.getErrorOrNull()
               )
             }
@@ -400,7 +400,7 @@ class OptionsFragmentPresenter @Inject constructor(
             } else {
               consoleLogger.e(
                 AUDIO_LANGUAGE_TAG,
-                "$AUDIO_LANGUAGE_ERROR: Hindi",
+                msg = "$AUDIO_LANGUAGE_ERROR: Hindi",
                 it.getErrorOrNull()
               )
             }
@@ -419,7 +419,7 @@ class OptionsFragmentPresenter @Inject constructor(
             } else {
               consoleLogger.e(
                 AUDIO_LANGUAGE_TAG,
-                "$AUDIO_LANGUAGE_ERROR: Chinese",
+                msg = "$AUDIO_LANGUAGE_ERROR: Chinese",
                 it.getErrorOrNull()
               )
             }
@@ -438,7 +438,7 @@ class OptionsFragmentPresenter @Inject constructor(
             } else {
               consoleLogger.e(
                 AUDIO_LANGUAGE_TAG,
-                "$AUDIO_LANGUAGE_ERROR: French",
+                msg = "$AUDIO_LANGUAGE_ERROR: French",
                 it.getErrorOrNull()
               )
             }

@@ -15,7 +15,7 @@ class DownloadsTabFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(downloadsTabFragment = this)
   }
 
   override fun onCreateView(

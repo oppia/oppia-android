@@ -92,7 +92,7 @@ class TopicTestActivityForStoryTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TopicTestActivityForStoryTest.TestApplication>()
-      .inject(this)
+      .inject(topicTestActivityForStoryTest = this)
   }
 
   @Test
@@ -101,7 +101,7 @@ class TopicTestActivityForStoryTest {
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            TopicTab.getTabForPosition(1).name
+            TopicTab.getTabForPosition(position = 1).name
           )
         )
       )
@@ -120,7 +120,7 @@ class TopicTestActivityForStoryTest {
       onView(
         atPosition(
           R.id.story_summary_recycler_view,
-          1
+          position = 1
         )
       ).check(matches(hasDescendant(withText(containsString("First Story")))))
     }
@@ -133,7 +133,7 @@ class TopicTestActivityForStoryTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          2,
+          position = 2,
           R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))

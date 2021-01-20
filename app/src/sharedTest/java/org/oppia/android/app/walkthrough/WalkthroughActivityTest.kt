@@ -73,7 +73,7 @@ class WalkthroughActivityTest {
   @Test
   fun testWalkthroughFragment_defaultProgress_worksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
-      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(progress = 1)))
     }
   }
 
@@ -90,7 +90,7 @@ class WalkthroughActivityTest {
   fun testWalkthroughFragment_increaseProgress_worksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
-      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(progress = 2)))
     }
   }
 
@@ -98,9 +98,9 @@ class WalkthroughActivityTest {
   fun testWalkthroughFragment_increaseProgress_configurationChanged_worksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
-      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(progress = 2)))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(progress = 2)))
     }
   }
 
@@ -123,9 +123,9 @@ class WalkthroughActivityTest {
   fun testWalkthroughFragment_increaseProgress_onBackPressed_decreaseProgress_progressWorksCorrectly() { // ktlint-disable max-line-length
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
-      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(progress = 2)))
       pressBack()
-      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(progress = 1)))
     }
   }
 
@@ -133,9 +133,9 @@ class WalkthroughActivityTest {
   fun testWalkthroughFragment_increaseProgress_decreaseProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
-      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(progress = 2)))
       onView(withId(R.id.back_button)).perform(click())
-      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(progress = 1)))
     }
   }
 

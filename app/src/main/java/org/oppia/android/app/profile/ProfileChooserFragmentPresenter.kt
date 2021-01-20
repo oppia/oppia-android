@@ -82,7 +82,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    StatusBarColor.statusBarColorUpdate(R.color.profileStatusBar, activity, false)
+    StatusBarColor.statusBarColorUpdate(R.color.profileStatusBar, activity, statusBarLight = false)
     binding = ProfileChooserFragmentBinding.inflate(
       inflater,
       container,
@@ -130,8 +130,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   ): Boolean {
     if (wasProfileEverBeenAddedResult.isFailure()) {
       logger.e(
-        "ProfileChooserFragment",
-        "Failed to retrieve the information on wasProfileEverBeenAdded",
+        tag = "ProfileChooserFragment",
+        msg = "Failed to retrieve the information on wasProfileEverBeenAdded",
         wasProfileEverBeenAddedResult.getErrorOrNull()!!
       )
     }
@@ -221,7 +221,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           AdminAuthActivity.createAdminAuthActivityIntent(
             activity,
             chooserViewModel.adminPin,
-            -1,
+            profileId = -1,
             selectUniqueRandomColor(),
             AdminAuthEnum.PROFILE_ADD_PROFILE.value
           )
@@ -257,7 +257,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_PROFILE_CHOOSER,
-      /* Event Context */ null
+      /* Event Context */ eventContext = null
     )
   }
 }

@@ -18,7 +18,7 @@ class HintsAndSolutionExplorationManagerFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(hintsAndSolutionExplorationManagerFragment = this)
   }
 
   override fun onCreateView(

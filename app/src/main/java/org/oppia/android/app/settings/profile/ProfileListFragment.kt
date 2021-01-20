@@ -27,7 +27,7 @@ class ProfileListFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(profileListFragment = this)
   }
 
   override fun onCreateView(

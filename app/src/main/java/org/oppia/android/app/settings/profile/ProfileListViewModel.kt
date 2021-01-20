@@ -27,8 +27,8 @@ class ProfileListViewModel @Inject constructor(
   private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<Profile> {
     if (profilesResult.isFailure()) {
       logger.e(
-        "ProfileListViewModel",
-        "Failed to retrieve the list of profiles",
+        tag = "ProfileListViewModel",
+        msg = "Failed to retrieve the list of profiles",
         profilesResult.getErrorOrNull()!!
       )
     }
@@ -42,7 +42,7 @@ class ProfileListViewModel @Inject constructor(
 
     adminProfile?.let {
       sortedProfileList.remove(adminProfile)
-      sortedProfileList.add(0, it)
+      sortedProfileList.add(index = 0, it)
     }
 
     return sortedProfileList

@@ -113,7 +113,7 @@ class ProfileChooserFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(profileChooserFragmentTest = this)
   }
 
   @Test
@@ -141,7 +141,7 @@ class ProfileChooserFragmentTest {
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          1,
+          position = 1,
           R.id.profile_is_admin_text
         )
       ).check(matches(not(isDisplayed())))
@@ -167,7 +167,7 @@ class ProfileChooserFragmentTest {
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          0,
+          position = 0,
           R.id.profile_last_visited
         )
       ).check(matches(isDisplayed()))
@@ -193,7 +193,7 @@ class ProfileChooserFragmentTest {
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          0,
+          position = 0,
           R.id.profile_last_visited
         )
       ).check(matches(isDisplayed()))
@@ -208,7 +208,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_addManyProfiles_checkProfilesSortedAndNoAddProfile() {
     profileTestHelper.initializeProfiles()
-    profileTestHelper.addMoreProfiles(8)
+    profileTestHelper.addMoreProfiles(numProfiles = 8)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -279,7 +279,7 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
+      onView(atPosition(R.id.profile_recycler_view, position = 0)).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
     }
   }
@@ -287,19 +287,19 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickAdminProfileWithNoPin_checkOpensAdminPinActivity() {
     profileManagementController.addProfile(
-      "Admin",
-      "",
-      null,
-      true,
-      -10710042,
-      true
+      name = "Admin",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = true
     ).toLiveData()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          1,
+          position = 1,
           R.id.add_profile_item
         )
       ).perform(click())
@@ -311,12 +311,12 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickAdminControlsWithNoPin_checkOpensAdminPinActivity() {
     profileManagementController.addProfile(
-      "Admin",
-      "",
-      null,
-      true,
-      -10710042,
-      true
+      name = "Admin",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = true
     ).toLiveData()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -363,7 +363,7 @@ class ProfileChooserFragmentTest {
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          1,
+          position = 1,
           R.id.add_profile_description_text
         )
       ).check(matches(isDisplayed()))
@@ -391,7 +391,7 @@ class ProfileChooserFragmentTest {
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          3,
+          position = 3,
           R.id.add_profile_description_text
         )
       ).check(matches(not(isDisplayed())))
@@ -414,7 +414,7 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPosition(R.id.profile_recycler_view, 3)).perform(click())
+      onView(atPosition(R.id.profile_recycler_view, position = 3)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
       intended(hasExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADD_PROFILE.value))
     }

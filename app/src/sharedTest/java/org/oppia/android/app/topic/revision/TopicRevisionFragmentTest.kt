@@ -111,7 +111,7 @@ class TopicRevisionFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(topicRevisionFragmentTest = this)
   }
 
   @Test
@@ -119,7 +119,7 @@ class TopicRevisionFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
-      onView(atPosition(R.id.revision_recycler_view, 0))
+      onView(atPosition(R.id.revision_recycler_view, position = 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
@@ -130,7 +130,7 @@ class TopicRevisionFragmentTest {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
       scrollToPosition(position = 0)
-      onView(atPosition(R.id.revision_recycler_view, 0)).perform(click())
+      onView(atPosition(R.id.revision_recycler_view, position = 0)).perform(click())
       intended(hasComponent(RevisionCardActivity::class.java.name))
     }
   }
@@ -140,7 +140,7 @@ class TopicRevisionFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
-      onView(atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_image_view)).check(
+      onView(atPositionOnView(R.id.revision_recycler_view, position = 0, R.id.subtopic_image_view)).check(
         matches(
           withDrawable(
             subtopicThumbnail
@@ -156,7 +156,7 @@ class TopicRevisionFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       clickRevisionTab()
-      onView(atPosition(R.id.revision_recycler_view, 0))
+      onView(atPosition(R.id.revision_recycler_view, position = 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
@@ -167,7 +167,7 @@ class TopicRevisionFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       clickRevisionTab()
-      onView(atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_image_view)).check(
+      onView(atPositionOnView(R.id.revision_recycler_view, position = 0, R.id.subtopic_image_view)).check(
         matches(
           withDrawable(
             subtopicThumbnail
@@ -193,7 +193,7 @@ class TopicRevisionFragmentTest {
   private fun clickRevisionTab() {
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(3).name),
+        withText(TopicTab.getTabForPosition(position = 3).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())

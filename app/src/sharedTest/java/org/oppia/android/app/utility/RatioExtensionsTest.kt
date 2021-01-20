@@ -88,7 +88,7 @@ class RatioExtensionsTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(ratioExtensionsTest = this)
   }
 
   private fun createRatio(element: List<Int>): RatioExpression {

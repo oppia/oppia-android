@@ -13,7 +13,7 @@ class OngoingTopicListActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(ongoingTopicListActivity = this)
     val internalProfileId: Int = intent.getIntExtra(
       ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY, -1
     )

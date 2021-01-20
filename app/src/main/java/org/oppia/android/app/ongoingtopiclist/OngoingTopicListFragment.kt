@@ -32,7 +32,7 @@ class OngoingTopicListFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(ongoingTopicListFragment = this)
   }
 
   override fun onCreateView(

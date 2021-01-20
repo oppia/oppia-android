@@ -47,8 +47,8 @@ class TopicViewModel @Inject constructor(
   private fun processTopicResult(topicResult: AsyncResult<Topic>): Topic {
     if (topicResult.isFailure()) {
       logger.e(
-        "TopicFragment",
-        "Failed to retrieve Topic: ",
+        tag = "TopicFragment",
+        msg = "Failed to retrieve Topic: ",
         topicResult.getErrorOrNull()!!
       )
     }

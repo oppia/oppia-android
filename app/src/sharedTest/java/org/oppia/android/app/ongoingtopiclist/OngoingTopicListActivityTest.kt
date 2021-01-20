@@ -118,7 +118,7 @@ class OngoingTopicListActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(ongoingTopicListActivityTest = this)
   }
 
   @Test
@@ -137,7 +137,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           R.id.ongoing_topic_list,
-          0, R.id.topic_name_text_view
+          position = 0, R.id.topic_name_text_view
         )
       ).check(
         matches(
@@ -163,7 +163,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           R.id.ongoing_topic_list,
-          0, R.id.topic_name_text_view
+          position = 0, R.id.topic_name_text_view
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
@@ -189,7 +189,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           R.id.ongoing_topic_list,
-          0, R.id.topic_name_text_view
+          position = 0, R.id.topic_name_text_view
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
@@ -214,7 +214,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           R.id.ongoing_topic_list,
-          0, R.id.story_count_text_view
+          position = 0, R.id.story_count_text_view
         )
       ).check(
         matches(
@@ -241,7 +241,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           R.id.ongoing_topic_list,
-          1, R.id.topic_name_text_view
+          position = 1, R.id.topic_name_text_view
         )
       ).check(
         matches(
@@ -265,7 +265,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           R.id.ongoing_topic_list,
-          1, R.id.topic_name_text_view
+          position = 1, R.id.topic_name_text_view
         )
       ).check(
         matches(
@@ -291,7 +291,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           R.id.ongoing_topic_list,
-          1, R.id.story_count_text_view
+          position = 1, R.id.story_count_text_view
         )
       ).check(
         matches(
@@ -318,7 +318,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           R.id.ongoing_topic_list,
-          1, R.id.story_count_text_view
+          position = 1, R.id.story_count_text_view
         )
       ).check(
         matches(
@@ -345,7 +345,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           R.id.ongoing_topic_list,
-          0, R.id.topic_name_text_view
+          position = 0, R.id.topic_name_text_view
         )
       ).check(
         matches(

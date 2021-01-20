@@ -163,7 +163,7 @@ class CustomBulletSpanTest {
       0,
       spannableString.length,
       CustomBulletSpan::class.java
-    )[0].getLeadingMargin(true)
+    )[0].getLeadingMargin(first = true)
     assertThat(leadingMargin).isEqualTo(expectedMargin)
   }
 

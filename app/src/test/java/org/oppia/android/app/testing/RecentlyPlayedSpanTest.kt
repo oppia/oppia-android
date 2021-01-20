@@ -101,7 +101,7 @@ class RecentlyPlayedSpanTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(recentlyPlayedSpanTest = this)
   }
 
   @Config(qualifiers = "port")

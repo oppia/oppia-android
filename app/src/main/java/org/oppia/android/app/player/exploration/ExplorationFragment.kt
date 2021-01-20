@@ -58,7 +58,7 @@ class ExplorationFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(explorationFragment = this)
     val readingTextSize =
       arguments!!.getString(STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY)
     checkNotNull(readingTextSize) { "ExplorationFragment must be created with a reading text size" }

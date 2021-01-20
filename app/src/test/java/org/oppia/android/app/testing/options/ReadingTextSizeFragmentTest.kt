@@ -112,7 +112,7 @@ class ReadingTextSizeFragmentTest {
 
   @Test
   fun testTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
-    launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
+    launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent(summaryValue = "Small")).use {
       checkTextSize(SMALL_TEXT_SIZE)
       updateTextSize(LARGE_TEXT_SIZE)
       rotateToLandscape()
@@ -124,7 +124,7 @@ class ReadingTextSizeFragmentTest {
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
   fun testTextSize_clickTextSize_changeTextSizeToLarge_checkOptionsFragmentIsUpdatedCorrectly() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0,isFromNavigationDrawer =  true)).use {
       testCoroutineDispatchers.runCurrent()
       updateTextSize(MEDIUM_TEXT_SIZE)
       checkTextSizeLabel("Medium")
@@ -155,14 +155,14 @@ class ReadingTextSizeFragmentTest {
       Tap.SINGLE,
       CoordinatesProvider { view ->
         val seekBar = view as SeekBar
-        val screenPos = IntArray(2)
+        val screenPos = IntArray(size = 2)
         seekBar.getLocationInWindow(screenPos)
         val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
 
         val percentagePos = (position.toFloat() / seekBar.max)
         val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
         val screenY = seekBar.height / 2f + screenPos[1]
-        val coordinates = FloatArray(2)
+        val coordinates = FloatArray(size = 2)
         coordinates[0] = screenX
         coordinates[1] = screenY
         coordinates
@@ -202,7 +202,7 @@ class ReadingTextSizeFragmentTest {
     onView(
       atPositionOnView(
         R.id.options_recyclerview,
-        0,
+        position = 0,
         R.id.reading_text_size_text_view
       )
     ).check(
@@ -211,7 +211,7 @@ class ReadingTextSizeFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(readingTextSizeFragmentTest = this)
   }
 
   @Module

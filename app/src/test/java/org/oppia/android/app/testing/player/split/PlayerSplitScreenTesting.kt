@@ -74,7 +74,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_540x960_xhdpi_continueInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("Continue")).isFalse()
+        assertThat(SplitScreenManager(activity).shouldSplitScreen(interactionId = "Continue")).isFalse()
       }
     }
   }
@@ -84,7 +84,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_540x960_xhdpi_dragInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isFalse()
+        assertThat(SplitScreenManager(activity).shouldSplitScreen(interactionId = "DragAndDropSortInput")).isFalse()
       }
     }
   }
@@ -94,7 +94,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_800x1280_xhdpi_continueInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("Continue")).isFalse()
+        assertThat(SplitScreenManager(activity).shouldSplitScreen(interactionId = "Continue")).isFalse()
       }
     }
   }
@@ -104,7 +104,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_800x1280_xhdpi_dragInteraction_split() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isTrue()
+        assertThat(SplitScreenManager(activity).shouldSplitScreen(interactionId = "DragAndDropSortInput")).isTrue()
       }
     }
   }
@@ -114,7 +114,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_411x731_xxxhdpi_dragInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isFalse()
+        assertThat(SplitScreenManager(activity).shouldSplitScreen(interactionId = "DragAndDropSortInput")).isFalse()
       }
     }
   }
@@ -124,7 +124,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_540x960_xhdpi_imageClickInput_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isFalse()
+        assertThat(SplitScreenManager(activity).shouldSplitScreen(interactionId = "ImageClickInput")).isFalse()
       }
     }
   }
@@ -134,7 +134,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_800x1280_xhdpi_imageClickInput_split() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isTrue()
+        assertThat(SplitScreenManager(activity).shouldSplitScreen(interactionId = "ImageClickInput")).isTrue()
       }
     }
   }
@@ -144,7 +144,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_411x731_xxxhdpi_imageClickInput_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isFalse()
+        assertThat(SplitScreenManager(activity).shouldSplitScreen(interactionId = "ImageClickInput")).isFalse()
       }
     }
   }

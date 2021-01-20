@@ -13,7 +13,7 @@ class CompletedStoryListActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(completedStoryListActivity = this)
     val internalProfileId: Int =
       intent.getIntExtra(COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY, -1)
     completedStoryListActivityPresenter.handleOnCreate(internalProfileId)

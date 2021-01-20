@@ -16,7 +16,7 @@ class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExploration
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(recentlyPlayedActivity = this)
     val internalProfileId = intent.getIntExtra(
       RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
       -1
@@ -46,7 +46,7 @@ class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExploration
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
-        this,
+        context = this,
         internalProfileId,
         topicId,
         storyId,

@@ -39,7 +39,7 @@ class PinPasswordActivityPresenter @Inject constructor(
   private lateinit var alertDialog: AlertDialog
 
   fun handleOnCreate() {
-    StatusBarColor.statusBarColorUpdate(R.color.pinInputStatusBar, activity, true)
+    StatusBarColor.statusBarColorUpdate(R.color.pinInputStatusBar, activity, statusBarLight = true)
     val adminPin = activity.intent.getStringExtra(PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY)
     profileId = activity.intent.getIntExtra(PIN_PASSWORD_PROFILE_ID_EXTRA_KEY, -1)
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
@@ -81,7 +81,7 @@ class PinPasswordActivityPresenter @Inject constructor(
                 )
             } else {
               binding.inputPin.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.shake))
-              lifecycleSafeTimerFactory.createTimer(1000).observe(
+              lifecycleSafeTimerFactory.createTimer(timeoutMillis = 1000).observe(
                 activity,
                 Observer {
                   binding.inputPin.setText("")

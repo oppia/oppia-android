@@ -96,7 +96,7 @@ class ConceptCardFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(conceptCardFragmentTest = this)
   }
 
   @Test

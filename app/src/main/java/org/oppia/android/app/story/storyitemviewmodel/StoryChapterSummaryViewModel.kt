@@ -38,10 +38,10 @@ class StoryChapterSummaryViewModel(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
         when {
-          result.isPending() -> logger.d(STORY_VIEWER_TAG, "Loading exploration")
+          result.isPending() -> logger.d(STORY_VIEWER_TAG, msg = "Loading exploration")
           result.isFailure() -> logger.e(
             STORY_VIEWER_TAG,
-            "Failed to load exploration",
+            msg = "Failed to load exploration",
             result.getErrorOrNull()!!
           )
           else -> {
@@ -51,7 +51,7 @@ class StoryChapterSummaryViewModel(
               topicId,
               storyId,
               explorationId, /* backflowScreen= */
-              1
+              backflowId = 1
             )
           }
         }

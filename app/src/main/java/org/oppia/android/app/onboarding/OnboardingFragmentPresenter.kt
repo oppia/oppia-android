@@ -75,7 +75,7 @@ class OnboardingFragmentPresenter @Inject constructor(
         override fun onPageSelected(position: Int) {
           if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
             binding.onboardingSlideViewPager.currentItem = TOTAL_NUMBER_OF_SLIDES - 1
-            getOnboardingViewModel().slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
+            getOnboardingViewModel().slideChanged(slideIndex = TOTAL_NUMBER_OF_SLIDES - 1)
           } else {
             getOnboardingViewModel().slideChanged(
               ViewPagerSlide.getSlideForPosition(position)
@@ -93,27 +93,27 @@ class OnboardingFragmentPresenter @Inject constructor(
       0 -> StatusBarColor.statusBarColorUpdate(
         R.color.onboarding1StatusBar,
         activity,
-        false
+        statusBarLight = false
       )
       1 -> StatusBarColor.statusBarColorUpdate(
         R.color.onboarding2StatusBar,
         activity,
-        false
+        statusBarLight = false
       )
       2 -> StatusBarColor.statusBarColorUpdate(
         R.color.onboarding3StatusBar,
         activity,
-        false
+        statusBarLight = false
       )
       3 -> StatusBarColor.statusBarColorUpdate(
         R.color.onboarding4StatusBar,
         activity,
-        false
+        statusBarLight = false
       )
       else -> StatusBarColor.statusBarColorUpdate(
         R.color.colorPrimaryDark,
         activity,
-        false
+        statusBarLight = false
       )
     }
   }
@@ -128,7 +128,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     if (position != TOTAL_NUMBER_OF_SLIDES - 1) {
       getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position).ordinal)
     } else {
-      getOnboardingViewModel().slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
+      getOnboardingViewModel().slideChanged(slideIndex = TOTAL_NUMBER_OF_SLIDES - 1)
     }
     selectDot(position)
   }
@@ -169,7 +169,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       dotsLayout.addView(dotView, params)
       dotsList.add(dotView)
     }
-    selectDot(0)
+    selectDot(position = 0)
   }
 
   private fun selectDot(position: Int) {

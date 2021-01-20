@@ -127,8 +127,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
       logger.e(
-        "TopicLessonsFragment",
-        "Failed to retrieve topic",
+        tag = "TopicLessonsFragment",
+        msg = "Failed to retrieve topic",
         topic.getErrorOrNull()!!
       )
     }
@@ -145,7 +145,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      /* backflowScreen= */ 0
+      /* backflowScreen= */ backflowScreen = 0
     )
   }
 
@@ -162,14 +162,14 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
         when {
-          result.isPending() -> logger.d("TopicLessonsFragment", "Loading exploration")
+          result.isPending() -> logger.d(tag = "TopicLessonsFragment", msg = "Loading exploration")
           result.isFailure() -> logger.e(
-            "TopicLessonsFragment",
-            "Failed to load exploration",
+            tag = "TopicLessonsFragment",
+            msg = "Failed to load exploration",
             result.getErrorOrNull()!!
           )
           else -> {
-            logger.d("TopicLessonsFragment", "Successfully loaded exploration")
+            logger.d(tag = "TopicLessonsFragment", msg = "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
               internalProfileId,
               topicId,

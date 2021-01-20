@@ -13,7 +13,7 @@ class SplashActivity : InjectableAppCompatActivity(), DeprecationNoticeExitAppLi
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(splashActivity = this)
     splashActivityPresenter.handleOnCreate()
   }
 

@@ -136,7 +136,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(recentlyPlayedFragmentTest = this)
   }
 
   private fun createRecentlyPlayedActivityIntent(profileId: Int): Intent {
@@ -190,7 +190,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.divider_view)
+        atPositionOnView(R.id.ongoing_story_recycler_view, position = 0, R.id.divider_view)
       ).check(
         matches(not(isDisplayed()))
       )
@@ -206,7 +206,7 @@ class RecentlyPlayedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.section_title_text_view)
+        atPositionOnView(R.id.ongoing_story_recycler_view, position = 0, R.id.section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_week))
       )
@@ -227,7 +227,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.story_name_text_view)
+        atPositionOnView(R.id.ongoing_story_recycler_view, position = 1, R.id.story_name_text_view)
       ).check(
         matches(withText(containsString("Matthew Goes to the Bakery")))
       )
@@ -248,7 +248,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.topic_name_text_view)
+        atPositionOnView(R.id.ongoing_story_recycler_view, position = 1, R.id.topic_name_text_view)
       ).check(
         matches(withText(containsString("FRACTIONS")))
       )
@@ -269,7 +269,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.lesson_thumbnail)
+        atPositionOnView(R.id.ongoing_story_recycler_view, position = 1, R.id.lesson_thumbnail)
       ).check(
         matches(withDrawable(R.drawable.lesson_thumbnail_graphic_duck_and_chicken))
       )
@@ -290,7 +290,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.lesson_thumbnail)
+        atPositionOnView(R.id.ongoing_story_recycler_view, position = 1, R.id.lesson_thumbnail)
       ).perform(click())
       intended(
         allOf(
@@ -330,7 +330,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 2, R.id.section_title_text_view)
+        atPositionOnView(R.id.ongoing_story_recycler_view, position = 2, R.id.section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_month))
       )
@@ -353,7 +353,7 @@ class RecentlyPlayedFragmentTest {
       onView(
         atPositionOnView(
           R.id.ongoing_story_recycler_view,
-          2,
+          position = 2,
           R.id.divider_view
         )
       ).check(matches(isDisplayed()))
@@ -391,7 +391,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.divider_view)
+        atPositionOnView(R.id.ongoing_story_recycler_view, position = 0, R.id.divider_view)
       ).check(matches(not(isDisplayed())))
     }
   }
@@ -411,7 +411,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.section_title_text_view)
+        atPositionOnView(R.id.ongoing_story_recycler_view, position = 0, R.id.section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_week))
       )
@@ -433,7 +433,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.story_name_text_view)
+        atPositionOnView(R.id.ongoing_story_recycler_view, position = 1, R.id.story_name_text_view)
       ).check(
         matches(withText(containsString("Matthew Goes to the Bakery")))
       )
@@ -455,7 +455,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.topic_name_text_view)
+        atPositionOnView(R.id.ongoing_story_recycler_view, position = 1, R.id.topic_name_text_view)
       ).check(
         matches(withText(containsString("FRACTIONS")))
       )
@@ -477,7 +477,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.lesson_thumbnail)
+        atPositionOnView(R.id.ongoing_story_recycler_view, position = 1, R.id.lesson_thumbnail)
       ).check(
         matches(withDrawable(R.drawable.lesson_thumbnail_graphic_duck_and_chicken))
       )
@@ -499,7 +499,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 2, R.id.section_title_text_view)
+        atPositionOnView(R.id.ongoing_story_recycler_view, position = 2, R.id.section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_month))
       )
@@ -521,7 +521,7 @@ class RecentlyPlayedFragmentTest {
       )
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
-          1, 1
+          spanCount = 1, position = 1
         )
       )
     }
@@ -542,7 +542,7 @@ class RecentlyPlayedFragmentTest {
       )
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
-          1, 3
+          spanCount = 1, position = 3
         )
       )
     }
@@ -564,7 +564,7 @@ class RecentlyPlayedFragmentTest {
       )
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
-          1, 1
+          spanCount = 1, position = 1
         )
       )
     }
@@ -586,7 +586,7 @@ class RecentlyPlayedFragmentTest {
       )
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
-          1, 3
+          spanCount = 1, position = 3
         )
       )
     }

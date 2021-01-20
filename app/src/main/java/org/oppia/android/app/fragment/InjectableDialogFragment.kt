@@ -19,6 +19,6 @@ abstract class InjectableDialogFragment : DialogFragment() {
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent =
-      (requireActivity() as InjectableAppCompatActivity).createFragmentComponent(this)
+      (requireActivity() as InjectableAppCompatActivity).createFragmentComponent(fragment = this)
   }
 }

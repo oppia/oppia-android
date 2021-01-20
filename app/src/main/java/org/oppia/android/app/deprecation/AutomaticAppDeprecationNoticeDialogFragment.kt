@@ -27,7 +27,7 @@ class AutomaticAppDeprecationNoticeDialogFragment : InjectableDialogFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(autoAppDeprecationNoticeDialogFragment = this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

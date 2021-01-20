@@ -99,7 +99,7 @@ class DragViewAction(
    * transitioned when performing drag action.
    */
   private fun interpolate(start: FloatArray, end: FloatArray): Array<FloatArray> {
-    val res = Array(DRAG_STEP_COUNT) { FloatArray(2) }
+    val res = Array(DRAG_STEP_COUNT) { FloatArray(size = 2) }
     for (i in 0 until DRAG_STEP_COUNT) {
       res[i][0] = start[0] + (end[0] - start[0]) * i / (DRAG_STEP_COUNT - 1f)
       res[i][1] = start[1] + (end[1] - start[1]) * i / (DRAG_STEP_COUNT - 1f)
@@ -138,7 +138,7 @@ class ChildViewCoordinatesProvider(
 enum class CustomGeneralLocation : CoordinatesProvider {
   UNDER_RIGHT {
     override fun calculateCoordinates(view: View): FloatArray {
-      val screenLocation = IntArray(2)
+      val screenLocation = IntArray(size = 2)
       view.getLocationOnScreen(screenLocation)
       return floatArrayOf(
         screenLocation[0] + view.width - 1f,
@@ -148,7 +148,7 @@ enum class CustomGeneralLocation : CoordinatesProvider {
   },
   ABOVE_RIGHT {
     override fun calculateCoordinates(view: View): FloatArray {
-      val screenLocation = IntArray(2)
+      val screenLocation = IntArray(size = 2)
       view.getLocationOnScreen(screenLocation)
       return floatArrayOf(
         screenLocation[0] + view.width - 1f,

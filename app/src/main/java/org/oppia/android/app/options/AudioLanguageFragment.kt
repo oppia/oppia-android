@@ -33,7 +33,7 @@ class AudioLanguageFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(audioLanguageFragment = this)
   }
 
   override fun onCreateView(

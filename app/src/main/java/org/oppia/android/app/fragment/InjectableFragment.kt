@@ -22,7 +22,7 @@ abstract class InjectableFragment : Fragment(), ViewComponentFactory {
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent =
-      (requireActivity() as InjectableAppCompatActivity).createFragmentComponent(this)
+      (requireActivity() as InjectableAppCompatActivity).createFragmentComponent(fragment = this)
   }
 
   override fun createViewComponent(view: View): ViewComponent {

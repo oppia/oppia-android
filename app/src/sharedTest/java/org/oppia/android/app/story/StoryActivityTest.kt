@@ -131,7 +131,7 @@ class StoryActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(storyActivityTest = this)
   }
 
   private fun createStoryActivityIntent(

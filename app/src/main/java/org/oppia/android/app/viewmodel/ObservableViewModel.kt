@@ -20,7 +20,7 @@ open class ObservableViewModel : ViewModel(), Observable {
 
   /** See [androidx.databinding.BaseObservable.notifyChange]. */
   fun notifyChange() {
-    notifyPropertyChanged(/* fieldId= */ 0)
+    notifyPropertyChanged(/* fieldId= */ fieldId = 0)
   }
 
   /** See [androidx.databinding.BaseObservable.notifyPropertyChanged]. */

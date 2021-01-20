@@ -39,7 +39,7 @@ class AdminAuthActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(adminAuthActivity = this)
     adminAuthFragmentPresenter.handleOnCreate()
   }
 

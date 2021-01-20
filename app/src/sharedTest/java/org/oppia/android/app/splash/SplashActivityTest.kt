@@ -239,27 +239,27 @@ class SplashActivityTest {
   }
 
   private fun initializeTestApplication() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(splashActivityTest = this)
     testCoroutineDispatchers.registerIdlingResource()
     setAutoAppExpirationEnabled(enabled = false) // Default to disabled.
   }
 
   private fun setAutoAppExpirationEnabled(enabled: Boolean) {
-    fakeMetaDataRetriever.putMetaDataBoolean("automatic_app_expiration_enabled", enabled)
+    fakeMetaDataRetriever.putMetaDataBoolean(keyName = "automatic_app_expiration_enabled", enabled)
   }
 
   private fun setAutoAppExpirationDate(dateString: String) {
-    fakeMetaDataRetriever.putMetaDataString("expiration_date", dateString)
+    fakeMetaDataRetriever.putMetaDataString(keyName = "expiration_date", dateString)
   }
 
   /** Returns a date string occurring before today. */
   private fun dateStringBeforeToday(): String {
-    return computeDateString(Instant.now() - Duration.ofDays(1))
+    return computeDateString(instant = Instant.now() - Duration.ofDays(1))
   }
 
   /** Returns a date string occurring after today. */
   private fun dateStringAfterToday(): String {
-    return computeDateString(Instant.now() + Duration.ofDays(1))
+    return computeDateString(instant = Instant.now() + Duration.ofDays(1))
   }
 
   private fun computeDateString(instant: Instant): String {

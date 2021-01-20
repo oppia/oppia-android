@@ -23,7 +23,7 @@ class AddProfileActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(addProfileActivity = this)
     addProfileFragmentPresenter.handleOnCreate()
   }
 

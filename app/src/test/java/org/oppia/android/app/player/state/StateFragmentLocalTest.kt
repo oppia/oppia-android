@@ -953,7 +953,7 @@ class StateFragmentLocalTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(stateFragmentLocalTest = this)
   }
 
   private fun launchForExploration(

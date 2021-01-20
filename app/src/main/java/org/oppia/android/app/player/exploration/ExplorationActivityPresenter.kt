@@ -50,8 +50,8 @@ class ExplorationActivityPresenter @Inject constructor(
   private var backflowScreen: Int? = null
 
   enum class ParentActivityForExploration(val value: Int) {
-    BACKFLOW_SCREEN_LESSONS(0),
-    BACKFLOW_SCREEN_STORY(1);
+    BACKFLOW_SCREEN_LESSONS(value = 0),
+    BACKFLOW_SCREEN_STORY(value = 1);
   }
 
   private val exploreViewModel by lazy {
@@ -145,7 +145,7 @@ class ExplorationActivityPresenter @Inject constructor(
         val intent = OptionsActivity.createOptionsActivity(
           activity,
           internalProfileId,
-          /* isFromNavigationDrawer= */ false
+          /* isFromNavigationDrawer= */ isFromNavigationDrawer = false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
         context.startActivity(intent)
@@ -154,7 +154,7 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
           activity, internalProfileId,
-          /* isFromNavigationDrawer= */false
+          /* isFromNavigationDrawer= */isFromNavigationDrawer = false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
         context.startActivity(intent)
@@ -202,14 +202,14 @@ class ExplorationActivityPresenter @Inject constructor(
         activity,
         Observer<AsyncResult<Any?>> {
           when {
-            it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
+            it.isPending() -> logger.d(tag = "ExplorationActivity", msg = "Stopping exploration")
             it.isFailure() -> logger.e(
-              "ExplorationActivity",
-              "Failed to stop exploration",
+              tag = "ExplorationActivity",
+              msg = "Failed to stop exploration",
               it.getErrorOrNull()!!
             )
             else -> {
-              logger.d("ExplorationActivity", "Successfully stopped exploration")
+              logger.d(tag = "ExplorationActivity", msg = "Successfully stopped exploration")
               backPressActivitySelector(backflowScreen)
               (activity as ExplorationActivity).finish()
             }
@@ -262,8 +262,8 @@ class ExplorationActivityPresenter @Inject constructor(
   private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
     if (ephemeralStateResult.isFailure()) {
       logger.e(
-        "StateFragment",
-        "Failed to retrieve answer outcome",
+        tag = "StateFragment",
+        msg = "Failed to retrieve answer outcome",
         ephemeralStateResult.getErrorOrNull()!!
       )
     }

@@ -21,7 +21,7 @@ class NavigationDrawerFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(navigationDrawerFragment = this)
   }
 
   override fun onCreateView(

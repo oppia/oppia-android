@@ -15,7 +15,7 @@ class OnboardingFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(onboardingFragment = this)
   }
 
   override fun onCreateView(

@@ -30,7 +30,7 @@ class AdministratorControlsActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(administratorControlsActivity = this)
     val extraControlsTitle = savedInstanceState?.getString(SELECTED_CONTROLS_TITLE_SAVED_KEY)
     lastLoadedFragment = if (savedInstanceState != null) {
       savedInstanceState.get(LAST_LOADED_FRAGMENT_KEY) as String
@@ -48,7 +48,7 @@ class AdministratorControlsActivity :
   }
 
   override fun routeToAppVersion() {
-    startActivity(AppVersionActivity.createAppVersionActivityIntent(this))
+    startActivity(AppVersionActivity.createAppVersionActivityIntent(context = this))
   }
 
   override fun routeToProfileList() {

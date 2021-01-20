@@ -132,7 +132,7 @@ class StringToRatioParserTest {
 
   @Test
   fun testParser_realtimeError_answerWithMixedFrationRatio_returnInvalidFormatError() {
-    val error = stringToRatioParser.getSubmitTimeError("1/2:3:4", 0)
+    val error = stringToRatioParser.getSubmitTimeError("1/2:3:4", numberOfTerms = 0)
       .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo("Please enter a valid ratio (e.g. 1:2 or 1:2:3).")
   }
@@ -183,7 +183,7 @@ class StringToRatioParserTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(stringToRatioParserTest = this)
   }
 
   private fun createRatio(element: List<Int>): RatioExpression {

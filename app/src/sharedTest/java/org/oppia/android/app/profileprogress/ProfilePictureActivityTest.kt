@@ -91,7 +91,7 @@ class ProfilePictureActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(profilePictureActivityTest = this)
   }
 
   private fun createProfilePictureActivityIntent(profileId: Int): Intent {

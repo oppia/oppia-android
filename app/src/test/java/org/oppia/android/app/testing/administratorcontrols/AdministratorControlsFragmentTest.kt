@@ -96,14 +96,14 @@ class AdministratorControlsFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(testAdministratorControlsFragmentTest = this)
   }
 
   @Test
   fun testAdministratorControlsFragment_clickEditProfile_checkSendingTheCorrectIntent() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -117,7 +117,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickAppVersion_checkSendingTheCorrectIntent() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -136,7 +136,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickEditProfile_checkLoadingTheCorrectFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -156,7 +156,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickAppVersion_checkLoadingTheCorrectFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()

@@ -140,7 +140,7 @@ class StateFragmentAccessibilityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(stateFragmentAccessibilityTest = this)
   }
 
   private fun launchForExploration(

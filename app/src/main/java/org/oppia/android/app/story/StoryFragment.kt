@@ -32,7 +32,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(storyFragment = this)
   }
 
   override fun onCreateView(

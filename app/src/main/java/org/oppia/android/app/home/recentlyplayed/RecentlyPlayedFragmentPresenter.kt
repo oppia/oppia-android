@@ -80,7 +80,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       Observer<OngoingStoryList> { it ->
         if (it.recentStoryCount > 0) {
           val recentSectionTitleViewModel =
-            SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
+            SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), isDividerVisible = false)
           itemList.add(recentSectionTitleViewModel)
           for (promotedStory in it.recentStoryList) {
             val ongoingStoryViewModel =
@@ -173,20 +173,20 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
         when {
-          result.isPending() -> logger.d("RecentlyPlayedFragment", "Loading exploration")
+          result.isPending() -> logger.d(tag = "RecentlyPlayedFragment", msg = "Loading exploration")
           result.isFailure() -> logger.e(
-            "RecentlyPlayedFragment",
-            "Failed to load exploration",
+            tag = "RecentlyPlayedFragment",
+            msg = "Failed to load exploration",
             result.getErrorOrNull()!!
           )
           else -> {
-            logger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
+            logger.d(tag = "RecentlyPlayedFragment", msg = "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
               internalProfileId,
               topicId,
               storyId,
               explorationId,
-              /* backflowScreen = */ null
+              /* backflowScreen = */ backflowScreen = null
             )
             activity.finish()
           }

@@ -31,7 +31,7 @@ class ProfileProgressFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(profileProgressFragment = this)
   }
 
   override fun onCreateView(

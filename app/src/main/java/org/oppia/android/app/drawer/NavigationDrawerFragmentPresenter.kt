@@ -210,7 +210,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         NavigationDrawerItem.OPTIONS -> {
           val intent = OptionsActivity.createOptionsActivity(
             activity, internalProfileId,
-            /* isFromNavigationDrawer= */ true
+            /* isFromNavigationDrawer= */ isFromNavigationDrawer = true
           )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
@@ -221,7 +221,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         NavigationDrawerItem.HELP -> {
           val intent = HelpActivity.createHelpActivityIntent(
             activity, internalProfileId,
-            /* isFromNavigationDrawer= */ true
+            /* isFromNavigationDrawer= */ isFromNavigationDrawer = true
           )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
@@ -325,7 +325,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           StatusBarColor.statusBarColorUpdate(
             R.color.slideDrawerOpenStatusBar,
             activity,
-            false
+            statusBarLight = false
           )
         }
 
@@ -335,7 +335,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           StatusBarColor.statusBarColorUpdate(
             R.color.colorPrimaryDark,
             activity,
-            false
+            statusBarLight = false
           )
         }
       }
@@ -359,7 +359,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           StatusBarColor.statusBarColorUpdate(
             R.color.slideDrawerOpenStatusBar,
             activity,
-            false
+            statusBarLight = false
           )
         }
 
@@ -369,7 +369,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           StatusBarColor.statusBarColorUpdate(
             R.color.colorPrimaryDark,
             activity,
-            false
+            statusBarLight = false
           )
         }
       }

@@ -14,7 +14,7 @@ class TestFontScaleConfigurationUtilActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(testFontScaleConfigurationUtilActivity = this)
     val readingTextSize = intent.getStringExtra(FONT_SCALE_EXTRA_KEY)
     configUtilActivityPresenter.handleOnCreate(readingTextSize)
   }

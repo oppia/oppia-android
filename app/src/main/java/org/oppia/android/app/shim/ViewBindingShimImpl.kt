@@ -77,7 +77,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
         resourceBucketName,
         entityType,
         entityId,
-        false
+        imageCenterAlign = false
       ).parseOppiaHtml(
         viewModel.htmlContent,
         binding.itemSelectionContentsTextView
@@ -109,7 +109,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
       DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
     binding.htmlContent =
       htmlParserFactory.create(
-        resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
+        resourceBucketName, entityType, entityId, /* imageCenterAlign= */ imageCenterAlign = false
       ).parseOppiaHtml(
         viewModel.htmlContent, binding.multipleChoiceContentTextView
       )
@@ -194,7 +194,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
       resourceBucketName,
       entityType,
       entityId,
-      /* imageCenterAlign= */ false
+      /* imageCenterAlign= */ imageCenterAlign = false
     ).parseOppiaHtml(
       viewModel, dragDropSingleItemBinding.dragDropContentTextView
     )

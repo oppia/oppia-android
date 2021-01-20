@@ -259,7 +259,7 @@ class PromotedStoryListViewModelTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(promotedStoryListViewModelTest = this)
   }
 
   private fun createPromotedStoryViewModelList(

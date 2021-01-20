@@ -87,8 +87,8 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
       logger.e(
-        "WalkthroughWelcomeFragment",
-        "Failed to retrieve profile",
+        tag = "WalkthroughWelcomeFragment",
+        msg = "Failed to retrieve profile",
         profileResult.getErrorOrNull()!!
       )
     }

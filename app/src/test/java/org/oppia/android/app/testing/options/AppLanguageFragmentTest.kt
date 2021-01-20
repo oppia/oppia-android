@@ -105,7 +105,7 @@ class AppLanguageFragmentTest {
 
   @Test
   fun testAppLanguage_changeAppLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(summaryValue = "English")).use {
       selectLanguage(FRENCH)
       rotateToLandscape()
       checkSelectedLanguage(FRENCH)
@@ -115,11 +115,11 @@ class AppLanguageFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAppLanguage_clickAppLanguage_changeAppLanguage_checkOptionsFragmentIsUpdatedCorrectly() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
       testCoroutineDispatchers.runCurrent()
       selectChangeAppLanguage()
       selectLanguage(HINDI)
-      checkAppLanguage("Hindi")
+      checkAppLanguage(appLanguage = "Hindi")
     }
   }
 
@@ -143,7 +143,7 @@ class AppLanguageFragmentTest {
     onView(
       atPositionOnView(
         R.id.options_recyclerview,
-        1,
+        position = 1,
         R.id.app_language_item_layout
       )
     ).perform(
@@ -169,7 +169,7 @@ class AppLanguageFragmentTest {
     onView(
       atPositionOnView(
         R.id.options_recyclerview,
-        1,
+        position = 1,
         R.id.app_language_text_view
       )
     ).check(
@@ -197,7 +197,7 @@ class AppLanguageFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(appLanguageFragmentTest = this)
   }
 
   @Module

@@ -31,8 +31,8 @@ class AdministratorControlsDownloadPermissionsViewModel(
         Observer {
           if (it.isFailure()) {
             logger.e(
-              "AdministratorControlsFragment",
-              "Failed to update topic update on wifi permission",
+              tag = "AdministratorControlsFragment",
+              msg = "Failed to update topic update on wifi permission",
               it.getErrorOrNull()!!
             )
           }
@@ -49,8 +49,8 @@ class AdministratorControlsDownloadPermissionsViewModel(
       Observer {
         if (it.isFailure()) {
           logger.e(
-            "AdministratorControlsFragment",
-            "Failed to update topic auto update permission",
+            tag = "AdministratorControlsFragment",
+            msg = "Failed to update topic auto update permission",
             it.getErrorOrNull()!!
           )
         }

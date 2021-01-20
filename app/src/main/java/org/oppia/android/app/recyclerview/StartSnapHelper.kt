@@ -24,7 +24,7 @@ class StartSnapHelper : LinearSnapHelper() {
     layoutManager: RecyclerView.LayoutManager,
     targetView: View
   ): IntArray? {
-    val out = IntArray(2)
+    val out = IntArray(size = 2)
     if (layoutManager.canScrollHorizontally()) {
       out[0] = distanceToStart(targetView, getHorizontalHelper(layoutManager))
     } else {

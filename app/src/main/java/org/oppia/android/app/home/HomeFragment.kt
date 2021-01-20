@@ -16,7 +16,7 @@ class HomeFragment : InjectableFragment(), TopicSummaryClickListener {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(homeFragment = this)
   }
 
   override fun onCreateView(

@@ -224,7 +224,7 @@ class AdministratorControlsActivityTest {
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2,
+          position = 2,
           R.id.topic_update_on_wifi_switch
         )
       ).check(matches(not(isChecked())))
@@ -232,7 +232,7 @@ class AdministratorControlsActivityTest {
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2,
+          position = 2,
           R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
@@ -251,21 +251,21 @@ class AdministratorControlsActivityTest {
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2,
+          position = 2,
           R.id.topic_update_on_wifi_switch
         )
       ).check(matches(not(isChecked())))
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2,
+          position = 2,
           R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2,
+          position = 2,
           R.id.topic_update_on_wifi_switch
         )
       ).perform(click())
@@ -274,14 +274,14 @@ class AdministratorControlsActivityTest {
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2,
+          position = 2,
           R.id.topic_update_on_wifi_switch
         )
       ).check(matches(isChecked()))
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2,
+          position = 2,
           R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
@@ -290,14 +290,14 @@ class AdministratorControlsActivityTest {
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2,
+          position = 2,
           R.id.topic_update_on_wifi_switch
         )
       ).check(matches(isChecked()))
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2,
+          position = 2,
           R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
@@ -402,7 +402,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_selectAdminNavItem_adminControlsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       it.openNavigationDrawer()

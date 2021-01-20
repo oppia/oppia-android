@@ -258,7 +258,7 @@ class HomeActivityTest {
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
-          1,
+          position = 1,
           R.id.view_all_text_view
         )
       ).perform(click())
@@ -274,7 +274,7 @@ class HomeActivityTest {
         allOf(
           withId(R.id.promoted_story_list_recycler_view),
           withParent(
-            atPosition(R.id.home_recycler_view, 1)
+            atPosition(R.id.home_recycler_view, position = 1)
           )
         )
       ).check(matches(hasDescendant(withText(containsString("Prototype Exploration")))))
@@ -317,7 +317,7 @@ class HomeActivityTest {
         allOf(
           withId(R.id.promoted_story_list_recycler_view),
           withParent(
-            atPosition(R.id.home_recycler_view, 1)
+            atPosition(R.id.home_recycler_view, position = 1)
           )
         )
       ).perform(click())
@@ -459,9 +459,9 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(spanCount = 3, position = 0))
       } else {
-        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(2, 0))
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(spanCount = 2, position = 0))
       }
     }
   }
@@ -470,7 +470,7 @@ class HomeActivityTest {
   fun testHomeActivity_checkSpanForItem4_spanSizeIsOne() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
+      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(spanCount = 1, position = 4))
     }
   }
 
@@ -479,7 +479,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
+      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(spanCount = 1, position = 4))
     }
   }
 
@@ -496,7 +496,7 @@ class HomeActivityTest {
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
-          2,
+          position = 2,
           R.id.promoted_story_list_recycler_view
         )
       ).check(doesNotExist())
@@ -556,7 +556,7 @@ class HomeActivityTest {
       scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view)).check(
         // The "All Topics" section currently should display the four test topics in two rows.
-        hasGridColumnCount(2)
+        hasGridColumnCount(expectedColumnCount = 2)
       )
     }
   }

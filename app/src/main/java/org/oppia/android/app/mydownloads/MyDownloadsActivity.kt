@@ -16,7 +16,7 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(myDownloadsActivity = this)
     myDownloadsActivityPresenter.handleOnCreate()
     internalProfileId = intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
   }
@@ -34,7 +34,7 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
   }
 
   override fun onBackPressed() {
-    val intent = HomeActivity.createHomeActivity(this, internalProfileId)
+    val intent = HomeActivity.createHomeActivity(context = this, internalProfileId)
     startActivity(intent)
     finish()
   }

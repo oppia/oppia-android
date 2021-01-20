@@ -262,7 +262,7 @@ class AudioFragmentTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
+  @Ignore(value = "Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
@@ -338,7 +338,7 @@ class AudioFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(audioFragmentTest = this)
   }
 
   private fun addMediaInfo() {
@@ -346,8 +346,8 @@ class AudioFragmentTest {
       val dataSource = toDataSource(context, Uri.parse(TEST_URL))
       val dataSource2 = toDataSource(context, Uri.parse(TEST_URL2))
       val mediaInfo = createMediaInfo(
-        /* duration= */ 1000,
-        /* preparationDelay= */ 0
+        /* duration= */ duration = 1000,
+        /* preparationDelay= */ preparationDelay = 0
       )
       addMediaInfo(dataSource, mediaInfo)
       addMediaInfo(dataSource2, mediaInfo)

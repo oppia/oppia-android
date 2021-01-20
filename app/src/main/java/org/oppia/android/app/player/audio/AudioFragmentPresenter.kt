@@ -123,7 +123,7 @@ class AudioFragmentPresenter @Inject constructor(
       activity,
       Observer<String> { result ->
         viewModel.selectedLanguageCode = result
-        viewModel.loadMainContentAudio(false)
+        viewModel.loadMainContentAudio(allowAutoPlay = false)
       }
     )
   }
@@ -141,7 +141,7 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): String {
     if (profileResult.isFailure()) {
-      logger.e("AudioFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      logger.e(tag = "AudioFragment", msg = "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
     return getAudioLanguage(profileResult.getOrDefault(Profile.getDefaultInstance()).audioLanguage)
   }
@@ -248,9 +248,9 @@ class AudioFragmentPresenter @Inject constructor(
     audioButtonListener.showAudioStreamingOn()
     audioButtonListener.scrollToTop()
     if (feedbackId == null) {
-      loadMainContentAudio(true)
+      loadMainContentAudio(allowAutoPlay = true)
     } else {
-      loadFeedbackAudio(feedbackId!!, true)
+      loadFeedbackAudio(feedbackId!!, allowAutoPlay = true)
     }
     fragment.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
   }

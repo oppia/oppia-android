@@ -15,7 +15,7 @@ class FAQListFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(faqListFragment = this)
   }
 
   override fun onCreateView(

@@ -67,7 +67,7 @@ class HintsAndSolutionDialogFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(hintsAndSolutionDialogFragment = this)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

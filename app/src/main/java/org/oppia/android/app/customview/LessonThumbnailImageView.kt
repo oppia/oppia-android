@@ -96,9 +96,9 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     )
     val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      imageLoader.loadSvg(imageUrl, ImageViewTarget(this))
+      imageLoader.loadSvg(imageUrl, ImageViewTarget(imageView = this))
     } else {
-      imageLoader.loadBitmap(imageUrl, ImageViewTarget(this))
+      imageLoader.loadBitmap(imageUrl, ImageViewTarget(imageView = this))
     }
   }
 
@@ -106,12 +106,12 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     try {
       super.onAttachedToWindow()
       (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
-        .createViewComponent(this).inject(this)
+        .createViewComponent(this).inject(lessonThumbnailImageView = this)
     } catch (e: IllegalStateException) {
       if (::logger.isInitialized)
         logger.e(
-          "LessonThumbnailImageView",
-          "Throws exception on attach to window",
+          tag = "LessonThumbnailImageView",
+          msg = "Throws exception on attach to window",
           e
         )
     }

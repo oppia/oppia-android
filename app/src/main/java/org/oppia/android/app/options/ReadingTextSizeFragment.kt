@@ -28,7 +28,7 @@ class ReadingTextSizeFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(readingTextSizeFragment = this)
   }
 
   override fun onCreateView(

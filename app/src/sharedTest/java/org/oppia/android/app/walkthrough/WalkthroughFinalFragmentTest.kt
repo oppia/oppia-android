@@ -108,7 +108,7 @@ class WalkthroughFinalFragmentTest {
 
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_topicTitleIsCorrect() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId = 0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(scrollTo(), click())
@@ -118,7 +118,7 @@ class WalkthroughFinalFragmentTest {
       onView(
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
-          1,
+          position = 1,
           R.id.walkthrough_topic_name_text_view
         )
       ).perform(click())
@@ -133,7 +133,7 @@ class WalkthroughFinalFragmentTest {
 
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex2_topicSelected_topicTitleIsCorrect() {
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId = 0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(scrollTo(), click())
@@ -143,7 +143,7 @@ class WalkthroughFinalFragmentTest {
       onView(
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
-          2,
+          position = 2,
           R.id.walkthrough_topic_name_text_view
         )
       ).perform(click())
@@ -158,7 +158,7 @@ class WalkthroughFinalFragmentTest {
 
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex2_topicSelected_configurationChanged_topicTitleIsCorrect() { // ktlint-disable max-line-length
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId = 0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(scrollTo(), click())
@@ -168,7 +168,7 @@ class WalkthroughFinalFragmentTest {
       onView(
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
-          2,
+          position = 2,
           R.id.walkthrough_topic_name_text_view
         )
       ).perform(click())
@@ -190,7 +190,7 @@ class WalkthroughFinalFragmentTest {
 
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_yesNoButton_isDisplayedCorrectly() { // ktlint-disable max-line-length
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId = 0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(scrollTo(), click())
@@ -200,7 +200,7 @@ class WalkthroughFinalFragmentTest {
       onView(
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
-          2,
+          position = 2,
           R.id.walkthrough_topic_name_text_view
         )
       ).perform(click())
@@ -213,7 +213,7 @@ class WalkthroughFinalFragmentTest {
 
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_clickNoButton_worksCorrectly() { // ktlint-disable max-line-length
-    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(profileId = 0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(scrollTo(), click())
@@ -223,18 +223,18 @@ class WalkthroughFinalFragmentTest {
       onView(
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
-          2,
+          position = 2,
           R.id.walkthrough_topic_name_text_view
         )
       ).perform(click())
       onView(withId(R.id.walkthrough_final_no_button)).perform(scrollTo())
         .perform(click())
-      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(progress = 2)))
     }
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(walkthroughFinalFragmentTest = this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

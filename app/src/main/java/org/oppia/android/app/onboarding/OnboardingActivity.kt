@@ -22,12 +22,12 @@ class OnboardingActivity : InjectableAppCompatActivity(), RouteToProfileListList
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(onboardingActivity = this)
     onboardingActivityPresenter.handleOnCreate()
   }
 
   override fun routeToProfileList() {
-    startActivity(ProfileChooserActivity.createProfileChooserActivity(this))
+    startActivity(ProfileChooserActivity.createProfileChooserActivity(context = this))
     finish()
   }
 }

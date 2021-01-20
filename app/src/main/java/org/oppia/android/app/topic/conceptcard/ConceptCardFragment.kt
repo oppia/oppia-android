@@ -34,7 +34,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(conceptCardFragment = this)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

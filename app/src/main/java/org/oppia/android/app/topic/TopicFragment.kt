@@ -16,7 +16,7 @@ class TopicFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(topicFragment = this)
   }
 
   override fun onCreateView(

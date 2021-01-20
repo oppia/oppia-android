@@ -26,13 +26,13 @@ class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopic
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(navigationDrawerTestActivity = this)
     internalProfileId = intent?.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)!!
     homeActivityPresenter.handleOnCreate()
     title = getString(R.string.menu_home)
   }
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
-    startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
+    startActivity(TopicActivity.createTopicActivityIntent(context = this, internalProfileId, topicId))
   }
 }

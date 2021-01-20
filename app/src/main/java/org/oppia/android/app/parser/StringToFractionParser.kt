@@ -49,9 +49,9 @@ class StringToFractionParser {
     val normalized = text.normalizeWhitespace()
     return when {
       !normalized.matches(invalidCharsRegex) -> FractionParsingError.INVALID_CHARS
-      normalized.startsWith("/") -> FractionParsingError.INVALID_FORMAT
+      normalized.startsWith(prefix = "/") -> FractionParsingError.INVALID_FORMAT
       normalized.count { it == '/' } > 1 -> FractionParsingError.INVALID_FORMAT
-      normalized.lastIndexOf('-') > 0 -> FractionParsingError.INVALID_FORMAT
+      normalized.lastIndexOf(char = '-') > 0 -> FractionParsingError.INVALID_FORMAT
       else -> FractionParsingError.VALID
     }
   }
@@ -106,7 +106,7 @@ class StringToFractionParser {
       .build()
   }
 
-  private fun isInputNegative(inputText: String): Boolean = inputText.startsWith("-")
+  private fun isInputNegative(inputText: String): Boolean = inputText.startsWith(prefix = "-")
 
   /** Enum to store the errors of [FractionInputInteractionView]. */
   enum class FractionParsingError(@StringRes private var error: Int?) {

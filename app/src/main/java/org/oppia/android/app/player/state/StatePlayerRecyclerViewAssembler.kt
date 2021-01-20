@@ -211,7 +211,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         conversationPendingItemList,
         extraInteractionPendingItemList,
         ephemeralState.pendingState.wrongAnswerList,
-        /* isCorrectAnswer= */ false,
+        /* isCorrectAnswer= */ isCorrectAnswer = false,
         gcsEntityId
       )
       if (playerFeatureSet.hintsAndSolutionsSupport) {
@@ -232,7 +232,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         conversationPendingItemList,
         extraInteractionPendingItemList,
         ephemeralState.completedState.answerList,
-        /* isCorrectAnswer= */ true,
+        /* isCorrectAnswer= */ isCorrectAnswer = true,
         gcsEntityId
       )
       hintHandler.hideHint()
@@ -273,7 +273,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasPreviousState,
       canContinueToNextState,
       hasGeneralContinueButton,
-      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
+      stateIsTerminal = ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
     )
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
@@ -321,7 +321,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     if (answersAndResponses.size > 1) {
       if (playerFeatureSet.wrongAnswerCollapsing) {
         PreviousResponsesHeaderViewModel(
-          answersAndResponses.size - 1,
+          previousAnswerCount = answersAndResponses.size - 1,
           hasConversationView,
           ObservableBoolean(hasPreviousResponsesExpanded),
           fragment as PreviousResponsesHeaderClickListener,
@@ -339,7 +339,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           createSubmittedAnswer(
             answerAndResponse.userAnswer,
             gcsEntityId,
-            /* isAnswerCorrect= */ false
+            /* isAnswerCorrect= */ isAnswerCorrect = false
           ).let { viewModel ->
             if (showPreviousAnswers) {
               pendingItemList += viewModel
@@ -366,7 +366,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           rightPendingItemList += createSubmittedAnswer(
             answerAndResponse.userAnswer,
             gcsEntityId,
-            /* isAnswerCorrect= */ true
+            /* isAnswerCorrect= */ isAnswerCorrect = true
           )
         } else {
           pendingItemList += createSubmittedAnswer(
@@ -401,7 +401,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       previousAnswerViewModels.takeLast(previousAnswerViewModels.size - 1)
     if (expandPreviousAnswers) {
       // Add the pending view models to the recycler view to expand them.
-      itemList.addAll(headerIndex + 1, previousAnswersAndFeedbacks)
+      itemList.addAll(index = headerIndex + 1, previousAnswersAndFeedbacks)
     } else {
       // Remove the pending view models to collapse the list.
       itemList.removeAll(previousAnswersAndFeedbacks)
@@ -447,7 +447,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     animation.addAnimation(fadeOut)
     textView.animation = animation
 
-    lifecycleSafeTimerFactory.createTimer(2000).observe(
+    lifecycleSafeTimerFactory.createTimer(timeoutMillis = 2000).observe(
       fragment,
       Observer {
         textView.clearAnimation()

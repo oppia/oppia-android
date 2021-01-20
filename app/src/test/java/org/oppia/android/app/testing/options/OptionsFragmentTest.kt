@@ -94,17 +94,17 @@ class OptionsFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(optionsFragmentTest = this)
   }
 
   @Test
   fun testOptionsFragment_clickReadingTextSize_checkSendingTheCorrectIntent() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
-          0,
+          position = 0,
           R.id.reading_text_size_item_layout
         )
       ).perform(
@@ -122,12 +122,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_clickAppLanguage_checkSendingTheCorrectIntent() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
-          1,
+          position = 1,
           R.id.app_language_item_layout
         )
       ).perform(
@@ -145,12 +145,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_clickDefaultAudioLanguage_checkSendingTheCorrectIntent() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
-          2,
+          position = 2,
           R.id.audio_laguage_item_layout
         )
       ).perform(
@@ -170,7 +170,7 @@ class OptionsFragmentTest {
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
   fun testOptionsFragment_checkInitiallyLoadedFragmentIsReadingTextSizeFragment() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
         val loadedFragment =
@@ -184,12 +184,12 @@ class OptionsFragmentTest {
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
   fun testOptionsFragment_clickReadingTextSize_checkLoadingTheCorrectFragment() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
-          0,
+          position = 0,
           R.id.reading_text_size_item_layout
         )
       ).perform(
@@ -207,12 +207,12 @@ class OptionsFragmentTest {
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
   fun testOptionsFragment_clickAppLanguage_checkLoadingTheCorrectFragment() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
-          1,
+          position = 1,
           R.id.app_language_item_layout
         )
       ).perform(
@@ -230,12 +230,12 @@ class OptionsFragmentTest {
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
   fun testOptionsFragment_clickDefaultAudio_checkLoadingTheCorrectFragment() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
-          2,
+          position = 2,
           R.id.audio_laguage_item_layout
         )
       ).perform(

@@ -43,8 +43,8 @@ class ProfileChooserViewModel @Inject constructor(
   ): List<ProfileChooserUiModel> {
     if (profilesResult.isFailure()) {
       logger.e(
-        "ProfileChooserViewModel",
-        "Failed to retrieve the list of profiles",
+        tag = "ProfileChooserViewModel",
+        msg = "Failed to retrieve the list of profiles",
         profilesResult.getErrorOrNull()!!
       )
     }
@@ -67,7 +67,7 @@ class ProfileChooserViewModel @Inject constructor(
     sortedProfileList.remove(adminProfile)
     adminPin = adminProfile.profile.pin
     adminProfileId = adminProfile.profile.id
-    sortedProfileList.add(0, adminProfile)
+    sortedProfileList.add(index = 0, adminProfile)
 
     if (sortedProfileList.size < 10) {
       sortedProfileList.add(ProfileChooserUiModel.newBuilder().setAddProfile(true).build())

@@ -37,8 +37,8 @@ class ConceptCardViewModel @Inject constructor(
   private fun processConceptCardResult(conceptCardResult: AsyncResult<ConceptCard>): ConceptCard {
     if (conceptCardResult.isFailure()) {
       logger.e(
-        "ConceptCardFragment",
-        "Failed to retrieve Concept Card",
+        tag = "ConceptCardFragment",
+        msg = "Failed to retrieve Concept Card",
         conceptCardResult.getErrorOrNull()!!
       )
     }

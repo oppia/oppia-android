@@ -132,7 +132,7 @@ class TopicInfoFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(topicInfoFragmentTest = this)
   }
 
   @Test
@@ -211,7 +211,7 @@ class TopicInfoFragmentTest {
         .check(
           matches(
             maxLines(
-              /* lineCount= */ 5
+              /* lineCount= */ lineCount = 5
             )
           )
         )
@@ -248,7 +248,7 @@ class TopicInfoFragmentTest {
         .check(
           matches(
             maxLines(
-              /* lineCount= */ 5
+              /* lineCount= */ lineCount = 5
             )
           )
         )

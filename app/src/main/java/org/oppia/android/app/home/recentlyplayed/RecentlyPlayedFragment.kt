@@ -32,7 +32,7 @@ class RecentlyPlayedFragment : InjectableFragment(), OngoingStoryClickListener {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    fragmentComponent.inject(recentlyPlayedFragment = this)
   }
 
   override fun onCreateView(

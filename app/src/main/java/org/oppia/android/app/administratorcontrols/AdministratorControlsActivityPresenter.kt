@@ -60,7 +60,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       ) as NavigationDrawerFragment
     navigationDrawerFragment.setUpDrawer(
       binding.administratorControlsActivityDrawerLayout,
-      toolbar, /* menuItemId= */ 0
+      toolbar, /* menuItemId= */ menuItemId = 0
     )
   }
 

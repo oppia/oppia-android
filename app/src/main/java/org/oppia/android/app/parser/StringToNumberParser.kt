@@ -22,9 +22,9 @@ class StringToNumberParser {
     val normalized = text.normalizeWhitespace()
     return when {
       !normalized.matches(validCharsRegex) -> NumericInputParsingError.INVALID_FORMAT
-      normalized.startsWith(".") -> NumericInputParsingError.STARTING_WITH_FLOATING_POINT
+      normalized.startsWith(prefix = ".") -> NumericInputParsingError.STARTING_WITH_FLOATING_POINT
       normalized.count { it == '.' } > 1 -> NumericInputParsingError.INVALID_FORMAT
-      normalized.lastIndexOf('-') > 0 -> NumericInputParsingError.INVALID_FORMAT
+      normalized.lastIndexOf(char = '-') > 0 -> NumericInputParsingError.INVALID_FORMAT
       else -> NumericInputParsingError.VALID
     }
   }

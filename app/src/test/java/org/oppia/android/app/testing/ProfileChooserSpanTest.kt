@@ -85,7 +85,7 @@ class ProfileChooserSpanTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(profileChooserSpanTest = this)
   }
 
   @Test

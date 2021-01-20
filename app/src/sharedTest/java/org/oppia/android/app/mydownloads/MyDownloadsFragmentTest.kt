@@ -107,7 +107,7 @@ class MyDownloadsFragmentTest {
         matches(
           matchCurrentTabTitle(
             MyDownloadsTab.getTabForPosition(
-              1
+              position = 1
             ).name
           )
         )
@@ -122,7 +122,7 @@ class MyDownloadsFragmentTest {
         matches(
           matchCurrentTabTitle(
             MyDownloadsTab.getTabForPosition(
-              0
+              position = 0
             ).name
           )
         )
@@ -135,7 +135,7 @@ class MyDownloadsFragmentTest {
     launch(MyDownloadsActivity::class.java).use {
       onView(
         allOf(
-          withText(MyDownloadsTab.getTabForPosition(0).name),
+          withText(MyDownloadsTab.getTabForPosition(position = 0).name),
           isDescendantOfA(withId(R.id.my_downloads_tabs_container))
         )
       ).perform(click())
@@ -143,7 +143,7 @@ class MyDownloadsFragmentTest {
         matches(
           matchCurrentTabTitle(
             MyDownloadsTab.getTabForPosition(
-              0
+              position = 0
             ).name
           )
         )
@@ -164,7 +164,7 @@ class MyDownloadsFragmentTest {
         matches(
           matchCurrentTabTitle(
             MyDownloadsTab.getTabForPosition(
-              1
+              position = 1
             ).name
           )
         )
@@ -173,7 +173,7 @@ class MyDownloadsFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(myDownloadsFragmentTest = this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

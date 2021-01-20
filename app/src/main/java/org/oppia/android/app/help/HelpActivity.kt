@@ -16,7 +16,7 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    activityComponent.inject(helpActivity = this)
     val isFromNavigationDrawer = intent.getBooleanExtra(
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
@@ -43,7 +43,7 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
   }
 
   override fun onRouteToFAQList() {
-    val intent = FAQListActivity.createFAQListActivityIntent(this)
+    val intent = FAQListActivity.createFAQListActivityIntent(context = this)
     startActivity(intent)
   }
 }

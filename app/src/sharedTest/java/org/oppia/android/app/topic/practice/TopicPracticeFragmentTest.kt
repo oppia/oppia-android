@@ -109,7 +109,7 @@ class TopicPracticeFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(topicPracticeFragmentTest = this)
   }
 
   @Test
@@ -119,7 +119,7 @@ class TopicPracticeFragmentTest {
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          0,
+          position = 0,
           R.id.master_skills_text_view
         )
       ).check(
@@ -134,14 +134,14 @@ class TopicPracticeFragmentTest {
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          5,
+          position = 5,
           R.id.topic_practice_start_button
         )
       ).check(matches(isCompletelyDisplayed()))
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          5,
+          position = 5,
           R.id.topic_practice_start_button
         )
       ).check(matches(not(isClickable())))
@@ -156,7 +156,7 @@ class TopicPracticeFragmentTest {
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          1,
+          position = 1,
           R.id.subtopic_check_box
         )
       ).check(matches(isChecked()))
@@ -164,7 +164,7 @@ class TopicPracticeFragmentTest {
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          2,
+          position = 2,
           R.id.subtopic_check_box
         )
       ).check(matches(isChecked()))
@@ -181,7 +181,7 @@ class TopicPracticeFragmentTest {
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          5,
+          position = 5,
           R.id.topic_practice_start_button
         )
       ).check(matches(isClickable()))
@@ -197,7 +197,7 @@ class TopicPracticeFragmentTest {
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          1,
+          position = 1,
           R.id.subtopic_check_box
         )
       ).check(matches(not(isChecked())))
@@ -215,7 +215,7 @@ class TopicPracticeFragmentTest {
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          5,
+          position = 5,
           R.id.topic_practice_start_button
         )
       ).check(matches(not(isClickable())))
@@ -243,7 +243,7 @@ class TopicPracticeFragmentTest {
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          1,
+          position = 1,
           R.id.subtopic_check_box
         )
       ).check(matches(isChecked()))
@@ -259,7 +259,7 @@ class TopicPracticeFragmentTest {
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          5,
+          position = 5,
           R.id.topic_practice_start_button
         )
       ).check(matches(not(isClickable())))
@@ -268,7 +268,7 @@ class TopicPracticeFragmentTest {
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          5,
+          position = 5,
           R.id.topic_practice_start_button
         )
       ).check(matches(not(isClickable())))
@@ -286,7 +286,7 @@ class TopicPracticeFragmentTest {
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          5,
+          position = 5,
           R.id.topic_practice_start_button
         )
       ).check(matches(isClickable()))
@@ -300,7 +300,7 @@ class TopicPracticeFragmentTest {
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          0,
+          position = 0,
           R.id.master_skills_text_view
         )
       ).check(
@@ -314,7 +314,7 @@ class TopicPracticeFragmentTest {
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          0,
+          position = 0,
           R.id.master_skills_text_view
         )
       ).check(
@@ -344,7 +344,7 @@ class TopicPracticeFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(2).name),
+        withText(TopicTab.getTabForPosition(position = 2).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())

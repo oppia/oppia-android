@@ -102,7 +102,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(imageRegionSelectionInteractionViewTest = this)
   }
 
   @Test
@@ -115,14 +115,14 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
       )
 
       verify(onClickableAreaClickedListener)
         .onClickableAreaTouched(
           capture(regionClickedEvent)
         )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 3"))
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
     }
   }
 
@@ -136,7 +136,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
@@ -144,7 +144,7 @@ class ImageRegionSelectionInteractionViewTest {
         )
 
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.7f, 0.3f)
+        clickPoint(pointX = 0.7f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 2"))))
         .check(
@@ -159,7 +159,7 @@ class ImageRegionSelectionInteractionViewTest {
           regionClickedEvent
         )
       )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 2"))
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2"))
     }
   }
 
@@ -173,7 +173,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.0f, 0.0f)
+        clickPoint(pointX = 0.0f, pointY = 0.0f)
       )
       onView(withId(R.id.default_selected_region)).check(
         matches(isDisplayed())
@@ -187,7 +187,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Robolectric")
+  @Ignore(value = "Move to Robolectric")
   fun testView_withTalkbackEnabled_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -195,7 +195,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
@@ -203,7 +203,7 @@ class ImageRegionSelectionInteractionViewTest {
         )
 
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.7f, 0.3f)
+        clickPoint(pointX = 0.7f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 2"))))
         .check(
@@ -218,12 +218,12 @@ class ImageRegionSelectionInteractionViewTest {
           regionClickedEvent
         )
       )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 2"))
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2"))
     }
   }
 
   @Test
-  @Ignore("Move to Robolectric")
+  @Ignore(value = "Move to Robolectric")
   fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -231,7 +231,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
@@ -242,12 +242,12 @@ class ImageRegionSelectionInteractionViewTest {
         .onClickableAreaTouched(
           capture(regionClickedEvent)
         )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 3"))
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
     }
   }
 
   @Test
-  @Ignore("Move to Robolectric")
+  @Ignore(value = "Move to Robolectric")
   fun testView_withTalkbackEnabled_clickOnDefaultRegion_defaultRegionNotClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
       scenario.onActivity {
@@ -255,7 +255,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.0f, 0.0f)
+        clickPoint(pointX = 0.0f, pointY = 0.0f)
       )
       onView(withId(R.id.default_selected_region)).check(
         matches(not(isDisplayed()))
