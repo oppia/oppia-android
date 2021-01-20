@@ -155,21 +155,29 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     suggestedStoryCount: Int
   ): RecyclerView.LayoutManager {
     val sectionTitle0Position = if (recentStoryCount == 0) {
+      // If recent story count is 0, that means that section title 0 will not be visible.
       -1
     } else {
       0
     }
-    val sectionTitle1Position = when {
+    val sectionTitle1Position = if (oldStoryCount == 0) {
       // If old story count is 0, that means that section title 1 will not be visible.
-      oldStoryCount == 0 -> -1
-      recentStoryCount == 0 -> 0
-      else -> recentStoryCount + 1
+      -1
+    } else if (recentStoryCount == 0) {
+      0
+    } else {
+      recentStoryCount + 1
     }
     val sectionTitle2Position = when {
-      // If suggested story count is 0, that means that section title 2 will not be visible.
-      suggestedStoryCount == 0 -> -1
-      recentStoryCount == 0 || oldStoryCount == 0 -> 0
-      else -> recentStoryCount + oldStoryCount + 1
+      suggestedStoryCount == 0 -> {
+        -1 // If suggested story count is 0, that means that section title 1 will not be visible.
+      }
+      oldStoryCount == 0 && recentStoryCount == 0 -> {
+        0
+      }
+      else -> {
+        recentStoryCount + oldStoryCount + 1
+      }
     }
 
     val spanCount = activity.resources.getInteger(R.integer.recently_played_span_count)
