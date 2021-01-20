@@ -18,7 +18,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -269,32 +269,24 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_displaysStoriesForYouText() {
+  fun testHomeActivity_displaysStoriesForYouText() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          1,
-          R.id.recently_played_stories_text_view
-        )
-      ).check(
-        matches(
-          withText(R.string.stories_for_you)
-        )
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.stories_for_you)
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_displaysLastPlayedStoriesText() {
+  fun testHomeActivity_displaysLastPlayedStoriesText() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = true
@@ -305,50 +297,34 @@ class HomeActivityTest {
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          1,
-          R.id.recently_played_stories_text_view
-        )
-      ).check(
-        matches(
-          withText(R.string.last_played_stories)
-        )
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.last_played_stories)
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_displaysRecommendedStoriesText() {
+  fun testHomeActivity_displaysRecommendedStoriesText() {
     storyProgressTestHelper.markFullProgressForSecondTestTopic(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          1,
-          R.id.recently_played_stories_text_view
-        )
-      ).check(
-        matches(
-          withText(R.string.recommended_stories)
-        )
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.recommended_stories)
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_forRecommendedStories_hideViewAll() {
+  fun testHomeActivity_forRecommendedStories_hideViewAll() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
@@ -361,33 +337,25 @@ class HomeActivityTest {
       onView(
         allOf(
           withId(R.id.view_all_text_view),
-          withEffectiveVisibility(ViewMatchers.Visibility.GONE)
+          withEffectiveVisibility(Visibility.GONE)
         )
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_displaysComingSoonTopicsText() {
+  fun testHomeActivity_displaysComingSoonTopicsText() {
     storyProgressTestHelper.markLastChapDoneOfRatiosStory0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          1,
-          R.id.coming_soon_text_view
-        )
-      ).check(
-        matches(
-          withText(R.string.coming_soon)
-        )
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.coming_soon_text_view,
+        stringToMatch = context.getString(R.string.coming_soon)
       )
     }
   }

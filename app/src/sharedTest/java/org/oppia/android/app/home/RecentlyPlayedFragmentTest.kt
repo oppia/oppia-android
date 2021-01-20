@@ -186,7 +186,6 @@ class RecentlyPlayedFragmentTest {
       profileId,
       timestampOlderThanAWeek = true
     )
-
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -231,7 +230,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem0_showsRecommendedSectionTitle() { // ktlint-disable max-line-length
+  fun testRecentlyPlayedTestActivity_configChange_showsRecommendedSectionTitle() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -256,7 +255,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem2_showsRecommendedSectionTitle() {
+  fun testRecentlyPlayedTestActivity_showsRecommendedSectionTitle() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -276,7 +275,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_recyclerViewItem3_recommendedSection_topicNameIsCorrect() {
+  fun testRecentlyPlayedTestActivity_recommendedSection_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -512,7 +511,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_configChange_sectionDividerIsNotDisplayed() { // ktlint-disable max-line-length
+  fun testRecentlyPlayedTestActivity_configChange_sectionDividerIsNotDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -540,7 +539,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_configChange_lastWeekSectionTitleIsDisplayed() { // ktlint-disable max-line-length
+  fun testRecentlyPlayedTestActivity_configChange_lastWeekSectionTitleIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -630,7 +629,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_configChange_lessonThumbnailIsCorrect() { // ktlint-disable max-line-length
+  fun testRecentlyPlayedTestActivity_configChange_lessonThumbnailIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false
@@ -660,7 +659,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_configChange_lastMonthSectionTitleIsDisplayed() { // ktlint-disable max-line-length
+  fun testRecentlyPlayedTestActivity_configChange_lastMonthSectionTitleIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanAWeek = false

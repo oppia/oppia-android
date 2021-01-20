@@ -304,14 +304,11 @@ message UpcomingTopic {
   // The structural version of the topic.
   int32 version = 3;
 
-  // The estimated release date/timestamp of topic.
-  int64 estimated_release_unix_timestamp = 4;
-
   // The associated thumbnail that should be displayed with this topic.
-  LessonThumbnail lesson_thumbnail = 5;
+  LessonThumbnail lesson_thumbnail = 4;
 
   // Specifics about whether this topic is playable.
-  TopicPlayAvailability topic_play_availability = 6;
+  TopicPlayAvailability topic_play_availability = 5;
 }
 
 // Represents the story progress.

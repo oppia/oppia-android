@@ -234,12 +234,12 @@ class TopicListController @Inject constructor(
   private fun computePromotedStoryList(topicProgressList: List<TopicProgress>): PromotedStoryList {
     return PromotedStoryList.newBuilder()
       .addAllUpTo(
-        computeRecentStoriesList(topicProgressList) { it < ONE_WEEK_IN_DAYS },
+        computePlayedStories(topicProgressList) { it < ONE_WEEK_IN_DAYS },
         PromotedStoryList.Builder::addAllRecentlyPlayedStory,
         limit = 3
       )
       .addAllUpTo(
-        computeRecentStoriesList(topicProgressList) { it > ONE_WEEK_IN_DAYS },
+        computePlayedStories(topicProgressList) { it > ONE_WEEK_IN_DAYS },
         PromotedStoryList.Builder::addAllOlderPlayedStory,
         limit = 3
       )
@@ -266,7 +266,7 @@ class TopicListController @Inject constructor(
     return this.addAll(iterable.take(limit - this.getTotalPromotedStoryCount()))
   }
 
-  private fun computeRecentStoriesList(
+  private fun computePlayedStories(
     topicProgressList: List<TopicProgress>,
     completionTimeFilter: (Long) -> Boolean
   ): List<PromotedStory> {
@@ -291,7 +291,7 @@ class TopicListController @Inject constructor(
         val recentlyPlayerChapterProgress: ChapterProgress? =
           startedChapterProgressList.firstOrNull()
 
-        checkIfStoryIsCompleted(topic.topicId, mostRecentCompletedChapterProgress, story)
+       val completedStoryTopicId = getTopicIdOfFullyCompletedStory(topic.topicId, mostRecentCompletedChapterProgress, story)
 
         when {
           recentlyPlayerChapterProgress != null -> {
@@ -309,6 +309,7 @@ class TopicListController @Inject constructor(
               it.first?.let { it1 -> recentlyPlayedPromotedStoryList.add(it1) }
             }
           }
+          // Compute the ongoing story list for stories that are not fully completed yet
           mostRecentCompletedChapterProgress != null &&
             mostRecentCompletedChapterProgress.explorationId !=
             story.chapterList.last().explorationId -> {
@@ -333,16 +334,18 @@ class TopicListController @Inject constructor(
     return recentlyPlayedPromotedStoryList
   }
 
-  private fun checkIfStoryIsCompleted(
+  private fun getTopicIdOfFullyCompletedStory(
     topicId: String,
     mostRecentCompletedChapterProgress: ChapterProgress?,
     story: StorySummary
-  ) {
+  ): String {
     if (mostRecentCompletedChapterProgress?.explorationId
       == story.chapterList.last().explorationId
     ) {
-      completedStoryTopicId = topicId
-    }
+      return topicId
+    }else
+      return ""
+
   }
 
   private fun getStartedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> =

@@ -832,14 +832,9 @@ class StoryProgressTestHelperTest {
 
     val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
     with(promotedActivityList.promotedStoryList) {
-      assertThat(recentlyPlayedStoryCount)
-        .isEqualTo(0)
-      assertThat(olderPlayedStoryCount)
-        .isEqualTo(0)
-      assertThat(suggestedStoryList[0].explorationId)
-        .isEqualTo(
-          FRACTIONS_EXPLORATION_ID_0
-        )
+      assertThat(recentlyPlayedStoryCount).isEqualTo(0)
+      assertThat(olderPlayedStoryCount).isEqualTo(0)
+      assertThat(suggestedStoryList[0].explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
     }
   }
 
