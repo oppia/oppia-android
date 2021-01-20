@@ -7,6 +7,8 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.app.home.promotedlist.PromotedStoryListView
+import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.android.util.parser.HtmlParser
@@ -21,52 +23,6 @@ import org.oppia.android.util.parser.HtmlParser
  */
 // TODO(#1619): Remove file post-Gradle
 interface ViewBindingShim {
-
-  /**
-   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
-   * returns the binding's root.
-   */
-  fun provideSelectionInteractionViewInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View
-
-  /**
-   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
-   * returns the binding's view model.
-   */
-  fun provideSelectionInteractionViewModel(
-    view: View,
-    viewModel: SelectionInteractionContentViewModel,
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String
-  )
-
-  /**
-   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
-   * returns the binding's view.
-   */
-  fun provideMultipleChoiceInteractionItemsInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View
-
-  /**
-   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
-   * returns the binding's view model.
-   */
-  fun provideMultipleChoiceInteractionItemsViewModel(
-    view: View,
-    viewModel: SelectionInteractionContentViewModel,
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String
-  )
 
   /**
    * Handles binding inflation for [DragDropSortInteractionView]'s SortInteraction and returns the
@@ -131,4 +87,63 @@ interface ViewBindingShim {
 
   /** Returns [ClickableAreasImage]'s default region. */
   fun getDefaultRegion(parentView: FrameLayout): View
+
+  /** Handles binding inflation for [PromotedStoryListView]. */
+  fun providePromotedStoryCardInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View
+
+  /** Handles binding inflation for [PromotedStoryListView] and returns the view model. */
+  fun providePromotedStoryViewModel(
+    view: View,
+    viewModel: PromotedStoryViewModel
+  )
+
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
+   * returns the binding's root.
+   */
+  fun provideSelectionInteractionViewInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View
+
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
+   * returns the binding's view model.
+   */
+  fun provideSelectionInteractionViewModel(
+    view: View,
+    viewModel: SelectionInteractionContentViewModel,
+    htmlParserFactory: HtmlParser.Factory,
+    resourceBucketName: String,
+    entityType: String,
+    entityId: String
+  )
+
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
+   * returns the binding's view.
+   */
+  fun provideMultipleChoiceInteractionItemsInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View
+
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
+   * returns the binding's view model.
+   */
+  fun provideMultipleChoiceInteractionItemsViewModel(
+    view: View,
+    viewModel: SelectionInteractionContentViewModel,
+    htmlParserFactory: HtmlParser.Factory,
+    resourceBucketName: String,
+    entityType: String,
+    entityId: String
+  )
 }
