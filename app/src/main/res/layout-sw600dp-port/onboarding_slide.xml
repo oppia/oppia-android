@@ -19,7 +19,6 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:id="@+id/onboarding_slide_container"
       android:layout_height="wrap_content">
 
       <ImageView

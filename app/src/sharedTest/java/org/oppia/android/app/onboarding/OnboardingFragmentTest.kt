@@ -14,7 +14,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -219,10 +218,9 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          ViewMatchers.isDescendantOfA(withId(R.id.onboarding_slide_container))
+          isCompletelyDisplayed()
         )
-      )
-        .check(matches(withText(R.string.onboarding_slide_1_title)))
+      ).check(matches(withText(R.string.onboarding_slide_1_title)))
     }
   }
 
