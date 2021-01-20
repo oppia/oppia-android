@@ -270,17 +270,7 @@ class TopicListController @Inject constructor(
     topicProgressList: List<TopicProgress>,
     completionTimeFilter: (Long) -> Boolean
   ): List<PromotedStory> {
-    computePromotedStories(topicProgressList).let {
-      Pair(it.first, it.second)
-      if (it.second > ONE_WEEK_IN_DAYS)
-        return it.first
-    }
-    return emptyList()
-  }
 
-  private fun computePromotedStories(
-    topicProgressList: List<TopicProgress>
-  ): Pair<List<PromotedStory>, Long> {
     var numberOfDaysPassed = 0L
     val recentlyPlayedPromotedStoryList = mutableListOf<PromotedStory>()
     val sortedTopicProgressList =
