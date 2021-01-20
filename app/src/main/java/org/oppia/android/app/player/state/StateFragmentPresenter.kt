@@ -250,6 +250,7 @@ class StateFragmentPresenter @Inject constructor(
         congratulationsTextConfettiView,
         confettiColors
       )
+      .addCelebrationForEndOfExplorationSession(fullScreenConfettiView, confettiColors)
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(
         explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
@@ -332,8 +333,7 @@ class StateFragmentPresenter @Inject constructor(
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,
       explorationId,
-      shouldSplit,
-      confettiColors
+      shouldSplit
     )
 
     viewModel.itemList.clear()

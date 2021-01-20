@@ -199,8 +199,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   fun compute(
     ephemeralState: EphemeralState,
     gcsEntityId: String,
-    isSplitView: Boolean,
-    confettiColorsList: List<Int> = listOf()
+    isSplitView: Boolean
   ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
     this.isSplitView.set(isSplitView)
 
@@ -256,8 +255,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
         canContinueToNextState = true
       }
       if (playerFeatureSet.showCelebrationAtEndOfExplorationSession) {
-        checkNotNull(confettiColorsList)
-        showCelebrationForEndOfExplorationSession(confettiColorsList)
+        val colorsList = checkNotNull(confettiColors) {
+          "Expected non-null list of confetti colors"
+        }
+        showCelebrationForEndOfExplorationSession(colorsList)
       }
     }
 
@@ -1193,9 +1194,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * exploration.
      */
     fun addCelebrationForEndOfExplorationSession(
-      confettiView: KonfettiView
+      confettiView: KonfettiView,
+      colorsList: List<Int>
     ): Builder {
       this.fullScreenConfettiView = confettiView
+      this.confettiColors = colorsList
       featureSets += PlayerFeatureSet(showCelebrationAtEndOfExplorationSession = true)
       return this
     }
