@@ -105,12 +105,6 @@ class ProfileTestHelper @Inject constructor(
    */
   fun logIntoNewUser() = logIntoProfile(internalProfileId = 2)
 
-  /**
-   * Login to a new user profile that has no progress for any topics or stories. This relies on other
-   * tests utilizing profile 1 as the default user profile so that profile 2 never has any progress.
-   */
-  fun loginToNewUser() = logIntoProfile(internalProfileId = 2)
-
   private fun logIntoProfile(internalProfileId: Int): LiveData<AsyncResult<Any?>> {
     val result = profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(internalProfileId).build()

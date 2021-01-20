@@ -230,7 +230,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testretrievePromotedActivityList_defaultLesson_hasCorrectInfo() {
+  fun testRetrievePromotedActivityList_defaultLesson_hasCorrectInfo() {
     topicListController.getPromotedActivityList(profileId0).toLiveData()
       .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
@@ -239,7 +239,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrievePromotedActivityList_markRecentlyPlayedFracStory0Exp0_promotedActivityListIsCorrect() { // ktlint-disable max-line-length
+  fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_promotedActivityListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -277,7 +277,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_promotedStoryListCorrect() { // ktlint-disable max-line-length
+  fun testGetStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_promotedStoryListCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -331,7 +331,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveStoryList_markRecentPlayedFirstChapInAllStoriesInRatios_promotedStoryListIsCorrect() { // ktlint-disable max-line-length
+  fun testGetStoryList_markRecentPlayedFirstChapInAllStoriesInRatios_promotedStoryListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
       RATIOS_TOPIC_ID,
@@ -361,7 +361,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveStoryList_markExp0DoneAndExp2AsPlayedInRatios_ongoingStoryListIsCorrect() {
+  fun testGetPromotedStoryList_markExp0DoneAndExp2AsPlayedInRatios_promotedStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       RATIOS_TOPIC_ID,
@@ -502,17 +502,6 @@ class TopicListControllerTest {
       atLeastOnce()
     ).onChanged(promotedActivityListResultCaptor.capture())
     assertThat(promotedActivityListResultCaptor.value.isSuccess()).isTrue()
-  }
-
-  private fun verifyDefaultPromotedActivityListSucceeded() {
-    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
-    with(promotedActivityList.promotedStoryList) {
-      assertThat(recentlyPlayedStoryCount).isEqualTo(4)
-      verifyOngoingStoryAsFirstTopicStory0Exploration0(recentlyPlayedStoryList[0])
-      verifyOngoingStoryAsSecondTopicStory0Exploration0(recentlyPlayedStoryList[1])
-      verifyPromotedStoryAsFractionStory0Exploration0(recentlyPlayedStoryList[2])
-      verifyOngoingStoryAsRatioStory0Exploration0(recentlyPlayedStoryList[3])
-    }
   }
 
   private fun verifyOngoingStoryAsFirstTopicStory0Exploration0(promotedStory: PromotedStory) {

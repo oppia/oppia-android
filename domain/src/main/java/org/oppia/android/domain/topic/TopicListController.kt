@@ -196,7 +196,6 @@ class TopicListController @Inject constructor(
     topicId: String,
     jsonObject: JSONObject
   ): UpcomingTopic {
-    val upcomingTopic = UpcomingTopic.newBuilder()
     var totalChapterCount = 0
     val storyData = jsonObject.getJSONArray("canonical_story_dicts")
     for (i in 0 until storyData.length()) {
@@ -211,7 +210,7 @@ class TopicListController @Inject constructor(
       TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
     }
 
-    return upcomingTopic.setTopicId(topicId)
+    return UpcomingTopic.newBuilder().setTopicId(topicId)
       .setName(jsonObject.getString("topic_name"))
       .setVersion(jsonObject.optInt("version"))
       .setTopicPlayAvailability(topicPlayAvailability)
@@ -233,8 +232,7 @@ class TopicListController @Inject constructor(
   }
 
   private fun computePromotedStoryList(topicProgressList: List<TopicProgress>): PromotedStoryList {
-    val promotedStoryListBuilder = PromotedStoryList.newBuilder()
-    promotedStoryListBuilder
+    return PromotedStoryList.newBuilder()
       .addAllUpTo(
         populateRecentlyPlayedStories(topicProgressList),
         PromotedStoryList.Builder::addAllRecentlyPlayedStory,
@@ -249,9 +247,7 @@ class TopicListController @Inject constructor(
         computeSuggestedStories(topicProgressList),
         PromotedStoryList.Builder::addAllSuggestedStory,
         limit = 3
-      )
-
-    return promotedStoryListBuilder.build()
+      ).build()
   }
 
   private fun PromotedStoryList.getTotalPromotedStoryCount(): Int {
@@ -359,9 +355,8 @@ class TopicListController @Inject constructor(
     mostRecentCompletedChapterProgress: ChapterProgress?,
     story: StorySummary
   ) {
-    if (mostRecentCompletedChapterProgress != null &&
-      mostRecentCompletedChapterProgress.explorationId ==
-      story.chapterList.last().explorationId
+    if (mostRecentCompletedChapterProgress?.explorationId
+      == story.chapterList.last().explorationId
     ) {
       completedStoryTopicId = topicId
     }
