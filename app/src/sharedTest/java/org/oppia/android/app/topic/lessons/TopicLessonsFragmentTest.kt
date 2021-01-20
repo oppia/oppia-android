@@ -123,7 +123,8 @@ class TopicLessonsFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>()
+      .inject(topicLessonsFragmentTest = this)
   }
 
   @Test
@@ -208,7 +209,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          1,
+          position = 1,
           R.id.chapter_list_drop_down_icon
         )
       ).check(
@@ -227,7 +228,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          1,
+          position = 1,
           R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
@@ -243,7 +244,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          1,
+          position = 1,
           R.id.chapter_recycler_view
         )
       ).check(matches(hasDescendant(withId(R.id.chapter_container)))).perform(click())
@@ -289,7 +290,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          1,
+          position = 1,
           R.id.chapter_recycler_view
         )
       ).check(matches(not(isDisplayed())))
@@ -308,7 +309,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          2,
+          position = 2,
           R.id.chapter_recycler_view
         )
       ).check(matches(not(isDisplayed())))
@@ -325,7 +326,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          1,
+          position = 1,
           R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
@@ -342,7 +343,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          1,
+          position = 1,
           R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
@@ -361,7 +362,7 @@ class TopicLessonsFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(1).name),
+        withText(TopicTab.getTabForPosition(position = 1).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
