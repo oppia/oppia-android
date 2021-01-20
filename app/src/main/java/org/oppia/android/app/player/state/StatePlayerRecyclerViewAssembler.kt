@@ -276,10 +276,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE &&
       playerFeatureSet.showCelebrationAtEndOfExplorationSession
     ) {
-      val colorsList = checkNotNull(confettiColors) {
-        "Expected non-null list of confetti colors"
-      }
-      showCelebrationForEndOfExplorationSession(colorsList)
+      showCelebrationForEndOfExplorationSession()
     }
 
     maybeAddNavigationButtons(
@@ -481,14 +478,23 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   /** Shows a congratulations message due to the learner having submitted a correct answer. */
-  fun showCelebrationForEndOfExplorationSession(confettiColors: List<Int>) {
+  fun showCelebrationForEndOfExplorationSession() {
     val confettiView = checkNotNull(fullScreenConfettiView) {
       "Expected non-null reference to confetti view"
+    }
+    val colorsList = checkNotNull(confettiColors) {
+      "Expected non-null list of confetti colors"
     }
 
     confettiView.build()
       .addShapes(Circle)
-      .addColors(confettiColors)
+      .setPosition(
+        minX = 0.toFloat(),
+        maxX = confettiView.width.toFloat(),
+        minY = 0.toFloat(),
+        maxY = 0.toFloat()
+      )
+      .addColors(colorsList)
       .setDelay(delay = 1000.toLong())
       .streamFor(particlesPerSecond = 12, emittingTime = 3000.toLong())
   }
