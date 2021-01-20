@@ -92,6 +92,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
         ImageViewTarget(this),
         transformations
       )
+      imageView.setImageResource(getLessonDrawableResource(lessonThumbnail))
     }
     imageView.setBackgroundColor(lessonThumbnail.backgroundColorRgb)
   }
