@@ -302,9 +302,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         if (result.isCorrectAnswer) {
           recyclerViewAssembler.stopHintsFromShowing()
           questionViewModel.setHintBulbVisibility(false)
-          recyclerViewAssembler.showCelebrationOnCorrectAnswer(
-            confettiColors
-          )
+          recyclerViewAssembler.showCelebrationOnCorrectAnswer()
         } else {
           questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
         }
@@ -429,7 +427,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       .addReplayButtonSupport()
       .addReturnToTopicSupport()
       .addHintsAndSolutionsSupport()
-      .addCelebrationForCorrectAnswers(congratulationsTextView, congratulationsTextConfettiView)
+      .addCelebrationForCorrectAnswers(
+        congratulationsTextView,
+        congratulationsTextConfettiView,
+        confettiColors
+      )
       .addConceptCardSupport()
       .build()
   }
