@@ -235,11 +235,11 @@ class TopicListControllerTest {
       .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifygetPromotedActivityListSucceeded()
+    verifyGetPromotedActivityListSucceeded()
   }
 
   @Test
-  fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_promotedActivityListIsCorrect() {
+  fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_promotedStoryListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -277,7 +277,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_promotedStoryListCorrect() {
+  fun testGetStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_ongoingStoryListCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -361,7 +361,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetPromotedStoryList_markExp0DoneAndExp2AsPlayedInRatios_promotedStoryListIsCorrect() {
+  fun testGetStoryList_markExp0DoneAndExp2AsPlayedInRatios_ongoingStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       RATIOS_TOPIC_ID,
@@ -389,7 +389,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveStoryList_markAllChapDoneInRatios_comingSoonTopicListIsCorrect() {
+  fun testRetrievePromotedActivityList_markAllChapDoneInRatios_comingSoonTopicListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       RATIOS_TOPIC_ID,
@@ -421,7 +421,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_ongoingListIsCorrect() {
+  fun testGetStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_ongoingListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -482,7 +482,7 @@ class TopicListControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_1,
       RATIOS_EXPLORATION_ID_2,
-      getOldTimestamp()
+      getCurrentTimestamp()
     )
 
     val promotedActivityList = retrievePromotedActivityList()
@@ -496,7 +496,7 @@ class TopicListControllerTest {
     }
   }
 
-  private fun verifygetPromotedActivityListSucceeded() {
+  private fun verifyGetPromotedActivityListSucceeded() {
     verify(
       mockPromotedActivityListObserver,
       atLeastOnce()
@@ -629,7 +629,7 @@ class TopicListControllerTest {
     topicListController.getPromotedActivityList(profileId0).toLiveData()
       .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
-    verifygetPromotedActivityListSucceeded()
+    verifyGetPromotedActivityListSucceeded()
     return promotedActivityListResultCaptor.value.getOrThrow()
   }
 

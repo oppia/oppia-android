@@ -224,7 +224,7 @@ class TopicListController @Inject constructor(
     val promotedActivityListBuilder = PromotedActivityList.newBuilder()
     if (topicProgressList.isNotEmpty()) {
       promotedActivityListBuilder.promotedStoryList = computePromotedStoryList(topicProgressList)
-      if (promotedActivityListBuilder.promotedStoryList.totalPromotedStoryCount == 0) {
+      if (promotedActivityListBuilder.promotedStoryList.getTotalPromotedStoryCount() == 0) {
         promotedActivityListBuilder.comingSoonTopicList = computeComingSoonTopicList()
       }
     }
@@ -234,12 +234,12 @@ class TopicListController @Inject constructor(
   private fun computePromotedStoryList(topicProgressList: List<TopicProgress>): PromotedStoryList {
     return PromotedStoryList.newBuilder()
       .addAllUpTo(
-        populateRecentlyPlayedStories(topicProgressList),
+        computePlayedStories(topicProgressList) { it < ONE_WEEK_IN_DAYS },
         PromotedStoryList.Builder::addAllRecentlyPlayedStory,
         limit = 3
       )
       .addAllUpTo(
-        populateOlderPlayedStories(topicProgressList),
+        computePlayedStories(topicProgressList) { it > ONE_WEEK_IN_DAYS },
         PromotedStoryList.Builder::addAllOlderPlayedStory,
         limit = 3
       )
@@ -266,19 +266,9 @@ class TopicListController @Inject constructor(
     return this.addAll(iterable.take(limit - this.getTotalPromotedStoryCount()))
   }
 
-  private fun populateRecentlyPlayedStories(
-    topicProgressList: List<TopicProgress>
-  ): List<PromotedStory> {
-    computePromotedStories(topicProgressList).let {
-      Pair(it.first, it.second)
-      if (it.second < ONE_WEEK_IN_DAYS)
-        return it.first
-    }
-    return emptyList()
-  }
-
-  private fun populateOlderPlayedStories(
-    topicProgressList: List<TopicProgress>
+  private fun computePlayedStories(
+    topicProgressList: List<TopicProgress>,
+    completionTimeFilter: (Long) -> Boolean
   ): List<PromotedStory> {
     computePromotedStories(topicProgressList).let {
       Pair(it.first, it.second)
@@ -295,6 +285,7 @@ class TopicListController @Inject constructor(
     val recentlyPlayedPromotedStoryList = mutableListOf<PromotedStory>()
     val sortedTopicProgressList =
       topicProgressList.sortedByDescending { it.lastPlayedTimestamp }
+        .filter { completionTimeFilter(numberOfDaysPassed) }
 
     sortedTopicProgressList.forEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
@@ -311,7 +302,11 @@ class TopicListController @Inject constructor(
         val recentlyPlayerChapterProgress: ChapterProgress? =
           startedChapterProgressList.firstOrNull()
 
-        checkIfStoryIsCompleted(topic.topicId, mostRecentCompletedChapterProgress, story)
+        val completedStoryTopicId = getTopicIdOfFullyCompletedStory(
+          topic.topicId,
+          mostRecentCompletedChapterProgress,
+          story
+        )
 
         when {
           recentlyPlayerChapterProgress != null -> {
@@ -319,15 +314,17 @@ class TopicListController @Inject constructor(
               storyId,
               story,
               recentlyPlayerChapterProgress,
-              completedChapterProgressList,
+              startedChapterProgressList,
               topic,
               completedStoryTopicId
             ).let {
               Pair(it.first, it.second)
               numberOfDaysPassed = it.second
+              completionTimeFilter(numberOfDaysPassed)
               it.first?.let { it1 -> recentlyPlayedPromotedStoryList.add(it1) }
             }
           }
+          // Compute the ongoing story list for stories that are not fully completed yet
           mostRecentCompletedChapterProgress != null &&
             mostRecentCompletedChapterProgress.explorationId !=
             story.chapterList.last().explorationId -> {
@@ -341,25 +338,28 @@ class TopicListController @Inject constructor(
             ).let {
               Pair(it.first, it.second)
               numberOfDaysPassed = it.second
+              completionTimeFilter(numberOfDaysPassed)
               it.first?.let { it1 -> recentlyPlayedPromotedStoryList.add(it1) }
             }
           }
         }
       }
     }
-    return Pair(recentlyPlayedPromotedStoryList, numberOfDaysPassed)
+
+    return recentlyPlayedPromotedStoryList
   }
 
-  private fun checkIfStoryIsCompleted(
+  private fun getTopicIdOfFullyCompletedStory(
     topicId: String,
     mostRecentCompletedChapterProgress: ChapterProgress?,
     story: StorySummary
-  ) {
+  ): String {
     if (mostRecentCompletedChapterProgress?.explorationId
       == story.chapterList.last().explorationId
     ) {
-      completedStoryTopicId = topicId
-    }
+      return topicId
+    } else
+      return ""
   }
 
   private fun getStartedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> =
@@ -487,10 +487,11 @@ class TopicListController @Inject constructor(
     val index = topicIdList.indexOf(topicProgressList.last().topicId)
 
     for (i in (index + 1) until topicIdJsonArray.length()) {
-      if (topicIdJsonArray.length() > i &&
-        createRecommendedStoryFromAssets(topicIdJsonArray[i].toString()) != null
-      ) {
-        recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[i].toString())!!)
+      if (topicIdJsonArray.length() > i) {
+        val recommendedStoriesIdFromAssets =
+          createRecommendedStoryFromAssets(topicIdJsonArray[i].toString())
+        if (recommendedStoriesIdFromAssets != null)
+          recommendedStories.add(recommendedStoriesIdFromAssets)
       }
     }
     return recommendedStories

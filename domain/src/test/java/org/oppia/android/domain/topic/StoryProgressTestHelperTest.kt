@@ -832,19 +832,14 @@ class StoryProgressTestHelperTest {
 
     val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
     with(promotedActivityList.promotedStoryList) {
-      assertThat(recentlyPlayedStoryCount)
-        .isEqualTo(0)
-      assertThat(olderPlayedStoryCount)
-        .isEqualTo(0)
-      assertThat(suggestedStoryList[0].explorationId)
-        .isEqualTo(
-          FRACTIONS_EXPLORATION_ID_0
-        )
+      assertThat(recentlyPlayedStoryCount).isEqualTo(0)
+      assertThat(olderPlayedStoryCount).isEqualTo(0)
+      assertThat(suggestedStoryList[0].explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
     }
   }
 
   @Test
-  fun testProgressTestHelper_markRecentlyPlayed_firstStoryInTestTopic1And2_promotedStoryListIsCorrect() { // ktlint-disable max-line-length
+  fun testProgressTestHelper_markRecentlyPlayed_firstStoryInTestTopic1And2_promotedListIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
       profileId = profileId,
       timestampOlderThanAWeek = false
