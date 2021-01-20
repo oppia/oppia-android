@@ -123,6 +123,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   val rhsAdapter: BindableAdapter<StateItemViewModel>,
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
+  private val confettiColors: List<Int>?,
   private val congratulationsTextView: TextView?,
   private val congratulationsTextConfettiView: KonfettiView?,
   private val canSubmitAnswer: ObservableField<Boolean>?,
@@ -428,18 +429,21 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   /** Shows a congratulations message due to the learner having submitted a correct answer. */
-  fun showCelebrationOnCorrectAnswer(confettiColors: List<Int>) {
+  fun showCelebrationOnCorrectAnswer() {
     check(playerFeatureSet.showCelebrationOnCorrectAnswer) {
       "Cannot show congratulations message for assembler that doesn't support it"
     }
     val textView = checkNotNull(congratulationsTextView) {
       "Expected non-null reference to congratulations text view"
     }
-    checkNotNull(congratulationsTextConfettiView) {
+    val confettiView = checkNotNull(congratulationsTextConfettiView) {
       "Expected non-null reference to confetti view"
     }
+    val colorsList = checkNotNull(confettiColors) {
+      "Expected non-null list for confetti colors"
+    }
 
-    createBannerConfetti(congratulationsTextConfettiView, confettiColors)
+    createBannerConfetti(confettiView, colorsList)
 
     textView.visibility = View.VISIBLE
 
@@ -806,6 +810,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * Tracks features individually enabled for the assembler. No features are enabled by default.
      */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
+    private var confettiColors: List<Int>? = null
     private var congratulationsTextView: TextView? = null
     private var congratulationsTextConfettiView: KonfettiView? = null
     private var hasConversationView: Boolean = true
@@ -1153,10 +1158,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     fun addCelebrationForCorrectAnswers(
       congratulationsTextView: TextView,
-      confettiView: KonfettiView
+      confettiView: KonfettiView,
+      colorsList: List<Int>
     ): Builder {
       this.congratulationsTextView = congratulationsTextView
       this.congratulationsTextConfettiView = confettiView
+      this.confettiColors = colorsList
       featureSets += PlayerFeatureSet(showCelebrationOnCorrectAnswer = true)
       return this
     }
@@ -1222,6 +1229,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         /* rhsAdapter= */ adapterBuilder.build(),
         playerFeatureSet,
         fragment,
+        confettiColors,
         congratulationsTextView,
         congratulationsTextConfettiView,
         canSubmitAnswer,

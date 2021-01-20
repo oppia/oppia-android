@@ -90,7 +90,7 @@ class StateFragmentPresenter @Inject constructor(
     R.color.confetti_yellow,
     R.color.confetti_evergreen,
     R.color.confetti_blue
-  )
+  ).map { getColor(context, it) }
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -243,7 +243,11 @@ class StateFragmentPresenter @Inject constructor(
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
       .addReturnToTopicSupport()
-      .addCelebrationForCorrectAnswers(congratulationsTextView, congratulationsTextConfettiView)
+      .addCelebrationForCorrectAnswers(
+        congratulationsTextView,
+        congratulationsTextConfettiView,
+        confettiColors
+      )
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(
         explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
@@ -402,9 +406,7 @@ class StateFragmentPresenter @Inject constructor(
           if (result.labelledAsCorrectAnswer) {
             recyclerViewAssembler.stopHintsFromShowing()
             viewModel.setHintBulbVisibility(false)
-            recyclerViewAssembler.showCelebrationOnCorrectAnswer(
-              confettiColors.map { getColor(context, it) }
-            )
+            recyclerViewAssembler.showCelebrationOnCorrectAnswer()
           } else {
             viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
           }
