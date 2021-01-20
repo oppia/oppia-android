@@ -1,6 +1,7 @@
 package org.oppia.android.app.options
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,6 +48,13 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       (fragment.activity as AudioLanguageActivity).finish()
     }
 
+    languageSelectionViewModel.selectedLanguage.observe(
+      fragment,
+      Observer {
+        Log.d("selectedLanguage", "selected language -> $it")
+      }
+    )
+
     return binding.root
   }
 
@@ -59,24 +67,8 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       .newBuilder<LanguageItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = LanguageItemsBinding::inflate,
-        setViewModel = this::bindLanguageView
+        setViewModel = LanguageItemsBinding::setViewModel
       ).build()
-  }
-
-  private fun bindLanguageView(
-    binding: LanguageItemsBinding,
-    model: LanguageItemViewModel
-  ) {
-    binding.radioContainer.setOnClickListener {
-      languageSelectionViewModel.selectedLanguage.value = model.language
-      updateAudioLanguage(model.language)
-    }
-    languageSelectionViewModel.selectedLanguage.observe(
-      fragment,
-      Observer {
-        binding.isChecked = model.language == it
-      }
-    )
   }
 
   private fun updateAudioLanguage(audioLanguage: String) {
@@ -87,6 +79,11 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       is AudioLanguageActivity ->
         parentActivity.audioLanguageActivityPresenter.setLanguageSelected(audioLanguage)
     }
+  }
+
+  fun onLanguageSelected(selectedLanguage: String) {
+    languageSelectionViewModel.selectedLanguage.value = selectedLanguage
+    updateAudioLanguage(selectedLanguage)
   }
 
   private fun getLanguageSelectionViewModel(): LanguageSelectionViewModel {
