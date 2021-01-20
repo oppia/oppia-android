@@ -2,28 +2,22 @@ package org.oppia.android.app.topic.questionplayer
 
 import android.app.Application
 import android.content.Context
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
-import nl.dionsegijn.konfetti.KonfettiView
 import org.hamcrest.BaseMatcher
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Description
 import org.junit.Before
 import org.junit.Test
@@ -59,6 +53,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.testing.EditTextInputAction
+import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -116,7 +111,7 @@ class QuestionPlayerActivityLocalTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
-      // Submit correct answer
+      // Submit correct answer & wait until animation starts
       submitCorrectAnswerToQuestionPlayerFractionInput()
 
       onView(withId(R.id.congratulations_text_view))
@@ -130,10 +125,11 @@ class QuestionPlayerActivityLocalTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
-      // Submit correct answer
+      // Submit correct answer & wait until animation starts
       submitCorrectAnswerToQuestionPlayerFractionInput()
+      testCoroutineDispatchers.advanceTimeBy(1000)
 
-      onView(withId(R.id.congratulations_text_confetti_view)).check(hasActiveConfetti())
+      onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
     }
   }
 
@@ -260,27 +256,6 @@ class QuestionPlayerActivityLocalTest {
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {
     return scrollToHolder(StateViewHolderTypeMatcher(viewType))
-  }
-
-  // Returns a matcher that matches for active confetti.
-  private fun hasActiveConfetti(): ViewAssertion {
-    return StateFragmentActiveConfettiAssertion()
-  }
-
-  // Custom class to check if a KonfettiView isActive().
-  private class StateFragmentActiveConfettiAssertion() : ViewAssertion {
-    override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
-      if (noViewFoundException != null) {
-        throw noViewFoundException
-      }
-      check(view is KonfettiView) { "The asserted view is not KonfettiView" }
-
-      assertThat(
-        "KonfettiView particle system",
-        view.isActive(),
-        `is`(true)
-      )
-    }
   }
 
   /**

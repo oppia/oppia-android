@@ -75,6 +75,7 @@ import org.oppia.android.domain.question.QuestionTrainingSeed
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.CoroutineExecutorService
+import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
@@ -209,6 +210,32 @@ class QuestionPlayerActivityTest {
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
         .check(matches(withText(containsString("Identify the numerator and denominator"))))
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testQuestionPlayer_submitCorrectAnswer_correctTextBannerIsDisplayed() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Option 2 is the right answer and tick icon should be visible completely
+      selectMultipleChoiceOption(optionPosition = 2)
+      onView(withId(R.id.congratulations_text_confetti_view)).check(
+        matches(
+          isCompletelyDisplayed()
+        )
+      )
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testQuestionPlayer_submitCorrectAnswer_confettiIsDisplayed() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Option 2 is the right answer and tick icon should be visible completely
+      selectMultipleChoiceOption(optionPosition = 2)
+      onView(withId(R.id.congratulations_text_confetti_view)).check(
+        matches(hasActiveConfetti())
+      )
     }
   }
 

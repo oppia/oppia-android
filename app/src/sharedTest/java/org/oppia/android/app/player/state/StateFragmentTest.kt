@@ -12,11 +12,9 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.GeneralLocation
 import androidx.test.espresso.action.Press
@@ -28,7 +26,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -46,9 +43,7 @@ import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
-import nl.dionsegijn.konfetti.KonfettiView
 import org.hamcrest.BaseMatcher
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
@@ -122,6 +117,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.IsOnRobolectric
+import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
@@ -913,6 +909,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_inputRatio_correctAnswerSubmitted_correctTextBannerDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_6).use {
       startPlayingExploration()
@@ -926,6 +923,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testStateFragment_inputRatio_correctAnswerSubmitted_confettiDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_6).use {
       startPlayingExploration()
@@ -933,7 +931,7 @@ class StateFragmentTest {
 
       clickSubmitAnswerButton()
 
-      onView(withId(R.id.banner_confetti_view)).check(hasActiveConfetti())
+      onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
     }
   }
 
@@ -1383,27 +1381,6 @@ class StateFragmentTest {
         // The view shouldn't be null if the constraints are being met.
         (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
       }
-    }
-  }
-
-  // Returns a matcher that matches for active confetti.
-  private fun hasActiveConfetti(): ViewAssertion {
-    return StateFragmentActiveConfettiAssertion()
-  }
-
-  // Custom class to check if a KonfettiView isActive().
-  private class StateFragmentActiveConfettiAssertion() : ViewAssertion {
-    override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
-      if (noViewFoundException != null) {
-        throw noViewFoundException
-      }
-      check(view is KonfettiView) { "The asserted view is not KonfettiView" }
-
-      assertThat(
-        "KonfettiView particle system",
-        view.isActive(),
-        `is`(true)
-      )
     }
   }
 
