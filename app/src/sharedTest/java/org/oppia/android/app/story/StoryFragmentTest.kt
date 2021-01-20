@@ -26,7 +26,6 @@ import com.google.firebase.FirebaseApp
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.android.synthetic.main.story_chapter_view.view.*
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -37,8 +36,9 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Captor
 import org.mockito.Mockito
+import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.R
@@ -49,6 +49,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
@@ -336,7 +337,6 @@ class StoryFragmentTest {
         )
       )
 
-      testCoroutineDispatchers.advanceUntilIdle()
       onView(
         atPositionOnView(
           R.id.story_chapter_list,
@@ -344,12 +344,15 @@ class StoryFragmentTest {
           R.id.chapter_thumbnail
         )
       ).check { view, noViewFoundException ->
-        Mockito.verify(view.chapter_thumbnail.imageLoader, times(2)).loadDrawable(
+        var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
+          R.id.chapter_thumbnail
+        )
+        verify(lessonThumbnailImageView.imageLoader, atLeastOnce()).loadDrawable(
           anyInt(),
           anyOrNull(),
           capture(listCaptor)
         )
-        assertThat(ImageTransformation.BLUR).isIn(listCaptor.value)
+        assertThat(listCaptor.value).contains(ImageTransformation.BLUR)
       }
     }
   }
@@ -365,7 +368,6 @@ class StoryFragmentTest {
         )
       )
 
-      testCoroutineDispatchers.advanceUntilIdle()
       onView(
         atPositionOnView(
           R.id.story_chapter_list,
@@ -373,12 +375,15 @@ class StoryFragmentTest {
           R.id.chapter_thumbnail
         )
       ).check { view, noViewFoundException ->
-        Mockito.verify(view.chapter_thumbnail.imageLoader, times(2)).loadDrawable(
+        var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
+          R.id.chapter_thumbnail
+        )
+        verify(lessonThumbnailImageView.imageLoader, atLeastOnce()).loadDrawable(
           anyInt(),
           anyOrNull(),
           capture(listCaptor)
         )
-        assertThat(ImageTransformation.BLUR).isIn(listCaptor.value)
+        assertThat(listCaptor.value).contains(ImageTransformation.BLUR)
       }
     }
   }
@@ -563,6 +568,6 @@ class StoryFragmentTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideMockLoader() = mock(ImageLoader::class.java)
+    fun provideMockImageLoader() = mock(ImageLoader::class.java)
   }
 }

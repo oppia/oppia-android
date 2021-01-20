@@ -36,7 +36,7 @@ class GlideImageLoader @Inject constructor(
     Glide.with(context)
       .asBitmap()
       .load(model)
-      .transform(*convertImageTransformationToGlideTransofmation(transformations))
+      .transform(*transformations.toGlideTransformations())
       .intoTarget(target)
   }
 
@@ -59,19 +59,19 @@ class GlideImageLoader @Inject constructor(
       .fitCenter()
       .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
       .load(model)
-      .transform(*convertImageTransformationToGlideTransofmation(transformations))
+      .transform(*transformations.toGlideTransformations())
       .intoTarget(target)
   }
 
   override fun loadDrawable(
-    imageDrawable: Int,
+    imageDrawableResId: Int,
     target: ImageTarget<Drawable>,
     transformations: List<ImageTransformation>
   ) {
     Glide.with(context)
       .asDrawable()
-      .load(imageDrawable)
-      .transform(*convertImageTransformationToGlideTransofmation(transformations))
+      .load(imageDrawableResId)
+      .transform(*transformations.toGlideTransformations())
       .intoTarget(target)
   }
 
@@ -82,10 +82,8 @@ class GlideImageLoader @Inject constructor(
     }
   }
 
-  private fun convertImageTransformationToGlideTransofmation(
-    transformations: List<ImageTransformation>
-  ): Array<Transformation<Bitmap>> {
-    return transformations.map {
+  private fun List<ImageTransformation>.toGlideTransformations(): Array<Transformation<Bitmap>> {
+    return map {
       when (it) {
         ImageTransformation.BLUR -> BlurTransformation(context)
       }

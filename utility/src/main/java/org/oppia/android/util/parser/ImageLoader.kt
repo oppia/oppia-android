@@ -5,13 +5,9 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.PictureDrawable
 import androidx.annotation.DrawableRes
 
-/**
- * [ImageTransformation] Represents transformations on an image.
- */
+/** [ImageTransformation] Represents transformations on an image. */
 enum class ImageTransformation {
-  /**
-   * Represents Blur Transformation on an [ImageTarget].
-   */
+  /** Represents Blur Transformation on an [ImageTarget]. */
   BLUR
 }
 
@@ -40,11 +36,11 @@ interface ImageLoader {
   )
 
   /**
-   * Loads a drawable resource at the specified [imageDrawable] into the specified [target].
+   * Loads the specified [imageDrawable] resource into the specified [target].
    * Optional [transformations] may be applied to the image.
    */
   fun loadDrawable(
-    @DrawableRes imageDrawable: Int,
+    @DrawableRes imageDrawableResId: Int,
     target: ImageTarget<Drawable>,
     transformations: List<ImageTransformation> = listOf()
   )
