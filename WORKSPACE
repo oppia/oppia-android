@@ -73,6 +73,10 @@ http_archive(
 
 load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
 
+rules_java_dependencies()
+
+rules_java_toolchains()
+
 # The rules_proto contains the proto_library rule used in the model module.
 http_archive(
     name = "rules_proto",
