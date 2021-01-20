@@ -1,6 +1,7 @@
 package org.oppia.android.domain.topic
 
 import android.graphics.Color
+import android.util.Log
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
@@ -234,12 +235,12 @@ class TopicListController @Inject constructor(
   private fun computePromotedStoryList(topicProgressList: List<TopicProgress>): PromotedStoryList {
     return PromotedStoryList.newBuilder()
       .addAllUpTo(
-        populateRecentlyPlayedStories(topicProgressList),
+        computeRecentStoriesList(topicProgressList) { it < ONE_WEEK_IN_DAYS },
         PromotedStoryList.Builder::addAllRecentlyPlayedStory,
         limit = 3
       )
       .addAllUpTo(
-        populateOlderPlayedStories(topicProgressList),
+        computeRecentStoriesList(topicProgressList) { it > ONE_WEEK_IN_DAYS },
         PromotedStoryList.Builder::addAllOlderPlayedStory,
         limit = 3
       )
@@ -266,31 +267,10 @@ class TopicListController @Inject constructor(
     return this.addAll(iterable.take(limit - this.getTotalPromotedStoryCount()))
   }
 
-  private fun populateRecentlyPlayedStories(
-    topicProgressList: List<TopicProgress>
+  private fun computeRecentStoriesList(
+    topicProgressList: List<TopicProgress>,
+    completionTimeFilter: (Long) -> Boolean
   ): List<PromotedStory> {
-    computePromotedStories(topicProgressList).let {
-      Pair(it.first, it.second)
-      if (it.second < ONE_WEEK_IN_DAYS)
-        return it.first
-    }
-    return emptyList()
-  }
-
-  private fun populateOlderPlayedStories(
-    topicProgressList: List<TopicProgress>
-  ): List<PromotedStory> {
-    computePromotedStories(topicProgressList).let {
-      Pair(it.first, it.second)
-      if (it.second > ONE_WEEK_IN_DAYS)
-        return it.first
-    }
-    return emptyList()
-  }
-
-  private fun computePromotedStories(
-    topicProgressList: List<TopicProgress>
-  ): Pair<List<PromotedStory>, Long> {
     var numberOfDaysPassed = 0L
     val recentlyPlayedPromotedStoryList = mutableListOf<PromotedStory>()
     val sortedTopicProgressList =
@@ -319,12 +299,13 @@ class TopicListController @Inject constructor(
               storyId,
               story,
               recentlyPlayerChapterProgress,
-              completedChapterProgressList,
+              startedChapterProgressList,
               topic,
               completedStoryTopicId
             ).let {
               Pair(it.first, it.second)
               numberOfDaysPassed = it.second
+              completionTimeFilter(numberOfDaysPassed)
               it.first?.let { it1 -> recentlyPlayedPromotedStoryList.add(it1) }
             }
           }
@@ -341,13 +322,15 @@ class TopicListController @Inject constructor(
             ).let {
               Pair(it.first, it.second)
               numberOfDaysPassed = it.second
+              completionTimeFilter(numberOfDaysPassed)
               it.first?.let { it1 -> recentlyPlayedPromotedStoryList.add(it1) }
             }
           }
         }
       }
     }
-    return Pair(recentlyPlayedPromotedStoryList, numberOfDaysPassed)
+
+    return recentlyPlayedPromotedStoryList
   }
 
   private fun checkIfStoryIsCompleted(
@@ -487,10 +470,11 @@ class TopicListController @Inject constructor(
     val index = topicIdList.indexOf(topicProgressList.last().topicId)
 
     for (i in (index + 1) until topicIdJsonArray.length()) {
-      if (topicIdJsonArray.length() > i &&
-        createRecommendedStoryFromAssets(topicIdJsonArray[i].toString()) != null
-      ) {
-        recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[i].toString())!!)
+      if (topicIdJsonArray.length() > i) {
+        val recommendedStoriesIdFromAssets =
+          createRecommendedStoryFromAssets(topicIdJsonArray[i].toString())
+        if (recommendedStoriesIdFromAssets != null)
+          recommendedStories.add(recommendedStoriesIdFromAssets)
       }
     }
     return recommendedStories
