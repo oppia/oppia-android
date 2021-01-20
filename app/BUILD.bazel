@@ -677,6 +677,7 @@ kt_android_library(
     ],
 )
 
+# TODO(__): Remove TEST_DEPS once all test shifted to their respective directory level BUILD.bazel file
 TEST_DEPS = [
     ":app",
     ":dagger",
@@ -706,6 +707,43 @@ TEST_DEPS = [
     artifact("org.mockito:mockito-core"),
     artifact("org.robolectric:annotations:4.3"),
 ]
+
+# Package for all test dependencies.
+# To reference this dependencies, add '//app:test_deps'
+# to your build rule's dependency list.
+
+android_library(
+    name = "test_deps",
+    exports = [
+        ":app",
+        ":dagger",
+        ":resources",
+        ":test_deps",
+        "//domain",
+        "//testing",
+        "//utility",
+        "@robolectric//bazel:android-all",
+        artifact("androidx.annotation:annotation"),
+        artifact("androidx.databinding:databinding-adapters"),
+        artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.databinding:databinding-compiler"),
+        artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.navigation:navigation-fragment"),
+        artifact("androidx.navigation:navigation-ui"),
+        artifact("androidx.test.espresso:espresso-contrib:3.1.0"),
+        artifact("androidx.test.espresso:espresso-core:3.2.0"),
+        artifact("androidx.test.espresso:espresso-intents:3.1.0"),
+        artifact("androidx.test.ext:junit"),
+        artifact("androidx.test:runner:1.2.0"),
+        artifact("com.github.bumptech.glide:mocks:4.11.0"),
+        artifact("com.google.truth:truth"),
+        artifact("org.jetbrains.kotlin:kotlin-test-junit"),
+        artifact("org.jetbrains.kotlin:kotlin-reflect"),
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2"),
+        artifact("org.mockito:mockito-core"),
+        artifact("org.robolectric:annotations:4.3"),
+    ],
+)
 
 """
 App module tests.

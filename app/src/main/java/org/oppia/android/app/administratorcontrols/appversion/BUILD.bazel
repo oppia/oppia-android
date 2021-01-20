@@ -1,0 +1,17 @@
+"""
+This file should contains the AppVersion's source files and functionality.
+"""
+
+app_test(
+    name = "AppVersionActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/administratorcontrols/AppVersionActivityTest.kt")],
+    manifest_values = {
+        "applicationId": "org.oppia.android",
+        "minSdkVersion": "19",
+        "targetSdkVersion": "28",
+        "versionCode": "0",
+        "versionName": "0.1-alpha",
+    },
+    test_class = "org.oppia.android.app.administratorcontrols.AppVersionActivityTest",
+    deps = "//app:test_deps",
+)
