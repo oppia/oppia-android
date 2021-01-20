@@ -273,7 +273,8 @@ class TopicListController @Inject constructor(
     var numberOfDaysPassed = 0L
     val recentlyPlayedPromotedStoryList = mutableListOf<PromotedStory>()
     val sortedTopicProgressList =
-      topicProgressList.sortedByDescending { it.lastPlayedTimestamp }.filter { completionTimeFilter(numberOfDaysPassed) }
+      topicProgressList.sortedByDescending { it.lastPlayedTimestamp }
+        .filter { completionTimeFilter(numberOfDaysPassed) }
 
     sortedTopicProgressList.forEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
