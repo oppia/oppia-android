@@ -2,6 +2,18 @@
 This file should contains the AppVersion's source files and functionality.
 """
 
+android_library(
+    name = "AppVersionActivity",
+    srcs = [
+        "AppVersionActivity.kt",
+        "AppVersionActivityPresenter.kt",
+        "AppVersionFragment.kt",
+        "AppVersionFragmentPresenter.kt",
+        "AppVersionViewModel.kt",
+    ],
+    deps = "//app:resources",
+)
+
 app_test(
     name = "AppVersionActivityTest",
     srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/administratorcontrols/AppVersionActivityTest.kt")],
@@ -13,5 +25,5 @@ app_test(
         "versionName": "0.1-alpha",
     },
     test_class = "org.oppia.android.app.administratorcontrols.AppVersionActivityTest",
-    deps = "//app:test_deps",
+    deps = "//app:dir_test_deps",
 )

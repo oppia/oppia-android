@@ -627,6 +627,7 @@ kt_android_library(
         ":views",
         "//model",
         "//utility",
+        "//src/main/java/org/oppia/android/app/administratorcontrols/appversion:AppVersionActivity",
         artifact("androidx.databinding:databinding-adapters"),
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.databinding:databinding-runtime"),
@@ -713,7 +714,7 @@ TEST_DEPS = [
 # to your build rule's dependency list.
 
 android_library(
-    name = "test_deps",
+    name = "dir_test_deps",
     exports = [
         ":app",
         ":dagger",
