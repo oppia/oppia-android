@@ -58,24 +58,8 @@ class AppLanguageFragmentPresenter @Inject constructor(
       .newBuilder<LanguageItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = LanguageItemsBinding::inflate,
-        setViewModel = this::bindLanguageView
+        setViewModel = LanguageItemsBinding::setViewModel
       ).build()
-  }
-
-  private fun bindLanguageView(
-    binding: LanguageItemsBinding,
-    model: LanguageItemViewModel
-  ) {
-    binding.radioContainer.setOnClickListener {
-      languageSelectionViewModel.selectedLanguage.value = model.language
-      updateAppLanguage(model.language)
-    }
-    languageSelectionViewModel.selectedLanguage.observe(
-      fragment,
-      Observer {
-        binding.isChecked = model.language == it
-      }
-    )
   }
 
   private fun updateAppLanguage(appLanguage: String) {
@@ -86,6 +70,10 @@ class AppLanguageFragmentPresenter @Inject constructor(
         appLanguage
       )
     }
+  }
+
+  fun onLanguageSelected(selectedLanguage: String){
+    languageSelectionViewModel.selectedLanguage.value = selectedLanguage
   }
 
   private fun getLanguageSelectionViewModel(): LanguageSelectionViewModel {
