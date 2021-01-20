@@ -144,7 +144,9 @@ class ExplorationActivityLocalTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      explorationActivityLocalTest = this
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

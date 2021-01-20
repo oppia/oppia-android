@@ -234,7 +234,9 @@ class WalkthroughFinalFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(walkthroughFinalFragmentTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      walkthroughFinalFragmentTest = this
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

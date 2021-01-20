@@ -102,7 +102,9 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(imageRegionSelectionInteractionViewTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      imageRegionSelectionInteractionViewTest = this
+    )
   }
 
   @Test
@@ -122,7 +124,9 @@ class ImageRegionSelectionInteractionViewTest {
         .onClickableAreaTouched(
           capture(regionClickedEvent)
         )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(
+        regionLabel = "Region 3"
+      ))
     }
   }
 
@@ -159,7 +163,9 @@ class ImageRegionSelectionInteractionViewTest {
           regionClickedEvent
         )
       )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2"))
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(
+        regionLabel = "Region 2"
+      ))
     }
   }
 
@@ -218,7 +224,9 @@ class ImageRegionSelectionInteractionViewTest {
           regionClickedEvent
         )
       )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2"))
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(
+        regionLabel = "Region 2"
+      ))
     }
   }
 
@@ -242,7 +250,9 @@ class ImageRegionSelectionInteractionViewTest {
         .onClickableAreaTouched(
           capture(regionClickedEvent)
         )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(
+        regionLabel = "Region 3"
+      ))
     }
   }
 

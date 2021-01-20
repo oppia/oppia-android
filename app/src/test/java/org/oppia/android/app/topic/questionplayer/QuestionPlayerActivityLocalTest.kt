@@ -233,7 +233,8 @@ class QuestionPlayerActivityLocalTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(questionPlayerActivityLocalTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      questionPlayerActivityLocalTest = this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

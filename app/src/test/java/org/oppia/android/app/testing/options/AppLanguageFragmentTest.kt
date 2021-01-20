@@ -115,7 +115,10 @@ class AppLanguageFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAppLanguage_clickAppLanguage_changeAppLanguage_checkOptionsFragmentIsUpdatedCorrectly() {
-    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(
+      internalProfileId = 0,
+      isFromNavigationDrawer = true
+    )).use {
       testCoroutineDispatchers.runCurrent()
       selectChangeAppLanguage()
       selectLanguage(HINDI)
@@ -197,7 +200,9 @@ class AppLanguageFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(appLanguageFragmentTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      appLanguageFragmentTest = this
+    )
   }
 
   @Module

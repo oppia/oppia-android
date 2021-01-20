@@ -126,7 +126,9 @@ class AddProfileActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(addProfileActivityTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      addProfileActivityTest = this
+    )
   }
 
   @Test

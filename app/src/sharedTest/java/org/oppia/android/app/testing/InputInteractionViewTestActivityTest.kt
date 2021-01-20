@@ -100,7 +100,9 @@ class InputInteractionViewTestActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(inputInteractionViewTestActivityTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      inputInteractionViewTestActivityTest = this
+    )
   }
 
   @Test

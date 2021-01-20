@@ -89,8 +89,12 @@ class DragDropTestActivityTest {
           Press.FINGER
         )
       )
-      onView(atPosition(R.id.drag_drop_recycler_view, position = 0)).check(matches(withText("Item 2")))
-      onView(atPosition(R.id.drag_drop_recycler_view, position = 1)).check(matches(withText("Item 1")))
+      onView(atPosition(R.id.drag_drop_recycler_view,
+        position = 0
+      )).check(matches(withText("Item 2")))
+      onView(atPosition(R.id.drag_drop_recycler_view,
+        position = 1
+      )).check(matches(withText("Item 1")))
     }
   }
 
@@ -113,8 +117,12 @@ class DragDropTestActivityTest {
           Press.FINGER
         )
       )
-      onView(atPosition(R.id.drag_drop_recycler_view, position = 1)).check(matches(withText("Item 3")))
-      onView(atPosition(R.id.drag_drop_recycler_view, position = 2)).check(matches(withText("Item 2")))
+      onView(atPosition(R.id.drag_drop_recycler_view,
+        position = 1
+      )).check(matches(withText("Item 3")))
+      onView(atPosition(R.id.drag_drop_recycler_view,
+        position = 2
+      )).check(matches(withText("Item 2")))
     }
   }
 
@@ -138,8 +146,12 @@ class DragDropTestActivityTest {
           Press.FINGER
         )
       )
-      onView(atPosition(R.id.drag_drop_recycler_view, position = 2)).check(matches(withText("Item 4")))
-      onView(atPosition(R.id.drag_drop_recycler_view, position = 3)).check(matches(withText("Item 3")))
+      onView(atPosition(R.id.drag_drop_recycler_view,
+        position = 2
+      )).check(matches(withText("Item 4")))
+      onView(atPosition(R.id.drag_drop_recycler_view,
+        position = 3
+      )).check(matches(withText("Item 3")))
     }
   }
 

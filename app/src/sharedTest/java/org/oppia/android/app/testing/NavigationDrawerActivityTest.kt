@@ -157,7 +157,9 @@ class NavigationDrawerActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(navigationDrawerActivityTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      navigationDrawerActivityTest = this
+    )
   }
 
   @Test

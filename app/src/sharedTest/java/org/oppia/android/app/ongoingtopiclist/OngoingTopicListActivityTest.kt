@@ -118,7 +118,9 @@ class OngoingTopicListActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(ongoingTopicListActivityTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      ongoingTopicListActivityTest = this
+    )
   }
 
   @Test

@@ -113,7 +113,9 @@ class ProfileChooserFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(profileChooserFragmentTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      profileChooserFragmentTest = this
+    )
   }
 
   @Test

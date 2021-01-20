@@ -140,7 +140,9 @@ class ProfileProgressFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(profileProgressFragmentTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      profileProgressFragmentTest = this
+    )
   }
 
   private fun createProfileProgressActivityIntent(profileId: Int): Intent {

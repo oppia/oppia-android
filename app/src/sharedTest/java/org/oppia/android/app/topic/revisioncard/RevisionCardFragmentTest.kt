@@ -94,7 +94,9 @@ class RevisionCardFragmentTest {
   fun setUp() {
     Intents.init()
     context = ApplicationProvider.getApplicationContext()
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(revisionCardFragmentTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      revisionCardFragmentTest = this
+    )
   }
 
   @Test

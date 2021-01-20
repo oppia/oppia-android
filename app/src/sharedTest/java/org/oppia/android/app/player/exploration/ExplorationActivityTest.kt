@@ -152,7 +152,9 @@ class ExplorationActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(explorationActivityTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      explorationActivityTest = this
+    )
   }
 
   private fun getApplicationDependencies(id: String) {

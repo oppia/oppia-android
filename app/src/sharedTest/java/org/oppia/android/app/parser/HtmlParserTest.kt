@@ -217,7 +217,8 @@ class HtmlParserTest {
       /* imageCenterAlign= */ imageCenterAlign = true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      rawString = "<oppia-noninteractive-image filepath-with-value=\"test.png\"></oppia-noninteractive-image>",
+      rawString =
+      "<oppia-noninteractive-image filepath-with-value=\"test.png\"></oppia-noninteractive-image>",
       textView
     )
 
@@ -244,7 +245,7 @@ class HtmlParserTest {
       /* imageCenterAlign= */ imageCenterAlign = true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      rawString = "A<oppia-noninteractive-image filepath-with-value=\"test.png\"></oppia-noninteractive-image>",
+      "A<oppia-noninteractive-image filepath-with-value=\"test.png\"></oppia-noninteractive-image>",
       textView
     )
 

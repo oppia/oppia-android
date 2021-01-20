@@ -136,7 +136,9 @@ class RecentlyPlayedFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(recentlyPlayedFragmentTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      recentlyPlayedFragmentTest = this
+    )
   }
 
   private fun createRecentlyPlayedActivityIntent(profileId: Int): Intent {
@@ -206,7 +208,9 @@ class RecentlyPlayedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, position = 0, R.id.section_title_text_view)
+        atPositionOnView(R.id.ongoing_story_recycler_view,
+          position = 0,
+          R.id.section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_week))
       )
@@ -330,7 +334,10 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, position = 2, R.id.section_title_text_view)
+        atPositionOnView(
+          R.id.ongoing_story_recycler_view,
+          position = 2,
+          R.id.section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_month))
       )
@@ -411,7 +418,10 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, position = 0, R.id.section_title_text_view)
+        atPositionOnView(
+          R.id.ongoing_story_recycler_view,
+          position = 0,
+          R.id.section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_week))
       )
@@ -499,7 +509,10 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, position = 2, R.id.section_title_text_view)
+        atPositionOnView(
+          R.id.ongoing_story_recycler_view,
+          position = 2,
+          R.id.section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_month))
       )

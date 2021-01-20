@@ -98,7 +98,9 @@ class ProfileChooserFragmentLocalTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(profileChooserFragmentLocalTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      profileChooserFragmentLocalTest = this
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

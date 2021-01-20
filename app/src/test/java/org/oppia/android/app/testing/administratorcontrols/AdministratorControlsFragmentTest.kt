@@ -96,7 +96,9 @@ class AdministratorControlsFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(testAdministratorControlsFragmentTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      testAdministratorControlsFragmentTest = this
+    )
   }
 
   @Test

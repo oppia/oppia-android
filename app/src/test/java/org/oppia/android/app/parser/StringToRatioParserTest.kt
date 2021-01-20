@@ -183,7 +183,9 @@ class StringToRatioParserTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(stringToRatioParserTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      stringToRatioParserTest = this
+    )
   }
 
   private fun createRatio(element: List<Int>): RatioExpression {

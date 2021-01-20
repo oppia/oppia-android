@@ -109,7 +109,9 @@ class TopicPracticeFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(topicPracticeFragmentTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      topicPracticeFragmentTest = this
+    )
   }
 
   @Test

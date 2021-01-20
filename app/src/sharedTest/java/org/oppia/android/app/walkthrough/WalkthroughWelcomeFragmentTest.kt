@@ -104,7 +104,9 @@ class WalkthroughWelcomeFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(walkthroughWelcomeFragmentTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      walkthroughWelcomeFragmentTest = this
+    )
   }
 
   private fun createWalkthroughActivityIntent(profileId: Int): Intent {

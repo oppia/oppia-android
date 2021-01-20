@@ -141,7 +141,11 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): String {
     if (profileResult.isFailure()) {
-      logger.e(tag = "AudioFragment", msg = "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      logger.e(
+        tag = "AudioFragment",
+        msg = "Failed to retrieve profile",
+        profileResult.getErrorOrNull()!!
+      )
     }
     return getAudioLanguage(profileResult.getOrDefault(Profile.getDefaultInstance()).audioLanguage)
   }

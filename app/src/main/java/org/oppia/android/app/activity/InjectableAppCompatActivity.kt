@@ -34,7 +34,9 @@ abstract class InjectableAppCompatActivity : AppCompatActivity() {
   }
 
   private fun initializeActivityComponent() {
-    activityComponent = (application as ActivityComponentFactory).createActivityComponent(activity = this)
+    activityComponent = (application as ActivityComponentFactory).createActivityComponent(
+      activity = this
+    )
   }
 
   fun createFragmentComponent(fragment: Fragment): FragmentComponent {

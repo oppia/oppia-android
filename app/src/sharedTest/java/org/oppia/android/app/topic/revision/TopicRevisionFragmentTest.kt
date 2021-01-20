@@ -111,7 +111,9 @@ class TopicRevisionFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(topicRevisionFragmentTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      topicRevisionFragmentTest = this
+    )
   }
 
   @Test
@@ -140,7 +142,9 @@ class TopicRevisionFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
-      onView(atPositionOnView(R.id.revision_recycler_view, position = 0, R.id.subtopic_image_view)).check(
+      onView(atPositionOnView(R.id.revision_recycler_view,
+        position = 0
+        , R.id.subtopic_image_view)).check(
         matches(
           withDrawable(
             subtopicThumbnail
@@ -167,7 +171,9 @@ class TopicRevisionFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       clickRevisionTab()
-      onView(atPositionOnView(R.id.revision_recycler_view, position = 0, R.id.subtopic_image_view)).check(
+      onView(atPositionOnView(R.id.revision_recycler_view,
+        position = 0,
+        R.id.subtopic_image_view)).check(
         matches(
           withDrawable(
             subtopicThumbnail
