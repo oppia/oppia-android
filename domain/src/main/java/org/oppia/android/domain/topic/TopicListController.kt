@@ -270,6 +270,7 @@ class TopicListController @Inject constructor(
     topicProgressList: List<TopicProgress>,
     completionTimeFilter: (Long) -> Boolean
   ): List<PromotedStory> {
+
     var numberOfDaysPassed = 0L
     val recentlyPlayedPromotedStoryList = mutableListOf<PromotedStory>()
     val sortedTopicProgressList =
