@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.TopicSummary
-import java.util.*
+import java.util.Objects
 
 // TODO(#206): Remove the color darkening computation and properly set up the topic thumbnails.
 // These values were roughly computed based on the mocks. They won't produce the same colors since darker colors in the

@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import org.oppia.android.util.datetime.DateTimeUtil
 import org.oppia.android.util.system.OppiaClock
-import java.util.*
+import java.util.Objects
 
 /** [ViewModel] for welcome text in home screen. */
 class WelcomeViewModel(
