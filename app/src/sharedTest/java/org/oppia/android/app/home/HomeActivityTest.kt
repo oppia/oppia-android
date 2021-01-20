@@ -423,7 +423,7 @@ class HomeActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "land-mdpi")
   @Test
-  fun testHomeActivity_phone_changeConfig_longProfileName_welcomeMessageIsDisplayed() {
+  fun testHomeActivity_phone_configChange_longProfileName_welcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -460,7 +460,7 @@ class HomeActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "sw600dp-land")
   @Test
-  fun testHomeActivity_tablet_changeConfig_longProfileName_welcomeMessageIsDisplayed() {
+  fun testHomeActivity_tablet_configChange_longProfileName_welcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
