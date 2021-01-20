@@ -254,12 +254,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
       } else if (ephemeralState.completedState.answerList.size > 0 && ephemeralState.hasNextState) {
         canContinueToNextState = true
       }
-      if (playerFeatureSet.showCelebrationAtEndOfExplorationSession) {
-        val colorsList = checkNotNull(confettiColors) {
-          "Expected non-null list of confetti colors"
-        }
-        showCelebrationForEndOfExplorationSession(colorsList)
-      }
     }
 
     if (playerFeatureSet.supportAudioVoiceovers) {
@@ -277,6 +271,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
           audioManager?.loadMainContentAudio(!canContinueToNextState)
         }
       }
+    }
+
+    if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE &&
+      playerFeatureSet.showCelebrationAtEndOfExplorationSession
+    ) {
+      val colorsList = checkNotNull(confettiColors) {
+        "Expected non-null list of confetti colors"
+      }
+      showCelebrationForEndOfExplorationSession(colorsList)
     }
 
     maybeAddNavigationButtons(
