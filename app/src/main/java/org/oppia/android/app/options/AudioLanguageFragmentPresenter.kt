@@ -59,11 +59,11 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       .newBuilder<LanguageItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = LanguageItemsBinding::inflate,
-        setViewModel = this::bindSkillView
+        setViewModel = this::bindLanguageView
       ).build()
   }
 
-  private fun bindSkillView(
+  private fun bindLanguageView(
     binding: LanguageItemsBinding,
     model: LanguageItemViewModel
   ) {
