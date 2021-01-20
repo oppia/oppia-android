@@ -88,11 +88,11 @@
         android:top="1dp" />
     </shape>
   </item>
-
   <item>
     <shape>
-      <stroke android:width="3dp"
-        android:color="@color/green_shade_80"/>
+      <stroke
+        android:width="3dp"
+        android:color="@color/green_shade_80" />
       <corners android:radius="4dp" />
       <solid android:color="@color/light_green" />
     </shape>

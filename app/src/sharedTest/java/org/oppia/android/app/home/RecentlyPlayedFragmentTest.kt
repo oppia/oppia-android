@@ -208,9 +208,11 @@ class RecentlyPlayedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view,
+        atPositionOnView(
+          R.id.ongoing_story_recycler_view,
           position = 0,
-          R.id.section_title_text_view)
+          R.id.section_title_text_view
+        )
       ).check(
         matches(withText(R.string.ongoing_story_last_week))
       )
@@ -337,7 +339,8 @@ class RecentlyPlayedFragmentTest {
         atPositionOnView(
           R.id.ongoing_story_recycler_view,
           position = 2,
-          R.id.section_title_text_view)
+          R.id.section_title_text_view
+        )
       ).check(
         matches(withText(R.string.ongoing_story_last_month))
       )
@@ -421,7 +424,8 @@ class RecentlyPlayedFragmentTest {
         atPositionOnView(
           R.id.ongoing_story_recycler_view,
           position = 0,
-          R.id.section_title_text_view)
+          R.id.section_title_text_view
+        )
       ).check(
         matches(withText(R.string.ongoing_story_last_week))
       )
@@ -512,7 +516,8 @@ class RecentlyPlayedFragmentTest {
         atPositionOnView(
           R.id.ongoing_story_recycler_view,
           position = 2,
-          R.id.section_title_text_view)
+          R.id.section_title_text_view
+        )
       ).check(
         matches(withText(R.string.ongoing_story_last_month))
       )

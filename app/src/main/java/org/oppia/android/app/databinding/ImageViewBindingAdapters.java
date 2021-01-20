@@ -3,20 +3,25 @@ package org.oppia.android.app.databinding;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+
 import org.oppia.android.R;
 import org.oppia.android.app.model.LessonThumbnailGraphic;
 import org.oppia.android.app.model.ProfileAvatar;
 
-/** Holds all custom binding adapters that bind to [ImageView]. */
+/**
+ * Holds all custom binding adapters that bind to [ImageView].
+ */
 public final class ImageViewBindingAdapters {
   /**
    * Allows binding drawables to an [ImageView] via "android:src".
@@ -45,7 +50,7 @@ public final class ImageViewBindingAdapters {
 
   /**
    * Binds the specified [LessonThumbnailGraphic] as the source for the [ImageView].
-   *
+   * <p>
    * The view should be specified to have no width/height (when sized in a constraint layout), and
    * use centerCrop for the image to appear correctly.
    */
@@ -107,7 +112,7 @@ public final class ImageViewBindingAdapters {
    * Binding adapter for profile images. Used to either display a local image or custom
    * colored avatar.
    *
-   * @param imageView view where the profile avatar will be loaded into
+   * @param imageView     view where the profile avatar will be loaded into
    * @param profileAvatar represents either a colorId or local image uri
    */
   @BindingAdapter("profile:src")

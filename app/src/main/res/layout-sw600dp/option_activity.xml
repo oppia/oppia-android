@@ -26,7 +26,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/options_separator"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
         android:id="@+id/options_activity_selected_options_title"
@@ -40,7 +40,7 @@
         android:background="@color/transparent"
         app:layout_constraintStart_toEndOf="@id/multipane_guideline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
       <FrameLayout
         android:id="@+id/multipane_options_container"

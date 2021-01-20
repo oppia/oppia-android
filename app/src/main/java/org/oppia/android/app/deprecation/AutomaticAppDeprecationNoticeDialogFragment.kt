@@ -22,7 +22,8 @@ class AutomaticAppDeprecationNoticeDialogFragment : InjectableDialogFragment() {
     }
   }
 
-  @Inject lateinit var automaticAppDeprecationNoticeDialogFragmentPresenter:
+  @Inject
+  lateinit var automaticAppDeprecationNoticeDialogFragmentPresenter:
     AutomaticAppDeprecationNoticeDialogFragmentPresenter
 
   override fun onAttach(context: Context) {

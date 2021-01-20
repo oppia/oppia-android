@@ -116,10 +116,12 @@ class AudioLanguageFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAudioLanguage_loadFragment_changeAudioLanguage_checkOptionsFragmentIsUpdatedCorrectly() {
-    launch<OptionsActivity>(createOptionActivityIntent(
-      internalProfileId = 0,
-      isFromNavigationDrawer = true
-    )).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       testCoroutineDispatchers.runCurrent()
       selectChangeAudioLanguage()
       selectLanguage(CHINESE)

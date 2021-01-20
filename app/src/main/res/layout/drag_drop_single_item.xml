@@ -13,5 +13,5 @@
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
     android:gravity="center_vertical"
-    android:text="@{htmlContent}"/>
+    android:text="@{htmlContent}" />
 </layout>

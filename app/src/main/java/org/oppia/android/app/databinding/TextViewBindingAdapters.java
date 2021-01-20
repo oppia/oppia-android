@@ -3,18 +3,25 @@ package org.oppia.android.app.databinding;
 import android.content.Context;
 import android.content.res.Resources;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
+
 import org.oppia.android.R;
 import org.oppia.android.util.system.OppiaDateTimeFormatter;
+
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-/** Holds all custom binding adapters that bind to [TextView]. */
+/**
+ * Holds all custom binding adapters that bind to [TextView].
+ */
 public final class TextViewBindingAdapters {
 
-  /** Binds date text with relative time. */
+  /**
+   * Binds date text with relative time.
+   */
   @BindingAdapter("profile:created")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
     OppiaDateTimeFormatter oppiaDateTimeFormatter = new OppiaDateTimeFormatter();

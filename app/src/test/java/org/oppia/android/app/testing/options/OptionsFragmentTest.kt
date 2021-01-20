@@ -101,10 +101,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_clickReadingTextSize_checkSendingTheCorrectIntent() {
-    launch<OptionsActivity>(createOptionActivityIntent(
-      internalProfileId = 0,
-      isFromNavigationDrawer = true
-    )).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
@@ -127,9 +129,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_clickAppLanguage_checkSendingTheCorrectIntent() {
-    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0,
-      isFromNavigationDrawer = true
-    )).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
@@ -152,9 +157,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_clickDefaultAudioLanguage_checkSendingTheCorrectIntent() {
-    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0,
-      isFromNavigationDrawer = true
-    )).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
@@ -179,9 +187,12 @@ class OptionsFragmentTest {
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
   fun testOptionsFragment_checkInitiallyLoadedFragmentIsReadingTextSizeFragment() {
-    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0,
-      isFromNavigationDrawer = true
-    )).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
         val loadedFragment =
@@ -195,8 +206,12 @@ class OptionsFragmentTest {
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
   fun testOptionsFragment_clickReadingTextSize_checkLoadingTheCorrectFragment() {
-    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0,
-      isFromNavigationDrawer = true)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
@@ -219,8 +234,12 @@ class OptionsFragmentTest {
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
   fun testOptionsFragment_clickAppLanguage_checkLoadingTheCorrectFragment() {
-    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0,
-      isFromNavigationDrawer = true)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
@@ -243,8 +262,12 @@ class OptionsFragmentTest {
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
   fun testOptionsFragment_clickDefaultAudio_checkLoadingTheCorrectFragment() {
-    launch<OptionsActivity>(createOptionActivityIntent(internalProfileId = 0,
-      isFromNavigationDrawer = true)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(

@@ -117,16 +117,18 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view,
-          position = 0
-          , R.id.profile_list_name)
+        atPositionOnView(
+          R.id.profile_list_recycler_view,
+          position = 0, R.id.profile_list_name
+        )
       ).check(
         matches(withText("Admin"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view,
-          position = 0
-          , R.id.profile_list_admin_text)
+        atPositionOnView(
+          R.id.profile_list_recycler_view,
+          position = 0, R.id.profile_list_admin_text
+        )
       ).check(
         matches(withText(context.getString(R.string.profile_chooser_admin)))
       )
@@ -136,16 +138,18 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view,
-          position = 1
-          , R.id.profile_list_name)
+        atPositionOnView(
+          R.id.profile_list_recycler_view,
+          position = 1, R.id.profile_list_name
+        )
       ).check(
         matches(withText("Ben"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view,
-          position = 1
-          , R.id.profile_list_admin_text)
+        atPositionOnView(
+          R.id.profile_list_recycler_view,
+          position = 1, R.id.profile_list_admin_text
+        )
       ).check(
         matches(not(isDisplayed()))
       )
@@ -164,16 +168,18 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view,
-          position = 0
-          , R.id.profile_list_name)
+        atPositionOnView(
+          R.id.profile_list_recycler_view,
+          position = 0, R.id.profile_list_name
+        )
       ).check(
         matches(withText("Admin"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view,
-          position = 0
-          , R.id.profile_list_admin_text)
+        atPositionOnView(
+          R.id.profile_list_recycler_view,
+          position = 0, R.id.profile_list_admin_text
+        )
       ).check(
         matches(withText(context.getString(R.string.profile_chooser_admin)))
       )
@@ -183,16 +189,18 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view,
-          position = 1
-          , R.id.profile_list_name)
+        atPositionOnView(
+          R.id.profile_list_recycler_view,
+          position = 1, R.id.profile_list_name
+        )
       ).check(
         matches(withText("Ben"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view,
-          position = 1
-          , R.id.profile_list_admin_text)
+        atPositionOnView(
+          R.id.profile_list_recycler_view,
+          position = 1, R.id.profile_list_admin_text
+        )
       ).check(
         matches(not(isDisplayed()))
       )

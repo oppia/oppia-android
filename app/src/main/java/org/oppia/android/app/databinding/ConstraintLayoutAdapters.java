@@ -7,10 +7,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.databinding.BindingAdapter;
 
-/** Custom binding adapters that set constraints to views. */
+/**
+ * Custom binding adapters that set constraints to views.
+ */
 public final class ConstraintLayoutAdapters {
 
-  /** Binding adapter for setting a layout_constraintEnd_toEndOf to a view. */
+  /**
+   * Binding adapter for setting a layout_constraintEnd_toEndOf to a view.
+   */
   @BindingAdapter("app:layout_constraintEnd_toEndOf")
   public static void setConstraintEndToEndOf(@NonNull View view, int constraintToId) {
     ConstraintLayout constraintLayout = (ConstraintLayout) view.getParent();
@@ -20,7 +24,9 @@ public final class ConstraintLayoutAdapters {
     constraintSet.applyTo(constraintLayout);
   }
 
-  /** Binding adapter for setting layout_constraintHorizontal_bias to a view. */
+  /**
+   * Binding adapter for setting layout_constraintHorizontal_bias to a view.
+   */
   @BindingAdapter("app:layout_constraintHorizontal_bias")
   public static void setHorizontalBias(@NonNull View view, float value) {
     ConstraintLayout constraintLayout = (ConstraintLayout) view.getParent();

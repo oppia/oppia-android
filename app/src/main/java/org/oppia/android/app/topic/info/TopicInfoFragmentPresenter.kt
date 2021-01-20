@@ -100,7 +100,8 @@ class TopicInfoFragmentPresenter @Inject constructor(
       logger.e(
         tag = "TopicInfoFragment",
         msg = "Failed to retrieve topic",
-        topic.getErrorOrNull()!!)
+        topic.getErrorOrNull()!!
+      )
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }

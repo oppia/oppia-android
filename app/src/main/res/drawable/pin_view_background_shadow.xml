@@ -32,7 +32,8 @@
         android:right="1dp"
         android:top="1dp" />
     </shape>
-  </item>  <item>
+  </item>
+  <item>
     <shape>
       <corners android:radius="4dp" />
       <solid android:color="@color/mid_grey_05" />

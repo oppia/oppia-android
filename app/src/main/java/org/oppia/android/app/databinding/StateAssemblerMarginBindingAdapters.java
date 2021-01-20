@@ -2,6 +2,7 @@ package org.oppia.android.app.databinding;
 
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
+
 import androidx.databinding.BindingAdapter;
 
 /**
@@ -10,7 +11,9 @@ import androidx.databinding.BindingAdapter;
  */
 public final class StateAssemblerMarginBindingAdapters {
 
-  /** Used to set a margin for exploration split-view. */
+  /**
+   * Used to set a margin for exploration split-view.
+   */
   @BindingAdapter(
       value = {
           "app:explorationSplitViewMarginApplicable",
@@ -32,7 +35,9 @@ public final class StateAssemblerMarginBindingAdapters {
     setMarginIfApplicable(view, isApplicable, marginStart, marginTop, marginEnd, marginBottom);
   }
 
-  /** Used to set a margin for exploration view. */
+  /**
+   * Used to set a margin for exploration view.
+   */
   @BindingAdapter(
       value = {
           "app:explorationViewMarginApplicable",
@@ -54,7 +59,9 @@ public final class StateAssemblerMarginBindingAdapters {
     setMarginIfApplicable(view, isApplicable, marginStart, marginTop, marginEnd, marginBottom);
   }
 
-  /** Used to set a margin for question view. */
+  /**
+   * Used to set a margin for question view.
+   */
   @BindingAdapter(
       value = {
           "app:questionViewMarginApplicable",
@@ -76,7 +83,9 @@ public final class StateAssemblerMarginBindingAdapters {
     setMarginIfApplicable(view, isApplicable, marginStart, marginTop, marginEnd, marginBottom);
   }
 
-  /** Used to set a margin for question split-view. */
+  /**
+   * Used to set a margin for question split-view.
+   */
   @BindingAdapter(
       value = {
           "app:questionSplitViewMarginApplicable",

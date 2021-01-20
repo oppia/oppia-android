@@ -136,9 +136,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_parentIsExploration_checkBackArrowNotVisible() {
-    launch<OptionsActivity>(createOptionActivityIntent(
-      internalProfileId = 0,
-      isFromNavigationDrawer = false)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = false
+      )
+    ).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(matches(isCompletelyDisplayed()))
     }
@@ -146,9 +149,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_parentIsNotExploration_checkBackArrowNotVisible() {
-    launch<OptionsActivity>(createOptionActivityIntent(
-      internalProfileId = 0,
-      isFromNavigationDrawer = true)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(doesNotExist())
     }
@@ -156,9 +162,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(
-      internalProfileId = 0,
-      isFromNavigationDrawer = true)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.options_fragment_placeholder))
         .check(matches(isCompletelyDisplayed()))
@@ -168,9 +177,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_readingTextSize_testOnActivityResult() {
-    launch<OptionsActivity>(createOptionActivityIntent(
-      internalProfileId = 0,
-      isFromNavigationDrawer = true)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       val resultDataIntent = Intent()
       resultDataIntent.putExtra(MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY, "Large")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
@@ -204,9 +216,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_audioLanguage_testOnActivityResult() {
-    launch<OptionsActivity>(createOptionActivityIntent(
-      internalProfileId = 0,
-      isFromNavigationDrawer = true)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       val resultDataIntent = Intent()
       resultDataIntent.putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
@@ -240,9 +255,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_appLanguage_testOnActivityResult() {
-    launch<OptionsActivity>(createOptionActivityIntent(
-      internalProfileId = 0,
-      isFromNavigationDrawer = true)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       val resultDataIntent = Intent()
       resultDataIntent.putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)

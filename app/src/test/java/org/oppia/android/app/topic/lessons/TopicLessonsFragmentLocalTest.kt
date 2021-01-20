@@ -105,7 +105,8 @@ class TopicLessonsFragmentLocalTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(
-      testLessonsFragmentLocalTest = this)
+      testLessonsFragmentLocalTest = this
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

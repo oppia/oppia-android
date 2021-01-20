@@ -95,7 +95,8 @@ class RevisionCardActivityLocalTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(
-      revisionCardActivityLocalTest = this)
+      revisionCardActivityLocalTest = this
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -129,7 +130,7 @@ class RevisionCardActivityLocalTest {
     private val component: TestApplicationComponent by lazy {
       DaggerRevisionCardActivityLocalTest_TestApplicationComponent.builder()
         .setApplication(this)
-        .build() as TestApplicationComponent
+        .build()
     }
 
     fun inject(revisionCardActivityLocalTest: RevisionCardActivityLocalTest) {

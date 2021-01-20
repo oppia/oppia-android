@@ -112,9 +112,11 @@ class ReadingTextSizeFragmentTest {
 
   @Test
   fun testTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
-    launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent(
-      summaryValue = "Small"
-    )).use {
+    launch<ReadingTextSizeActivity>(
+      createReadingTextSizeActivityIntent(
+        summaryValue = "Small"
+      )
+    ).use {
       checkTextSize(SMALL_TEXT_SIZE)
       updateTextSize(LARGE_TEXT_SIZE)
       rotateToLandscape()
@@ -126,10 +128,12 @@ class ReadingTextSizeFragmentTest {
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
   fun testTextSize_clickTextSize_changeTextSizeToLarge_checkOptionsFragmentIsUpdatedCorrectly() {
-    launch<OptionsActivity>(createOptionActivityIntent(
-      internalProfileId = 0,
-      isFromNavigationDrawer =  true
-    )).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       testCoroutineDispatchers.runCurrent()
       updateTextSize(MEDIUM_TEXT_SIZE)
       checkTextSizeLabel("Medium")

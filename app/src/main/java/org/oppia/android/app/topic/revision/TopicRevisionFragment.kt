@@ -16,6 +16,7 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val TOPIC_REVISION_FRAGMENT_TAG = "TOPIC_REVISION_FRAGMENT_TAG"
+
     /** Returns a new [TopicRevisionFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicRevisionFragment {
       val topicRevisionFragment = TopicRevisionFragment()

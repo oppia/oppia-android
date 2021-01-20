@@ -80,7 +80,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       Observer<OngoingStoryList> { it ->
         if (it.recentStoryCount > 0) {
           val recentSectionTitleViewModel =
-            SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week),
+            SectionTitleViewModel(
+              activity.getString(R.string.ongoing_story_last_week),
               isDividerVisible = false
             )
           itemList.add(recentSectionTitleViewModel)

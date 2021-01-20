@@ -142,9 +142,12 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view,
-        position = 0
-      )).check(matches(withText(STR_VALUE_0.strValue)))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText(STR_VALUE_0.strValue)))
     }
   }
 
@@ -181,15 +184,24 @@ class BindableAdapterTest {
           getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
-      onView(atPosition(R.id.test_recycler_view,
-        position = 0
-      )).check(matches(withText(STR_VALUE_1.strValue)))
-      onView(atPosition(R.id.test_recycler_view,
-        position = 1
-      )).check(matches(withText(STR_VALUE_0.strValue)))
-      onView(atPosition(R.id.test_recycler_view,
-        position = 2
-      )).check(matches(withText(STR_VALUE_2.strValue)))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText(STR_VALUE_1.strValue)))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          position = 1
+        )
+      ).check(matches(withText(STR_VALUE_0.strValue)))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          position = 2
+        )
+      ).check(matches(withText(STR_VALUE_2.strValue)))
     }
   }
 
@@ -213,9 +225,12 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view,
-        position = 0
-      )).check(matches(withText(STR_VALUE_1.strValue)))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText(STR_VALUE_1.strValue)))
       onView(
         atPosition(
           R.id.test_recycler_view,
@@ -250,9 +265,12 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view,
-        position = 0
-      )).check(matches(withText(STR_VALUE_0.strValue)))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText(STR_VALUE_0.strValue)))
     }
   }
 
@@ -275,15 +293,24 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view,
-        position = 0
-      )).check(matches(withText(STR_VALUE_1.strValue)))
-      onView(atPosition(R.id.test_recycler_view,
-        position = 1
-      )).check(matches(withText(STR_VALUE_0.strValue)))
-      onView(atPosition(R.id.test_recycler_view,
-        position = 2
-      )).check(matches(withText(STR_VALUE_2.strValue)))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText(STR_VALUE_1.strValue)))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          position = 1
+        )
+      ).check(matches(withText(STR_VALUE_0.strValue)))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          position = 2
+        )
+      ).check(matches(withText(STR_VALUE_2.strValue)))
     }
   }
 
@@ -307,9 +334,12 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view,
-        position = 0
-      )).check(matches(withText(STR_VALUE_1.strValue)))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText(STR_VALUE_1.strValue)))
       onView(
         atPosition(
           R.id.test_recycler_view,

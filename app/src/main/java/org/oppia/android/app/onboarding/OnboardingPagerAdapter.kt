@@ -20,6 +20,7 @@ class OnboardingPagerAdapter(
   // TODO (#2194 ): Remove this once the implementation is updated to ViewPager2
   val isRTL = TextUtilsCompat
     .getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL
+
   override fun instantiateItem(container: ViewGroup, position: Int): Any {
     if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
       val binding =

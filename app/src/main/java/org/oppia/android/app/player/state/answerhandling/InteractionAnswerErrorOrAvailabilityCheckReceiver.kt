@@ -14,5 +14,6 @@ interface InteractionAnswerErrorOrAvailabilityCheckReceiver {
   fun onPendingAnswerErrorOrAvailabilityCheck(
     pendingAnswerError: String?,
     inputAnswerAvailable: Boolean
-  ) {}
+  ) {
+  }
 }

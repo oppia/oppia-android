@@ -33,9 +33,11 @@ class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopic
   }
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
-    startActivity(TopicActivity.createTopicActivityIntent(
-      context = this,
-      internalProfileId, topicId)
+    startActivity(
+      TopicActivity.createTopicActivityIntent(
+        context = this,
+        internalProfileId, topicId
+      )
     )
   }
 }

@@ -7,7 +7,6 @@
     <variable
       name="viewModel"
       type="org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicViewModel" />
-
   </data>
 
   <LinearLayout
