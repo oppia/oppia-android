@@ -234,8 +234,8 @@ class StoryProgressTestHelper @Inject constructor(
   /**
    * Marks full topic progress on the second test topic for a particular profile.
    *
-   * @param profileId The profile we are setting topic progress for.
-   * @param timestampOlderThanOneWeek If the timestamp for completing the topic is from more than one week ago.
+   * @param profileId the profile we are setting topic progress for
+   * @param timestampOlderThanOneWeek if the timestamp for completing the topic is from more than one week ago
    */
   fun markFullProgressForSecondTestTopic(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
     val timestamp = if (!timestampOlderThanAWeek) {
