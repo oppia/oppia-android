@@ -445,11 +445,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     val fadeIn = AlphaAnimation(0f, 1f)
     fadeIn.interpolator = DecelerateInterpolator()
-    fadeIn.duration = 2000
+    fadeIn.duration = 1500
 
     val fadeOut = AlphaAnimation(1f, 0f)
     fadeOut.interpolator = AccelerateInterpolator()
-    fadeOut.startOffset = 1000
+    fadeOut.startOffset = 1500
     fadeOut.duration = 1000
 
     val animation = AnimationSet(false)
@@ -457,7 +457,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     animation.addAnimation(fadeOut)
     textView.animation = animation
 
-    lifecycleSafeTimerFactory.createTimer(2000).observe(
+    lifecycleSafeTimerFactory.createTimer(2500).observe(
       fragment,
       Observer {
         textView.clearAnimation()
