@@ -125,6 +125,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val fragment: Fragment,
   private val congratulationsTextView: TextView?,
   private val congratulationsTextConfettiView: KonfettiView?,
+  private val fullScreenConfettiView: KonfettiView?,
   private val canSubmitAnswer: ObservableField<Boolean>?,
   private val audioActivityId: String?,
   private val currentStateName: ObservableField<String>?,
@@ -808,6 +809,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
     private var congratulationsTextConfettiView: KonfettiView? = null
+    private var fullScreenConfettiView: KonfettiView? = null
     private var hasConversationView: Boolean = true
     private var canSubmitAnswer: ObservableField<Boolean>? = null
     private var audioActivityId: String? = null
@@ -1162,6 +1164,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
 
     /**
+     * Adds support for displaying a confetti animation when the learner completes an entire
+     * exploration.
+     */
+    fun addCelebrationForEndOfExplorationSession(
+      confettiView: KonfettiView
+    ): Builder {
+      this.fullScreenConfettiView = confettiView
+      featureSets += PlayerFeatureSet(showCelebrationAtEndOfExplorationSession = true)
+      return this
+    }
+
+    /**
      * Adds support for displaying with proper alignment and background.
      */
     fun hasConversationView(hasConversationView: Boolean): Builder {
@@ -1224,6 +1238,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         fragment,
         congratulationsTextView,
         congratulationsTextConfettiView,
+        fullScreenConfettiView,
         canSubmitAnswer,
         audioActivityId,
         currentStateName,
@@ -1285,6 +1300,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val replaySupport: Boolean = false,
     val returnToTopicNavigation: Boolean = false,
     val showCelebrationOnCorrectAnswer: Boolean = false,
+    val showCelebrationAtEndOfExplorationSession: Boolean = false,
     val hintsAndSolutionsSupport: Boolean = false,
     val supportAudioVoiceovers: Boolean = false,
     val conceptCardSupport: Boolean = false
@@ -1306,6 +1322,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         returnToTopicNavigation = returnToTopicNavigation || other.returnToTopicNavigation,
         showCelebrationOnCorrectAnswer = showCelebrationOnCorrectAnswer ||
           other.showCelebrationOnCorrectAnswer,
+        showCelebrationAtEndOfExplorationSession = showCelebrationAtEndOfExplorationSession ||
+          other.showCelebrationAtEndOfExplorationSession,
         hintsAndSolutionsSupport = hintsAndSolutionsSupport || other.hintsAndSolutionsSupport,
         supportAudioVoiceovers = supportAudioVoiceovers || other.supportAudioVoiceovers,
         conceptCardSupport = conceptCardSupport || other.conceptCardSupport
