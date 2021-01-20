@@ -224,7 +224,7 @@ class TopicListController @Inject constructor(
     val promotedActivityListBuilder = PromotedActivityList.newBuilder()
     if (topicProgressList.isNotEmpty()) {
       promotedActivityListBuilder.promotedStoryList = computePromotedStoryList(topicProgressList)
-      if (promotedActivityListBuilder.promotedStoryList.getTotalPromotedStoryCount() == 0) {
+      if (promotedActivityListBuilder.promotedStoryList.totalPromotedStoryCount == 0) {
         promotedActivityListBuilder.comingSoonTopicList = computeComingSoonTopicList()
       }
     }
