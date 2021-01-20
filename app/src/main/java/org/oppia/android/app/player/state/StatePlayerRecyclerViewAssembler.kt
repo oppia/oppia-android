@@ -726,6 +726,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val timeToLiveMs = 2000
     val shapesArray = arrayOf(Circle)
     val sizeInDp = Size(sizeInDp = 7)
+    // Confetti pieces with mass make the animation more active and dynamic.
     val sizeWithMass = Size(sizeInDp = 7, mass = 3f)
     val numPieces = 7
 
