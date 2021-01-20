@@ -188,6 +188,7 @@ maven_install(
         "io.fabric.sdk.android:fabric:1.4.7",
         "javax.annotation:javax.annotation-api:jar:1.3.2",
         "junit:junit:4.12",
+        "nl.dionsegijn:konfetti:1.2.5",
         "org.jetbrains.kotlin:kotlin-reflect:1.3.41",
         "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
         "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",

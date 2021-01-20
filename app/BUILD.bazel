@@ -512,6 +512,7 @@ android_library(
         artifact("com.google.android.material:material"),
         artifact("de.hdodenhof:circleimageview:3.0.1"),
         artifact("javax.annotation:javax.annotation-api"),
+        artifact("nl.dionsegijn:konfetti:1.2.5"),
     ],
 )
 
@@ -591,12 +592,15 @@ kt_android_library(
     deps = [artifact("androidx.recyclerview:recyclerview:1.0.0"),],
 )
 
-# Library for snap helper used to build views.
+# Library for confetti used to create confetti animations in fragments.
 kt_android_library(
     name = "confetti",
     srcs = CONFETTI,
     custom_package = "org.oppia.android.app",
-    deps = [artifact("nl.dionsegijn:konfetti:1.2.5"),],
+    deps = [
+        ":dagger",
+        artifact("nl.dionsegijn:konfetti:1.2.5"),
+        ],
 )
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
