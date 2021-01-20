@@ -129,8 +129,6 @@
         android:layout_marginBottom="24dp"
         android:layout_gravity="bottom"
         android:background="@drawable/congratulations_text_background_shadow"
-        android:elevation="8dp"
-        android:translationZ="4dp"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:lineSpacingExtra="1dp"
