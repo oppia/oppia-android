@@ -50,8 +50,9 @@ class AdminPinActivityPresenter @Inject constructor(
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminPinInputPinEditText.onTextChanged { pin ->
       pin?.let {
-        if(adminViewModel.pinErrorMsg.get()?.isNotEmpty()!! &&
-          adminViewModel.savedPin.get() == it) {
+        if (adminViewModel.pinErrorMsg.get()?.isNotEmpty()!! &&
+          adminViewModel.savedPin.get() == it
+        ) {
           adminViewModel.savedPin.set(it)
           inputtedPin = pin.isNotEmpty()
         } else {
@@ -67,7 +68,8 @@ class AdminPinActivityPresenter @Inject constructor(
     binding.adminPinInputConfirmPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
         if (adminViewModel.confirmPinErrorMsg.get()?.isNotEmpty()!! &&
-          adminViewModel.savedConfirmPin.get() == it) {
+          adminViewModel.savedConfirmPin.get() == it
+        ) {
           adminViewModel.savedConfirmPin.set(it)
           inputtedConfirmPin = confirmPin.isNotEmpty()
         } else {
