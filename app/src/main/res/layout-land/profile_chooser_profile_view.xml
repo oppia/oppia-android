@@ -27,8 +27,6 @@
       android:id="@+id/profile_chooser_item"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/profile_chooser_profile_view_margin_start"
-      android:layout_marginEnd="@dimen/profile_chooser_profile_view_margin_end"
       android:gravity="center_horizontal"
       android:orientation="vertical"
       app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_margin_bottom_profile_already_added : @dimen/profile_chooser_profile_view_margin_bottom_profile_not_added}"
