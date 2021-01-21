@@ -100,6 +100,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         getHeaderViewModel().profile.set(it)
         getFooterViewModel().isAdmin.set(it.isAdmin)
         binding.administratorControlsLinearLayout.setOnClickListener {
+          if (getFooterViewModel().isAdministratorControlsSelected.get() == true) {
+            drawerLayout.closeDrawers()
+            return@setOnClickListener
+          }
+
           binding.fragmentDrawerNavView.menu.forEach { menuItem ->
             menuItem.isCheckable = false
           }

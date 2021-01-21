@@ -26,7 +26,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -129,8 +128,6 @@ class QuestionPlayerActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    FirebaseApp.initializeApp(context)
-
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
     // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
     // dispatchers.
@@ -218,7 +215,7 @@ class QuestionPlayerActivityTest {
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Test
-  fun testChooseCorrectAnswer_answerLongerThanScreen_phonePort_tickIsCompletelyVisible() {
+  fun testChooseCorrectAnswer_chooseCorrectAnswer_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       // Option 2 is the right answer and tick icon should be visible completely
       selectMultipleChoiceOption(optionPosition = 2)
@@ -233,7 +230,23 @@ class QuestionPlayerActivityTest {
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Test
-  fun testChooseCorrectAnswer_answerLongerThanScreen_phoneLand_tickIsCompletelyVisible() {
+  fun testQuestionPlayer_chooseCorrectAnswer_configChange_tickIsCompletelyVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Option 2 is the right answer and tick icon should be visible completely
+      selectMultipleChoiceOption(optionPosition = 2)
+      rotateToLandscape()
+      onView(withId(R.id.answer_tick)).check(
+        matches(
+          isCompletelyDisplayed()
+        )
+      )
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Test
+  fun testQuestionPlayer_configChange_chooseCorrectAnswer_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       rotateToLandscape()
       // Option 2 is the right answer and tick icon should be visible completely
@@ -250,7 +263,7 @@ class QuestionPlayerActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "sw600dp")
   @Test
-  fun testChooseCorrectAnswer_answerLongerThanScreen_tabletPort_tickIsCompletelyVisible() {
+  fun testQuestionPlayer_onTablet_chooseCorrectAnswer_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       // Option 2 is the right answer and tick icon should be visible completely
       selectMultipleChoiceOption(optionPosition = 2)
@@ -266,7 +279,7 @@ class QuestionPlayerActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "sw600dp")
   @Test
-  fun testChooseCorrectAnswer_answerLongerThanScreen_tabletLand_tickIsCompletelyVisible() {
+  fun testQuestionPlayer_onTablet_configChange_chooseCorrectAnswer_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       rotateToLandscape()
       // Option 2 is the right answer and tick icon should be visible completely
