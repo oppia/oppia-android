@@ -59,7 +59,6 @@
   <!--  CONFETTI COLORS -->
   <color name="confetti_red">#FF1414</color>
   <color name="confetti_yellow">#FFE558</color>
-  <color name="confetti_pink">#FF1AAB</color>
   <color name="confetti_evergreen">#00645C</color>
   <color name="confetti_blue">#2D4A9D</color>
   <!-- AUDIO COMPONENT -->
