@@ -12,7 +12,7 @@ import java.security.MessageDigest
 
 // The radius of the blur, a float between 0 and 25. It defines the value of the standard
 // deviation to the Gaussian function.
-private const val BLUR_RADIUS = 20f;
+private const val BLUR_RADIUS = 20f
 
 /**
  * [BlurTransformation] is a bitmap transformation that blurs an image using RenderScript.
