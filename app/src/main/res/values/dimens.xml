@@ -93,9 +93,7 @@
   <dimen name="profile_chooser_profile_view_is_admin_margin_top">4dp</dimen>
   <dimen name="profile_chooser_profile_view_last_visited_margin_top_profile_not_added">4dp</dimen>
   <dimen name="continue_navigation_item_button_non_split_view_margin">4dp</dimen>
-
   <dimen name="space_0dp">0dp</dimen>
-
   <dimen name="dot_width_height">12dp</dimen>
   <dimen name="dot_gap">12dp</dimen>
   <dimen name="enter_text_view_padding_start">60dp</dimen>
@@ -111,7 +109,6 @@
   <dimen name="recently_played_margin_min">8dp</dimen>
   <dimen name="recently_played_tablet_land_outer_margin">96dp</dimen>
   <dimen name="recently_played_tablet_port_outer_margin">120dp</dimen>
-
   <dimen name="default_reading_text_size">18sp</dimen>
   <dimen name="font_scale_content_text_size">20dp</dimen>
   <dimen name="profile_view_already_added_margin">20dp</dimen>
@@ -210,7 +207,7 @@
   <dimen name="previous_responses_item_question_split_view_margin_top">24dp</dimen>
   <dimen name="previous_responses_item_question_view_margin_top">24dp</dimen>
   <dimen name="profile_chooser_add_view_margin_top_profile_not_added">24dp</dimen>
-  <dimen name="profile_chooser_add_view_description_parent_margin_start_profile_not_added">24dp</dimen>
+  <dimen name="profile_chooser_description_margin_start_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_add_view_margin_end_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_add_view_margin_start_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_end_profile_already_added">24dp</dimen>
@@ -360,8 +357,6 @@
   <dimen name="submitted_answer_item_question_view_margin_start">32dp</dimen>
   <dimen name="text_input_interaction_item_non_conversation_view_margin_start">32dp</dimen>
   <dimen name="text_input_interaction_item_non_conversation_view_margin_end">32dp</dimen>
-  <dimen name="profile_chooser_add_view_description_margin_start_profile_not_added">32dp</dimen>
-  <dimen name="profile_chooser_profile_view_textview_margin_start_profile_not_added">32dp</dimen>
 
   <dimen name="content_item_question_view_margin_top">36dp</dimen>
   <dimen name="previous_button_item_question_split_view_margin_start">48dp</dimen>

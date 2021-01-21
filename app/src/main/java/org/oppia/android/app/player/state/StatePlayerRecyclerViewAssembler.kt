@@ -236,6 +236,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
         )
       }
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
+      // Ensure the answer is marked in situations where that's guaranteed (e.g. completed state)
+      // so that the UI always has the correct answer indication, even after configuration changes.
+      isCorrectAnswer.set(true)
       addPreviousAnswers(
         conversationPendingItemList,
         extraInteractionPendingItemList,

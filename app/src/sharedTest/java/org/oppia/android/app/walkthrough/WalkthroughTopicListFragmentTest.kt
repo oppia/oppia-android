@@ -106,7 +106,7 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex0_topicHeader_topicHeaderIsCorrect() {
+  fun testWalkthroughTopicListFragment_topicHeader_whatDoYouWantToLearnIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -126,7 +126,7 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_topicNameIsCorrect() {
+  fun testWalkthroughTopicListFragment_topicCard_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -152,7 +152,7 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_configurationChanged_topicNameIsCorrect() { // ktlint-disable max-line-length
+  fun testWalkthroughTopicListFragment_topicCard_configChange_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -179,7 +179,7 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex4_lessonThumbnailIsCorrect() {
+  fun testWalkthroughTopicListFragment_topicCard_lessonThumbnailIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
