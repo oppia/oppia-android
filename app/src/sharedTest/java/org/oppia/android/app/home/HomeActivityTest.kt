@@ -405,7 +405,7 @@ class HomeActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "port-mdpi")
   @Test
-  fun testHomeActivity_phonePort_longProfileName_welcomeMessageIsDisplayed() {
+  fun testHomeActivity_longProfileName_welcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
@@ -423,7 +423,7 @@ class HomeActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "land-mdpi")
   @Test
-  fun testHomeActivity_phone_configChange_longProfileName_welcomeMessageIsDisplayed() {
+  fun testHomeActivity_configChange_longProfileName_welcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -442,7 +442,7 @@ class HomeActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "sw600dp-port")
   @Test
-  fun testHomeActivity_tabletPort_longProfileName_welcomeMessageIsDisplayed() {
+  fun testHomeActivity_longProfileName_tabletPortraitWelcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
@@ -460,7 +460,7 @@ class HomeActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "sw600dp-land")
   @Test
-  fun testHomeActivity_tablet_configChange_longProfileName_welcomeMessageIsDisplayed() {
+  fun testHomeActivity_longProfileName_tabletLandscapeWelcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -817,16 +817,16 @@ class HomeActivityTest {
     return HomeActivity.createHomeActivity(context, profileId)
   }
 
+  // Refrence - https://stackoverflow.com/a/61455336/12215015
   private fun isEllipsized() = object : TypeSafeMatcher<View>() {
     override fun describeTo(description: Description) {
       description.appendText("with ellipsized text")
     }
 
-    override fun matchesSafely(textView: View): Boolean {
-      if (textView !is TextView) {
-        return false
+    override fun matchesSafely(view: View): Boolean {
+      return view is TextView && with((view).layout) {
+        lineCount > 0 && getEllipsisCount(lineCount - 1) > 0
       }
-      return with(textView.layout) { lineCount > 0 && getEllipsisCount(lineCount - 1) > 0 }
     }
   }
 
@@ -875,7 +875,7 @@ class HomeActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
+// TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
