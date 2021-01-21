@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AppLanguageFragmentBinding
 import org.oppia.android.databinding.LanguageItemsBinding
 import javax.inject.Inject
@@ -14,10 +13,9 @@ import javax.inject.Inject
 /** The presenter for [AppLanguageFragment]. */
 class AppLanguageFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<LanguageSelectionViewModel>
+  private val languageSelectionViewModel: LanguageSelectionViewModel
 ) {
   private lateinit var prefSummaryValue: String
-  private lateinit var languageSelectionViewModel: LanguageSelectionViewModel
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -30,7 +28,6 @@ class AppLanguageFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     this.prefSummaryValue = prefSummaryValue
-    languageSelectionViewModel = getLanguageSelectionViewModel()
     binding.viewModel = languageSelectionViewModel
     languageSelectionViewModel.selectedLanguage.value = prefSummaryValue
     binding.languageRecyclerView.apply {
@@ -73,9 +70,6 @@ class AppLanguageFragmentPresenter @Inject constructor(
 
   fun onLanguageSelected(selectedLanguage: String) {
     languageSelectionViewModel.selectedLanguage.value = selectedLanguage
-  }
-
-  private fun getLanguageSelectionViewModel(): LanguageSelectionViewModel {
-    return viewModelProvider.getForFragment(fragment, LanguageSelectionViewModel::class.java)
+    updateAppLanguage(selectedLanguage)
   }
 }
