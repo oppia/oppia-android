@@ -5,10 +5,10 @@
   <data>
 
     <import type="org.oppia.android.R" />
+
     <variable
       name="viewModel"
-      type="org.oppia.android.app.home.HomeViewModel"/>
-
+      type="org.oppia.android.app.home.HomeViewModel" />
   </data>
 
   <FrameLayout
