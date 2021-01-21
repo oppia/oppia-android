@@ -10,7 +10,7 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
  */
 class LanguageItemViewModel(
   val language: String,
-  val selectedLanguage: LiveData<String>,
+  private val selectedLanguage: LiveData<String>,
   val languageRadioButtonListener: LanguageRadioButtonListener
 ) : ObservableViewModel() {
   val isLanguageSelected: LiveData<Boolean> by lazy {
