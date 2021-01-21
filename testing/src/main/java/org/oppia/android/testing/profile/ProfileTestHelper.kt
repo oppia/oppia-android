@@ -48,6 +48,14 @@ class ProfileTestHelper @Inject constructor(
       colorRgb = -10710042,
       isAdmin = false
     )
+    profileManagementController.addProfile(
+      name = "Natrajan Subramanniyam Balaguruswamy",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = -10710042,
+      isAdmin = false
+    )
     val result = profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(0)
         .build()
@@ -93,11 +101,17 @@ class ProfileTestHelper @Inject constructor(
     testCoroutineDispatchers.runCurrent()
   }
 
-  /** Login to admin profile. */
-  fun loginToAdmin() = logIntoProfile(internalProfileId = 0)
+  /** Log in to admin profile. */
+  fun logIntoAdmin() = logIntoProfile(internalProfileId = 0)
 
-  /** Login to user profile. */
-  fun loginToUser() = logIntoProfile(internalProfileId = 1)
+  /** Log in to user profile. */
+  fun logIntoUser() = logIntoProfile(internalProfileId = 1)
+
+  /**
+   * Log in to a new user profile that has no progress for any topics or stories. This relies on other
+   * tests utilizing profile 1 as the default user profile so that profile 2 never has any progress.
+   */
+  fun logIntoNewUser() = logIntoProfile(internalProfileId = 2)
 
   private fun logIntoProfile(internalProfileId: Int): LiveData<AsyncResult<Any?>> {
     val result = profileManagementController.loginToProfile(
