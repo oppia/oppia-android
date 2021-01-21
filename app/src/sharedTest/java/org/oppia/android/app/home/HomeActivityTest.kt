@@ -3,6 +3,8 @@ package org.oppia.android.app.home
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -28,6 +30,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.Description
+import org.hamcrest.TypeSafeMatcher
+import org.hamcrest.core.IsNot.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -74,10 +79,12 @@ import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.RobolectricModule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -124,6 +131,7 @@ class HomeActivityTest {
 
   private val internalProfileId: Int = 0
   private val internalProfileId1: Int = 1
+  private val longNameInternalProfileId: Int = 3
   private lateinit var oppiaClock: OppiaClock
 
   @Before
@@ -390,6 +398,80 @@ class HomeActivityTest {
         targetViewId = R.id.lesson_count_text_view,
         stringToMatch = "1 Lesson"
       )
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Config(qualifiers = "port-mdpi")
+  @Test
+  fun testHomeActivity_longProfileName_welcomeMessageIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(not(isEllipsized())))
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Config(qualifiers = "land-mdpi")
+  @Test
+  fun testHomeActivity_configChange_longProfileName_welcomeMessageIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(not(isEllipsized())))
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testHomeActivity_longProfileName_tabletPortraitWelcomeMessageIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(not(isEllipsized())))
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testHomeActivity_longProfileName_tabletLandscapeWelcomeMessageIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(not(isEllipsized())))
     }
   }
 
@@ -735,6 +817,19 @@ class HomeActivityTest {
     return HomeActivity.createHomeActivity(context, profileId)
   }
 
+  // Refrence - https://stackoverflow.com/a/61455336/12215015
+  private fun isEllipsized() = object : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description) {
+      description.appendText("with ellipsized text")
+    }
+
+    override fun matchesSafely(view: View): Boolean {
+      return view is TextView && with((view).layout) {
+        lineCount > 0 && getEllipsisCount(lineCount - 1) > 0
+      }
+    }
+  }
+
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.home_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(
@@ -780,7 +875,7 @@ class HomeActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
+// TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [

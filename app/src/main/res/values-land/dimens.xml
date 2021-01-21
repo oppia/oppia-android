@@ -6,7 +6,6 @@
   <dimen name="home_inner_margin">36dp</dimen>
   <dimen name="recently_played_margin_max">72dp</dimen>
   <dimen name="recently_played_margin_min">36dp</dimen>
-
   <dimen name="content_item_exploration_view_margin_start">48dp</dimen>
   <dimen name="content_item_question_view_margin_top">32dp</dimen>
   <dimen name="content_item_question_split_view_margin_end">32dp</dimen>
