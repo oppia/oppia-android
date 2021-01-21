@@ -52,6 +52,7 @@ import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
@@ -976,6 +977,17 @@ class StateFragmentLocalTest {
     }
   }
 
+  @Test
+  fun testStateFragment_finishExploration_endOfSessionConfettiIsDisplayed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
@@ -1004,73 +1016,79 @@ class StateFragmentLocalTest {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
     onView(withSubstring("the pieces must be the same size.")).perform(click())
     testCoroutineDispatchers.runCurrent()
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState2() {
     // Correct answer to 'Matthew gets conned'
     submitFractionAnswer(answerText = "3/4")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState3() {
     // Correct answer to 'Question 1'
     submitFractionAnswer(answerText = "4/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState4() {
     // Correct answer to 'Question 2'
     submitFractionAnswer(answerText = "1/4")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState5() {
     // Correct answer to 'Question 3'
     submitFractionAnswer(answerText = "1/8")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState6() {
     // Correct answer to 'Question 4'
     submitFractionAnswer(answerText = "1/2")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState7() {
     // Correct answer to 'Question 5' which redirects the learner to 'Thinking in fractions Q1'
     submitFractionAnswer(answerText = "2/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState8() {
     // Correct answer to 'Thinking in fractions Q1'
     submitFractionAnswer(answerText = "7/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState9() {
     // Correct answer to 'Thinking in fractions Q2'
     submitFractionAnswer(answerText = "4/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState10() {
     // Correct answer to 'Thinking in fractions Q3'
     submitFractionAnswer(answerText = "5/8")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState11() {
     // Correct answer to 'Thinking in fractions Q4' which redirects the learner to 'Final Test A'
     submitFractionAnswer(answerText = "3/4")
-    clickContinueButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughState12() {
+    // Correct answer to 'Final Test A' redirects learner to 'Happy ending'
+    submitFractionAnswer(answerText = "2/4")
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState12WithWrongAnswer() {
     // Incorrect answer to 'Final Test A' redirects the learner to 'Final Test A second try'
     submitFractionAnswer(answerText = "1/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playUpToFinalTestSecondTry() {
@@ -1088,10 +1106,32 @@ class StateFragmentLocalTest {
     playThroughState12WithWrongAnswer()
   }
 
-  private fun clickContinueButton() {
+  private fun playThroughAllStates() {
+    playThroughState1()
+    playThroughState2()
+    playThroughState3()
+    playThroughState4()
+    playThroughState5()
+    playThroughState6()
+    playThroughState7()
+    playThroughState8()
+    playThroughState9()
+    playThroughState10()
+    playThroughState11()
+    playThroughState12()
+  }
+
+  private fun clickContinueNavigationButton() {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.continue_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickContinueButton() {
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.continue_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
