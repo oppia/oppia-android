@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.PictureDrawable
 import androidx.annotation.DrawableRes
 
-/** [ImageTransformation] Represents transformations on an image. */
+/** Represents transformations for images loaded using [ImageLoader]. */
 enum class ImageTransformation {
   /** Represents Blur Transformation on an [ImageTarget]. */
   BLUR
