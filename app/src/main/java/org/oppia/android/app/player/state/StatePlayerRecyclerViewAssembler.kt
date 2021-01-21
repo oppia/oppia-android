@@ -449,19 +449,19 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     val fadeIn = AlphaAnimation(0f, 1f)
     fadeIn.interpolator = DecelerateInterpolator()
-    fadeIn.duration = 1500
+    fadeIn.duration = 600
 
     val fadeOut = AlphaAnimation(1f, 0f)
     fadeOut.interpolator = AccelerateInterpolator()
-    fadeOut.startOffset = 1500
-    fadeOut.duration = 1000
+    fadeOut.startOffset = 1400
+    fadeOut.duration = 600
 
     val animation = AnimationSet(false)
     animation.addAnimation(fadeIn)
     animation.addAnimation(fadeOut)
     textView.animation = animation
 
-    lifecycleSafeTimerFactory.createTimer(2500).observe(
+    lifecycleSafeTimerFactory.createTimer(2000).observe(
       fragment,
       Observer {
         textView.clearAnimation()
@@ -729,7 +729,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val speedMax = 4f
     val timeToLiveMs = 2000
     val shapesArray = arrayOf(Circle)
-    val sizeInDp = Size(sizeInDp = 7)
+    val sizeInDp = Size(sizeInDp = 8)
     // Confetti pieces with mass make the animation more active and dynamic.
     val sizeWithMass = Size(sizeInDp = 7, mass = 3f)
     val numPieces = 7
@@ -743,7 +743,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       .addShapes(*shapesArray)
       .addSizes(sizeInDp, sizeWithMass)
       .setPosition(x.toFloat(), y.toFloat())
-      .setRotationEnabled(false)
+//      .setRotationEnabled(false)
       .burst(numPieces)
     bannerConfettiView.build()
       .addColors(colorsList)
@@ -754,7 +754,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       .addShapes(*shapesArray)
       .addSizes(sizeInDp, sizeWithMass)
       .setPosition((2 * x).toFloat(), y.toFloat())
-      .setRotationEnabled(false)
+//      .setRotationEnabled(false)
       .burst(numPieces)
   }
 
