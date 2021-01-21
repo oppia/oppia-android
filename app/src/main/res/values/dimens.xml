@@ -207,7 +207,7 @@
   <dimen name="previous_responses_item_question_split_view_margin_top">24dp</dimen>
   <dimen name="previous_responses_item_question_view_margin_top">24dp</dimen>
   <dimen name="profile_chooser_add_view_margin_top_profile_not_added">24dp</dimen>
-  <dimen name="profile_chooser_add_view_description_parent_margin_start_profile_not_added">24dp</dimen>
+  <dimen name="profile_chooser_description_margin_start_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_add_view_margin_end_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_add_view_margin_start_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_end_profile_already_added">24dp</dimen>
@@ -357,8 +357,6 @@
   <dimen name="submitted_answer_item_question_view_margin_start">32dp</dimen>
   <dimen name="text_input_interaction_item_non_conversation_view_margin_start">32dp</dimen>
   <dimen name="text_input_interaction_item_non_conversation_view_margin_end">32dp</dimen>
-  <dimen name="profile_chooser_add_view_description_margin_start_profile_not_added">32dp</dimen>
-  <dimen name="profile_chooser_profile_view_textview_margin_start_profile_not_added">32dp</dimen>
 
   <dimen name="content_item_question_view_margin_top">36dp</dimen>
   <dimen name="previous_button_item_question_split_view_margin_start">48dp</dimen>
