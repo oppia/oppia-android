@@ -331,9 +331,7 @@ class HomeActivityTest {
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
+      scrollToPosition(position = 1)
       onView(
         allOf(
           withId(R.id.view_all_text_view),
