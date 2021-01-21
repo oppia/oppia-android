@@ -10,7 +10,7 @@ import javax.inject.Inject
 /** The ViewModel for [AdminAuthActivity]. */
 @ActivityScope
 class AdminAuthViewModel @Inject constructor() : ObservableViewModel() {
-  val inputPin = ObservableField("")
+  val inputPin = ObservableField<String>("")
   val errorMessage = ObservableField<String>("")
 
   var isSubmitButtonActive = ObservableField<Boolean>(false)
