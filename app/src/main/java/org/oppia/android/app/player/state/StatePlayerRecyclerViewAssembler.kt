@@ -96,6 +96,9 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 /** The fragment tag corresponding to the concept card dialog fragment. */
 const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
+private const val CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS: Long = 600
+private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
+
 /**
  * An assembler for generating the list of view models to bind to the state player recycler view.
  * This class also handles some non-recycler view feature management, such as the congratulations
@@ -444,30 +447,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
 
     createBannerConfetti(confettiView, colorsList)
-
-    textView.visibility = View.VISIBLE
-
-    val fadeIn = AlphaAnimation(0f, 1f)
-    fadeIn.interpolator = DecelerateInterpolator()
-    fadeIn.duration = 600
-
-    val fadeOut = AlphaAnimation(1f, 0f)
-    fadeOut.interpolator = AccelerateInterpolator()
-    fadeOut.startOffset = 1400
-    fadeOut.duration = 600
-
-    val animation = AnimationSet(false)
-    animation.addAnimation(fadeIn)
-    animation.addAnimation(fadeOut)
-    textView.animation = animation
-
-    lifecycleSafeTimerFactory.createTimer(2000).observe(
-      fragment,
-      Observer {
-        textView.clearAnimation()
-        textView.visibility = View.INVISIBLE
-      }
-    )
+    animateCongratulationsTextView(textView)
   }
 
   /**
@@ -727,7 +707,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val y = bannerConfettiView.height / 2
     val speedMin = 2f
     val speedMax = 4f
-    val timeToLiveMs = 2000
+    // Set confetti lifetime to be the same as the congratulations text view.
+    val timeToLiveMs = CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS +
+      CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS +
+      CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS
     val shapesArray = arrayOf(Circle)
     val sizeInDp = Size(sizeInDp = 8)
     // Confetti pieces with mass make the animation more active and dynamic.
@@ -743,7 +726,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
       .addShapes(*shapesArray)
       .addSizes(sizeInDp, sizeWithMass)
       .setPosition(x.toFloat(), y.toFloat())
-//      .setRotationEnabled(false)
       .burst(numPieces)
     bannerConfettiView.build()
       .addColors(colorsList)
@@ -754,8 +736,36 @@ class StatePlayerRecyclerViewAssembler private constructor(
       .addShapes(*shapesArray)
       .addSizes(sizeInDp, sizeWithMass)
       .setPosition((2 * x).toFloat(), y.toFloat())
-//      .setRotationEnabled(false)
       .burst(numPieces)
+  }
+
+  private fun animateCongratulationsTextView(congratulationsText: TextView) {
+    congratulationsText.visibility = View.VISIBLE
+    val fullAnimationMs = CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS +
+      CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS + CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS
+
+    val fadeIn = AlphaAnimation(0f, 1f)
+    fadeIn.interpolator = DecelerateInterpolator()
+    fadeIn.duration = CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS
+
+    val fadeOut = AlphaAnimation(1f, 0f)
+    fadeOut.interpolator = AccelerateInterpolator()
+    fadeOut.startOffset = CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS +
+      CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS
+    fadeOut.duration = CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS
+
+    val animation = AnimationSet(false)
+    animation.addAnimation(fadeIn)
+    animation.addAnimation(fadeOut)
+    congratulationsText.animation = animation
+
+    lifecycleSafeTimerFactory.createTimer(fullAnimationMs).observe(
+      fragment,
+      Observer {
+        congratulationsText.clearAnimation()
+        congratulationsText.visibility = View.INVISIBLE
+      }
+    )
   }
 
   /**
