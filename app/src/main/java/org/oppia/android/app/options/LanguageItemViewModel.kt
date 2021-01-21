@@ -1,7 +1,7 @@
 package org.oppia.android.app.options
 
+import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /**
@@ -10,10 +10,13 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
  */
 class LanguageItemViewModel(
   val language: String,
-  private val selectedLanguage: LiveData<String>,
+  selectedLanguage: LiveData<String>,
   val languageRadioButtonListener: LanguageRadioButtonListener
 ) : ObservableViewModel() {
-  val isLanguageSelected: LiveData<Boolean> by lazy {
-    Transformations.map(selectedLanguage) { it == language }
+  val isLanguageSelected = ObservableBoolean()
+  init {
+    selectedLanguage.observeForever {
+      isLanguageSelected.set(it == language)
+    }
   }
 }
