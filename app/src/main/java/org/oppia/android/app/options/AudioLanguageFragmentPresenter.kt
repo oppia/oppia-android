@@ -1,12 +1,10 @@
 package org.oppia.android.app.options
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioLanguageFragmentBinding
@@ -47,13 +45,6 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       (fragment.activity as AudioLanguageActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
       (fragment.activity as AudioLanguageActivity).finish()
     }
-
-    languageSelectionViewModel.selectedLanguage.observe(
-      fragment,
-      Observer {
-        Log.d("selectedLanguage", "selected language -> $it")
-      }
-    )
 
     return binding.root
   }
