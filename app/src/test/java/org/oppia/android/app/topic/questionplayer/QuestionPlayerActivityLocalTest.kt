@@ -106,12 +106,13 @@ class QuestionPlayerActivityLocalTest {
   }
 
   @Test
-  fun testQuestionPlayer_submitCorrectAnswer_correctTextBannerIsDisplayed() {
+  @Config(qualifiers = "port")
+  fun testQuestionPlayer_submitCorrectAnswer_correctTextBannerIsDisplayedInPortrait() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
-      // Submit correct answer & wait until animation starts
+      // Submit correct answer
       submitCorrectAnswerToQuestionPlayerFractionInput()
 
       onView(withId(R.id.congratulations_text_view))
@@ -120,14 +121,43 @@ class QuestionPlayerActivityLocalTest {
   }
 
   @Test
-  fun testQuestionPlayer_submitCorrectAnswer_confettiIsDisplayed() {
+  @Config(qualifiers = "land")
+  fun testQuestionPlayer_submitCorrectAnswer_correctTextBannerIsDisplayedInLandscape() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
-      // Submit correct answer & wait until animation starts
+      // Submit correct answer
       submitCorrectAnswerToQuestionPlayerFractionInput()
-      testCoroutineDispatchers.advanceTimeBy(1000)
+
+      onView(withId(R.id.congratulations_text_view))
+        .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port")
+  fun testQuestionPlayer_submitCorrectAnswer_confettiIsDisplayedInPortrait() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      // Submit correct answer
+      submitCorrectAnswerToQuestionPlayerFractionInput()
+
+      onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testQuestionPlayer_submitCorrectAnswer_confettiIsDisplayedInLandscape() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      // Submit correct answer
+      submitCorrectAnswerToQuestionPlayerFractionInput()
 
       onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
     }
