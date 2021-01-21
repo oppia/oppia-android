@@ -25,13 +25,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -117,7 +115,6 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.IsOnRobolectric
-import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
@@ -905,33 +902,6 @@ class StateFragmentTest {
 
       onView(withId(R.id.submitted_answer_text_view))
         .check(matches(withContentDescription("4 to 5")))
-    }
-  }
-
-  @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testStateFragment_inputRatio_correctAnswerSubmitted_correctTextBannerDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_6).use {
-      startPlayingExploration()
-      typeRatioExpression("4:5")
-
-      clickSubmitAnswerButton()
-
-      onView(withId(R.id.congratulations_text_view))
-        .check(matches(withEffectiveVisibility(VISIBLE)))
-    }
-  }
-
-  @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testStateFragment_inputRatio_correctAnswerSubmitted_confettiDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_6).use {
-      startPlayingExploration()
-      typeRatioExpression("4:5")
-
-      clickSubmitAnswerButton()
-
-      onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
     }
   }
 
