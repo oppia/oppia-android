@@ -112,7 +112,6 @@ class QuestionPlayerActivityLocalTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
-      // Submit correct answer
       submitCorrectAnswerToQuestionPlayerFractionInput()
 
       onView(withId(R.id.congratulations_text_view))
@@ -127,7 +126,6 @@ class QuestionPlayerActivityLocalTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
-      // Submit correct answer
       submitCorrectAnswerToQuestionPlayerFractionInput()
 
       onView(withId(R.id.congratulations_text_view))
@@ -142,7 +140,6 @@ class QuestionPlayerActivityLocalTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
-      // Submit correct answer
       submitCorrectAnswerToQuestionPlayerFractionInput()
 
       onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
@@ -156,7 +153,6 @@ class QuestionPlayerActivityLocalTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
-      // Submit correct answer
       submitCorrectAnswerToQuestionPlayerFractionInput()
 
       onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
