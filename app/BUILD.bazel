@@ -122,6 +122,10 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/help/HelpItemViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpListViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/FAQListViewModel.kt",
+    "src/main/java/org/oppia/android/app/home/HomeViewModel.kt",
+    "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListViewModel.kt",
+    "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryViewModel.kt",
+    "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboadingSlideViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingViewModel.kt",
     "src/main/java/org/oppia/android/app/parser/StringToFractionParser.kt",
@@ -168,9 +172,6 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedItemViewModel.kt",
     "src/main/java/org/oppia/android/app/home/recentlyplayed/SectionTitleViewModel.kt",
     "src/main/java/org/oppia/android/app/home/topiclist/AllTopicsViewModel.kt",
-    "src/main/java/org/oppia/android/app/home/topiclist/PromotedStoryListViewModel.kt",
-    "src/main/java/org/oppia/android/app/home/topiclist/PromotedStoryViewModel.kt",
-    "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/home/UserAppHistoryViewModel.kt",
     "src/main/java/org/oppia/android/app/home/WelcomeViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingSlideFinalViewModel.kt",
@@ -312,6 +313,7 @@ VIEWS = [
     "src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/TextInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/RatioInputInteractionView.kt",
+    "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListView.kt",
     "src/main/java/org/oppia/android/app/player/state/DragDropSortInteractionView.kt",
     "src/main/java/org/oppia/android/app/player/state/ImageRegionSelectionInteractionView.kt",
     "src/main/java/org/oppia/android/app/player/state/SelectionInteractionView.kt",
@@ -405,6 +407,8 @@ in order to keep Gradle building.
      """,
 ) for file in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS]
 
+SNAP_HELPER = ["src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper.kt"]
+
 """
 Files to be excluded from the source list for the app library. This list includes all the files
 built by the following libraries:
@@ -415,7 +419,7 @@ built by the following libraries:
 - binding_adapters
 """
 
-EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS
+EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS + SNAP_HELPER
 
 """
 Files to be built by the app library. All of these files are assumed to have resource imports and
@@ -499,6 +503,7 @@ android_library(
         artifact("androidx.viewpager:viewpager:1.0.0"),
         artifact("androidx.viewpager2:viewpager2:1.0.0"),
         artifact("com.chaos.view:pinview:1.4.4"),
+        artifact("com.google.android:flexbox:2.0.1"),
         artifact("com.google.android.material:material"),
         artifact("de.hdodenhof:circleimageview:3.0.1"),
         artifact("javax.annotation:javax.annotation-api"),
@@ -530,6 +535,7 @@ kt_android_library(
         ":listeners",
         ":resources",
         ":view_models",
+        ":snap_helper",
         "//model",
         "@circularimageview//circularimageview:circular_image_view",
         artifact("androidx.appcompat:appcompat"),
@@ -570,6 +576,14 @@ kt_android_library(
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.databinding:databinding-runtime"),
     ],
+)
+
+# Library for snap helper used to build views.
+kt_android_library(
+    name = "snap_helper",
+    srcs = SNAP_HELPER,
+    custom_package = "org.oppia.android.app.recyclerview",
+    deps = [artifact("androidx.recyclerview:recyclerview:1.0.0"),],
 )
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
@@ -625,6 +639,7 @@ kt_android_library(
         artifact("androidx.viewpager2:viewpager2:1.0.0"),
         artifact("androidx.work:work-runtime-ktx:2.4.0"),
         artifact("com.caverock:androidsvg-aar"),
+        artifact("com.google.android:flexbox:2.0.1"),
         artifact("javax.annotation:javax.annotation-api:jar"),
     ],
 )
