@@ -119,14 +119,6 @@ class RecentlyPlayedFragmentTest {
     profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId,
-      timestampOlderThanAWeek = false
-    )
-    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId,
-      timestampOlderThanAWeek = true
-    )
   }
 
   @After

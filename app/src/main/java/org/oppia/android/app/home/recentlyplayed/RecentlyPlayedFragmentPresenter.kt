@@ -175,6 +175,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       oldStoryCount == 0 && recentStoryCount == 0 -> {
         0
       }
+      oldStoryCount > 0 && recentStoryCount > 0 -> {
+        recentStoryCount + oldStoryCount + 2
+      }
       else -> {
         recentStoryCount + oldStoryCount + 1
       }
