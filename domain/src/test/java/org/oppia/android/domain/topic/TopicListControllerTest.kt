@@ -250,10 +250,16 @@ class TopicListControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount).isEqualTo(1)
-    verifyPromotedStoryAsFractionStory0Exploration0(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0])
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(1)
-    verifyOngoingStoryAsRatioStory0Exploration0(promotedActivityList.promotedStoryList.suggestedStoryList[0])
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
+    verifyPromotedStoryAsFractionStory0Exploration0(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
+      .isEqualTo(1)
+    verifyOngoingStoryAsRatioStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[0]
+    )
   }
 
   @Test
@@ -268,8 +274,11 @@ class TopicListControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount).isEqualTo(1)
-    verifyOngoingStoryAsFractionStory0Exploration1(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0])
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
+    verifyOngoingStoryAsFractionStory0Exploration1(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
   }
 
   @Test
@@ -293,8 +302,11 @@ class TopicListControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount).isEqualTo(1)
-    verifyOngoingStoryAsFractionStory0Exploration1(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0])
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
+    verifyOngoingStoryAsFractionStory0Exploration1(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
   }
 
   @Test
@@ -318,7 +330,8 @@ class TopicListControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount).isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(1)
   }
 
@@ -343,11 +356,16 @@ class TopicListControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount).isEqualTo(2)
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(2)
     assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount).isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(0)
-    verifyOngoingStoryAsRatioStory0Exploration0(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0])
-    verifyOngoingStoryAsRatioStory1Exploration2(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1])
+    verifyOngoingStoryAsRatioStory0Exploration0(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+    verifyOngoingStoryAsRatioStory1Exploration2(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
+    )
   }
 
   @Test
@@ -371,9 +389,14 @@ class TopicListControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount).isEqualTo(2)
-    verifyOngoingStoryAsRatioStory0Exploration1(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0])
-    verifyOngoingStoryAsRatioStory1Exploration2(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1])
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(2)
+    verifyOngoingStoryAsRatioStory0Exploration1(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+    verifyOngoingStoryAsRatioStory1Exploration2(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
+    )
   }
 
   @Test
@@ -397,11 +420,9 @@ class TopicListControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount).isEqualTo(0)
-    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount).isEqualTo(0)
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(0)
 
-    assertThat(promotedActivityList.comingSoonTopicList.upcomingTopicCount).isEqualTo(1)
+    assertThat(promotedActivityList.comingSoonTopicList.upcomingTopicCount)
+      .isEqualTo(1)
     verifyUpcomingTopic1(promotedActivityList.comingSoonTopicList.upcomingTopicList[0])
   }
 
@@ -434,10 +455,17 @@ class TopicListControllerTest {
     )
 
     val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount).isEqualTo(3)
-    verifyOngoingStoryAsRatioStory0Exploration1(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0])
-    verifyOngoingStoryAsRatioStory1Exploration3(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1])
-    verifyOngoingStoryAsFractionStory0Exploration1(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[2])
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(3)
+    verifyOngoingStoryAsRatioStory0Exploration1(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+    verifyOngoingStoryAsRatioStory1Exploration3(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
+    )
+    verifyOngoingStoryAsFractionStory0Exploration1(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[2]
+    )
   }
 
   @Test
@@ -469,11 +497,19 @@ class TopicListControllerTest {
     )
 
     val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount).isEqualTo(0)
-    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount).isEqualTo(3)
-    verifyOngoingStoryAsRatioStory0Exploration1(promotedActivityList.promotedStoryList.olderPlayedStoryList[0])
-    verifyOngoingStoryAsRatioStory1Exploration3(promotedActivityList.promotedStoryList.olderPlayedStoryList[1])
-    verifyOngoingStoryAsFractionStory0Exploration1(promotedActivityList.promotedStoryList.olderPlayedStoryList[2])
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
+      .isEqualTo(3)
+    verifyOngoingStoryAsRatioStory0Exploration1(
+      promotedActivityList.promotedStoryList.olderPlayedStoryList[0]
+    )
+    verifyOngoingStoryAsRatioStory1Exploration3(
+      promotedActivityList.promotedStoryList.olderPlayedStoryList[1]
+    )
+    verifyOngoingStoryAsFractionStory0Exploration1(
+      promotedActivityList.promotedStoryList.olderPlayedStoryList[2]
+    )
   }
 
   private fun verifyGetPromotedActivityListSucceeded() {
