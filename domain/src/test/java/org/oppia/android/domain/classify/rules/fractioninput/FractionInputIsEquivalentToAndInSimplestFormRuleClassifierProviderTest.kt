@@ -31,9 +31,11 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       value = 2
     )
   private val NEGATIVE_INTEGER_VALUE_TEST_2 =
-    InteractionObjectTestBuilder.createWholeNumber(
+    InteractionObjectTestBuilder.createMixedNumber(
       isNegative = true,
-      value = 2
+      wholeNumber = 2,
+      numerator = 0,
+      denominator = 1
     )
   private val FRACTION_VALUE_TEST_1_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
