@@ -263,7 +263,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrievePromotedActivityList_markChapDoneFracStory0Exp0_promotedStoryListIsCorrect() {
+  fun testGetPromotedStoryList_markChapDoneFracStory0Exp0_ongoingStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -310,7 +310,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrievePromotedActivityList_markAllChapsDoneInFractions_promotedStoryListIsCorrect() {
+  fun testGetPromotedStoryList_markAllChapsDoneInFractions_promotedStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
