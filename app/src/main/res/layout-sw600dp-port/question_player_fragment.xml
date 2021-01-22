@@ -103,9 +103,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:background="@drawable/hints_background"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}">
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
           android:id="@+id/dot_hint"
@@ -151,7 +151,6 @@
       android:id="@+id/hints_and_solution_fragment_placeholder"
       android:layout_width="match_parent"
       android:layout_height="match_parent" />
-
 
     <FrameLayout
       android:layout_width="match_parent"

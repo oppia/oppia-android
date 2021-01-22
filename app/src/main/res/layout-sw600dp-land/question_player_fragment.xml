@@ -96,15 +96,16 @@
         app:layout_constraintBottom_toTopOf="@id/question_progress_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/hints_and_solution_fragment_container" />
+
       <FrameLayout
         android:id="@+id/hints_and_solution_fragment_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:background="@drawable/hints_background"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}">
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
           android:id="@+id/dot_hint"
@@ -150,7 +151,6 @@
       android:id="@+id/hints_and_solution_fragment_placeholder"
       android:layout_width="match_parent"
       android:layout_height="match_parent" />
-
 
     <FrameLayout
       android:layout_width="match_parent"
