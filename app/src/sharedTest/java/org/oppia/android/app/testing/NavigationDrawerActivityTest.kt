@@ -281,7 +281,7 @@ class NavigationDrawerActivityTest {
   // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_openNavDrawer_clickSwitchProfile_clickCancel() {
+  fun testNavDrawer_openNavDrawer_switchProfile_cancel_homeItemIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -301,7 +301,7 @@ class NavigationDrawerActivityTest {
   // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_goToOptions_openNavDrawer_clickSwitchProfile_clickCancel() {
+  fun testNavDrawer_openNavDrawer_options_switchProfile_cancel_optionsIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -323,7 +323,7 @@ class NavigationDrawerActivityTest {
   // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_goToHelp_openNavDrawer_clickSwitchProfile_clickCancel() {
+  fun testNavDrawer_openNavDrawer_help_switchProfile_cancel_helpIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -345,7 +345,7 @@ class NavigationDrawerActivityTest {
   // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_goToAdmin_openNavDrawer_clickSwitchProfile_clickCancel() {
+  fun testNavDrawer_openNavDrawer_admin_switchProfile_cancel_adminIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -371,7 +371,7 @@ class NavigationDrawerActivityTest {
   // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_clickSwitchProfile_clickCancel_configChange() {
+  fun testNavDrawer_openNavDrawer_switchProfile_cancel_configChange_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -392,7 +392,7 @@ class NavigationDrawerActivityTest {
   // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_goToOptions_clickSwitchProfile_clickCancel_configChange() {
+  fun testNavDrawer_openNavDrawer_options_switchProfile_cancel_configChange_optionsIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -415,7 +415,7 @@ class NavigationDrawerActivityTest {
   // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_goToHelp_clickSwitchProfile_clickCancel_configChange() {
+  fun testNavDrawer_openNavDrawer_help_switchProfile_cancel_configChange_helpIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -438,7 +438,7 @@ class NavigationDrawerActivityTest {
   // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_goToAdmin_clickSwitchProfile_clickCancel_configChange() {
+  fun testNavDrawer_openNavDrawer_admin_switchProfile_cancel_configChange_adminIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
