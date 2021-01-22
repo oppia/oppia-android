@@ -24,11 +24,6 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-      <nl.dionsegijn.konfetti.KonfettiView
-        android:id="@+id/full_screen_confetti_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/state_recycler_view"
         android:layout_width="0dp"
@@ -88,6 +83,11 @@
           android:layout_height="wrap_content"
           android:visibility="@{viewModel.isAudioBarVisible ? View.VISIBLE : View.GONE}" />
       </FrameLayout>
+
+      <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/full_screen_confetti_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
