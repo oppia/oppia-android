@@ -277,8 +277,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
-  // Requires opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_openNavDrawer_switchProfile_cancel_homeItemIsSelected() {
@@ -297,8 +296,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
-  // Requires opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_openNavDrawer_options_switchProfile_cancel_optionsIsSelected() {
@@ -319,8 +317,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
-  // Requires opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_openNavDrawer_help_switchProfile_cancel_helpIsSelected() {
@@ -341,8 +338,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
-  // Requires opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_openNavDrawer_admin_switchProfile_cancel_adminIsSelected() {
@@ -367,8 +363,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
-  // Requires opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_openNavDrawer_switchProfile_cancel_configChange_homeIsSelected() {
@@ -388,8 +383,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
-  // Requires opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_openNavDrawer_options_switchProfile_cancel_configChange_optionsIsSelected() {
@@ -411,8 +405,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
-  // Requires opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_openNavDrawer_help_switchProfile_cancel_configChange_helpIsSelected() {
@@ -434,8 +427,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
-  // Requires opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_openNavDrawer_admin_switchProfile_cancel_configChange_adminIsSelected() {
