@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
 import nl.dionsegijn.konfetti.models.Shape.Circle
+import nl.dionsegijn.konfetti.models.Shape.Square
 import nl.dionsegijn.konfetti.models.Size
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
@@ -202,7 +203,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   fun compute(
     ephemeralState: EphemeralState,
     gcsEntityId: String,
-    isSplitView: Boolean
+    isSplitView: Boolean,
+    isTablet: Boolean
   ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
     this.isSplitView.set(isSplitView)
 
@@ -282,7 +284,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE &&
       playerFeatureSet.showCelebrationAtEndOfExplorationSession
     ) {
-      showCelebrationForEndOfExplorationSession()
+      showCelebrationForEndOfExplorationSession(isTablet)
     }
 
     maybeAddNavigationButtons(
@@ -461,7 +463,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   /** Shows a congratulations message due to the learner having submitted a correct answer. */
-  fun showCelebrationForEndOfExplorationSession() {
+  fun showCelebrationForEndOfExplorationSession(isTablet: Boolean) {
     val confettiView = checkNotNull(fullScreenConfettiView) {
       "Expected non-null reference to confetti view"
     }
@@ -469,17 +471,28 @@ class StatePlayerRecyclerViewAssembler private constructor(
       "Expected non-null list of confetti colors"
     }
 
+    val minSpeed = 1f
+    val maxSpeed = 2f
+    val sizeInDp = Size(sizeInDp = 8)
+    val sizeWithMass = Size(sizeInDp = 7, mass = 3f)
+    val timeToLiveMillis: Long = 4000
+    var minX = 0f
+    var maxX = confettiView.width.toFloat()
+    if (isTablet) {
+      // Limit confetti area when on a tablet
+      minX = confettiView.width.toFloat() / 4
+      maxX = 3 * confettiView.width.toFloat() / 4
+    }
     confettiView.build()
-      .addShapes(Circle)
-      .setPosition(
-        minX = 0.toFloat(),
-        maxX = confettiView.width.toFloat(),
-        minY = 0.toFloat(),
-        maxY = 0.toFloat()
-      )
       .addColors(colorsList)
-      .setDelay(delay = 1000.toLong())
-      .streamFor(particlesPerSecond = 12, emittingTime = 3000.toLong())
+      .setDirection(0.0, 359.0)
+      .setSpeed(minSpeed, maxSpeed)
+      .setFadeOutEnabled(true)
+      .setTimeToLive(timeToLiveMillis)
+      .addShapes(Circle, Square)
+      .addSizes(sizeInDp, sizeWithMass)
+      .setPosition(minX, maxX, -50f, -50f)
+      .streamFor(30, 5000L)
   }
 
   /**

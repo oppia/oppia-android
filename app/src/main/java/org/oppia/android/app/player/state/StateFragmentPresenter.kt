@@ -334,7 +334,8 @@ class StateFragmentPresenter @Inject constructor(
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,
       explorationId,
-      shouldSplit
+      shouldSplit,
+      context.resources.getBoolean(R.bool.isTablet)
     )
 
     viewModel.itemList.clear()

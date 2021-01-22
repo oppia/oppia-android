@@ -260,7 +260,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     val dataPair = recyclerViewAssembler.compute(
       ephemeralQuestion.ephemeralState,
       skillId,
-      isSplitView
+      isSplitView,
+      context.resources.getBoolean(R.bool.isTablet)
     )
 
     questionViewModel.itemList.clear()
