@@ -187,7 +187,8 @@ class HomeViewModel(
         if (promotedStory.isTopicLearned &&
           suggestedStoryCount != 0
         ) {
-          if (completedStoryIndex == 0 && (recentlyPlayedStoryCount > 1 || olderPlayedStoryCount > 1)) {
+          if (completedStoryIndex == 0 && (recentlyPlayedStoryCount > 1 ||
+              olderPlayedStoryCount > 1)) {
             Collections.swap(storyList, completedStoryIndex, 1)
           } else {
             val swapWithSuggestedListIndex0 =

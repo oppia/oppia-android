@@ -1,7 +1,6 @@
 package org.oppia.android.domain.topic
 
 import android.graphics.Color
-import android.util.Log
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
