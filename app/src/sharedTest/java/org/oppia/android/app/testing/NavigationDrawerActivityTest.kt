@@ -175,7 +175,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavDrawer_openNavDrawer_changeConfig_navDrawerIsDisplayed() {
+  fun testNavDrawer_openNavDrawer_configChange_navDrawerIsDisplayed() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -202,7 +202,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavDrawer_withAdminProfile_changeConfig_profileNameIsDisplayed() {
+  fun testNavDrawer_withAdminProfile_configChange_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -277,7 +277,8 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // Require opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
+  // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_openNavDrawer_clickSwitchProfile_clickCancel() {
@@ -296,7 +297,8 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // Require opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
+  // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_goToOptions_openNavDrawer_clickSwitchProfile_clickCancel() {
@@ -317,7 +319,8 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // Require opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
+  // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_goToHelp_openNavDrawer_clickSwitchProfile_clickCancel() {
@@ -338,7 +341,8 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // Require opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
+  // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_goToAdmin_openNavDrawer_clickSwitchProfile_clickCancel() {
@@ -363,10 +367,11 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // Require opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
+  // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_clickSwitchProfile_clickCancel_changeConfig() {
+  fun testNavDrawer_clickSwitchProfile_clickCancel_configChange() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -383,10 +388,11 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // Require opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
+  // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_goToOptions_clickSwitchProfile_clickCancel_changeConfig() {
+  fun testNavDrawer_goToOptions_clickSwitchProfile_clickCancel_configChange() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -405,10 +411,11 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // Require opening the NavDrawer several times which is currently not supported on robolectric
+  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
+  // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_goToHelp_clickSwitchProfile_clickCancel_changeConfig() {
+  fun testNavDrawer_goToHelp_clickSwitchProfile_clickCancel_configChange() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -427,10 +434,12 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // Require opening the NavDrawer several times which is currently not supported on robolectric
+
+  // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
+  // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_goToAdmin_clickSwitchProfile_clickCancel_changeConfig() {
+  fun testNavDrawer_goToAdmin_clickSwitchProfile_clickCancel_configChange() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -465,7 +474,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavDrawer_withAdminProfile_changeConfig_adminControlsIsDisplayed() {
+  fun testNavDrawer_withAdminProfile_configChange_adminControlsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -516,7 +525,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavDrawer_switchProfileMenu_showsExitToProfileChooserDialog() {
+  fun testNavDrawer_switchProfileMenu_exitToProfileChooserDialogIsDisplayed() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -570,7 +579,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavDrawer_selectSwitchProfile_changeConfig_dialogIsVisible() {
+  fun testNavDrawer_selectSwitchProfile_configChange_dialogIsVisible() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
