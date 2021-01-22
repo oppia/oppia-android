@@ -270,7 +270,7 @@ class StateFragmentLocalTest {
 
   @Test
   @Config(qualifiers = "port")
-  fun testStateFragment_nextState_submitCorrectAnswer_correctTextBannerIsDisplayedInPortrait() {
+  fun testStateFragment_portrait_nextState_submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
@@ -285,7 +285,7 @@ class StateFragmentLocalTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testStateFragment_nextState_submitCorrectAnswer_correctTextBannerIsDisplayedInLandscape() {
+  fun testStateFragment_landscape_nextState_submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
@@ -300,7 +300,7 @@ class StateFragmentLocalTest {
 
   @Test
   @Config(qualifiers = "port")
-  fun testStateFragment_nextState_submitCorrectAnswer_confettiIsDisplayedInPortrait() {
+  fun testStateFragment_portrait_nextState_submitCorrectAnswer_confettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
@@ -314,7 +314,7 @@ class StateFragmentLocalTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testStateFragment_nextState_submitCorrectAnswer_confettiIsDisplayedInLandscape() {
+  fun testStateFragment_landscape_nextState_submitCorrectAnswer_confettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
