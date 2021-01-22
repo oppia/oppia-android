@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.PictureDrawable
+import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.Transformation
@@ -65,14 +66,14 @@ class GlideImageLoader @Inject constructor(
 
   override fun loadDrawable(
     imageDrawableResId: Int,
-    target: ImageTarget<Drawable>,
+    imageView: ImageView,
     transformations: List<ImageTransformation>
   ) {
     Glide.with(context)
       .asDrawable()
       .load(imageDrawableResId)
       .transform(*transformations.toGlideTransformations())
-      .intoTarget(target)
+      .into(imageView)
   }
 
   private fun <T> RequestBuilder<T>.intoTarget(target: ImageTarget<T>) {

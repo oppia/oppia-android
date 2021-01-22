@@ -89,10 +89,9 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     } else {
       imageLoader.loadDrawable(
         getLessonDrawableResource(lessonThumbnail),
-        ImageViewTarget(this),
+        this,
         transformations
       )
-      imageView.setImageResource(getLessonDrawableResource(lessonThumbnail))
     }
     imageView.setBackgroundColor(lessonThumbnail.backgroundColorRgb)
   }
