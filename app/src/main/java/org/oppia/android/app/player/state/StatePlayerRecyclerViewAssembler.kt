@@ -483,6 +483,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       minX = confettiView.width.toFloat() / 4
       maxX = 3 * confettiView.width.toFloat() / 4
     }
+
     confettiView.build()
       .addColors(colorsList)
       .setDirection(0.0, 359.0)

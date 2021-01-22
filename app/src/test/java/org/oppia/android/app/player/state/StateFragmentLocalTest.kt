@@ -1009,7 +1009,44 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_finishExploration_endOfSessionConfettiIsDisplayed() {
+  @Config(qualifiers = "port")
+  fun testStateFragment_finishExploration_endOfSessionConfettiIsDisplayedOnMobilePortrat() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testStateFragment_finishExploration_endOfSessionConfettiIsDisplayedOnMobileLandscape() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp-port")
+  fun testStateFragment_finishExploration_endOfSessionConfettiIsDisplayedOnTabletPortrait() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp-land")
+  fun testStateFragment_finishExploration_endOfSessionConfettiIsDisplayedOnTabletLandscape() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughAllStates()
