@@ -253,7 +253,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks one story progress full in ratios exploration for a particular profile.
+   * Marks one story progress fully complete in the ratios topic for a particular profile.
    *
    * @param profileId the profile we are setting topic progress on ratios for
    * @param timestampOlderThanOneWeek if the timestamp for this progress is from more than one week ago
