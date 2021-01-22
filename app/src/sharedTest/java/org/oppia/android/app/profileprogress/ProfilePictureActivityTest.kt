@@ -102,7 +102,7 @@ class ProfilePictureActivityTest {
   }
 
   @Test
-  fun testProfilePictureActivity_userImage_isDisplayedSuccessfully() {
+  fun testProfilePictureActivity_userImageIsDisplayed() {
     launch<ProfilePictureActivity>(createProfilePictureActivityIntent(internalProfileId)).use {
       onView(withId(R.id.profile_picture_image_view)).check(matches(isDisplayed()))
     }
