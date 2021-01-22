@@ -73,7 +73,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     }
 
   private fun subscribeToOngoingStoryList() {
-    getAssumedSuccessfulOngoingStoryList().observe(
+    getAssumedSuccessfulPromotedActivityList().observe(
       fragment,
       Observer<PromotedActivityList> { it ->
         if (it.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
@@ -140,7 +140,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun getAssumedSuccessfulOngoingStoryList(): LiveData<PromotedActivityList> {
+  private fun getAssumedSuccessfulPromotedActivityList(): LiveData<PromotedActivityList> {
     // If there's an error loading the data, assume the default.
     return Transformations.map(ongoingStoryListSummaryResultLiveData) {
       it.getOrDefault(

@@ -19,7 +19,7 @@ class ComingSoonTopicsViewModel(
   /**
    * Returns the padding placed at the start of the coming soon topics list.
    */
-  fun getStartPadding(): Int =
+  private fun getStartPadding(): Int =
     activity.resources.getDimensionPixelSize(R.dimen.coming_soon_padding_start)
 
   /**
