@@ -503,10 +503,10 @@ android_library(
         artifact("androidx.viewpager:viewpager:1.0.0"),
         artifact("androidx.viewpager2:viewpager2:1.0.0"),
         artifact("com.chaos.view:pinview:1.4.4"),
+        artifact("com.google.android:flexbox:2.0.1"),
         artifact("com.google.android.material:material"),
         artifact("de.hdodenhof:circleimageview:3.0.1"),
         artifact("javax.annotation:javax.annotation-api"),
-        artifact("nl.dionsegijn:konfetti:1.2.5"),
     ],
 )
 
@@ -554,6 +554,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//model",
+        artifact("nl.dionsegijn:konfetti:1.2.5"),
     ],
 )
 
@@ -584,18 +585,6 @@ kt_android_library(
     srcs = SNAP_HELPER,
     custom_package = "org.oppia.android.app.recyclerview",
     deps = [artifact("androidx.recyclerview:recyclerview:1.0.0"),],
-)
-
-# Library for files using confetti animations.
-kt_android_library(
-    name = "confetti",
-    srcs = [
-       "src/main/java/org/oppia/android/app/player/state/StateFragmentPresenter.kt",
-       "src/main/java/org/oppia/android/app/player/state/StatePlayerRecyclerViewAssembler.kt",
-       "src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerFragmentPresenter.kt",
-    ],
-    custom_package = "org.oppia.android.app",
-    deps = [artifact("nl.dionsegijn:konfetti:1.2.5"),],
 )
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
@@ -651,6 +640,7 @@ kt_android_library(
         artifact("androidx.viewpager2:viewpager2:1.0.0"),
         artifact("androidx.work:work-runtime-ktx:2.4.0"),
         artifact("com.caverock:androidsvg-aar"),
+        artifact("com.google.android:flexbox:2.0.1"),
         artifact("javax.annotation:javax.annotation-api:jar"),
     ],
 )

@@ -269,7 +269,8 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_nextState_submitCorrectAnswer_correctTextBannerIsDisplayed() {
+  @Config(qualifiers = "port")
+  fun testStateFragment_nextState_submitCorrectAnswer_correctTextBannerIsDisplayedInPortrait() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
@@ -283,7 +284,37 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_nextState_submitCorrectAnswer_confettiIsDisplayed() {
+  @Config(qualifiers = "land")
+  fun testStateFragment_nextState_submitCorrectAnswer_correctTextBannerIsDisplayedInLandscape() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      // Submit correct answer
+      submitFractionAnswer(answerText = "3/4")
+
+      onView(withId(R.id.congratulations_text_view))
+        .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port")
+  fun testStateFragment_nextState_submitCorrectAnswer_confettiIsDisplayedInPortrait() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      // Submit correct answer
+      submitFractionAnswer(answerText = "3/4")
+
+      onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testStateFragment_nextState_submitCorrectAnswer_confettiIsDisplayedInLandscape() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()

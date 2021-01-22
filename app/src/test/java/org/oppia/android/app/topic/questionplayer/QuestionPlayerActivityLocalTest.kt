@@ -9,6 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
@@ -106,12 +107,12 @@ class QuestionPlayerActivityLocalTest {
   }
 
   @Test
-  fun testQuestionPlayer_submitCorrectAnswer_correctTextBannerIsDisplayed() {
+  @Config(qualifiers = "port")
+  fun testQuestionPlayer_submitCorrectAnswer_correctTextBannerIsDisplayedInPortrait() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
-      // Submit correct answer & wait until animation starts
       submitCorrectAnswerToQuestionPlayerFractionInput()
 
       onView(withId(R.id.congratulations_text_view))
@@ -120,14 +121,40 @@ class QuestionPlayerActivityLocalTest {
   }
 
   @Test
-  fun testQuestionPlayer_submitCorrectAnswer_confettiIsDisplayed() {
+  @Config(qualifiers = "land")
+  fun testQuestionPlayer_submitCorrectAnswer_correctTextBannerIsDisplayedInLandscape() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
-      // Submit correct answer & wait until animation starts
       submitCorrectAnswerToQuestionPlayerFractionInput()
-      testCoroutineDispatchers.advanceTimeBy(1000)
+
+      onView(withId(R.id.congratulations_text_view))
+        .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port")
+  fun testQuestionPlayer_submitCorrectAnswer_confettiIsDisplayedInPortrait() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      submitCorrectAnswerToQuestionPlayerFractionInput()
+
+      onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testQuestionPlayer_submitCorrectAnswer_confettiIsDisplayedInLandscape() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      submitCorrectAnswerToQuestionPlayerFractionInput()
 
       onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
     }
@@ -228,7 +255,10 @@ class QuestionPlayerActivityLocalTest {
   private fun submitCorrectAnswerToQuestionPlayerFractionInput() {
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
-    onView(withId(R.id.text_input_interaction_view)).perform(editTextInputAction.appendText("1/2"))
+    onView(withId(R.id.text_input_interaction_view)).perform(
+      editTextInputAction.appendText("1/2"),
+      closeSoftKeyboard()
+    )
     testCoroutineDispatchers.runCurrent()
 
     onView(withId(R.id.question_recycler_view))

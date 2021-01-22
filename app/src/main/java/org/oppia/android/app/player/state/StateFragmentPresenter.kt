@@ -89,7 +89,8 @@ class StateFragmentPresenter @Inject constructor(
     R.color.confetti_red,
     R.color.confetti_yellow,
     R.color.confetti_evergreen,
-    R.color.confetti_blue
+    R.color.confetti_blue,
+    R.color.confetti_pink
   ).map { getColor(context, it) }
 
   fun handleCreateView(
