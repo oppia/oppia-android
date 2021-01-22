@@ -9,6 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
@@ -254,7 +255,10 @@ class QuestionPlayerActivityLocalTest {
   private fun submitCorrectAnswerToQuestionPlayerFractionInput() {
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
-    onView(withId(R.id.text_input_interaction_view)).perform(editTextInputAction.appendText("1/2"))
+    onView(withId(R.id.text_input_interaction_view)).perform(
+      editTextInputAction.appendText("1/2"),
+      closeSoftKeyboard()
+    )
     testCoroutineDispatchers.runCurrent()
 
     onView(withId(R.id.question_recycler_view))
