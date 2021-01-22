@@ -205,7 +205,7 @@ message PromotedStory {
   LessonThumbnail lesson_thumbnail = 9;
 
   // The indicator to handle if story is completed.
-  string completed_story_topic_id = 10;
+  bool is_topic_learned = 10;
 }
 
 // A homescreen summary of a topic.

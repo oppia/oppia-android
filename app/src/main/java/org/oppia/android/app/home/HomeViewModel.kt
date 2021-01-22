@@ -181,20 +181,18 @@ class HomeViewModel(
         }
       }
 
-      storyList.take(promotedStoryListLimit).mapIndexed { index, promotedStory ->
-        if (promotedStory.topicId == promotedStory.completedStoryTopicId &&
+      // Check if at least one story in topic is completed. Prioritize recommended story over completed story topic.
+      // Use swap function to change recommended and completed story topic position.
+      storyList.take(promotedStoryListLimit).mapIndexed { completedStoryIndex, promotedStory ->
+        if (promotedStory.isTopicLearned &&
           suggestedStoryCount != 0
         ) {
-          when {
-            index == 0 && suggestedStoryCount > 1 -> {
-              Collections.swap(storyList, 0, 1)
-            }
-            recentlyPlayedStoryCount > 1 || olderPlayedStoryCount > 1 -> {
-              if (index == 0)
-                Collections.swap(storyList, 0, 2)
-              else
-                Collections.swap(storyList, 1, 2)
-            }
+          if (completedStoryIndex == 0 && (recentlyPlayedStoryCount > 1 || olderPlayedStoryCount > 1)) {
+            Collections.swap(storyList, completedStoryIndex, 1)
+          } else {
+            val swapWithSuggestedListIndex0 =
+              recentlyPlayedStoryList.size + olderPlayedStoryList.size
+            Collections.swap(storyList, completedStoryIndex, swapWithSuggestedListIndex0)
           }
         }
       }

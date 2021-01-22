@@ -1,6 +1,7 @@
 package org.oppia.android.domain.topic
 
 import android.graphics.Color
+import android.util.Log
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
@@ -277,6 +278,8 @@ class TopicListController @Inject constructor(
     sortedTopicProgressList.forEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
 
+      val isTopicConsideredCompleted = checkIfAtLeastOnStoryIsCompleted(topicProgress, topic)
+
       topicProgress.storyProgressMap.values.forEach { storyProgress ->
         val storyId = storyProgress.storyId
         val story = topicController.retrieveStory(topic.topicId, storyId)
@@ -288,12 +291,7 @@ class TopicListController @Inject constructor(
         val startedChapterProgressList = getStartedChapterProgressList(storyProgress)
         val latestStartedChapterProgress: ChapterProgress? =
           startedChapterProgressList.firstOrNull()
-
-        setTopicIdIfAtleastOneStoryIsCompleted(
-          topic.topicId,
-          mostRecentCompletedChapterProgress,
-          story
-        )
+        val isCurrentStoryCompleted = checkIfStoryIsCompleted(storyProgress, story)
 
         when {
           latestStartedChapterProgress != null -> {
@@ -303,7 +301,7 @@ class TopicListController @Inject constructor(
               latestStartedChapterProgress,
               startedChapterProgressList,
               topic,
-              completedStoryTopicId
+              isTopicConsideredCompleted
             ).let {
               Pair(it.first, it.second)
               numberOfDaysPassed = it.second
@@ -312,16 +310,14 @@ class TopicListController @Inject constructor(
             }
           }
           // Compute the ongoing story list for stories that are not fully completed yet.
-          mostRecentCompletedChapterProgress != null &&
-            mostRecentCompletedChapterProgress.explorationId !=
-            story.chapterList.last().explorationId -> {
+          isCurrentStoryCompleted && mostRecentCompletedChapterProgress != null -> {
             createOngoingStoryListBasedOnMostRecentlyCompleted(
               storyId,
               story,
               mostRecentCompletedChapterProgress,
               completedChapterProgressList,
               topic,
-              completedStoryTopicId
+              isTopicConsideredCompleted
             ).let {
               Pair(it.first, it.second)
               numberOfDaysPassed = it.second
@@ -335,16 +331,30 @@ class TopicListController @Inject constructor(
     return playedPromotedStoryList
   }
 
-  private fun setTopicIdIfAtleastOneStoryIsCompleted(
-    topicId: String,
-    mostRecentCompletedChapterProgress: ChapterProgress?,
-    story: StorySummary
-  ) {
-    if (mostRecentCompletedChapterProgress?.explorationId
-      == story.chapterList.last().explorationId
-    ) {
-      completedStoryTopicId = topicId
+  private fun checkIfAtLeastOnStoryIsCompleted(
+    topicProgress: TopicProgress,
+    topic: Topic
+  ): Boolean {
+    topicProgress.storyProgressMap.values.forEach { storyProgress ->
+      val storyId = storyProgress.storyId
+      val story = topicController.retrieveStory(topic.topicId, storyId)
+      val isStoryCompleted = checkIfStoryIsCompleted(storyProgress, story)
+      if (isStoryCompleted) {
+        return true
+      }
     }
+    return false
+  }
+
+  private fun checkIfStoryIsCompleted(
+    storyProgress: StoryProgress,
+    storySummary: StorySummary
+  ): Boolean {
+    val completedChapterProgressList = getCompletedChapterProgressList(storyProgress)
+    val lastChapterSummary = storySummary.chapterList.lastOrNull()
+    return completedChapterProgressList.find { chapterProgress ->
+      chapterProgress.explorationId == lastChapterSummary?.explorationId
+    } != null
   }
 
   private fun getStartedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> =
@@ -372,7 +382,7 @@ class TopicListController @Inject constructor(
     recentlyPlayerChapterProgress: ChapterProgress,
     completedChapterProgressList: List<ChapterProgress>,
     topic: Topic,
-    completedStoryTopicId: String
+    isTopicConsideredCompleted: Boolean
   ): Pair<PromotedStory?, Long> {
     var numberOfDaysPassed = 0L
     val recentlyPlayerChapterSummary: ChapterSummary? =
@@ -389,7 +399,7 @@ class TopicListController @Inject constructor(
           story.chapterCount,
           recentlyPlayerChapterSummary.name,
           recentlyPlayerChapterSummary.explorationId,
-          completedStoryTopicId
+          isTopicConsideredCompleted
         ),
         numberOfDaysPassed
       )
@@ -403,7 +413,7 @@ class TopicListController @Inject constructor(
     mostRecentCompletedChapterProgress: ChapterProgress,
     completedChapterProgressList: List<ChapterProgress>,
     topic: Topic,
-    completedStoryTopicId: String
+    isTopicConsideredCompleted: Boolean
   ): Pair<PromotedStory?, Long> {
     var numberOfDaysPassed = 0L
     val lastChapterSummary: ChapterSummary? =
@@ -423,7 +433,7 @@ class TopicListController @Inject constructor(
             story.chapterCount,
             nextChapterSummary.name,
             nextChapterSummary.explorationId,
-            completedStoryTopicId
+            isTopicConsideredCompleted
           ),
           numberOfDaysPassed
         )
@@ -439,7 +449,7 @@ class TopicListController @Inject constructor(
     chapterCount: Int,
     chapterSummaryName: String,
     chapterSummaryExplorationId: String,
-    completedStoryTopicId: String
+    isTopicConsideredCompleted: Boolean
   ): PromotedStory {
     return createPromotedStory(
       storyId,
@@ -448,7 +458,7 @@ class TopicListController @Inject constructor(
       chapterCount,
       chapterSummaryName,
       chapterSummaryExplorationId,
-      completedStoryTopicId
+      isTopicConsideredCompleted
     )
   }
 
@@ -522,7 +532,7 @@ class TopicListController @Inject constructor(
     totalChapterCount: Int,
     nextChapterName: String?,
     explorationId: String?,
-    completedStoryTopicId: String
+    isTopicConsideredCompleted: Boolean
   ): PromotedStory {
     val storySummary = topic.storyList.find { summary -> summary.storyId == storyId }!!
     val promotedStoryBuilder = PromotedStory.newBuilder()
@@ -533,7 +543,7 @@ class TopicListController @Inject constructor(
       .setTopicName(topic.name)
       .setCompletedChapterCount(completedChapterCount)
       .setTotalChapterCount(totalChapterCount)
-      .setCompletedStoryTopicId(completedStoryTopicId)
+      .setIsTopicLearned(isTopicConsideredCompleted)
     if (nextChapterName != null && explorationId != null) {
       promotedStoryBuilder.nextChapterName = nextChapterName
       promotedStoryBuilder.explorationId = explorationId
