@@ -52,9 +52,6 @@ class HomeViewModel(
 ) : ObservableViewModel() {
 
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-  private val promotedStoryListLimit = activity.resources.getInteger(
-    R.integer.promoted_story_list_limit
-  )
 
   private val profileDataProvider: DataProvider<Profile> by lazy {
     profileManagementController.getProfile(profileId)
@@ -181,7 +178,7 @@ class HomeViewModel(
         }
       }
 
-      storyList.take(promotedStoryListLimit).mapIndexed { index, promotedStory ->
+      storyList.mapIndexed { index, promotedStory ->
         if (promotedStory.topicId == promotedStory.completedStoryTopicId &&
           suggestedStoryCount != 0
         ) {
@@ -199,8 +196,7 @@ class HomeViewModel(
         }
       }
 
-      return storyList.take(promotedStoryListLimit)
-        .map { promotedStory ->
+      return storyList.map { promotedStory ->
           PromotedStoryViewModel(
             activity,
             internalProfileId,

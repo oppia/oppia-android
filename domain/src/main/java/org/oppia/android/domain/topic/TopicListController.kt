@@ -237,18 +237,15 @@ class TopicListController @Inject constructor(
     return PromotedStoryList.newBuilder()
       .addAllUpTo(
         recentlyPlayedStories,
-        PromotedStoryList.Builder::addAllRecentlyPlayedStory,
-        limit = 3
+        PromotedStoryList.Builder::addAllRecentlyPlayedStory
       )
       .addAllUpTo(
         olderPlayedStories,
-        PromotedStoryList.Builder::addAllOlderPlayedStory,
-        limit = 3
+        PromotedStoryList.Builder::addAllOlderPlayedStory
       )
       .addAllUpTo(
         computeSuggestedStories(topicProgressList),
-        PromotedStoryList.Builder::addAllSuggestedStory,
-        limit = 3
+        PromotedStoryList.Builder::addAllSuggestedStory
       ).build()
   }
 
@@ -262,10 +259,9 @@ class TopicListController @Inject constructor(
 
   private fun PromotedStoryList.Builder.addAllUpTo(
     iterable: Iterable<PromotedStory>,
-    addAll: PromotedStoryList.Builder.(Iterable<PromotedStory>) -> PromotedStoryList.Builder,
-    limit: Int
+    addAll: PromotedStoryList.Builder.(Iterable<PromotedStory>) -> PromotedStoryList.Builder
   ): PromotedStoryList.Builder {
-    return this.addAll(iterable.take(limit - this.getTotalPromotedStoryCount()))
+    return this.addAll(iterable)
   }
 
   private fun computePlayedStories(
@@ -289,9 +285,9 @@ class TopicListController @Inject constructor(
         val mostRecentCompletedChapterProgress: ChapterProgress? =
           completedChapterProgressList.firstOrNull()
 
-        val recentlyStartedChapterProgressList = getStartedChapterProgressList(storyProgress)
-        val recentlyPlayerChapterProgress: ChapterProgress? =
-          recentlyStartedChapterProgressList.firstOrNull()
+        val startedChapterProgressList = getStartedChapterProgressList(storyProgress)
+        val latestStartedChapterProgress: ChapterProgress? =
+          startedChapterProgressList.firstOrNull()
 
         setTopicIdIfAtleastOneStoryIsCompleted(
           topic.topicId,
@@ -300,12 +296,12 @@ class TopicListController @Inject constructor(
         )
 
         when {
-          recentlyPlayerChapterProgress != null -> {
+          latestStartedChapterProgress != null -> {
             createOngoingStoryListBasedOnRecentlyPlayed(
               storyId,
               story,
-              recentlyPlayerChapterProgress,
-              recentlyStartedChapterProgressList,
+              latestStartedChapterProgress,
+              startedChapterProgressList,
               topic,
               completedStoryTopicId
             ).let {

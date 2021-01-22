@@ -194,7 +194,7 @@ class HomeActivityTest {
   fun testHomeActivity_morningTimestamp_goodMorningMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
@@ -209,7 +209,7 @@ class HomeActivityTest {
   fun testHomeActivity_afternoonTimestamp_goodAfternoonMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
@@ -224,7 +224,7 @@ class HomeActivityTest {
   fun testHomeActivity_eveningTimestamp_goodEveningMessageIsDisplayed() {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
@@ -238,14 +238,14 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recentlyPlayedStoriesTextIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -259,14 +259,14 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_viewAllTextIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -280,10 +280,10 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_displaysStoriesForYouText() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -297,14 +297,14 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_displaysLastPlayedStoriesText() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = true
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -318,10 +318,10 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_displaysRecommendedStoriesText() {
     storyProgressTestHelper.markFullProgressForSecondTestTopic(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -335,10 +335,10 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_forRecommendedStories_hideViewAll() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
@@ -353,10 +353,10 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_displaysComingSoonTopicsText() {
     storyProgressTestHelper.markLastChapDoneOfRatiosStory0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -370,14 +370,14 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_clickViewAll_opensRecentlyPlayedActivity() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
@@ -394,14 +394,14 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_promotedCard_chapterNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
@@ -423,14 +423,14 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_promotedCard_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyTextOnHomeListItemAtPosition(
@@ -444,14 +444,14 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_configChange_promotedCard_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(isRoot()).perform(orientationLandscape())
@@ -466,10 +466,10 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_clickPromotedStory_opensTopicActivity() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
@@ -481,7 +481,7 @@ class HomeActivityTest {
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
+      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId1))
       intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
@@ -490,14 +490,14 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_promotedCard_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = true
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyTextOnHomeListItemAtPosition(
@@ -511,10 +511,10 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_firstTestTopic_topicSummary_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
@@ -527,7 +527,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_fiveLessons_topicSummary_lessonCountIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
       verifyTextOnHomeListItemAtPosition(
@@ -541,10 +541,10 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_secondTestTopic_topicSummary_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
       verifyTextOnHomeListItemAtPosition(
@@ -557,7 +557,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_oneLesson_topicSummary_lessonCountIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
@@ -644,7 +644,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_oneLesson_topicSummary_configChange_lessonCountIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 3)
@@ -658,7 +658,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_clickTopicSummary_opensTopicActivity() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
       onView(atPosition(R.id.home_recycler_view, 2)).perform(click())
@@ -669,7 +669,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onBackPressed_exitToProfileChooserDialogIsDisplayed() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_message))
@@ -680,7 +680,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onBackPressed_configChange_exitToProfileChooserDialogIsDisplayed() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
 
       testCoroutineDispatchers.runCurrent()
       pressBack()
@@ -693,7 +693,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onBackPressed_clickExit_opensProfileActivity() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_exit))
@@ -705,7 +705,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_checkSpanForItem0_spanSizeIsTwoOrThree() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
         onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
@@ -717,7 +717,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_checkSpanForItem4_spanSizeIsOne() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
     }
@@ -725,7 +725,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_configChange_checkSpanForItem4_spanSizeIsOne() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
