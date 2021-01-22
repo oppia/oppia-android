@@ -478,10 +478,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val timeToLiveMillis: Long = 4000
     var minX = 0f
     var maxX = confettiView.width.toFloat()
+    var numPieces = 30
     if (isTablet) {
       // Limit confetti area when on a tablet
       minX = confettiView.width.toFloat() / 4
       maxX = 3 * confettiView.width.toFloat() / 4
+      numPieces = 50
     }
 
     confettiView.build()
@@ -493,7 +495,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       .addShapes(Circle, Square)
       .addSizes(sizeInDp, sizeWithMass)
       .setPosition(minX, maxX, -50f, -50f)
-      .streamFor(30, 5000L)
+      .streamFor(numPieces, 5000L)
   }
 
   /**
