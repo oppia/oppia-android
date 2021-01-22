@@ -434,7 +434,6 @@ class NavigationDrawerActivityTest {
     }
   }
 
-
   // TODO(#2535): Remove notation when Robolectric supports multiple times opening of the NavDrawer
   // Requires opening the NavDrawer several times which is currently not supported on robolectric
   @RunOn(TestPlatform.ESPRESSO)
