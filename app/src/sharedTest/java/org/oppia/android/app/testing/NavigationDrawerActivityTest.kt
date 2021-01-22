@@ -277,6 +277,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO) // Require opening the NavDrawer several times which is currently not supported on robolectric
   @Test
   fun testNavDrawer_openNavDrawer_clickSwitchProfile_clickCancel() {
     launch<NavigationDrawerTestActivity>(
@@ -294,6 +295,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO) // Require opening the NavDrawer several times which is currently not supported on robolectric
   @Test
   fun testNavDrawer_goToOptions_openNavDrawer_clickSwitchProfile_clickCancel() {
     launch<NavigationDrawerTestActivity>(
@@ -313,6 +315,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO) // Require opening the NavDrawer several times which is currently not supported on robolectric
   @Test
   fun testNavDrawer_goToHelp_openNavDrawer_clickSwitchProfile_clickCancel() {
     launch<NavigationDrawerTestActivity>(
@@ -332,6 +335,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO) // Require opening the NavDrawer several times which is currently not supported on robolectric
   @Test
   fun testNavDrawer_goToAdmin_openNavDrawer_clickSwitchProfile_clickCancel() {
     launch<NavigationDrawerTestActivity>(
@@ -355,6 +359,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO) // Require opening the NavDrawer several times which is currently not supported on robolectric
   @Test
   fun testNavDrawer_clickSwitchProfile_clickCancel_changeConfig() {
     launch<NavigationDrawerTestActivity>(
@@ -373,6 +378,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO) // Require opening the NavDrawer several times which is currently not supported on robolectric
   @Test
   fun testNavDrawer_goToOptions_clickSwitchProfile_clickCancel_changeConfig() {
     launch<NavigationDrawerTestActivity>(
@@ -393,6 +399,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO) // Require opening the NavDrawer several times which is currently not supported on robolectric
   @Test
   fun testNavDrawer_goToHelp_clickSwitchProfile_clickCancel_changeConfig() {
     launch<NavigationDrawerTestActivity>(
@@ -413,6 +420,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO) // Require opening the NavDrawer several times which is currently not supported on robolectric
   @Test
   fun testNavDrawer_goToAdmin_clickSwitchProfile_clickCancel_changeConfig() {
     launch<NavigationDrawerTestActivity>(
@@ -435,63 +443,6 @@ class NavigationDrawerActivityTest {
           isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
         )
       ).check(matches(ViewMatchers.hasTextColor(R.color.highlightedNavMenuItem)))
-    }
-  }
-
-  @Test
-  fun testNavDrawer_clickSwitchProfile_clickCancel_checkHomeItemColor() {
-    launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
-    ).use {
-      it.openNavigationDrawer()
-      onView(withText(R.string.administrator_controls)).perform(click())
-      it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
-        .inRoot(isDialog())
-        .perform(click())
-      it.openNavigationDrawer()
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.menu_home))
-        .check(matches(ViewMatchers.hasTextColor(R.color.highlightedNavMenuItem)))
-    }
-  }
-
-  @Test
-  fun testNavDrawer_goToOptions_clickSwitchProfile_clickCancel_checkOptionsItemColor() {
-    launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
-    ).use {
-      it.openNavigationDrawer()
-      onView(withText(R.string.administrator_controls)).perform(click())
-      it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
-        .inRoot(isDialog())
-        .perform(click())
-      it.openNavigationDrawer()
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.menu_options))
-        .check(matches(ViewMatchers.hasTextColor(R.color.highlightedNavMenuItem)))
-    }
-  }
-
-  @Test
-  fun testNavDrawer_goToHelp_clickSwitchProfile_clickCancel_checkHelpItemColor() {
-    launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
-    ).use {
-      it.openNavigationDrawer()
-      onView(withText(R.string.administrator_controls)).perform(click())
-      it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
-        .inRoot(isDialog())
-        .perform(click())
-      it.openNavigationDrawer()
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.menu_help))
-        .check(matches(ViewMatchers.hasTextColor(R.color.highlightedNavMenuItem)))
     }
   }
 
