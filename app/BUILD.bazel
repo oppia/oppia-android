@@ -507,6 +507,7 @@ android_library(
         artifact("com.google.android.material:material"),
         artifact("de.hdodenhof:circleimageview:3.0.1"),
         artifact("javax.annotation:javax.annotation-api"),
+        artifact("nl.dionsegijn:konfetti:1.2.5"),
     ],
 )
 
@@ -554,7 +555,6 @@ kt_android_library(
     deps = [
         ":dagger",
         "//model",
-        artifact("nl.dionsegijn:konfetti:1.2.5"),
     ],
 )
 

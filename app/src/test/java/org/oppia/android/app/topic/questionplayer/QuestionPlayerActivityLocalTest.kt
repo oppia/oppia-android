@@ -108,7 +108,7 @@ class QuestionPlayerActivityLocalTest {
 
   @Test
   @Config(qualifiers = "port")
-  fun testQuestionPlayer_submitCorrectAnswer_correctTextBannerIsDisplayedInPortrait() {
+  fun testQuestionPlayer_portrait__submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
@@ -122,7 +122,7 @@ class QuestionPlayerActivityLocalTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testQuestionPlayer_submitCorrectAnswer_correctTextBannerIsDisplayedInLandscape() {
+  fun testQuestionPlayer_landscape_submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
@@ -136,7 +136,7 @@ class QuestionPlayerActivityLocalTest {
 
   @Test
   @Config(qualifiers = "port")
-  fun testQuestionPlayer_submitCorrectAnswer_confettiIsDisplayedInPortrait() {
+  fun testQuestionPlayer_portrait_submitCorrectAnswer_confettiIsDisplayed() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
@@ -149,7 +149,7 @@ class QuestionPlayerActivityLocalTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testQuestionPlayer_submitCorrectAnswer_confettiIsDisplayedInLandscape() {
+  fun testQuestionPlayer_landscape_submitCorrectAnswer_confettiIsDisplayed() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
