@@ -269,10 +269,19 @@ class TopicListController @Inject constructor(
     completionTimeFilter: (Long) -> Boolean
   ): List<PromotedStory> {
 
-    var numberOfDaysPassed: Long
+    val numberOfDaysPassed: Long
     val playedPromotedStoryList = mutableListOf<PromotedStory>()
     val sortedTopicProgressList =
-      topicProgressList.sortedByDescending { it.lastPlayedTimestamp }
+      topicProgressList.sortedByDescending {
+        val topicProgressStories = it.storyProgressMap.values
+        val topicProgressChapters = topicProgressStories.flatMap { it.chapterProgressMap.values }
+        val topicProgressLastPlayedTimes =
+          topicProgressChapters.map(ChapterProgress::getLastPlayedTimestamp)
+        topicProgressLastPlayedTimes.maxOrNull()
+      }
+
+
+
 
     sortedTopicProgressList.forEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
@@ -290,7 +299,6 @@ class TopicListController @Inject constructor(
         val startedChapterProgressList = getStartedChapterProgressList(storyProgress)
         val latestStartedChapterProgress: ChapterProgress? =
           startedChapterProgressList.firstOrNull()
-        val isCurrentStoryCompleted = checkIfStoryIsCompleted(storyProgress, story)
 
         when {
           latestStartedChapterProgress != null -> {
@@ -303,13 +311,14 @@ class TopicListController @Inject constructor(
               isTopicConsideredCompleted
             ).let {
               Pair(it.first, it.second)
-              numberOfDaysPassed = it.second
-              if (completionTimeFilter(numberOfDaysPassed))
+              if (completionTimeFilter(it.second))
                 it.first?.let { it1 -> playedPromotedStoryList.add(it1) }
             }
           }
           // Compute the ongoing story list for stories that are not fully completed yet.
-          isCurrentStoryCompleted && mostRecentCompletedChapterProgress != null -> {
+          mostRecentCompletedChapterProgress != null &&
+            mostRecentCompletedChapterProgress.explorationId !=
+            story.chapterList.last().explorationId -> {
             createOngoingStoryListBasedOnMostRecentlyCompleted(
               storyId,
               story,
@@ -319,8 +328,7 @@ class TopicListController @Inject constructor(
               isTopicConsideredCompleted
             ).let {
               Pair(it.first, it.second)
-              numberOfDaysPassed = it.second
-              if (completionTimeFilter(numberOfDaysPassed))
+              if (completionTimeFilter(it.second))
                 it.first?.let { it1 -> playedPromotedStoryList.add(it1) }
             }
           }

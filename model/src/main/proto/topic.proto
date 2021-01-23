@@ -260,9 +260,6 @@ message TopicProgress {
 
   // Map from story ID to StoryProgress.
   map<string, StoryProgress> story_progress = 2;
-
-  // Timestamp to indicate the last time the exploration was played in ms.
-  int64 last_played_timestamp = 3;
 }
 
 // A structure corresponding to the promoted stories. This structure is set up

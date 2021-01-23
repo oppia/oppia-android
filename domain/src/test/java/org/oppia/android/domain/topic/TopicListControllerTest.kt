@@ -310,7 +310,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetPromotedStoryList_markAllChapsDoneInFractions_promotedStoryListIsCorrect() {
+  fun testGetPromotedStoryList_markAllChapsDoneInFractions_suggestedStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -358,8 +358,6 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
       .isEqualTo(2)
-    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount).isEqualTo(0)
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(0)
     verifyOngoingStoryAsRatioStory0Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
     )
