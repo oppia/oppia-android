@@ -2,9 +2,9 @@ package org.oppia.android.util.parser
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import javax.inject.Inject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.CacheAssetsLocally
+import javax.inject.Inject
 
 /** A [TestGlideImageLoader] that is used in tests. */
 class TestGlideImageLoader @Inject constructor(
