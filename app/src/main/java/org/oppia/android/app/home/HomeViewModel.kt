@@ -18,7 +18,6 @@ import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
-import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -31,7 +30,6 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
-import java.util.*
 
 private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
   "profile+promotedActivityList"
@@ -184,7 +182,6 @@ class HomeViewModel(
 
       // Check if at least one story in topic is completed. Prioritize recommended story over completed story topic.
       val sortedStoryList = storyList.sortedByDescending { !it.isTopicLearned }
-
       return sortedStoryList.take(promotedStoryListLimit)
         .map { promotedStory ->
           PromotedStoryViewModel(
@@ -197,7 +194,7 @@ class HomeViewModel(
         }
     }
   }
-  
+
   /**
    * Returns a list of [HomeItemViewModel]s corresponding to [ComingSoonTopicListViewModel]  all the upcoming topics available in future and to be
    * displayed for this profile (see [ComingSoonTopicsViewModel]), or an empty list if the profile does not have any
@@ -238,8 +235,4 @@ class HomeViewModel(
       listOf(AllTopicsViewModel) + allTopicsList
     } else emptyList()
   }
-}
-
-private fun <E> MutableList<E>.add(element: List<PromotedStory>): List<PromotedStory> {
-  return element
 }

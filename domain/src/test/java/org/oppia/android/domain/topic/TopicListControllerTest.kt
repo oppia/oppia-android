@@ -635,7 +635,6 @@ class TopicListControllerTest {
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
-
   private fun verifyOngoingStoryAsSecondTopicStory0Exploration0(promotedStory: PromotedStory) {
     assertThat(promotedStory.explorationId).isEqualTo(TEST_EXPLORATION_ID_4)
     assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_2)
