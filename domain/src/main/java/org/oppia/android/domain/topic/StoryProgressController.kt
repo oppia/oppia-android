@@ -112,13 +112,11 @@ class StoryProgressController @Inject constructor(
         val storyProgress = storyProgressBuilder.build()
 
         val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId)
-
         if (topicProgressDatabase.topicProgressMap[topicId] != null) {
           topicProgressBuilder
             .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)
         }
         topicProgressBuilder.putStoryProgress(storyId, storyProgress)
-
         val topicProgress = topicProgressBuilder.build()
 
         val topicDatabaseBuilder =
@@ -195,14 +193,13 @@ class StoryProgressController @Inject constructor(
         val storyProgress = storyProgressBuilder.build()
 
         val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId)
-
         if (topicProgressDatabase.topicProgressMap[topicId] != null) {
           topicProgressBuilder
             .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)
         }
         topicProgressBuilder.putStoryProgress(storyId, storyProgress)
-
         val topicProgress = topicProgressBuilder.build()
+
         val topicDatabaseBuilder =
           topicProgressDatabase.toBuilder().putTopicProgress(topicId, topicProgress)
         Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)
