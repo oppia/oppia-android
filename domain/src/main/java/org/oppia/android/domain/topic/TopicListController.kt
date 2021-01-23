@@ -1,7 +1,6 @@
 package org.oppia.android.domain.topic
 
 import android.graphics.Color
-import android.util.Log
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
@@ -255,7 +254,7 @@ class TopicListController @Inject constructor(
     completionTimeFilter: (Long) -> Boolean
   ): List<PromotedStory> {
 
-    var numberOfDaysPassed = 0L
+    var numberOfDaysPassed: Long
     val playedPromotedStoryList = mutableListOf<PromotedStory>()
     val sortedTopicProgressList =
       topicProgressList.sortedByDescending {
@@ -297,7 +296,6 @@ class TopicListController @Inject constructor(
               if (completionTimeFilter(numberOfDaysPassed)) {
                 playedPromotedStoryList.add(it!!)
               }
-              Log.d("record","="+it)
             }
           }
           // Compute the ongoing story list for stories that are not fully completed yet.
