@@ -88,8 +88,7 @@ class StateFragmentPresenter @Inject constructor(
   private val confettiColors = listOf(
     R.color.confetti_red,
     R.color.confetti_yellow,
-    R.color.confetti_blue,
-    R.color.confetti_purple
+    R.color.confetti_blue
   ).map { getColor(context, it) }
 
   fun handleCreateView(
