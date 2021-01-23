@@ -2,8 +2,8 @@ package org.oppia.android.util.parser
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.PictureDrawable
-import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.Transformation
@@ -14,7 +14,7 @@ import org.oppia.android.util.caching.CacheAssetsLocally
 import javax.inject.Inject
 
 /** An [ImageLoader] that uses Glide. */
-class GlideImageLoader @Inject constructor(
+open class GlideImageLoader @Inject constructor(
   private val context: Context,
   @CacheAssetsLocally private val cacheAssetsLocally: Boolean,
   private val assetRepository: AssetRepository
@@ -65,14 +65,14 @@ class GlideImageLoader @Inject constructor(
 
   override fun loadDrawable(
     imageDrawableResId: Int,
-    imageView: ImageView,
+    target: ImageTarget<Drawable>,
     transformations: List<ImageTransformation>
   ) {
     Glide.with(context)
       .asDrawable()
       .load(imageDrawableResId)
       .transform(*transformations.toGlideTransformations())
-      .into(imageView)
+      .intoTarget(target)
   }
 
   private fun <T> RequestBuilder<T>.intoTarget(target: ImageTarget<T>) {

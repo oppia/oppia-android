@@ -89,7 +89,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     } else {
       imageLoader.loadDrawable(
         getLessonDrawableResource(lessonThumbnail),
-        this,
+        ImageViewTarget(this),
         transformations
       )
     }
