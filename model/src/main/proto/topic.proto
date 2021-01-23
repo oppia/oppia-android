@@ -204,7 +204,7 @@ message PromotedStory {
   // The thumbnail that should be displayed for this promoted story.
   LessonThumbnail lesson_thumbnail = 9;
 
-  // The indicator to handle if story is completed.
+  // Indicates whether the topic containing this story is 'learned' (meaning at least one story was completed).
   bool is_topic_learned = 10;
 }
 
@@ -260,9 +260,6 @@ message TopicProgress {
 
   // Map from story ID to StoryProgress.
   map<string, StoryProgress> story_progress = 2;
-
-  // Timestamp to indicate the last time the exploration was played in ms.
-  int64 last_played_timestamp = 3;
 }
 
 // A structure corresponding to the promoted stories. This structure is set up
