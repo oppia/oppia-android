@@ -843,7 +843,9 @@ class StoryProgressTestHelperTest {
       .isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount).isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryList[0].explorationId)
-      .isEqualTo(FRACTIONS_EXPLORATION_ID_0)
+      .isEqualTo(TEST_EXPLORATION_ID_2)
+    assertThat(promotedActivityList.promotedStoryList.suggestedStoryList[1].explorationId)
+      .isEqualTo(RATIOS_EXPLORATION_ID_0)
   }
 
   @Test

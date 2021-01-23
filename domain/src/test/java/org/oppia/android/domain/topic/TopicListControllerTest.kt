@@ -670,7 +670,7 @@ class TopicListControllerTest {
     assertThat(promotedStory.nextChapterName).isEqualTo("Second Exploration")
     assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.COMPARING_FRACTIONS)
-    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isTrue()
     assertThat(promotedStory.totalChapterCount).isEqualTo(3)
   }
@@ -696,7 +696,7 @@ class TopicListControllerTest {
     assertThat(promotedStory.nextChapterName).isEqualTo("Prototype Exploration")
     assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.BAKER)
-    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
@@ -709,7 +709,7 @@ class TopicListControllerTest {
     assertThat(promotedStory.nextChapterName).isEqualTo("Fifth Exploration")
     assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.DERIVE_A_RATIO)
-    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.totalChapterCount).isEqualTo(1)
   }
 
@@ -733,7 +733,7 @@ class TopicListControllerTest {
     assertThat(promotedStory.nextChapterName).isEqualTo("What is a Fraction?")
     assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
@@ -769,7 +769,7 @@ class TopicListControllerTest {
     assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
     assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
@@ -812,7 +812,7 @@ class TopicListControllerTest {
     assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
     assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
-    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 

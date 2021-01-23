@@ -288,7 +288,7 @@ class TopicListController @Inject constructor(
               storyId,
               story,
               latestStartedChapterProgress,
-              startedChapterProgressList,
+              completedChapterProgressList,
               topic,
               isTopicConsideredCompleted
             ).let {
@@ -371,7 +371,7 @@ class TopicListController @Inject constructor(
     storyId: String,
     story: StorySummary,
     latestStartedChapterProgress: ChapterProgress,
-    startedChapterProgressList: List<ChapterProgress>,
+    completedChapterProgressList: List<ChapterProgress>,
     topic: Topic,
     isTopicConsideredCompleted: Boolean
   ): PromotedStory? {
@@ -383,7 +383,7 @@ class TopicListController @Inject constructor(
       return createPromotedStory(
         storyId,
         topic,
-        startedChapterProgressList.size,
+        completedChapterProgressList.size,
         story.chapterCount,
         recentlyPlayerChapterSummary.name,
         recentlyPlayerChapterSummary.explorationId,
