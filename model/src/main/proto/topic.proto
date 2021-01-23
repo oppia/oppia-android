@@ -204,7 +204,8 @@ message PromotedStory {
   // The thumbnail that should be displayed for this promoted story.
   LessonThumbnail lesson_thumbnail = 9;
 
-  // Indicates whether the topic containing this story is 'learned' (meaning at least one story was completed).
+  // Indicates whether the topic containing this story is 'learned'
+  // (meaning at least one story was completed).
   bool is_topic_learned = 10;
 }
 
