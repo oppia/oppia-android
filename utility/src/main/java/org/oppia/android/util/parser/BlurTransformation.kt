@@ -19,8 +19,7 @@ private const val BLUR_RADIUS = 20f
  *
  * The following [tutorial](https://futurestud.io/tutorials/glide-custom-transformation)
  * was used as a reference, as well as this [article](https://stackoverflow.com/a/23119957).
- * */
-
+ */
 class BlurTransformation(private val context: Context) : BitmapTransformation() {
 
   private val renderScript by lazy { RenderScript.create(context) }
