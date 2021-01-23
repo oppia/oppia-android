@@ -752,14 +752,17 @@ class StoryProgressTestHelperTest {
     verifyGetPromotedActivityListSucceeded()
 
     val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
-    with(promotedActivityList.promotedStoryList) {
-      assertThat(recentlyPlayedStoryCount).isEqualTo(1)
-      assertThat(olderPlayedStoryCount).isEqualTo(0)
-      assertThat(recentlyPlayedStoryList[0].explorationId).isEqualTo(
+      assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+        .isEqualTo(1)
+      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
+        .isEqualTo(0)
+      assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].explorationId)
+        .isEqualTo(
         FRACTIONS_EXPLORATION_ID_0
       )
-      assertThat(recentlyPlayedStoryList[0].completedChapterCount).isEqualTo(0)
-    }
+      assertThat(
+        promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].completedChapterCount
+      ).isEqualTo(0)
   }
 
   @Test
@@ -777,14 +780,15 @@ class StoryProgressTestHelperTest {
     verifyGetPromotedActivityListSucceeded()
 
     val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
-    with(promotedActivityList.promotedStoryList) {
-      assertThat(recentlyPlayedStoryCount).isEqualTo(1)
-      assertThat(olderPlayedStoryCount).isEqualTo(0)
-      assertThat(recentlyPlayedStoryList[0].explorationId).isEqualTo(
-        RATIOS_EXPLORATION_ID_0
-      )
-      assertThat(recentlyPlayedStoryList[0].completedChapterCount).isEqualTo(0)
-    }
+      assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+        .isEqualTo(1)
+      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
+        .isEqualTo(0)
+      assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].explorationId)
+        .isEqualTo(RATIOS_EXPLORATION_ID_0)
+      assertThat(
+        promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].completedChapterCount)
+        .isEqualTo(0)
   }
 
   @Test
@@ -802,18 +806,19 @@ class StoryProgressTestHelperTest {
     verifyGetPromotedActivityListSucceeded()
 
     val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
-    with(promotedActivityList.promotedStoryList) {
-      assertThat(recentlyPlayedStoryCount).isEqualTo(2)
-      assertThat(olderPlayedStoryCount).isEqualTo(0)
-      assertThat(recentlyPlayedStoryList[0].explorationId).isEqualTo(
-        RATIOS_EXPLORATION_ID_0
-      )
-      assertThat(recentlyPlayedStoryList[0].completedChapterCount).isEqualTo(0)
-      assertThat(recentlyPlayedStoryList[1].explorationId).isEqualTo(
-        RATIOS_EXPLORATION_ID_2
-      )
-      assertThat(recentlyPlayedStoryList[1].completedChapterCount).isEqualTo(0)
-    }
+      assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+        .isEqualTo(2)
+      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount).isEqualTo(0)
+      assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].explorationId)
+        .isEqualTo(RATIOS_EXPLORATION_ID_0)
+      assertThat(
+        promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].completedChapterCount)
+        .isEqualTo(0)
+      assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1].explorationId)
+        .isEqualTo(RATIOS_EXPLORATION_ID_2)
+      assertThat(
+        promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1].completedChapterCount)
+        .isEqualTo(0)
   }
 
   @Test
@@ -831,11 +836,11 @@ class StoryProgressTestHelperTest {
     verifyGetPromotedActivityListSucceeded()
 
     val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
-    with(promotedActivityList.promotedStoryList) {
-      assertThat(recentlyPlayedStoryCount).isEqualTo(0)
-      assertThat(olderPlayedStoryCount).isEqualTo(0)
-      assertThat(suggestedStoryList[0].explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
-    }
+      assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+        .isEqualTo(0)
+      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount).isEqualTo(0)
+      assertThat(promotedActivityList.promotedStoryList.suggestedStoryList[0].explorationId)
+        .isEqualTo(FRACTIONS_EXPLORATION_ID_0)
   }
 
   @Test
@@ -853,18 +858,24 @@ class StoryProgressTestHelperTest {
     verifyGetPromotedActivityListSucceeded()
 
     val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
-    with(promotedActivityList.promotedStoryList) {
-      assertThat(recentlyPlayedStoryCount).isEqualTo(2)
-      assertThat(olderPlayedStoryCount).isEqualTo(0)
-      assertThat(recentlyPlayedStoryList[0].explorationId).isEqualTo(
-        TEST_EXPLORATION_ID_2
-      )
-      assertThat(recentlyPlayedStoryList[0].completedChapterCount).isEqualTo(0)
-      assertThat(recentlyPlayedStoryList[1].explorationId).isEqualTo(
-        TEST_EXPLORATION_ID_4
-      )
-      assertThat(recentlyPlayedStoryList[1].completedChapterCount).isEqualTo(0)
-    }
+      assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+        .isEqualTo(2)
+      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
+        .isEqualTo(0)
+      assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].explorationId)
+        .isEqualTo(
+          TEST_EXPLORATION_ID_2
+        )
+      assertThat(
+        promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].completedChapterCount
+      ).isEqualTo(0)
+      assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1].explorationId)
+        .isEqualTo(
+          TEST_EXPLORATION_ID_4
+        )
+      assertThat(
+        promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1].completedChapterCount
+      ).isEqualTo(0)
   }
 
   @Test
@@ -882,24 +893,23 @@ class StoryProgressTestHelperTest {
     verifyGetPromotedActivityListSucceeded()
 
     val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
-    with(promotedActivityList.promotedStoryList) {
-      assertThat(recentlyPlayedStoryCount).isEqualTo(0)
-      assertThat(olderPlayedStoryCount).isEqualTo(3)
-
-      assertThat(olderPlayedStoryList[0].explorationId).isEqualTo(
+      assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+        .isEqualTo(0)
+      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
+        .isEqualTo(3)
+      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[0].explorationId).isEqualTo(
         FRACTIONS_EXPLORATION_ID_0
       )
-      assertThat(olderPlayedStoryList[0].completedChapterCount)
+      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[0].completedChapterCount)
         .isEqualTo(0)
-      assertThat(olderPlayedStoryList[1].explorationId)
+      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[1].explorationId)
         .isEqualTo(RATIOS_EXPLORATION_ID_0)
-      assertThat(olderPlayedStoryList[1].completedChapterCount)
+      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[1].completedChapterCount)
         .isEqualTo(0)
-      assertThat(olderPlayedStoryList[2].explorationId)
+      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[2].explorationId)
         .isEqualTo(RATIOS_EXPLORATION_ID_2)
-      assertThat(olderPlayedStoryList[2].completedChapterCount)
+      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[2].completedChapterCount)
         .isEqualTo(0)
-    }
   }
 
   private fun verifyGetTopicSucceeded() {

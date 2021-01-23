@@ -352,12 +352,30 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_displaysComingSoonTopicsText() {
-    storyProgressTestHelper.markLastChapDoneOfRatiosStory0(
+    storyProgressTestHelper.markChapDoneOfRatiosStory0Exp2(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.coming_soon_text_view,
+        stringToMatch = context.getString(R.string.coming_soon)
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_markFullProgressForAllTopics_displaysComingSoonTopicsText() {
+    storyProgressTestHelper.markFullProgressForAllTopics(
+      profileId = createProfileId(internalProfileId),
+      timestampOlderThanOneWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,

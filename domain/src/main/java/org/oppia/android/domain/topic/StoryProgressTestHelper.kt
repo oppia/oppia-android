@@ -289,7 +289,7 @@ class StoryProgressTestHelper @Inject constructor(
    * @param profileId the profile we are setting topic progress on ratios for
    * @param timestampOlderThanOneWeek if the timestamp for this progress is from more than one week ago
    */
-  fun markLastChapDoneOfRatiosStory0(
+  fun markChapDoneOfRatiosStory0Exp2(
     profileId: ProfileId,
     timestampOlderThanAWeek: Boolean
   ) {
