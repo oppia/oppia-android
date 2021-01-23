@@ -286,7 +286,7 @@ class TopicListController @Inject constructor(
     sortedTopicProgressList.forEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
 
-      val isTopicConsideredCompleted = checkIfAtLeastOnStoryIsCompleted(topicProgress, topic)
+      val isTopicConsideredCompleted = checkIfAtLeastOneStoryIsCompleted(topicProgress, topic)
 
       topicProgress.storyProgressMap.values.forEach { storyProgress ->
         val storyId = storyProgress.storyId
@@ -338,7 +338,7 @@ class TopicListController @Inject constructor(
     return playedPromotedStoryList
   }
 
-  private fun checkIfAtLeastOnStoryIsCompleted(
+  private fun checkIfAtLeastOneStoryIsCompleted(
     topicProgress: TopicProgress,
     topic: Topic
   ): Boolean {
