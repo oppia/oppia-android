@@ -897,18 +897,23 @@ class StoryProgressTestHelperTest {
         .isEqualTo(0)
       assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
         .isEqualTo(3)
-      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[0].explorationId).isEqualTo(
+      assertThat(
+        promotedActivityList.promotedStoryList.olderPlayedStoryList[0].explorationId).isEqualTo(
         FRACTIONS_EXPLORATION_ID_0
       )
-      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[0].completedChapterCount)
+      assertThat(
+        promotedActivityList.promotedStoryList.olderPlayedStoryList[0].completedChapterCount)
         .isEqualTo(0)
-      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[1].explorationId)
+      assertThat(
+        promotedActivityList.promotedStoryList.olderPlayedStoryList[1].explorationId)
         .isEqualTo(RATIOS_EXPLORATION_ID_0)
-      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[1].completedChapterCount)
+      assertThat(
+        promotedActivityList.promotedStoryList.olderPlayedStoryList[1].completedChapterCount)
         .isEqualTo(0)
       assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[2].explorationId)
         .isEqualTo(RATIOS_EXPLORATION_ID_2)
-      assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[2].completedChapterCount)
+      assertThat(
+        promotedActivityList.promotedStoryList.olderPlayedStoryList[2].completedChapterCount)
         .isEqualTo(0)
   }
 
