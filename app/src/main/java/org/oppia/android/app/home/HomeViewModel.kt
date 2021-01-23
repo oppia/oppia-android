@@ -18,6 +18,7 @@ import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
+import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -30,7 +31,7 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
-import java.util.Collections
+import java.util.*
 
 private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
   "profile+promotedActivityList"
@@ -182,36 +183,21 @@ class HomeViewModel(
       }
 
       // Check if at least one story in topic is completed. Prioritize recommended story over completed story topic.
-      // Use swap function to change recommended and completed story topic position.
-      storyList.take(promotedStoryListLimit).mapIndexed { completedStoryIndex, promotedStory ->
-        if (promotedStory.isTopicLearned &&
-          suggestedStoryCount != 0
-        ) {
-          if (completedStoryIndex == 0 &&
-            (recentlyPlayedStoryCount > 1 || olderPlayedStoryCount > 1)
-          ) {
-            Collections.swap(storyList, completedStoryIndex, 1)
-          } else {
-            val swapWithSuggestedListIndex0 =
-              recentlyPlayedStoryList.size + olderPlayedStoryList.size
-            Collections.swap(storyList, completedStoryIndex, swapWithSuggestedListIndex0)
-          }
-        }
-      }
+      val sortedStoryList = storyList.sortedByDescending { !it.isTopicLearned }
 
-      return storyList.take(promotedStoryListLimit)
+      return sortedStoryList.take(promotedStoryListLimit)
         .map { promotedStory ->
           PromotedStoryViewModel(
             activity,
             internalProfileId,
-            storyList.size,
+            sortedStoryList.size,
             storyEntityType,
             promotedStory
           )
         }
     }
   }
-
+  
   /**
    * Returns a list of [HomeItemViewModel]s corresponding to [ComingSoonTopicListViewModel]  all the upcoming topics available in future and to be
    * displayed for this profile (see [ComingSoonTopicsViewModel]), or an empty list if the profile does not have any
@@ -252,4 +238,8 @@ class HomeViewModel(
       listOf(AllTopicsViewModel) + allTopicsList
     } else emptyList()
   }
+}
+
+private fun <E> MutableList<E>.add(element: List<PromotedStory>): List<PromotedStory> {
+  return element
 }
