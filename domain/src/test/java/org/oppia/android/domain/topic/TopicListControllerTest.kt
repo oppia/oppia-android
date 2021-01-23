@@ -239,7 +239,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_promotedStoryListIsCorrect() {
+  fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_ongoindStoryListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -254,11 +254,6 @@ class TopicListControllerTest {
       .isEqualTo(1)
     verifyPromotedStoryAsFractionStory0Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
-    )
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(1)
-    verifyOngoingStoryAsRatioStory0Exploration0(
-      promotedActivityList.promotedStoryList.suggestedStoryList[0]
     )
   }
 
@@ -310,7 +305,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetPromotedStoryList_markAllChapsDoneInFractions_promotedStoryListIsCorrect() {
+  fun testGetPromotedStoryList_markAllChapsDoneInFractions_suggestedStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -330,9 +325,10 @@ class TopicListControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
-      .isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(1)
+    verifyRecommendedStoryAsRatioStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[0]
+    )
   }
 
   @Test
@@ -358,8 +354,6 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
       .isEqualTo(2)
-    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount).isEqualTo(0)
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(0)
     verifyOngoingStoryAsRatioStory0Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
     )
@@ -469,6 +463,43 @@ class TopicListControllerTest {
   }
 
   @Test
+  fun testGetStoryList_markOneStoryDoneAndPlayNextStoryOfFirstTestTopic_ongoingListIsCorrect() {
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    storyProgressController.recordRecentlyPlayedChapter(
+      profileId0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_1,
+      TEST_EXPLORATION_ID_1,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val promotedActivityList = retrievePromotedActivityList()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
+    verifyOngoingStoryAsFirstTopicStory1Exploration0(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+  }
+
+  @Test
   fun testRetrieveStoryList_markFirstExpOfEveryStoryDoneWithinLastMonth_ongoingListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
@@ -498,17 +529,17 @@ class TopicListControllerTest {
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
-      .isEqualTo(0)
+      .isEqualTo(1)
     assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
-      .isEqualTo(3)
+      .isEqualTo(2)
     verifyOngoingStoryAsRatioStory0Exploration1(
       promotedActivityList.promotedStoryList.olderPlayedStoryList[0]
     )
-    verifyOngoingStoryAsRatioStory1Exploration3(
+    verifyOngoingStoryAsFractionStory0Exploration1(
       promotedActivityList.promotedStoryList.olderPlayedStoryList[1]
     )
-    verifyOngoingStoryAsFractionStory0Exploration1(
-      promotedActivityList.promotedStoryList.olderPlayedStoryList[2]
+    verifyOngoingStoryAsRatioStory1Exploration3(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
     )
   }
 
@@ -520,15 +551,29 @@ class TopicListControllerTest {
     assertThat(promotedActivityListResultCaptor.value.isSuccess()).isTrue()
   }
 
-  private fun verifyOngoingStoryAsFirstTopicStory0Exploration0(promotedStory: PromotedStory) {
-    assertThat(promotedStory.explorationId).isEqualTo(TEST_EXPLORATION_ID_2)
-    assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_0)
+  private fun verifyOngoingStoryAsFirstTopicStory1Exploration0(promotedStory: PromotedStory) {
+    assertThat(promotedStory.explorationId).isEqualTo(TEST_EXPLORATION_ID_1)
+    assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_1)
     assertThat(promotedStory.topicId).isEqualTo(TEST_TOPIC_ID_0)
     assertThat(promotedStory.topicName).isEqualTo("First Test Topic")
-    assertThat(promotedStory.nextChapterName).isEqualTo("Prototype Exploration")
+    assertThat(promotedStory.nextChapterName).isEqualTo("Second Exploration")
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.COMPARING_FRACTIONS)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
+    assertThat(promotedStory.isTopicLearned).isTrue()
+    assertThat(promotedStory.totalChapterCount).isEqualTo(3)
+  }
+
+  private fun verifyOngoingStoryAsFirstTopicStory0Exploration1(promotedStory: PromotedStory) {
+    assertThat(promotedStory.explorationId).isEqualTo(TEST_EXPLORATION_ID_5)
+    assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_0)
+    assertThat(promotedStory.topicId).isEqualTo(TEST_TOPIC_ID_1)
+    assertThat(promotedStory.topicName).isEqualTo("First Test Topic")
+    assertThat(promotedStory.nextChapterName).isEqualTo("Image Region Selection Exploration")
     assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.BAKER)
-    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(2)
+    assertThat(promotedStory.isTopicLearned).isTrue()
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
@@ -552,7 +597,7 @@ class TopicListControllerTest {
     assertThat(promotedStory.nextChapterName).isEqualTo("What is a Fraction?")
     assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
@@ -568,7 +613,7 @@ class TopicListControllerTest {
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
-  private fun verifyOngoingStoryAsRatioStory0Exploration0(promotedStory: PromotedStory) {
+  private fun verifyRecommendedStoryAsRatioStory0Exploration0(promotedStory: PromotedStory) {
     assertThat(promotedStory.explorationId).isEqualTo(RATIOS_EXPLORATION_ID_0)
     assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
@@ -577,6 +622,18 @@ class TopicListControllerTest {
     assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
+    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
+  }
+
+  private fun verifyOngoingStoryAsRatioStory0Exploration0(promotedStory: PromotedStory) {
+    assertThat(promotedStory.explorationId).isEqualTo(RATIOS_EXPLORATION_ID_0)
+    assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_0)
+    assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
+    assertThat(promotedStory.nextChapterName).isEqualTo("What is a Ratio?")
+    assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
@@ -607,7 +664,7 @@ class TopicListControllerTest {
     assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
     assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
       .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
-    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 

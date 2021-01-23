@@ -13,7 +13,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -57,7 +56,6 @@ private const val RECORD_RECENTLY_PLAYED_CHAPTER_PROVIDER_ID =
 class StoryProgressController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
-  private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger
 ) {
   // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype,
@@ -120,16 +118,7 @@ class StoryProgressController @Inject constructor(
             .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)
         }
         topicProgressBuilder.putStoryProgress(storyId, storyProgress)
-        // Compute lastPlayedTimeStamp from chapterProgress list.
-        val topicProgressStories = topicProgressBuilder.storyProgressMap.values
-        val topicProgressChapters = topicProgressStories.flatMap { it.chapterProgressMap.values }
-        val topicProgressLastPlayedTimes =
-          topicProgressChapters.map(ChapterProgress::getLastPlayedTimestamp)
-        val computedLastPlayedTimestamp =
-          topicProgressLastPlayedTimes.max()
-        if (computedLastPlayedTimestamp != null) {
-          topicProgressBuilder.lastPlayedTimestamp = computedLastPlayedTimestamp
-        }
+
         val topicProgress = topicProgressBuilder.build()
 
         val topicDatabaseBuilder =
@@ -206,7 +195,6 @@ class StoryProgressController @Inject constructor(
         val storyProgress = storyProgressBuilder.build()
 
         val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId)
-        // Compute lastPlayedTimeStamp from chapterProgress list.
 
         if (topicProgressDatabase.topicProgressMap[topicId] != null) {
           topicProgressBuilder
@@ -214,15 +202,6 @@ class StoryProgressController @Inject constructor(
         }
         topicProgressBuilder.putStoryProgress(storyId, storyProgress)
 
-        val topicProgressStories = topicProgressBuilder.storyProgressMap.values
-        val topicProgressChapters = topicProgressStories.flatMap { it.chapterProgressMap.values }
-        val topicProgressLastPlayedTimes =
-          topicProgressChapters.map(ChapterProgress::getLastPlayedTimestamp)
-        val computedLastPlayedTimestamp =
-          topicProgressLastPlayedTimes.maxOrNull()
-        if (computedLastPlayedTimestamp != null) {
-          topicProgressBuilder.setLastPlayedTimestamp(computedLastPlayedTimestamp).build()
-        }
         val topicProgress = topicProgressBuilder.build()
         val topicDatabaseBuilder =
           topicProgressDatabase.toBuilder().putTopicProgress(topicId, topicProgress)
