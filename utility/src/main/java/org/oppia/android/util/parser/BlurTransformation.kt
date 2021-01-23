@@ -35,7 +35,7 @@ class BlurTransformation(private val context: Context) : BitmapTransformation() 
       // Create a RenderScript allocation pointing to the original bitmap to avoid a memory copy.
       Allocation.createFromBitmap(renderScript, toTransform)
     } else {
-      // Create a RenderScript allocation pointing to the a copy.
+      // Create a RenderScript allocation pointing to a copy. Note that a copy is needed here since the original bitmap configuration isn't in ARGB_8888 (which is required for how the script intrinsic is configured below).
       Allocation.createFromBitmap(
         renderScript,
         toTransform.copy(Bitmap.Config.ARGB_8888, true),
