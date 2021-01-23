@@ -94,8 +94,6 @@ class TopicListController @Inject constructor(
   private val oppiaClock: OppiaClock
 ) {
 
-  private var completedStoryTopicId: String = ""
-
   /**
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
@@ -253,10 +251,6 @@ class TopicListController @Inject constructor(
     return recentlyPlayedStoryList.size + olderPlayedStoryList.size + suggestedStoryList.size
   }
 
-  private fun PromotedStoryList.Builder.getTotalPromotedStoryCount(): Int {
-    return recentlyPlayedStoryList.size + olderPlayedStoryList.size + suggestedStoryList.size
-  }
-
   private fun PromotedStoryList.Builder.addAllUpTo(
     iterable: Iterable<PromotedStory>,
     addAll: PromotedStoryList.Builder.(Iterable<PromotedStory>) -> PromotedStoryList.Builder
@@ -269,7 +263,6 @@ class TopicListController @Inject constructor(
     completionTimeFilter: (Long) -> Boolean
   ): List<PromotedStory> {
 
-    val numberOfDaysPassed: Long
     val playedPromotedStoryList = mutableListOf<PromotedStory>()
     val sortedTopicProgressList =
       topicProgressList.sortedByDescending {
@@ -279,9 +272,6 @@ class TopicListController @Inject constructor(
           topicProgressChapters.map(ChapterProgress::getLastPlayedTimestamp)
         topicProgressLastPlayedTimes.maxOrNull()
       }
-
-
-
 
     sortedTopicProgressList.forEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
