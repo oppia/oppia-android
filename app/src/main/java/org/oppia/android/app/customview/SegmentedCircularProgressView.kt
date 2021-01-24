@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.TextUtilsCompat
 import androidx.core.view.ViewCompat
 import org.oppia.android.R
-import java.util.*
+import java.util.Locale
 
 private const val STROKE_DASH_GAP_IN_DEGREE = 12
 
@@ -79,8 +79,8 @@ class SegmentedCircularProgressView : View {
   }
 
   override fun onDraw(canvas: Canvas) {
-    if(isRTL)
-      rotationY=180f
+    if (isRTL)
+      rotationY = 180f
     super.onDraw(canvas)
     if (baseRect == null) {
       val centerX = measuredWidth / 2
