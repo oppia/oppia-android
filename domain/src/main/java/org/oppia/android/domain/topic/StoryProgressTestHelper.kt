@@ -274,7 +274,7 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
-/**
+   /**
    * Marks recently played on the second test topic for a particular profile.
    *
    * @param profileId the profile we are setting topic progress for
@@ -559,7 +559,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks one explorations in first test topic as completed played for a particular profile.
+   * Marks one exploration in first test topic as completed played for a particular profile.
    *
    * @param profileId the profile we are setting recently played for
    * @param timestampOlderThanOneWeek if the timestamp for the recently played story is more than a week ago

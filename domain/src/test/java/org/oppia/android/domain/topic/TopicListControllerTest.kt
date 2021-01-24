@@ -277,7 +277,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_suggestedStoryListCorrect() {
+  fun testGetStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_ongoingStoryListCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -301,11 +301,6 @@ class TopicListControllerTest {
       .isEqualTo(1)
     verifyOngoingStoryAsFractionStory0Exploration1(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
-    )
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(1)
-    verifyPromotedStoryAsFirstTestTopicStory0Exploration0(
-      promotedActivityList.promotedStoryList.suggestedStoryList[0]
     )
   }
 
@@ -334,6 +329,9 @@ class TopicListControllerTest {
       .isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
       .isEqualTo(1)
+    verifyPromotedStoryAsFirstTestTopicStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[0]
+    )
   }
 
   @Test
@@ -399,7 +397,42 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrievePromotedActivityList_markAllChapDoneInRatios_comingSoonTopicListIsCorrect() {
+  fun testGetStoryList_markStoryDoneOfFracRatiosFirstTestTopic_suggestedStoryListIsCorrect() {
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_1,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+
     storyProgressController.recordCompletedChapter(
       profileId0,
       RATIOS_TOPIC_ID,
@@ -421,13 +454,78 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
 
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(2)
-    verifyPromotedStoryAsFirstTestTopicStory0Exploration0(
+      .isEqualTo(1)
+
+    verifyPromotedStoryAsSecondTestTopicStory0Exploration0(
       promotedActivityList.promotedStoryList.suggestedStoryList[0]
     )
-    verifyPromotedStoryAsSecondTestTopicStory0Exploration0(
-      promotedActivityList.promotedStoryList.suggestedStoryList[1]
+  }
+
+
+  @Test
+  fun testRetrievePromotedActivityList_markAllChapDoneInRatios_comingSoonTopicListIsCorrect() {
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      getCurrentTimestamp()
     )
+    testCoroutineDispatchers.runCurrent()
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_1,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_4,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_1,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val promotedActivityList = retrievePromotedActivityList()
+
+    assertThat(promotedActivityList.comingSoonTopicList.upcomingTopicCount)
+      .isEqualTo(1)
   }
 
   @Test
@@ -490,12 +588,10 @@ class TopicListControllerTest {
     verifyOngoingStoryAsFirstTopicStory0Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
     )
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(0)
   }
 
   @Test
-  fun testGetStoryList_markOneStoryDoneForFracTopic_suggestedListIsCorrect() {
+  fun testGetStoryList_markOneStoryDoneForFirstTestTopic_ongoingStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       TEST_TOPIC_ID_0,

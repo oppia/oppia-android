@@ -439,12 +439,22 @@ class TopicListController @Inject constructor(
   private fun retrieveTopicDependencies(topicId: String): List<String> {
     val listOfTopicIds = mutableListOf<String>()
     when (topicId) {
-      FRACTIONS_TOPIC_ID -> {
+      TEST_TOPIC_ID_0 -> {
+        listOfTopicIds.add(FRACTIONS_TOPIC_ID)
+      }
+      TEST_TOPIC_ID_1 -> {
         listOfTopicIds.add(TEST_TOPIC_ID_0)
+        listOfTopicIds.add(RATIOS_TOPIC_ID)
+      }
+      FRACTIONS_TOPIC_ID -> {
+        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
+        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
+        listOfTopicIds.add(DIVISION_TOPIC_ID)
       }
       RATIOS_TOPIC_ID -> {
-        listOfTopicIds.add(TEST_TOPIC_ID_0)
-        listOfTopicIds.add(TEST_TOPIC_ID_1)
+        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
+        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
+        listOfTopicIds.add(DIVISION_TOPIC_ID)
       }
       ADDITION_AND_SUBTRACTION_TOPIC_ID -> {
         listOfTopicIds.add(PLACE_VALUE_TOPIC_ID)
@@ -476,39 +486,30 @@ class TopicListController @Inject constructor(
     val topicIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
+    val topicIdList =
+      (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
 
-    // Check if any prerequisite topic user needs to learn.
-    for (i in 0 until topicIdJsonArray.length()) {
+    // Suggest prerequisite topic user needs to learn after completing any of the topics.
+    for (i in 0 until topicIdList.size) {
       val topicInProgressFound = topicProgressList.any { it.topicId == topicIdJsonArray[i] }
-      if (topicInProgressFound) {
+      if (!topicInProgressFound) {
         val dependentListOfTopics =
-          retrieveTopicDependencies(topicIdJsonArray[i].toString())
+          retrieveTopicDependencies(topicIdList[i])
         for (j in dependentListOfTopics.indices) {
-          val dependentTopicIdsFound =
-            topicProgressList.any { it.topicId == dependentListOfTopics[j] }
-          val recommendedTopicAlreadyExist =
-            recommendedStories.any { it.topicId == dependentListOfTopics[j] }
-          if (!dependentTopicIdsFound && !recommendedTopicAlreadyExist) {
-            fetchListOfRecommendedStories(dependentListOfTopics[j])?.let {
-              recommendedStories.add(it)
-            }
-          }
-        }
-      }
-    }
-
-    // If no any dependent topics to recommend. Recommend next topic,only if any ongoing topic is completed.
-    if (recommendedStories.size == 0) {
-      val topicIdList =
-        (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
-      val index = topicIdList.indexOf(topicProgressList.last().topicId)
-      val topic = topicController.retrieveTopic(topicProgressList.last().topicId)
-      if (checkIfAtLeastOneStoryIsCompleted(topicProgressList.last(), topic)) {
-        for (i in (index + 1) until topicIdJsonArray.length()) {
-          if (topicIdJsonArray.length() > i) {
-            fetchListOfRecommendedStories(topicIdJsonArray[i].toString())?.let {
-              recommendedStories.add(it)
-              return recommendedStories
+          topicProgressList.mapIndexed { index, topicProgress ->
+            if (topicProgress.topicId == dependentListOfTopics[j]) {
+              val topic = topicController.retrieveTopic(topicProgressList[index].topicId)
+              if (checkIfAtLeastOneStoryIsCompleted(topicProgressList[index], topic)) {
+                val recommendedTopicAlreadyExist =
+                  recommendedStories.any { it.topicId == topicIdList[i] }
+                if (!recommendedTopicAlreadyExist) {
+                  val recommendedStoriesIdFromAssets =
+                    createRecommendedStoryFromAssets(topicIdList[i])
+                  if (recommendedStoriesIdFromAssets != null) {
+                    recommendedStories.add(recommendedStoriesIdFromAssets)
+                  }
+                }
+              }
             }
           }
         }
@@ -517,47 +518,42 @@ class TopicListController @Inject constructor(
     return recommendedStories
   }
 
-  private fun fetchListOfRecommendedStories(topicId: String): PromotedStory? {
-    val recommendedStoriesIdFromAssets =
-      createRecommendedStoryFromAssets(topicId)
-    if (recommendedStoriesIdFromAssets != null) {
-      return recommendedStoriesIdFromAssets
-    } else {
-      return null
-    }
-  }
-
   private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory? {
-    val topicJson = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
-    if (!topicJson.getBoolean("published")) {
-      // Do not recommend unpublished topics.
+
+    val topicJson = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")
+    if (topicJson!!.optString("topic_name").isNullOrEmpty()) {
       return null
-    }
+    } else {
+      if (!topicJson.getBoolean("published")) {
+        // Do not recommend unpublished topics.
+        return null
+      }
 
-    val storyData = topicJson.getJSONArray("canonical_story_dicts")
-    if (storyData.length() == 0) {
-      return PromotedStory.getDefaultInstance()
-    }
-    val totalChapterCount = storyData
-      .getJSONObject(0)
-      .getJSONArray("node_titles")
-      .length()
-    val storyId = storyData.optJSONObject(0).optString("id")
-    val storySummary = topicController.retrieveStory(topicId, storyId)
+      val storyData = topicJson.getJSONArray("canonical_story_dicts")
+      if (storyData.length() == 0) {
+        return PromotedStory.getDefaultInstance()
+      }
+      val totalChapterCount = storyData
+        .getJSONObject(0)
+        .getJSONArray("node_titles")
+        .length()
+      val storyId = storyData.optJSONObject(0).optString("id")
+      val storySummary = topicController.retrieveStory(topicId, storyId)
 
-    val promotedStoryBuilder = PromotedStory.newBuilder()
-      .setStoryId(storyId)
-      .setStoryName(storySummary.storyName)
-      .setLessonThumbnail(storySummary.storyThumbnail)
-      .setTopicId(topicId)
-      .setTopicName(topicJson.optString("topic_name"))
-      .setCompletedChapterCount(0)
-      .setTotalChapterCount(totalChapterCount)
-    if (storySummary.chapterList.isNotEmpty()) {
-      promotedStoryBuilder.nextChapterName = storySummary.chapterList[0].name
-      promotedStoryBuilder.explorationId = storySummary.chapterList[0].explorationId
+      val promotedStoryBuilder = PromotedStory.newBuilder()
+        .setStoryId(storyId)
+        .setStoryName(storySummary.storyName)
+        .setLessonThumbnail(storySummary.storyThumbnail)
+        .setTopicId(topicId)
+        .setTopicName(topicJson.optString("topic_name"))
+        .setCompletedChapterCount(0)
+        .setTotalChapterCount(totalChapterCount)
+      if (storySummary.chapterList.isNotEmpty()) {
+        promotedStoryBuilder.nextChapterName = storySummary.chapterList[0].name
+        promotedStoryBuilder.explorationId = storySummary.chapterList[0].explorationId
+      }
+      return promotedStoryBuilder.build()
     }
-    return promotedStoryBuilder.build()
   }
 
   private fun createPromotedStory(
