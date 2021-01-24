@@ -464,7 +464,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markRecentlyPlayedforFirstTestTopic_promotedListIsCorrect() {
+  fun testGetStoryList_markRecentlyPlayedForFirstTestTopic_promotedListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
       TEST_TOPIC_ID_0,
