@@ -825,7 +825,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markFullProgressForSecondTestTopic_promotedStoryListIsCorrect() {
+  fun testProgressTestHelper_markFullProgressForSecondTestTopic_comingSooTopicIsCorrect() {
     storyProgressTestHelper.markFullProgressForSecondTestTopic(
       profileId = profileId,
       timestampOlderThanAWeek = false
@@ -842,9 +842,8 @@ class StoryProgressTestHelperTest {
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
       .isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount).isEqualTo(0)
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(1)
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryList[0].explorationId)
-      .isEqualTo(FRACTIONS_EXPLORATION_ID_0)
+    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(0)
+    assertThat(promotedActivityList.comingSoonTopicList.upcomingTopicCount).isEqualTo(1)
   }
 
   @Test
