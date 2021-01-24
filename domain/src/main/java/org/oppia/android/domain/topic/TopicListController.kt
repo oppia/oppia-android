@@ -452,8 +452,7 @@ class TopicListController @Inject constructor(
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
 
-//    val topicIdList = (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
-//    topicProgressList.forEach { topicProgress ->
+    // Check if any prerequisite topic user needs to learn.
     for (i in 0 until topicIdJsonArray.length()) {
       val topicInProgressFound = topicProgressList.any { it.topicId == topicIdJsonArray[i] }
       if (topicInProgressFound) {
@@ -465,31 +464,42 @@ class TopicListController @Inject constructor(
           val recommendedTopicAlreadyExist =
             recommendedStories.any { it.topicId == dependentListOfTopics[j] }
           if (!dependentTopicIdsFound && !recommendedTopicAlreadyExist) {
-            val recommendedStoriesIdFromAssets =
-              createRecommendedStoryFromAssets(dependentListOfTopics[j])
-            if (recommendedStoriesIdFromAssets != null) {
-              recommendedStories.add(recommendedStoriesIdFromAssets)
+            fetchListOfRecommendedStories(dependentListOfTopics[j])?.let {
+              recommendedStories.add(it)
             }
           }
         }
       }
-//          }
     }
-//    topicProgressList.forEach {
-//      val dependentListOfTopics =
-//        retrieveTopicDependencies(it.topicId)
-//      for (j in dependentListOfTopics.indices) {
-//        val found = topicProgressList.any { it.topicId == dependentListOfTopics[j] }
-//        if (!found) {
-//          val recommendedStoriesIdFromAssets =
-//            createRecommendedStoryFromAssets(dependentListOfTopics[j])
-//          if (recommendedStoriesIdFromAssets != null) {
-//            recommendedStories.add(recommendedStoriesIdFromAssets)
-//          }
-//        }
-//      }
-//    }
+
+    // If no any dependent topics to recommend. Recommend next topic,only if any ongoing topic is completed.
+    if (recommendedStories.size == 0) {
+      val topicIdList =
+        (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
+      val index = topicIdList.indexOf(topicProgressList.last().topicId)
+      val topic = topicController.retrieveTopic(topicProgressList.last().topicId)
+      if (checkIfAtLeastOneStoryIsCompleted(topicProgressList.last(), topic)) {
+        for (i in (index + 1) until topicIdJsonArray.length()) {
+          if (topicIdJsonArray.length() > i) {
+            fetchListOfRecommendedStories(topicIdJsonArray[i].toString())?.let {
+              recommendedStories.add(it)
+              return recommendedStories
+            }
+          }
+        }
+      }
+    }
     return recommendedStories
+  }
+
+  private fun fetchListOfRecommendedStories(topicId: String): PromotedStory? {
+    val recommendedStoriesIdFromAssets =
+      createRecommendedStoryFromAssets(topicId)
+    if (recommendedStoriesIdFromAssets != null) {
+      return recommendedStoriesIdFromAssets
+    } else {
+      return null
+    }
   }
 
   private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory? {

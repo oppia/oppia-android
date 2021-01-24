@@ -606,4 +606,3 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 }
-
