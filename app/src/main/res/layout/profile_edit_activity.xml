@@ -210,6 +210,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
+            android:layout_marginEnd="150dp"
             android:text="@{viewModel.profile.name}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="20sp"
