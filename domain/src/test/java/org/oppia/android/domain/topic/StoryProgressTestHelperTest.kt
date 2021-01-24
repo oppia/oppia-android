@@ -126,7 +126,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testProgressTestHelper_markPartialStoryProgressForFractions_getTopicIsCorrect() {
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
+    storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId,
       timestampOlderThanAWeek = false
     )
@@ -149,7 +149,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testProgressTestHelper_markPartialStoryProgressForFractions_getStoryIsCorrect() {
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
+    storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId,
       timestampOlderThanAWeek = false
     )
@@ -171,7 +171,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testProgressTestHelper_markPartialStoryProgressForFractions_getOngoingTopicListIsCorrect() {
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
+    storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId,
       timestampOlderThanAWeek = false
     )
@@ -191,7 +191,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testProgressTestHelper_markPartialStoryProgressForFractions_getCompletedStoryListIsCorrect() {
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
+    storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId,
       timestampOlderThanAWeek = false
     )
