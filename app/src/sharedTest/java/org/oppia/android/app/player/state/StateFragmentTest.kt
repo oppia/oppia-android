@@ -1000,7 +1000,6 @@ class StateFragmentTest {
     }
   }
 
-
   @Test
   fun testStateFragment_forMisconception_showsLinkTextForConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
