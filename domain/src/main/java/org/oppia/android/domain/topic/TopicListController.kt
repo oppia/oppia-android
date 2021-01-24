@@ -48,6 +48,12 @@ const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
 const val SUBTOPIC_TOPIC_ID = 1
 const val SUBTOPIC_TOPIC_ID_2 = 2
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
+const val PLACE_VALUE_TOPIC_ID = "id0"
+const val ADDITION_AND_SUBTRACTION_TOPIC_ID = "id1"
+const val MULTIPLICATION_TOPIC_ID = "id2"
+const val DIVISION_TOPIC_ID = "id3"
+const val EXPRESSION_AND_EQUATION_TOPIC_ID = "id4"
+const val DECIMALS_TOPIC_ID = "id5"
 val TOPIC_THUMBNAILS = mapOf(
   FRACTIONS_TOPIC_ID to createTopicThumbnail0(),
   RATIOS_TOPIC_ID to createTopicThumbnail1(),
@@ -439,6 +445,25 @@ class TopicListController @Inject constructor(
       RATIOS_TOPIC_ID -> {
         listOfTopicIds.add(TEST_TOPIC_ID_0)
         listOfTopicIds.add(TEST_TOPIC_ID_1)
+      }
+      ADDITION_AND_SUBTRACTION_TOPIC_ID -> {
+        listOfTopicIds.add(PLACE_VALUE_TOPIC_ID)
+      }
+      MULTIPLICATION_TOPIC_ID -> {
+        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
+      }
+      DIVISION_TOPIC_ID -> {
+        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
+      }
+      EXPRESSION_AND_EQUATION_TOPIC_ID -> {
+        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
+        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
+        listOfTopicIds.add(DIVISION_TOPIC_ID)
+      }
+      DECIMALS_TOPIC_ID -> {
+        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
+        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
+        listOfTopicIds.add(DIVISION_TOPIC_ID)
       }
     }
     return listOfTopicIds
