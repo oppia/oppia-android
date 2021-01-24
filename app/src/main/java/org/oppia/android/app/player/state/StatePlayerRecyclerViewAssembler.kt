@@ -1376,7 +1376,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
       } else {
         // See if the learner's new wrong answer justifies showing a hint.
-        if (isFirstHint) {
+        if (isFirstHint && nextUnrevealedHintIndex.hintIndex == 0) {
           if (wrongAnswerCount > 1) {
             // If more than one answer has been submitted and no hint has yet been shown, show a
             // hint immediately since the learner is probably stuck.
