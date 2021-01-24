@@ -562,7 +562,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks one explorations in first test topic as completed played for a particular profile.
    *
    * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for the recently played story is more than a week ago
+   * @param timestampOlderThanAWeek if the timestamp for the recently played story is more than a week ago
    */
   fun markChapterDoneFirstTestTopicStory0Exploration0(
     profileId: ProfileId,
