@@ -461,7 +461,6 @@ class TopicListControllerTest {
     )
   }
 
-
   @Test
   fun testRetrievePromotedActivityList_markAllChapDoneInRatios_comingSoonTopicListIsCorrect() {
     storyProgressController.recordCompletedChapter(

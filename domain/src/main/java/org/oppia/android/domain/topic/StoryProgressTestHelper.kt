@@ -274,7 +274,7 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
-   /**
+  /**
    * Marks recently played on the second test topic for a particular profile.
    *
    * @param profileId the profile we are setting topic progress for
