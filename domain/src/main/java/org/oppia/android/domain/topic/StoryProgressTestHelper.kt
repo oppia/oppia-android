@@ -42,7 +42,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Creates a partial story progress for a particular profile.
+   * Mark a partial story progress for a particular profile.
    *
    * @param profileId the profile we are setting partial progress of the fraction story for
    * @param timestampOlderThanAWeek if the timestamp for this topic progress is more than one week ago
