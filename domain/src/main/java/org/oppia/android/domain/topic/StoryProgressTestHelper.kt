@@ -45,7 +45,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Creates a partial story progress for a particular profile.
    *
    * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week ago
+   * @param timestampOlderThanAWeek if the timestamp for this topic progress is more than one week ago
    */
 
   fun markChapDoneFrac0Story0Expl(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
@@ -257,7 +257,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks full topic progress on the second test topic for a particular profile.
    *
    * @param profileId the profile we are setting topic progress for
-   * @param timestampOlderThanOneWeek if the timestamp for completing the topic is from more than one week ago
+   * @param timestampOlderThanAWeek if the timestamp for completing the topic is from more than one week ago
    */
   fun markFullProgressForSecondTestTopic(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
     val timestamp = if (!timestampOlderThanAWeek) {
@@ -330,7 +330,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks one story progress full in ratios exploration for a particular profile.
    *
    * @param profileId the profile we are setting topic progress on ratios for
-   * @param timestampOlderThanOneWeek if the timestamp for this progress is from more than one week ago
+   * @param timestampOlderThanAWeek if the timestamp for this progress is from more than one week ago
    */
   fun markChapDoneOfRatiosStory0Exp0(
     profileId: ProfileId,
@@ -354,7 +354,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks one story progress full in ratios exploration for a particular profile.
    *
    * @param profileId the profile we are setting topic progress on ratios for
-   * @param timestampOlderThanOneWeek if the timestamp for this progress is from more than one week ago
+   * @param timestampOlderThanAWeek if the timestamp for this progress is from more than one week ago
    */
   fun markChapDoneOfRatiosStory0Exp1(
     profileId: ProfileId,
@@ -562,7 +562,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks one exploration in first test topic as completed played for a particular profile.
    *
    * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for the recently played story is more than a week ago
+   * @param timestampOlderThanAWeek if the timestamp for the recently played story is more than a week ago
    */
   fun markChapterDoneFirstTestTopicStory0Exploration0(
     profileId: ProfileId,
@@ -586,7 +586,7 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks one explorations in first test topic as completed for a particular profile.
    *
    * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for the recently played story is more than a week ago
+   * @param timestampOlderThanAWeek if the timestamp for the recently played story is more than a week ago
    */
   fun markChapterDoneFirstTestTopicStory0Exploration1(
     profileId: ProfileId,
