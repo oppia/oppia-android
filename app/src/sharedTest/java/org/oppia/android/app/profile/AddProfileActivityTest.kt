@@ -224,7 +224,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_inputPin_opensProfileActivity() {
+  fun testAddProfileActivity_inputNameAndPin_opensProfileActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(

@@ -140,7 +140,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputCorrectPassword_imeActionOpensAddProfileActivity() {
+  fun testAdminAuthActivity_inputCorrectPassword_imeAction_opensAddProfileActivity() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -189,7 +189,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputCorrectPassword_imeActionAddAdminControlsActivity() {
+  fun testAdminAuthActivity_inputCorrectPassword_imeAction_opensAdminControlsActivity() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -299,7 +299,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputIncorrectPasswordTwice_imeActionErrorIsGone() {
+  fun testAdminAuthActivity_inputIncorrectPasswordTwice_imeAction_errorIsGone() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -524,7 +524,6 @@ class AdminAuthActivityTest {
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminAuthActivity_inputIncorrectPasswordLandscape_imeAction_checkError() {
     launch<AdminAuthActivity>(

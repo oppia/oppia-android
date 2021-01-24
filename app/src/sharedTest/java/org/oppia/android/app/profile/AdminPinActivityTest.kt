@@ -123,7 +123,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputPin_submitOpensAddProfileActivity() {
+  fun testAdminPinActivity_inputPin_submit_opensAddProfileActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -159,7 +159,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputPin_imeActionOpensAddProfileActivity() {
+  fun testAdminPinActivity_inputPin_imeAction_opensAddProfileActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -193,7 +193,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputPin_submitOpensAdminControlsActivity() {
+  fun testAdminAuthActivity_inputPin_submit_opensAdminControlsActivity() {
     launch<AdminAuthActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -232,7 +232,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputPin_imeActionOpensAdminControlsActivity() {
+  fun testAdminAuthActivity_inputPin_imeAction_opensAdminControlsActivity() {
     launch<AdminAuthActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -493,7 +493,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configChange_inputPin_submitOpensAddProfileActivity() {
+  fun testAdminPinActivity_configChange_inputPin_submit_opensAddProfileActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -532,7 +532,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configChange_inputPin_imeActionOpensAddProfileActivity() {
+  fun testAdminPinActivity_configChange_inputPin_imeAction_opensAddProfileActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -568,7 +568,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configChange_inputPin_submitOpensAdminControlsActivity() {
+  fun testAdminPinActivity_configChange_inputPin_submit_opensAdminControlsActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -607,7 +607,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configChange_inputPin_imeActionOpensAdminControlsActivity() {
+  fun testAdminPinActivity_configChange_inputPin_imeAction_opensAdminControlsActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
