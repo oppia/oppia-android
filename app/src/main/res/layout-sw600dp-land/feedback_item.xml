@@ -63,6 +63,10 @@
       android:layout_height="wrap_content"
       android:breakStrategy="simple"
       android:fontFamily="sans-serif"
+      android:paddingStart="@dimen/feedback_text_view_padding_start"
+      android:paddingEnd="@dimen/feedback_text_view_padding_end"
+      android:paddingTop="@dimen/feedback_text_view_padding_top"
+      android:paddingBottom="@dimen/feedback_text_view_padding_bottom"
       android:text="@{htmlContent}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp" />
