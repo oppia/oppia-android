@@ -26,7 +26,7 @@
         android:id="@+id/slide_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="@string/onboarding_slide_3_title"
+        android:importantForAccessibility="no"
         android:src="@drawable/ic_portrait_onboarding_3"
         app:layout_constraintDimensionRatio="5:4"
         app:layout_constraintEnd_toEndOf="parent"

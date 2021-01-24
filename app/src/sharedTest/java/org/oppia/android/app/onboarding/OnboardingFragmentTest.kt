@@ -123,18 +123,6 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_checkDefaultSlideImage_isCorrect() {
-    launch(OnboardingActivity::class.java).use {
-      onView(
-        allOf(
-          withId(R.id.slide_image_view),
-          isCompletelyDisplayed()
-        )
-      ).check(matches(withContentDescription(R.string.onboarding_slide_0_title)))
-    }
-  }
-
-  @Test
   fun testOnboardingFragment_checkDefaultSlide_index0DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
       onView(
@@ -229,19 +217,6 @@ class OnboardingFragmentTest {
           isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_1_description)))
-    }
-  }
-
-  @Test
-  fun testOnboardingFragment_checkSlide1Image_isCorrect() {
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
-      onView(
-        allOf(
-          withId(R.id.slide_image_view),
-          isCompletelyDisplayed()
-        )
-      ).check(matches(withContentDescription(R.string.onboarding_slide_1_title)))
     }
   }
 
@@ -349,19 +324,6 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_checkSlide2Image_isCorrect() {
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
-      onView(
-        allOf(
-          withId(R.id.slide_image_view),
-          isCompletelyDisplayed()
-        )
-      ).check(matches(withContentDescription(R.string.onboarding_slide_2_title)))
-    }
-  }
-
-  @Test
   fun testOnboardingFragment_checkSlide2_index2DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
@@ -447,19 +409,6 @@ class OnboardingFragmentTest {
           isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_3_description)))
-    }
-  }
-
-  @Test
-  fun testOnboardingFragment_checkSlide3Image_isCorrect() {
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
-      onView(
-        allOf(
-          withId(R.id.slide_image_view),
-          isCompletelyDisplayed()
-        )
-      ).check(matches(withContentDescription(R.string.onboarding_slide_3_title)))
     }
   }
 
