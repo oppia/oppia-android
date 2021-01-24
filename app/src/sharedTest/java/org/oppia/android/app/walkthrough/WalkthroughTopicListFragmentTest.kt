@@ -34,6 +34,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -105,7 +106,7 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex0_topicHeader_topicHeaderIsCorrect() {
+  fun testWalkthroughTopicListFragment_topicHeader_whatDoYouWantToLearnIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -125,7 +126,7 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_topicNameIsCorrect() {
+  fun testWalkthroughTopicListFragment_topicCard_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -151,7 +152,7 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_configurationChanged_topicNameIsCorrect() { // ktlint-disable max-line-length
+  fun testWalkthroughTopicListFragment_topicCard_configChange_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -172,6 +173,33 @@ class WalkthroughTopicListFragmentTest {
       ).check(
         matches(
           withText(containsString("First Test Topic"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testWalkthroughTopicListFragment_topicCard_lessonThumbnailIsCorrect() {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          4
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.walkthrough_topic_recycler_view,
+          4,
+          R.id.walkthrough_topic_thumbnail_image_view
+        )
+      ).check(
+        matches(
+          withDrawable(
+            R.drawable.lesson_thumbnail_graphic_duck_and_chicken
+          )
         )
       )
     }
