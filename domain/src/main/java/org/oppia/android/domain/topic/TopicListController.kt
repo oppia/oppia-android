@@ -48,6 +48,12 @@ const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
 const val SUBTOPIC_TOPIC_ID = 1
 const val SUBTOPIC_TOPIC_ID_2 = 2
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
+const val PLACE_VALUE_TOPIC_ID = "id0"
+const val ADDITION_AND_SUBTRACTION_TOPIC_ID = "id1"
+const val MULTIPLICATION_TOPIC_ID = "id2"
+const val DIVISION_TOPIC_ID = "id3"
+const val EXPRESSION_AND_EQUATION_TOPIC_ID = "id4"
+const val DECIMALS_TOPIC_ID = "id5"
 val TOPIC_THUMBNAILS = mapOf(
   FRACTIONS_TOPIC_ID to createTopicThumbnail0(),
   RATIOS_TOPIC_ID to createTopicThumbnail1(),
@@ -254,7 +260,6 @@ class TopicListController @Inject constructor(
     completionTimeFilter: (Long) -> Boolean
   ): List<PromotedStory> {
 
-    var numberOfDaysPassed: Long
     val playedPromotedStoryList = mutableListOf<PromotedStory>()
     val sortedTopicProgressList =
       topicProgressList.sortedByDescending {
@@ -284,17 +289,17 @@ class TopicListController @Inject constructor(
 
         when {
           latestStartedChapterProgress != null -> {
-            createOngoingStoryListBasedOnRecentlyPlayed(
-              storyId,
-              story,
-              latestStartedChapterProgress,
-              completedChapterProgressList,
-              topic,
-              isTopicConsideredCompleted
-            ).let {
-              numberOfDaysPassed = latestStartedChapterProgress.getNumberOfDaysPassed()
-              if (completionTimeFilter(numberOfDaysPassed)) {
-                playedPromotedStoryList.add(it!!)
+            val numberOfDaysPassed = latestStartedChapterProgress.getNumberOfDaysPassed()
+            if (completionTimeFilter(numberOfDaysPassed)) {
+              createOngoingStoryListBasedOnRecentlyPlayed(
+                storyId,
+                story,
+                latestStartedChapterProgress,
+                completedChapterProgressList,
+                topic,
+                isTopicConsideredCompleted
+              )?.let { promotedStory ->
+                playedPromotedStoryList.add(promotedStory)
               }
             }
           }
@@ -302,17 +307,17 @@ class TopicListController @Inject constructor(
           latestCompletedChapterProgress != null &&
             latestCompletedChapterProgress.explorationId !=
             story.chapterList.last().explorationId -> {
-            createOngoingStoryListBasedOnMostRecentlyCompleted(
-              storyId,
-              story,
-              latestCompletedChapterProgress,
-              completedChapterProgressList,
-              topic,
-              isTopicConsideredCompleted
-            ).let {
-              numberOfDaysPassed = latestCompletedChapterProgress.getNumberOfDaysPassed()
-              if (completionTimeFilter(numberOfDaysPassed)) {
-                playedPromotedStoryList.add(it!!)
+            val numberOfDaysPassed = latestCompletedChapterProgress.getNumberOfDaysPassed()
+            if (completionTimeFilter(numberOfDaysPassed)) {
+              createOngoingStoryListBasedOnMostRecentlyCompleted(
+                storyId,
+                story,
+                latestCompletedChapterProgress,
+                completedChapterProgressList,
+                topic,
+                isTopicConsideredCompleted
+              )?.let { promotedStory ->
+                playedPromotedStoryList.add(promotedStory)
               }
             }
           }
@@ -429,13 +434,37 @@ class TopicListController @Inject constructor(
     )
   }
 
-  private fun getDependentLisOfTopicForOngoingTopic(topicId: String): List<String> {
+  // TODO(#2550): Remove hardcoded order of topics. Compute list of suggested stories from backend structures
+  /** Returns a list of topic IDs for which the specified topic ID expects to be completed before being suggested. */
+  private fun retrieveTopicDependencies(topicId: String): List<String> {
     val listOfTopicIds = mutableListOf<String>()
-    if (topicId == TEST_TOPIC_ID_0) {
-      listOfTopicIds.add(FRACTIONS_TOPIC_ID)
-    } else if (topicId == TEST_TOPIC_ID_1) {
-      listOfTopicIds.add(TEST_TOPIC_ID_0)
-      listOfTopicIds.add(RATIOS_TOPIC_ID)
+    when (topicId) {
+      FRACTIONS_TOPIC_ID -> {
+        listOfTopicIds.add(TEST_TOPIC_ID_0)
+      }
+      RATIOS_TOPIC_ID -> {
+        listOfTopicIds.add(TEST_TOPIC_ID_0)
+        listOfTopicIds.add(TEST_TOPIC_ID_1)
+      }
+      ADDITION_AND_SUBTRACTION_TOPIC_ID -> {
+        listOfTopicIds.add(PLACE_VALUE_TOPIC_ID)
+      }
+      MULTIPLICATION_TOPIC_ID -> {
+        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
+      }
+      DIVISION_TOPIC_ID -> {
+        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
+      }
+      EXPRESSION_AND_EQUATION_TOPIC_ID -> {
+        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
+        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
+        listOfTopicIds.add(DIVISION_TOPIC_ID)
+      }
+      DECIMALS_TOPIC_ID -> {
+        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
+        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
+        listOfTopicIds.add(DIVISION_TOPIC_ID)
+      }
     }
     return listOfTopicIds
   }
@@ -444,21 +473,58 @@ class TopicListController @Inject constructor(
     topicProgressList: List<TopicProgress>
   ): List<PromotedStory> {
     val recommendedStories = mutableListOf<PromotedStory>()
-    topicProgressList.forEach {
-      val dependentListOfTopics =
-        getDependentLisOfTopicForOngoingTopic(it.topicId)
-      for (j in dependentListOfTopics.indices) {
-        val found = topicProgressList.any { it.topicId == dependentListOfTopics[j] }
-        if (!found) {
-          val recommendedStoriesIdFromAssets =
-            createRecommendedStoryFromAssets(dependentListOfTopics[j])
-          if (recommendedStoriesIdFromAssets != null) {
-            recommendedStories.add(recommendedStoriesIdFromAssets)
+    val topicIdJsonArray = jsonAssetRetriever
+      .loadJsonFromAsset("topics.json")!!
+      .getJSONArray("topic_id_list")
+
+    // Check if any prerequisite topic user needs to learn.
+    for (i in 0 until topicIdJsonArray.length()) {
+      val topicInProgressFound = topicProgressList.any { it.topicId == topicIdJsonArray[i] }
+      if (topicInProgressFound) {
+        val dependentListOfTopics =
+          retrieveTopicDependencies(topicIdJsonArray[i].toString())
+        for (j in dependentListOfTopics.indices) {
+          val dependentTopicIdsFound =
+            topicProgressList.any { it.topicId == dependentListOfTopics[j] }
+          val recommendedTopicAlreadyExist =
+            recommendedStories.any { it.topicId == dependentListOfTopics[j] }
+          if (!dependentTopicIdsFound && !recommendedTopicAlreadyExist) {
+            fetchListOfRecommendedStories(dependentListOfTopics[j])?.let {
+              recommendedStories.add(it)
+            }
+          }
+        }
+      }
+    }
+
+    // If no any dependent topics to recommend. Recommend next topic,only if any ongoing topic is completed.
+    if (recommendedStories.size == 0) {
+      val topicIdList =
+        (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
+      val index = topicIdList.indexOf(topicProgressList.last().topicId)
+      val topic = topicController.retrieveTopic(topicProgressList.last().topicId)
+      if (checkIfAtLeastOneStoryIsCompleted(topicProgressList.last(), topic)) {
+        for (i in (index + 1) until topicIdJsonArray.length()) {
+          if (topicIdJsonArray.length() > i) {
+            fetchListOfRecommendedStories(topicIdJsonArray[i].toString())?.let {
+              recommendedStories.add(it)
+              return recommendedStories
+            }
           }
         }
       }
     }
     return recommendedStories
+  }
+
+  private fun fetchListOfRecommendedStories(topicId: String): PromotedStory? {
+    val recommendedStoriesIdFromAssets =
+      createRecommendedStoryFromAssets(topicId)
+    if (recommendedStoriesIdFromAssets != null) {
+      return recommendedStoriesIdFromAssets
+    } else {
+      return null
+    }
   }
 
   private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory? {

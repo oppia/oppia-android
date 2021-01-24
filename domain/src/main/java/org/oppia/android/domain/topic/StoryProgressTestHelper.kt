@@ -42,6 +42,28 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
+   * Creates a partial story progress for a particular profile.
+   *
+   * @param profileId the profile we are setting partial progress of the fraction story for
+   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week ago
+   */
+
+  fun markChapDoneFrac0Story0Expl(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
+    val timestamp = if (!timestampOlderThanAWeek) {
+      getCurrentTimestamp()
+    } else {
+      getOldTimestamp()
+    }
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_1,
+      timestamp
+    )
+  }
+
+  /**
    * Creates a partial topic progress for a particular profile.
    *
    * @param profileId the profile we are setting partial progress of the fraction topic for
@@ -252,6 +274,27 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
+/**
+   * Marks recently played on the second test topic for a particular profile.
+   *
+   * @param profileId the profile we are setting topic progress for
+   * @param timestampOlderThanOneWeek if the timestamp for completing the topic is from more than one week ago
+   */
+  fun markRecentlyPlayedForSecondTestTopic(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
+    val timestamp = if (!timestampOlderThanAWeek) {
+      getCurrentTimestamp()
+    } else {
+      getOldTimestamp()
+    }
+    storyProgressController.recordRecentlyPlayedChapter(
+      profileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_4,
+      timestamp
+    )
+  }
+
   /**
    * Marks one story progress fully complete in the ratios topic for a particular profile.
    *
@@ -289,7 +332,31 @@ class StoryProgressTestHelper @Inject constructor(
    * @param profileId the profile we are setting topic progress on ratios for
    * @param timestampOlderThanOneWeek if the timestamp for this progress is from more than one week ago
    */
-  fun markChapDoneOfRatiosStory0Exp2(
+  fun markChapDoneOfRatiosStory0Exp0(
+    profileId: ProfileId,
+    timestampOlderThanAWeek: Boolean
+  ) {
+    val timestamp = if (!timestampOlderThanAWeek) {
+      getCurrentTimestamp()
+    } else {
+      getOldTimestamp()
+    }
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      timestamp
+    )
+  }
+
+  /**
+   * Marks one story progress full in ratios exploration for a particular profile.
+   *
+   * @param profileId the profile we are setting topic progress on ratios for
+   * @param timestampOlderThanOneWeek if the timestamp for this progress is from more than one week ago
+   */
+  fun markChapDoneOfRatiosStory0Exp1(
     profileId: ProfileId,
     timestampOlderThanAWeek: Boolean
   ) {
@@ -487,6 +554,54 @@ class StoryProgressTestHelper @Inject constructor(
       TEST_TOPIC_ID_1,
       TEST_STORY_ID_2,
       TEST_EXPLORATION_ID_4,
+      timestamp
+    )
+  }
+
+  /**
+   * Marks one explorations in first test topic as completed played for a particular profile.
+   *
+   * @param profileId the profile we are setting recently played for
+   * @param timestampOlderThanOneWeek if the timestamp for the recently played story is more than a week ago
+   */
+  fun markChapterDoneFirstTestTopicStory0Exploration0(
+    profileId: ProfileId,
+    timestampOlderThanAWeek: Boolean
+  ) {
+    val timestamp = if (!timestampOlderThanAWeek) {
+      getCurrentTimestamp()
+    } else {
+      getOldTimestamp()
+    }
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      timestamp
+    )
+  }
+
+  /**
+   * Marks one explorations in first test topic as completed for a particular profile.
+   *
+   * @param profileId the profile we are setting recently played for
+   * @param timestampOlderThanOneWeek if the timestamp for the recently played story is more than a week ago
+   */
+  fun markChapterDoneFirstTestTopicStory0Exploration1(
+    profileId: ProfileId,
+    timestampOlderThanAWeek: Boolean
+  ) {
+    val timestamp = if (!timestampOlderThanAWeek) {
+      getCurrentTimestamp()
+    } else {
+      getOldTimestamp()
+    }
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
       timestamp
     )
   }
