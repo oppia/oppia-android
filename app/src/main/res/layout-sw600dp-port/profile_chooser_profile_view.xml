@@ -60,8 +60,6 @@
         <TextView
           android:id="@+id/profile_name_text"
           style="@style/Heading2"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
           android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
           android:text="@{viewModel.profile.name}"
           android:textColor="@color/white"
