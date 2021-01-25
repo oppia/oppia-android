@@ -335,7 +335,6 @@ class StoryFragmentTest {
           2
         )
       )
-
       onView(
         atPositionOnView(
           R.id.story_chapter_list,
@@ -357,7 +356,7 @@ class StoryFragmentTest {
   }
 
   @Test
-  fun testStoryFragment_changeConfiguration_chapterMissingPrerequisiteThumbnailIsBlurred() {
+  fun testStoryFragment_configChange_chapterMissingPrerequisiteThumbnailIsBlurred() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -366,7 +365,6 @@ class StoryFragmentTest {
           2
         )
       )
-
       onView(
         atPositionOnView(
           R.id.story_chapter_list,
@@ -563,6 +561,7 @@ class StoryFragmentTest {
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 
+  /** [TestModule] is a mock that does not load image. It is used to spy on [ImageLoader]. */
   @Module
   class TestModule {
     @Provides
