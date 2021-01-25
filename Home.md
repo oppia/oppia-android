@@ -22,7 +22,10 @@ Please follow these steps for initial setup of the project on your local machine
 
 2. Navigate to `opensource/oppia-android/` and run the project in Android Studio. or follow [Android Studio UI based Github workflow](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow)
 
-3. Run the script
+3. Set up `Java` with the latest version. Install from [here](https://www.java.com/en/download/). <br>
+If you are on Windows, please set up the environment path correctly for `Java`.
+
+4. Run the script
     - For Mac or Linux 
        1. Open terminal
        2. Move to `opensource/oppia-android/`
