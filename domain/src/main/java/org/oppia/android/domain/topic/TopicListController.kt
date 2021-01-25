@@ -486,36 +486,76 @@ class TopicListController @Inject constructor(
     val topicIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
+    
+    // The list of started or completed topic IDs.
+    val startedTopicIds = topicProgressList.map(TopicProgress::getTopicId)
+    // All topics that could potentially be recommended.
     val topicIdList =
       (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
+    // The list of topic IDs that qualify for being recommended.
+    val unstartedTopicIdList = topicIdList.filterNot { startedTopicIds.contains(it) }
 
+    // A map of topic IDs to their dependencies.
+    val topicDependencyMap = topicIdList.associateWith {
+      retrieveTopicDependencies(it).toSet()
+    }.withDefault { setOf<String>() }
+    // The list of topic IDs that are considered "finished" from a recommendation perspective.
+    val fullyCompletedTopicIds = topicProgressList.filter {
+      topicHasAtleastOnStoryCompleted(it)
+    }.map(TopicProgress::getTopicId)
+    // A set of topic IDs that can be considered topics that should not be recommended.
+    val impliedFinishedTopicIds = computeImpliedCompletedDependencies(
+      fullyCompletedTopicIds, topicDependencyMap
+    )
     // Suggest prerequisite topic user needs to learn after completing any of the topics.
-    for (i in 0 until topicIdList.size) {
-      val topicInProgressFound = topicProgressList.any { it.topicId == topicIdJsonArray[i] }
-      if (!topicInProgressFound) {
-        val dependentListOfTopics =
-          retrieveTopicDependencies(topicIdList[i])
-        for (j in dependentListOfTopics.indices) {
-          topicProgressList.mapIndexed { index, topicProgress ->
-            if (topicProgress.topicId == dependentListOfTopics[j]) {
-              val topic = topicController.retrieveTopic(topicProgressList[index].topicId)
-              if (checkIfAtLeastOneStoryIsCompleted(topicProgressList[index], topic)) {
-                val recommendedTopicAlreadyExist =
-                  recommendedStories.any { it.topicId == topicIdList[i] }
-                if (!recommendedTopicAlreadyExist) {
-                  val recommendedStoriesIdFromAssets =
-                    createRecommendedStoryFromAssets(topicIdList[i])
-                  if (recommendedStoriesIdFromAssets != null) {
-                    recommendedStories.add(recommendedStoriesIdFromAssets)
-                  }
-                }
-              }
-            }
-          }
+    for (topicId in unstartedTopicIdList) {
+      // All of the topic's prerequisites must be completed before it can be suggested.
+      val dependentTopicIds = topicDependencyMap[topicId]
+      if (topicId !in impliedFinishedTopicIds && startedTopicIds.containsAll(dependentTopicIds!!)) {
+        createRecommendedStoryFromAssets(topicId)?.let {
+          recommendedStories.add(it)
         }
       }
     }
     return recommendedStories
+  }
+
+  private fun topicHasAtleastOnStoryCompleted(it: TopicProgress): Boolean {
+    val topic = topicController.retrieveTopic(it.topicId)
+    it.storyProgressMap.values.forEach { storyProgress ->
+      val storyId = storyProgress.storyId
+      val story = topicController.retrieveStory(topic.topicId, storyId)
+      val isStoryCompleted = checkIfStoryIsCompleted(storyProgress, story)
+      if (isStoryCompleted) {
+        return true
+      }
+    }
+    return false
+  }
+
+  /** Returns the list of topic IDs that are completed or can be implied completed based on actually completed topics. */
+  private fun computeImpliedCompletedDependencies(
+    fullyCompletedTopicIds: List<String>,
+    topicDependencyMap: Map<String, Set<String>>
+  ): Set<String> {
+    // For each completed topic ID, compute the transitive closure of all of its dependencies & then combine them into a single list with the actual completed topic IDs. The returned list is a list of either completed or assumed completed topics which will eliminate potential recommendations.
+    return (fullyCompletedTopicIds.flatMap { topicId ->
+      computeTransitiveDependencyClosure(topicId, topicDependencyMap)
+    } + fullyCompletedTopicIds).toSet()
+  }
+
+  private fun computeTransitiveDependencyClosure(
+    topicId: String,
+    topicDependencyMap: Map<String, Set<String>>
+  ): Set<String> {
+    // Compute the total list of dependent topics that must be completed before the specified topic can be recommended. Note that this will cause a stack overflow if the graph has cycles.
+    val topicDependencyList = topicDependencyMap[topicId]?.flatMap { dependentId ->
+      computeTransitiveDependencyClosure(
+        dependentId,
+        topicDependencyMap
+      )
+    }
+    return topicDependencyList?.toSet() ?: emptySet()
   }
 
   private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory? {
@@ -753,3 +793,4 @@ internal fun createChapterThumbnail9(): LessonThumbnail {
     .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
+
