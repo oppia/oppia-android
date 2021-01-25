@@ -836,7 +836,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configChange_inputPinAndWrongConfirmPin_imeAction_inputConfirmPin() {
+  fun testAdminPinActivity_configChange_inputWrongConfirmPin_imeAction_correct_errorIsCleared() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,

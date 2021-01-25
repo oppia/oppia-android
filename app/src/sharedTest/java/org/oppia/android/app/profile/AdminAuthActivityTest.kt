@@ -239,7 +239,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputIncorrectPassword_imeAction_checkError() {
+  fun testAdminAuthActivity_inputIncorrectPassword_imeAction_errorIsDisplayed() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -299,7 +299,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputIncorrectPasswordTwice_imeAction_errorIsGone() {
+  fun testAdminAuthActivity_inputIncorrectPassword_correct_imeAction_errorIsGone() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -525,7 +525,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputIncorrectPasswordLandscape_imeAction_checkError() {
+  fun testAdminAuthActivity_inputIncorrectPassword_imeAction_configChange_errorIsDisplayed() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,

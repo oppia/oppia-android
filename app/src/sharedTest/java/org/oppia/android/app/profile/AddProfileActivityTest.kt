@@ -452,7 +452,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_configChange_inputNotUniqueName_create_inputName_errorCleared() {
+  fun testAddProfileActivity_configChange_inputNotUniqueName_create_inputName_errorIsCleared() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -564,7 +564,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_configChange_inputNameWithNumbers_create_inputName_errorCleared() {
+  fun testAddProfileActivity_configChange_inputNameWithNumbers_create_inputName_errorIsCleared() {
     launch(AddProfileActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -703,7 +703,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_configChange_inputShortPin_create_inputPin_errorCleared() {
+  fun testAddProfileActivity_configChange_inputShortPin_create_inputPin_errorIsCleared() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
@@ -901,7 +901,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_configChange_inputWrongConfirmPinAndConfirmPin_errorCleared() {
+  fun testAddProfileActivity_configChange_inputWrongConfirmPinAndConfirmPin_errorIsCleared() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
@@ -973,7 +973,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_configChange_inputPin_checkAllowDownloadNotClickable() {
+  fun testAddProfileActivity_configChange_inputPin_allowDownloadIsNotClickable() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo()).perform(click())
@@ -998,7 +998,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputPin_inputConfirmPin_checkAllowDownloadClickable() {
+  fun testAddProfileActivity_inputPin_inputConfirmPin_allowDownloadIsClickable() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
@@ -1038,7 +1038,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_configChange_inputPin_checkAllowDownloadClickable() {
+  fun testAddProfileActivity_configChange_inputPin_allowDownloadIsClickable() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
@@ -1135,7 +1135,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_configChange_checkNameDisplayed() {
+  fun testAddProfileActivity_inputName_configChange_nameIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -1158,7 +1158,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputPin_configChange_checkPinDisplayed() {
+  fun testAddProfileActivity_inputPin_configChange_pinIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
@@ -1326,7 +1326,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputNotUniqueName_create_configChange_errorMessageDisplayed() {
+  fun testAddProfileActivity_inputNotUniqueName_create_configChange_errorMessageIsDisplayed() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1415,7 +1415,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputPin_create_configChange_errorMessageDisplayed() {
+  fun testAddProfileActivity_inputPin_create_configChange_errorMessageIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
