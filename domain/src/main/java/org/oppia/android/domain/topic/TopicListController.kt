@@ -526,7 +526,8 @@ class TopicListController @Inject constructor(
     // For each completed topic ID, compute the transitive closure of all of its dependencies & then combine them into a single list with the actual completed topic IDs. The returned list is a list of either completed or assumed completed topics which will eliminate potential recommendations.
     return (fullyCompletedTopicIds.flatMap { topicId ->
       computeTransitiveDependencyClosure(topicId, topicDependencyMap)
-    } + fullyCompletedTopicIds).toSet()
+    }+ fullyCompletedTopicIds
+      ).toSet()
   }
 
   private fun computeTransitiveDependencyClosure(
@@ -778,4 +779,3 @@ internal fun createChapterThumbnail9(): LessonThumbnail {
     .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
-
