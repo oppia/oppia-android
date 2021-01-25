@@ -22,25 +22,13 @@ class KonfettiViewMatcher {
      * A custom [TypeSafeMatcher] class to check that the associated view is a [KonfettiView] and isActive().
      */
     private class ActiveConfettiMatcher() : TypeSafeMatcher<View>() {
-      var view: KonfettiView? = null
 
       override fun describeTo(description: Description) {
-        if (view != null) {
-          description.appendText(
-            String.format(
-              "KonfettiView with %s active confetti systems", view!!.getActiveSystems()
-            )
-          )
-        }
+        description.appendText("KonfettiView with active confetti animation")
       }
 
       override fun matchesSafely(view: View): Boolean {
-        if (view !is KonfettiView) {
-          return false
-        }
-        System.out.println("ACTIVE SYSTEMS = " + view.getActiveSystems())
-        this.view = view
-        return this.view!!.isActive()
+        return view is KonfettiView && view.isActive()
       }
     }
   }
