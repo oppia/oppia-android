@@ -273,7 +273,7 @@ class TopicListController @Inject constructor(
     sortedTopicProgressList.forEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
 
-      val isTopicConsideredCompleted = checkIfAtLeastOneStoryIsCompleted(topicProgress, topic)
+      val isTopicConsideredCompleted = topicHasAtLeastOnStoryCompleted(topicProgress)
 
       topicProgress.storyProgressMap.values.forEach { storyProgress ->
         val storyId = storyProgress.storyId
@@ -325,21 +325,6 @@ class TopicListController @Inject constructor(
       }
     }
     return playedPromotedStoryList
-  }
-
-  private fun checkIfAtLeastOneStoryIsCompleted(
-    topicProgress: TopicProgress,
-    topic: Topic
-  ): Boolean {
-    topicProgress.storyProgressMap.values.forEach { storyProgress ->
-      val storyId = storyProgress.storyId
-      val story = topicController.retrieveStory(topic.topicId, storyId)
-      val isStoryCompleted = checkIfStoryIsCompleted(storyProgress, story)
-      if (isStoryCompleted) {
-        return true
-      }
-    }
-    return false
   }
 
   private fun checkIfStoryIsCompleted(
@@ -486,7 +471,7 @@ class TopicListController @Inject constructor(
     val topicIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
-    
+
     // The list of started or completed topic IDs.
     val startedTopicIds = topicProgressList.map(TopicProgress::getTopicId)
     // All topics that could potentially be recommended.
@@ -501,7 +486,7 @@ class TopicListController @Inject constructor(
     }.withDefault { setOf<String>() }
     // The list of topic IDs that are considered "finished" from a recommendation perspective.
     val fullyCompletedTopicIds = topicProgressList.filter {
-      topicHasAtleastOnStoryCompleted(it)
+      topicHasAtLeastOnStoryCompleted(it)
     }.map(TopicProgress::getTopicId)
     // A set of topic IDs that can be considered topics that should not be recommended.
     val impliedFinishedTopicIds = computeImpliedCompletedDependencies(
@@ -520,7 +505,7 @@ class TopicListController @Inject constructor(
     return recommendedStories
   }
 
-  private fun topicHasAtleastOnStoryCompleted(it: TopicProgress): Boolean {
+  private fun topicHasAtLeastOnStoryCompleted(it: TopicProgress): Boolean {
     val topic = topicController.retrieveTopic(it.topicId)
     it.storyProgressMap.values.forEach { storyProgress ->
       val storyId = storyProgress.storyId
