@@ -216,8 +216,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide1Title_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide1()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(isRoot()).perform(orientationPortrait())
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -231,8 +229,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide1Description_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      onView(isRoot()).perform(orientationLandscape())
-      onView(isRoot()).perform(orientationPortrait())
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
@@ -246,8 +242,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide1Image_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide1()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(isRoot()).perform(orientationPortrait())
       onView(
         allOf(
           withId(R.id.slide_image_view),
@@ -326,8 +320,6 @@ class OnboardingFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeRight())
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(isRoot()).perform(orientationPortrait())
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -341,8 +333,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide2Title_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide2()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(isRoot()).perform(orientationPortrait())
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -356,8 +346,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide2Description_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide2()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(isRoot()).perform(orientationPortrait())
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
@@ -371,8 +359,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide2Image_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide2()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(isRoot()).perform(orientationPortrait())
       onView(
         allOf(
           withId(R.id.slide_image_view),
@@ -386,7 +372,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide2_index2DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide2()
-
       onView(
         allOf(
           withId(R.id.onboarding_dot_0),
@@ -449,8 +434,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide3Title_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide3()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(isRoot()).perform(orientationPortrait())
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -464,8 +447,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide3Description_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide3()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(isRoot()).perform(orientationPortrait())
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
@@ -479,8 +460,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide3Image_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide3()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(isRoot()).perform(orientationPortrait())
       onView(
         allOf(
           withId(R.id.slide_image_view),
@@ -509,13 +488,8 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide3_clickGetStartedButton_opensProfileActivity() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      swipeToSlide3()
       onView(withId(R.id.get_started_button)).perform(scrollTo(), click())
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(isRoot()).perform(orientationPortrait())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
