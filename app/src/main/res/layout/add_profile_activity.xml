@@ -94,7 +94,7 @@
               android:imeOptions="actionDone"
               android:maxLength="36"
               android:singleLine="true"
-              android:text="@{viewModel.inputName}"/>
+              android:text="@{viewModel.inputName}" />
           </com.google.android.material.textfield.TextInputLayout>
 
           <CheckBox
@@ -148,7 +148,7 @@
                 android:imeOptions="actionNext"
                 android:inputType="numberPassword"
                 android:maxLength="3"
-                android:text="@{viewModel.inputPin}"/>
+                android:text="@{viewModel.inputPin}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -173,7 +173,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="numberPassword"
                 android:maxLength="3"
-                android:text="@{viewModel.inputConfirmPin}"/>
+                android:text="@{viewModel.inputConfirmPin}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
