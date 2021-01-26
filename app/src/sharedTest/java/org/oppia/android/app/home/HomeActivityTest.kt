@@ -428,14 +428,14 @@ class HomeActivityTest {
         targetViewId = R.id.recently_played_stories_text_view,
         stringToMatch = context.getString(R.string.stories_for_you)
       )
-      verifyTextOnHomeListItemAtPosition(
-        itemPosition = 1,
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "Ratios and Proportional Reasoning"
       )
-      scrollToPositionOfPromotedList(position = 2)
-      verifyTextOnHomeListItemAtPosition(
-        itemPosition = 2,
+      scrollToPositionOfPromotedList(position = 1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "Second Test Topic"
       )
@@ -1115,6 +1115,20 @@ class HomeActivityTest {
     onView(
       atPositionOnView(
         R.id.home_recycler_view,
+        itemPosition,
+        targetViewId
+      )
+    ).check(matches(withText(containsString(stringToMatch))))
+  }
+
+  private fun verifyTextOnPromotedListItemAtPosition(
+    itemPosition: Int,
+    targetViewId: Int,
+    stringToMatch: String
+  ) {
+    onView(
+      atPositionOnView(
+        R.id.promoted_story_list_recycler_view,
         itemPosition,
         targetViewId
       )

@@ -273,7 +273,7 @@ class TopicListController @Inject constructor(
     sortedTopicProgressList.forEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
 
-      val isTopicConsideredCompleted = topicHasAtLeastOnStoryCompleted(topicProgress)
+      val isTopicConsideredCompleted = topicHasAtLeastOneStoryCompleted(topicProgress)
 
       topicProgress.storyProgressMap.values.forEach { storyProgress ->
         val storyId = storyProgress.storyId
@@ -486,7 +486,7 @@ class TopicListController @Inject constructor(
     }.withDefault { setOf<String>() }
     // The list of topic IDs that are considered "finished" from a recommendation perspective.
     val fullyCompletedTopicIds = topicProgressList.filter {
-      topicHasAtLeastOnStoryCompleted(it)
+      topicHasAtLeastOneStoryCompleted(it)
     }.map(TopicProgress::getTopicId)
     // A set of topic IDs that can be considered topics that should not be recommended.
     val impliedFinishedTopicIds = computeImpliedCompletedDependencies(
@@ -495,7 +495,7 @@ class TopicListController @Inject constructor(
     // Suggest prerequisite topic user needs to learn after completing any of the topics.
     for (topicId in unstartedTopicIdList) {
       // All of the topic's prerequisites must be completed before it can be suggested.
-      val dependentTopicIds = topicDependencyMap[topicId]
+      val dependentTopicIds = topicDependencyMap[topicId] ?: listOf()
       if (topicId !in impliedFinishedTopicIds && startedTopicIds.containsAll(dependentTopicIds!!)) {
         createRecommendedStoryFromAssets(topicId)?.let {
           recommendedStories.add(it)
@@ -505,7 +505,7 @@ class TopicListController @Inject constructor(
     return recommendedStories
   }
 
-  private fun topicHasAtLeastOnStoryCompleted(it: TopicProgress): Boolean {
+  private fun topicHasAtLeastOneStoryCompleted(it: TopicProgress): Boolean {
     val topic = topicController.retrieveTopic(it.topicId)
     it.storyProgressMap.values.forEach { storyProgress ->
       val storyId = storyProgress.storyId
@@ -518,24 +518,30 @@ class TopicListController @Inject constructor(
     return false
   }
 
-  /** Returns the list of topic IDs that are completed or can be implied completed based on actually completed topics. */
+  /** Returns the list of topic IDs that are completed or can be implied completed based on actually
+   * completed topics.
+   * */
   private fun computeImpliedCompletedDependencies(
     fullyCompletedTopicIds: List<String>,
     topicDependencyMap: Map<String, Set<String>>
   ): Set<String> {
-    // For each completed topic ID, compute the transitive closure of all of its dependencies & then combine them into a single list with the actual completed topic IDs. The returned list is a list of either completed or assumed completed topics which will eliminate potential recommendations.
-    return (
+    // For each completed topic ID, compute the transitive closure of all of its dependencies &
+    // then combine them into a single list with the actual completed topic IDs. The returned list
+    // is a list of either completed or assumed completed topics which will eliminate potential
+    // recommendations.
+    val completedTopicIds =
       fullyCompletedTopicIds.flatMap { topicId ->
         computeTransitiveDependencyClosure(topicId, topicDependencyMap)
       } + fullyCompletedTopicIds
-      ).toSet()
+    return completedTopicIds.toSet()
   }
 
   private fun computeTransitiveDependencyClosure(
     topicId: String,
     topicDependencyMap: Map<String, Set<String>>
   ): Set<String> {
-    // Compute the total list of dependent topics that must be completed before the specified topic can be recommended. Note that this will cause a stack overflow if the graph has cycles.
+    // Compute the total list of dependent topics that must be completed before the specified topic
+    // can be recommended. Note that this will cause a stack overflow if the graph has cycles.
     val topicDependencyList = topicDependencyMap[topicId]?.flatMap { dependentId ->
       computeTransitiveDependencyClosure(
         dependentId,
