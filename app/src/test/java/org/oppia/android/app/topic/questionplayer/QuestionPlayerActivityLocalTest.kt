@@ -22,9 +22,7 @@ import dagger.Module
 import dagger.Provides
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
-import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -54,14 +52,12 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
-import org.oppia.android.domain.question.QuestionCountPerTrainingSession
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.question.QuestionTrainingSeed
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasActiveConfetti
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -92,9 +88,6 @@ import javax.inject.Singleton
 )
 class QuestionPlayerActivityLocalTest {
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
@@ -113,13 +106,7 @@ class QuestionPlayerActivityLocalTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-  }
-
-  @After
-  fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   @Test
@@ -326,10 +313,6 @@ class QuestionPlayerActivityLocalTest {
 
   @Module
   class TestModule {
-    @Provides
-    @QuestionCountPerTrainingSession
-    fun provideQuestionCountPerTrainingSession(): Int = 3
-
     // Ensure that the question seed is consistent for all runs of the tests to keep question order
     // predictable.
     @Provides
