@@ -1049,9 +1049,9 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_finishExplorationAndGoBackAState_endOfSessionConfettiWillStopEmitting() {
-    // TODO(#2560) Test depends on if we want graceful or abrupt stop for confetti. If graceful, can only check that
-    //  confetti stops emitting since we don't know how long it takes for the view to remove the system once
-    //  it has stopped. If reset, can check not active.
+    // TODO(#2560) Test depends on if we want graceful or abrupt stop for confetti. If graceful,
+    //  can only check that confetti stops emitting since we don't know how long it takes for the
+    //  view to remove the system onceit has stopped. If reset, can check not active.
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughAllStates()
