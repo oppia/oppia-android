@@ -669,23 +669,13 @@ class TopicListControllerTest {
       TEST_EXPLORATION_ID_5,
       getCurrentTimestamp()
     )
-
     testCoroutineDispatchers.runCurrent()
 
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_1,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordRecentlyPlayedChapter(
-      profileId0,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_2,
-      TEST_EXPLORATION_ID_4,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
       getCurrentTimestamp()
     )
     testCoroutineDispatchers.runCurrent()
