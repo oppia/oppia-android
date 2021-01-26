@@ -3,6 +3,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+
     <variable
       name="viewModel"
       type="org.oppia.android.app.topic.revision.TopicRevisionViewModel" />
@@ -24,6 +25,6 @@
       android:paddingEnd="56dp"
       android:paddingBottom="104dp"
       android:tag="@string/topic_revision_recyclerview_tag"
-      app:data="@{viewModel.subtopicLiveData}"/>
+      app:data="@{viewModel.subtopicLiveData}" />
   </FrameLayout>
 </layout>
