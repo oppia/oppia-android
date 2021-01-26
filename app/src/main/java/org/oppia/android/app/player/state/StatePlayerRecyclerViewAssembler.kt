@@ -462,7 +462,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     animateCongratulationsTextView(textView)
   }
 
-  /** Shows a congratulations message due to the learner having submitted a correct answer. */
+  /** Shows confetti when the learner reaches the end of an exploration. */
   fun showCelebrationForEndOfExplorationSession(isTablet: Boolean) {
     val confettiView = checkNotNull(fullScreenConfettiView) {
       "Expected non-null reference to confetti view"
@@ -471,31 +471,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       "Expected non-null list of confetti colors"
     }
 
-    val minSpeed = 1f
-    val maxSpeed = 2f
-    val sizeInDp = Size(sizeInDp = 8)
-    val sizeWithMass = Size(sizeInDp = 7, mass = 3f)
-    val timeToLiveMillis: Long = 4000
-    var minX = 0f
-    var maxX = confettiView.width.toFloat()
-    var numPieces = 30
-    if (isTablet) {
-      // Limit confetti area when on a tablet
-      minX = confettiView.width.toFloat() / 4
-      maxX = 3 * confettiView.width.toFloat() / 4
-      numPieces = 50
-    }
-
-    confettiView.build()
-      .addColors(colorsList)
-      .setDirection(0.0, 359.0)
-      .setSpeed(minSpeed, maxSpeed)
-      .setFadeOutEnabled(true)
-      .setTimeToLive(timeToLiveMillis)
-      .addShapes(Circle, Square)
-      .addSizes(sizeInDp, sizeWithMass)
-      .setPosition(minX, maxX, -50f, -50f)
-      .streamFor(numPieces, 5000L)
+    createEndOfExplorationSessionConfetti(confettiView, colorsList, isTablet)
   }
 
   /**
@@ -814,6 +790,64 @@ class StatePlayerRecyclerViewAssembler private constructor(
         congratulationsText.visibility = View.INVISIBLE
       }
     )
+  }
+
+  private fun createEndOfExplorationSessionConfetti(
+    confettiView: KonfettiView,
+    colorsList: List<Int>,
+    isTablet: Boolean
+  ) {
+    var minSpeed = 3f
+    var maxSpeed = 8f
+    var sizeInDp = Size(sizeInDp = 8)
+    var sizeWithMass = Size(sizeInDp = 7, mass = 3f)
+    val timeToLiveMillis: Long = 4000
+    val delayMs: Long = 500
+    var minX = 0f
+    var maxX = confettiView.width.toFloat()
+    var numPieces = 30
+
+    if (isTablet) {
+      // Use corner bursts on larger devices
+      minSpeed = 3f
+      maxSpeed = 12f
+      sizeInDp = Size(sizeInDp = 12)
+      sizeWithMass = Size(sizeInDp = 11, mass = 3f)
+      numPieces = 50
+      confettiView.build()
+        .setDelay(delayMs)
+        .addColors(colorsList)
+        .setDirection(minDegrees = -90.0, maxDegrees = 90.0)
+        .setSpeed(minSpeed, maxSpeed)
+        .setTimeToLive(timeToLiveMillis)
+        .addShapes(Circle, Square)
+        .addSizes(sizeInDp, sizeWithMass)
+        .setPosition(x = 0f, y = 0f)
+        .burst(numPieces)
+      confettiView.build()
+        .setDelay(delayMs)
+        .addColors(colorsList)
+        .setDirection(minDegrees = 90.0, maxDegrees = 270.0)
+        .setSpeed(minSpeed, maxSpeed)
+        .setTimeToLive(timeToLiveMillis)
+        .addShapes(Circle, Square)
+        .addSizes(sizeInDp, sizeWithMass)
+        .setPosition(x = confettiView.width.toFloat(), y = 0f)
+        .burst(numPieces)
+    } else {
+      confettiView.build()
+        .setDelay(delayMs)
+        .addColors(colorsList)
+        .setDirection(0.0, 359.0)
+        .setSpeed(minSpeed, maxSpeed)
+        .setFadeOutEnabled(true)
+        .setTimeToLive(timeToLiveMillis)
+        .addShapes(Circle, Square)
+        .addSizes(sizeInDp, sizeWithMass)
+        // Start the confetti above the visible area to create a fluid falling effect.
+        .setPosition(minX, maxX, minY =-10f, maxY = -10f)
+        .streamFor(particlesPerSecond = numPieces, emittingTime = 3000L)
+    }
   }
 
   /**
