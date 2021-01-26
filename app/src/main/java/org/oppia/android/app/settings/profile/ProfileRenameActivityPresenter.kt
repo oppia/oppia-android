@@ -79,8 +79,15 @@ class ProfileRenameActivityPresenter @Inject constructor(
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.profileRenameInputEditText.onTextChanged { name ->
       name?.let {
-        renameViewModel.nameErrorMsg.set("")
-        renameViewModel.inputName.set(it)
+        if (
+          renameViewModel.nameErrorMsg.get()?.isNotEmpty()!! &&
+          renameViewModel.inputName.get() == it
+        ) {
+          renameViewModel.inputName.set(it)
+        } else {
+          renameViewModel.nameErrorMsg.set("")
+          renameViewModel.inputName.set(it)
+        }
       }
     }
 

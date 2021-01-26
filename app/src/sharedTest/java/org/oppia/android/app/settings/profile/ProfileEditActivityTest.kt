@@ -358,7 +358,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        profileId = 3
+        profileId = 4
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -379,7 +379,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        profileId = 3
+        profileId = 4
       )
     ).use {
       testCoroutineDispatchers.runCurrent()

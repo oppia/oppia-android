@@ -266,13 +266,13 @@ class PromotedStoryListViewModelTest {
     activity: AppCompatActivity,
     promotedStoryList: List<PromotedStory>
   ): List<PromotedStoryViewModel> {
-    return promotedStoryList.map {
+    return promotedStoryList.map { promotedStory ->
       PromotedStoryViewModel(
         activity = activity,
         internalProfileId = 1,
         totalStoryCount = promotedStoryList.size,
         entityType = "entity",
-        promotedStory = it
+        promotedStory = promotedStory
       )
     }
   }

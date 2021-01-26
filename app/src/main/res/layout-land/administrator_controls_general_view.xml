@@ -14,8 +14,8 @@
     android:layout_height="wrap_content">
 
     <TextView
-      style="@style/Heading5"
       android:id="@+id/general_text_view"
+      style="@style/Heading5"
       android:layout_width="match_parent"
       android:background="@color/mid_grey_30"
       android:paddingStart="36dp"
@@ -30,8 +30,8 @@
       app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-      style="@style/Subtitle1"
       android:id="@+id/edit_account_text_view"
+      style="@style/Subtitle1"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:paddingStart="36dp"
