@@ -474,7 +474,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     if (stateIsTerminal) {
       createEndOfExplorationSessionConfetti(confettiView, colorsList, isTablet)
-    } else if (confettiView.isActive()){
+    } else if (confettiView.isActive()) {
       // Ensure that confetti is not showing when navigating away from the end of the exploration.
       confettiView.stopGracefully()
     }
