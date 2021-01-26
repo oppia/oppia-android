@@ -652,7 +652,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_story0DonePlayStory1FirstTestTopic_playSecondTestTopic_storyListIsCorrect() {
+  fun testGetStoryList_story0DonePlayStory1FirstTestTopic_playRatios_storyListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       TEST_TOPIC_ID_0,

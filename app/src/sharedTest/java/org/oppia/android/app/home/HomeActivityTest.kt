@@ -428,6 +428,7 @@ class HomeActivityTest {
         targetViewId = R.id.recently_played_stories_text_view,
         stringToMatch = context.getString(R.string.stories_for_you)
       )
+      scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
@@ -438,6 +439,12 @@ class HomeActivityTest {
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "Second Test Topic"
+      )
+      scrollToPositionOfPromotedList(position = 2)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 2,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "First Test Topic"
       )
     }
   }
