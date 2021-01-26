@@ -1047,6 +1047,23 @@ class StateFragmentLocalTest {
     }
   }
 
+  @Test
+  fun testStateFragment_finishExplorationAndGoBackAState_endOfSessionConfettiWillStopEmitting() {
+    // TODO(#2560) Test depends on if we want graceful or abrupt stop for confetti. If graceful, can only check that
+    //  confetti stops emitting since we don't know how long it takes for the view to remove the system once
+    //  it has stopped. If reset, can check not active.
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+
+      clickBackArrow()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(not(hasActiveConfetti())))
+    }
+  }
+
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
@@ -1191,6 +1208,11 @@ class StateFragmentLocalTest {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.continue_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickBackArrow() {
+    onView(withId(R.id.previous_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 

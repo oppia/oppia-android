@@ -281,19 +281,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
     }
 
-    if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE &&
-      playerFeatureSet.showCelebrationAtEndOfExplorationSession
-    ) {
-      showCelebrationForEndOfExplorationSession(isTablet)
+    val isTerminalState = ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
+    if (playerFeatureSet.showCelebrationAtEndOfExplorationSession) {
+      maybeShowCelebrationForEndOfExplorationSession(isTerminalState, isTablet)
     }
-
     maybeAddNavigationButtons(
       conversationPendingItemList,
       extraInteractionPendingItemList,
       hasPreviousState,
       canContinueToNextState,
       hasGeneralContinueButton,
-      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
+      isTerminalState
     )
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
@@ -463,15 +461,22 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   /** Shows confetti when the learner reaches the end of an exploration. */
-  fun showCelebrationForEndOfExplorationSession(isTablet: Boolean) {
+  fun maybeShowCelebrationForEndOfExplorationSession(stateIsTerminal: Boolean, isTablet: Boolean) {
+    check(playerFeatureSet.showCelebrationAtEndOfExplorationSession) {
+      "Cannot show end of exploration confetti for assembler that doesn't support it"
+    }
     val confettiView = checkNotNull(fullScreenConfettiView) {
       "Expected non-null reference to confetti view"
     }
     val colorsList = checkNotNull(confettiColors) {
       "Expected non-null list of confetti colors"
     }
-
-    createEndOfExplorationSessionConfetti(confettiView, colorsList, isTablet)
+    if (stateIsTerminal) {
+      createEndOfExplorationSessionConfetti(confettiView, colorsList, isTablet)
+    } else {
+      // Ensure that confetti is not showing when navigating away from the end of the exploration.
+      confettiView.reset()
+    }
   }
 
   /**
@@ -805,7 +810,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val delayMs: Long = 500
     var minX = 0f
     var maxX = confettiView.width.toFloat()
-    var numPieces = 30
+    var numPieces = 40
 
     if (isTablet) {
       // Use corner bursts on larger devices
@@ -813,7 +818,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       maxSpeed = 12f
       sizeInDp = Size(sizeInDp = 12)
       sizeWithMass = Size(sizeInDp = 11, mass = 3f)
-      numPieces = 50
+      numPieces = 60
       confettiView.build()
         .setDelay(delayMs)
         .addColors(colorsList)
