@@ -281,7 +281,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
     }
 
-    val isTerminalState = ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
+    val isTerminalState =
+      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
     if (playerFeatureSet.showCelebrationAtEndOfExplorationSession) {
       maybeShowCelebrationForEndOfExplorationSession(isTerminalState, isTablet)
     }
