@@ -845,7 +845,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         .addShapes(Circle, Square)
         .addSizes(sizeInDp, sizeWithMass)
         // Start the confetti above the visible area to create a fluid falling effect.
-        .setPosition(minX, maxX, minY =-10f, maxY = -10f)
+        .setPosition(minX, maxX, minY = -10f, maxY = -10f)
         .streamFor(particlesPerSecond = numPieces, emittingTime = 3000L)
     }
   }
