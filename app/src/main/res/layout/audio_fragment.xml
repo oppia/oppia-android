@@ -29,7 +29,7 @@
     android:padding="4dp">
 
     <ImageView
-      android:id="@+id/ivPlayPauseAudio"
+      android:id="@+id/play_pause_audio_icon"
       android:layout_width="48dp"
       android:layout_height="48dp"
       android:layout_marginStart="8dp"
@@ -43,7 +43,7 @@
       app:layout_constraintTop_toTopOf="parent" />
 
     <SeekBar
-      android:id="@+id/sbAudioProgress"
+      android:id="@+id/audio_progress_seek_bar"
       style="@style/AudioSeekBar"
       android:layout_width="0dp"
       android:layout_height="26dp"
@@ -58,12 +58,12 @@
       android:thumb="@drawable/seekbar_thumb"
       android:thumbOffset="16dp"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/ivAudioLanguage"
-      app:layout_constraintStart_toEndOf="@+id/ivPlayPauseAudio"
+      app:layout_constraintEnd_toStartOf="@+id/audio_language_icon"
+      app:layout_constraintStart_toEndOf="@+id/play_pause_audio_icon"
       app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-      android:id="@+id/ivAudioLanguage"
+      android:id="@+id/audio_language_icon"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:contentDescription="@{viewModel.currentLanguageCode}"
