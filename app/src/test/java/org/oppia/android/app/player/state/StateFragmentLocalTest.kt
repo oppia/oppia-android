@@ -271,13 +271,10 @@ class StateFragmentLocalTest {
 
   @Test
   @Config(qualifiers = "port")
-  fun testStateFragment_portrait_nextState_submitCorrectAnswer_correctTextBannerIsDisplayed() {
+  fun testStateFragment_portrait_submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
-
-      // Submit correct answer
-      submitFractionAnswer(answerText = "3/4")
 
       onView(withId(R.id.congratulations_text_view))
         .check(matches(isCompletelyDisplayed()))
@@ -286,13 +283,10 @@ class StateFragmentLocalTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testStateFragment_landscape_nextState_submitCorrectAnswer_correctTextBannerIsDisplayed() {
+  fun testStateFragment_landscape_submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
-
-      // Submit correct answer
-      submitFractionAnswer(answerText = "3/4")
 
       onView(withId(R.id.congratulations_text_view))
         .check(matches(isCompletelyDisplayed()))
@@ -301,13 +295,10 @@ class StateFragmentLocalTest {
 
   @Test
   @Config(qualifiers = "port")
-  fun testStateFragment_portrait_nextState_submitCorrectAnswer_confettiIsDisplayed() {
+  fun testStateFragment_portrait_submitCorrectAnswer_confettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
-
-      // Submit correct answer
-      submitFractionAnswer(answerText = "3/4")
 
       onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
     }
@@ -315,13 +306,10 @@ class StateFragmentLocalTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testStateFragment_landscape_nextState_submitCorrectAnswer_confettiIsDisplayed() {
+  fun testStateFragment_landscape_submitCorrectAnswer_confettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
-
-      // Submit correct answer
-      submitFractionAnswer(answerText = "3/4")
 
       onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
     }

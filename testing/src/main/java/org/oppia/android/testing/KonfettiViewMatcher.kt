@@ -11,17 +11,15 @@ class KonfettiViewMatcher {
     /**
      * This function checks that the view being checked is a [KonfettiView] with an active confetti animation.
      *
-     * @returns a [TypeSafeMatcher] that performs matching on the view
+     * @returns a [TypeSafeMatcher] that checks if the given view is a [KonfettiView] that isActive with
+     *          confetti
      */
     fun hasActiveConfetti(): TypeSafeMatcher<View> {
       return ActiveConfettiMatcher()
     }
 
     /**
-     * A custom class to check that the associated view is a [KonfettiView] and isActive().
-     *
-     * @returns a [TypeSafeMatcher] that checks if the given view is a [KonfettiView] that isActive with
-     *          confetti
+     * A custom [TypeSafeMatcher] class to check that the associated view is a [KonfettiView] and isActive().
      */
     private class ActiveConfettiMatcher() : TypeSafeMatcher<View>() {
       override fun describeTo(description: Description) {

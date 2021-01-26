@@ -18,6 +18,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.junit.Before
@@ -32,7 +34,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -50,7 +52,8 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
-import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.question.QuestionCountPerTrainingSession
+import org.oppia.android.domain.question.QuestionTrainingSeed
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.testing.EditTextInputAction
@@ -108,7 +111,7 @@ class QuestionPlayerActivityLocalTest {
 
   @Test
   @Config(qualifiers = "port")
-  fun testQuestionPlayer_portrait__submitCorrectAnswer_correctTextBannerIsDisplayed() {
+  fun testQuestionPlayer_portrait_submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
@@ -122,7 +125,7 @@ class QuestionPlayerActivityLocalTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testQuestionPlayer__landscape_submitCorrectAnswer_correctTextBannerIsDisplayed() {
+  fun testQuestionPlayer_landscape_submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
@@ -308,24 +311,38 @@ class QuestionPlayerActivityLocalTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  @Module
+  class TestModule {
+    @Provides
+    @QuestionCountPerTrainingSession
+    fun provideQuestionCountPerTrainingSession(): Int = 3
+
+    // Ensure that the question seed is consistent for all runs of the tests to keep question order
+    // predictable.
+    @Provides
+    @QuestionTrainingSeed
+    fun provideQuestionTrainingSeed(): Long = 1
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
+      RobolectricModule::class,
+      TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      HtmlParserEntityTypeModule::class, TestLogReportingModule::class,
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
-      RatioInputModule::class, HintsAndSolutionConfigModule::class,
-      LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-      FirebaseLogUploaderModule::class
+      RatioInputModule::class, HintsAndSolutionConfigFastShowTestModule::class,
+      WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
+      LogUploadWorkerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -145,7 +145,7 @@
       <nl.dionsegijn.konfetti.KonfettiView
         android:id="@+id/congratulations_text_confetti_view"
         android:layout_width="match_parent"
-        android:layout_height="124dp"/>
+        android:layout_height="124dp" />
     </FrameLayout>
   </FrameLayout>
 </layout>
