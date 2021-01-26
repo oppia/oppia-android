@@ -495,7 +495,7 @@ class TopicListController @Inject constructor(
     // Suggest prerequisite topic user needs to learn after completing any of the topics.
     for (topicId in unstartedTopicIdList) {
       // All of the topic's prerequisites must be completed before it can be suggested.
-      val dependentTopicIds = topicDependencyMap[topicId] ?: listOf()
+      val dependentTopicIds = topicDependencyMap[topicId]
       if (topicId !in impliedFinishedTopicIds && startedTopicIds.containsAll(dependentTopicIds!!)) {
         createRecommendedStoryFromAssets(topicId)?.let {
           recommendedStories.add(it)
