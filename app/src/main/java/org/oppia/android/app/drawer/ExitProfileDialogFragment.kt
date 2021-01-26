@@ -19,8 +19,7 @@ class ExitProfileDialogFragment : DialogFragment() {
       "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
     const val BOOL_IS_ADMINISTRATOR_CONTROLS_SELECTED_KEY =
       "BOOL_IS_ADMINISTRATOR_CONTROLS_SELECTED_KEY"
-    const val INT_LAST_CHECKED_ITEM_KEY =
-      "INT_LAST_CHECKED_ITEM_KEY"
+    const val INT_LAST_CHECKED_ITEM_KEY = "INT_LAST_CHECKED_ITEM_KEY"
 
     /**
      * This function is responsible for displaying content in DialogFragment.
@@ -70,11 +69,11 @@ class ExitProfileDialogFragment : DialogFragment() {
       .setMessage(R.string.home_activity_back_dialog_message)
       .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
         if (isFromNavigationDrawer) {
-          exitProfileDialogInterface.markLastCheckedItemCloseDrawer(
+          exitProfileDialogInterface.checkLastCheckedItemAndCloseDrawer(
             lastCheckedItemId,
             isAdministratorControlsSelected
           )
-          exitProfileDialogInterface.unmarkSwitchProfileItemCloseDrawer()
+          exitProfileDialogInterface.unCheckSwitchProfileItemAndCloseDrawer()
         }
         dialog.dismiss()
       }

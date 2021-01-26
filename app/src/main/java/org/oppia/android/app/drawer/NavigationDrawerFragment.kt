@@ -40,17 +40,17 @@ class NavigationDrawerFragment :
     navigationDrawerFragmentPresenter.openProfileProgress(profileId)
   }
 
-  override fun markLastCheckedItemCloseDrawer(
+  override fun checkLastCheckedItemAndCloseDrawer(
     lastCheckedItemId: Int,
     isAdministratorControlsSelected: Boolean
   ) {
-    navigationDrawerFragmentPresenter.checkLastCheckedItemCloseDrawer(
+    navigationDrawerFragmentPresenter.checkLastCheckedItemAndCloseDrawer(
       lastCheckedItemId,
       isAdministratorControlsSelected
     )
   }
 
-  override fun unmarkSwitchProfileItemCloseDrawer() {
-    navigationDrawerFragmentPresenter.uncheckSwitchProfileItemCloseDrawer()
+  override fun unCheckSwitchProfileItemAndCloseDrawer() {
+    navigationDrawerFragmentPresenter.uncheckSwitchProfileItemAndCloseDrawer()
   }
 }

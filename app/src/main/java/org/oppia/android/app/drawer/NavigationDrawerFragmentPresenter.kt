@@ -277,7 +277,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     )
   }
 
-  fun checkLastCheckedItemCloseDrawer(
+  fun checkLastCheckedItemAndCloseDrawer(
     lastCheckedItemId: Int,
     isAdministratorControlsSelected: Boolean
   ) {
@@ -301,7 +301,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     drawerLayout.closeDrawers()
   }
 
-  fun uncheckSwitchProfileItemCloseDrawer() {
+  fun uncheckSwitchProfileItemAndCloseDrawer() {
     binding.fragmentDrawerNavView.menu.getItem(
       NavigationDrawerItem.SWITCH_PROFILE.ordinal
     ).isChecked =
