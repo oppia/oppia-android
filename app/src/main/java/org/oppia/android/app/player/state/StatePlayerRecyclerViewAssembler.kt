@@ -473,9 +473,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     if (stateIsTerminal) {
       createEndOfExplorationSessionConfetti(confettiView, colorsList, isTablet)
-    } else {
+    } else if (confettiView.isActive()){
       // Ensure that confetti is not showing when navigating away from the end of the exploration.
-      confettiView.reset()
+      confettiView.stopGracefully()
     }
   }
 
@@ -808,51 +808,36 @@ class StatePlayerRecyclerViewAssembler private constructor(
     var sizeWithMass = Size(sizeInDp = 7, mass = 3f)
     val timeToLiveMillis: Long = 4000
     val delayMs: Long = 500
-    var minX = 0f
-    var maxX = confettiView.width.toFloat()
-    var numPieces = 40
+    var numPieces = 35
 
     if (isTablet) {
-      // Use corner bursts on larger devices
+      // Use a larger burst animation for larger layouts
       minSpeed = 3f
       maxSpeed = 12f
       sizeInDp = Size(sizeInDp = 12)
       sizeWithMass = Size(sizeInDp = 11, mass = 3f)
       numPieces = 60
-      confettiView.build()
-        .setDelay(delayMs)
-        .addColors(colorsList)
-        .setDirection(minDegrees = -90.0, maxDegrees = 90.0)
-        .setSpeed(minSpeed, maxSpeed)
-        .setTimeToLive(timeToLiveMillis)
-        .addShapes(Circle, Square)
-        .addSizes(sizeInDp, sizeWithMass)
-        .setPosition(x = 0f, y = 0f)
-        .burst(numPieces)
-      confettiView.build()
-        .setDelay(delayMs)
-        .addColors(colorsList)
-        .setDirection(minDegrees = 90.0, maxDegrees = 270.0)
-        .setSpeed(minSpeed, maxSpeed)
-        .setTimeToLive(timeToLiveMillis)
-        .addShapes(Circle, Square)
-        .addSizes(sizeInDp, sizeWithMass)
-        .setPosition(x = confettiView.width.toFloat(), y = 0f)
-        .burst(numPieces)
-    } else {
-      confettiView.build()
-        .setDelay(delayMs)
-        .addColors(colorsList)
-        .setDirection(0.0, 359.0)
-        .setSpeed(minSpeed, maxSpeed)
-        .setFadeOutEnabled(true)
-        .setTimeToLive(timeToLiveMillis)
-        .addShapes(Circle, Square)
-        .addSizes(sizeInDp, sizeWithMass)
-        // Start the confetti above the visible area to create a fluid falling effect.
-        .setPosition(minX, maxX, minY = -10f, maxY = -10f)
-        .streamFor(particlesPerSecond = numPieces, emittingTime = 3000L)
     }
+    confettiView.build()
+      .setDelay(delayMs)
+      .addColors(colorsList)
+      .setDirection(minDegrees = -90.0, maxDegrees = 90.0)
+      .setSpeed(minSpeed, maxSpeed)
+      .setTimeToLive(timeToLiveMillis)
+      .addShapes(Circle, Square)
+      .addSizes(sizeInDp, sizeWithMass)
+      .setPosition(x = 0f, y = 0f)
+      .burst(numPieces)
+    confettiView.build()
+      .setDelay(delayMs)
+      .addColors(colorsList)
+      .setDirection(minDegrees = 90.0, maxDegrees = 270.0)
+      .setSpeed(minSpeed, maxSpeed)
+      .setTimeToLive(timeToLiveMillis)
+      .addShapes(Circle, Square)
+      .addSizes(sizeInDp, sizeWithMass)
+      .setPosition(x = confettiView.width.toFloat(), y = 0f)
+      .burst(numPieces)
   }
 
   /**
