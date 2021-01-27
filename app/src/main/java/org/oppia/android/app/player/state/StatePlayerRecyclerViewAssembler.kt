@@ -21,6 +21,7 @@ import nl.dionsegijn.konfetti.models.Shape.Square
 import nl.dionsegijn.konfetti.models.Size
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.EphemeralState.StateTypeCase
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.android.app.model.Interaction
@@ -217,7 +218,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     val interaction = ephemeralState.state.interaction
 
-    if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
+    if (ephemeralState.stateTypeCase == StateTypeCase.PENDING_STATE) {
       addPreviousAnswers(
         conversationPendingItemList,
         extraInteractionPendingItemList,
@@ -238,7 +239,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           gcsEntityId
         )
       }
-    } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
+    } else if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE) {
       // Ensure the answer is marked in situations where that's guaranteed (e.g. completed state)
       // so that the UI always has the correct answer indication, even after configuration changes.
       isCorrectAnswer.set(true)
@@ -254,8 +255,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     var canContinueToNextState = false
     var hasGeneralContinueButton = false
-    if (ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.TERMINAL_STATE) {
-      if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE &&
+    if (ephemeralState.stateTypeCase != StateTypeCase.TERMINAL_STATE) {
+      if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE &&
         !ephemeralState.hasNextState
       ) {
         hasGeneralContinueButton = true
@@ -281,8 +282,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
     }
 
-    val isTerminalState =
-      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
+    val isTerminalState = ephemeralState.stateTypeCase == StateTypeCase.TERMINAL_STATE
     if (playerFeatureSet.showCelebrationAtEndOfExplorationSession && isTerminalState) {
       maybeShowCelebrationForEndOfExplorationSession(isTablet)
     }
