@@ -60,7 +60,10 @@
         <TextView
           android:id="@+id/profile_name_text"
           style="@style/Heading2"
+          android:ellipsize="end"
           android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
+          android:maxLines="2"
+          android:singleLine="false"
           android:text="@{viewModel.profile.name}"
           android:textColor="@color/white"
           app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_name_margin_top_profile_already_added : @dimen/space_0dp}" />

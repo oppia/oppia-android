@@ -52,7 +52,10 @@
         <TextView
           android:id="@+id/profile_name_text"
           style="@style/Caption"
+          android:ellipsize="end"
           android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
+          android:maxLines="2"
+          android:singleLine="false"
           android:text="@{viewModel.profile.name}"
           android:textColor="@color/white" />
 
