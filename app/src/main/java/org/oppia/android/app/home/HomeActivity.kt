@@ -8,11 +8,16 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
+import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
-class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
+class HomeActivity :
+  InjectableAppCompatActivity(),
+  RouteToTopicListener,
+  RouteToTopicPlayStoryListener,
+  RouteToRecentlyPlayedListener {
   @Inject
   lateinit var homeActivityPresenter: HomeActivityPresenter
   private var internalProfileId: Int = -1
@@ -46,5 +51,25 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
     val dialogFragment = ExitProfileDialogFragment
       .newInstance(isFromNavigationDrawer = false)
     dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
+  }
+
+  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
+    startActivity(
+      TopicActivity.createTopicPlayStoryActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId
+      )
+    )
+  }
+
+  override fun routeToRecentlyPlayed() {
+    startActivity(
+      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
+        this,
+        internalProfileId
+      )
+    )
   }
 }
