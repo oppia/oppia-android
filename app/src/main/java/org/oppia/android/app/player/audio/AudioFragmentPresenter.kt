@@ -78,8 +78,8 @@ class AudioFragmentPresenter @Inject constructor(
       )
 
     val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    binding.audioProgressSeekBar
-      .setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+    binding.audioProgressSeekBar.setOnSeekBarChangeListener(
+      object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
           if (fromUser) {
             userProgress = progress
