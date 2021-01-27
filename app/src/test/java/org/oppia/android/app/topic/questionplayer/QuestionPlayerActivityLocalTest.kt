@@ -139,7 +139,7 @@ class QuestionPlayerActivityLocalTest {
 
   @Test
   @Config(qualifiers = "port")
-  fun testQuestionPlayer_portrait_submitCorrectAnswer_confettiIsDisplayed() {
+  fun testQuestionPlayer_portrait_submitCorrectAnswer_confettiIsActive() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
@@ -152,7 +152,7 @@ class QuestionPlayerActivityLocalTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testQuestionPlayer_landscape_submitCorrectAnswer_confettiIsDisplayed() {
+  fun testQuestionPlayer_landscape_submitCorrectAnswer_confettiIsActive() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))

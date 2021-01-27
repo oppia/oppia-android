@@ -293,7 +293,7 @@ class StateFragmentLocalTest {
 
   @Test
   @Config(qualifiers = "port")
-  fun testStateFragment_portrait_submitCorrectAnswer_confettiIsDisplayed() {
+  fun testStateFragment_portrait_submitCorrectAnswer_confettiIsActive() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
@@ -304,7 +304,7 @@ class StateFragmentLocalTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testStateFragment_landscape_submitCorrectAnswer_confettiIsDisplayed() {
+  fun testStateFragment_landscape_submitCorrectAnswer_confettiIsActive() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
