@@ -2,7 +2,6 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
-import android.graphics.Canvas
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +17,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -33,7 +31,6 @@ import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
-import nl.dionsegijn.konfetti.KonfettiView
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -60,7 +57,6 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
@@ -1080,17 +1076,21 @@ class StateFragmentLocalTest {
       playThroughAllStates()
       clickContinueButton()
       onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
-      onView(withId(R.id.full_screen_confetti_view)).check(matches(
-        hasExpectedNumberOfActiveSystems(2)
-      ))
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(2)
+        )
+      )
 
       clickPreviousStateNavigationButton()
       clickNextStateNavigationButton()
 
       // End of exploration confetti should only render one instance at a time.
-      onView(withId(R.id.full_screen_confetti_view)).check(matches(
-        hasExpectedNumberOfActiveSystems(2)
-      ))
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(2)
+        )
+      )
     }
   }
 

@@ -1,7 +1,6 @@
 package org.oppia.android.testing
 
 import android.view.View
-import androidx.test.espresso.ViewAssertion
 import nl.dionsegijn.konfetti.KonfettiView
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
@@ -50,7 +49,7 @@ class KonfettiViewMatcher {
     ) : TypeSafeMatcher<View>() {
       override fun describeTo(description: Description) {
         description.appendText(
-          "KonfettiView with ${expectedNumSystems} active particle systems"
+          "KonfettiView with $expectedNumSystems active particle systems"
         )
       }
 
