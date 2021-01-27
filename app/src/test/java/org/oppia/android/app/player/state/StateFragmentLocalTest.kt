@@ -88,7 +88,6 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasActiveConfetti
-import org.oppia.android.testing.KonfettiViewMatcher.Companion.isEmittingNewConfetti
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -298,7 +297,7 @@ class StateFragmentLocalTest {
 
   @Test
   @Config(qualifiers = "port")
-  fun testStateFragment_portrait_submitCorrectAnswer_confettiIsDisplayed() {
+  fun testStateFragment_portrait_submitCorrectAnswer_confettiIsActive() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
@@ -309,7 +308,7 @@ class StateFragmentLocalTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testStateFragment_landscape_submitCorrectAnswer_confettiIsDisplayed() {
+  fun testStateFragment_landscape_submitCorrectAnswer_confettiIsActive() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
