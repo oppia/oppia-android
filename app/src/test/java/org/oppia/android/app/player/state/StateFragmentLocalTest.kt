@@ -1023,7 +1023,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Ignore("Currently failing as tablet layouts currently do not properly render interaction views")
+  @Ignore("Currently failing as tablet layouts are not properly rendering interaction views")
   @Config(qualifiers = "sw600dp-port")
   fun testStateFragment_tabletPortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
@@ -1036,7 +1036,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Ignore("Currently failing as tablet layouts currently do not properly render interaction views")
+  @Ignore("Currently failing as tablet layouts are not properly rendering interaction views")
   @Config(qualifiers = "sw600dp-land")
   fun testStateFragment_tabletLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
