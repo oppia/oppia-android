@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Canvas
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -31,13 +33,13 @@ import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
+import nl.dionsegijn.konfetti.KonfettiView
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -86,6 +88,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasActiveConfetti
+import org.oppia.android.testing.KonfettiViewMatcher.Companion.isEmittingNewConfetti
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -1022,7 +1025,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Ignore("Currently failing as tablet layouts currently do not properly render interaction views")
+//  @Ignore("Currently failing as tablet layouts currently do not properly render interaction views")
   @Config(qualifiers = "sw600dp-port")
   fun testStateFragment_tabletPortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
@@ -1035,7 +1038,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Ignore("Currently failing as tablet layouts currently do not properly render interaction views")
+//  @Ignore("Currently failing as tablet layouts currently do not properly render interaction views")
   @Config(qualifiers = "sw600dp-land")
   fun testStateFragment_tabletLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
@@ -1048,10 +1051,17 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_finishExplorationAndGoBackAState_endOfSessionConfettiWillStopEmitting() {
-    // TODO(#2560) Test depends on if we want graceful or abrupt stop for confetti. If graceful,
-    //  can only check that confetti stops emitting since we don't know how long it takes for the
-    //  view to remove the system onceit has stopped. If reset, can check not active.
+  fun testStateFragment_notAtEndOfExploration_endOfSessionConfettiDoesNotStart() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(not(hasActiveConfetti())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_finishExplorationAndGoBack_endOfSessionConfettiStopsEmittingNewPieces() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughAllStates()
@@ -1090,6 +1100,7 @@ class StateFragmentLocalTest {
 
   private fun playThroughState1() {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
+    testCoroutineDispatchers.advanceUntilIdle()
     onView(withSubstring("the pieces must be the same size.")).perform(click())
     testCoroutineDispatchers.runCurrent()
     clickContinueNavigationButton()
