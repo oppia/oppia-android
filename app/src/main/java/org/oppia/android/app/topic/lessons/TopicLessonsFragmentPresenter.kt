@@ -13,6 +13,7 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.player.exploration.ParentScreenForExplorationEnum
 import org.oppia.android.app.topic.RouteToStoryListener
 import org.oppia.android.databinding.TopicLessonsFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
@@ -144,8 +145,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       internalProfileId,
       topicId,
       storyId,
-      explorationId,
-      /* backflowScreen= */ 0
+      explorationId
     )
   }
 
@@ -153,8 +153,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String,
-    backflowScreen: Int?
+    explorationId: String
   ) {
     explorationDataController.startPlayingExploration(
       explorationId
@@ -175,7 +174,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               topicId,
               storyId,
               explorationId,
-              backflowScreen
+              ParentScreenForExplorationEnum.TOPIC_LESSONS
             )
           }
         }

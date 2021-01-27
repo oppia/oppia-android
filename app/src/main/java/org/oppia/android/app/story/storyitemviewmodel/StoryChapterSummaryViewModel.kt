@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.LessonThumbnail
+import org.oppia.android.app.player.exploration.ParentScreenForExplorationEnum
 import org.oppia.android.app.story.ExplorationSelectionListener
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.util.data.AsyncResult
@@ -51,7 +52,7 @@ class StoryChapterSummaryViewModel(
               topicId,
               storyId,
               explorationId, /* backflowScreen= */
-              1
+              ParentScreenForExplorationEnum.STORY
             )
           }
         }

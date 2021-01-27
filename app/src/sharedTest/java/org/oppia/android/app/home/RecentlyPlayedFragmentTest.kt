@@ -42,6 +42,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.player.exploration.ParentScreenForExplorationEnum
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
@@ -309,6 +310,10 @@ class RecentlyPlayedFragmentTest {
           hasExtra(
             ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
             internalProfileId
+          ),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_PARENT_SCREEN_KEY,
+            ParentScreenForExplorationEnum.TOPIC_INFO
           ),
           hasComponent(ExplorationActivity::class.java.name)
         )

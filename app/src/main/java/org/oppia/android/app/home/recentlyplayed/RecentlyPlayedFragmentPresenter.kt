@@ -17,6 +17,7 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.player.exploration.ParentScreenForExplorationEnum
 import org.oppia.android.databinding.RecentlyPlayedFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.topic.TopicListController
@@ -186,7 +187,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
               topicId,
               storyId,
               explorationId,
-              /* backflowScreen = */ null
+              ParentScreenForExplorationEnum.TOPIC_INFO
             )
             activity.finish()
           }

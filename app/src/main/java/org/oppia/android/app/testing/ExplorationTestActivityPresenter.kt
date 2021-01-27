@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.player.exploration.ParentScreenForExplorationEnum
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
@@ -57,8 +58,8 @@ class ExplorationTestActivityPresenter @Inject constructor(
               INTERNAL_PROFILE_ID,
               TOPIC_ID,
               STORY_ID,
-              EXPLORATION_ID, /* backflowScreen= */
-              null
+              EXPLORATION_ID,
+              ParentScreenForExplorationEnum.TOPIC_INFO
             )
           }
         }

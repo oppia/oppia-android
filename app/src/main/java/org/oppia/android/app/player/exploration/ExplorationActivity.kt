@@ -45,7 +45,6 @@ class ExplorationActivity :
   private lateinit var storyId: String
   private lateinit var explorationId: String
   private lateinit var state: State
-  private var backflowScreen: Int? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -54,14 +53,16 @@ class ExplorationActivity :
     topicId = intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
     storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
-    backflowScreen = intent.getIntExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, -1)
+    val parentScreenForExplorationEnum =
+      intent.getSerializableExtra(EXPLORATION_ACTIVITY_PARENT_SCREEN_KEY)
+        as ParentScreenForExplorationEnum
     explorationActivityPresenter.handleOnCreate(
       this,
       internalProfileId,
       topicId,
       storyId,
       explorationId,
-      backflowScreen
+      parentScreenForExplorationEnum
     )
   }
 
@@ -75,8 +76,8 @@ class ExplorationActivity :
     const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
     const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY =
       "ExplorationActivity.exploration_id"
-    const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY =
-      "ExplorationActivity.backflow_screen"
+    const val EXPLORATION_ACTIVITY_PARENT_SCREEN_KEY =
+      "ExplorationActivity.parent_screen"
 
     fun createExplorationActivityIntent(
       context: Context,
@@ -84,14 +85,14 @@ class ExplorationActivity :
       topicId: String,
       storyId: String,
       explorationId: String,
-      backflowScreen: Int?
+      parentScreenForExplorationEnumValue: ParentScreenForExplorationEnum
     ): Intent {
       val intent = Intent(context, ExplorationActivity::class.java)
       intent.putExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
       intent.putExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       intent.putExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       intent.putExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
-      intent.putExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, backflowScreen)
+      intent.putExtra(EXPLORATION_ACTIVITY_PARENT_SCREEN_KEY, parentScreenForExplorationEnumValue)
       return intent
     }
   }

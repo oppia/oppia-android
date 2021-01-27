@@ -734,7 +734,7 @@ class ExplorationActivityTest {
       topicId,
       storyId,
       explorationId,
-      /* backflowScreen= */ null
+      ParentScreenForExplorationEnum.TOPIC_INFO
     )
   }
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.player.exploration.ParentScreenForExplorationEnum
 import javax.inject.Inject
 
 private const val KEY_INTERNAL_PROFILE_ID_ARGUMENT = "INTERNAL_PROFILE_ID"
@@ -66,14 +67,14 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    parentScreenForExplorationEnum: ParentScreenForExplorationEnum
   ) {
     storyFragmentPresenter.handleSelectExploration(
       internalProfileId,
       topicId,
       storyId,
       explorationId,
-      backflowScreen
+      parentScreenForExplorationEnum
     )
   }
 

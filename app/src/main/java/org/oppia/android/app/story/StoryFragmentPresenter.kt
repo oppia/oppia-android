@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.player.exploration.ParentScreenForExplorationEnum
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
@@ -94,14 +95,14 @@ class StoryFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    parentScreenForExplorationEnum: ParentScreenForExplorationEnum
   ) {
     routeToExplorationListener.routeToExploration(
       internalProfileId,
       topicId,
       storyId,
       explorationId,
-      backflowScreen
+      parentScreenForExplorationEnum
     )
   }
 

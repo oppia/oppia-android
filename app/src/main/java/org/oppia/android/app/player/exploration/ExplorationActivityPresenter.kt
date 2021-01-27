@@ -47,12 +47,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private lateinit var storyId: String
   private lateinit var explorationId: String
   private lateinit var context: Context
-  private var backflowScreen: Int? = null
-
-  enum class ParentActivityForExploration(val value: Int) {
-    BACKFLOW_SCREEN_LESSONS(0),
-    BACKFLOW_SCREEN_STORY(1);
-  }
+  private lateinit var parentScreenForExplorationEnum: ParentScreenForExplorationEnum
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
@@ -64,7 +59,7 @@ class ExplorationActivityPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    parentScreenForExplorationEnum: ParentScreenForExplorationEnum
   ) {
     val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
       activity,
@@ -97,7 +92,7 @@ class ExplorationActivityPresenter @Inject constructor(
     this.storyId = storyId
     this.explorationId = explorationId
     this.context = context
-    this.backflowScreen = backflowScreen
+    this.parentScreenForExplorationEnum = parentScreenForExplorationEnum
     if (getExplorationManagerFragment() == null) {
       val explorationManagerFragment = ExplorationManagerFragment()
       val args = Bundle()
@@ -210,7 +205,7 @@ class ExplorationActivityPresenter @Inject constructor(
             )
             else -> {
               logger.d("ExplorationActivity", "Successfully stopped exploration")
-              backPressActivitySelector(backflowScreen)
+              backPressActivitySelector(parentScreenForExplorationEnum)
               (activity as ExplorationActivity).finish()
             }
           }
@@ -270,10 +265,12 @@ class ExplorationActivityPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }
 
-  private fun backPressActivitySelector(backflowScreen: Int?) {
-    when (backflowScreen) {
-      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.finish()
-      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.finish()
+  private fun backPressActivitySelector(
+    parentScreenForExplorationEnum: ParentScreenForExplorationEnum
+  ) {
+    when (parentScreenForExplorationEnum) {
+      ParentScreenForExplorationEnum.TOPIC_LESSONS -> activity.finish()
+      ParentScreenForExplorationEnum.STORY -> activity.finish()
       else -> activity.startActivity(
         TopicActivity.createTopicActivityIntent(
           context,

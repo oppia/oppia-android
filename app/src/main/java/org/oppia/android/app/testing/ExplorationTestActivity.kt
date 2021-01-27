@@ -4,6 +4,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.player.exploration.ParentScreenForExplorationEnum
 import org.oppia.android.app.topic.TopicFragment
 import javax.inject.Inject
 
@@ -23,7 +24,7 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    parentScreenForExplorationEnum: ParentScreenForExplorationEnum
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
@@ -32,7 +33,7 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        parentScreenForExplorationEnum
       )
     )
   }
