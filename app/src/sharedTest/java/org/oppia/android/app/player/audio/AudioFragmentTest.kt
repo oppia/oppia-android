@@ -163,6 +163,7 @@ class AudioFragmentTest {
     }
   }
 
+  // TODO(#2417): Re-enable once this test passes on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testAudioFragment_withHindiAudioLanguageProfile_showsHindiAudioLanguage() {
