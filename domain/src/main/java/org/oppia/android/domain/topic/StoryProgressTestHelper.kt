@@ -26,7 +26,10 @@ class StoryProgressTestHelper @Inject constructor(
    * @param profileId the profile we are setting partial progress of the fraction story for
    * @param timestampOlderThanOneweek if the timestamp for this topic progress is more than one week ago
    */
-  fun markPartialStoryProgressForFractions(profileId: ProfileId, timestampOlderThanOneweek: Boolean) {
+  fun markPartialStoryProgressForFractions(
+    profileId: ProfileId, 
+    timestampOlderThanOneweek: Boolean
+    ) {
     val timestamp = if (!timestampOlderThanOneweek) {
       getCurrentTimestamp()
     } else {
