@@ -51,7 +51,7 @@ class StoryChapterSummaryViewModel(
               internalProfileId,
               topicId,
               storyId,
-              explorationId, /* backflowScreen= */
+              explorationId,
               ParentScreenForExplorationEnum.STORY
             )
           }

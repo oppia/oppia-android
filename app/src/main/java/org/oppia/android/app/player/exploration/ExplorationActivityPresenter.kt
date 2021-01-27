@@ -269,8 +269,8 @@ class ExplorationActivityPresenter @Inject constructor(
     parentScreenForExplorationEnum: ParentScreenForExplorationEnum
   ) {
     when (parentScreenForExplorationEnum) {
-      ParentScreenForExplorationEnum.TOPIC_LESSONS -> activity.finish()
       ParentScreenForExplorationEnum.STORY -> activity.finish()
+      ParentScreenForExplorationEnum.TOPIC_LESSONS -> activity.finish()
       else -> activity.startActivity(
         TopicActivity.createTopicActivityIntent(
           context,
