@@ -1120,7 +1120,6 @@ class StateFragmentLocalTest {
 
   private fun playThroughState1() {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
-    testCoroutineDispatchers.advanceUntilIdle()
     onView(withSubstring("the pieces must be the same size.")).perform(click())
     testCoroutineDispatchers.runCurrent()
     clickContinueNavigationButton()
