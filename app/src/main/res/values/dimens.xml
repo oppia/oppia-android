@@ -167,8 +167,8 @@
   <dimen name="content_item_question_view_margin_bottom">12dp</dimen>
   <dimen name="feedback_item_exploration_view_padding_bottom">0dp</dimen>
   <dimen name="feedback_item_exploration_view_padding_top">0dp</dimen>
-  <dimen name="feedback_item_text_view_padding_top">12dp</dimen>
-  <dimen name="feedback_item_text_view_padding_bottom">12dp</dimen>
+  <dimen name="feedback_item_text_view_padding_top">13dp</dimen>
+  <dimen name="feedback_item_text_view_padding_bottom">13dp</dimen>
   <dimen name="profile_chooser_profile_view_last_visited_margin_start_profile_not_added">12dp</dimen>
   <dimen name="replay_button_item_exploration_view_padding_bottom">12dp</dimen>
   <dimen name="replay_button_item_question_view_padding_bottom">12dp</dimen>
