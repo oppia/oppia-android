@@ -492,13 +492,34 @@ class TopicListController @Inject constructor(
     val impliedFinishedTopicIds = computeImpliedCompletedDependencies(
       fullyCompletedTopicIds, topicDependencyMap
     )
-    // Suggest prerequisite topic user needs to learn after completing any of the topics.
+    // Suggest prerequisite topic user needs to learn while user is learning any of the topics.
     for (topicId in unstartedTopicIdList) {
-      // All of the topic's prerequisites must be completed before it can be suggested.
-      val dependentTopicIds = topicDependencyMap[topicId]
-      if (topicId !in impliedFinishedTopicIds && startedTopicIds.containsAll(dependentTopicIds!!)) {
+      // All of the topic's prerequisites can be suggested if the topic is ongoing.
+      val dependentTopicIds = topicDependencyMap[topicId] ?: listOf()
+      if (topicId !in impliedFinishedTopicIds && startedTopicIds.any { it in dependentTopicIds } &&
+        !impliedFinishedTopicIds.containsAll(dependentTopicIds)
+      ) {
         createRecommendedStoryFromAssets(topicId)?.let {
           recommendedStories.add(it)
+        }
+      }
+    }
+
+    // Suggest next topic user might be interested to learn while user is learning or completed
+    // any of the topics.
+    val nextTopicIndex = topicIdList.indexOf(startedTopicIds.last()) + 1
+    if (topicIdList.size > nextTopicIndex) {
+      val dependentTopicIds = topicDependencyMap[topicIdList[nextTopicIndex]] ?: listOf()
+      if (topicIdList[nextTopicIndex] !in impliedFinishedTopicIds &&
+        topicIdList[nextTopicIndex] !in dependentTopicIds
+      ) {
+        val recommendedTopicAlreadyExist =
+          recommendedStories.any { it.topicId == topicIdList[nextTopicIndex] }
+        if (!recommendedTopicAlreadyExist) {
+          createRecommendedStoryFromAssets(topicIdList[nextTopicIndex])?.let {
+            recommendedStories.add(it)
+            return recommendedStories
+          }
         }
       }
     }
