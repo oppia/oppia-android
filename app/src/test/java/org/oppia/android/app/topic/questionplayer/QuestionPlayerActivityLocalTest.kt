@@ -34,7 +34,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
+import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -329,8 +329,8 @@ class QuestionPlayerActivityLocalTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, QuestionPlayerActivityLocalTestModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
+      QuestionPlayerActivityLocalTestModule::class,
+      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -340,9 +340,9 @@ class QuestionPlayerActivityLocalTest {
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
-      RatioInputModule::class, HintsAndSolutionConfigFastShowTestModule::class,
-      WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
-      LogUploadWorkerModule::class
+      RatioInputModule::class, HintsAndSolutionConfigModule::class,
+      LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
+      FirebaseLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
