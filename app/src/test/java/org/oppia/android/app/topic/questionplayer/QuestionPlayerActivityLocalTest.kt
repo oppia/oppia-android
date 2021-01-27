@@ -312,7 +312,7 @@ class QuestionPlayerActivityLocalTest {
   }
 
   @Module
-  class TestModule {
+  class QuestionPlayerActivityLocalTestModule {
     @Provides
     @QuestionCountPerTrainingSession
     fun provideQuestionCountPerTrainingSession(): Int = 3
@@ -329,8 +329,8 @@ class QuestionPlayerActivityLocalTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
-      TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
+      RobolectricModule::class, QuestionPlayerActivityLocalTestModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,

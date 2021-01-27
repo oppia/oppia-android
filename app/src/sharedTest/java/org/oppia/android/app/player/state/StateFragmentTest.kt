@@ -893,7 +893,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_inputRatio_correctAnswerSubmitted_correctAnswerDisplayed() {
+  fun testStateFragment_inputRatio_correctAnswerSubmitted_correctAnswerIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_6).use {
       startPlayingExploration()
       typeRatioExpression("4:5")
