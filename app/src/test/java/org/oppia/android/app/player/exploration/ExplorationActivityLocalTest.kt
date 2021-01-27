@@ -139,7 +139,7 @@ class ExplorationActivityLocalTest {
       topicId,
       storyId,
       explorationId,
-      backflowScreen = null
+      ParentScreenForExplorationEnum.TOPIC_INFO
     )
   }
 
