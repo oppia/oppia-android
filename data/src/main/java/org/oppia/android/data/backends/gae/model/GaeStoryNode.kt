@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for StoryNode model
- * https://github.com/oppia/oppia/blob/b56a20/core/domain/story_domain.py#L226
+ * @link https://github.com/oppia/oppia/blob/develop/core/domain/story_domain.py#L184
  */
 @JsonClass(generateAdapter = true)
 data class GaeStoryNode(

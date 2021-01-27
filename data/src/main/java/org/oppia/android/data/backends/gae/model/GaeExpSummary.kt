@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for ExpSummary model
- * https://github.com/oppia/oppia/blob/b56a20/core/domain/summary_services.py#L340
+ * @link https://github.com/oppia/oppia/blob/develop/core/domain/summary_services.py#L360
  */
 @JsonClass(generateAdapter = true)
 data class GaeExpSummary(

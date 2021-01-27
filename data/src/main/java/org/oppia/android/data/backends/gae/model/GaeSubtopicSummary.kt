@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for Subtopic summary model
- * https://github.com/oppia/oppia/blob/b33aa9/core/domain/topic_domain.py#L297
+ * @link https://github.com/oppia/oppia/blob/develop/core/domain/topic_domain.py#L337
  */
 @JsonClass(generateAdapter = true)
 data class GaeSubtopicSummary(

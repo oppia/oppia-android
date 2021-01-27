@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for SubtopicPageContents model
- * https://github.com/oppia/oppia/blob/b33aa9/core/domain/subtopic_page_domain.py#L112
+ * @link https://github.com/oppia/oppia/blob/develop/core/domain/subtopic_page_domain.py#L80
  */
 @JsonClass(generateAdapter = true)
 data class GaeSubtopicPageContents(

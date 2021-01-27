@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for Exploration model
- * https://github.com/oppia/oppia/blob/15516a/core/domain/exp_domain.py#L3272
+ * @link https://github.com/oppia/oppia/blob/develop/core/domain/exp_domain.py#L249
  */
 @JsonClass(generateAdapter = true)
 data class GaeExploration(

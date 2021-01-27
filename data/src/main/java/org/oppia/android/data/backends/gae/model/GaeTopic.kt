@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for Topic model containing full information
- * https://github.com/oppia/oppia/blob/b33aa9/core/controllers/topic_viewer.py#L45
+ * @link https://github.com/oppia/oppia/blob/develop/core/controllers/topic_viewer.py#L124
  */
 @JsonClass(generateAdapter = true)
 data class GaeTopic(

@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for State model
- * https://github.com/oppia/oppia/blob/15516a/core/domain/state_domain.py#L1774
+ * @link https://github.com/oppia/oppia/blob/develop/core/domain/state_domain.py#L2284
  */
 @JsonClass(generateAdapter = true)
 data class GaeState(

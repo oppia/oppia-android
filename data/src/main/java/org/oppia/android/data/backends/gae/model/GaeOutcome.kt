@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for Outcome model
- * https://github.com/oppia/oppia/blob/15516a/core/domain/state_domain.py#L533
+ * @link https://github.com/oppia/oppia/blob/develop/core/domain/state_domain.py#L1258
  */
 @JsonClass(generateAdapter = true)
 data class GaeOutcome(

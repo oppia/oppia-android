@@ -5,12 +5,13 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for WrittenTranslation model
- * https://github.com/oppia/oppia/blob/15516a/core/domain/state_domain.py#L749
+ * @link https://github.com/oppia/oppia/blob/develop/core/domain/state_domain.py#L1461
  */
 @JsonClass(generateAdapter = true)
 data class GaeWrittenTranslation(
 
-  @Json(name = "html") val html: String?,
+  @Json(name = "translation") val translation: String?,
+  @Json(name = "data_format") val dataFormat: String?,
   @Json(name = "needs_update") val isUpdateNeeded: Boolean?
 
 )

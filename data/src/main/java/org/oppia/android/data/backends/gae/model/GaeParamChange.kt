@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for ParamChange model
- * https://github.com/oppia/oppia/blob/15516a/core/domain/param_domain.py#L149
+ * @link https://github.com/oppia/oppia/blob/develop/core/domain/param_domain.py#L90
  */
 @JsonClass(generateAdapter = true)
 data class GaeParamChange(

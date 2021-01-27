@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for story summary model with minimum details
- * https://github.com/oppia/oppia/blob/b33aa9/core/domain/story_domain.py#L1118
+ * @link https://github.com/oppia/oppia/blob/develop/core/domain/story_domain.py#L1465
  */
 @JsonClass(generateAdapter = true)
 data class GaeStorySummary(

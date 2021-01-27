@@ -5,11 +5,13 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for Classroom model containing full information
- * https://github.com/oppia/oppia/blob/77d6fd/core/controllers/classroom.py#L49
+ * @link https://github.com/oppia/oppia/blob/develop/core/controllers/classroom.py#L67
  */
 @JsonClass(generateAdapter = true)
 data class GaeClassroom(
 
-  @Json(name = "topic_summary_dicts") val topicSummaryDicts: List<GaeTopicSummary>?
-
+  @Json(name = "topic_summary_dicts") val topicSummaryDicts: List<GaeTopicSummary>?,
+  @Json(name = "topic_list_intro") val topicListIntro: String?,
+  @Json(name = "course_details") val courseDetails: String?,
+  @Json(name = "name") val name: String?
 )

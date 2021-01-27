@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for RuleSpec model
- * https://github.com/oppia/oppia/blob/15516a/core/domain/state_domain.py#L1113
+ * @link https://github.com/oppia/oppia/blob/develop/core/domain/state_domain.py#L1113
  */
 @JsonClass(generateAdapter = true)
 data class GaeRuleSpec(

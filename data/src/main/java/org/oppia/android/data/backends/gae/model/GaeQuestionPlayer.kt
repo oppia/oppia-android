@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class model for Questions List
- * https://github.com/oppia/oppia/blob/b33aa9/core/controllers/reader.py#L1008
+ * @link https://github.com/oppia/oppia/blob/develop/core/controllers/reader.py#L220
  */
 @JsonClass(generateAdapter = true)
 data class GaeQuestionPlayer(

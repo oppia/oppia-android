@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for TopicSummaryDict model containing full information
- * https://github.com/oppia/oppia/blob/77d6fd/core/domain/topic_domain.py#L1178
+ * @link https://github.com/oppia/oppia/blob/develop/core/domain/topic_domain.py#L1678
  */
 @JsonClass(generateAdapter = true)
 data class GaeTopicSummary(

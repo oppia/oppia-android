@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for Voiceover model
- * https://github.com/oppia/oppia/blob/15516a/core/domain/state_domain.py#L651
+ * @link https://github.com/oppia/oppia/blob/develop/core/domain/state_domain.py#L1337
  */
 @JsonClass(generateAdapter = true)
 data class GaeVoiceover(

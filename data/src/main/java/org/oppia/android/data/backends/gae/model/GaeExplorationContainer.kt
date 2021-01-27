@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for ExplorationContainer model
- * https://github.com/oppia/oppia/blob/15516a/core/controllers/reader.py#L245
+ * @link https://github.com/oppia/oppia/blob/develop/core/controllers/reader.py#L178
  */
 @JsonClass(generateAdapter = true)
 data class GaeExplorationContainer(
