@@ -283,8 +283,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     val isTerminalState =
       ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
-    if (playerFeatureSet.showCelebrationAtEndOfExplorationSession) {
-      maybeShowCelebrationForEndOfExplorationSession(isTerminalState, isTablet)
+    if (playerFeatureSet.showCelebrationAtEndOfExplorationSession && isTerminalState) {
+      maybeShowCelebrationForEndOfExplorationSession(isTablet)
     }
     maybeAddNavigationButtons(
       conversationPendingItemList,
@@ -462,7 +462,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   /** Shows confetti when the learner reaches the end of an exploration. */
-  fun maybeShowCelebrationForEndOfExplorationSession(stateIsTerminal: Boolean, isTablet: Boolean) {
+  fun maybeShowCelebrationForEndOfExplorationSession(isTablet: Boolean) {
     check(playerFeatureSet.showCelebrationAtEndOfExplorationSession) {
       "Cannot show end of exploration confetti for assembler that doesn't support it"
     }
@@ -472,11 +472,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val colorsList = checkNotNull(confettiColors) {
       "Expected non-null list of confetti colors"
     }
-    if (stateIsTerminal) {
+    if (!confettiView.isActive()) {
+      // If learners toggle back and forth from the ene dof the exploration we only show the confetti one
+      // instance at a time.
       createEndOfExplorationSessionConfetti(confettiView, colorsList, isTablet)
-    } else if (confettiView.isActive()) {
-      // Ensure that confetti is not showing when navigating away from the end of the exploration.
-      confettiView.stopGracefully()
     }
   }
 
@@ -803,8 +802,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     colorsList: List<Int>,
     isTablet: Boolean
   ) {
-    var minSpeed = 3f
-    var maxSpeed = 8f
+    var minSpeed = 4f
+    var maxSpeed = 9f
     var sizeInDp = Size(sizeInDp = 8)
     var sizeWithMass = Size(sizeInDp = 7, mass = 3f)
     val timeToLiveMillis: Long = 4000
@@ -813,7 +812,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     if (isTablet) {
       // Use a larger burst animation for larger layouts
-      minSpeed = 3f
+      minSpeed = 5f
       maxSpeed = 12f
       sizeInDp = Size(sizeInDp = 12)
       sizeWithMass = Size(sizeInDp = 11, mass = 3f)
