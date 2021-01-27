@@ -40,6 +40,7 @@ import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -59,6 +60,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
@@ -88,6 +90,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasActiveConfetti
+import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasExpectedNumberOfActiveSystems
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -1024,7 +1027,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-//  @Ignore("Currently failing as tablet layouts currently do not properly render interaction views")
+  @Ignore("Currently failing as tablet layouts currently do not properly render interaction views")
   @Config(qualifiers = "sw600dp-port")
   fun testStateFragment_tabletPortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
@@ -1037,7 +1040,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-//  @Ignore("Currently failing as tablet layouts currently do not properly render interaction views")
+  @Ignore("Currently failing as tablet layouts currently do not properly render interaction views")
   @Config(qualifiers = "sw600dp-land")
   fun testStateFragment_tabletLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
@@ -1050,7 +1053,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_notAtEndOfExploration_endOfSessionConfettiDoesNotStart() {
+  fun testStateFragment_submitCorrectAnswer_endOfSessionConfettiDoesNotStart() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
@@ -1060,16 +1063,34 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_finishExplorationAndGoBack_endOfSessionConfettiStopsEmittingNewPieces() {
+  fun testStateFragment_notAtEndOfExploration_endOfSessionConfettiDoesNotStart() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      // Play through all questions but do not reach the last screen of the exploration.
+      playThroughAllStates()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(not(hasActiveConfetti())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_reachEndOfExplorationTwice_endOfSessionConfettiIsDisplayedOnce() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
       onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(
+        hasExpectedNumberOfActiveSystems(2)
+      ))
 
-      clickBackArrow()
+      clickPreviousStateNavigationButton()
+      clickNextStateNavigationButton()
 
-      onView(withId(R.id.full_screen_confetti_view)).check(matches(not(hasActiveConfetti())))
+      // End of exploration confetti should only render one instance at a time.
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(
+        hasExpectedNumberOfActiveSystems(2)
+      ))
     }
   }
 
@@ -1221,7 +1242,12 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun clickBackArrow() {
+  private fun clickNextStateNavigationButton() {
+    onView(withId(R.id.next_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickPreviousStateNavigationButton() {
     onView(withId(R.id.previous_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
