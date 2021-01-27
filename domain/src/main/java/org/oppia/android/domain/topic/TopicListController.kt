@@ -496,8 +496,8 @@ class TopicListController @Inject constructor(
     for (topicId in unstartedTopicIdList) {
       // All of the topic's prerequisites can be suggested if the topic is ongoing.
       val dependentTopicIds = topicDependencyMap[topicId] ?: listOf()
-      if (topicId !in impliedFinishedTopicIds && startedTopicIds.any { it in dependentTopicIds } &&
-        !impliedFinishedTopicIds.containsAll(dependentTopicIds)) {
+      if (topicId !in impliedFinishedTopicIds && startedTopicIds.any { it in dependentTopicIds }
+        && !impliedFinishedTopicIds.containsAll(dependentTopicIds)) {
         createRecommendedStoryFromAssets(topicId)?.let {
           recommendedStories.add(it)
         }
