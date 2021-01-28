@@ -17,7 +17,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -42,7 +41,6 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -61,6 +59,8 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -239,7 +239,7 @@ class TopicPracticeFragmentTest {
       clickPracticeTab()
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
@@ -263,7 +263,7 @@ class TopicPracticeFragmentTest {
           R.id.topic_practice_start_button
         )
       ).check(matches(not(isClickable())))
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       scrollToPosition(position = 5)
       onView(
         atPositionOnView(
@@ -280,7 +280,7 @@ class TopicPracticeFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       scrollToPosition(position = 5)
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -310,7 +310,7 @@ class TopicPracticeFragmentTest {
           )
         )
       )
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
@@ -392,14 +392,18 @@ class TopicPracticeFragmentTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(topicPracticeFragmentTest: TopicPracticeFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerTopicPracticeFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -415,5 +419,7 @@ class TopicPracticeFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }

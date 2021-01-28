@@ -16,7 +16,6 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -41,7 +40,6 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -59,6 +57,8 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
@@ -402,7 +402,7 @@ class PinPasswordActivityTest {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
         .perform(editTextInputAction.appendText("1234"), closeSoftKeyboard())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
         .check(matches(withText("1234")))
@@ -427,7 +427,7 @@ class PinPasswordActivityTest {
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
         .perform(click())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withText(context.getString(R.string.reset_pin_enter)))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -456,7 +456,7 @@ class PinPasswordActivityTest {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
         .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
         .perform(click())
@@ -479,7 +479,7 @@ class PinPasswordActivityTest {
       testCoroutineDispatchers.runCurrent()
       closeSoftKeyboard()
       onView(withId(R.id.forgot_pin)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withText(context.getString(R.string.pin_password_forgot_message)))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -515,7 +515,7 @@ class PinPasswordActivityTest {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
         .perform(editTextInputAction.appendText("5"), closeSoftKeyboard())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin))))
         .inRoot(isDialog())
         .check(matches(withText("")))
@@ -547,7 +547,7 @@ class PinPasswordActivityTest {
       onView(withText(context.getString(R.string.admin_settings_submit)))
         .inRoot(isDialog())
         .perform(click())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         allOf(
           withId(R.id.error_text),
@@ -573,7 +573,7 @@ class PinPasswordActivityTest {
         editTextInputAction.appendText("54321"),
         closeSoftKeyboard()
       )
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(
         matches(
           isDisplayed()
@@ -668,7 +668,7 @@ class PinPasswordActivityTest {
       testCoroutineDispatchers.runCurrent()
       closeSoftKeyboard()
       onView(withId(R.id.show_pin)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withText(context.getString(R.string.pin_password_hide))).check(matches(isDisplayed()))
       onView(withId(R.id.show_hide_password_image_view))
         .check(
@@ -725,14 +725,18 @@ class PinPasswordActivityTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(pinPasswordActivityTest: PinPasswordActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerPinPasswordActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -748,5 +752,7 @@ class PinPasswordActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }

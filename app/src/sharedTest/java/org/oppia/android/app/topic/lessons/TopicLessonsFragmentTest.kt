@@ -20,7 +20,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -50,7 +49,6 @@ import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -72,6 +70,8 @@ import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.StoryProgressTestHelper
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -170,7 +170,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_configurationChange_storyName_isCorrect() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       verifyTextOnStorySummaryListItemAtPosition(itemPosition = 1, stringToMatch = "Ratios: Part 1")
     }
   }
@@ -319,7 +319,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationChange_chapterListIsVisible() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
       onView(
@@ -418,14 +418,18 @@ class TopicLessonsFragmentTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(topicLessonsFragmentTest: TopicLessonsFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerTopicLessonsFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -441,5 +445,7 @@ class TopicLessonsFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }

@@ -15,7 +15,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -44,7 +43,6 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -67,6 +65,8 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.domain.topic.TEST_STORY_ID_1
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -184,7 +184,7 @@ class StoryFragmentTest {
   fun testStoryFragment_changeConfiguration_textViewIsShownCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -231,7 +231,7 @@ class StoryFragmentTest {
   fun testStoryFragment_changeConfiguration_chapterSummaryIsShownCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -282,7 +282,7 @@ class StoryFragmentTest {
   fun testStoryFragment_changeConfiguration_chapterLongSummaryIsShownCorrectly() {
     launch<StoryActivity>(createTestStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -333,7 +333,7 @@ class StoryFragmentTest {
   fun testStoryFragment_changeConfiguration_chapterMissingPrerequisiteIsShownCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           2
@@ -357,7 +357,7 @@ class StoryFragmentTest {
   fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -376,7 +376,7 @@ class StoryFragmentTest {
     setStoryPartialProgressForFractions()
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       val headerString: String =
         getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
       onView(withId(R.id.story_chapter_list)).perform(
@@ -457,14 +457,18 @@ class StoryFragmentTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(storyFragmentTest: StoryFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerStoryFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -480,5 +484,7 @@ class StoryFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }

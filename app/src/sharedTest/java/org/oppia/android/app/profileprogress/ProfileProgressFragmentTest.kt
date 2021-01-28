@@ -66,7 +66,6 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -87,6 +86,8 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -174,7 +175,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_configurationChange_checkProfileName_profileNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.profile_name_text_view)
@@ -217,7 +218,7 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
     }
   }
@@ -274,7 +275,7 @@ class ProfileProgressFragmentTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(expectedIntent)
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       testCoroutineDispatchers.runCurrent()
       intended(expectedIntent)
       onView(
@@ -339,7 +340,7 @@ class ProfileProgressFragmentTest {
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("2"))
       onView(
@@ -404,7 +405,7 @@ class ProfileProgressFragmentTest {
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
@@ -500,7 +501,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressActivity_changeConfiguration_recyclerViewItem1_storyNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
@@ -636,7 +637,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressActivityNoProgress_recyclerViewIndex0_changeConfiguration_clickStoryCount_isNotClickable() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.stories_completed))
       onView(
@@ -815,14 +816,18 @@ class ProfileProgressFragmentTest {
       HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(profileProgressFragmentTest: ProfileProgressFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerProfileProgressFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -838,5 +843,7 @@ class ProfileProgressFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }

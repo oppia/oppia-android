@@ -17,7 +17,6 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -48,7 +47,6 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -70,6 +68,8 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -369,7 +369,7 @@ class RecentlyPlayedFragmentTest {
         internalProfileId
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         allOf(instanceOf(TextView::class.java), withParent(withId(R.id.recently_played_toolbar)))
       ).check(
@@ -386,7 +386,7 @@ class RecentlyPlayedFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -406,7 +406,7 @@ class RecentlyPlayedFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -428,7 +428,7 @@ class RecentlyPlayedFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -450,7 +450,7 @@ class RecentlyPlayedFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -471,7 +471,7 @@ class RecentlyPlayedFragmentTest {
         internalProfileId
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -494,7 +494,7 @@ class RecentlyPlayedFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           2
@@ -558,7 +558,7 @@ class RecentlyPlayedFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -580,7 +580,7 @@ class RecentlyPlayedFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           3
@@ -615,14 +615,18 @@ class RecentlyPlayedFragmentTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(recentlyPlayedFragmentTest: RecentlyPlayedFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerRecentlyPlayedFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -638,5 +642,7 @@ class RecentlyPlayedFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }

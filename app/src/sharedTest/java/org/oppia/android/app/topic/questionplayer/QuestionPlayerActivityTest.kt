@@ -19,7 +19,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -55,7 +54,6 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -75,6 +73,7 @@ import org.oppia.android.domain.question.QuestionCountPerTrainingSession
 import org.oppia.android.domain.question.QuestionTrainingSeed
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RobolectricModule
@@ -168,7 +167,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_landscape_forMisconception_showsLinkTextForConceptCard() {
     launchForSkillList(SKILL_ID_LIST).use {
-      rotateToLandscape()
+      it.rotateToLandscape()
 
       // Option 3 is the wrong answer and should trigger showing a concept card.
       selectMultipleChoiceOption(optionPosition = 3)
@@ -201,7 +200,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_landscape_forMisconception_clickLinkText_opensConceptCard() {
     launchForSkillList(SKILL_ID_LIST).use {
-      rotateToLandscape()
+      it.rotateToLandscape()
       selectMultipleChoiceOption(optionPosition = 3) // Misconception.
       scrollToViewType(FEEDBACK)
 
@@ -235,7 +234,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_phoneLand_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
-      rotateToLandscape()
+      it.rotateToLandscape()
       // Option 2 is the right answer and tick icon should be visible completely
       selectMultipleChoiceOption(optionPosition = 2)
       onView(withId(R.id.answer_tick)).check(
@@ -268,7 +267,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testChooseCorrectAnswer_answerLongerThanScreen_tabletLand_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
-      rotateToLandscape()
+      it.rotateToLandscape()
       // Option 2 is the right answer and tick icon should be visible completely
       selectMultipleChoiceOption(optionPosition = 2)
       onView(withId(R.id.answer_tick)).check(
@@ -294,11 +293,6 @@ class QuestionPlayerActivityTest {
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
     return scenario
-  }
-
-  private fun rotateToLandscape() {
-    onView(isRoot()).perform(orientationLandscape())
-    testCoroutineDispatchers.runCurrent()
   }
 
   // TODO(#1778): Share the following utilities with StateFragmentTest.

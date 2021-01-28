@@ -16,7 +16,6 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -38,7 +37,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -57,6 +55,8 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -158,7 +158,7 @@ class ProfileEditActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Admin"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
@@ -191,7 +191,7 @@ class ProfileEditActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Ben"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
       onView(withId(R.id.profile_edit_allow_download_container)).perform(scrollTo())
@@ -229,7 +229,7 @@ class ProfileEditActivityTest {
         profileId = 1
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.profile_rename_button)).perform(click())
       intended(hasComponent(ProfileRenameActivity::class.java.name))
     }
@@ -256,7 +256,7 @@ class ProfileEditActivityTest {
         profileId = 1
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.profile_reset_button)).perform(scrollTo()).perform(click())
       intended(hasComponent(ProfileResetPinActivity::class.java.name))
     }
@@ -289,7 +289,7 @@ class ProfileEditActivityTest {
         profileId = 1
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_dialog_message))
@@ -331,7 +331,7 @@ class ProfileEditActivityTest {
         profileId = 1
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_positive))
         .inRoot(isDialog())
@@ -383,7 +383,7 @@ class ProfileEditActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
     }
   }
@@ -409,14 +409,18 @@ class ProfileEditActivityTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(profileEditActivityTest: ProfileEditActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerProfileEditActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -432,5 +436,7 @@ class ProfileEditActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }

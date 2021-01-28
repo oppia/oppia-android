@@ -31,7 +31,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -62,7 +61,6 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -81,6 +79,8 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
@@ -173,7 +173,7 @@ class NavigationDrawerActivityTest {
   fun testNavigationDrawerTestActivity_openNavDrawer_changeConfig_navDrawerIsDisplayed() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
     }
   }
@@ -205,7 +205,7 @@ class NavigationDrawerActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         allOf(
           withId(R.id.nav_header_profile_name),
@@ -288,7 +288,7 @@ class NavigationDrawerActivityTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.drawer_nested_scroll_view)).perform(swipeUp())
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
     }
@@ -395,7 +395,7 @@ class NavigationDrawerActivityTest {
       onView(withText(R.string.home_activity_back_dialog_message))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
     }
   }
@@ -511,14 +511,18 @@ class NavigationDrawerActivityTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerNavigationDrawerActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -534,5 +538,7 @@ class NavigationDrawerActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }

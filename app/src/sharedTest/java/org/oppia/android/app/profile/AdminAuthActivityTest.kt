@@ -17,7 +17,6 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -42,7 +41,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -60,6 +58,8 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
@@ -352,7 +352,7 @@ class AdminAuthActivityTest {
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.admin_auth_submit_button)).check(matches(isEnabled()))
     }
   }
@@ -387,7 +387,7 @@ class AdminAuthActivityTest {
             )
           )
         )
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.admin_auth_sub_text))
         .check(
           matches(
@@ -438,7 +438,7 @@ class AdminAuthActivityTest {
             )
           )
         )
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.admin_auth_sub_text))
         .check(
           matches(
@@ -481,7 +481,7 @@ class AdminAuthActivityTest {
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
@@ -518,7 +518,7 @@ class AdminAuthActivityTest {
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(withId(R.id.admin_auth_input_pin))
         .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.admin_auth_input_pin))
         .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
     }
@@ -547,7 +547,7 @@ class AdminAuthActivityTest {
       )
       onView(withId(R.id.admin_auth_input_pin))
         .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.admin_auth_input_pin))
         .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
     }
@@ -598,14 +598,18 @@ class AdminAuthActivityTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(adminAuthActivityTest: AdminAuthActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerAdminAuthActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -621,5 +625,7 @@ class AdminAuthActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }

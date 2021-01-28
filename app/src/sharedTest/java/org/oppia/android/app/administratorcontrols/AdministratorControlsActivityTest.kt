@@ -28,7 +28,6 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -58,8 +57,6 @@ import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -77,6 +74,9 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToPortrait
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -368,7 +368,7 @@ class AdministratorControlsActivityTest {
         )
       )
         .perform(click())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.administrator_controls_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           2
@@ -388,7 +388,7 @@ class AdministratorControlsActivityTest {
         )
       )
         .check(matches(not(isChecked())))
-      onView(isRoot()).perform(orientationPortrait())
+      it.rotateToPortrait()
       onView(withId(R.id.administrator_controls_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           2
@@ -460,7 +460,7 @@ class AdministratorControlsActivityTest {
           4
         )
       )
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.administrator_controls_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           4
@@ -661,14 +661,18 @@ class AdministratorControlsActivityTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(administratorControlsActivityTest: AdministratorControlsActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerAdministratorControlsActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -684,5 +688,7 @@ class AdministratorControlsActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }
