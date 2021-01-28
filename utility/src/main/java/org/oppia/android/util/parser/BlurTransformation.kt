@@ -30,20 +30,14 @@ class BlurTransformation(private val context: Context) : BitmapTransformation() 
     outWidth: Int,
     outHeight: Int
   ): Bitmap {
-
-    val inputAllocation = if (toTransform.config == Bitmap.Config.ARGB_8888) {
-      // Create a RenderScript allocation pointing to the original bitmap to avoid a memory copy.
-      Allocation.createFromBitmap(renderScript, toTransform)
-    } else {
-      // Create a RenderScript allocation pointing to a copy. Note that a copy is needed here since the original bitmap configuration isn't in ARGB_8888 (which is required for how the script intrinsic is configured below).
-      Allocation.createFromBitmap(
-        renderScript,
-        toTransform.copy(Bitmap.Config.ARGB_8888, true),
-        Allocation.MipmapControl.MIPMAP_FULL,
-        Allocation.USAGE_SHARED
-      )
-    }
-
+    val blurredBitmap = toTransform.copy(Bitmap.Config.ARGB_8888, true)
+    // Create a RenderScript allocation pointing to a copy.
+    val inputAllocation = Allocation.createFromBitmap(
+      renderScript,
+      blurredBitmap,
+      Allocation.MipmapControl.MIPMAP_FULL,
+      Allocation.USAGE_SHARED
+    )
     // Create a new RenderScript allocation to receive the output from the blur operation.
     val outputAllocation = Allocation.createTyped(renderScript, inputAllocation.type)
 
@@ -53,9 +47,8 @@ class BlurTransformation(private val context: Context) : BitmapTransformation() 
     blurScript.setRadius(BLUR_RADIUS)
     blurScript.forEach(outputAllocation)
 
-    // Transform the original bitmap to avoid needing to reallocate a second one.
-    outputAllocation.copyTo(toTransform)
-    return toTransform
+    outputAllocation.copyTo(blurredBitmap)
+    return blurredBitmap
   }
 
   override fun updateDiskCacheKey(messageDigest: MessageDigest) {
