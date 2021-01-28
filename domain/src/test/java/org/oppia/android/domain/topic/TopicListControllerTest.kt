@@ -477,7 +477,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrievePromotedActivityList_markAllChapDoneInRatios_comingSoonTopicListIsCorrect() {
+  fun testRetrievePromotedActivityList_markAllChapDoneInAllTopics_comingSoonTopicListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -513,7 +513,7 @@ class TopicListControllerTest {
     storyProgressController.recordCompletedChapter(
       profileId0,
       TEST_TOPIC_ID_1,
-      TEST_STORY_ID_2,
+      TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_4,
       getCurrentTimestamp()
     )
