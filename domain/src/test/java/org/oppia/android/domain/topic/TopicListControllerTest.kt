@@ -747,6 +747,7 @@ class TopicListControllerTest {
       RATIOS_EXPLORATION_ID_2,
       getCurrentTimestamp()
     )
+    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
