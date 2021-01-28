@@ -390,9 +390,9 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_tooLongName_isCompletelyVisible() {
+  fun testProfileEdit_withLongProfileName_nameIsCompletelyVisible() {
     profileManagementController.addProfile(
-      name = "Marijuana Pepsi Jackson Cocacola",
+      name = "Hubert Blaine Wolfeschlegelstein",
       pin = "123",
       avatarImagePath = null,
       allowDownloadAccess = false,
@@ -406,7 +406,32 @@ class ProfileEditActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Marijuana Pepsi Jackson Cocacola")))
+      onView(withId(R.id.profile_edit_name))
+        .check(matches(withText("Hubert Blaine Wolfeschlegelstein")))
+      onView(withId(R.id.profile_edit_name)).check(matches(ViewMatchers.isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_withLongProfileName_configChange_nameIsCompletelyVisible() {
+    profileManagementController.addProfile(
+      name = "Hubert Blaine Wolfeschlegelstein",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = -10710042,
+      isAdmin = false
+    ).toLiveData()
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context,
+        profileId = 4
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_edit_name))
+        .check(matches(withText("Hubert Blaine Wolfeschlegelstein")))
       onView(withId(R.id.profile_edit_name)).check(matches(ViewMatchers.isCompletelyDisplayed()))
     }
   }
