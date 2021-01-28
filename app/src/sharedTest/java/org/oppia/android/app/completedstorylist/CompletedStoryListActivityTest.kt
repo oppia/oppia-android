@@ -19,7 +19,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
@@ -88,6 +87,7 @@ import javax.inject.Singleton
 class CompletedStoryListActivityTest {
 
   private val internalProfileId = 0
+  private val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -103,9 +103,7 @@ class CompletedStoryListActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    FirebaseApp.initializeApp(context)
 
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     storyProfileTestHelper.markFullStoryProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false

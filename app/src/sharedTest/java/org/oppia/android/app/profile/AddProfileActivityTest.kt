@@ -34,7 +34,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -118,7 +117,6 @@ class AddProfileActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    FirebaseApp.initializeApp(context)
   }
 
   @After

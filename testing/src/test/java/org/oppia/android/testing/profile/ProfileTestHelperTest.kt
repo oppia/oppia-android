@@ -131,10 +131,10 @@ class ProfileTestHelperTest {
   }
 
   @Test
-  fun testLoginToAdmin_initializeProfiles_loginToAdmin_checkIsSuccessful() {
+  fun testLogIntoAdmin_initializeProfiles_logIntoAdmin_checkIsSuccessful() {
     profileTestHelper.initializeProfiles()
 
-    profileTestHelper.loginToAdmin().observeForever(mockUpdateResultObserver)
+    profileTestHelper.logIntoAdmin().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
@@ -143,15 +143,27 @@ class ProfileTestHelperTest {
   }
 
   @Test
-  fun testLoginToUser_initializeProfiles_loginToUser_checkIsSuccessful() {
+  fun testLogIntoUser_initializeProfiles_logIntoUser_checkIsSuccessful() {
     profileTestHelper.initializeProfiles()
 
-    profileTestHelper.loginToUser().observeForever(mockUpdateResultObserver)
+    profileTestHelper.logIntoUser().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isSuccess()).isTrue()
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(1)
+  }
+
+  @Test
+  fun testLogIntoNewUser_initializeProfiles_logIntoUser_checkIsSuccessful() {
+    profileTestHelper.initializeProfiles()
+
+    profileTestHelper.logIntoNewUser().observeForever(mockUpdateResultObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
   }
 
   // TODO(#89): Move this to a common test application component.
