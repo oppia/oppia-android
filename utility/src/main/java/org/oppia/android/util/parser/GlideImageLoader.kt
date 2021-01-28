@@ -14,7 +14,7 @@ import org.oppia.android.util.caching.CacheAssetsLocally
 import javax.inject.Inject
 
 /** An [ImageLoader] that uses Glide. */
-open class GlideImageLoader @Inject constructor(
+class GlideImageLoader @Inject constructor(
   private val context: Context,
   @CacheAssetsLocally private val cacheAssetsLocally: Boolean,
   private val assetRepository: AssetRepository
