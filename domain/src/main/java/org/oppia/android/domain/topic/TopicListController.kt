@@ -436,7 +436,7 @@ class TopicListController @Inject constructor(
   private fun retrieveTopicDependencies(topicId: String): List<String> {
     val listOfTopicIds = mutableListOf<String>()
     when (topicId) {
-     TEST_TOPIC_ID_0 -> {
+      TEST_TOPIC_ID_0 -> {
         listOfTopicIds.add(FRACTIONS_TOPIC_ID)
       }
       TEST_TOPIC_ID_1 -> {
@@ -511,7 +511,8 @@ class TopicListController @Inject constructor(
       // All of the topic's prerequisites can be suggested if the topic is ongoing.
       val dependentTopicIds = topicDependencyMap[topicId] ?: listOf()
       if (topicId !in impliedFinishedTopicIds &&
-        impliedFinishedTopicIds.any { it in dependentTopicIds } ) {
+        impliedFinishedTopicIds.any { it in dependentTopicIds }
+      ) {
         createRecommendedStoryFromAssets(topicId)?.let {
           recommendedStories.add(it)
         }
