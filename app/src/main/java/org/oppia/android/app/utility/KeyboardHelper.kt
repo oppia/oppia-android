@@ -4,11 +4,11 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 
-/** KeyboardHelper helps to change the visibility of softinputkeybord. */
+/** KeyboardHelper helps to change the visibility of softinputkeyboard. */
 class KeyboardHelper {
   companion object {
     /**
-     * This method hides softinputkeybord
+     * This method hides softinputkeyboard
      * @param view is the input view
      * @param context context of the activity
      */
@@ -20,7 +20,7 @@ class KeyboardHelper {
     }
 
     /**
-     * This method shows softinputkeybord
+     * This method shows softinputkeyboard
      * @param view is the input view
      * @param context context of the activity
      */
