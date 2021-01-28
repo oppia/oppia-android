@@ -462,7 +462,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   /** Shows confetti when the learner reaches the end of an exploration. */
-  fun maybeShowCelebrationForEndOfExplorationSession(isTablet: Boolean) {
+  private fun maybeShowCelebrationForEndOfExplorationSession(isTablet: Boolean) {
     check(playerFeatureSet.showCelebrationAtEndOfExplorationSession) {
       "Cannot show end of exploration confetti for assembler that doesn't support it"
     }
@@ -802,22 +802,16 @@ class StatePlayerRecyclerViewAssembler private constructor(
     colorsList: List<Int>,
     isTablet: Boolean
   ) {
-    var minSpeed = 4f
-    var maxSpeed = 9f
-    var sizeInDp = Size(sizeInDp = 8)
-    var sizeWithMass = Size(sizeInDp = 7, mass = 3f)
+    // Use a larger burst animation for larger layouts
+    val minSpeed = if (isTablet) 5f else 4f
+    val maxSpeed = if (isTablet) 12f else 9f
+    val sizeInDp = if (isTablet) Size(sizeInDp = 12) else Size(sizeInDp = 8)
+    val sizeWithMass =
+      if (isTablet) Size(sizeInDp = 11, mass = 3f) else Size(sizeInDp = 7, mass = 3f)
+    val numPieces = if (isTablet) 60 else 35
     val timeToLiveMillis: Long = 4000
     val delayMs: Long = 500
-    var numPieces = 35
 
-    if (isTablet) {
-      // Use a larger burst animation for larger layouts
-      minSpeed = 5f
-      maxSpeed = 12f
-      sizeInDp = Size(sizeInDp = 12)
-      sizeWithMass = Size(sizeInDp = 11, mass = 3f)
-      numPieces = 60
-    }
     confettiView.build()
       .setDelay(delayMs)
       .addColors(colorsList)
