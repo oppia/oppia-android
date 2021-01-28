@@ -561,7 +561,7 @@ class StoryFragmentTest {
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 
-  /** [TestModule] is a mock that does not load image. It is used to spy on [ImageLoader]. */
+  /** Provides test dependencies (including a mock for [ImageLoader] to capture its operations). */
   @Module
   class TestModule {
     @Provides
