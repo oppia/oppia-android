@@ -420,11 +420,23 @@ class TopicListController @Inject constructor(
   }
 
   // TODO(#2550): Remove hardcoded order of topics. Compute list of suggested stories from backend structures
-  /** Returns a list of topic IDs for which the specified topic ID expects to be completed before being suggested. */
+  /** Returns a list of topic IDs for which the specified topic ID expects to be completed before being suggested.
+   * Dependent hierarchy
+   * TEST_TOPIC_ID_0 (Fractions)
+   * TEST_TOPIC_ID_1 (TEST_TOPIC_ID_0,Ratios)
+   * Addition and Subtraction (depends on Place Values)
+   * Multiplication (depends on Addition and Subtraction)
+   * Division (depends on Multiplication)
+   * Expressions and Equations (depends on A+S, Multiplication, Division)
+   * Fractions (depends on A+S, Multiplication, Division)
+   * Ratios (depends on A+S, Multiplication, Division)
+   * Decimals (depends on A+S, Multiplication, Division)
+   *
+   * */
   private fun retrieveTopicDependencies(topicId: String): List<String> {
     val listOfTopicIds = mutableListOf<String>()
     when (topicId) {
-      TEST_TOPIC_ID_0 -> {
+     TEST_TOPIC_ID_0 -> {
         listOfTopicIds.add(FRACTIONS_TOPIC_ID)
       }
       TEST_TOPIC_ID_1 -> {
@@ -492,34 +504,16 @@ class TopicListController @Inject constructor(
     val impliedFinishedTopicIds = computeImpliedCompletedDependencies(
       fullyCompletedTopicIds, topicDependencyMap
     )
-    // Suggest prerequisite topic user needs to learn while user is learning any of the topics.
+    // Suggest prerequisite topic user needs to learn after completing any of the topics.
+    // The order in which the topic IDs are enumerated matters, and that it should be in the order
+    // of the list itself.
     for (topicId in unstartedTopicIdList) {
       // All of the topic's prerequisites can be suggested if the topic is ongoing.
       val dependentTopicIds = topicDependencyMap[topicId] ?: listOf()
-      if (topicId !in impliedFinishedTopicIds && startedTopicIds.any { it in dependentTopicIds } &&
-        !impliedFinishedTopicIds.containsAll(dependentTopicIds)
-      ) {
+      if (topicId !in impliedFinishedTopicIds &&
+        impliedFinishedTopicIds.any { it in dependentTopicIds } ) {
         createRecommendedStoryFromAssets(topicId)?.let {
           recommendedStories.add(it)
-        }
-      }
-    }
-
-    // Suggest next topic user might be interested to learn while user is learning or completed
-    // any of the topics.
-    val nextTopicIndex = topicIdList.indexOf(startedTopicIds.last()) + 1
-    if (topicIdList.size > nextTopicIndex) {
-      val dependentTopicIds = topicDependencyMap[topicIdList[nextTopicIndex]] ?: listOf()
-      if (topicIdList[nextTopicIndex] !in impliedFinishedTopicIds &&
-        topicIdList[nextTopicIndex] !in dependentTopicIds
-      ) {
-        val recommendedTopicAlreadyExist =
-          recommendedStories.any { it.topicId == topicIdList[nextTopicIndex] }
-        if (!recommendedTopicAlreadyExist) {
-          createRecommendedStoryFromAssets(topicIdList[nextTopicIndex])?.let {
-            recommendedStories.add(it)
-            return recommendedStories
-          }
         }
       }
     }
