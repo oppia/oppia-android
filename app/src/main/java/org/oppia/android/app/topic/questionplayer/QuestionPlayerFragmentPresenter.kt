@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import nl.dionsegijn.konfetti.KonfettiView
+import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
@@ -43,6 +46,7 @@ import javax.inject.Inject
 class QuestionPlayerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val context: Context,
   private val viewModelProvider: ViewModelProvider<QuestionPlayerViewModel>,
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val oppiaLogger: OppiaLogger,
@@ -61,6 +65,13 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
     questionAssessmentProgressController.getCurrentQuestion().toLiveData()
   }
+
+  private val confettiColors = listOf(
+    R.color.confetti_red,
+    R.color.confetti_yellow,
+    R.color.confetti_blue
+  ).map { getColor(context, it) }
+
   private lateinit var binding: QuestionPlayerFragmentBinding
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private lateinit var questionId: String
@@ -75,7 +86,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, "skill"),
-      binding.congratulationsTextView
+      binding.congratulationsTextView,
+      binding.congratulationsTextConfettiView
     )
 
     binding.apply {
@@ -289,7 +301,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         if (result.isCorrectAnswer) {
           recyclerViewAssembler.stopHintsFromShowing()
           questionViewModel.setHintBulbVisibility(false)
-          recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+          recyclerViewAssembler.showCelebrationOnCorrectAnswer()
         } else {
           questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
         }
@@ -397,7 +409,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
-    congratulationsTextView: TextView
+    congratulationsTextView: TextView,
+    congratulationsTextConfettiView: KonfettiView
   ): StatePlayerRecyclerViewAssembler {
     // TODO(#501): Add support early exit detection & message, which requires changes in the training progress
     //  controller & possibly the ephemeral question data model.
@@ -413,7 +426,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       .addReplayButtonSupport()
       .addReturnToTopicSupport()
       .addHintsAndSolutionsSupport()
-      .addCongratulationsForCorrectAnswers(congratulationsTextView)
+      .addCelebrationForCorrectAnswers(
+        congratulationsTextView,
+        congratulationsTextConfettiView,
+        confettiColors
+      )
       .addConceptCardSupport()
       .build()
   }

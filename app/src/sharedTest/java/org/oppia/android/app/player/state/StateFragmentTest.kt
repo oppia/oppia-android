@@ -25,11 +25,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -893,7 +893,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_inputRatio_submit_correctAnswerDisplayed() {
+  fun testStateFragment_inputRatio_correctAnswerSubmitted_correctAnswerIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_6).use {
       startPlayingExploration()
       typeRatioExpression("4:5")
@@ -901,7 +901,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(ViewMatchers.withContentDescription("4 to 5")))
+        .check(matches(withContentDescription("4 to 5")))
     }
   }
 
