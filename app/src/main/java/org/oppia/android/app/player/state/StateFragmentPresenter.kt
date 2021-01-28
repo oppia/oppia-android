@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnswerOutcome
@@ -53,6 +55,7 @@ class StateFragmentPresenter @Inject constructor(
   @ExplorationHtmlParserEntityType private val entityType: String,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val context: Context,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
@@ -82,6 +85,12 @@ class StateFragmentPresenter @Inject constructor(
     explorationProgressController.getCurrentState().toLiveData()
   }
 
+  private val confettiColors = listOf(
+    R.color.confetti_red,
+    R.color.confetti_yellow,
+    R.color.confetti_blue
+  ).map { getColor(context, it) }
+
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -102,7 +111,8 @@ class StateFragmentPresenter @Inject constructor(
     )
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, entityType),
-      binding.congratulationsTextView
+      binding.congratulationsTextView,
+      binding.congratulationsTextConfettiView
     )
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
@@ -219,7 +229,8 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
-    congratulationsTextView: TextView
+    congratulationsTextView: TextView,
+    congratulationsTextConfettiView: KonfettiView
   ): StatePlayerRecyclerViewAssembler {
     return builder
       .hasConversationView(hasConversationView)
@@ -231,7 +242,11 @@ class StateFragmentPresenter @Inject constructor(
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
       .addReturnToTopicSupport()
-      .addCongratulationsForCorrectAnswers(congratulationsTextView)
+      .addCelebrationForCorrectAnswers(
+        congratulationsTextView,
+        congratulationsTextConfettiView,
+        confettiColors
+      )
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(
         explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
@@ -390,7 +405,7 @@ class StateFragmentPresenter @Inject constructor(
           if (result.labelledAsCorrectAnswer) {
             recyclerViewAssembler.stopHintsFromShowing()
             viewModel.setHintBulbVisibility(false)
-            recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+            recyclerViewAssembler.showCelebrationOnCorrectAnswer()
           } else {
             viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
           }

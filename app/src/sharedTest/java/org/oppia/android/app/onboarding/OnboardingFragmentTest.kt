@@ -238,19 +238,6 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_checkSlide1Image_isCorrect() {
-    launch(OnboardingActivity::class.java).use {
-      swipeToSlide1()
-      onView(
-        allOf(
-          withId(R.id.slide_image_view),
-          isCompletelyDisplayed()
-        )
-      ).check(matches(withContentDescription(R.string.onboarding_slide_1_title)))
-    }
-  }
-
-  @Test
   fun testOnboardingFragment_checkSlide1_index1DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide1()
@@ -355,19 +342,6 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_checkSlide2Image_isCorrect() {
-    launch(OnboardingActivity::class.java).use {
-      swipeToSlide2()
-      onView(
-        allOf(
-          withId(R.id.slide_image_view),
-          isCompletelyDisplayed()
-        )
-      ).check(matches(withContentDescription(R.string.onboarding_slide_2_title)))
-    }
-  }
-
-  @Test
   fun testOnboardingFragment_checkSlide2_index2DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide2()
@@ -452,19 +426,6 @@ class OnboardingFragmentTest {
           isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_3_description)))
-    }
-  }
-
-  @Test
-  fun testOnboardingFragment_checkSlide3Image_isCorrect() {
-    launch(OnboardingActivity::class.java).use {
-      swipeToSlide3()
-      onView(
-        allOf(
-          withId(R.id.slide_image_view),
-          isCompletelyDisplayed()
-        )
-      ).check(matches(withContentDescription(R.string.onboarding_slide_3_title)))
     }
   }
 
