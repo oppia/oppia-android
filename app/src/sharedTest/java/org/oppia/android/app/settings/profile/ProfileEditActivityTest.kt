@@ -13,6 +13,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -385,6 +386,28 @@ class ProfileEditActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_tooLongName_isCompletelyVisible() {
+    profileManagementController.addProfile(
+      name = "Marijuana Pepsi Jackson Cocacola",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = -10710042,
+      isAdmin = false
+    ).toLiveData()
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context,
+        profileId = 4
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Marijuana Pepsi Jackson Cocacola")))
+      onView(withId(R.id.profile_edit_name)).check(matches(ViewMatchers.isCompletelyDisplayed()))
     }
   }
 
