@@ -329,13 +329,13 @@ class TopicListControllerTest {
       .isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
       .isEqualTo(1)
-    verifyPromotedStoryAsRatioStory0Exploration0(
+    verifyPromotedStoryAsFirstTestTopicStory0Exploration0(
       promotedActivityList.promotedStoryList.suggestedStoryList[0]
     )
   }
 
   @Test
-  fun testGetPromotedStoryList_markRecentlyPlayedFractStory0Exp0_suggestedStoryListIsCorrect() {
+  fun testGetPromotedStoryList_markRecentlyPlayedFractStory0Exp0_ongoingStoryListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -348,16 +348,8 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
       .isEqualTo(1)
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(2)
     verifyOngoingStoryAsFractionStory0Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
-    )
-    verifyPromotedStoryAsFirstTestTopicStory0Exploration0(
-      promotedActivityList.promotedStoryList.suggestedStoryList[0]
-    )
-    verifyPromotedStoryAsRatioStory0Exploration0(
-      promotedActivityList.promotedStoryList.suggestedStoryList[1]
     )
   }
 
@@ -384,16 +376,11 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
       .isEqualTo(2)
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(1)
     verifyOngoingStoryAsRatioStory0Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
     )
     verifyOngoingStoryAsRatioStory1Exploration2(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
-    )
-    verifyPromotedStoryAsSecondTestTopicStory0Exploration0(
-      promotedActivityList.promotedStoryList.suggestedStoryList[0]
     )
   }
 
@@ -426,7 +413,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markStoryDoneOfFracRatiosFirstTestTopic_comingSoonTopicListIsCorrect() {
+  fun testGetStoryList_markStoryDoneOfFracRatiosFirstTestTopic_suggestedStoryistIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -483,10 +470,10 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
 
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(0)
-    assertThat(promotedActivityList.comingSoonTopicList.upcomingTopicCount)
       .isEqualTo(1)
-    verifyUpcomingTopic1(promotedActivityList.comingSoonTopicList.upcomingTopicList[0])
+    verifyPromotedStoryAsSecondTestTopicStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[0]
+    )
   }
 
   @Test
