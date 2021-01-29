@@ -2,9 +2,11 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Canvas
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.ActivityScenario
@@ -17,6 +19,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -31,6 +34,7 @@ import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
+import nl.dionsegijn.konfetti.KonfettiView
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -62,6 +66,9 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.NavigationDrawerTestActivity
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -270,7 +277,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Config(qualifiers = "port")
+  @Config(qualifiers = "+port")
   fun testStateFragment_portrait_submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -282,7 +289,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Config(qualifiers = "land")
+  @Config(qualifiers = "+land")
   fun testStateFragment_landscape_submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -294,7 +301,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Config(qualifiers = "port")
+  @Config(qualifiers = "+port")
   fun testStateFragment_portrait_submitCorrectAnswer_confettiIsActive() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -305,7 +312,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Config(qualifiers = "land")
+  @Config(qualifiers = "+land")
   fun testStateFragment_landscape_submitCorrectAnswer_confettiIsActive() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -998,7 +1005,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Config(qualifiers = "port")
+  @Config(qualifiers = "+port")
   fun testStateFragment_mobilePortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -1010,7 +1017,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Config(qualifiers = "land")
+  @Config(qualifiers = "+land")
   fun testStateFragment_mobileLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -1022,9 +1029,9 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  // Specify xlarge qualifier so Robolectric runs the test on a large enough screen size for the
+  // Specify xlarge and mdpi qualifier so Robolectric runs the test on a large enough screen size for the
   // corresponding sw600dp layouts.
-  @Config(qualifiers = "sw600dp-xlarge-port")
+  @Config(qualifiers = "sw600dp-xlarge-port-mdpi")
   fun testStateFragment_tabletPortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -1036,9 +1043,9 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  // Specify xlarge qualifier so Robolectric runs the test on a large enough screen size for the
+  // Specify xlarge and mdpi qualifier so Robolectric runs the test on a large enough screen size for the
   // corresponding sw600dp layouts.
-  @Config(qualifiers = "sw600dp-xlarge-land")
+  @Config(qualifiers = "sw600dp-xlarge-land-mdpi")
   fun testStateFragment_tabletLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -1046,6 +1053,52 @@ class StateFragmentLocalTest {
       clickContinueButton()
 
       onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+port")
+  fun testStateFragment_finishExploration_changePortToLand_endOfSessionConfettiIsDisplayedAgain() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+
+      onView(isRoot()).perform(orientationLandscape())
+
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+land")
+  fun testStateFragment_finishExploration_changeLandToPort_endOfSessionConfettiIsDisplayedAgain() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+
+      onView(isRoot()).perform(orientationPortrait())
+
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
     }
   }
 
@@ -1079,17 +1132,22 @@ class StateFragmentLocalTest {
       onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
       onView(withId(R.id.full_screen_confetti_view)).check(
         matches(
-          hasExpectedNumberOfActiveSystems(2)
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
         )
       )
 
       clickPreviousStateNavigationButton()
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
       clickNextStateNavigationButton()
 
       // End of exploration confetti should only render one instance at a time.
       onView(withId(R.id.full_screen_confetti_view)).check(
         matches(
-          hasExpectedNumberOfActiveSystems(2)
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
         )
       )
     }
@@ -1249,7 +1307,7 @@ class StateFragmentLocalTest {
 
   private fun clickPreviousStateNavigationButton() {
     onView(withId(R.id.previous_state_navigation_button)).perform(click())
-    testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceUntilIdle()
   }
 
   private fun openHintsAndSolutionsDialog() {
