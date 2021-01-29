@@ -498,13 +498,13 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks first exploration in all stories of Ratios & Fractions as recently played for a particular profile.
    *
    * @param profileId the profile we are setting recently played for.
-   * @param timestampOlderThanOneWeek the timestamp for the recently played explorations is more than a week ago.
+   * @param timestampOlderThanAWeek the timestamp for the recently played explorations is more than a week ago.
    */
   fun markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
     profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
+    timestampOlderThanAWeek: Boolean
   ) {
-    val timestamp = if (!timestampOlderThanOneWeek) {
+    val timestamp = if (!timestampOlderThanAWeek) {
       getCurrentTimestamp()
     } else {
       getOldTimestamp()
@@ -539,13 +539,13 @@ class StoryProgressTestHelper @Inject constructor(
    * Marks one explorations in each of the two two test topics as recently played for a particular profile.
    *
    * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for the recently played story is more than a week ago
+   * @param timestampOlderThanAWeek if the timestamp for the recently played story is more than a week ago
    */
   fun markRecentlyPlayedForOneExplorationInTestTopics1And2(
     profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
+    timestampOlderThanAWeek: Boolean
   ) {
-    val timestamp = if (!timestampOlderThanOneWeek) {
+    val timestamp = if (!timestampOlderThanAWeek) {
       getCurrentTimestamp()
     } else {
       getOldTimestamp()
