@@ -550,7 +550,7 @@ class TopicListController @Inject constructor(
         listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
       // Ratios (depends on A+S, Multiplication, Division)
-      RATIOS_TOPIC_ID ->  {
+      RATIOS_TOPIC_ID -> {
         listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
       // Addition and Subtraction (depends on Place Values)
@@ -560,11 +560,11 @@ class TopicListController @Inject constructor(
       // Division (depends on Multiplication)
       DIVISION_TOPIC_ID -> listOf(MULTIPLICATION_TOPIC_ID)
       // Expressions and Equations (depends on A+S, Multiplication, Division)
-      EXPRESSION_AND_EQUATION_TOPIC_ID ->  {
+      EXPRESSION_AND_EQUATION_TOPIC_ID -> {
         listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
       // Decimals (depends on A+S, Multiplication, Division)
-      DECIMALS_TOPIC_ID ->  {
+      DECIMALS_TOPIC_ID -> {
         listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
       else -> listOf()
