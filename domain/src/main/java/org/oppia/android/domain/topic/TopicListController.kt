@@ -664,7 +664,6 @@ class TopicListController @Inject constructor(
   }
 
   private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory? {
-
     val topicJson = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")
     if (topicJson!!.optString("topic_name").isNullOrEmpty()) {
       return null
