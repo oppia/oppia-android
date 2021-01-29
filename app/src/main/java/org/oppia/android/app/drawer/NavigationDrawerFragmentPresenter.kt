@@ -256,7 +256,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           ).isChecked = true
           val dialogFragment = ExitProfileDialogFragment
             .newInstance(
-              isFromNavigationDrawer = true,
+              restoreLastCheckedMenuItem = true,
               isAdministratorControlsSelected = isAdministratorControlsSelected,
               lastCheckedItemId = lastCheckedItemId
             )

@@ -50,7 +50,7 @@ class HomeActivity :
     }
     val dialogFragment = ExitProfileDialogFragment
       .newInstance(
-        isFromNavigationDrawer = false,
+        restoreLastCheckedMenuItem = false,
         isAdministratorControlsSelected = false,
         lastCheckedItemId = -1
       )

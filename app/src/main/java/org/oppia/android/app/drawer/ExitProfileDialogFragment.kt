@@ -27,13 +27,13 @@ class ExitProfileDialogFragment : DialogFragment() {
      * @return [ExitProfileDialogFragment]: DialogFragment
      */
     fun newInstance(
-      isFromNavigationDrawer: Boolean,
+      restoreLastCheckedMenuItem: Boolean,
       isAdministratorControlsSelected: Boolean,
       lastCheckedItemId: Int
     ): ExitProfileDialogFragment {
       val exitProfileDialogFragment = ExitProfileDialogFragment()
       val args = Bundle()
-      args.putBoolean(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
+      args.putBoolean(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, restoreLastCheckedMenuItem)
       args.putBoolean(BOOL_IS_ADMINISTRATOR_CONTROLS_SELECTED_KEY, isAdministratorControlsSelected)
       args.putInt(INT_LAST_CHECKED_ITEM_KEY, lastCheckedItemId)
       exitProfileDialogFragment.arguments = args
