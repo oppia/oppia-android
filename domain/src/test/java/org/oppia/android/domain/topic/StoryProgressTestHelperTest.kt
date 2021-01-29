@@ -825,7 +825,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markFullProgressForSecondTestTopic_comingSooTopicIsCorrect() {
+  fun testProgressTestHelper_markFullProgressForSecondTestTopic_suggestedStoryListIsCorrect() {
     storyProgressTestHelper.markFullProgressForSecondTestTopic(
       profileId = profileId,
       timestampOlderThanOneWeek = false
@@ -842,8 +842,8 @@ class StoryProgressTestHelperTest {
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
       .isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount).isEqualTo(0)
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(0)
-    assertThat(promotedActivityList.comingSoonTopicList.upcomingTopicCount).isEqualTo(1)
+    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(2)
+    assertThat(promotedActivityList.comingSoonTopicList.upcomingTopicCount).isEqualTo(0)
   }
 
   @Test
@@ -882,7 +882,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testHelper_recentlyPlayed_firstExpInAllFracRatio_asOldStories_PromotedActivityListCorrect() {
+  fun testHelper_recentlyPlayed_firstExpInAllFracRatio_asOldStories_promotedActivityListCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = profileId,
       timestampOlderThanOneWeek = true
