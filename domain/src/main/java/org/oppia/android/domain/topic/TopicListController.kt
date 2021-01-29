@@ -536,35 +536,34 @@ class TopicListController @Inject constructor(
   }
 
   // TODO(#2550): Remove hardcoded order of topics. Compute list of suggested stories from backend structures
-  /** Returns a list of topic IDs for which the specified topic ID expects to be completed before being suggested.
-   * Dependent hierarchy
-   * TEST_TOPIC_ID_0 (Fractions)
-   * TEST_TOPIC_ID_1 (TEST_TOPIC_ID_0,Ratios)
-   * Addition and Subtraction (depends on Place Values)
-   * Multiplication (depends on Addition and Subtraction)
-   * Division (depends on Multiplication)
-   * Expressions and Equations (depends on A+S, Multiplication, Division)
-   * Fractions (depends on A+S, Multiplication, Division)
-   * Ratios (depends on A+S, Multiplication, Division)
-   * Decimals (depends on A+S, Multiplication, Division)
-   *
+  /** Returns a list of topic IDs for which the specified topic ID expects to be completed before
+   * being suggested.
    * */
   private fun retrieveTopicDependencies(topicId: String): List<String> {
     return when (topicId) {
+      // TEST_TOPIC_ID_0 (depends on Fractions)
       TEST_TOPIC_ID_0 -> listOf(FRACTIONS_TOPIC_ID)
+      // TEST_TOPIC_ID_1 (depends on TEST_TOPIC_ID_0,Ratios)
       TEST_TOPIC_ID_1 -> listOf(TEST_TOPIC_ID_0, RATIOS_TOPIC_ID)
+      // Fractions (depends on A+S, Multiplication, Division)
       FRACTIONS_TOPIC_ID -> {
         listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
+      // Ratios (depends on A+S, Multiplication, Division)
       RATIOS_TOPIC_ID ->  {
         listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
+      // Addition and Subtraction (depends on Place Values)
       ADDITION_AND_SUBTRACTION_TOPIC_ID -> listOf(PLACE_VALUE_TOPIC_ID)
+      // Multiplication (depends on Addition and Subtraction)
       MULTIPLICATION_TOPIC_ID -> listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID)
+      // Division (depends on Multiplication)
       DIVISION_TOPIC_ID -> listOf(MULTIPLICATION_TOPIC_ID)
+      // Expressions and Equations (depends on A+S, Multiplication, Division)
       EXPRESSION_AND_EQUATION_TOPIC_ID ->  {
         listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
+      // Decimals (depends on A+S, Multiplication, Division)
       DECIMALS_TOPIC_ID ->  {
         listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
@@ -607,10 +606,17 @@ class TopicListController @Inject constructor(
       // All of the topic's prerequisites can be suggested if the topic is ongoing.
       val dependentTopicIds = topicDependencyMap[topicId] ?: listOf()
       if (topicId !in impliedFinishedTopicIds &&
-        impliedFinishedTopicIds.any { it in dependentTopicIds }
+        impliedFinishedTopicIds.containsAll(dependentTopicIds)
       ) {
         createRecommendedStoryFromAssets(topicId)?.let {
           recommendedStories.add(it)
+        }
+      } else if (impliedFinishedTopicIds.any { it in dependentTopicIds }) {
+        val nextTopicsListToRecommend = dependentTopicIds.filter { it !in impliedFinishedTopicIds }
+        nextTopicsListToRecommend.forEach { depId ->
+          createRecommendedStoryFromAssets(depId)?.let {
+            recommendedStories.add(it)
+          }
         }
       }
     }
