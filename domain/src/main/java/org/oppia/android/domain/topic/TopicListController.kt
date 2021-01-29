@@ -236,18 +236,10 @@ class TopicListController @Inject constructor(
   }
 
   private fun computePromotedStoryList(topicProgressList: List<TopicProgress>): PromotedStoryList {
-    val recentlyPlayedStories = computePlayedStories(topicProgressList) { it < ONE_WEEK_IN_DAYS }
-    val olderPlayedStories = computePlayedStories(topicProgressList) { it > ONE_WEEK_IN_DAYS }
     return PromotedStoryList.newBuilder()
-      .addAllRecentlyPlayedStory(
-        recentlyPlayedStories
-      )
-      .addAllOlderPlayedStory(
-        olderPlayedStories
-      )
-      .addAllSuggestedStory(
-        computeSuggestedStories(topicProgressList)
-      )
+      .addAllRecentlyPlayedStory(computePlayedStories(topicProgressList) { it < ONE_WEEK_IN_DAYS })
+      .addAllOlderPlayedStory(computePlayedStories(topicProgressList) { it > ONE_WEEK_IN_DAYS })
+      .addAllSuggestedStory(computeSuggestedStories(topicProgressList))
       .build()
   }
 
@@ -424,55 +416,35 @@ class TopicListController @Inject constructor(
    * being suggested.
    * */
   private fun retrieveTopicDependencies(topicId: String): List<String> {
-    val listOfTopicIds = mutableListOf<String>()
-    when (topicId) {
-      TEST_TOPIC_ID_0 -> {
-        // TEST_TOPIC_ID_0 (depends on Fractions)
-        listOfTopicIds.add(FRACTIONS_TOPIC_ID)
-      }
-      TEST_TOPIC_ID_1 -> {
-        // TEST_TOPIC_ID_1 (depends on TEST_TOPIC_ID_0,Ratios)
-        listOfTopicIds.add(TEST_TOPIC_ID_0)
-        listOfTopicIds.add(RATIOS_TOPIC_ID)
-      }
+    return when (topicId) {
+      // TEST_TOPIC_ID_0 (depends on Fractions)
+      TEST_TOPIC_ID_0 -> listOf(FRACTIONS_TOPIC_ID)
+      // TEST_TOPIC_ID_1 (depends on TEST_TOPIC_ID_0,Ratios)
+      TEST_TOPIC_ID_1 -> listOf(TEST_TOPIC_ID_0, RATIOS_TOPIC_ID)
+      // Fractions (depends on A+S, Multiplication, Division)
       FRACTIONS_TOPIC_ID -> {
-        // Fractions (depends on A+S, Multiplication, Division)
-        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
-        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
-        listOfTopicIds.add(DIVISION_TOPIC_ID)
+        listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
+      // Ratios (depends on A+S, Multiplication, Division)
       RATIOS_TOPIC_ID -> {
-        // Ratios (depends on A+S, Multiplication, Division)
-        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
-        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
-        listOfTopicIds.add(DIVISION_TOPIC_ID)
+        listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
-      ADDITION_AND_SUBTRACTION_TOPIC_ID -> {
-        // Addition and Subtraction (depends on Place Values)
-        listOfTopicIds.add(PLACE_VALUE_TOPIC_ID)
-      }
-      MULTIPLICATION_TOPIC_ID -> {
-        // Multiplication (depends on Addition and Subtraction)
-        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
-      }
-      DIVISION_TOPIC_ID -> {
-        // Division (depends on Multiplication)
-        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
-      }
+      // Addition and Subtraction (depends on Place Values)
+      ADDITION_AND_SUBTRACTION_TOPIC_ID -> listOf(PLACE_VALUE_TOPIC_ID)
+      // Multiplication (depends on Addition and Subtraction)
+      MULTIPLICATION_TOPIC_ID -> listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID)
+      // Division (depends on Multiplication)
+      DIVISION_TOPIC_ID -> listOf(MULTIPLICATION_TOPIC_ID)
+      // Expressions and Equations (depends on A+S, Multiplication, Division)
       EXPRESSION_AND_EQUATION_TOPIC_ID -> {
-        // Expressions and Equations (depends on A+S, Multiplication, Division)
-        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
-        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
-        listOfTopicIds.add(DIVISION_TOPIC_ID)
+        listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
+      // Decimals (depends on A+S, Multiplication, Division)
       DECIMALS_TOPIC_ID -> {
-        // Decimals (depends on A+S, Multiplication, Division)
-        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
-        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
-        listOfTopicIds.add(DIVISION_TOPIC_ID)
+        listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
+      else -> listOf()
     }
-    return listOfTopicIds
   }
 
   private fun computeSuggestedStories(
@@ -529,20 +501,16 @@ class TopicListController @Inject constructor(
 
   private fun topicHasAtLeastOneStoryCompleted(it: TopicProgress): Boolean {
     val topic = topicController.retrieveTopic(it.topicId)
-    it.storyProgressMap.values.forEach { storyProgress ->
-      val storyId = storyProgress.storyId
-      val story = topicController.retrieveStory(topic.topicId, storyId)
-      val isStoryCompleted = checkIfStoryIsCompleted(storyProgress, story)
-      if (isStoryCompleted) {
-        return true
-      }
+    return it.storyProgressMap.values.any { storyProgress ->
+      val story = topicController.retrieveStory(topic.topicId, storyProgress.storyId)
+      return@any checkIfStoryIsCompleted(storyProgress, story)
     }
-    return false
   }
 
-  /** Returns the list of topic IDs that are completed or can be implied completed based on actually
+  /**
+   * Return the list of topic IDs that are completed or can be implied completed based on actually
    * completed topics.
-   * */
+   */
   private fun computeImpliedCompletedDependencies(
     fullyCompletedTopicIds: List<String>,
     topicDependencyMap: Map<String, Set<String>>
@@ -574,7 +542,6 @@ class TopicListController @Inject constructor(
   }
 
   private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory? {
-
     val topicJson = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")
     if (topicJson!!.optString("topic_name").isNullOrEmpty()) {
       return null
