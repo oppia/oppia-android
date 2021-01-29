@@ -236,7 +236,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide1_index1DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
-      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.onboarding_dot_0),
@@ -293,7 +292,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide1_getStartedButtonIsNotVisible() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.get_started_button)).check(doesNotExist())
     }
   }
@@ -301,10 +299,9 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_swipeLeftThenSwipeRight_isWorking() {
     launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
-      testCoroutineDispatchers.advanceUntilIdle()
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeRight())
-      testCoroutineDispatchers.advanceUntilIdle()
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(0))
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -346,7 +343,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide2_index2DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
-      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.onboarding_dot_0),
@@ -403,7 +399,6 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide2_getStartedButtonIsNotVisible() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.get_started_button)).check(doesNotExist())
     }
   }
@@ -514,7 +509,6 @@ class OnboardingFragmentTest {
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
