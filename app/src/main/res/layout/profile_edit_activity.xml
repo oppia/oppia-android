@@ -194,7 +194,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-          android:layout_width="wrap_content"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_marginStart="24dp"
           android:layout_marginEnd="8dp"
@@ -207,10 +207,9 @@
 
           <TextView
             android:id="@+id/profile_edit_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
-            android:layout_marginEnd="150dp"
             android:text="@{viewModel.profile.name}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="20sp"
