@@ -1,6 +1,8 @@
 package org.oppia.android.app.onboarding
 
 import android.app.Application
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -15,6 +17,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withAlpha
@@ -25,6 +28,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -216,10 +222,7 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide1()
       onView(
-        allOf(
-          withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isDescendantOfA(getChildAtPosition(1, ))
       ).check(matches(withText(R.string.onboarding_slide_1_title)))
     }
   }
@@ -231,7 +234,7 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
-          isCompletelyDisplayed()
+          isDescendantOfA(getChildAtPosition(1))
         )
       ).check(matches(withText(R.string.onboarding_slide_1_description)))
     }
@@ -322,7 +325,7 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
+          isDescendantOfA(getChildAtPosition(withId(R.id.onboarding_slide_view_pager), 2))
         )
       ).check(matches(withText(R.string.onboarding_slide_2_title)))
     }
@@ -335,7 +338,7 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
-          isCompletelyDisplayed()
+          isDescendantOfA(getChildAtPosition(withId(R.id.onboarding_slide_view_pager), 2))
         )
       ).check(matches(withText(R.string.onboarding_slide_2_description)))
     }
@@ -410,7 +413,7 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
+          isDescendantOfA(getChildAtPosition(withId(R.id.onboarding_slide_view_pager), 3))
         )
       ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
@@ -420,10 +423,12 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide3Description_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide3()
+//      getChildAtPosition(3)
+      onView()
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
-          isCompletelyDisplayed()
+          isDescendantOfA(getChildAtPosition(3))
         )
       ).check(matches(withText(R.string.onboarding_slide_3_description)))
     }
@@ -450,7 +455,7 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide3()
       onView(withId(R.id.get_started_button)).perform(scrollTo(), click())
-      testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.advanceUntilIdle()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
@@ -525,6 +530,39 @@ class OnboardingFragmentTest {
   private fun swipeToSlide3() {
     swipeToSlide2()
     swipeToSlide1()
+  }
+
+  private fun getChildAtPosition(childPosition: Int): Matcher<View?> {
+    return object : TypeSafeMatcher<View?>() {
+      override fun describeTo(description: Description) {
+        description.appendText("with $childPosition child view of type parentMatcher")
+      }
+
+      override fun matchesSafely(view: View?): Boolean {
+        if (view?.parent !is ViewGroup) {
+          return withId(R.id.onboarding_slide_view_pager).matches(view?.parent)
+        }
+        val group = view.parent as ViewGroup
+        return withId(R.id.onboarding_slide_view_pager).matches(view.parent) && group.getChildAt(childPosition) == view
+      }
+    }
+  }
+
+  private fun getChildAt(childPosition: Int): Matcher<View?> {
+    return object : TypeSafeMatcher<View?>() {
+      override fun describeTo(description: Description) {
+        description.appendText("with $childPosition child view of type parentMatcher")
+      }
+
+      override fun matchesSafely(view: View?): Boolean {
+//        if (view?.parent !is ViewGroup) {
+//          return withId(R.id.onboarding_slide_view_pager).matches(view?.parent)
+//        }
+        val group = view?.parent
+        val child = getChildAtPosition(3)
+        return withId(R.id.onboarding_slide_view_pager).matches(view.parent) && group.getChildAt(childPosition) == view
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
