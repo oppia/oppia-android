@@ -619,15 +619,10 @@ class TopicListController @Inject constructor(
 
   private fun topicHasAtLeastOneStoryCompleted(it: TopicProgress): Boolean {
     val topic = topicController.retrieveTopic(it.topicId)
-    it.storyProgressMap.values.forEach { storyProgress ->
-      val storyId = storyProgress.storyId
-      val story = topicController.retrieveStory(topic.topicId, storyId)
-      val isStoryCompleted = checkIfStoryIsCompleted(storyProgress, story)
-      if (isStoryCompleted) {
-        return true
-      }
+    return it.storyProgressMap.values.any { storyProgress ->
+      val story = topicController.retrieveStory(topic.topicId, storyProgress.storyId)
+      return@any checkIfStoryIsCompleted(storyProgress, story)
     }
-    return false
   }
 
   /**
