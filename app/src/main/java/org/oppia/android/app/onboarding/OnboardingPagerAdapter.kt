@@ -56,9 +56,11 @@ class OnboardingPagerAdapter(
       VIEW_TYPE_TITLE_TEXT -> {
         val onboardingSlideViewModel =
           OnboardingSlideViewModel(context, ViewPagerSlide.getSlideForPosition(position))
+        holder.setIsRecyclable(false)
         (holder as OnboardingSlideViewHolder).bind(onboardingSlideViewModel)
       }
       VIEW_TYPE_STORY_ITEM -> {
+        holder.setIsRecyclable(false)
         (holder as OnboardingSlideFinalViewHolder).bind(onboardingSlideFinalViewModel)
       }
     }
