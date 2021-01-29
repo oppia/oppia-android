@@ -413,7 +413,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markStoryDoneOfFracRatiosFirstTestTopic_suggestedStoryistIsCorrect() {
+  fun testGetStoryList_markStoryDoneOfFracRatiosFirstTestTopic_suggestedStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
