@@ -636,10 +636,8 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
-      onView(withId(R.id.home_recycler_view)).check(
-        // The "All Topics" section currently should display the four test topics in two rows.
-        hasGridColumnCount(2)
-      )
+      // The "All Topics" section currently should display the four test topics in two rows.
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
     }
   }
 
