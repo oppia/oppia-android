@@ -84,7 +84,6 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.ChildViewCoordinatesProvider
 import org.oppia.android.app.utility.CustomGeneralLocation
 import org.oppia.android.app.utility.DragViewAction
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.RecyclerViewCoordinatesProvider
 import org.oppia.android.app.utility.clickPoint
 import org.oppia.android.domain.classify.InteractionsModule
@@ -112,6 +111,8 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_6
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.IsOnRobolectric
@@ -241,7 +242,7 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
-      rotateToLandscape()
+      it.rotateToLandscape()
 
       // Due to the exploration activity loading, the play button should no longer be visible.
       onView(withId(R.id.play_test_exploration_button)).check(matches(not(isDisplayed())))
@@ -264,7 +265,7 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
-      rotateToLandscape()
+      it.rotateToLandscape()
 
       scrollToViewType(CONTINUE_INTERACTION)
       onView(withId(R.id.continue_button)).check(matches(isDisplayed()))
@@ -290,7 +291,7 @@ class StateFragmentTest {
   fun testStateFragment_loadExp_changeConfiguration_secondState_hasSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
-      rotateToLandscape()
+      it.rotateToLandscape()
 
       clickContinueInteractionButton()
 
@@ -334,7 +335,7 @@ class StateFragmentTest {
   fun testStateFragment_loadExp_landscape_secondState_submitAnswer_submitButtonIsClickable() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
-      rotateToLandscape()
+      it.rotateToLandscape()
       clickContinueInteractionButton()
 
       typeFractionText("1/2")
@@ -348,7 +349,7 @@ class StateFragmentTest {
   fun testStateFragment_loadExp_land_secondState_submitAnswer_clickSubmit_continueIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
-      rotateToLandscape()
+      it.rotateToLandscape()
       clickContinueInteractionButton()
       typeFractionText("1/2")
 
@@ -382,7 +383,7 @@ class StateFragmentTest {
   fun testStateFragment_loadExp_land_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
-      rotateToLandscape()
+      it.rotateToLandscape()
       clickContinueInteractionButton()
 
       // Attempt to submit an invalid answer.
@@ -431,7 +432,7 @@ class StateFragmentTest {
   fun testStateFragment_loadExp_land_secondState_invalidAnswer_submitAnswerIsNotEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
-      rotateToLandscape()
+      it.rotateToLandscape()
       clickContinueInteractionButton()
 
       typeFractionText("1/")
@@ -446,7 +447,7 @@ class StateFragmentTest {
   fun testStateFragment_loadExp_land_secondState_invalidAnswer_updated_submitAnswerIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
-      rotateToLandscape()
+      it.rotateToLandscape()
       clickContinueInteractionButton()
       typeFractionText("1/")
       clickSubmitAnswerButton()
@@ -694,7 +695,7 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
-      rotateToLandscape()
+      it.rotateToLandscape()
 
       onView(withId(R.id.previous_state_navigation_button)).check(matches(not(isDisplayed())))
       onView(withId(R.id.next_state_navigation_button)).check(doesNotExist())
@@ -716,7 +717,7 @@ class StateFragmentTest {
   fun testStateFragment_loadExp_changeConfig_submitAnswer_clickContinue_prevButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
-      rotateToLandscape()
+      it.rotateToLandscape()
 
       clickContinueInteractionButton()
 
@@ -743,7 +744,7 @@ class StateFragmentTest {
   fun testStateFragment_loadExp_changeConfig_submit_clickContinueThenPrev_onlyNextButtonShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
-      rotateToLandscape()
+      it.rotateToLandscape()
       clickContinueInteractionButton()
 
       clickPreviousNavigationButton()
@@ -777,7 +778,7 @@ class StateFragmentTest {
   fun testStateFragment_loadExp_land_submit_clickContinueThenPrevThenNext_prevAndSubmitShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
-      rotateToLandscape()
+      it.rotateToLandscape()
       clickContinueInteractionButton()
 
       clickPreviousNavigationButton()
@@ -813,7 +814,7 @@ class StateFragmentTest {
   fun testStateFragment_loadExp_changeConfiguration_continueToEnd_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
-      rotateToLandscape()
+      it.rotateToLandscape()
 
       playThroughPrototypeExploration()
 
@@ -844,7 +845,7 @@ class StateFragmentTest {
   fun testStateFragment_loadExp_changeConfig_continueToEnd_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
-      rotateToLandscape()
+      it.rotateToLandscape()
       playThroughPrototypeExploration()
 
       clickReturnToTopicButton()
@@ -928,7 +929,7 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_landscape_forMisconception_showsLinkTextForConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
-      rotateToLandscape()
+      it.rotateToLandscape()
       startPlayingExploration()
       selectMultipleChoiceOption(optionPosition = 3) // No, pieces must be the same size.
       clickContinueNavigationButton()
@@ -968,7 +969,7 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_landscape_forMisconception_clickLinkText_opensConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
-      rotateToLandscape()
+      it.rotateToLandscape()
       startPlayingExploration()
       selectMultipleChoiceOption(optionPosition = 3) // No, pieces must be the same size.
       clickContinueNavigationButton()
@@ -1093,11 +1094,6 @@ class StateFragmentTest {
       )
     ).check(matches(withText("0.6")))
     clickContinueNavigationButton()
-  }
-
-  private fun rotateToLandscape() {
-    onView(isRoot()).perform(orientationLandscape())
-    testCoroutineDispatchers.runCurrent()
   }
 
   private fun clickContinueInteractionButton() {
@@ -1404,7 +1400,7 @@ class StateFragmentTest {
       LogUploadWorkerModule::class, FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -1419,7 +1415,11 @@ class StateFragmentTest {
     fun isOnRobolectric(): Boolean
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerStateFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1435,5 +1435,7 @@ class StateFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }

@@ -30,7 +30,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -55,7 +54,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -73,6 +71,8 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
@@ -151,7 +151,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_changeConfiguration_inputName_clickCreate_checkOpensProfileChooserActivity() { // ktlint-disable max-line-length
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
       onView(
         allOf(
@@ -184,7 +184,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_changeConfiguration_clickOnCheckbox_createPin_checkIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
         .perform(click())
       onView(withId(R.id.add_profile_activity_pin)).perform(scrollTo())
@@ -212,7 +212,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_changeConfiguration_createPin_checkNotVisible() {
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_pin)).check(
         matches(
           not(
@@ -274,7 +274,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_changeConfiguration_inputName_inputPin_clickCreate_checkOpensProfileActivity() { // ktlint-disable max-line-length
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
       onView(
         allOf(
@@ -337,7 +337,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_changeConfiguration_checkCreateIsNotClickable() {
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).check(matches(not(isClickable())))
     }
@@ -372,7 +372,7 @@ class AddProfileActivityTest {
       ).perform(
         editTextInputAction.appendText("Rajat"), closeSoftKeyboard()
       )
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
         .check(matches(isClickable()))
     }
@@ -403,7 +403,7 @@ class AddProfileActivityTest {
   fun testAddProfileActivity_changeConfiguration_inputNotUniqueName_clickCreate_checkNameNotUniqueError() { // ktlint-disable max-line-length
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         allOf(
           withId(R.id.add_profile_activity_user_name_edit_text),
@@ -455,7 +455,7 @@ class AddProfileActivityTest {
   fun testAddProfileActivity_changeConfiguration_inputNotUniqueName_clickCreate_inputName_checkErrorIsCleared() { // ktlint-disable max-line-length
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(
@@ -513,7 +513,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_changeConfiguration_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() { // ktlint-disable max-line-length
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(
@@ -567,7 +567,7 @@ class AddProfileActivityTest {
   fun testAddProfileActivity_changeConfiguration_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch(AddProfileActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         allOf(
           withId(R.id.add_profile_activity_user_name_edit_text),
@@ -636,7 +636,7 @@ class AddProfileActivityTest {
   fun testAddProfileActivity_changeConfiguration_inputShortPin_clickCreate_checkPinLengthError() { // ktlint-disable max-line-length
     launch(AddProfileActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         allOf(
           withId(R.id.add_profile_activity_user_name_edit_text),
@@ -705,7 +705,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_changeConfiguration_inputShortPin_clickCreate_inputPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
@@ -785,7 +785,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_changeConfiguration_inputWrongConfirmPin_checkConfirmWrongError() {
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(
         allOf(
@@ -903,7 +903,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_changeConfiguration_inputWrongConfirmPin_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
@@ -975,7 +975,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_changeConfiguration_inputPin_checkAllowDownloadNotClickable() {
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo()).perform(click())
       onView(
         allOf(
@@ -1040,7 +1040,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_changeConfiguration_inputPin_inputConfirmPin_checkAllowDownloadClickable() { // ktlint-disable max-line-length
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
@@ -1097,7 +1097,7 @@ class AddProfileActivityTest {
     val activityResult = createGalleryPickActivityResultStub()
     intending(expectedIntent).respondWith(activityResult)
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_user_image_view)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_user_image_view)).perform(click())
       intended(expectedIntent)
@@ -1127,7 +1127,7 @@ class AddProfileActivityTest {
     val activityResult = createGalleryPickActivityResultStub()
     intending(expectedIntent).respondWith(activityResult)
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_edit_user_image_view)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_edit_user_image_view)).perform(click())
       intended(expectedIntent)
@@ -1146,7 +1146,7 @@ class AddProfileActivityTest {
         editTextInputAction.appendText("test"),
         closeSoftKeyboard()
       )
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         allOf(
           withId(R.id.add_profile_activity_user_name_edit_text),
@@ -1172,7 +1172,7 @@ class AddProfileActivityTest {
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         allOf(
           withId(R.id.add_profile_activity_pin_edit_text),
@@ -1199,7 +1199,7 @@ class AddProfileActivityTest {
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         allOf(
           withId(R.id.add_profile_activity_confirm_pin_edit_text),
@@ -1251,7 +1251,7 @@ class AddProfileActivityTest {
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(
         allOf(
@@ -1342,7 +1342,7 @@ class AddProfileActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
         .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
@@ -1354,7 +1354,7 @@ class AddProfileActivityTest {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_pin_check_box)).check(matches(isChecked()))
     }
@@ -1391,7 +1391,7 @@ class AddProfileActivityTest {
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         allOf(
           withId(R.id.add_profile_activity_pin_edit_text),
@@ -1456,7 +1456,7 @@ class AddProfileActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_confirm_pin))
         .check(matches(hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
@@ -1496,7 +1496,7 @@ class AddProfileActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_allow_download_switch)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_allow_download_switch)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.add_profile_activity_allow_download_switch)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_allow_download_switch)).check(matches(isChecked()))
     }
@@ -1519,7 +1519,7 @@ class AddProfileActivityTest {
   fun testAddProfileActivity_clickInfo_changeConfiguration_checkInfoPopupIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_info_image_view)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withText(context.getString(R.string.add_profile_pin_info))).inRoot(isDialog())
         .check(
           matches(
@@ -1587,14 +1587,18 @@ class AddProfileActivityTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(addProfileActivityTest: AddProfileActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerAddProfileActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1610,5 +1614,7 @@ class AddProfileActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }

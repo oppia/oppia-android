@@ -22,7 +22,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -57,7 +56,6 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemC
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HomeInjectionActivity
 import org.oppia.android.app.topic.TopicActivity
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -78,6 +76,8 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
@@ -177,7 +177,7 @@ class HomeActivityTest {
   fun testHomeActivity_withAdminProfile_configChange_profileNameIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
@@ -307,7 +307,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.story_name_text_view,
@@ -425,7 +425,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_configChange_longProfileName_welcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
       onView(
@@ -462,8 +462,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_longProfileName_tabletLandscapeWelcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
+      it.rotateToLandscape()
       scrollToPosition(0)
       onView(
         atPositionOnView(
@@ -479,7 +478,7 @@ class HomeActivityTest {
   fun testHomeActivity_oneLesson_topicSummary_configChange_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       scrollToPosition(position = 4)
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 4,
@@ -517,7 +516,7 @@ class HomeActivityTest {
 
       testCoroutineDispatchers.runCurrent()
       pressBack()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withText(R.string.home_activity_back_dialog_message))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -560,7 +559,7 @@ class HomeActivityTest {
   fun testHomeActivity_configChange_checkSpanForItem4_spanSizeIsOne() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
     }
   }
@@ -680,7 +679,7 @@ class HomeActivityTest {
     profileTestHelper.logIntoNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
 
       scrollToPosition(position = 3)
@@ -711,7 +710,7 @@ class HomeActivityTest {
     profileTestHelper.logIntoNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       verifyHomeRecyclerViewHasGridColumnCount(columnCount = 4)
 
       scrollToPosition(position = 3)
@@ -783,7 +782,7 @@ class HomeActivityTest {
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
@@ -895,14 +894,18 @@ class HomeActivityTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(homeActivityTest: HomeActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerHomeActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -918,5 +921,7 @@ class HomeActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }

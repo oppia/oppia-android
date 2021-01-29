@@ -61,7 +61,6 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationInjectionActivity
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -89,6 +88,8 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.IsOnRobolectric
 import org.oppia.android.testing.RobolectricModule
@@ -200,7 +201,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.exploration_toolbar_title))
         .check(matches(withText("Prototype Exploration")))
@@ -297,7 +298,7 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
     }
     explorationDataController.stopPlayingExploration()
@@ -363,7 +364,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -863,7 +864,7 @@ class ExplorationActivityTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
@@ -873,7 +874,11 @@ class ExplorationActivityTest {
     fun isOnRobolectric(): Boolean
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerExplorationActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -891,5 +896,7 @@ class ExplorationActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }

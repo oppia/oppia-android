@@ -24,7 +24,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -51,7 +50,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -69,6 +67,8 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.ActivityRotator
+import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
@@ -502,7 +502,7 @@ class AdminPinActivityTest {
         adminPinEnum = 1
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -541,7 +541,7 @@ class AdminPinActivityTest {
         adminPinEnum = 1
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       closeSoftKeyboard()
       onView(
         allOf(
@@ -577,7 +577,7 @@ class AdminPinActivityTest {
         adminPinEnum = 0
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -616,7 +616,7 @@ class AdminPinActivityTest {
         adminPinEnum = 0
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       closeSoftKeyboard()
       onView(
         allOf(
@@ -652,7 +652,7 @@ class AdminPinActivityTest {
         adminPinEnum = 0
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         allOf(
           withId(R.id.admin_pin_input_pin_edit_text),
@@ -677,7 +677,7 @@ class AdminPinActivityTest {
         adminPinEnum = 0
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(
         allOf(
           withId(R.id.admin_pin_input_pin_edit_text),
@@ -712,7 +712,7 @@ class AdminPinActivityTest {
         adminPinEnum = 0
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       closeSoftKeyboard()
       onView(
         allOf(
@@ -755,7 +755,7 @@ class AdminPinActivityTest {
         adminPinEnum = 0
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       closeSoftKeyboard()
       onView(
         allOf(
@@ -798,7 +798,7 @@ class AdminPinActivityTest {
         adminPinEnum = 0
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       closeSoftKeyboard()
       onView(
         allOf(
@@ -845,7 +845,7 @@ class AdminPinActivityTest {
         adminPinEnum = 0
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       closeSoftKeyboard()
       onView(
         allOf(
@@ -912,7 +912,7 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
@@ -954,7 +954,7 @@ class AdminPinActivityTest {
         pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
@@ -985,7 +985,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo())
-      onView(isRoot()).perform(orientationLandscape())
+      it.rotateToLandscape()
       onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
@@ -1040,7 +1040,7 @@ class AdminPinActivityTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
@@ -1101,7 +1101,11 @@ class AdminPinActivityTest {
     return view.parent
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    ActivityRotator.Provider {
     private val component: TestApplicationComponent by lazy {
       DaggerAdminPinActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1117,5 +1121,7 @@ class AdminPinActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 }
