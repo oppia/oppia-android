@@ -128,6 +128,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   val rhsAdapter: BindableAdapter<StateItemViewModel>,
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
+  private val isTablet: Boolean,
   private val confettiColors: List<Int>?,
   private val congratulationsTextView: TextView?,
   private val congratulationsTextConfettiView: KonfettiView?,
@@ -204,8 +205,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   fun compute(
     ephemeralState: EphemeralState,
     gcsEntityId: String,
-    isSplitView: Boolean,
-    isTablet: Boolean
+    isSplitView: Boolean
   ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
     this.isSplitView.set(isSplitView)
 
@@ -253,9 +253,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hintHandler.hideHint()
     }
 
+    val isTerminalState = ephemeralState.stateTypeCase == StateTypeCase.TERMINAL_STATE
     var canContinueToNextState = false
     var hasGeneralContinueButton = false
-    if (ephemeralState.stateTypeCase != StateTypeCase.TERMINAL_STATE) {
+    if (!isTerminalState) {
       if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE &&
         !ephemeralState.hasNextState
       ) {
@@ -282,10 +283,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
     }
 
-    val isTerminalState = ephemeralState.stateTypeCase == StateTypeCase.TERMINAL_STATE
-    if (playerFeatureSet.showCelebrationAtEndOfExplorationSession && isTerminalState) {
-      maybeShowCelebrationForEndOfExplorationSession(isTablet)
+    if (playerFeatureSet.showCelebrationAtEndOfSession && isTerminalState) {
+      maybeShowCelebrationForEndOfSession()
     }
+
     maybeAddNavigationButtons(
       conversationPendingItemList,
       extraInteractionPendingItemList,
@@ -461,10 +462,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     animateCongratulationsTextView(textView)
   }
 
-  /** Shows confetti when the learner reaches the end of an exploration. */
-  private fun maybeShowCelebrationForEndOfExplorationSession(isTablet: Boolean) {
-    check(playerFeatureSet.showCelebrationAtEndOfExplorationSession) {
-      "Cannot show end of exploration confetti for assembler that doesn't support it"
+  /** Shows confetti when the learner reaches the end of an exploration session. */
+  private fun maybeShowCelebrationForEndOfSession() {
+    check(playerFeatureSet.showCelebrationAtEndOfSession) {
+      "Cannot show end of session confetti for assembler that doesn't support it"
     }
     val confettiView = checkNotNull(fullScreenConfettiView) {
       "Expected non-null reference to confetti view"
@@ -473,9 +474,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       "Expected non-null list of confetti colors"
     }
     if (!confettiView.isActive()) {
-      // If learners toggle back and forth from the ene dof the exploration we only show the confetti one
+      // If learners toggle back and forth from the end of the exploration we only show the confetti one
       // instance at a time.
-      createEndOfExplorationSessionConfetti(confettiView, colorsList, isTablet)
+      createEndOfSessionConfetti(confettiView, colorsList)
     }
   }
 
@@ -797,10 +798,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     )
   }
 
-  private fun createEndOfExplorationSessionConfetti(
+  private fun createEndOfSessionConfetti(
     confettiView: KonfettiView,
-    colorsList: List<Int>,
-    isTablet: Boolean
+    colorsList: List<Int>
   ) {
     // Use a larger burst animation for larger layouts
     val minSpeed = if (isTablet) 5f else 4f
@@ -890,6 +890,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private var congratulationsTextView: TextView? = null
     private var congratulationsTextConfettiView: KonfettiView? = null
     private var fullScreenConfettiView: KonfettiView? = null
+    private var isTablet: Boolean = false
     private var hasConversationView: Boolean = true
     private var canSubmitAnswer: ObservableField<Boolean>? = null
     private var audioActivityId: String? = null
@@ -1249,13 +1250,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * Adds support for displaying a confetti animation when the learner completes an entire
      * exploration.
      */
-    fun addCelebrationForEndOfExplorationSession(
+    fun addCelebrationForEndOfSession(
       confettiView: KonfettiView,
-      colorsList: List<Int>
+      colorsList: List<Int>,
+      isTablet: Boolean
     ): Builder {
       this.fullScreenConfettiView = confettiView
       this.confettiColors = colorsList
-      featureSets += PlayerFeatureSet(showCelebrationAtEndOfExplorationSession = true)
+      this.isTablet = isTablet
+      featureSets += PlayerFeatureSet(showCelebrationAtEndOfSession = true)
       return this
     }
 
@@ -1320,6 +1323,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         /* rhsAdapter= */ adapterBuilder.build(),
         playerFeatureSet,
         fragment,
+        isTablet,
         confettiColors,
         congratulationsTextView,
         congratulationsTextConfettiView,
@@ -1385,7 +1389,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val replaySupport: Boolean = false,
     val returnToTopicNavigation: Boolean = false,
     val showCelebrationOnCorrectAnswer: Boolean = false,
-    val showCelebrationAtEndOfExplorationSession: Boolean = false,
+    val showCelebrationAtEndOfSession: Boolean = false,
     val hintsAndSolutionsSupport: Boolean = false,
     val supportAudioVoiceovers: Boolean = false,
     val conceptCardSupport: Boolean = false
@@ -1407,8 +1411,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         returnToTopicNavigation = returnToTopicNavigation || other.returnToTopicNavigation,
         showCelebrationOnCorrectAnswer = showCelebrationOnCorrectAnswer ||
           other.showCelebrationOnCorrectAnswer,
-        showCelebrationAtEndOfExplorationSession = showCelebrationAtEndOfExplorationSession ||
-          other.showCelebrationAtEndOfExplorationSession,
+        showCelebrationAtEndOfSession = showCelebrationAtEndOfSession ||
+          other.showCelebrationAtEndOfSession,
         hintsAndSolutionsSupport = hintsAndSolutionsSupport || other.hintsAndSolutionsSupport,
         supportAudioVoiceovers = supportAudioVoiceovers || other.supportAudioVoiceovers,
         conceptCardSupport = conceptCardSupport || other.conceptCardSupport

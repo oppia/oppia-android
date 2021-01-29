@@ -9,7 +9,7 @@ import org.hamcrest.TypeSafeMatcher
 class KonfettiViewMatcher {
   companion object {
     /**
-     * This function checks that the view being checked is a [KonfettiView] with an active confetti animation.
+     * Checks that the view being checked is a [KonfettiView] with an active confetti animation.
      *
      * @returns a [TypeSafeMatcher] that checks if the given view is a [KonfettiView] that isActive with
      *          confetti
@@ -19,7 +19,7 @@ class KonfettiViewMatcher {
     }
 
     /**
-     * This function checks that the view being checked is a [KonfettiView] with the expected number of
+     * Checks that the view being checked is a [KonfettiView] with the expected number of
      * actively rendering confetti systems.
      *
      * @returns a [TypeSafeMatcher] that checks if the given view is a [KonfettiView] that isActive with
