@@ -208,7 +208,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide1Title_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -222,7 +222,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide1Description_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
@@ -318,7 +318,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide2Title_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -332,7 +332,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide2Description_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(2))
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
@@ -412,7 +412,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide3Title_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
@@ -426,7 +426,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide3Description_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
@@ -449,7 +449,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide3_getStartedButtonIsVisible() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.get_started_button)).check(matches(isDisplayed()))
     }
   }
@@ -458,7 +458,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide3_clickGetStartedButton_opensProfileActivity() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.get_started_button)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
@@ -469,7 +469,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_swipeLeftOnLastSlide_doesNotWork() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(
         allOf(
