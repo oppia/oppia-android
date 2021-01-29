@@ -31,6 +31,7 @@ import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
+import nl.dionsegijn.konfetti.KonfettiView
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -1024,9 +1025,9 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  // Specify xlarge and mdpi qualifier so Robolectric runs the test on a large enough screen size for the
-  // corresponding sw600dp layouts.
-  @Config(qualifiers = "sw600dp-xlarge-port-mdpi")
+  // Specify dimensions and mdpi qualifier so Robolectric runs the test on a Pixel C equivalent screen size
+  // for the sw600dp layouts.
+  @Config(qualifiers = "sw600dp-w1600dp-1200dp-port-mdpi")
   fun testStateFragment_tabletPortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -1038,9 +1039,9 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  // Specify xlarge and mdpi qualifier so Robolectric runs the test on a large enough screen size for the
-  // corresponding sw600dp layouts.
-  @Config(qualifiers = "sw600dp-xlarge-land-mdpi")
+  // Specify dimensions and mdpi qualifier so Robolectric runs the test on a Pixel C equivalent screen size
+  // for the sw600dp layouts.
+  @Config(qualifiers = "sw600dp-w1600dp-1200dp-land-mdpi")
   fun testStateFragment_tabletLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -1146,6 +1147,43 @@ class StateFragmentLocalTest {
         )
       )
     }
+  }
+
+  @Test
+  fun testStateFragment_reachEndOfExpl_goBackAndWait_reachEndAgain_confettiIsDisplayedAgain() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+      // Wait for confetti animations to completely finish.
+      testCoroutineDispatchers.advanceUntilIdle()
+
+      clickPreviousStateNavigationButton()
+      testCoroutineDispatchers.advanceTimeBy(5000L)
+      it.stopConfetti()
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 0)
+        )
+      )
+      clickNextStateNavigationButton()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+    }
+  }
+
+  private fun ActivityScenario<StateFragmentTestActivity>.stopConfetti() {
+    // Force the confetti animation to stop since Robolectric does not render animated items.
+    onActivity { activity ->
+      val confettiView = activity.findViewById<KonfettiView>(R.id.full_screen_confetti_view)
+//      confettiView.reset()
+    }
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
