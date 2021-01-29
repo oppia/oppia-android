@@ -535,8 +535,7 @@ class OnboardingFragmentTest {
       }
 
       override fun perform(uiController: UiController?, view: View?) {
-        val viewPager2 = view as ViewPager2
-        viewPager2.setCurrentItem(position, false)
+        (view as ViewPager2).setCurrentItem(position, false)
       }
     }
   }
