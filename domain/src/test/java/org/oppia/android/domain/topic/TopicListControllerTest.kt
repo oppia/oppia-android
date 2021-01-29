@@ -603,19 +603,25 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
       .isEqualTo(3)
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[0]
+      .isTopicLearned).isFalse()
     verifyOngoingStoryAsRatioStory0Exploration1(
       promotedActivityList.promotedStoryList.olderPlayedStoryList[0]
     )
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[1]
+      .isTopicLearned).isFalse()
     verifyOngoingStoryAsRatioStory1Exploration3(
       promotedActivityList.promotedStoryList.olderPlayedStoryList[1]
     )
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[2]
+      .isTopicLearned).isFalse()
     verifyOngoingStoryAsFractionStory0Exploration1(
       promotedActivityList.promotedStoryList.olderPlayedStoryList[2]
     )
   }
 
   @Test
-  fun testGetStoryList_markRecentlyPlayedForFirstTestTopic_ongoingStoryListIsCorrect() {
+  fun testGetStoryList_markRecentlyPlayedForFirstExpOFFirstTestTopic_ongoingStoryListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
       TEST_TOPIC_ID_0,
@@ -628,39 +634,10 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
       .isEqualTo(1)
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+      .isTopicLearned).isFalse()
     verifyOngoingStoryAsFirstTopicStory0Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
-    )
-  }
-
-  @Test
-  fun testGetStoryList_markOneStoryDoneForFirstTestTopic_markIsTopicLearned() {
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    val promotedActivityList = retrievePromotedActivityList()
-
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].isTopicLearned)
-      .isTrue()
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(1)
-    verifyPromotedStoryAsRatioStory0Exploration0(
-      promotedActivityList.promotedStoryList.suggestedStoryList[0]
     )
   }
 
@@ -696,7 +673,8 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
       .isEqualTo(1)
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].isTopicLearned).isTrue()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+      .isTopicLearned).isTrue()
     verifyOngoingStoryAsFirstTopicStory1Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
     )
@@ -743,9 +721,13 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
       .isEqualTo(2)
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+      .isTopicLearned).isFalse()
     verifyOngoingStoryAsRatioStory0Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
     )
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
+      .isTopicLearned).isTrue()
     verifyOngoingStoryAsFirstTopicStory1Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
     )
@@ -785,12 +767,19 @@ class TopicListControllerTest {
       .isEqualTo(1)
     assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
       .isEqualTo(2)
+
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[0]
+      .isTopicLearned).isFalse()
     verifyOngoingStoryAsRatioStory0Exploration1(
       promotedActivityList.promotedStoryList.olderPlayedStoryList[0]
     )
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[1]
+      .isTopicLearned).isFalse()
     verifyOngoingStoryAsFractionStory0Exploration1(
       promotedActivityList.promotedStoryList.olderPlayedStoryList[1]
     )
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[0]
+      .isTopicLearned).isFalse()
     verifyOngoingStoryAsRatioStory1Exploration3(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
     )
