@@ -206,7 +206,7 @@ class AdminAuthActivityTest {
         )
       ).perform(
         editTextInputAction.appendText("12345"),
-        pressimeAction()
+        pressImeActionButton()
       )
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
     }
