@@ -487,13 +487,6 @@ class TopicListController @Inject constructor(
         createRecommendedStoryFromAssets(topicId)?.let {
           recommendedStories.add(it)
         }
-      } else if (impliedFinishedTopicIds.any { it in dependentTopicIds }) {
-        val nextTopicsListToRecommend = dependentTopicIds.filter { it !in impliedFinishedTopicIds }
-        nextTopicsListToRecommend.forEach { depId ->
-          createRecommendedStoryFromAssets(depId)?.let {
-            recommendedStories.add(it)
-          }
-        }
       }
     }
     return recommendedStories
