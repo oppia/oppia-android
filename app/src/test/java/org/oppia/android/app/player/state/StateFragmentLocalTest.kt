@@ -37,7 +37,6 @@ import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
