@@ -630,9 +630,10 @@ class TopicListController @Inject constructor(
     return false
   }
 
-  /** Returns the list of topic IDs that are completed or can be implied completed based on actually
+  /**
+   * Return the list of topic IDs that are completed or can be implied completed based on actually
    * completed topics.
-   * */
+   */
   private fun computeImpliedCompletedDependencies(
     fullyCompletedTopicIds: List<String>,
     topicDependencyMap: Map<String, Set<String>>
