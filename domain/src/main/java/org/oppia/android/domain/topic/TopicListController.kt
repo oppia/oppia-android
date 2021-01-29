@@ -550,46 +550,26 @@ class TopicListController @Inject constructor(
    *
    * */
   private fun retrieveTopicDependencies(topicId: String): List<String> {
-    val listOfTopicIds = mutableListOf<String>()
-    when (topicId) {
-      TEST_TOPIC_ID_0 -> {
-        listOfTopicIds.add(FRACTIONS_TOPIC_ID)
-      }
-      TEST_TOPIC_ID_1 -> {
-        listOfTopicIds.add(TEST_TOPIC_ID_0)
-        listOfTopicIds.add(RATIOS_TOPIC_ID)
-      }
+    return when (topicId) {
+      TEST_TOPIC_ID_0 -> listOf(FRACTIONS_TOPIC_ID)
+      TEST_TOPIC_ID_1 -> listOf(TEST_TOPIC_ID_0, RATIOS_TOPIC_ID)
       FRACTIONS_TOPIC_ID -> {
-        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
-        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
-        listOfTopicIds.add(DIVISION_TOPIC_ID)
+        listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
-      RATIOS_TOPIC_ID -> {
-        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
-        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
-        listOfTopicIds.add(DIVISION_TOPIC_ID)
+      RATIOS_TOPIC_ID ->  {
+        listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
-      ADDITION_AND_SUBTRACTION_TOPIC_ID -> {
-        listOfTopicIds.add(PLACE_VALUE_TOPIC_ID)
+      ADDITION_AND_SUBTRACTION_TOPIC_ID -> listOf(PLACE_VALUE_TOPIC_ID)
+      MULTIPLICATION_TOPIC_ID -> listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID)
+      DIVISION_TOPIC_ID -> listOf(MULTIPLICATION_TOPIC_ID)
+      EXPRESSION_AND_EQUATION_TOPIC_ID ->  {
+        listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
-      MULTIPLICATION_TOPIC_ID -> {
-        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
+      DECIMALS_TOPIC_ID ->  {
+        listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
       }
-      DIVISION_TOPIC_ID -> {
-        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
-      }
-      EXPRESSION_AND_EQUATION_TOPIC_ID -> {
-        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
-        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
-        listOfTopicIds.add(DIVISION_TOPIC_ID)
-      }
-      DECIMALS_TOPIC_ID -> {
-        listOfTopicIds.add(ADDITION_AND_SUBTRACTION_TOPIC_ID)
-        listOfTopicIds.add(MULTIPLICATION_TOPIC_ID)
-        listOfTopicIds.add(DIVISION_TOPIC_ID)
-      }
+      else -> listOf()
     }
-    return listOfTopicIds
   }
 
   private fun computeSuggestedStories(
