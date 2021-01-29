@@ -1023,8 +1023,9 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Ignore("Currently failing as tablet layouts are not properly rendering interaction views")
-  @Config(qualifiers = "sw600dp-port")
+  // Specify xlarge qualifier so Robolectric runs the test on a large enough screen size for the
+  // corresponding sw600dp layouts.
+  @Config(qualifiers = "sw600dp-xlarge-port")
   fun testStateFragment_tabletPortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -1036,8 +1037,9 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Ignore("Currently failing as tablet layouts are not properly rendering interaction views")
-  @Config(qualifiers = "sw600dp-land")
+  // Specify xlarge qualifier so Robolectric runs the test on a large enough screen size for the
+  // corresponding sw600dp layouts.
+  @Config(qualifiers = "sw600dp-xlarge-land")
   fun testStateFragment_tabletLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
