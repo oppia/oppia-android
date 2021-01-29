@@ -422,7 +422,7 @@ class StoryFragmentTest {
   private fun setStoryPartialProgressForFractions() {
     storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
   }
 
