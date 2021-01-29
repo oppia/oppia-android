@@ -1149,43 +1149,6 @@ class StateFragmentLocalTest {
     }
   }
 
-  @Test
-  fun testStateFragment_reachEndOfExpl_goBackAndWait_reachEndAgain_confettiIsDisplayedAgain() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
-      startPlayingExploration()
-      playThroughAllStates()
-      clickContinueButton()
-      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
-      // Wait for confetti animations to completely finish.
-      testCoroutineDispatchers.advanceUntilIdle()
-
-      clickPreviousStateNavigationButton()
-      testCoroutineDispatchers.advanceTimeBy(5000L)
-      it.stopConfetti()
-      onView(withId(R.id.full_screen_confetti_view)).check(
-        matches(
-          hasExpectedNumberOfActiveSystems(numSystems = 0)
-        )
-      )
-      clickNextStateNavigationButton()
-
-      onView(withId(R.id.full_screen_confetti_view)).check(
-        matches(
-          hasExpectedNumberOfActiveSystems(numSystems = 2)
-        )
-      )
-    }
-  }
-
-  private fun ActivityScenario<StateFragmentTestActivity>.stopConfetti() {
-    // Force the confetti animation to stop since Robolectric does not render animated items.
-    onActivity { activity ->
-      val confettiView = activity.findViewById<KonfettiView>(R.id.full_screen_confetti_view)
-//      confettiView.reset()
-    }
-    testCoroutineDispatchers.runCurrent()
-  }
-
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
