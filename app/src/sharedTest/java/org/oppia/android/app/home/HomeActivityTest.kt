@@ -673,7 +673,7 @@ class HomeActivityTest {
 
   @Config(qualifiers = "land")
   @Test
-  fun testHomeActivity_noTopicsStarted_mobileLandspaceDisplaysTopicsIn3Columns() {
+  fun testHomeActivity_noTopicsStarted_mobileLandscapeDisplaysTopicsIn3Columns() {
     // Only new users will have no progress for any topics.
     profileTestHelper.logIntoNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
