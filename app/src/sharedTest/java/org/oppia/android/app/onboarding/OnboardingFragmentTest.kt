@@ -21,7 +21,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withAlpha
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -135,18 +134,6 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_checkDefaultSlideImage_isCorrect() {
-    launch(OnboardingActivity::class.java).use {
-      onView(
-        allOf(
-          withId(R.id.slide_image_view),
-          isCompletelyDisplayed()
-        )
-      ).check(matches(withContentDescription(R.string.onboarding_slide_0_title)))
-    }
-  }
-
-  @Test
   fun testOnboardingFragment_checkDefaultSlide_index0DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
       onView(
@@ -222,7 +209,10 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide1()
       onView(
-          isDescendantOfA(getChildAtPosition(1, ))
+        allOf(
+          withId(R.id.slide_title_text_view),
+          isDescendantOfA(childAtPosition(withId(R.id.onboarding_slide_view_pager), 1))
+        )
       ).check(matches(withText(R.string.onboarding_slide_1_title)))
     }
   }
@@ -234,7 +224,7 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
-          isDescendantOfA(getChildAtPosition(1))
+          isDescendantOfA(childAtPosition(withId(R.id.onboarding_slide_view_pager), 1))
         )
       ).check(matches(withText(R.string.onboarding_slide_1_description)))
     }
@@ -308,11 +298,10 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeRight())
-      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
+          isDescendantOfA(childAtPosition(withId(R.id.onboarding_slide_view_pager), 0))
         )
       ).check(matches(withText(R.string.onboarding_slide_0_title)))
     }
@@ -325,7 +314,7 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isDescendantOfA(getChildAtPosition(withId(R.id.onboarding_slide_view_pager), 2))
+          isDescendantOfA(childAtPosition(withId(R.id.onboarding_slide_view_pager), 2))
         )
       ).check(matches(withText(R.string.onboarding_slide_2_title)))
     }
@@ -338,7 +327,7 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
-          isDescendantOfA(getChildAtPosition(withId(R.id.onboarding_slide_view_pager), 2))
+          isDescendantOfA(childAtPosition(withId(R.id.onboarding_slide_view_pager), 2))
         )
       ).check(matches(withText(R.string.onboarding_slide_2_description)))
     }
@@ -413,7 +402,7 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isDescendantOfA(getChildAtPosition(withId(R.id.onboarding_slide_view_pager), 3))
+          isDescendantOfA(childAtPosition(withId(R.id.onboarding_slide_view_pager), 3))
         )
       ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
@@ -423,12 +412,10 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide3Description_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide3()
-//      getChildAtPosition(3)
-      onView()
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
-          isDescendantOfA(getChildAtPosition(3))
+          isDescendantOfA(childAtPosition(withId(R.id.onboarding_slide_view_pager), 3))
         )
       ).check(matches(withText(R.string.onboarding_slide_3_description)))
     }
@@ -455,7 +442,7 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       swipeToSlide3()
       onView(withId(R.id.get_started_button)).perform(scrollTo(), click())
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
@@ -532,7 +519,7 @@ class OnboardingFragmentTest {
     swipeToSlide1()
   }
 
-  private fun getChildAtPosition(childPosition: Int): Matcher<View?> {
+  private fun childAtPosition(parentMatcher: Matcher<View?>, childPosition: Int): Matcher<View?> {
     return object : TypeSafeMatcher<View?>() {
       override fun describeTo(description: Description) {
         description.appendText("with $childPosition child view of type parentMatcher")
@@ -540,27 +527,10 @@ class OnboardingFragmentTest {
 
       override fun matchesSafely(view: View?): Boolean {
         if (view?.parent !is ViewGroup) {
-          return withId(R.id.onboarding_slide_view_pager).matches(view?.parent)
+          return parentMatcher.matches(view?.parent)
         }
         val group = view.parent as ViewGroup
-        return withId(R.id.onboarding_slide_view_pager).matches(view.parent) && group.getChildAt(childPosition) == view
-      }
-    }
-  }
-
-  private fun getChildAt(childPosition: Int): Matcher<View?> {
-    return object : TypeSafeMatcher<View?>() {
-      override fun describeTo(description: Description) {
-        description.appendText("with $childPosition child view of type parentMatcher")
-      }
-
-      override fun matchesSafely(view: View?): Boolean {
-//        if (view?.parent !is ViewGroup) {
-//          return withId(R.id.onboarding_slide_view_pager).matches(view?.parent)
-//        }
-        val group = view?.parent
-        val child = getChildAtPosition(3)
-        return withId(R.id.onboarding_slide_view_pager).matches(view.parent) && group.getChildAt(childPosition) == view
+        return parentMatcher.matches(view.parent) && group.getChildAt(childPosition) == view
       }
     }
   }
