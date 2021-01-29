@@ -328,9 +328,12 @@ class TopicListControllerTest {
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
       .isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(1)
-    verifyPromotedStoryAsRatioStory0Exploration0(
+      .isEqualTo(2)
+    verifyPromotedStoryAsFirstTestTopicStory0Exploration0(
       promotedActivityList.promotedStoryList.suggestedStoryList[0]
+    )
+    verifyPromotedStoryAsRatioStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[1]
     )
   }
 
@@ -388,7 +391,7 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
       .isEqualTo(1)
-    verifyPromotedStoryAsFirstTestTopicStory0Exploration0(
+    verifyPromotedStoryAsFractionStory0Exploration0(
       promotedActivityList.promotedStoryList.suggestedStoryList[0]
     )
   }
@@ -434,9 +437,12 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
 
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(1)
+      .isEqualTo(2)
     verifyPromotedStoryAsSecondTestTopicStory0Exploration0(
       promotedActivityList.promotedStoryList.suggestedStoryList[0]
+    )
+    verifyPromotedStoryAsFractionStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[1]
     )
   }
 
@@ -523,9 +529,13 @@ class TopicListControllerTest {
     assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
       .isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(0)
-    assertThat(promotedActivityList.comingSoonTopicList.upcomingTopicCount)
-      .isEqualTo(1)
+      .isEqualTo(2)
+    verifyPromotedStoryAsFractionStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[0]
+    )
+    verifyPromotedStoryAsRatioStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[1]
+    )
   }
 
   @Test
@@ -634,7 +644,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markOneStoryDoneForFirstTestTopic_markIsTopicLearned() {
+  fun testGetStoryList_markOneStoryDoneForFirstTestTopic_suggestedStoryListIsCorrect() {
     storyProgressController.recordCompletedChapter(
       profileId0,
       TEST_TOPIC_ID_0,
@@ -655,12 +665,13 @@ class TopicListControllerTest {
 
     val promotedActivityList = retrievePromotedActivityList()
 
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].isTopicLearned)
-      .isTrue()
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(1)
-    verifyPromotedStoryAsRatioStory0Exploration0(
+      .isEqualTo(2)
+    verifyPromotedStoryAsFractionStory0Exploration0(
       promotedActivityList.promotedStoryList.suggestedStoryList[0]
+    )
+    verifyPromotedStoryAsRatioStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[1]
     )
   }
 
@@ -857,6 +868,19 @@ class TopicListControllerTest {
   }
 
   private fun verifyOngoingStoryAsFractionStory0Exploration0(promotedStory: PromotedStory) {
+    assertThat(promotedStory.explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
+    assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+    assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(promotedStory.topicName).isEqualTo("Fractions")
+    assertThat(promotedStory.nextChapterName).isEqualTo("What is a Fraction?")
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
+    assertThat(promotedStory.isTopicLearned).isFalse()
+    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
+  }
+
+  private fun verifyPromotedStoryAsFractionStory0Exploration0(promotedStory: PromotedStory) {
     assertThat(promotedStory.explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
     assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)

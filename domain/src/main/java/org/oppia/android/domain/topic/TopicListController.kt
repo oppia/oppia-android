@@ -48,12 +48,6 @@ const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
 const val SUBTOPIC_TOPIC_ID = 1
 const val SUBTOPIC_TOPIC_ID_2 = 2
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
-const val PLACE_VALUE_TOPIC_ID = "id0"
-const val ADDITION_AND_SUBTRACTION_TOPIC_ID = "id1"
-const val MULTIPLICATION_TOPIC_ID = "id2"
-const val DIVISION_TOPIC_ID = "id3"
-const val EXPRESSION_AND_EQUATION_TOPIC_ID = "id4"
-const val DECIMALS_TOPIC_ID = "id5"
 val TOPIC_THUMBNAILS = mapOf(
   FRACTIONS_TOPIC_ID to createTopicThumbnail0(),
   RATIOS_TOPIC_ID to createTopicThumbnail1(),
@@ -416,6 +410,8 @@ class TopicListController @Inject constructor(
    * being suggested.
    * */
   private fun retrieveTopicDependencies(topicId: String): List<String> {
+    // The comments describe the correct dependencies, but those might not be available until the
+    // topic is introduced into the app.
     return when (topicId) {
       // TEST_TOPIC_ID_0 (depends on Fractions)
       TEST_TOPIC_ID_0 -> listOf(FRACTIONS_TOPIC_ID)
@@ -423,26 +419,17 @@ class TopicListController @Inject constructor(
       TEST_TOPIC_ID_1 -> listOf(TEST_TOPIC_ID_0, RATIOS_TOPIC_ID)
       // Fractions (depends on A+S, Multiplication, Division)
       FRACTIONS_TOPIC_ID -> {
-        listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
+        listOf()
       }
       // Ratios (depends on A+S, Multiplication, Division)
       RATIOS_TOPIC_ID -> {
-        listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
+        listOf()
       }
       // Addition and Subtraction (depends on Place Values)
-      ADDITION_AND_SUBTRACTION_TOPIC_ID -> listOf(PLACE_VALUE_TOPIC_ID)
       // Multiplication (depends on Addition and Subtraction)
-      MULTIPLICATION_TOPIC_ID -> listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID)
       // Division (depends on Multiplication)
-      DIVISION_TOPIC_ID -> listOf(MULTIPLICATION_TOPIC_ID)
       // Expressions and Equations (depends on A+S, Multiplication, Division)
-      EXPRESSION_AND_EQUATION_TOPIC_ID -> {
-        listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
-      }
       // Decimals (depends on A+S, Multiplication, Division)
-      DECIMALS_TOPIC_ID -> {
-        listOf(ADDITION_AND_SUBTRACTION_TOPIC_ID, MULTIPLICATION_TOPIC_ID, DIVISION_TOPIC_ID)
-      }
       else -> listOf()
     }
   }
