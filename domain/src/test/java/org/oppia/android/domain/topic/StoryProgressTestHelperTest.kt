@@ -850,7 +850,7 @@ class StoryProgressTestHelperTest {
   fun testProgressTestHelper_markRecentlyPlayed_firstStoryInTestTopic1And2_promotedListIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -885,7 +885,7 @@ class StoryProgressTestHelperTest {
   fun testHelper_recentlyPlayed_firstExpInAllFracRatio_asOldStories_promotedActivityListCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     testCoroutineDispatchers.runCurrent()
 
