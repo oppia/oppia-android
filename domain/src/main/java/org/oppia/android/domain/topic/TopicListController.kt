@@ -360,18 +360,10 @@ class TopicListController @Inject constructor(
   }
 
   private fun computePromotedStoryList(topicProgressList: List<TopicProgress>): PromotedStoryList {
-    val recentlyPlayedStories = computePlayedStories(topicProgressList) { it < ONE_WEEK_IN_DAYS }
-    val olderPlayedStories = computePlayedStories(topicProgressList) { it > ONE_WEEK_IN_DAYS }
     return PromotedStoryList.newBuilder()
-      .addAllRecentlyPlayedStory(
-        recentlyPlayedStories
-      )
-      .addAllOlderPlayedStory(
-        olderPlayedStories
-      )
-      .addAllSuggestedStory(
-        computeSuggestedStories(topicProgressList)
-      )
+      .addAllRecentlyPlayedStory(computePlayedStories(topicProgressList) { it < ONE_WEEK_IN_DAYS })
+      .addAllOlderPlayedStory(computePlayedStories(topicProgressList) { it > ONE_WEEK_IN_DAYS })
+      .addAllSuggestedStory(computeSuggestedStories(topicProgressList))
       .build()
   }
 
