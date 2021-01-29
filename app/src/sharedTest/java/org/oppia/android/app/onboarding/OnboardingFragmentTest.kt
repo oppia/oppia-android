@@ -2,7 +2,6 @@ package org.oppia.android.app.onboarding
 
 import android.app.Application
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -30,9 +29,7 @@ import androidx.viewpager2.widget.ViewPager2
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -178,8 +175,12 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(childAtPosition(withId(R.id.final_layout), 1))
-        .check(matches(withText(R.string.onboarding_slide_3_title)))
+      onView(
+        allOf(
+          withId(R.id.slide_title_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
 
@@ -279,8 +280,12 @@ class OnboardingFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(childAtPosition(withId(R.id.final_layout), 1))
-        .check(matches(withText(R.string.onboarding_slide_3_title)))
+      onView(
+        allOf(
+          withId(R.id.slide_title_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
 
@@ -530,23 +535,8 @@ class OnboardingFragmentTest {
       }
 
       override fun perform(uiController: UiController?, view: View?) {
-        (view as ViewPager2).setCurrentItem(position, true)
-      }
-    }
-  }
-
-  private fun childAtPosition(parentMatcher: Matcher<View?>, childPosition: Int): Matcher<View?> {
-    return object : TypeSafeMatcher<View?>() {
-      override fun describeTo(description: Description) {
-        description.appendText("With $childPosition child view of type parentMatcher")
-      }
-
-      override fun matchesSafely(view: View?): Boolean {
-        if (view?.parent !is ViewGroup) {
-          return parentMatcher.matches(view?.parent)
-        }
-        val group = view.parent as ViewGroup
-        return parentMatcher.matches(view.parent) && group.getChildAt(childPosition) == view
+        val viewPager2 = view as ViewPager2
+        viewPager2.setCurrentItem(position, false)
       }
     }
   }
