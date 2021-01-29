@@ -139,7 +139,7 @@ class NavigationDrawerActivityTest {
       ProfileId.newBuilder().setInternalId(
         internalProfileId
       ).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
   }
 

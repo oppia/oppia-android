@@ -237,11 +237,11 @@ class HomeActivityTest {
   fun testHomeActivity_recentlyPlayedStoriesTextIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -258,11 +258,11 @@ class HomeActivityTest {
   fun testHomeActivity_viewAllTextIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -279,11 +279,11 @@ class HomeActivityTest {
   fun testHomeActivity_displaysLastPlayedStoriesText() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -358,7 +358,7 @@ class HomeActivityTest {
   fun testHomeActivity_forRecommendedStories_hideViewAll() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -463,7 +463,7 @@ class HomeActivityTest {
 
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -555,7 +555,7 @@ class HomeActivityTest {
 
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -597,11 +597,11 @@ class HomeActivityTest {
   fun testHomeActivity_clickViewAll_opensRecentlyPlayedActivity() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -621,7 +621,7 @@ class HomeActivityTest {
   fun testHomeActivity_promotedCard_chapterNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -638,7 +638,7 @@ class HomeActivityTest {
   fun testHomeActivity_promotedCard_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -655,11 +655,11 @@ class HomeActivityTest {
   fun testHomeActivity_configChange_promotedCard_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -705,7 +705,7 @@ class HomeActivityTest {
   fun testHomeActivity_clickPromotedStory_opensTopicActivity() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -728,11 +728,11 @@ class HomeActivityTest {
   fun testHomeActivity_promotedCard_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -775,7 +775,7 @@ class HomeActivityTest {
   fun testHomeActivity_secondTestTopic_topicSummary_alltopics_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -990,11 +990,11 @@ class HomeActivityTest {
     val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {

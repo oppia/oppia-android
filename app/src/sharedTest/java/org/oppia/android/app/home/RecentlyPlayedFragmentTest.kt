@@ -172,11 +172,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_sectionDividerIsNotDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -201,11 +201,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_lastWeekSectionTitleIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -225,7 +225,7 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_showsRecommendedSectionTitle() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -250,7 +250,7 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_showsRecommendedSectionTitle() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -270,7 +270,7 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_recommendedSection_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -295,11 +295,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -324,11 +324,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -353,11 +353,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_lessonThumbnailIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -382,11 +382,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_clickStory_opensExplorationActivity() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -430,11 +430,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_lastMonthSectionTitleIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -459,11 +459,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_sectionDividerIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -506,11 +506,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_sectionDividerIsNotDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -534,11 +534,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_lastWeekSectionTitleIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -564,11 +564,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -594,11 +594,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -624,11 +624,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_lessonThumbnailIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -654,11 +654,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_lastMonthSectionTitleIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -684,11 +684,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_checkSpanForItem1_spanSizeIsOne() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -713,11 +713,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_checkSpanForItem3_spanSizeIsOne() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -742,11 +742,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_checkSpanForItem1_spanSizeIsOne() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -772,11 +772,11 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_checkSpanForItem3_spanSizeIsOne() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(

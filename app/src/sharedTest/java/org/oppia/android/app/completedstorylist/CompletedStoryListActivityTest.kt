@@ -106,11 +106,11 @@ class CompletedStoryListActivityTest {
 
     storyProfileTestHelper.markFullStoryProgressForFractions(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
   }
 

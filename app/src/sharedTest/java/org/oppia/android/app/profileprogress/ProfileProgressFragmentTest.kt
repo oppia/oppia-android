@@ -255,11 +255,11 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_twoPartialStoryProgress_ongoingTopicCountIsTwo() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -276,11 +276,11 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_configChange_twoPartialStoryProgress_ongoingTopicCountIsTwo() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -311,11 +311,11 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_twoPartialStoryProgress_ongoingTopicDescriptionIsCorrect() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -332,11 +332,11 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_configChange_ongoingTopicDescriptionIsCorrect() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -367,11 +367,11 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesCountIsTwo() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markFullStoryProgressForFractions(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -400,11 +400,11 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesDescriptionIsCorrect() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markFullStoryProgressForFractions(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -421,7 +421,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_configChange_firstStory_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -441,7 +441,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressActivity_recyclerViewItem1_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -462,7 +462,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressActivity_recyclerViewItem1_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -483,7 +483,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressActivity_clickRecyclerViewItem1_intentIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -569,11 +569,11 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_clickTopicCount_opensOngoingTopicListActivity() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -594,11 +594,11 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_clickStoryCount_opensCompletedStoryListActivity() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markFullStoryProgressForFractions(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {

@@ -146,7 +146,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_completeStoryProgress_isDisplayed() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
@@ -158,7 +158,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_partialStoryProgress_isDisplayed() {
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()

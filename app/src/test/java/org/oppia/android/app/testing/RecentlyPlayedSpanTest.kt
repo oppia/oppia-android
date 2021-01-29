@@ -87,11 +87,11 @@ class RecentlyPlayedSpanTest {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanAWeek = true
     )
   }
 
