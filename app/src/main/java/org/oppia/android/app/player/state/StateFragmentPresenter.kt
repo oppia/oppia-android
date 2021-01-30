@@ -525,6 +525,7 @@ class StateFragmentPresenter @Inject constructor(
       explorationId,
       Date().time
     )
+    markExplorationCompleted()
   }
 
   private fun markExplorationCompleted() {

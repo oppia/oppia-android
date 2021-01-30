@@ -326,13 +326,23 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_markStory0DoneForRatios_displaysRecommendedStories() {
+  fun testHomeActivity_markStory0DoneForRatiosAndFirstTestTopic_displaysRecommendedStories() {
     storyProgressTestHelper.markChapDoneOfRatiosStory0Exp0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapDoneOfRatiosStory0Exp1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
+      timestampOlderThanOneWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+    storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
+      timestampOlderThanOneWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+    storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
@@ -414,7 +424,7 @@ class HomeActivityTest {
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
-        targetViewId = R.id.coming_soon_text_view,
+        targetViewId = R.id.coming_soon_topic_text_view,
         stringToMatch = context.getString(R.string.coming_soon)
       )
       verifyExactTextOnHomeListItemAtPosition(
@@ -437,11 +447,12 @@ class HomeActivityTest {
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
-        targetViewId = R.id.coming_soon_text_view,
+        targetViewId = R.id.coming_soon_topic_text_view,
         stringToMatch = context.getString(R.string.coming_soon)
       )
+      scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
-        itemPosition = 1,
+        itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "Third Test Topic"
       )
@@ -449,7 +460,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_markStory0DonePlayStory1FirstTestTopic_playRatios_storiesForYouIsCorrect() {
+  fun testHomeActivity_markStory0DonePlayStory1FirstTestTopic_playSecondTestTopic_orderIsCorrect() {
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
@@ -461,9 +472,9 @@ class HomeActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
+    storyProgressTestHelper.markRecentlyPlayedForSecondTestTopic(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -482,15 +493,15 @@ class HomeActivityTest {
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Ratios and Proportional Reasoning"
-      )
-      scrollToPositionOfPromotedList(position = 1)
-      verifyTextOnPromotedListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "Second Test Topic"
+      )
+      scrollToPositionOfPromotedList(position = 1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Ratios and Proportional Reasoning"
       )
       scrollToPositionOfPromotedList(position = 2)
       verifyTextOnPromotedListItemAtPosition(
@@ -521,28 +532,12 @@ class HomeActivityTest {
         targetViewId = R.id.recently_played_stories_text_view,
         stringToMatch = context.getString(R.string.recommended_stories)
       )
-      scrollToPositionOfPromotedList(position = 1)
-      verifyTextOnPromotedListItemAtPosition(
-        itemPosition = 1,
-        targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Second Test Topic"
-      )
     }
   }
 
   @Test
-  fun testHomeActivity_markStory0DoneforFrac_playFirstTestTopicAndRatios_storiesForYouIsCorrect() {
-    storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
-    )
-    testCoroutineDispatchers.runCurrent()
-    storyProgressTestHelper.markChapDoneFrac0Story0Expl(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
-    )
-    testCoroutineDispatchers.runCurrent()
-    storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
+  fun testHomeActivity_markStory0DoneforFirstTestTopic_playSecondTestTopic_suggestionOnPriority() {
+   storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
@@ -553,13 +548,7 @@ class HomeActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanAWeek = false
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressTestHelper.markRecentlyPlayedFirstTestTopicStory1Exploration1(
+    storyProgressTestHelper.markRecentlyPlayedForSecondTestTopic(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
@@ -576,19 +565,59 @@ class HomeActivityTest {
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Ratios and Proportional Reasoning"
+        stringToMatch = "Second Test Topic"
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Second Test Topic"
+        stringToMatch = "Ratios and Proportional Reasoning"
       )
       scrollToPositionOfPromotedList(position = 2)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "First Test Topic"
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_markStory0DoneForFrac_suggestFirstTestTopicIsCorrect() {
+    storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
+      timestampOlderThanOneWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+    storyProgressTestHelper.markChapDoneFrac0Story0Expl(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
+      timestampOlderThanOneWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.recommended_stories)
+      )
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.recommended_stories)
+      )
+      scrollToPositionOfPromotedList(position = 1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "First Test Topic"
+      )
+      scrollToPositionOfPromotedList(position = 1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Ratios and Proportional Reasoning"
       )
     }
   }
@@ -674,10 +703,10 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_markFullProgressForFraction_playSecondTestTopic_displaysStoriesForYouText() {
-    storyProgressTestHelper.markRecentlyPlayedForSecondTestTopic(
+  fun testHomeActivity_markFullProgressForFraction_playRatios_displaysRecommendedStories() {
+    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
@@ -696,7 +725,12 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.stories_for_you)
+        stringToMatch = context.getString(R.string.recommended_stories)
+      )
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "First Test Topic"
       )
     }
   }
@@ -1125,11 +1159,11 @@ class HomeActivityTest {
     val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = createProfileId(internalProfileId),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -1150,11 +1184,11 @@ class HomeActivityTest {
     val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = createProfileId(internalProfileId),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -1175,11 +1209,11 @@ class HomeActivityTest {
     val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = createProfileId(internalProfileId),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -1201,7 +1235,7 @@ class HomeActivityTest {
     // (see https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462)
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = createProfileId(internalProfileId),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
