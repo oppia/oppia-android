@@ -229,6 +229,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryItemViewModel.kt",
     "src/main/java/org/oppia/android/app/story/StoryViewModel.kt",
+    "src/main/java/org/oppia/android/app/testing/BindableAdapterTestDataModel.kt",
     "src/main/java/org/oppia/android/app/testing/BindableAdapterTestViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/conceptcard/ConceptCardViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/StorySummaryViewModel.kt",
