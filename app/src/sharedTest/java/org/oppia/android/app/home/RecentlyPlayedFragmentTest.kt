@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -21,7 +22,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
@@ -29,6 +32,7 @@ import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -108,6 +112,10 @@ class RecentlyPlayedFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @get:Rule
+  var activityScenarioRule: ActivityScenarioRule<RecentlyPlayedActivity> =
+    ActivityScenarioRule(RecentlyPlayedActivity::class.java)
+
   private val internalProfileId = 0
 
   private lateinit var profileId: ProfileId
@@ -155,6 +163,7 @@ class RecentlyPlayedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.recently_played_toolbar)).perform(click())
+      assertThat(activityScenarioRule.scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
     }
   }
 
