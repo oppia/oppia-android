@@ -31,6 +31,7 @@ import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
+import nl.dionsegijn.konfetti.KonfettiView
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -1026,7 +1027,7 @@ class StateFragmentLocalTest {
   @Test
   // Specify dimensions and mdpi qualifier so Robolectric runs the test on a Pixel C equivalent screen size
   // for the sw600dp layouts.
-  @Config(qualifiers = "sw600dp-w1600dp-1200dp-port-mdpi")
+  @Config(qualifiers = "sw600dp-w1600dp-h1200dp-port-mdpi")
   fun testStateFragment_tabletPortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -1040,7 +1041,7 @@ class StateFragmentLocalTest {
   @Test
   // Specify dimensions and mdpi qualifier so Robolectric runs the test on a Pixel C equivalent screen size
   // for the sw600dp layouts.
-  @Config(qualifiers = "sw600dp-w1600dp-1200dp-land-mdpi")
+  @Config(qualifiers = "sw600dp-w1600dp-h1200dp-land-mdpi")
   fun testStateFragment_tabletLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
