@@ -95,7 +95,13 @@
         android:progressDrawable="@drawable/progress_bar"
         app:layout_constraintBottom_toTopOf="@id/question_progress_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/hints_and_solution_fragment_container" />
+        app:layout_constraintStart_toEndOf="@id/hints_and_solution_fragment_container"
+        app:layout_constraintStart_toStartOf="parent" />
+
+      <FrameLayout
+        android:id="@+id/hints_and_solution_fragment_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
       <FrameLayout
         android:id="@+id/hints_and_solution_fragment_container"
