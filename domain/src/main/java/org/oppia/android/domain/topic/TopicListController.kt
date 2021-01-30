@@ -542,13 +542,9 @@ class TopicListController @Inject constructor(
       // TEST_TOPIC_ID_1 (depends on TEST_TOPIC_ID_0,Ratios)
       TEST_TOPIC_ID_1 -> listOf(TEST_TOPIC_ID_0, RATIOS_TOPIC_ID)
       // Fractions (depends on A+S, Multiplication, Division)
-      FRACTIONS_TOPIC_ID -> {
-        listOf()
-      }
+      FRACTIONS_TOPIC_ID -> listOf()
       // Ratios (depends on A+S, Multiplication, Division)
-      RATIOS_TOPIC_ID -> {
-        listOf()
-      }
+      RATIOS_TOPIC_ID -> listOf()
       // Addition and Subtraction (depends on Place Values)
       // Multiplication (depends on Addition and Subtraction)
       // Division (depends on Multiplication)
