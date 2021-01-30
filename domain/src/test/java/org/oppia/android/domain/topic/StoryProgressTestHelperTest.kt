@@ -842,7 +842,7 @@ class StoryProgressTestHelperTest {
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
       .isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount).isEqualTo(0)
-    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(2)
+    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(0)
     assertThat(promotedActivityList.comingSoonTopicList.upcomingTopicCount).isEqualTo(0)
   }
 
