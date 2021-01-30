@@ -537,7 +537,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0DoneforFirstTestTopic_playSecondTestTopic_suggestionOnPriority() {
-   storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
+    storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
