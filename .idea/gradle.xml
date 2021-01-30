@@ -19,7 +19,7 @@
             <option value="$PROJECT_DIR$/utility" />
           </set>
         </option>
-        <option name="resolveModulePerSourceSet" value="false" />  
+        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>
