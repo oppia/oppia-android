@@ -5,10 +5,6 @@ package model;
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
-message TestMessage {
-  int32 version = 1;
-}
-
 message TestModel {
   oneof model_type {
     string str_value = 1;

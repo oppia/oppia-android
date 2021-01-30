@@ -2,6 +2,7 @@ package org.oppia.android.util.extensions
 
 import android.os.Bundle
 import com.google.protobuf.ByteString
+import com.google.protobuf.InvalidProtocolBufferException
 import com.google.protobuf.MessageLite
 
 /**
@@ -9,7 +10,7 @@ import com.google.protobuf.MessageLite
  *
  * The proto can then be retrieved from the bundle using [Bundle.getProto].
  */
-fun <T: MessageLite> Bundle.putProto(name: String, message: T) {
+fun <T : MessageLite> Bundle.putProto(name: String, message: T) {
   putSerializable(name, message.toByteString())
 }
 
@@ -19,17 +20,25 @@ fun <T: MessageLite> Bundle.putProto(name: String, message: T) {
  *
  * This should only be used by protos stored using [Bundle.putProto].
  *
- * Note that the type of [defaultValue] must correspond to the type stored in the bundle, otherwise
- * this function will throw. The proto stored in the bundle must also be interoperable with the
- * current version of the proto (in case the persisted proto survives across app processes which may
- * be possible in some circumstances such as low-memory process kills).
+ * Note that the proto type of [defaultValue] must correspond to the type stored in the bundle,
+ * otherwise this function will have undefined behavior. The proto stored in the bundle should be
+ * interoperable with the current version of the proto (in case the persisted proto survives across
+ * app processes which may be possible in some circumstances such as low-memory process kills),
+ * otherwise no guarantees can be made about the stability of the data returned.
+ *
+ * If the [name] provided corresponds to an existing value of a non-proto type, this function will
+ * return [defaultValue].
  */
-fun <T: MessageLite> Bundle.getProto(name: String, defaultValue: T): T {
-  val deserializedByteString = getSerializable(name) as? ByteString
-  return deserializedByteString?.let {
+fun <T : MessageLite> Bundle.getProto(name: String, defaultValue: T): T {
+  val serializedByteString = getSerializable(name) as? ByteString
+  return serializedByteString?.let {
     // Type safety is *generally* guaranteed by newBuilderForType. If the bundle actually has an
     // incorrect type, then the mergeFrom() call should fail.
-    @Suppress("UNCHECKED_CAST")
-    defaultValue.newBuilderForType().mergeFrom(it).build() as T
+    return@let try {
+      @Suppress("UNCHECKED_CAST")
+      defaultValue.newBuilderForType().mergeFrom(it).build() as T
+    } catch (e: InvalidProtocolBufferException) {
+      null
+    }
   } ?: defaultValue
 }
