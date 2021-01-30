@@ -237,7 +237,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_explorationLoads_changeConfiguration_buttonIsNotVisible() {
+  fun testStateFragment_loadExp_configChange_buttonIsNotVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -260,7 +260,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_explorationHasContinueButton() {
+  fun testStateFragment_loadExp_configChange_explorationHasContinueButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -287,7 +287,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_secondState_hasSubmitButton() {
+  fun testStateFragment_loadExp_configChange_secondState_hasSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -564,7 +564,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadImageRegion_clickRegion6_clickSubmit_receivesCorrectFeedback() {
+  fun testStateFragment_loadImageRegion_clickRegion6_clickSubmit_receiveCorrectFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -690,7 +690,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_firstState_prevAndNextButtonIsNotDisplayed() {
+  fun testStateFragment_loadExp_configChange_firstState_prevAndNextButtonIsNotDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -713,7 +713,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfig_submitAnswer_clickContinue_prevButtonIsDisplayed() {
+  fun testStateFragment_loadExp_configChange_submitAns_clickContinue_prevButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -725,7 +725,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() {
+  fun testStateFragment_loadExp_submitAns_clickContinueThenPrevious_onlyNextButtonIsShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -740,7 +740,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfig_submit_clickContinueThenPrev_onlyNextButtonShown() {
+  fun testStateFragment_loadExp_configChange_submit_clickContinueThenPrev_onlyNextButtonShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -756,7 +756,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevThenNext_prevAndSubmitShown() {
+  fun testStateFragment_loadExp_submitAns_clickContinueThenPrevThenNext_prevAndSubmitShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -794,7 +794,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  fun testStateFragment_loadExp_continueToEndExploration_hasReturnToTopicButton() {
+  fun testStateFragment_loadExp_continueToEndExp_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -810,7 +810,7 @@ class StateFragmentTest {
 
   @Test
   @Ignore("Currently failing due to a regression") // TODO(#1769): Re-enable.
-  fun testStateFragment_loadExp_changeConfiguration_continueToEnd_hasReturnToTopicButton() {
+  fun testStateFragment_loadExp_configChange_continueToEnd_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -827,7 +827,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  fun testStateFragment_loadExp_continueToEndExploration_clickReturnToTopic_destroysActivity() {
+  fun testStateFragment_loadExp_continueToEndExp_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       playThroughPrototypeExploration()
@@ -841,7 +841,7 @@ class StateFragmentTest {
 
   @Test
   @Ignore("Currently failing due to a regression") // TODO(#1769): Re-enable.
-  fun testStateFragment_loadExp_changeConfig_continueToEnd_clickReturnToTopic_destroysActivity() {
+  fun testStateFragment_loadExp_configChange_continueToEnd_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -926,7 +926,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_landscape_forMisconception_showsLinkTextForConceptCard() {
+  fun testStateFragment_land_forMisconception_showsLinkTextForConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       rotateToLandscape()
       startPlayingExploration()
@@ -966,7 +966,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_landscape_forMisconception_clickLinkText_opensConceptCard() {
+  fun testStateFragment_land_forMisconception_clickLinkText_opensConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       rotateToLandscape()
       startPlayingExploration()

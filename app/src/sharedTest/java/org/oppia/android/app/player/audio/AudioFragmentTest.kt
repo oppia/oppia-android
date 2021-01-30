@@ -153,7 +153,7 @@ class AudioFragmentTest {
 
   // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
   @Test
-  fun testAudioFragment_withDefaultProfile_showsAudioLanguageAsEnglish() {
+  fun testAudioFragment_DefaultProfile_showsAudioLangAsEnglish() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
@@ -166,7 +166,7 @@ class AudioFragmentTest {
 
   // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
   @Test
-  fun testAudioFragment_withHindiAudioLanguageProfile_showsHindiAudioLanguage() {
+  fun testAudioFragment_HindiAudioLangProfile_showsHindiAudioLang() {
     addMediaInfo()
     profileTestHelper.addOnlyAdminProfile()
     val data = profileManagementController.updateAudioLanguage(
@@ -263,7 +263,7 @@ class AudioFragmentTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
+  fun testAudioFragment_invokePrepared_playAudio_configChange_checkStillPlaying() {
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
@@ -280,7 +280,7 @@ class AudioFragmentTest {
 
   // TODO(#1845): As updating tvAudioLanguage to image, we need to update this test
   @Test
-  fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
+  fun testAudioFragment_invokePrepared_changeDifferentLang_checkResetSeekBarAndPaused() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
