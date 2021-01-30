@@ -632,13 +632,14 @@ class TopicListController @Inject constructor(
   ): Set<String> {
     // Compute the total list of dependent topics that must be completed before the specified topic
     // can be recommended. Note that this will cause a stack overflow if the graph has cycles.
-    val topicDependencyList = topicDependencyMap[topicId]?.flatMap { dependentId ->
+    val directDependencies = topicDependencyMap[topicId] ?: listOf()
+    val transitiveDependencies = directDependencies.flatMap { dependentId ->
       computeTransitiveDependencyClosure(
         dependentId,
         topicDependencyMap
       )
     }
-    return topicDependencyList?.toSet() ?: emptySet()
+    return (transitiveDependencies + directDependencies).toSet()
   }
 
   private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory? {
