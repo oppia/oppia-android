@@ -408,7 +408,7 @@ class TopicListController @Inject constructor(
   // TODO(#2550): Remove hardcoded order of topics. Compute list of suggested stories from backend structures
   /** Returns a list of topic IDs for which the specified topic ID expects to be completed before
    * being suggested.
-   * */
+   */
   private fun retrieveTopicDependencies(topicId: String): List<String> {
     // The comments describe the correct dependencies, but those might not be available until the
     // topic is introduced into the app.
@@ -418,13 +418,9 @@ class TopicListController @Inject constructor(
       // TEST_TOPIC_ID_1 (depends on TEST_TOPIC_ID_0,Ratios)
       TEST_TOPIC_ID_1 -> listOf(TEST_TOPIC_ID_0, RATIOS_TOPIC_ID)
       // Fractions (depends on A+S, Multiplication, Division)
-      FRACTIONS_TOPIC_ID -> {
-        listOf()
-      }
+      FRACTIONS_TOPIC_ID -> listOf()
       // Ratios (depends on A+S, Multiplication, Division)
-      RATIOS_TOPIC_ID -> {
-        listOf()
-      }
+      RATIOS_TOPIC_ID -> listOf()
       // Addition and Subtraction (depends on Place Values)
       // Multiplication (depends on Addition and Subtraction)
       // Division (depends on Multiplication)

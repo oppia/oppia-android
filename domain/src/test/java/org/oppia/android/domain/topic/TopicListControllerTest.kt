@@ -391,7 +391,7 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
       .isEqualTo(1)
-    verifyPromotedStoryAsFractionStory0Exploration0(
+    verifyPromotedStoryAsFirstTestTopicStory0Exploration0(
       promotedActivityList.promotedStoryList.suggestedStoryList[0]
     )
   }
@@ -437,12 +437,9 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
 
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(2)
+      .isEqualTo(1)
     verifyPromotedStoryAsSecondTestTopicStory0Exploration0(
       promotedActivityList.promotedStoryList.suggestedStoryList[0]
-    )
-    verifyPromotedStoryAsFractionStory0Exploration0(
-      promotedActivityList.promotedStoryList.suggestedStoryList[1]
     )
   }
 
@@ -529,13 +526,7 @@ class TopicListControllerTest {
     assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
       .isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
-      .isEqualTo(2)
-    verifyPromotedStoryAsFractionStory0Exploration0(
-      promotedActivityList.promotedStoryList.suggestedStoryList[0]
-    )
-    verifyPromotedStoryAsRatioStory0Exploration0(
-      promotedActivityList.promotedStoryList.suggestedStoryList[1]
-    )
+      .isEqualTo(0)
   }
 
   @Test
@@ -755,10 +746,10 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
       .isEqualTo(2)
-    verifyOngoingStoryAsRatioStory0Exploration0(
+    verifyOngoingStoryAsFirstTopicStory1Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
     )
-    verifyOngoingStoryAsFirstTopicStory1Exploration0(
+    verifyOngoingStoryAsRatioStory0Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
     )
   }
