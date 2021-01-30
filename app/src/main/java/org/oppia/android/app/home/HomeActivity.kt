@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.drawer.NAVIGATION_DRAWER_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.topic.TopicActivity
@@ -25,7 +25,7 @@ class HomeActivity :
   companion object {
     fun createHomeActivity(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, HomeActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(NAVIGATION_DRAWER_PROFILE_ID_ARGUMENT_KEY, profileId)
       return intent
     }
   }
@@ -33,7 +33,7 @@ class HomeActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    internalProfileId = intent?.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)!!
+    internalProfileId = intent?.getIntExtra(NAVIGATION_DRAWER_PROFILE_ID_ARGUMENT_KEY, -1)!!
     homeActivityPresenter.handleOnCreate()
     title = getString(R.string.menu_home)
   }
