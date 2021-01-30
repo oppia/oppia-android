@@ -560,7 +560,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudWithWifi_openFractionsExp_changeLang_clickNext_checkLangIsHinglish() {
-     setupAudioForFraction()
+    setupAudioForFraction()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
