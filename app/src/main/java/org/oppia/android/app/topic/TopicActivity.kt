@@ -12,8 +12,8 @@ import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import javax.inject.Inject
 
-private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
-private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
+private const val TOPIC_ACTIVITY_TOPIC_ID_EXTRA_KEY = "TopicActivity.topic_activity_topic_id"
+private const val TOPIC_ACTIVITY_STORY_ID_EXTRA_KEY = "TopicActivity.topic_activity_story_id"
 
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity :
@@ -34,10 +34,10 @@ class TopicActivity :
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     internalProfileId = intent?.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)!!
-    topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
+    topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_EXTRA_KEY)) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
-    storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)
+    storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_EXTRA_KEY)
     topicActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
   }
 
@@ -102,11 +102,11 @@ class TopicActivity :
     }
 
     fun getTopicIdKey(): String {
-      return TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
+      return TOPIC_ACTIVITY_TOPIC_ID_EXTRA_KEY
     }
 
     fun getStoryIdKey(): String {
-      return TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY
+      return TOPIC_ACTIVITY_STORY_ID_EXTRA_KEY
     }
 
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
@@ -117,7 +117,7 @@ class TopicActivity :
     ): Intent {
       val intent = Intent(context, TopicActivity::class.java)
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
-      intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+      intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_EXTRA_KEY, topicId)
       return intent
     }
 
@@ -130,8 +130,8 @@ class TopicActivity :
     ): Intent {
       val intent = Intent(context, TopicActivity::class.java)
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
-      intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      intent.putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+      intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_EXTRA_KEY, topicId)
+      intent.putExtra(TOPIC_ACTIVITY_STORY_ID_EXTRA_KEY, storyId)
       return intent
     }
   }
