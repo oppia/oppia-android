@@ -450,9 +450,8 @@ class HomeActivityTest {
         targetViewId = R.id.coming_soon_topic_text_view,
         stringToMatch = context.getString(R.string.coming_soon)
       )
-      scrollToPosition(position = 1)
-      verifyExactTextOnHomeListItemAtPosition(
-        itemPosition = 0,
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "Third Test Topic"
       )
@@ -460,7 +459,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_markStory0DonePlayStory1FirstTestTopic_playSecondTestTopic_orderIsCorrect() {
+  fun testHomeActivity_markStory0DonePlayStory1FirstTestTopic_playFractionsTopic_orderIsCorrect() {
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
@@ -472,9 +471,9 @@ class HomeActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    storyProgressTestHelper.markRecentlyPlayedForSecondTestTopic(
+    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -493,13 +492,13 @@ class HomeActivityTest {
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
-        itemPosition = 1,
+        itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Second Test Topic"
+        stringToMatch = "Fractions"
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
-        itemPosition = 0,
+        itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "Ratios and Proportional Reasoning"
       )
@@ -532,58 +531,17 @@ class HomeActivityTest {
         targetViewId = R.id.recently_played_stories_text_view,
         stringToMatch = context.getString(R.string.recommended_stories)
       )
-    }
-  }
-
-  @Test
-  fun testHomeActivity_markStory0DoneforFirstTestTopic_playSecondTestTopic_suggestionOnPriority() {
-    storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
-    )
-    testCoroutineDispatchers.runCurrent()
-    storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration1(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressTestHelper.markRecentlyPlayedForSecondTestTopic(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanOneWeek = false
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
-      scrollToPosition(position = 1)
-      verifyExactTextOnHomeListItemAtPosition(
-        itemPosition = 1,
-        targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.stories_for_you)
-      )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Second Test Topic"
-      )
-      scrollToPositionOfPromotedList(position = 1)
-      verifyTextOnPromotedListItemAtPosition(
-        itemPosition = 1,
-        targetViewId = R.id.topic_name_text_view,
         stringToMatch = "Ratios and Proportional Reasoning"
-      )
-      scrollToPositionOfPromotedList(position = 2)
-      verifyTextOnPromotedListItemAtPosition(
-        itemPosition = 2,
-        targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "First Test Topic"
       )
     }
   }
 
   @Test
-  fun testHomeActivity_markStory0DoneForFrac_suggestFirstTestTopicIsCorrect() {
+  fun testHomeActivity_markStory0DoneForFrac_recommendedStoriesIsCorrect() {
     storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
@@ -595,12 +553,6 @@ class HomeActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
-      scrollToPosition(position = 1)
-      verifyExactTextOnHomeListItemAtPosition(
-        itemPosition = 1,
-        targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recommended_stories)
-      )
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
@@ -725,9 +677,15 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recommended_stories)
+        stringToMatch = context.getString(R.string.stories_for_you)
       )
       verifyTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Ratios and Proportional Reasoning"
+      )
+      scrollToPositionOfPromotedList(2)
+      verifyTextOnPromotedListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "First Test Topic"
@@ -1316,6 +1274,20 @@ class HomeActivityTest {
     onView(
       atPositionOnView(
         R.id.home_recycler_view,
+        itemPosition,
+        targetViewId
+      )
+    ).check(matches(withText(stringToMatch)))
+  }
+
+  private fun verifyExactTextOnComingSoonListItemAtPosition(
+    itemPosition: Int,
+    targetViewId: Int,
+    stringToMatch: String
+  ) {
+    onView(
+      atPositionOnView(
+        R.id.coming_soon_topic_list_recycler_view,
         itemPosition,
         targetViewId
       )
