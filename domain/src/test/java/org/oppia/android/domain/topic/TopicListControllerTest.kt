@@ -239,7 +239,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_ongoindStoryListIsCorrect() {
+  fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_ongoingStoryListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -444,7 +444,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markRecentlyPlayedFirstTestTopic_defaultsuggestedStoryListIsCorrect() {
+  fun testGetStoryList_markRecentlyPlayedFirstTestTopic_defaultSuggestedStoryListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
       TEST_TOPIC_ID_0,
@@ -456,8 +456,13 @@ class TopicListControllerTest {
 
     val promotedActivityList = retrievePromotedActivityList()
 
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
       .isEqualTo(2)
+    verifyOngoingStoryAsFirstTopicStory0Exploration0(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
     verifyPromotedStoryAsFractionStory0Exploration0(
       promotedActivityList.promotedStoryList.suggestedStoryList[0]
     )
@@ -550,6 +555,29 @@ class TopicListControllerTest {
       .isEqualTo(0)
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
       .isEqualTo(0)
+  }
+
+  @Test
+  fun testGetStoryList_markAllChapDoneInSecondTestTopic_comingSoonTopicListIsCorrect() {
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_4,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val promotedActivityList = retrievePromotedActivityList()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
+      .isEqualTo(0)
+    assertThat(promotedActivityList.comingSoonTopicList.upcomingTopicCount)
+      .isEqualTo(1)
+    verifyUpcomingTopic1(promotedActivityList.comingSoonTopicList.upcomingTopicList[0])
   }
 
   @Test
