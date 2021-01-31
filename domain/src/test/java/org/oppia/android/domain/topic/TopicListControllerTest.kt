@@ -239,7 +239,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_ongoindStoryListIsCorrect() {
+  fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_ongoingStoryListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
