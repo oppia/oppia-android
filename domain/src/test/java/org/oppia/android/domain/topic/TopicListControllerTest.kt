@@ -444,7 +444,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markRecentlyPlayedFirstTestTopic_defaultsuggestedStoryListIsCorrect() {
+  fun testGetStoryList_markRecentlyPlayedFirstTestTopic_defaultSuggestedStoryListIsCorrect() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId0,
       TEST_TOPIC_ID_0,
