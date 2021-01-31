@@ -323,8 +323,9 @@ class HomeActivityTest {
         targetViewId = R.id.recently_played_stories_text_view,
         stringToMatch = context.getString(R.string.recommended_stories)
       )
-      verifyTextOnHomeListItemAtPosition(
-        itemPosition = 1,
+      scrollToPositionOfPromotedList(position = 1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "First Test Topic"
       )
@@ -362,7 +363,7 @@ class HomeActivityTest {
         targetViewId = R.id.recently_played_stories_text_view,
         stringToMatch = context.getString(R.string.recommended_stories)
       )
-      scrollToPositionOfPromotedList(1)
+      scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
@@ -436,7 +437,7 @@ class HomeActivityTest {
         targetViewId = R.id.coming_soon_topic_text_view,
         stringToMatch = context.getString(R.string.coming_soon)
       )
-      scrollToPositionOfComingSoonList(1)
+      scrollToPositionOfComingSoonList(position = 1)
       verifyTextOnComingSoonItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
