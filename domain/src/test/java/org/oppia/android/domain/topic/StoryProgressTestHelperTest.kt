@@ -23,9 +23,9 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.CompletedStoryList
-import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicList
@@ -79,10 +79,11 @@ class StoryProgressTestHelperTest {
   lateinit var completedStoryListResultCaptor: ArgumentCaptor<AsyncResult<CompletedStoryList>>
 
   @Mock
-  lateinit var mockOngoingStoryListObserver: Observer<AsyncResult<OngoingStoryList>>
+  lateinit var mockPromotedActivityListObserver: Observer<AsyncResult<PromotedActivityList>>
 
   @Captor
-  lateinit var ongoingStoryListResultCaptor: ArgumentCaptor<AsyncResult<OngoingStoryList>>
+  lateinit var promotedActivityListResultCaptor:
+    ArgumentCaptor<AsyncResult<PromotedActivityList>>
 
   @Mock
   lateinit var mockOngoingTopicListObserver: Observer<AsyncResult<OngoingTopicList>>
@@ -125,9 +126,9 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testProgressTestHelper_markPartialStoryProgressForFractions_getTopicIsCorrect() {
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
+    storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -148,9 +149,9 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testProgressTestHelper_markPartialStoryProgressForFractions_getStoryIsCorrect() {
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
+    storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -170,9 +171,9 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testProgressTestHelper_markPartialStoryProgressForFractions_getOngoingTopicListIsCorrect() {
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
+    storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -190,9 +191,9 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testProgressTestHelper_markPartialStoryProgressForFractions_getCompletedStoryListIsCorrect() {
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
+    storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -374,7 +375,7 @@ class StoryProgressTestHelperTest {
   fun testProgressTestHelper_markFullTopicProgressForFractions_getTopicIsCorrect() {
     storyProgressTestHelper.markFullTopicProgressForFractions(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -397,7 +398,7 @@ class StoryProgressTestHelperTest {
   fun testProgressTestHelper_markFullTopicProgressForFractions_getStoryIsCorrect() {
     storyProgressTestHelper.markFullTopicProgressForFractions(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -417,7 +418,7 @@ class StoryProgressTestHelperTest {
   fun testProgressTestHelper_markFullTopicProgressForFractions_getOngoingTopicListIsCorrect() {
     storyProgressTestHelper.markFullTopicProgressForFractions(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -436,7 +437,7 @@ class StoryProgressTestHelperTest {
   fun testProgressTestHelper_markFullTopicProgressForFractions_getCompletedStoryListIsCorrect() {
     storyProgressTestHelper.markFullTopicProgressForFractions(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -737,139 +738,190 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testProgressTestHelper_markRecentlyPlayed_fractionsStory0Exp0_getOngoingStoryListIsCorrect() {
+  fun testProgressTestHelper_markRecentlyPlayed_fractionsStory0Exp0_promotedStoryListIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId,
       timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getPromotedActivityList(profileId).toLiveData()
+      .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetPromotedActivityListSucceeded()
 
-    val ongoingStoryList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(1)
-    assertThat(ongoingStoryList.olderStoryCount).isEqualTo(0)
-    assertThat(ongoingStoryList.recentStoryList[0].explorationId).isEqualTo(
-      FRACTIONS_EXPLORATION_ID_0
-    )
-    assertThat(ongoingStoryList.recentStoryList[0].completedChapterCount).isEqualTo(0)
+    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].explorationId)
+      .isEqualTo(
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    assertThat(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].completedChapterCount
+    ).isEqualTo(0)
   }
 
   @Test
-  fun testProgressTestHelper_markRecentlyPlayed_ratiosStory0Exp0_getOngoingStoryListIsCorrect() {
+  fun testProgressTestHelper_markRecentlyPlayed_ratiosStory0Exp0_promotedStoryListIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = profileId,
       timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getPromotedActivityList(profileId).toLiveData()
+      .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetPromotedActivityListSucceeded()
 
-    val ongoingStoryList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(1)
-    assertThat(ongoingStoryList.olderStoryCount).isEqualTo(0)
-    assertThat(ongoingStoryList.recentStoryList[0].explorationId).isEqualTo(
-      RATIOS_EXPLORATION_ID_0
+    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].explorationId)
+      .isEqualTo(RATIOS_EXPLORATION_ID_0)
+    assertThat(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].completedChapterCount
     )
-    assertThat(ongoingStoryList.recentStoryList[0].completedChapterCount).isEqualTo(0)
+      .isEqualTo(0)
   }
 
   @Test
   fun testProgressTestHelper_markRecentlyPlayed_ratiosStory0Exp0AndStory1Exp2_storyListIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0AndStory1Exploration2(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getPromotedActivityList(profileId).toLiveData()
+      .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetPromotedActivityListSucceeded()
 
-    val ongoingStoryList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(2)
-    assertThat(ongoingStoryList.olderStoryCount).isEqualTo(0)
-    assertThat(ongoingStoryList.recentStoryList[0].explorationId).isEqualTo(
-      RATIOS_EXPLORATION_ID_0
+    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(2)
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount).isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].explorationId)
+      .isEqualTo(RATIOS_EXPLORATION_ID_0)
+    assertThat(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].completedChapterCount
     )
-    assertThat(ongoingStoryList.recentStoryList[0].completedChapterCount).isEqualTo(0)
-
-    assertThat(ongoingStoryList.recentStoryList[1].explorationId).isEqualTo(
-      RATIOS_EXPLORATION_ID_2
+      .isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1].explorationId)
+      .isEqualTo(RATIOS_EXPLORATION_ID_2)
+    assertThat(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1].completedChapterCount
     )
-    assertThat(ongoingStoryList.recentStoryList[1].completedChapterCount).isEqualTo(0)
+      .isEqualTo(0)
   }
 
   @Test
-  fun testProgressTestHelper_markRecentlyPlayed_firstStoryInTestTopic1And2_storyListIsCorrect() {
+  fun testProgressTestHelper_markFullProgressForSecondTestTopic_suggestedStoryListIsCorrect() {
+    storyProgressTestHelper.markFullProgressForSecondTestTopic(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    topicListController.getPromotedActivityList(profileId).toLiveData()
+      .observeForever(mockPromotedActivityListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetPromotedActivityListSucceeded()
+
+    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount).isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount).isEqualTo(0)
+    assertThat(promotedActivityList.comingSoonTopicList.upcomingTopicCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testProgressTestHelper_markRecentlyPlayed_firstStoryInTestTopic1And2_promotedListIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
       profileId = profileId,
       timestampOlderThanAWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getPromotedActivityList(profileId).toLiveData()
+      .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetPromotedActivityListSucceeded()
 
-    val ongoingStoryList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(2)
-    assertThat(ongoingStoryList.olderStoryCount).isEqualTo(0)
-    assertThat(ongoingStoryList.recentStoryList[0].explorationId).isEqualTo(
-      TEST_EXPLORATION_ID_2
-    )
-    assertThat(ongoingStoryList.recentStoryList[0].completedChapterCount).isEqualTo(0)
-
-    assertThat(ongoingStoryList.recentStoryList[1].explorationId).isEqualTo(
-      TEST_EXPLORATION_ID_4
-    )
-    assertThat(ongoingStoryList.recentStoryList[1].completedChapterCount).isEqualTo(0)
+    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(2)
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].explorationId)
+      .isEqualTo(
+        TEST_EXPLORATION_ID_2
+      )
+    assertThat(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].completedChapterCount
+    ).isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1].explorationId)
+      .isEqualTo(
+        TEST_EXPLORATION_ID_4
+      )
+    assertThat(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1].completedChapterCount
+    ).isEqualTo(0)
   }
 
   @Test
-  fun testHelper_recentlyPlayed_firstExpInAllFracRatio_asOldStories_ongoingStoryListCorrect() {
+  fun testHelper_recentlyPlayed_firstExpInAllFracRatio_asOldStories_promotedActivityListCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = profileId,
       timestampOlderThanAWeek = true
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId).toLiveData()
-      .observeForever(mockOngoingStoryListObserver)
+    topicListController.getPromotedActivityList(profileId).toLiveData()
+      .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyGetOngoingStoryListSucceeded()
+    verifyGetPromotedActivityListSucceeded()
 
-    val ongoingStoryList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(0)
-    assertThat(ongoingStoryList.olderStoryCount).isEqualTo(3)
-
-    assertThat(ongoingStoryList.olderStoryList[0].explorationId).isEqualTo(
+    val promotedActivityList = promotedActivityListResultCaptor.value.getOrThrow()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
+      .isEqualTo(3)
+    assertThat(
+      promotedActivityList.promotedStoryList.olderPlayedStoryList[0].explorationId
+    ).isEqualTo(
       FRACTIONS_EXPLORATION_ID_0
     )
-    assertThat(ongoingStoryList.olderStoryList[0].completedChapterCount)
+    assertThat(
+      promotedActivityList.promotedStoryList.olderPlayedStoryList[0].completedChapterCount
+    )
       .isEqualTo(0)
-
-    assertThat(ongoingStoryList.olderStoryList[1].explorationId)
+    assertThat(
+      promotedActivityList.promotedStoryList.olderPlayedStoryList[1].explorationId
+    )
       .isEqualTo(RATIOS_EXPLORATION_ID_0)
-    assertThat(ongoingStoryList.olderStoryList[1].completedChapterCount)
+    assertThat(
+      promotedActivityList.promotedStoryList.olderPlayedStoryList[1].completedChapterCount
+    )
       .isEqualTo(0)
-
-    assertThat(ongoingStoryList.olderStoryList[2].explorationId)
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryList[2].explorationId)
       .isEqualTo(RATIOS_EXPLORATION_ID_2)
-    assertThat(ongoingStoryList.olderStoryList[2].completedChapterCount)
+    assertThat(
+      promotedActivityList.promotedStoryList.olderPlayedStoryList[2].completedChapterCount
+    )
       .isEqualTo(0)
   }
 
@@ -899,12 +951,12 @@ class StoryProgressTestHelperTest {
     assertThat(completedStoryListResultCaptor.value.isSuccess()).isTrue()
   }
 
-  private fun verifyGetOngoingStoryListSucceeded() {
+  private fun verifyGetPromotedActivityListSucceeded() {
     verify(
-      mockOngoingStoryListObserver,
+      mockPromotedActivityListObserver,
       atLeastOnce()
-    ).onChanged(ongoingStoryListResultCaptor.capture())
-    assertThat(ongoingStoryListResultCaptor.value.isSuccess()).isTrue()
+    ).onChanged(promotedActivityListResultCaptor.capture())
+    assertThat(promotedActivityListResultCaptor.value.isSuccess()).isTrue()
   }
 
   private fun verifyGetTopicListSucceeded() {
