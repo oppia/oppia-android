@@ -530,7 +530,8 @@ class TopicListController @Inject constructor(
   }
 
   // TODO(#2550): Remove hardcoded order of topics. Compute list of suggested stories from backend structures
-  /** Returns a list of topic IDs for which the specified topic ID expects to be completed before
+  /**
+   * Returns a list of topic IDs for which the specified topic ID expects to be completed before
    * being suggested.
    */
   private fun retrieveTopicDependencies(topicId: String): List<String> {
