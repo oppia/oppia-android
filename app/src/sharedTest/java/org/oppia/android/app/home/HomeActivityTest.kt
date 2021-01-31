@@ -356,8 +356,9 @@ class HomeActivityTest {
         targetViewId = R.id.recently_played_stories_text_view,
         stringToMatch = context.getString(R.string.recommended_stories)
       )
-      verifyTextOnHomeListItemAtPosition(
-        itemPosition = 1,
+      scrollToPositionOfPromotedList(1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "Second Test Topic"
       )
@@ -421,14 +422,16 @@ class HomeActivityTest {
     testCoroutineDispatchers.runCurrent()
 
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.coming_soon_topic_text_view,
         stringToMatch = context.getString(R.string.coming_soon)
       )
-      verifyExactTextOnHomeListItemAtPosition(
-        itemPosition = 1,
+      scrollToPositionOfComingSoonList(1)
+      verifyTextOnComingSoonItemAtPosition(
+        itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "Third Test Topic"
       )
@@ -444,6 +447,7 @@ class HomeActivityTest {
     testCoroutineDispatchers.runCurrent()
 
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
@@ -484,6 +488,7 @@ class HomeActivityTest {
     testCoroutineDispatchers.runCurrent()
 
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
@@ -525,6 +530,7 @@ class HomeActivityTest {
     testCoroutineDispatchers.runCurrent()
 
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
@@ -553,8 +559,9 @@ class HomeActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
-      scrollToPosition(position = 1)
-      verifyExactTextOnHomeListItemAtPosition(
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(1)
+      verifyTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
         stringToMatch = context.getString(R.string.recommended_stories)
@@ -673,14 +680,16 @@ class HomeActivityTest {
     testCoroutineDispatchers.runCurrent()
 
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
         stringToMatch = context.getString(R.string.stories_for_you)
       )
-      verifyTextOnHomeListItemAtPosition(
-        itemPosition = 1,
+      scrollToPositionOfPromotedList(1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "Ratios and Proportional Reasoning"
       )
@@ -1238,6 +1247,14 @@ class HomeActivityTest {
     )
   }
 
+  private fun scrollToPositionOfComingSoonList(position: Int) {
+    onView(withId(R.id.coming_soon_topic_list_recycler_view)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        position
+      )
+    )
+  }
+
   private fun verifyTextOnHomeListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
@@ -1266,6 +1283,20 @@ class HomeActivityTest {
     ).check(matches(withText(containsString(stringToMatch))))
   }
 
+  private fun verifyTextOnComingSoonItemAtPosition(
+    itemPosition: Int,
+    targetViewId: Int,
+    stringToMatch: String
+  ) {
+    onView(
+      atPositionOnView(
+        R.id.coming_soon_topic_list_recycler_view,
+        itemPosition,
+        targetViewId
+      )
+    ).check(matches(withText(containsString(stringToMatch))))
+  }
+
   private fun verifyExactTextOnHomeListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
@@ -1274,20 +1305,6 @@ class HomeActivityTest {
     onView(
       atPositionOnView(
         R.id.home_recycler_view,
-        itemPosition,
-        targetViewId
-      )
-    ).check(matches(withText(stringToMatch)))
-  }
-
-  private fun verifyExactTextOnComingSoonListItemAtPosition(
-    itemPosition: Int,
-    targetViewId: Int,
-    stringToMatch: String
-  ) {
-    onView(
-      atPositionOnView(
-        R.id.coming_soon_topic_list_recycler_view,
         itemPosition,
         targetViewId
       )
