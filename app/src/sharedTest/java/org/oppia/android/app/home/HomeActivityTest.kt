@@ -145,7 +145,6 @@ class HomeActivityTest {
     profileTestHelper.initializeProfiles()
     profileId = createProfileId(internalProfileId)
     profileId1 = createProfileId(internalProfileId1)
-
   }
 
   @After
