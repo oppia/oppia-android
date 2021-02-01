@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// A test message that is meant only to be used in tests.
+message TestMessage {
+  string str_value = 1;
+
+  int32 int_value = 2;
+}
+
+// A version of TestMessage that is binary compatible, but is "newer".
+message TestMessage2 {
+  string str_value = 1;
+
+  reserved 2;
+
+  bool bool_value = 3;
+}
+
+// A proto which is incompatible with TestMessage/TestMessage 2.
+message IncompatibleTestMessage {
+  IncompatibleNestedMessage nested_message = 1;
+
+  int32 int_value = 2;
+}
+
+message IncompatibleNestedMessage {
+  repeated int32 int_value = 1;
+}
