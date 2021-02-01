@@ -15,7 +15,7 @@ import javax.inject.Inject
 /** The presenter for [MyDownloadsFragment]. */
 @FragmentScope
 class MyDownloadsFragmentPresenter @Inject constructor(private val fragment: Fragment) {
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = MyDownloadsFragmentBinding.inflate(
       inflater,
       container,
