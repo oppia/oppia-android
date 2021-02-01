@@ -14,4 +14,4 @@ message TestModel {
     string str_value = 1;
     int32 int_value = 2;
   }
-} 
+}
