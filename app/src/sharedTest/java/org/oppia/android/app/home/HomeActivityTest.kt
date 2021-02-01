@@ -236,15 +236,13 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recentlyPlayedStoriesTextIsDisplayed() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
+      profileId = createProfileId(internalProfileId1),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -262,12 +260,10 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = true
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -285,12 +281,10 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = true
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = true
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -308,13 +302,10 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapDoneFrac0Story0Expl(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -338,23 +329,18 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapDoneOfRatiosStory0Exp1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -378,7 +364,6 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -397,38 +382,30 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markFullProgressForSecondTestTopic(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapDoneFrac0Story0Expl(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapDoneOfRatiosStory0Exp0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapDoneOfRatiosStory0Exp1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -452,8 +429,6 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -476,25 +451,18 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
     storyProgressTestHelper.markRecentlyPlayedFirstTestTopicStory1Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -530,13 +498,10 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -565,7 +530,6 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(1)
@@ -595,12 +559,14 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
-      timestampOlderThanAWeek = true
+      timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
+    storyProgressTestHelper.markRecentlyPlayedForSecondTestTopic(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
+      timestampOlderThanOneWeek = false
+    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -621,7 +587,6 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -639,7 +604,6 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -657,13 +621,10 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = true
     )
-    testCoroutineDispatchers.runCurrent()
-
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -682,18 +643,14 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapDoneFrac0Story0Expl(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -723,7 +680,6 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -747,12 +703,10 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = true
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -796,7 +750,6 @@ class HomeActivityTest {
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
@@ -991,7 +944,6 @@ class HomeActivityTest {
       profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -1012,12 +964,10 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
       profileId = profileId,
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -1035,7 +985,6 @@ class HomeActivityTest {
       profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -1053,7 +1002,6 @@ class HomeActivityTest {
       profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
@@ -1148,12 +1096,10 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = createProfileId(internalProfileId),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -1175,12 +1121,10 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = createProfileId(internalProfileId),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -1202,12 +1146,10 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = createProfileId(internalProfileId),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1230,7 +1172,6 @@ class HomeActivityTest {
       profileId = createProfileId(internalProfileId),
       timestampOlderThanAWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 6)
