@@ -166,7 +166,7 @@
   <dimen name="content_text_view_padding_top">12dp</dimen>
   <dimen name="content_text_view_padding_bottom">12dp</dimen>
   <dimen name="content_item_question_split_view_margin_bottom">12dp</dimen>
-  <dimen name="content_item_question_view_margin_bottom">12dp</dimen>
+  <dimen name="content_item_question_view_margin_bottom">0dp</dimen>
   <dimen name="feedback_item_exploration_view_padding_bottom">12dp</dimen>
   <dimen name="feedback_item_exploration_view_padding_top">12dp</dimen>
   <dimen name="profile_chooser_profile_view_last_visited_margin_start_profile_not_added">12dp</dimen>
@@ -333,8 +333,8 @@
 
   <dimen name="content_item_question_split_view_margin_end">32dp</dimen>
   <dimen name="content_item_question_split_view_margin_start">32dp</dimen>
-  <dimen name="content_item_question_view_margin_end">32dp</dimen>
-  <dimen name="content_item_question_view_margin_start">32dp</dimen>
+  <dimen name="content_item_question_view_margin_end">24dp</dimen>
+  <dimen name="content_item_question_view_margin_start">24dp</dimen>
   <dimen name="drag_drop_item_exploration_split_view_margin_start">32dp</dimen>
   <dimen name="drag_drop_item_exploration_split_view_margin_top">32dp</dimen>
   <dimen name="drag_drop_item_question_split_view_margin_end">32dp</dimen>
@@ -362,7 +362,7 @@
   <dimen name="text_input_interaction_item_non_conversation_view_margin_start">32dp</dimen>
   <dimen name="text_input_interaction_item_non_conversation_view_margin_end">32dp</dimen>
 
-  <dimen name="content_item_question_view_margin_top">36dp</dimen>
+  <dimen name="content_item_question_view_margin_top">24dp</dimen>
   <dimen name="previous_button_item_question_split_view_margin_start">48dp</dimen>
   <dimen name="previous_button_item_exploration_split_view_margin_start">48dp</dimen>
   <dimen name="previous_button_item_question_view_margin_start">48dp</dimen>

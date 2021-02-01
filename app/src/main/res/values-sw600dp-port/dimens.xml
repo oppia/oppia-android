@@ -8,7 +8,7 @@
   <dimen name="recently_played_margin_min">60dp</dimen>
   <dimen name="previous_responses_item_question_split_view_margin_end">48dp</dimen>
   <dimen name="previous_responses_item_exploration_split_view_margin_end">48dp</dimen>
-  <dimen name="content_item_question_view_margin_top">36dp</dimen>
+  <dimen name="content_item_question_view_margin_top">20dp</dimen>
   <dimen name="content_item_exploration_view_margin_top">36dp</dimen>
   <dimen name="content_item_question_split_view_margin_end">32dp</dimen>
   <dimen name="content_item_question_split_view_margin_start">32dp</dimen>
@@ -23,8 +23,8 @@
   <dimen name="profile_chooser_description_margin_start_profile_not_added">32dp</dimen>
 
   <dimen name="previous_button_item_question_view_margin_start">128dp</dimen>
-  <dimen name="content_item_question_view_margin_end">128dp</dimen>
-  <dimen name="content_item_question_view_margin_start">128dp</dimen>
+  <dimen name="content_item_question_view_margin_end">116dp</dimen>
+  <dimen name="content_item_question_view_margin_start">116dp</dimen>
   <dimen name="continue_interaction_item_question_view_margin_end">128dp</dimen>
   <dimen name="continue_interaction_item_question_view_margin_start">128dp</dimen>
   <dimen name="continue_navigation_item_question_view_margin_end">128dp</dimen>
