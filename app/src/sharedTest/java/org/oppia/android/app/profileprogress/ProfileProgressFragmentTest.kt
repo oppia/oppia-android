@@ -421,7 +421,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_configChange_firstStory_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -441,7 +441,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressActivity_recyclerViewItem1_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -462,7 +462,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressActivity_recyclerViewItem1_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -483,7 +483,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressActivity_clickRecyclerViewItem1_intentIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -505,7 +505,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_clickViewAll_opensRecentlyPlayedActivity() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
 
