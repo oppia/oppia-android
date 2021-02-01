@@ -57,7 +57,7 @@ class PromotedStoryListViewModel(
         }
         else -> View.VISIBLE
       }
-    }else{
+    } else {
       return if (promotedStoryList.size > 2) View.VISIBLE else View.INVISIBLE
     }
     return View.VISIBLE
