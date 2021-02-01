@@ -172,8 +172,8 @@ class StoryProgressTestHelper @Inject constructor(
    */
   fun markFullProgressForAllTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markFullTopicProgressForFractions(profileId, timestampOlderThanOneWeek)
-    markFullTopicProgressForTestTopics(profileId, timestampOlderThanOneWeek)
     markFullTopicProgressForRatios(profileId, timestampOlderThanOneWeek)
+    markFullTopicProgressForTestTopics(profileId, timestampOlderThanOneWeek)
   }
 
   /**
@@ -208,14 +208,21 @@ class StoryProgressTestHelper @Inject constructor(
       profileId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_3,
+      TEST_EXPLORATION_ID_1,
       timestamp
     )
     storyProgressController.recordCompletedChapter(
       profileId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_4,
+      TEST_EXPLORATION_ID_0,
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_1,
+      TEST_EXPLORATION_ID_3,
       timestamp
     )
     storyProgressController.recordCompletedChapter(
@@ -223,13 +230,6 @@ class StoryProgressTestHelper @Inject constructor(
       TEST_TOPIC_ID_1,
       TEST_STORY_ID_2,
       TEST_EXPLORATION_ID_4,
-      timestamp
-    )
-    storyProgressController.recordCompletedChapter(
-      profileId,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_2,
-      TEST_EXPLORATION_ID_5,
       timestamp
     )
   }

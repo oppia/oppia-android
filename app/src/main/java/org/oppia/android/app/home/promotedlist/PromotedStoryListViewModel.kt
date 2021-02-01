@@ -18,7 +18,9 @@ class PromotedStoryListViewModel(
   private val promotedActivityList: PromotedActivityList
 ) : HomeItemViewModel() {
   private val routeToRecentlyPlayedListener = activity as RouteToRecentlyPlayedListener
-
+  private val promotedStoryListLimit = activity.resources.getInteger(
+    R.integer.promoted_story_list_limit
+  )
   /** Returns the padding placed at the end of the promoted stories list based on the number of promoted stories. */
   val endPadding =
     if (promotedStoryList.size > 1)
@@ -58,7 +60,11 @@ class PromotedStoryListViewModel(
         else -> View.VISIBLE
       }
     } else {
-      return if (promotedStoryList.size > 2) View.VISIBLE else View.INVISIBLE
+      return if (promotedStoryList.size > promotedStoryListLimit - 1) {
+        View.VISIBLE
+      } else {
+        View.INVISIBLE
+      }
     }
     return View.VISIBLE
   }
