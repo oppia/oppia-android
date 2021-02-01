@@ -47,16 +47,6 @@ class PromotedStoryListViewModel(
 
   /** Returns the visibility for the "View All" button. */
   fun getViewAllButtonVisibility(): Int {
-    promotedActivityList.promotedStoryList.let {
-      if (it.suggestedStoryList.isNotEmpty()) {
-        return if (it.recentlyPlayedStoryList.isNotEmpty() ||
-          it.olderPlayedStoryList.isNotEmpty()
-        ) {
-          View.VISIBLE
-        } else
-          View.INVISIBLE
-      }
-    }
     if (activity.resources.getBoolean(R.bool.isTablet)) {
       when (Resources.getSystem().configuration.orientation) {
         Configuration.ORIENTATION_PORTRAIT -> {
@@ -67,6 +57,8 @@ class PromotedStoryListViewModel(
         }
         else -> View.VISIBLE
       }
+    }else{
+      return if (promotedStoryList.size > 2) View.VISIBLE else View.INVISIBLE
     }
     return View.VISIBLE
   }
