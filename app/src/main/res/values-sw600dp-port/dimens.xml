@@ -31,8 +31,8 @@
   <dimen name="continue_navigation_item_question_view_margin_start">128dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_end">128dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_start">128dp</dimen>
-  <dimen name="feedback_item_question_view_margin_end">128dp</dimen>
-  <dimen name="feedback_item_question_view_margin_start">128dp</dimen>
+  <dimen name="feedback_item_question_view_margin_end">116dp</dimen>
+  <dimen name="feedback_item_question_view_margin_start">116dp</dimen>
   <dimen name="fraction_interaction_item_non_conversation_view_margin_end">128dp</dimen>
   <dimen name="fraction_interaction_item_non_conversation_view_margin_start">128dp</dimen>
   <dimen name="next_button_item_question_view_margin_end">128dp</dimen>
@@ -65,7 +65,7 @@
   <dimen name="feedback_item_exploration_split_view_margin_top">24dp</dimen>
   <dimen name="feedback_item_exploration_view_margin_top">24dp</dimen>
   <dimen name="feedback_item_question_split_view_margin_top">24dp</dimen>
-  <dimen name="feedback_item_question_view_margin_top">24dp</dimen>
+  <dimen name="feedback_item_question_view_margin_top">8dp</dimen>
   <dimen name="previous_responses_item_exploration_split_view_margin_top">24dp</dimen>
   <dimen name="previous_responses_item_exploration_view_margin_top">24dp</dimen>
   <dimen name="previous_responses_item_question_split_view_margin_top">24dp</dimen>
