@@ -83,7 +83,8 @@
               android:textSize="16sp"
               app:layout_constraintBottom_toBottomOf="parent"
               app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toTopOf="parent" />
+              app:layout_constraintTop_toTopOf="parent"
+              android:contentDescription="@string/smallest_textsize"/>
 
             <FrameLayout
               android:layout_width="0dp"
@@ -161,7 +162,8 @@
               android:textSize="28sp"
               app:layout_constraintBottom_toBottomOf="parent"
               app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintTop_toTopOf="parent" />
+              app:layout_constraintTop_toTopOf="parent"
+              android:contentDescription="@string/largest_textsize"/>
           </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
       </ScrollView>
