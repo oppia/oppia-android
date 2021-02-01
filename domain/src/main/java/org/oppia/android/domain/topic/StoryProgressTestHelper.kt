@@ -26,8 +26,11 @@ class StoryProgressTestHelper @Inject constructor(
    * @param profileId the profile we are setting partial progress of the fraction story for
    * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week ago
    */
-  fun markPartialStoryProgressForFractions(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
-    val timestamp = if (!timestampOlderThanAWeek) {
+  fun markPartialStoryProgressForFractions(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    val timestamp = if (!timestampOlderThanOneWeek) {
       getCurrentTimestamp()
     } else {
       getOldTimestamp()
@@ -91,9 +94,9 @@ class StoryProgressTestHelper @Inject constructor(
    */
   fun markPartialTopicProgressForFractions(
     profileId: ProfileId,
-    timestampOlderThanAWeek: Boolean
+    timestampOlderThanOneWeek: Boolean
   ) {
-    val timestamp = if (!timestampOlderThanAWeek) {
+    val timestamp = if (!timestampOlderThanOneWeek) {
       getCurrentTimestamp()
     } else {
       getOldTimestamp()
@@ -113,8 +116,8 @@ class StoryProgressTestHelper @Inject constructor(
    * @param profileId the profile we are setting full on the fraction story progress for
    * @param timestampOlderThanAWeek if the timestamp for completing the story is more than one week ago
    */
-  fun markFullStoryProgressForFractions(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
-    val timestamp = if (!timestampOlderThanAWeek) {
+  fun markFullStoryProgressForFractions(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    val timestamp = if (!timestampOlderThanOneWeek) {
       getCurrentTimestamp()
     } else {
       getOldTimestamp()
@@ -329,9 +332,9 @@ class StoryProgressTestHelper @Inject constructor(
    */
   fun markFullStoryPartialTopicProgressForRatios(
     profileId: ProfileId,
-    timestampOlderThanAWeek: Boolean
+    timestampOlderThanOneWeek: Boolean
   ) {
-    val timestamp = if (!timestampOlderThanAWeek) {
+    val timestamp = if (!timestampOlderThanOneWeek) {
       getCurrentTimestamp()
     } else {
       getOldTimestamp()
@@ -409,9 +412,9 @@ class StoryProgressTestHelper @Inject constructor(
    */
   fun markTwoPartialStoryProgressForRatios(
     profileId: ProfileId,
-    timestampOlderThanAWeek: Boolean
+    timestampOlderThanOneWeek: Boolean
   ) {
-    val timestamp = if (!timestampOlderThanAWeek) {
+    val timestamp = if (!timestampOlderThanOneWeek) {
       getCurrentTimestamp()
     } else {
       getOldTimestamp()
@@ -441,9 +444,9 @@ class StoryProgressTestHelper @Inject constructor(
    */
   fun markRecentlyPlayedForFractionsStory0Exploration0(
     profileId: ProfileId,
-    timestampOlderThanAWeek: Boolean
+    timestampOlderThanOneWeek: Boolean
   ) {
-    val timestamp = if (!timestampOlderThanAWeek) {
+    val timestamp = if (!timestampOlderThanOneWeek) {
       getCurrentTimestamp()
     } else {
       getOldTimestamp()
@@ -465,9 +468,9 @@ class StoryProgressTestHelper @Inject constructor(
    */
   fun markRecentlyPlayedForRatiosStory0Exploration0(
     profileId: ProfileId,
-    timestampOlderThanAWeek: Boolean
+    timestampOlderThanOneWeek: Boolean
   ) {
-    val timestamp = if (!timestampOlderThanAWeek) {
+    val timestamp = if (!timestampOlderThanOneWeek) {
       getCurrentTimestamp()
     } else {
       getOldTimestamp()
@@ -523,9 +526,9 @@ class StoryProgressTestHelper @Inject constructor(
    */
   fun markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
     profileId: ProfileId,
-    timestampOlderThanAWeek: Boolean
+    timestampOlderThanOneWeek: Boolean
   ) {
-    val timestamp = if (!timestampOlderThanAWeek) {
+    val timestamp = if (!timestampOlderThanOneWeek) {
       getCurrentTimestamp()
     } else {
       getOldTimestamp()
@@ -564,9 +567,9 @@ class StoryProgressTestHelper @Inject constructor(
    */
   fun markRecentlyPlayedForOneExplorationInTestTopics1And2(
     profileId: ProfileId,
-    timestampOlderThanAWeek: Boolean
+    timestampOlderThanOneWeek: Boolean
   ) {
-    val timestamp = if (!timestampOlderThanAWeek) {
+    val timestamp = if (!timestampOlderThanOneWeek) {
       getCurrentTimestamp()
     } else {
       getOldTimestamp()

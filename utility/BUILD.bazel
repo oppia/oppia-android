@@ -77,6 +77,15 @@ utility_test(
 )
 
 utility_test(
+    name = "BundleExtensionsTest",
+    srcs = ["src/test/java/org/oppia/android/util/extensions/BundleExtensionsTest.kt"],
+    test_class = "org.oppia.android.util.extensions.BundleExtensionsTest",
+    deps = TEST_DEPS + [
+        "//model:test_models",
+    ],
+)
+
+utility_test(
     name = "EventBundleCreatorTest",
     srcs = ["src/test/java/org/oppia/android/util/logging/EventBundleCreatorTest.kt"],
     test_class = "org.oppia.android.util.logging.EventBundleCreatorTest",
