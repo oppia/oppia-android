@@ -392,7 +392,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_markFullProgressForAllTopics_displaysComingSoonTopicsText() {
+  fun testHomeActivity_markFullProgressForAllTopics_displaysComingSoonTopicsList() {
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId1).build(),
       timestampOlderThanOneWeek = false
