@@ -976,7 +976,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_allTopicsCompleted_hidesPromotedStories() {
-   val profileId = createProfileId(internalProfileId)
+    val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markFullProgressForAllTopics(
       profileId = profileId,
       timestampOlderThanOneWeek = false
