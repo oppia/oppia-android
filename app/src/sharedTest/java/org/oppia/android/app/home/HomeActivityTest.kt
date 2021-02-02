@@ -590,11 +590,11 @@ class HomeActivityTest {
     val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -725,11 +725,11 @@ class HomeActivityTest {
     val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = createProfileId(internalProfileId),
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -750,11 +750,11 @@ class HomeActivityTest {
     val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = createProfileId(internalProfileId),
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -775,11 +775,11 @@ class HomeActivityTest {
     val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = createProfileId(internalProfileId),
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -801,7 +801,7 @@ class HomeActivityTest {
     // (see https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462)
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = createProfileId(internalProfileId),
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
