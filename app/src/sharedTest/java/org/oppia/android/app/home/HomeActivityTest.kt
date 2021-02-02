@@ -262,6 +262,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = true
@@ -284,6 +285,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
+    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = true
