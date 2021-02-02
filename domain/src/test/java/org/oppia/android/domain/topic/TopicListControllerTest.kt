@@ -314,7 +314,6 @@ class TopicListControllerTest {
       getCurrentTimestamp()
     )
     testCoroutineDispatchers.runCurrent()
-
     storyProgressController.recordCompletedChapter(
       profileId0,
       FRACTIONS_TOPIC_ID,
@@ -507,26 +506,25 @@ class TopicListControllerTest {
     testCoroutineDispatchers.runCurrent()
     storyProgressController.recordCompletedChapter(
       profileId0,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_2,
-      TEST_EXPLORATION_ID_4,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-    storyProgressController.recordCompletedChapter(
-      profileId0,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
       getCurrentTimestamp()
     )
     testCoroutineDispatchers.runCurrent()
-
     storyProgressController.recordCompletedChapter(
       profileId0,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_1,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_4,
       getCurrentTimestamp()
     )
     testCoroutineDispatchers.runCurrent()
