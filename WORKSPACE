@@ -77,7 +77,7 @@ rules_java_dependencies()
 
 rules_java_toolchains()
 
-# The rules_proto contains the proto_library rule used in the gitmodel module.
+# The rules_proto contains the proto_library rule used in the model module.
 http_archive(
     name = "rules_proto",
     sha256 = "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",
@@ -180,6 +180,7 @@ maven_install(
         "com.crashlytics.sdk.android:crashlytics:2.9.8",
         "com.github.bumptech.glide:glide:4.11.0",
         "com.github.bumptech.glide:mocks:4.11.0",
+        "com.google.android:flexbox:2.0.1",
         "com.google.android.material:material:1.2.0-alpha02",
         "com.google.firebase:firebase-analytics:17.5.0",
         "com.google.firebase:firebase-crashlytics:17.1.1",
@@ -192,6 +193,7 @@ maven_install(
         "io.fabric.sdk.android:fabric:1.4.7",
         "javax.annotation:javax.annotation-api:jar:1.3.2",
         "junit:junit:4.12",
+        "nl.dionsegijn:konfetti:1.2.5",
         "org.jetbrains.kotlin:kotlin-reflect:1.3.41",
         "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
         "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",

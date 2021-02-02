@@ -232,6 +232,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryItemViewModel.kt",
     "src/main/java/org/oppia/android/app/story/StoryViewModel.kt",
+    "src/main/java/org/oppia/android/app/testing/BindableAdapterTestDataModel.kt",
     "src/main/java/org/oppia/android/app/testing/BindableAdapterTestViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/conceptcard/ConceptCardViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/StorySummaryViewModel.kt",
@@ -506,9 +507,11 @@ android_library(
         artifact("androidx.viewpager:viewpager:1.0.0"),
         artifact("androidx.viewpager2:viewpager2:1.0.0"),
         artifact("com.chaos.view:pinview:1.4.4"),
+        artifact("com.google.android:flexbox:2.0.1"),
         artifact("com.google.android.material:material"),
         artifact("de.hdodenhof:circleimageview:3.0.1"),
         artifact("javax.annotation:javax.annotation-api"),
+        artifact("nl.dionsegijn:konfetti:1.2.5"),
     ],
 )
 
@@ -641,6 +644,7 @@ kt_android_library(
         artifact("androidx.viewpager2:viewpager2:1.0.0"),
         artifact("androidx.work:work-runtime-ktx:2.4.0"),
         artifact("com.caverock:androidsvg-aar"),
+        artifact("com.google.android:flexbox:2.0.1"),
         artifact("javax.annotation:javax.annotation-api:jar"),
     ],
 )
