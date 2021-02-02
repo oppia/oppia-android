@@ -306,6 +306,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapDoneFrac0Story0Expl(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -324,6 +325,12 @@ class HomeActivityTest {
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "First Test Topic"
       )
+      scrollToPositionOfPromotedList(position = 1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Ratios and Proportional Reasoning"
+      )
     }
   }
 
@@ -333,14 +340,17 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapDoneOfRatiosStory0Exp1(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration1(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -386,10 +396,12 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapDoneFrac0Story0Expl(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
