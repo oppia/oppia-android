@@ -92,8 +92,8 @@ class TopicListControllerTest {
   @Captor
   lateinit var promotedActivityListResultCaptor:
     ArgumentCaptor<AsyncResult<PromotedActivityList>>
-  
-  private val internalProfileId : Int = 1
+
+  private val internalProfileId: Int = 1
 
   @Before
   fun setUp() {
@@ -338,7 +338,7 @@ class TopicListControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList(profileId)
-    System.out.println("promoted ="+ promotedActivityList.promotedStoryList)
+    System.out.println("promoted =" + promotedActivityList.promotedStoryList)
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
       .isEqualTo(2)
     verifyPromotedStoryAsFirstTestTopicStory0Exploration0(
@@ -1063,7 +1063,7 @@ class TopicListControllerTest {
     return topicListResultCaptor.value.getOrThrow()
   }
 
-  private fun retrievePromotedActivityList(profileId : ProfileId): PromotedActivityList {
+  private fun retrievePromotedActivityList(profileId: ProfileId): PromotedActivityList {
     testCoroutineDispatchers.runCurrent()
     topicListController.getPromotedActivityList(profileId).toLiveData()
       .observeForever(mockPromotedActivityListObserver)
@@ -1071,7 +1071,7 @@ class TopicListControllerTest {
     verifyGetPromotedActivityListSucceeded()
     return promotedActivityListResultCaptor.value.getOrThrow()
   }
-  
+
   private fun createProfileId(internalProfileId: Int): ProfileId {
     return ProfileId.newBuilder().setInternalId(internalProfileId).build()
   }
