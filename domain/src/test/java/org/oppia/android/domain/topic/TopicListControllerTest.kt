@@ -328,6 +328,7 @@ class TopicListControllerTest {
       FRACTIONS_EXPLORATION_ID_0,
       getCurrentTimestamp()
     )
+    testCoroutineDispatchers.runCurrent()
     storyProgressController.recordCompletedChapter(
       profileId,
       FRACTIONS_TOPIC_ID,
@@ -338,7 +339,6 @@ class TopicListControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList(profileId)
-    System.out.println("promoted =" + promotedActivityList.promotedStoryList)
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
       .isEqualTo(2)
     verifyPromotedStoryAsFirstTestTopicStory0Exploration0(
