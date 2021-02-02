@@ -130,7 +130,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_clickCreate_checkOpensProfileChooserActivity() {
+  fun testAddProfileActivity_inputName_opensProfileChooserActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -149,7 +149,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_inputName_clickCreate_checkOpensProfileChooserActivity() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_configChange_inputName_opensProfileChooserActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
@@ -170,7 +170,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_clickOnCheckbox_createPin_checkIsDisplayed() {
+  fun testAddProfileActivity_clickOnCheckbox_inputPinIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(click())
       onView(withId(R.id.add_profile_activity_pin)).check(
@@ -182,7 +182,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_clickOnCheckbox_createPin_checkIsDisplayed() {
+  fun testAddProfileActivity_configChange_clickOnCheckbox_inputPinIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
@@ -197,7 +197,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_createPin_checkNotVisible() {
+  fun testAddProfileActivity_inputPinIsNotDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin)).check(
         matches(
@@ -210,7 +210,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_createPin_checkNotVisible() {
+  fun testAddProfileActivity_configChange_inputPinIsNotDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin)).check(
@@ -224,7 +224,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_inputPin_clickCreate_checkOpensProfileActivity() {
+  fun testAddProfileActivity_inputNameAndPin_opensProfileActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -272,7 +272,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_inputName_inputPin_clickCreate_checkOpensProfileActivity() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_configChange_inputNameAndPin_opensProfileActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
@@ -327,7 +327,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_checkCreateIsNotClickable() {
+  fun testAddProfileActivity_createIsNotClickable() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).check(matches(not(isClickable())))
@@ -335,7 +335,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_checkCreateIsNotClickable() {
+  fun testAddProfileActivity_configChange_createIsNotClickable() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
@@ -344,7 +344,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_checkCreateIsClickable() {
+  fun testAddProfileActivity_inputName_createIsClickable() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       onView(
@@ -361,7 +361,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_changeConfiguration_checkCreateIsClickable() {
+  fun testAddProfileActivity_inputName_configChange_createIsClickable() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       onView(
@@ -379,7 +379,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputNotUniqueName_clickCreate_checkNameNotUniqueError() {
+  fun testAddProfileActivity_inputNotUniqueName_create_nameNotUniqueError() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       onView(
@@ -400,7 +400,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_inputNotUniqueName_clickCreate_checkNameNotUniqueError() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_configChange_inputNotUniqueName_create_nameNotUniqueError() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -422,7 +422,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputNotUniqueName_clickCreate_inputName_checkErrorIsCleared() {
+  fun testAddProfileActivity_inputNotUniqueName_create_inputName_errorIsCleared() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       onView(
@@ -452,7 +452,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_inputNotUniqueName_clickCreate_inputName_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_configChange_inputNotUniqueName_create_inputName_errorIsCleared() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -491,7 +491,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() {
+  fun testAddProfileActivity_inputNameWithNumbers_create_nameOnlyLettersError() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -511,7 +511,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_configChange_inputNameWithNumbers_create_nameOnlyLettersError() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -534,7 +534,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() {
+  fun testAddProfileActivity_inputNameWithNumbers_create_inputName_errorIsCleared() {
     launch(AddProfileActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -564,7 +564,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_configChange_inputNameWithNumbers_create_inputName_errorIsCleared() {
     launch(AddProfileActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -601,7 +601,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputShortPin_clickCreate_checkPinLengthError() {
+  fun testAddProfileActivity_inputShortPin_create_pinLengthError() {
     launch(AddProfileActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -633,7 +633,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_inputShortPin_clickCreate_checkPinLengthError() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_configChange_inputShortPin_create_pinLengthError() {
     launch(AddProfileActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -672,7 +672,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputShortPin_clickCreate_inputPin_checkErrorIsCleared() {
+  fun testAddProfileActivity_inputShortPin_create_inputPin_errorIsCleared() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
@@ -703,7 +703,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_inputShortPin_clickCreate_inputPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_configChange_inputShortPin_create_inputPin_errorIsCleared() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
@@ -739,7 +739,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputWrongConfirmPin_checkConfirmWrongError() {
+  fun testAddProfileActivity_inputWrongConfirmPin_confirmWrongError() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -783,7 +783,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_inputWrongConfirmPin_checkConfirmWrongError() {
+  fun testAddProfileActivity_configChange_inputWrongConfirmPin_confirmWrongError() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
@@ -844,7 +844,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputWrongConfirmPin_inputConfirmPin_checkErrorIsCleared() {
+  fun testAddProfileActivity_inputWrongConfirmPin_inputConfirmPin_errorIsCleared() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
@@ -901,7 +901,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_inputWrongConfirmPin_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_configChange_inputWrongConfirmPinAndConfirmPin_errorIsCleared() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
@@ -973,7 +973,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_inputPin_checkAllowDownloadNotClickable() {
+  fun testAddProfileActivity_configChange_inputPin_allowDownloadIsNotClickable() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo()).perform(click())
@@ -998,7 +998,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputPin_inputConfirmPin_checkAllowDownloadClickable() {
+  fun testAddProfileActivity_inputPin_inputConfirmPin_allowDownloadIsClickable() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
@@ -1038,7 +1038,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_inputPin_inputConfirmPin_checkAllowDownloadClickable() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_configChange_inputPin_allowDownloadIsClickable() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
@@ -1089,7 +1089,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_imageSelectAvatar_checkGalleryIntent() {
+  fun testAddProfileActivity_configChange_imageSelectAvatar_checkGalleryIntent() {
     val expectedIntent: Matcher<Intent> = allOf(
       hasAction(Intent.ACTION_PICK),
       hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -1119,7 +1119,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_changeConfiguration_imageSelectEdit_checkGalleryIntent() {
+  fun testAddProfileActivity_configChange_imageSelectEdit_checkGalleryIntent() {
     val expectedIntent: Matcher<Intent> = allOf(
       hasAction(Intent.ACTION_PICK),
       hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -1135,7 +1135,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_changeConfiguration_checkNameIsDisplayed() {
+  fun testAddProfileActivity_inputName_configChange_nameIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -1158,7 +1158,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputPin_changeConfiguration_checkPinIsDisplayed() {
+  fun testAddProfileActivity_inputPin_configChange_pinIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
@@ -1184,7 +1184,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputConfirmPin_changeConfiguration_checkConfirmPinIsDisplayed() {
+  fun testAddProfileActivity_inputConfirmPin_configChange_confirmPinIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
@@ -1211,7 +1211,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_inputPin_inputConfirmPin_changeConfiguration_checkName_checkPin_checkConfirmPin_IsDisplayed() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_inputNameAndPin_configChange_confirmPinIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -1284,7 +1284,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_inputPin_inputConfirmPin_deselectPIN_clickCreate_checkOpensProfileActivity() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_inputNameAndPin_deselectPIN_opensProfileActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -1326,7 +1326,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputNotUniqueName_clickCreate_changeConfiguration_checkErrorMessageDisplayed() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_inputNotUniqueName_create_configChange_errorMessageIsDisplayed() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1350,7 +1350,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_selectCheckbox_changeConfiguration_checkboxIsSelected() {
+  fun testAddProfileActivity_selectCheckbox_configChange_checkboxIsSelected() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
@@ -1361,7 +1361,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputPin_inputConfirmPin_changeConfiguration_checkPin_checkConfirmPin_IsDisplayed() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_inputPin_configChange_confirmPinIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
@@ -1415,7 +1415,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputPin_inputDifferentConfirmPin_clickCreate_changeConfiguration_checkErrorMessageDisplayed() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_inputPin_create_configChange_errorMessageIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -1464,7 +1464,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputPin_inputConfirmPin_turnOnDownloadAccessSwitch_changeConfiguration_checkDownloadAccessSwitchIsOn() { // ktlint-disable max-line-length
+  fun testAddProfileActivity_inputPin_configChange_downloadAccessSwitchIsOn() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
@@ -1503,7 +1503,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_clickInfo_checkInfoPopupIsDisplayed() {
+  fun testAddProfileActivity_clickInfo_infoPopupIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_info_image_view)).perform(click())
       onView(withText(context.getString(R.string.add_profile_pin_info))).inRoot(isDialog())
@@ -1516,7 +1516,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_clickInfo_changeConfiguration_checkInfoPopupIsDisplayed() {
+  fun testAddProfileActivity_clickInfo_configChange_infoPopupIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_info_image_view)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
