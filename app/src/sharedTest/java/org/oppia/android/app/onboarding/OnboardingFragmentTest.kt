@@ -529,7 +529,7 @@ class OnboardingFragmentTest {
       }
 
       override fun perform(uiController: UiController?, view: View?) {
-        (view as ViewPager2).setCurrentItem(position, /* smoothScroll= */false)
+        (view as ViewPager2).setCurrentItem(position, /* smoothScroll= */ false)
       }
     }
   }
