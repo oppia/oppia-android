@@ -55,7 +55,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
       .setLifecycleOwner(fragment)
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = LanguageItemsBinding::inflate,
-        setViewModel = LanguageItemsBinding::setViewModel,
+        setViewModel = LanguageItemsBinding::setViewModel
       ).build()
   }
 
