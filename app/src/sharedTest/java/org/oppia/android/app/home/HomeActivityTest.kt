@@ -134,8 +134,6 @@ class HomeActivityTest {
   private val internalProfileId1: Int = 1
   private val longNameInternalProfileId: Int = 3
   private lateinit var oppiaClock: OppiaClock
-  private lateinit var profileId: ProfileId
-  private lateinit var profileId1: ProfileId
 
   @Before
   fun setUp() {
@@ -143,8 +141,6 @@ class HomeActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    profileId = createProfileId(internalProfileId)
-    profileId1 = createProfileId(internalProfileId1)
   }
 
   @After
@@ -239,6 +235,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recentlyPlayedStoriesTextIsDisplayed() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -260,6 +257,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_viewAllTextIsDisplayed() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -281,6 +279,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_displaysLastPlayedStoriesText() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = true
@@ -302,6 +301,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0DoneForFraction_displaysRecommendedStories() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -336,6 +336,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0DoneForRatiosAndFirstTestTopic_displaysRecommendedStories() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markChapDoneOfRatiosStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -374,6 +375,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_forRecommendedStories_hideViewAll() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -392,6 +394,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markFullProgressForAllTopics_displaysComingSoonTopicsList() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -445,6 +448,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markFullProgressForSecondTestTopic_displaysComingSoonTopicsText() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markFullProgressForSecondTestTopic(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -467,6 +471,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0DonePlayStory1FirstTestTopic_playFractionsTopic_orderIsCorrect() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -514,6 +519,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0DoneFirstTestTopic_recommendedStoriesIsCorrect() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -542,6 +548,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0DoneForFrac_recommendedStoriesIsCorrect() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -576,6 +583,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_clickViewAll_opensRecentlyPlayedActivity() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -604,6 +612,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_promotedCard_chapterNameIsCorrect() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -621,6 +630,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_promotedCard_storyNameIsCorrect() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -638,6 +648,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_configChange_promotedCard_storyNameIsCorrect() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -660,6 +671,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markFullProgressForFraction_playRatios_displaysRecommendedStories() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -697,6 +709,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_clickPromotedStory_opensTopicActivity() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -720,6 +733,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_promotedCard_topicNameIsCorrect() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -767,6 +781,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_secondTestTopic_topicSummary_alltopics_topicNameIsCorrect() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -961,6 +976,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_allTopicsCompleted_hidesPromotedStories() {
+   val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markFullProgressForAllTopics(
       profileId = profileId,
       timestampOlderThanOneWeek = false
@@ -980,7 +996,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_partialProgressForFractionsAndRatios_showsRecentlyPlayedStories() {
-    val profileId = profileId
+    val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId = profileId,
       timestampOlderThanOneWeek = false
@@ -1002,6 +1018,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicsHeader() {
+    val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markFullProgressForAllTopics(
       profileId = profileId,
       timestampOlderThanOneWeek = false
@@ -1019,6 +1036,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicCards() {
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markFullProgressForAllTopics(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -1112,7 +1130,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_mobileShows3PromotedStories() {
-    val profileId = profileId
+    val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
       profileId = profileId,
       timestampOlderThanOneWeek = false
@@ -1137,7 +1155,7 @@ class HomeActivityTest {
   @Config(qualifiers = "sw600dp-port")
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletPortraitShows3PromotedStories() {
-    val profileId = profileId
+    val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
       profileId = profileId,
       timestampOlderThanOneWeek = false
@@ -1162,7 +1180,7 @@ class HomeActivityTest {
   @Config(qualifiers = "sw600dp-land")
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletLandscapeShows4PromotedStories() {
-    val profileId = profileId
+    val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
       profileId = profileId,
       timestampOlderThanOneWeek = false
@@ -1189,6 +1207,7 @@ class HomeActivityTest {
   fun testHomeActivity_onScrollDown_promotedStoryListViewStillShows() {
     // This test is to catch a bug introduced and then fixed in #2246
     // (see https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462)
+    val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
       profileId = profileId,
       timestampOlderThanOneWeek = false
