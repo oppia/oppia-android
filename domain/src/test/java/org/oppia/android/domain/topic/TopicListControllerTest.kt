@@ -815,16 +815,16 @@ class TopicListControllerTest {
     val promotedActivityList = retrievePromotedActivityList(profileId)
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList.size)
       .isEqualTo(2)
+    verifyOngoingStoryAsFirstTopicStory1Exploration0(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
+    )
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1].isTopicLearned)
+      .isTrue()
     verifyOngoingStoryAsRatioStory0Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
     )
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0].isTopicLearned)
       .isFalse()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1].isTopicLearned)
-      .isTrue()
-    verifyOngoingStoryAsFirstTopicStory1Exploration0(
-      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
-    )
   }
 
   @Test
