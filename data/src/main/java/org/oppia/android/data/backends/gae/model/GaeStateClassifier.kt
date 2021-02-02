@@ -7,7 +7,6 @@ import com.squareup.moshi.JsonClass
  * Data class for StateClassifier model
  * @link https://github.com/oppia/oppia/blob/develop/core/controllers/reader.py#L239
  *
- * // TODO(#2596): This file need clarification as the backend is changed.
  */
 @JsonClass(generateAdapter = true)
 data class GaeStateClassifier(
