@@ -115,27 +115,48 @@ class AddProfileActivityPresenter @Inject constructor(
 
     binding.addProfileActivityUserNameEditText.onTextChanged { name ->
       name?.let {
-        profileViewModel.isButtonActive.set(it.isNotEmpty())
-        profileViewModel.nameErrorMsg.set("")
-        profileViewModel.inputName.set(it)
+        if (
+          profileViewModel.nameErrorMsg.get()?.isNotEmpty()!! &&
+          profileViewModel.inputName.get() == it
+        ) {
+          profileViewModel.inputName.set(it)
+          profileViewModel.isButtonActive.set(it.isNotEmpty())
+        } else {
+          profileViewModel.isButtonActive.set(it.isNotEmpty())
+          profileViewModel.nameErrorMsg.set("")
+          profileViewModel.inputName.set(it)
+        }
       }
     }
 
     binding.addProfileActivityPinEditText.onTextChanged { pin ->
       pin?.let {
-        profileViewModel.inputPin.set(it)
-        profileViewModel.pinErrorMsg.set("")
-        inputtedPin = pin.isNotEmpty()
-        setValidPin(binding)
+        if (profileViewModel.pinErrorMsg.get()?.isNotEmpty()!! &&
+          profileViewModel.inputPin.get() == it
+        ) {
+          profileViewModel.inputPin.set(it)
+        } else {
+          profileViewModel.inputPin.set(it)
+          profileViewModel.pinErrorMsg.set("")
+          inputtedPin = pin.isNotEmpty()
+          setValidPin(binding)
+        }
       }
     }
 
     binding.addProfileActivityConfirmPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
-        profileViewModel.inputConfirmPin.set(it)
-        profileViewModel.confirmPinErrorMsg.set("")
-        inputtedConfirmPin = confirmPin.isNotEmpty()
-        setValidPin(binding)
+        if (
+          profileViewModel.confirmPinErrorMsg.get()?.isNotEmpty()!! &&
+          profileViewModel.inputConfirmPin.get() == it
+        ) {
+          profileViewModel.inputConfirmPin.set(it)
+        } else {
+          profileViewModel.inputConfirmPin.set(it)
+          profileViewModel.confirmPinErrorMsg.set("")
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+          setValidPin(binding)
+        }
       }
     }
 

@@ -92,8 +92,7 @@
               android:imeOptions="actionDone"
               android:maxLength="36"
               android:singleLine="true"
-              android:text="@{viewModel.inputName}"
-              android:textDirection="locale" />
+              android:text="@{viewModel.inputName}" />
           </com.google.android.material.textfield.TextInputLayout>
 
           <CheckBox
@@ -145,8 +144,7 @@
                 android:imeOptions="actionNext"
                 android:inputType="numberPassword"
                 android:maxLength="3"
-                android:text="@{viewModel.inputPin}"
-                android:textDirection="locale" />
+                android:text="@{viewModel.inputPin}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -169,8 +167,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="numberPassword"
                 android:maxLength="3"
-                android:text="@{viewModel.inputConfirmPin}"
-                android:textDirection="locale" />
+                android:text="@{viewModel.inputConfirmPin}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -186,7 +183,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/add_profile_allow_download_heading"
-                android:textColor="@color/accessible_grey"
+                android:textColor="@{viewModel.validPin ? @color/oppiaPrimaryTextDark : @color/accessible_grey}"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -203,7 +200,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_allow_download_heading_text_view"
                 app:layout_constraintWidth_percent=".8" />
 
-              <Switch
+              <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/add_profile_activity_allow_download_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -35,11 +35,11 @@ import org.oppia.android.app.settings.profile.ProfileResetPinActivity
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.testing.AudioFragmentTestActivity
-import org.oppia.android.app.testing.BindableAdapterTestActivity
 import org.oppia.android.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.android.app.testing.DragDropTestActivity
 import org.oppia.android.app.testing.ExplorationInjectionActivity
 import org.oppia.android.app.testing.ExplorationTestActivity
+import org.oppia.android.app.testing.HomeFragmentTestActivity
 import org.oppia.android.app.testing.HomeInjectionActivity
 import org.oppia.android.app.testing.HomeTestActivity
 import org.oppia.android.app.testing.HtmlParserTestActivity
@@ -77,7 +77,6 @@ interface ActivityComponent {
   fun inject(appLanguageActivity: AppLanguageActivity)
   fun inject(appVersionActivity: AppVersionActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
-  fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   fun inject(completedStoryListActivity: CompletedStoryListActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(audioLanguageActivity: AudioLanguageActivity)
@@ -90,6 +89,7 @@ interface ActivityComponent {
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
   fun inject(helpActivity: HelpActivity)
   fun inject(homeActivity: HomeActivity)
+  fun inject(homeFragmentTestActivity: HomeFragmentTestActivity)
   fun inject(homeInjectionActivity: HomeInjectionActivity)
   fun inject(homeTestActivity: HomeTestActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)

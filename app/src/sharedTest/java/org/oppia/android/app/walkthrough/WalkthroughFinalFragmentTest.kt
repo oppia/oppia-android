@@ -107,7 +107,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_topicTitleIsCorrect() {
+  fun testWalkthroughFinalFragment_topicSelected_firstTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -132,7 +132,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex2_topicSelected_topicTitleIsCorrect() {
+  fun testWalkthroughFinalFragment_topicSelected_secondTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -157,7 +157,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_rVIndex2_topicTitleIsCorrect() {
+  fun testWalkthroughFinalFragment_topicSelected_configChange_secondTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -189,7 +189,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_rVIndex1_yesNoButton_isDisplayedCorrectly() {
+  fun testWalkthroughFinalFragment_topicSelected_yesNoBtnIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))
@@ -212,7 +212,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_rVIndex1_clickNoButton_worksCorrectly() {
+  fun testWalkthroughFinalFragment_topicSelected_clickNoBtn_noBtnWorksCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button))

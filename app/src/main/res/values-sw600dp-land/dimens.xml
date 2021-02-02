@@ -2,8 +2,8 @@
 <resources>
   <dimen name="home_padding_end">96dp</dimen>
   <dimen name="home_padding_start">96dp</dimen>
-  <dimen name="home_margin_max">96dp</dimen>
-  <dimen name="home_margin_min">64dp</dimen>
+  <dimen name="home_outer_margin">96dp</dimen>
+  <dimen name="home_inner_margin">64dp</dimen>
   <dimen name="recently_played_margin_max">96dp</dimen>
   <dimen name="recently_played_margin_min">64dp</dimen>
   <dimen name="content_item_question_split_view_margin_end">32dp</dimen>
@@ -15,8 +15,7 @@
   <dimen name="feedback_item_question_split_view_margin_top">32dp</dimen>
   <dimen name="feedback_item_question_split_view_margin_start">32dp</dimen>
 
-  <dimen name="profile_chooser_profile_view_textview_margin_start_profile_not_added">32dp</dimen>
-  <dimen name="profile_chooser_add_view_description_margin_start_profile_not_added">32dp</dimen>
+  <dimen name="profile_chooser_description_margin_start_profile_not_added">32dp</dimen>
 
   <dimen name="state_fragment_split_view_margin_end">64dp</dimen>
   <dimen name="state_fragment_split_view_margin_start">64dp</dimen>
