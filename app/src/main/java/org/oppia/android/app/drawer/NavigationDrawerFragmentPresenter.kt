@@ -241,15 +241,15 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           if (previousFragment != null) {
             fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
           }
-          val lastCheckedItemId: Int
+          val lastCheckedMenuItemId: Int
           val isAdministratorControlsSelected: Boolean
           if (getFooterViewModel().isAdministratorControlsSelected.get() == true) {
             getFooterViewModel().isAdministratorControlsSelected.set(false)
             isAdministratorControlsSelected = true
-            lastCheckedItemId = -1
+            lastCheckedMenuItemId = -1
           } else {
             isAdministratorControlsSelected = false
-            lastCheckedItemId = previousMenuItemId ?: -1
+            lastCheckedMenuItemId = previousMenuItemId ?: -1
           }
           binding.fragmentDrawerNavView.menu.getItem(
             NavigationDrawerItem.SWITCH_PROFILE.ordinal
@@ -258,7 +258,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             .newInstance(
               restoreLastCheckedMenuItem = true,
               isAdministratorControlsSelected = isAdministratorControlsSelected,
-              lastCheckedItemId = lastCheckedItemId
+              lastCheckedMenuItemId = lastCheckedMenuItemId
             )
           dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
         }
@@ -278,16 +278,16 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   fun checkLastCheckedItemAndCloseDrawer(
-    lastCheckedItemId: Int,
+    lastCheckedMenuItemId: Int,
     isAdministratorControlsSelected: Boolean
   ) {
     if (isAdministratorControlsSelected) {
       getFooterViewModel().isAdministratorControlsSelected.set(true)
       uncheckAllMenuItemsWhenAdministratorControlsIsChecked()
-    } else if (lastCheckedItemId != -1) {
+    } else if (lastCheckedMenuItemId != -1) {
       getFooterViewModel().isAdministratorControlsSelected.set(false)
       val checkedItemPosition =
-        when (lastCheckedItemId) {
+        when (lastCheckedMenuItemId) {
           NavigationDrawerItem.HOME.value -> 0
           NavigationDrawerItem.OPTIONS.value -> 1
           NavigationDrawerItem.HELP.value -> 2

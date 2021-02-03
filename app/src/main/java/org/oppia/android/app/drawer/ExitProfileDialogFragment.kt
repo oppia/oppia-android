@@ -28,7 +28,7 @@ class ExitProfileDialogFragment : DialogFragment() {
     fun newInstance(
       restoreLastCheckedMenuItem: Boolean,
       isAdministratorControlsSelected: Boolean,
-      lastCheckedItemId: Int
+      lastCheckedMenuItemId: Int
     ): ExitProfileDialogFragment {
       val exitProfileDialogFragment = ExitProfileDialogFragment()
       val args = Bundle()
@@ -36,7 +36,7 @@ class ExitProfileDialogFragment : DialogFragment() {
         ExitProfileDialogArguments.newBuilder()
           .setRestoreLastCheckedMenuItem(restoreLastCheckedMenuItem)
           .setIsAdministratorControlsSelected(isAdministratorControlsSelected)
-          .setLastCheckedMenuItemId(lastCheckedItemId).build()
+          .setLastCheckedMenuItemId(lastCheckedMenuItemId).build()
       args.putProto(EXIT_PROFILE_DIALOG_ARGUMENTS, exitProfileDialogArguments)
 
       exitProfileDialogFragment.arguments = args
