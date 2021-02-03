@@ -119,7 +119,7 @@
   <dimen name="content_item_question_split_view_margin_end">32dp</dimen>
   <dimen name="content_item_question_split_view_margin_bottom">16dp</dimen>
 
-  <!-- Content Item: QUESTION View -->
+  <!-- Content Item: Question View -->
   <dimen name="content_item_question_view_margin_start">64dp</dimen>
   <dimen name="content_item_question_view_margin_top">32dp</dimen>
   <dimen name="content_item_question_view_margin_end">64dp</dimen>
