@@ -56,6 +56,22 @@ class ProfileTestHelper @Inject constructor(
       colorRgb = -10710042,
       isAdmin = false
     )
+    profileManagementController.addProfile(
+      name = "Veena",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = -10710042,
+      isAdmin = false
+    )
+    profileManagementController.addProfile(
+      name = "Rajat",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = -10710042,
+      isAdmin = false
+    )
     val result = profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(0)
         .build()

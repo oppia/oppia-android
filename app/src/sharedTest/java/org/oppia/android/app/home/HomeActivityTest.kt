@@ -132,7 +132,9 @@ class HomeActivityTest {
 
   private val internalProfileId: Int = 0
   private val internalProfileId1: Int = 1
+  private val internalProfileId2: Int = 2
   private val longNameInternalProfileId: Int = 3
+  private val internalProfileId4: Int = 4
   private lateinit var oppiaClock: OppiaClock
 
   @Before
@@ -145,6 +147,10 @@ class HomeActivityTest {
 
   @After
   fun tearDown() {
+    context.filesDir.listFiles{ file ->
+      file.deleteRecursively()
+    }
+
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
@@ -303,7 +309,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0DoneForFraction_displaysRecommendedStories() {
-    val profileId1 = createProfileId(internalProfileId1)
+    val profileId1 = createProfileId(internalProfileId4)
     storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -313,7 +319,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId4)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -337,46 +343,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_markStory0DoneForRatiosAndFirstTestTopic_displaysRecommendedStories() {
-    val profileId1 = createProfileId(internalProfileId1)
-    storyProgressTestHelper.markChapDoneOfRatiosStory0Exp0(
-      profileId = profileId1,
-      timestampOlderThanOneWeek = false
-    )
-    testCoroutineDispatchers.runCurrent()
-    storyProgressTestHelper.markChapDoneOfRatiosStory0Exp1(
-      profileId = profileId1,
-      timestampOlderThanOneWeek = false
-    )
-    testCoroutineDispatchers.runCurrent()
-    storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
-      profileId = profileId1,
-      timestampOlderThanOneWeek = false
-    )
-    testCoroutineDispatchers.runCurrent()
-    storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration1(
-      profileId = profileId1,
-      timestampOlderThanOneWeek = false
-    )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
-      verifyExactTextOnHomeListItemAtPosition(
-        itemPosition = 1,
-        targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recommended_stories)
-      )
-      scrollToPositionOfPromotedList(position = 1)
-      verifyTextOnPromotedListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Second Test Topic"
-      )
-    }
-  }
-
-  @Test
-  fun testHomeActivity_forRecommendedStories_hideViewAll() {
+  fun testHomeActivity_forPromotedAtcivityList_hideViewAll() {
     val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId = profileId1,
@@ -395,8 +362,47 @@ class HomeActivityTest {
   }
 
   @Test
+  fun testHomeActivity_markStory0DoneForRatiosAndFirstTestTopic_displaysRecommendedStories() {
+    val profileId1 = createProfileId(internalProfileId2)
+    storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+    storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration1(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markChapDoneOfRatiosStory0Exp0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+    storyProgressTestHelper.markChapDoneOfRatiosStory0Exp1(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    testCoroutineDispatchers.runCurrent()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId2)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.recommended_stories)
+      )
+      scrollToPositionOfPromotedList(position = 1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Second Test Topic"
+      )
+    }
+  }
+
+  @Test
   fun testHomeActivity_markFullProgressForAllTopics_displaysComingSoonTopicsList() {
-    val profileId1 = createProfileId(internalProfileId1)
+    val profileId1 = createProfileId(3)
     storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -431,7 +437,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+    launch<HomeActivity>(createHomeActivityIntent(3)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
