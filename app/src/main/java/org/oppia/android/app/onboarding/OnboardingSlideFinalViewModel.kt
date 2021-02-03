@@ -10,7 +10,7 @@ import javax.inject.Inject
 class OnboardingSlideFinalViewModel @Inject constructor(
   private val activity: AppCompatActivity,
   private val appStartupStateController: AppStartupStateController
-) : ObservableViewModel() {
+) : OnBoardingViewPagerViewModel() {
 
   fun clickOnGetStarted() {
     appStartupStateController.markOnboardingFlowCompleted()

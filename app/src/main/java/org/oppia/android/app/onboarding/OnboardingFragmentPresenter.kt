@@ -10,8 +10,26 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.home.HomeFragmentPresenter
+import org.oppia.android.app.home.HomeItemViewModel
+import org.oppia.android.app.home.WelcomeViewModel
+import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
+import org.oppia.android.app.home.recentlyplayed.SectionTitleViewModel
+import org.oppia.android.app.home.topiclist.AllTopicsViewModel
+import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
+import org.oppia.android.app.options.LanguageItemViewModel
+import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.AllTopicsBinding
+import org.oppia.android.databinding.LanguageItemsBinding
 import org.oppia.android.databinding.OnboardingFragmentBinding
+import org.oppia.android.databinding.OnboardingSlideBinding
+import org.oppia.android.databinding.OnboardingSlideBindingImpl
+import org.oppia.android.databinding.OnboardingSlideFinalBinding
+import org.oppia.android.databinding.PromotedStoryListBinding
+import org.oppia.android.databinding.SectionTitleBinding
+import org.oppia.android.databinding.TopicSummaryViewBinding
+import org.oppia.android.databinding.WelcomeBinding
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -45,9 +63,9 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager() {
-    val adapter =
-      OnboardingPagerAdapter(fragment.requireContext(), getOnboardingSlideFinalViewModel())
-    binding.onboardingSlideViewPager.adapter = adapter
+//    val adapter =
+//      OnboardingPagerAdapter(fragment.requireContext(), getOnboardingSlideFinalViewModel())
+    binding.onboardingSlideViewPager.adapter = createRecyclerViewAdapter()
     binding.onboardingSlideViewPager.registerOnPageChangeCallback(
       object : ViewPager2.OnPageChangeCallback() {
         override fun onPageScrollStateChanged(state: Int) {
@@ -74,6 +92,35 @@ class OnboardingFragmentPresenter @Inject constructor(
           onboardingStatusBarColorUpdate(position)
         }
       })
+  }
+
+  private fun createRecyclerViewAdapter(): BindableAdapter<OnBoardingViewPagerViewModel> {
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<OnBoardingViewPagerViewModel, ViewType> { viewModel ->
+        when (viewModel) {
+          is OnboardingSlideViewModel -> ViewType.ONBOARDING_SLIDE
+          is OnboardingSlideFinalViewModel -> ViewType.ONBOARDING_FINAL_SLIDE
+          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+        }
+      }
+      .registerViewDataBinder(
+        viewType = ViewType.ONBOARDING_SLIDE,
+        inflateDataBinding = OnboardingSlideBinding::inflate,
+        setViewModel = OnboardingSlideBinding::setViewModel,
+        transformViewModel = { it as OnboardingSlideViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = ViewType.ONBOARDING_FINAL_SLIDE,
+        inflateDataBinding = OnboardingSlideFinalBinding::inflate,
+        setViewModel = OnboardingSlideFinalBinding::setViewModel,
+        transformViewModel = { it as OnboardingSlideFinalViewModel }
+      )
+      .build()
+  }
+
+  private enum class ViewType {
+    ONBOARDING_SLIDE,
+    ONBOARDING_FINAL_SLIDE
   }
 
   private fun onboardingStatusBarColorUpdate(position: Int) {
