@@ -50,16 +50,6 @@ java_lite_proto_library(
 )
 
 proto_library(
-    name = "example_proto",
-    srcs = ["src/main/proto/example.proto"],
-)
-
-java_lite_proto_library(
-    name = "example_java_proto_lite",
-    deps = [":example_proto"],
-)
-
-proto_library(
     name = "interaction_object_proto",
     srcs = ["src/main/proto/interaction_object.proto"],
 )
@@ -203,7 +193,6 @@ android_library(
     visibility = ["//visibility:public"],
     exports = [
         ":event_logger_java_proto_lite",
-        ":example_java_proto_lite",
         ":exploration_java_proto_lite",
         ":interaction_object_java_proto_lite",
         ":onboarding_java_proto_lite",
