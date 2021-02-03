@@ -104,6 +104,9 @@ class TopicListControllerTest {
 
   @After
   fun tearDown() {
+    context.filesDir.listFiles { file ->
+      file.deleteRecursively()
+    }
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
