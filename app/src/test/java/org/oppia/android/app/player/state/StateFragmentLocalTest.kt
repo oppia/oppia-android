@@ -62,6 +62,8 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -82,9 +84,6 @@ import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.ActivityRotator
-import org.oppia.android.testing.ActivityRotator.Companion.rotateToLandscape
-import org.oppia.android.testing.ActivityRotator.Companion.rotateToPortrait
 import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasActiveConfetti
@@ -1065,7 +1064,7 @@ class StateFragmentLocalTest {
         )
       )
 
-      it.rotateToLandscape()
+      onView(isRoot()).perform(orientationLandscape())
 
       onView(withId(R.id.full_screen_confetti_view)).check(
         matches(
@@ -1088,7 +1087,7 @@ class StateFragmentLocalTest {
         )
       )
 
-      it.rotateToPortrait()
+      onView(isRoot()).perform(orientationPortrait())
 
       onView(withId(R.id.full_screen_confetti_view)).check(
         matches(
@@ -1515,18 +1514,14 @@ class StateFragmentLocalTest {
       FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent, ActivityRotator.Injector {
+  interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(stateFragmentLocalTest: StateFragmentLocalTest)
   }
 
-  class TestApplication :
-    Application(),
-    ActivityComponentFactory,
-    ApplicationInjectorProvider,
-    ActivityRotator.Provider {
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerStateFragmentLocalTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1542,8 +1537,6 @@ class StateFragmentLocalTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
-
-    override fun getActivityRotatorInjector(): ActivityRotator.Injector = component
   }
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {
