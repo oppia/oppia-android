@@ -18,7 +18,7 @@ class ExitProfileDialogFragment : DialogFragment() {
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val EXIT_PROFILE_DIALOG_ARGUMENTS = "EXIT_PROFILE_DIALOG_ARGUMENNTS"
+    const val EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO = "EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO"
 
     /**
      * This function is responsible for displaying content in DialogFragment.
@@ -37,7 +37,7 @@ class ExitProfileDialogFragment : DialogFragment() {
           .setRestoreLastCheckedMenuItem(restoreLastCheckedMenuItem)
           .setIsAdministratorControlsSelected(isAdministratorControlsSelected)
           .setLastCheckedMenuItemId(lastCheckedMenuItemId).build()
-      args.putProto(EXIT_PROFILE_DIALOG_ARGUMENTS, exitProfileDialogArguments)
+      args.putProto(EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO, exitProfileDialogArguments)
 
       exitProfileDialogFragment.arguments = args
       return exitProfileDialogFragment
@@ -51,13 +51,13 @@ class ExitProfileDialogFragment : DialogFragment() {
       checkNotNull(arguments) { "Expected arguments to be pass to ExitProfileDialogFragment" }
 
     val exitProfileDialogArguments = args.getProto(
-      EXIT_PROFILE_DIALOG_ARGUMENTS,
+      EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO,
       ExitProfileDialogArguments.getDefaultInstance()
     )
 
     val restoreLastCheckedMenuItem = exitProfileDialogArguments.restoreLastCheckedMenuItem
     val isAdministratorControlsSelected = exitProfileDialogArguments.isAdministratorControlsSelected
-    val lastCheckedItemId = exitProfileDialogArguments.lastCheckedMenuItemId
+    val lastCheckedMenuItemId = exitProfileDialogArguments.lastCheckedMenuItemId
 
     if (restoreLastCheckedMenuItem) {
       exitProfileDialogInterface =
@@ -70,7 +70,7 @@ class ExitProfileDialogFragment : DialogFragment() {
       .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
         if (restoreLastCheckedMenuItem) {
           exitProfileDialogInterface.checkLastCheckedItemAndCloseDrawer(
-            lastCheckedItemId,
+            lastCheckedMenuItemId,
             isAdministratorControlsSelected
           )
           exitProfileDialogInterface.unCheckSwitchProfileItemAndCloseDrawer()

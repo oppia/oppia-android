@@ -7,10 +7,10 @@ option java_multiple_files = true;
 
 // Represents the arguments associated with ExitProfileDialogFragment.
 message ExitProfileDialogArguments {
-  // Represents if the last checked menu item needs to be restored or not.
+  // The last checked menu item needs to be restored or not.
   bool restore_last_checked_menu_item = 3;
 
-  // Represents if the request for switching/exiting profile was made from Administrator Controls
+  // The request for switching/exiting profile was made from Administrator Controls
   // Fragment/Activity or not.
   bool is_administrator_controls_selected = 2;
 

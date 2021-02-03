@@ -286,7 +286,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       uncheckAllMenuItemsWhenAdministratorControlsIsChecked()
     } else if (lastCheckedMenuItemId != -1) {
       getFooterViewModel().isAdministratorControlsSelected.set(false)
-      val checkedItemPosition =
+      val checkedMenuItemPosition =
         when (lastCheckedMenuItemId) {
           NavigationDrawerItem.HOME.value -> 0
           NavigationDrawerItem.OPTIONS.value -> 1
@@ -294,8 +294,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           NavigationDrawerItem.DOWNLOADS.value -> 3
           else -> 4
         }
-      if (checkedItemPosition != 4) {
-        binding.fragmentDrawerNavView.menu.getItem(checkedItemPosition).isChecked = true
+      if (checkedMenuItemPosition != 4) {
+        binding.fragmentDrawerNavView.menu.getItem(checkedMenuItemPosition).isChecked = true
       }
     }
     drawerLayout.closeDrawers()
