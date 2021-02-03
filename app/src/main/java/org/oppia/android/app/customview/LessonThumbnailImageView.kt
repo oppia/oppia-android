@@ -13,6 +13,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.DefaultGcsPrefix
 import org.oppia.android.util.parser.ImageLoader
+import org.oppia.android.util.parser.ImageTransformation
 import org.oppia.android.util.parser.ImageViewTarget
 import org.oppia.android.util.parser.ThumbnailDownloadUrlTemplate
 import javax.inject.Inject
@@ -25,6 +26,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
   private val imageView = this
+  private var isBlurred: Boolean = false
   private lateinit var lessonThumbnail: LessonThumbnail
   private lateinit var entityId: String
   private lateinit var entityType: String
@@ -63,6 +65,10 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     checkIfLoadingIsPossible()
   }
 
+  fun setIsBlurred(isBlurred: Boolean) {
+    this.isBlurred = isBlurred
+  }
+
   private fun checkIfLoadingIsPossible() {
     if (::entityId.isInitialized &&
       ::entityType.isInitialized &&
@@ -78,16 +84,25 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   }
 
   private fun loadLessonThumbnail() {
-    if (lessonThumbnail.thumbnailFilename.isNotEmpty()) {
-      loadImage(lessonThumbnail.thumbnailFilename)
+    var transformations = if (isBlurred) {
+      listOf(ImageTransformation.BLUR)
     } else {
-      imageView.setImageResource(getLessonDrawableResource(lessonThumbnail))
+      listOf()
+    }
+    if (lessonThumbnail.thumbnailFilename.isNotEmpty()) {
+      loadImage(lessonThumbnail.thumbnailFilename, transformations)
+    } else {
+      imageLoader.loadDrawable(
+        getLessonDrawableResource(lessonThumbnail),
+        ImageViewTarget(this),
+        transformations
+      )
     }
     imageView.setBackgroundColor(lessonThumbnail.backgroundColorRgb)
   }
 
   /** Loads an image using Glide from [filename]. */
-  private fun loadImage(filename: String) {
+  private fun loadImage(filename: String, transformations: List<ImageTransformation>) {
     val imageName = String.format(
       thumbnailDownloadUrlTemplate,
       entityType,
@@ -96,9 +111,9 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     )
     val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      imageLoader.loadSvg(imageUrl, ImageViewTarget(this))
+      imageLoader.loadSvg(imageUrl, ImageViewTarget(this), transformations)
     } else {
-      imageLoader.loadBitmap(imageUrl, ImageViewTarget(this))
+      imageLoader.loadBitmap(imageUrl, ImageViewTarget(this), transformations)
     }
   }
 
