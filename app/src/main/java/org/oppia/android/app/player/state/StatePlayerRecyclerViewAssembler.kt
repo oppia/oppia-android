@@ -7,6 +7,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getColor
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -15,10 +16,6 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
-import nl.dionsegijn.konfetti.KonfettiView
-import nl.dionsegijn.konfetti.models.Shape.Circle
-import nl.dionsegijn.konfetti.models.Shape.Square
-import nl.dionsegijn.konfetti.models.Size
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
@@ -128,11 +125,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
   val rhsAdapter: BindableAdapter<StateItemViewModel>,
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
-  private val isTablet: Boolean,
-  private val confettiColors: List<Int>?,
   private val congratulationsTextView: TextView?,
-  private val congratulationsTextConfettiView: KonfettiView?,
-  private val fullScreenConfettiView: KonfettiView?,
+  private val congratulationsTextConfettiConfig: ConfettiConfig?,
+  private val endOfSessionConfettiConfig: ConfettiConfig?,
   private val canSubmitAnswer: ObservableField<Boolean>?,
   private val audioActivityId: String?,
   private val currentStateName: ObservableField<String>?,
@@ -283,7 +278,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
     }
 
-    if (playerFeatureSet.showCelebrationAtEndOfSession && isTerminalState) {
+    if (isTerminalState && playerFeatureSet.showCelebrationAtEndOfSession) {
       maybeShowCelebrationForEndOfSession()
     }
 
@@ -443,7 +438,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     hasPreviousResponsesExpanded = false
   }
 
-  /** Shows a congratulations message due to the learner having submitted a correct answer. */
+  /**
+   * Shows a celebratory animation with a congratulations message and confetti when the learner submits
+   *  a correct answer.
+   */
   fun showCelebrationOnCorrectAnswer() {
     check(playerFeatureSet.showCelebrationOnCorrectAnswer) {
       "Cannot show congratulations message for assembler that doesn't support it"
@@ -451,14 +449,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val textView = checkNotNull(congratulationsTextView) {
       "Expected non-null reference to congratulations text view"
     }
-    val confettiView = checkNotNull(congratulationsTextConfettiView) {
-      "Expected non-null reference to confetti view"
-    }
-    val colorsList = checkNotNull(confettiColors) {
-      "Expected non-null list for confetti colors"
+    val confettiConfig = checkNotNull(congratulationsTextConfettiConfig) {
+      "Expected non-null configuration for confetti"
     }
 
-    createBannerConfetti(confettiView, colorsList)
+    createBannerConfetti(confettiConfig)
     animateCongratulationsTextView(textView)
   }
 
@@ -467,16 +462,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
     check(playerFeatureSet.showCelebrationAtEndOfSession) {
       "Cannot show end of session confetti for assembler that doesn't support it"
     }
-    val confettiView = checkNotNull(fullScreenConfettiView) {
-      "Expected non-null reference to confetti view"
+    val confettiConfig = checkNotNull(endOfSessionConfettiConfig) {
+      "Expected non-null configuration for confetti"
     }
-    val colorsList = checkNotNull(confettiColors) {
-      "Expected non-null list of confetti colors"
-    }
-    if (!confettiView.isActive()) {
+    if (!confettiConfig.confettiView.isActive()) {
       // If learners toggle back and forth from the end of the exploration we only show the confetti one
       // instance at a time.
-      createEndOfSessionConfetti(confettiView, colorsList)
+      createEndOfSessionConfetti(confettiConfig)
     }
   }
 
@@ -732,41 +724,36 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
-  private fun createBannerConfetti(bannerConfettiView: KonfettiView, colorsList: List<Int>) {
-    val x = bannerConfettiView.width / 3
-    val y = bannerConfettiView.height / 2
-    val speedMin = 2f
-    val speedMax = 4f
+  private fun createBannerConfetti(config: ConfettiConfig) {
+    val confettiView = config.confettiView
+    val colorsList = ConfettiConfig.primaryColors.map { getColor(config.context, it) }
+    val x = confettiView.width / 3
+    val y = confettiView.height / 2
     // Set confetti lifetime to be the same as the congratulations text view.
     val timeToLiveMs = CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS +
       CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS +
       CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS
-    val shapesArray = arrayOf(Circle)
-    val sizeInDp = Size(sizeInDp = 8)
-    // Confetti pieces with mass make the animation more active and dynamic.
-    val sizeWithMass = Size(sizeInDp = 7, mass = 3f)
-    val numPieces = 7
 
-    bannerConfettiView.build()
+    confettiView.build()
       .addColors(colorsList)
       .setDirection(minDegrees = 180.0, maxDegrees = 270.0)
-      .setSpeed(speedMin, speedMax)
+      .setSpeed(config.minSpeed, config.maxSpeed)
       .setFadeOutEnabled(true)
-      .setTimeToLive(timeToLiveMs.toLong())
-      .addShapes(*shapesArray)
-      .addSizes(sizeInDp, sizeWithMass)
+      .setTimeToLive(timeToLiveMs)
+      .addShapes(*config.shapes)
+      .addSizes(config.sizeInDp, config.sizeWithMass)
       .setPosition(x.toFloat(), y.toFloat())
-      .burst(numPieces)
-    bannerConfettiView.build()
+      .burst(config.numPieces)
+    confettiView.build()
       .addColors(colorsList)
       .setDirection(minDegrees = 270.0, maxDegrees = 360.0)
-      .setSpeed(speedMin, speedMax)
+      .setSpeed(config.minSpeed, config.maxSpeed)
       .setFadeOutEnabled(true)
-      .setTimeToLive(timeToLiveMs.toLong())
-      .addShapes(*shapesArray)
-      .addSizes(sizeInDp, sizeWithMass)
+      .setTimeToLive(timeToLiveMs)
+      .addShapes(*config.shapes)
+      .addSizes(config.sizeInDp, config.sizeWithMass)
       .setPosition((2 * x).toFloat(), y.toFloat())
-      .burst(numPieces)
+      .burst(config.numPieces)
   }
 
   private fun animateCongratulationsTextView(congratulationsText: TextView) {
@@ -798,17 +785,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     )
   }
 
-  private fun createEndOfSessionConfetti(
-    confettiView: KonfettiView,
-    colorsList: List<Int>
-  ) {
-    // Use a larger burst animation for larger layouts
-    val minSpeed = if (isTablet) 5f else 4f
-    val maxSpeed = if (isTablet) 12f else 9f
-    val sizeInDp = if (isTablet) Size(sizeInDp = 12) else Size(sizeInDp = 8)
-    val sizeWithMass =
-      if (isTablet) Size(sizeInDp = 11, mass = 3f) else Size(sizeInDp = 7, mass = 3f)
-    val numPieces = if (isTablet) 60 else 35
+  private fun createEndOfSessionConfetti(config: ConfettiConfig) {
+    val confettiView = config.confettiView
+    val colorsList = ConfettiConfig.primaryColors.map { getColor(config.context, it) }
     val timeToLiveMillis: Long = 4000
     val delayMs: Long = 500
 
@@ -816,22 +795,22 @@ class StatePlayerRecyclerViewAssembler private constructor(
       .setDelay(delayMs)
       .addColors(colorsList)
       .setDirection(minDegrees = -90.0, maxDegrees = 90.0)
-      .setSpeed(minSpeed, maxSpeed)
+      .setSpeed(config.minSpeed, config.maxSpeed)
       .setTimeToLive(timeToLiveMillis)
-      .addShapes(Circle, Square)
-      .addSizes(sizeInDp, sizeWithMass)
+      .addShapes(*config.shapes)
+      .addSizes(config.sizeInDp, config.sizeWithMass)
       .setPosition(x = 0f, y = 0f)
-      .burst(numPieces)
+      .burst(config.numPieces)
     confettiView.build()
       .setDelay(delayMs)
       .addColors(colorsList)
       .setDirection(minDegrees = 90.0, maxDegrees = 270.0)
-      .setSpeed(minSpeed, maxSpeed)
+      .setSpeed(config.minSpeed, config.maxSpeed)
       .setTimeToLive(timeToLiveMillis)
-      .addShapes(Circle, Square)
-      .addSizes(sizeInDp, sizeWithMass)
+      .addShapes(*config.shapes)
+      .addSizes(config.sizeInDp, config.sizeWithMass)
       .setPosition(x = confettiView.width.toFloat(), y = 0f)
-      .burst(numPieces)
+      .burst(config.numPieces)
   }
 
   /**
@@ -888,8 +867,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var confettiColors: List<Int>? = null
     private var congratulationsTextView: TextView? = null
-    private var congratulationsTextConfettiView: KonfettiView? = null
-    private var fullScreenConfettiView: KonfettiView? = null
+    private var congratulationsTextConfettiConfig: ConfettiConfig? = null
+    private var endOfSessionConfettiConfig: ConfettiConfig? = null
     private var isTablet: Boolean = false
     private var hasConversationView: Boolean = true
     private var canSubmitAnswer: ObservableField<Boolean>? = null
@@ -1236,12 +1215,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     fun addCelebrationForCorrectAnswers(
       congratulationsTextView: TextView,
-      confettiView: KonfettiView,
-      colorsList: List<Int>
+      confettiConfig: ConfettiConfig
     ): Builder {
       this.congratulationsTextView = congratulationsTextView
-      this.congratulationsTextConfettiView = confettiView
-      this.confettiColors = colorsList
+      this.congratulationsTextConfettiConfig = confettiConfig
       featureSets += PlayerFeatureSet(showCelebrationOnCorrectAnswer = true)
       return this
     }
@@ -1250,14 +1227,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * Adds support for displaying a confetti animation when the learner completes an entire
      * exploration.
      */
-    fun addCelebrationForEndOfSession(
-      confettiView: KonfettiView,
-      colorsList: List<Int>,
-      isTablet: Boolean
-    ): Builder {
-      this.fullScreenConfettiView = confettiView
-      this.confettiColors = colorsList
-      this.isTablet = isTablet
+    fun addCelebrationForEndOfSession(confettiConfig: ConfettiConfig): Builder {
+      this.endOfSessionConfettiConfig = confettiConfig
       featureSets += PlayerFeatureSet(showCelebrationAtEndOfSession = true)
       return this
     }
@@ -1323,11 +1294,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
         /* rhsAdapter= */ adapterBuilder.build(),
         playerFeatureSet,
         fragment,
-        isTablet,
-        confettiColors,
         congratulationsTextView,
-        congratulationsTextConfettiView,
-        fullScreenConfettiView,
+        congratulationsTextConfettiConfig,
+        endOfSessionConfettiConfig,
         canSubmitAnswer,
         audioActivityId,
         currentStateName,
