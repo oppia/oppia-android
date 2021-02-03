@@ -392,6 +392,8 @@
   <dimen name="bottom_white_space">160dp</dimen>
 
   <dimen name="train_checkbox_padding">18dp</dimen>
-
+  
+  <dimen name="activity_horizontal_margin">16dp</dimen>
+  <dimen name="activity_vertical_margin">16dp</dimen>
 
 </resources>
