@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import androidx.core.content.ContextCompat.getColor
 import nl.dionsegijn.konfetti.KonfettiView
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
@@ -18,6 +19,28 @@ sealed class ConfettiConfig() {
   internal abstract val sizeWithMass: Size
   internal abstract val numPieces: Int
   internal abstract val shapes: Array<Shape>
+
+  fun startConfettiBurst(
+    xPosition: Float,
+    yPosition: Float,
+    timeToLiveMs: Long,
+    delayMs: Long,
+    minAngle: Double,
+    maxAngle: Double
+  ) {
+    val colorsList = primaryColors.map { getColor(context, it) }
+    confettiView.build()
+      .setDelay(delayMs)
+      .setFadeOutEnabled(true)
+      .addColors(colorsList)
+      .setDirection(minAngle, maxAngle)
+      .setSpeed(minSpeed, maxSpeed)
+      .setTimeToLive(timeToLiveMs)
+      .addShapes(*shapes)
+      .addSizes(sizeInDp, sizeWithMass)
+      .setPosition(xPosition, yPosition)
+      .burst(numPieces)
+  }
 
   /** A configuration for large bursts of confetti. */
   class LargeConfettiBurst(
