@@ -4,9 +4,10 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import org.oppia.android.data.backends.gae.api.ClassroomService
+import org.oppia.android.data.backends.gae.api.ExplorationService
 import org.oppia.android.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.protobuf.ProtoConverterFactory
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -34,7 +35,7 @@ class NetworkModule {
 
     return retrofit2.Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
-      .addConverterFactory(MoshiConverterFactory.create())
+      .addConverterFactory(ProtoConverterFactory.create())
       .client(client.build())
       .build()
   }
@@ -48,6 +49,11 @@ class NetworkModule {
   @Singleton
   fun provideTopicService(@OppiaRetrofit retrofit: Retrofit): TopicService {
     return retrofit.create(TopicService::class.java)
+  }
+
+  @Provides
+  fun provideExplorationService(@OppiaRetrofit retrofit: Retrofit): ExplorationService {
+    return retrofit.create(ExplorationService::class.java)
   }
 
   /**

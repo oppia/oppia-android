@@ -87,12 +87,14 @@ dependencies {
   // TODO (#97): Isolate retrofit-mock dependency from production
   api(
       'com.squareup.retrofit2:converter-moshi:2.5.0',
+      'com.squareup.retrofit2:converter-protobuf:2.5.0',
       'com.squareup.retrofit2:retrofit:2.5.0',
       'com.squareup.retrofit2:retrofit-mock:2.5.0',
   )
   androidTestImplementation('androidx.test:runner:1.2.0',
       'androidx.test.espresso:espresso-core:3.2.0')
-  kapt("com.squareup.moshi:moshi-kotlin-codegen:1.11.0")
+  kapt('com.squareup.moshi:moshi-kotlin-codegen:1.11.0',
+      'com.google.dagger:dagger-compiler:2.24')
   kaptTest(
       'com.google.dagger:dagger-compiler:2.24'
   )

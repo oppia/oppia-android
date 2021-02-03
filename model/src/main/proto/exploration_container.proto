@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package model;
+
+import "exploration.proto";
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+message ExplorationContainer {
+   bool is_topic_manager = 1;
+   bool auto_tts_enabled = 2;
+   bool can_edit = 3;
+   string session_id = 4;
+   string exploration_id = 5;
+   bool is_super_admin = 6;
+   bool is_moderator = 7;
+   double version = 8;
+   bool is_admin = 9;
+   bool is_logged_in = 10;
+   double record_playthrough_probability = 11;
+  Exploration exploration = 12;
+  PREFERRED_AUDIO_LANGUAGE_CODE preferred_audio_language_code = 13;
+  bool correctness_feedback_enabled = 14;
+}
+
+message PREFERRED_AUDIO_LANGUAGE_CODE {
+}

@@ -1,11 +1,13 @@
 package org.oppia.android.domain.topic
 
 import android.graphics.Color
+import android.util.Log
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ComingSoonTopicList
+import org.oppia.android.app.model.ExplorationContainer
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingStoryList
@@ -23,16 +25,44 @@ import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILA
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.model.UpcomingTopic
+import org.oppia.android.data.backends.gae.api.ExplorationService
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.system.OppiaClock
-import java.util.Date
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.Set
+import kotlin.collections.any
+import kotlin.collections.associateWith
+import kotlin.collections.filter
+import kotlin.collections.filterNot
+import kotlin.collections.find
+import kotlin.collections.firstOrNull
+import kotlin.collections.flatMap
+import kotlin.collections.forEach
+import kotlin.collections.getValue
+import kotlin.collections.isNotEmpty
+import kotlin.collections.last
+import kotlin.collections.lastOrNull
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.mapOf
+import kotlin.collections.mutableListOf
+import kotlin.collections.setOf
+import kotlin.collections.sortedByDescending
+import kotlin.collections.toSet
+import kotlin.collections.withDefault
 
 private const val ONE_WEEK_IN_DAYS = 7
 private const val ONE_DAY_IN_MS = 24 * 60 * 60 * 1000
@@ -99,11 +129,29 @@ class TopicListController @Inject constructor(
   private val oppiaClock: OppiaClock
 ) {
 
+  @Inject
+  lateinit var explorationService: ExplorationService
+
   /**
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
    */
   fun getTopicList(): DataProvider<TopicList> {
+
+    explorationService.getExplorationById("MjZzEVOG47_1")
+      .enqueue(object : Callback<ExplorationContainer> {
+        override fun onFailure(call: Call<ExplorationContainer>, t: Throwable) {
+          Log.d("Backend Data", "Failure - " + t.message)
+        }
+
+        override fun onResponse(
+          call: Call<ExplorationContainer>,
+          response: Response<ExplorationContainer>
+        ) {
+          Log.d("Backend Data", "Response - " + response.body()!!.isAdmin)
+        }
+      })
+
     return dataProviders.createInMemoryDataProvider(
       GET_TOPIC_LIST_PROVIDER_ID,
       this::createTopicList

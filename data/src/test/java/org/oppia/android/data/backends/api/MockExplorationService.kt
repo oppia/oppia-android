@@ -2,6 +2,7 @@ package org.oppia.android.data.backends.api
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import org.oppia.android.app.model.Exploration
 import org.oppia.android.data.backends.ApiUtils
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
@@ -15,7 +16,7 @@ import retrofit2.mock.BehaviorDelegate
  */
 class MockExplorationService(private val delegate: BehaviorDelegate<ExplorationService>) :
   ExplorationService {
-  override fun getExplorationById(explorationId: String): Call<GaeExplorationContainer> {
+  override fun getExplorationById(explorationId: String): Call<Exploration> {
     val explorationContainer = createMockGaeExplorationContainer()
     return delegate.returningResponse(explorationContainer).getExplorationById(explorationId)
   }

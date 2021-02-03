@@ -9,6 +9,7 @@ import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -48,7 +49,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(
   modules = [
-    ApplicationModule::class, DispatcherModule::class,
+    ApplicationModule::class, DispatcherModule::class, NetworkModule::class,
     LoggerModule::class,
     ContinueModule::class, FractionInputModule::class,
     ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
