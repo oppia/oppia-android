@@ -7,6 +7,8 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -738,7 +740,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       timeToLiveMs,
       delayMs = 0L,
       minAngle = 180.0,
-      maxAngle = 270.0
+      maxAngle = 270.0,
+      colorsList = ConfettiConfig.primaryColors
     )
     config.startConfettiBurst(
       xPosition = width * 2 / 3,
@@ -746,7 +749,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       timeToLiveMs,
       delayMs = 0L,
       minAngle = 270.0,
-      maxAngle = 370.0
+      maxAngle = 370.0,
+      colorsList = ConfettiConfig.primaryColors
     )
   }
 
@@ -789,7 +793,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       timeToLiveMillis,
       delayMillis,
       minAngle = -90.0,
-      maxAngle = 90.0
+      maxAngle = 90.0,
+      colorsList = ConfettiConfig.primaryColors
     )
     config.startConfettiBurst(
       xPosition = config.confettiView.width.toFloat(),
@@ -797,7 +802,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       timeToLiveMillis,
       delayMillis,
       minAngle = 90.0,
-      maxAngle = 270.0
+      maxAngle = 270.0,
+      colorsList = ConfettiConfig.primaryColors
     )
   }
 

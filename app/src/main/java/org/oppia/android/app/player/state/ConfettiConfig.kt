@@ -25,13 +25,14 @@ sealed class ConfettiConfig() {
     timeToLiveMs: Long,
     delayMs: Long,
     minAngle: Double,
-    maxAngle: Double
+    maxAngle: Double,
+    colorsList: List<Int>
   ) {
-    val colorsList = primaryColors.map { getColor(context, it) }
+    val colors = colorsList.map { getColor(context, it) }
     confettiView.build()
       .setDelay(delayMs)
       .setFadeOutEnabled(true)
-      .addColors(colorsList)
+      .addColors(colors)
       .setDirection(minAngle, maxAngle)
       .setSpeed(minSpeed, maxSpeed)
       .setTimeToLive(timeToLiveMs)
