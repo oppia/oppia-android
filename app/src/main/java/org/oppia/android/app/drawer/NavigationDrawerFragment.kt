@@ -41,11 +41,11 @@ class NavigationDrawerFragment :
   }
 
   override fun checkLastCheckedItemAndCloseDrawer(
-    lastCheckedItemId: Int,
+    lastCheckedMenuItemId: Int,
     isAdministratorControlsSelected: Boolean
   ) {
     navigationDrawerFragmentPresenter.checkLastCheckedItemAndCloseDrawer(
-      lastCheckedItemId,
+      lastCheckedMenuItemId,
       isAdministratorControlsSelected
     )
   }

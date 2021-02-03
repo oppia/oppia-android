@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// Represents the arguments associated with ExitProfileDialogFragment.
+message ExitProfileDialogArguments {
+  // Represents if the last checked menu item needs to be restored or not.
+  bool restoreLastCheckedMenuItem = 3;
+
+  // Represents if the request for switching/exiting profile was made from Administrator Controls
+  // Fragment/Activity or not.
+  bool isAdministratorControlsSelected = 2;
+
+  // The id of the menu item that was checked before the Exit Profile Dialog appears.
+  int32 lastCheckedMenuItemId = 1;
+}

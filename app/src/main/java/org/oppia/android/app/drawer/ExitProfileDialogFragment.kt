@@ -8,18 +8,17 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
+import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.profile.ProfileChooserActivity
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 
 /** [DialogFragment] that gives option to either cancel or exit current profile. */
 class ExitProfileDialogFragment : DialogFragment() {
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
-      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
-    const val BOOL_IS_ADMINISTRATOR_CONTROLS_SELECTED_KEY =
-      "BOOL_IS_ADMINISTRATOR_CONTROLS_SELECTED_KEY"
-    const val INT_LAST_CHECKED_ITEM_KEY = "INT_LAST_CHECKED_ITEM_KEY"
+    const val EXIT_PROFILE_DIALOG_ARGUMENTS = "EXIT_PROFILE_DIALOG_ARGUMENNTS"
 
     /**
      * This function is responsible for displaying content in DialogFragment.
@@ -33,9 +32,13 @@ class ExitProfileDialogFragment : DialogFragment() {
     ): ExitProfileDialogFragment {
       val exitProfileDialogFragment = ExitProfileDialogFragment()
       val args = Bundle()
-      args.putBoolean(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, restoreLastCheckedMenuItem)
-      args.putBoolean(BOOL_IS_ADMINISTRATOR_CONTROLS_SELECTED_KEY, isAdministratorControlsSelected)
-      args.putInt(INT_LAST_CHECKED_ITEM_KEY, lastCheckedItemId)
+      val exitProfileDialogArguments =
+        ExitProfileDialogArguments.newBuilder()
+          .setRestoreLastCheckedMenuItem(restoreLastCheckedMenuItem)
+          .setIsAdministratorControlsSelected(isAdministratorControlsSelected)
+          .setLastCheckedMenuItemId(lastCheckedItemId).build()
+      args.putProto(EXIT_PROFILE_DIALOG_ARGUMENTS, exitProfileDialogArguments)
+
       exitProfileDialogFragment.arguments = args
       return exitProfileDialogFragment
     }
@@ -47,19 +50,16 @@ class ExitProfileDialogFragment : DialogFragment() {
     val args =
       checkNotNull(arguments) { "Expected arguments to be pass to ExitProfileDialogFragment" }
 
-    val isFromNavigationDrawer = args.getBoolean(
-      BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-      false
+    val exitProfileDialogArguments = args.getProto(
+      EXIT_PROFILE_DIALOG_ARGUMENTS,
+      ExitProfileDialogArguments.getDefaultInstance()
     )
 
-    val isAdministratorControlsSelected = args.getBoolean(
-      BOOL_IS_ADMINISTRATOR_CONTROLS_SELECTED_KEY,
-      false
-    )
+    val restoreLastCheckedMenuItem = exitProfileDialogArguments.restoreLastCheckedMenuItem
+    val isAdministratorControlsSelected = exitProfileDialogArguments.isAdministratorControlsSelected
+    val lastCheckedItemId = exitProfileDialogArguments.lastCheckedMenuItemId
 
-    val lastCheckedItemId = args.getInt(INT_LAST_CHECKED_ITEM_KEY)
-
-    if (isFromNavigationDrawer) {
+    if (restoreLastCheckedMenuItem) {
       exitProfileDialogInterface =
         parentFragment as ExitProfileDialogInterface
     }
@@ -68,7 +68,7 @@ class ExitProfileDialogFragment : DialogFragment() {
       .Builder(ContextThemeWrapper(activity as Context, R.style.AlertDialogTheme))
       .setMessage(R.string.home_activity_back_dialog_message)
       .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
-        if (isFromNavigationDrawer) {
+        if (restoreLastCheckedMenuItem) {
           exitProfileDialogInterface.checkLastCheckedItemAndCloseDrawer(
             lastCheckedItemId,
             isAdministratorControlsSelected
@@ -80,7 +80,7 @@ class ExitProfileDialogFragment : DialogFragment() {
       .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
         // TODO(#322): Need to start intent for ProfileChooserActivity to get update. Change to finish when live data bug is fixed.
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
-        if (!isFromNavigationDrawer) {
+        if (!restoreLastCheckedMenuItem) {
           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
         activity!!.startActivity(intent)
