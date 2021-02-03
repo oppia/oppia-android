@@ -7,7 +7,6 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getColor
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -726,34 +725,31 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   private fun createBannerConfetti(config: ConfettiConfig) {
     val confettiView = config.confettiView
-    val colorsList = ConfettiConfig.primaryColors.map { getColor(config.context, it) }
-    val x = confettiView.width / 3
-    val y = confettiView.height / 2
+    val width = confettiView.width.toFloat()
+    val height = confettiView.height.toFloat()
     // Set confetti lifetime to be the same as the congratulations text view.
     val timeToLiveMs = CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS +
       CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS +
       CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS
 
-    confettiView.build()
-      .addColors(colorsList)
-      .setDirection(minDegrees = 180.0, maxDegrees = 270.0)
-      .setSpeed(config.minSpeed, config.maxSpeed)
-      .setFadeOutEnabled(true)
-      .setTimeToLive(timeToLiveMs)
-      .addShapes(*config.shapes)
-      .addSizes(config.sizeInDp, config.sizeWithMass)
-      .setPosition(x.toFloat(), y.toFloat())
-      .burst(config.numPieces)
-    confettiView.build()
-      .addColors(colorsList)
-      .setDirection(minDegrees = 270.0, maxDegrees = 360.0)
-      .setSpeed(config.minSpeed, config.maxSpeed)
-      .setFadeOutEnabled(true)
-      .setTimeToLive(timeToLiveMs)
-      .addShapes(*config.shapes)
-      .addSizes(config.sizeInDp, config.sizeWithMass)
-      .setPosition((2 * x).toFloat(), y.toFloat())
-      .burst(config.numPieces)
+    ConfettiConfig.startConfettiBurst(
+      config,
+      xPosition = width / 3,
+      yPosition = height / 2,
+      timeToLiveMs,
+      delayMs = 0L,
+      minAngle = 180.0,
+      maxAngle = 270.0
+    )
+    ConfettiConfig.startConfettiBurst(
+      config,
+      xPosition = width * 2 / 3,
+      yPosition = height / 2,
+      timeToLiveMs,
+      delayMs = 0L,
+      minAngle = 270.0,
+      maxAngle = 370.0
+    )
   }
 
   private fun animateCongratulationsTextView(congratulationsText: TextView) {
@@ -786,31 +782,27 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   private fun createEndOfSessionConfetti(config: ConfettiConfig) {
-    val confettiView = config.confettiView
-    val colorsList = ConfettiConfig.primaryColors.map { getColor(config.context, it) }
-    val timeToLiveMillis: Long = 4000
-    val delayMs: Long = 500
+    val timeToLiveMillis = 4000L
+    val delayMillis = 500L
 
-    confettiView.build()
-      .setDelay(delayMs)
-      .addColors(colorsList)
-      .setDirection(minDegrees = -90.0, maxDegrees = 90.0)
-      .setSpeed(config.minSpeed, config.maxSpeed)
-      .setTimeToLive(timeToLiveMillis)
-      .addShapes(*config.shapes)
-      .addSizes(config.sizeInDp, config.sizeWithMass)
-      .setPosition(x = 0f, y = 0f)
-      .burst(config.numPieces)
-    confettiView.build()
-      .setDelay(delayMs)
-      .addColors(colorsList)
-      .setDirection(minDegrees = 90.0, maxDegrees = 270.0)
-      .setSpeed(config.minSpeed, config.maxSpeed)
-      .setTimeToLive(timeToLiveMillis)
-      .addShapes(*config.shapes)
-      .addSizes(config.sizeInDp, config.sizeWithMass)
-      .setPosition(x = confettiView.width.toFloat(), y = 0f)
-      .burst(config.numPieces)
+    ConfettiConfig.startConfettiBurst(
+      config,
+      xPosition = 0f,
+      yPosition = 0f,
+      timeToLiveMillis,
+      delayMillis,
+      minAngle = -90.0,
+      maxAngle = 90.0
+    )
+    ConfettiConfig.startConfettiBurst(
+      config,
+      xPosition = config.confettiView.width.toFloat(),
+      yPosition = 0f,
+      timeToLiveMillis,
+      delayMillis,
+      minAngle = 90.0,
+      maxAngle = 270.0
+    )
   }
 
   /**

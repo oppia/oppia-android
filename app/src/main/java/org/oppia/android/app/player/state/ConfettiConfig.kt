@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import androidx.core.content.ContextCompat.getColor
 import nl.dionsegijn.konfetti.KonfettiView
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
@@ -65,5 +66,29 @@ sealed class ConfettiConfig() {
       R.color.confetti_yellow,
       R.color.confetti_blue
     )
+
+    fun startConfettiBurst(
+      config: ConfettiConfig,
+      xPosition: Float,
+      yPosition: Float,
+      timeToLiveMs: Long,
+      delayMs: Long,
+      minAngle: Double,
+      maxAngle: Double
+    ) {
+      val confettiView = config.confettiView
+      val colorsList = primaryColors.map { getColor(config.context, it) }
+      confettiView.build()
+        .setDelay(delayMs)
+        .setFadeOutEnabled(true)
+        .addColors(colorsList)
+        .setDirection(minAngle, maxAngle)
+        .setSpeed(config.minSpeed, config.maxSpeed)
+        .setTimeToLive(timeToLiveMs)
+        .addShapes(*config.shapes)
+        .addSizes(config.sizeInDp, config.sizeWithMass)
+        .setPosition(xPosition, yPosition)
+        .burst(config.numPieces)
+    }
   }
 }
