@@ -146,7 +146,7 @@
   <dimen name="submitted_answer_question_split_view_margin_start_no_extra_interaction_answer">40dp</dimen>
   <dimen name="submitted_answer_question_split_view_margin_top_extra_interaction_answer">40dp</dimen>
 
-  <!-- CONTENT ITEM: EXPLORATION SPLIT VIEW -->
+  <!-- Content Item: Exploration Split View -->
   <dimen name="content_item_exploration_split_view_margin_start">24dp</dimen>
   <dimen name="content_item_exploration_split_view_margin_top">40dp</dimen>
   <dimen name="content_item_exploration_split_view_margin_end">40dp</dimen>
@@ -156,7 +156,7 @@
   <dimen name="content_item_exploration_split_view_padding_end">12dp</dimen>
   <dimen name="content_item_exploration_split_view_padding_bottom">16dp</dimen>
 
-  <!-- CONTENT ITEM: EXPLORATION VIEW -->
+  <!-- Content Item: Exploration View -->
   <dimen name="content_item_exploration_view_margin_start">112dp</dimen>
   <dimen name="content_item_exploration_view_margin_top">36dp</dimen>
   <dimen name="content_item_exploration_view_margin_end">144dp</dimen>
@@ -166,12 +166,12 @@
   <dimen name="content_item_exploration_view_padding_end">12dp</dimen>
   <dimen name="content_item_exploration_view_padding_bottom">16dp</dimen>
 
-  <!-- CONTENT ITEM: QUESTION SPLIT VIEW -->
+  <!-- Content Item: Question Split View -->
   <dimen name="content_item_question_split_view_margin_start">32dp</dimen>
   <dimen name="content_item_question_split_view_margin_top">40dp</dimen>
   <dimen name="content_item_question_split_view_margin_end">32dp</dimen>
 
-  <!-- CONTENT ITEM -->
+  <!-- Content Item: Question View -->
   <dimen name="content_item_question_view_margin_start">128dp</dimen>
   <dimen name="content_item_question_view_margin_top">36dp</dimen>
   <dimen name="content_item_question_view_margin_end">128dp</dimen>
