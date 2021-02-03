@@ -147,7 +147,7 @@ class HomeActivityTest {
 
   @After
   fun tearDown() {
-    context.filesDir.listFiles{ file ->
+    context.filesDir.listFiles { file ->
       file.deleteRecursively()
     }
 
