@@ -14,7 +14,6 @@ sealed class ConfettiConfig() {
   internal abstract val minSpeed: Float
   internal abstract val maxSpeed: Float
   internal abstract val sizeInDp: Size
-
   // Confetti pieces with mass make the animation more active and dynamic.
   internal abstract val sizeWithMass: Size
   internal abstract val numPieces: Int
