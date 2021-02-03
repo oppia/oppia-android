@@ -28,7 +28,7 @@
 
   <!-- QUESTION VIEW -->
   <!-- Overall Outer Space: 32, 36, 32, 12 -->
-  <!-- Overall Inner Space: 00, 00, 00, 00 -->
+  <!-- Overall Inner Space: 0, 0, 0, 0 -->
 
   <FrameLayout
     android:layout_width="match_parent"
