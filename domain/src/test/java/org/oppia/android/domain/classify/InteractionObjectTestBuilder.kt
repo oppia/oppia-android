@@ -40,16 +40,8 @@ object InteractionObjectTestBuilder {
     return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
   }
 
-  fun createWholeNumber(isNegative: Boolean = false, value: Int): InteractionObject {
-    // Whole number fractions imply '0/1' fractional parts.
-    return InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder()
-        .setIsNegative(isNegative)
-        .setWholeNumber(value)
-        .setNumerator(0)
-        .setDenominator(1)
-        .build()
-    ).build()
+  fun createWholeNumber(value: Int): InteractionObject {
+    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
   }
 
   fun createFraction(
