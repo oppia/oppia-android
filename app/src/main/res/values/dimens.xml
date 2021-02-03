@@ -365,7 +365,7 @@
   <dimen name="previous_button_item_exploration_view_margin_start">48dp</dimen>
   <dimen name="submitted_answer_item_exploration_view_margin_end">48dp</dimen>
   <dimen name="profile_chooser_add_view_circular_image_margin_top_profile_already_added">48dp</dimen>
-  <dimen name="profile_chooser_profile_view_circular_image_size">72dp</dimen>
+  <dimen name="profile_chooser_avatar_circular_image_size">72dp</dimen>
   <dimen name="profile_chooser_profile_view_circular_image_margin_top_profile_already_added">48dp</dimen>
   <dimen name="state_fragment_padding_top_audio_bar_visible">48dp</dimen>
 </resources>
