@@ -35,7 +35,6 @@ import org.oppia.android.app.settings.profile.ProfileResetPinActivity
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.testing.AudioFragmentTestActivity
-import org.oppia.android.app.testing.BindableAdapterTestActivity
 import org.oppia.android.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.android.app.testing.DragDropTestActivity
 import org.oppia.android.app.testing.ExplorationInjectionActivity
@@ -78,7 +77,6 @@ interface ActivityComponent {
   fun inject(appLanguageActivity: AppLanguageActivity)
   fun inject(appVersionActivity: AppVersionActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
-  fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   fun inject(completedStoryListActivity: CompletedStoryListActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(audioLanguageActivity: AudioLanguageActivity)

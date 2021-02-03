@@ -103,11 +103,11 @@ class OngoingTopicListActivityTest {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     storyProfileTestHelper.markPartialTopicProgressForFractions(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
   }
 
