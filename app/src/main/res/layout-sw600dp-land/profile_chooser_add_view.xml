@@ -29,7 +29,6 @@
       android:layout_width="match_parent"
       android:layout_height="0.5dp"
       android:layout_marginBottom="40dp"
-      android:background="@color/oppiaProfileChooserDivider"
       android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
 
     <LinearLayout
