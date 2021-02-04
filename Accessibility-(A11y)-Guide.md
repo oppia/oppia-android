@@ -32,48 +32,27 @@ By default tablet emulators do not contain **Play Store** app and therefore you 
 * Clickable items
 * Text and image contrast
 
-#### For real device
-1. Go to Google Play Store
+### How to Use?
+1. Open **Google Play Store**
 2. Download/Install **Accessibility Scanner** app
-
-#### For mobile emulator
-1. Create a new emulator device which contains **Google Play Store** in it. Example: Nexus 5, Nexus 5A, Pixel, Pixel 2, Pixel 3, Pixel 3a, Pixel 4.
-2. Open "Play Store" app and sign-in.
-3. Download/Install **Accessibility Scanner** app
-
-#### How to use
-1. After installation, open Settings
-2. Search **Accessibility Scanner**, click on it.
-3. Turn on **Use Accessibility Scanner** -> **Allow**
-4. You will notice a blue colored floating button with tick/check icon.
-5. Open **Oppia** app.
-6. Now on any screen inside app click on the floating button and either record or take snapshot.
+3. After installation, open Settings
+4. Search **Accessibility Scanner**, click on it.
+5. Turn on **Use Accessibility Scanner** -> **Allow**
+6. You will notice a blue colored floating button with tick/check icon.
+7. Open **Oppia** app.
+8. Now on any screen inside app click on the floating button and either record or take snapshot.
 
 **Result**: You will notice that the scanner analyses the screen and give errors if there are any or else it will show that no errors were found.
 
 ## Using Talkback in android
 TalkBack is the Google **screen reader** included on Android devices. TalkBack gives you spoken feedback so that you can use your device without looking at the screen.
 
-#### For real device
-1. Go to Google Play Store
-2. Download/Install **Android Accessibility Suite** app
-
-#### For mobile emulator
-1. Create a new emulator device which contains **Google Play Store** in it. Example: Nexus 5, Nexus 5A, Pixel, Pixel 2, Pixel 3, Pixel 3a, Pixel 4.
-2. Open "Play Store" app and sign-in.
-3. Download/Install **Android Accessibility Suite** app
-
-#### For tablet emulator
-By default tablet emulators do not contain **Play Store** app and therefore you will need to make some changes to make it available.
-1. Follow the steps mentioned [here](https://stackoverflow.com/a/62680014).
-2. Once above steps are done, start the emulator.
-3. Open "Play Store" app and sign-in.
-4. Download/Install **Android Accessibility Suite** app
-
 #### How to use
-1. After installation, open Settings
-2. Search **Talkback**, click on it.
-3. Read all the instructions written on the screen as using Talkback requires specific steps.
-4. Turn on **Use Service** -> **Allow**
+1. Open **Google Play Store**
+2. Download/Install **Android Accessibility Suite** app
+3. After installation, open Settings
+4. Search **Talkback**, click on it.
+5. Read all the instructions written on the screen as using Talkback requires specific steps.
+6. Turn on **Use Service** -> **Allow**
 
 Now you can use talkback. For more information visit [Getting started with Talkback](https://support.google.com/accessibility/android/answer/6283677).
