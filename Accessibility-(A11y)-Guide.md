@@ -15,6 +15,16 @@ Note: In short we can write Accessibility as **A11Y**.
 * [Using A11Y Menu](https://support.google.com/accessibility/android/answer/9078941)
 * [Getting started with Talkback](https://support.google.com/accessibility/android/answer/6283677)
 
+## Setup Play Store in mobile emulator
+1. Create a new emulator device which contains **Google Play Store** in it. Example: Nexus 5, Nexus 5A, Pixel, Pixel 2, Pixel 3, Pixel 3a, Pixel 4.
+2. Open "Play Store" app and sign-in.
+
+## Setup Play Store in tablet emulator
+By default tablet emulators do not contain **Play Store** app and therefore you will need to make some changes to make it available.
+1. Follow the steps mentioned [here](https://stackoverflow.com/a/62680014).
+2. Once above steps are done, start the emulator.
+3. Open "Play Store" app and sign-in.
+
 ## Using a11y scanner in android
 [Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en) scans your screen and provides suggestions to improve the accessibility of your app, based on:
 * Content labels
@@ -52,6 +62,13 @@ TalkBack is the Google **screen reader** included on Android devices. TalkBack g
 1. Create a new emulator device which contains **Google Play Store** in it. Example: Nexus 5, Nexus 5A, Pixel, Pixel 2, Pixel 3, Pixel 3a, Pixel 4.
 2. Open "Play Store" app and sign-in.
 3. Download/Install **Android Accessibility Suite** app
+
+#### For tablet emulator
+By default tablet emulators do not contain **Play Store** app and therefore you will need to make some changes to make it available.
+1. Follow the steps mentioned [here](https://stackoverflow.com/a/62680014).
+2. Once above steps are done, start the emulator.
+3. Open "Play Store" app and sign-in.
+4. Download/Install **Android Accessibility Suite** app
 
 #### How to use
 1. After installation, open Settings
