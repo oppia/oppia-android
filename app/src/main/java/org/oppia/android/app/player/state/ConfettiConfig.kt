@@ -1,19 +1,16 @@
 package org.oppia.android.app.player.state
 
-import android.content.Context
-import androidx.core.content.ContextCompat.getColor
 import nl.dionsegijn.konfetti.KonfettiView
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
 import org.oppia.android.R
+import javax.inject.Singleton
 
 /**
  * Configuration for the confetti animations used in the state player. See sub-classes for available
  * configurations.
  */
 sealed class ConfettiConfig() {
-  protected abstract val context: Context
-  protected abstract val confettiView: KonfettiView
   protected abstract val minSpeed: Float
   protected abstract val maxSpeed: Float
   protected abstract val sizeInDp: Size
@@ -23,19 +20,19 @@ sealed class ConfettiConfig() {
   protected abstract val shapes: Array<Shape>
 
   fun startConfettiBurst(
+    confettiView: KonfettiView,
     xPosition: Float,
     yPosition: Float,
-    timeToLiveMs: Long,
-    delayMs: Long,
     minAngle: Double,
     maxAngle: Double,
+    timeToLiveMs: Long,
+    delayMs: Long,
     colorsList: List<Int>
   ) {
-    val colors = colorsList.map { getColor(context, it) }
     confettiView.build()
       .setDelay(delayMs)
       .setFadeOutEnabled(true)
-      .addColors(colors)
+      .addColors(colorsList)
       .setDirection(minAngle, maxAngle)
       .setSpeed(minSpeed, maxSpeed)
       .setTimeToLive(timeToLiveMs)
@@ -46,10 +43,8 @@ sealed class ConfettiConfig() {
   }
 
   /** A configuration for large bursts of confetti. */
-  class LargeConfettiBurst(
-    override val context: Context,
-    override val confettiView: KonfettiView
-  ) : ConfettiConfig() {
+  @Singleton
+  class LargeConfettiBurst : ConfettiConfig() {
     override val minSpeed = 5f
     override val maxSpeed = 12f
     override val sizeInDp = Size(sizeInDp = 12)
@@ -59,10 +54,8 @@ sealed class ConfettiConfig() {
   }
 
   /** A configuration for medium bursts of confetti. */
-  class MediumConfettiBurst(
-    override val context: Context,
-    override val confettiView: KonfettiView
-  ) : ConfettiConfig() {
+  @Singleton
+  class MediumConfettiBurst : ConfettiConfig() {
     override val minSpeed = 4f
     override val maxSpeed = 9f
     override val sizeInDp = Size(sizeInDp = 8)
@@ -72,10 +65,8 @@ sealed class ConfettiConfig() {
   }
 
   /** A configuration for mini bursts of confetti. */
-  class MiniConfettiBurst(
-    override val context: Context,
-    override val confettiView: KonfettiView
-  ) : ConfettiConfig() {
+  @Singleton
+  class MiniConfettiBurst : ConfettiConfig() {
     override val minSpeed = 2f
     override val maxSpeed = 4f
     override val sizeInDp = Size(sizeInDp = 8)

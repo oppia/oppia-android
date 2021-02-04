@@ -421,7 +421,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       .addHintsAndSolutionsSupport()
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,
-        MiniConfettiBurst(context, congratulationsTextConfettiView)
+        congratulationsTextConfettiView,
+        MiniConfettiBurst()
       )
       .addConceptCardSupport()
       .build()

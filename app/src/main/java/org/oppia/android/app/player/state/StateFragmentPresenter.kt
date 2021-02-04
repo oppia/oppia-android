@@ -243,11 +243,12 @@ class StateFragmentPresenter @Inject constructor(
       .addReturnToTopicSupport()
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,
-        MiniConfettiBurst(context, congratulationsTextConfettiView)
+        congratulationsTextConfettiView,
+        MiniConfettiBurst()
       )
       .addCelebrationForEndOfSession(
-        if (isTablet) LargeConfettiBurst(context, fullScreenConfettiView)
-        else MediumConfettiBurst(context, fullScreenConfettiView)
+        fullScreenConfettiView,
+        if (isTablet) LargeConfettiBurst() else MediumConfettiBurst()
       )
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(
