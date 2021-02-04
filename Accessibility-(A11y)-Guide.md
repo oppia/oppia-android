@@ -47,7 +47,7 @@ By default tablet emulators do not contain **Play Store** app and therefore you 
 ## Using Talkback in android
 TalkBack is the Google **screen reader** included on Android devices. TalkBack gives you spoken feedback so that you can use your device without looking at the screen.
 
-#### How to use
+### How to use?
 1. Open **Google Play Store**
 2. Download/Install **Android Accessibility Suite** app
 3. After installation, open Settings
