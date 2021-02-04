@@ -103,6 +103,7 @@ class OnboardingFragmentPresenter @Inject constructor(
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
+      .setLifecycleOwner(fragment)
       .registerViewDataBinder(
         viewType = ViewType.ONBOARDING_SLIDE,
         inflateDataBinding = OnboardingSlideBinding::inflate,
