@@ -37,10 +37,7 @@ jobs:
     - name: Download Checkstyle
       run: |
         cd $HOME/oppia-android-tools
-        CHECKSTYLE="8.37"
-        echo Using Checkstyle version $CHECKSTYLE
-        curl -sSLO https://github.com/checkstyle/checkstyle/releases/download/checkstyle-$CHECKSTYLE/checkstyle-$CHECKSTYLE-all.jar
-        chmod a+x checkstyle-$CHECKSTYLE-all.jar
+        sh ./scripts/download_checkstyle.sh
 
     - name: Download Ktlint
       run: |
