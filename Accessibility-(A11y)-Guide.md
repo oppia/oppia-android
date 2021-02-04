@@ -14,6 +14,7 @@ Note: In short we can write Accessibility as **A11Y**.
 * [Android A11Y Overview](https://support.google.com/accessibility/android/answer/6006564)
 * [Using A11Y Menu](https://support.google.com/accessibility/android/answer/9078941)
 * [Getting started with Talkback](https://support.google.com/accessibility/android/answer/6283677)
+* [Display speech output as Text: Talkback](https://developer.android.com/guide/topics/ui/accessibility/testing#optional_talkback_developer_settings)
 
 ## Setup Play Store in mobile emulator
 1. Create a new emulator device which contains **Google Play Store** in it. Example: Nexus 5, Nexus 5A, Pixel, Pixel 2, Pixel 3, Pixel 3a, Pixel 4.
