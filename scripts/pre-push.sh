@@ -5,7 +5,7 @@
 #  - bufbuild
 #  - (others in the future)
 
-bash scripts/kotlin_lint_check.sh
+bash scripts/kotlin-lint-check.sh
 bash scripts/buf_lint_check.sh
 
 # TODO(#1736): Add Bazel Linter to the project
