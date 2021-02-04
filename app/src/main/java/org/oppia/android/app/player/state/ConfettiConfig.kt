@@ -4,20 +4,45 @@ import nl.dionsegijn.konfetti.KonfettiView
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
 import org.oppia.android.R
-import javax.inject.Singleton
 
 /**
- * Configuration for the confetti animations used in the state player. See sub-classes for available
+ * Configuration for the confetti animations used in the state player. See enum types for available
  * configurations.
  */
-sealed class ConfettiConfig() {
-  protected abstract val minSpeed: Float
-  protected abstract val maxSpeed: Float
-  protected abstract val sizeInDp: Size
+enum class ConfettiConfig(
+  private val minSpeed: Float,
+  private val maxSpeed: Float,
+  private val sizeInDp: Size,
   // Confetti pieces with mass make the animation more active and dynamic.
-  protected abstract val sizeWithMass: Size
-  protected abstract val numPieces: Int
-  protected abstract val shapes: Array<Shape>
+  private val sizeWithMass: Size,
+  private val numPieces: Int,
+  private val shapes: Array<Shape>
+) {
+
+  LARGE_CONFETTI_BURST(
+    minSpeed = 5f,
+    maxSpeed = 12f,
+    sizeInDp = Size(sizeInDp = 12),
+    sizeWithMass = Size(sizeInDp = 11, mass = 3f),
+    numPieces = 60,
+    shapes = arrayOf(Shape.Circle, Shape.Square)
+  ),
+  MEDIUM_CONFETTI_BURST(
+    minSpeed = 4f,
+    maxSpeed = 9f,
+    sizeInDp = Size(sizeInDp = 8),
+    sizeWithMass = Size(sizeInDp = 7, mass = 3f),
+    numPieces = 35,
+    shapes = arrayOf(Shape.Circle, Shape.Square)
+  ),
+  MINI_CONFETTI_BURST(
+    minSpeed = 2f,
+    maxSpeed = 4f,
+    sizeInDp = Size(sizeInDp = 8),
+    sizeWithMass = Size(sizeInDp = 7, mass = 3f),
+    numPieces = 7,
+    shapes = arrayOf(Shape.Circle)
+  );
 
   fun startConfettiBurst(
     confettiView: KonfettiView,
@@ -40,39 +65,6 @@ sealed class ConfettiConfig() {
       .addSizes(sizeInDp, sizeWithMass)
       .setPosition(xPosition, yPosition)
       .burst(numPieces)
-  }
-
-  /** A configuration for large bursts of confetti. */
-  @Singleton
-  class LargeConfettiBurst : ConfettiConfig() {
-    override val minSpeed = 5f
-    override val maxSpeed = 12f
-    override val sizeInDp = Size(sizeInDp = 12)
-    override val sizeWithMass = Size(sizeInDp = 11, mass = 3f)
-    override val numPieces = 60
-    override val shapes = arrayOf(Shape.Circle, Shape.Square)
-  }
-
-  /** A configuration for medium bursts of confetti. */
-  @Singleton
-  class MediumConfettiBurst : ConfettiConfig() {
-    override val minSpeed = 4f
-    override val maxSpeed = 9f
-    override val sizeInDp = Size(sizeInDp = 8)
-    override val sizeWithMass = Size(sizeInDp = 7, mass = 3f)
-    override val numPieces = 35
-    override val shapes = arrayOf(Shape.Circle, Shape.Square)
-  }
-
-  /** A configuration for mini bursts of confetti. */
-  @Singleton
-  class MiniConfettiBurst : ConfettiConfig() {
-    override val minSpeed = 2f
-    override val maxSpeed = 4f
-    override val sizeInDp = Size(sizeInDp = 8)
-    override val sizeWithMass = Size(sizeInDp = 7, mass = 3f)
-    override val numPieces = 7
-    override val shapes: Array<Shape> = arrayOf(Shape.Circle)
   }
 
   companion object {

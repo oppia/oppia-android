@@ -27,9 +27,9 @@ import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.audio.AudioFragment
 import org.oppia.android.app.player.audio.AudioUiManager
-import org.oppia.android.app.player.state.ConfettiConfig.LargeConfettiBurst
-import org.oppia.android.app.player.state.ConfettiConfig.MediumConfettiBurst
-import org.oppia.android.app.player.state.ConfettiConfig.MiniConfettiBurst
+import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
+import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
+import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.utility.SplitScreenManager
@@ -244,11 +244,11 @@ class StateFragmentPresenter @Inject constructor(
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,
         congratulationsTextConfettiView,
-        MiniConfettiBurst()
+        MINI_CONFETTI_BURST
       )
       .addCelebrationForEndOfSession(
         fullScreenConfettiView,
-        if (isTablet) LargeConfettiBurst() else MediumConfettiBurst()
+        if (isTablet) LARGE_CONFETTI_BURST else MEDIUM_CONFETTI_BURST
       )
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(

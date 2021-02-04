@@ -23,7 +23,7 @@ import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
-import org.oppia.android.app.player.state.ConfettiConfig.MiniConfettiBurst
+import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
@@ -422,7 +422,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,
         congratulationsTextConfettiView,
-        MiniConfettiBurst()
+        MINI_CONFETTI_BURST
       )
       .addConceptCardSupport()
       .build()
