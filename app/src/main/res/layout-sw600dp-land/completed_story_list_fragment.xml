@@ -30,10 +30,10 @@
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/stories_completed"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -52,8 +52,8 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingStart="64dp"
-        android:paddingEnd="64dp"
         android:paddingTop="24dp"
+        android:paddingEnd="64dp"
         android:paddingBottom="112dp"
         android:scrollbars="none"
         android:tag="@string/completed_story_list_recyclerview_tag"

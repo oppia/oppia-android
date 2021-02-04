@@ -151,7 +151,6 @@ class AudioFragmentTest {
     )
   }
 
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
   @Test
   fun testAudioFragment_withDefaultProfile_showsAudioLanguageAsEnglish() {
     addMediaInfo()
@@ -160,11 +159,12 @@ class AudioFragmentTest {
         internalProfileId
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
+      onView(withId(R.id.audio_language_icon)).check(matches(withContentDescription("en")))
     }
   }
 
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
+  // TODO(#2417): Re-enable once this test passes on robolectric
+  @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testAudioFragment_withHindiAudioLanguageProfile_showsHindiAudioLanguage() {
     addMediaInfo()
@@ -181,7 +181,7 @@ class AudioFragmentTest {
       it.onActivity {
         profileTestHelper.waitForOperationToComplete(data)
       }
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
+      onView(withId(R.id.audio_language_icon)).check(matches(withContentDescription("hi")))
     }
   }
 
@@ -194,9 +194,9 @@ class AudioFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(isDisplayed()))
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
     }
   }
@@ -213,10 +213,10 @@ class AudioFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
   }
@@ -231,10 +231,10 @@ class AudioFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.sbAudioProgress)).perform(setProgress(100))
+      onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
     }
   }
@@ -251,12 +251,12 @@ class AudioFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.sbAudioProgress)).perform(setProgress(100))
+      onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
   }
@@ -270,15 +270,14 @@ class AudioFragmentTest {
       )
     ).use {
       invokePreparedListener(shadowMediaPlayer)
-      onView(withId(R.id.ivPlayPauseAudio)).perform(click())
-      onView(withId(R.id.sbAudioProgress)).perform(setProgress(100))
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
   }
 
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to update this test
   @Test
   fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
     addMediaInfo()
@@ -289,12 +288,12 @@ class AudioFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.sbAudioProgress)).perform(setProgress(100))
+      onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.tvAudioLanguage)).perform(click())
+      onView(withId(R.id.audio_language_icon)).perform(click())
 
       val locale = Locale("es")
 
@@ -305,9 +304,9 @@ class AudioFragmentTest {
       onView(withText("OK")).inRoot(isDialog()).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
-      onView(withId(R.id.sbAudioProgress)).check(matches(withSeekBarPosition(0)))
+      onView(withId(R.id.audio_progress_seek_bar)).check(matches(withSeekBarPosition(0)))
     }
   }
 
