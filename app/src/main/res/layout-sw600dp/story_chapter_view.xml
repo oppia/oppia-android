@@ -47,11 +47,34 @@
           android:scaleType="centerInside"
           app:entityId="@{viewModel.storyId}"
           app:entityType="@{viewModel.entityType}"
+          app:isBlurred="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
           app:layout_constraintDimensionRatio="16:9"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
           app:lessonThumbnail="@{viewModel.chapterThumbnail}" />
+
+        <View
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:alpha="0.5"
+          android:background="@{viewModel.chapterThumbnail.backgroundColorRgb}"
+          android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}"
+          app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
+          app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
+          app:layout_constraintStart_toStartOf="@id/chapter_thumbnail"
+          app:layout_constraintTop_toTopOf="@id/chapter_thumbnail" />
+
+        <ImageView
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:scaleType="center"
+          android:src="@drawable/ic_baseline_lock_24"
+          android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}"
+          app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
+          app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
+          app:layout_constraintStart_toStartOf="@id/chapter_thumbnail"
+          app:layout_constraintTop_toTopOf="@id/chapter_thumbnail" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
