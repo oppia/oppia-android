@@ -12,15 +12,15 @@ import org.oppia.android.R
  * configurations.
  */
 sealed class ConfettiConfig() {
-  internal abstract val context: Context
-  internal abstract val confettiView: KonfettiView
-  internal abstract val minSpeed: Float
-  internal abstract val maxSpeed: Float
-  internal abstract val sizeInDp: Size
+  protected abstract val context: Context
+  protected abstract val confettiView: KonfettiView
+  protected abstract val minSpeed: Float
+  protected abstract val maxSpeed: Float
+  protected abstract val sizeInDp: Size
   // Confetti pieces with mass make the animation more active and dynamic.
-  internal abstract val sizeWithMass: Size
-  internal abstract val numPieces: Int
-  internal abstract val shapes: Array<Shape>
+  protected abstract val sizeWithMass: Size
+  protected abstract val numPieces: Int
+  protected abstract val shapes: Array<Shape>
 
   fun startConfettiBurst(
     xPosition: Float,
