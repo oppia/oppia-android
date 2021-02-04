@@ -8,7 +8,7 @@ import android.view.inputmethod.InputMethodManager
 class KeyboardHelper {
   companion object {
     /**
-     * This method hides the soft input keyboard
+     * This method hides the soft input keyboard.
      *
      * @param view the input view
      * @param context the activity context
@@ -21,7 +21,7 @@ class KeyboardHelper {
     }
 
     /**
-     * This method shows the soft input keyboard
+     * This method shows the soft input keyboard.
      *
      * @param view the input view
      * @param context the activity context
