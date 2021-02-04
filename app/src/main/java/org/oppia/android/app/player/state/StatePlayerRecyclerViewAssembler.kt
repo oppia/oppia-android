@@ -439,7 +439,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   /**
    * Shows a celebratory animation with a congratulations message and confetti when the learner submits
-   *  a correct answer.
+   * a correct answer.
    */
   fun showCelebrationOnCorrectAnswer() {
     check(playerFeatureSet.showCelebrationOnCorrectAnswer) {

@@ -7,7 +7,10 @@ import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
 import org.oppia.android.R
 
-/** A sealed class defining the standard configurations for various confetti animations */
+/**
+ * Configuration for the confetti animations used in the state player. See sub-classes for available
+ * configurations.
+ */
 sealed class ConfettiConfig() {
   internal abstract val context: Context
   internal abstract val confettiView: KonfettiView
