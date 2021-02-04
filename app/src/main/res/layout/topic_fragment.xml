@@ -70,7 +70,7 @@
         app:tabTextColor="@color/tab_icon_color_selector" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/topic_tabs_viewpager_container"
       android:layout_width="match_parent"
       android:layout_height="0dp"
@@ -82,13 +82,16 @@
       <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/topic_tabs_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topic_shadow_view" />
 
       <View
         android:id="@+id/topic_shadow_view"
         android:layout_width="match_parent"
         android:layout_height="6dp"
-        android:background="@drawable/toolbar_drop_shadow" />
-    </FrameLayout>
+        android:background="@drawable/toolbar_drop_shadow"
+        app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
