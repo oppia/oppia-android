@@ -23,7 +23,7 @@ message ExitProfileDialogArguments {
 }
 
 enum LastCheckedMenuItem {
-  HOME_MENU_ITEM = 0;
+  HOME_MENU_ITEM_UNSPECIFIED = 0;
   OPTIONS_MENU_ITEM = 1;
   HELP_MENU_ITEM = 2;
   DOWNLOADS_MENU_ITEM = 3;
