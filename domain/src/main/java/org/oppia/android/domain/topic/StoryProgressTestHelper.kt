@@ -1,24 +1,21 @@
 package org.oppia.android.domain.topic
 
 import org.oppia.android.app.model.ProfileId
-import java.util.Date
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 private const val EIGHT_DAYS_IN_MS = 8 * 24 * 60 * 60 * 1000
 
 /** This helper allows tests to easily create dummy progress per profile-basis. */
 class StoryProgressTestHelper @Inject constructor(
-  private val storyProgressController: StoryProgressController
+  private val storyProgressController: StoryProgressController,
+  private val oppiaClock: OppiaClock
 ) {
 
-  private fun getCurrentTimestamp(): Long {
-    return Date().time
-  }
+  private fun getCurrentTimestamp(): Long = oppiaClock.getCurrentTimeMs()
 
   // Returns a timestamp which is at least a week old than current.
-  private fun getOldTimestamp(): Long {
-    return Date().time - EIGHT_DAYS_IN_MS
-  }
+  private fun getOldTimestamp(): Long = getCurrentTimestamp() - EIGHT_DAYS_IN_MS
 
   /**
    * Creates a partial story progress for a particular profile.

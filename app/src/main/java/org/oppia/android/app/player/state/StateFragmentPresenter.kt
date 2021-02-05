@@ -40,7 +40,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
-import java.util.Date
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -62,7 +62,8 @@ class StateFragmentPresenter @Inject constructor(
   private val logger: ConsoleLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private val splitScreenManager: SplitScreenManager
+  private val splitScreenManager: SplitScreenManager,
+  private val oppiaClock: OppiaClock
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -523,7 +524,7 @@ class StateFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      Date().time
+      oppiaClock.getCurrentTimeMs()
     )
   }
 
@@ -533,7 +534,7 @@ class StateFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      Date().time
+      oppiaClock.getCurrentTimeMs()
     )
   }
 }

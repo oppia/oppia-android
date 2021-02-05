@@ -39,6 +39,8 @@ import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
@@ -52,7 +54,6 @@ import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -120,10 +121,11 @@ class TopicControllerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
   private lateinit var profileId1: ProfileId
   private lateinit var profileId2: ProfileId
-
-  private val currentTimestamp = Date().time
 
   @Before
   fun setUp() {
@@ -1201,7 +1203,7 @@ class TopicControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      currentTimestamp
+      fakeOppiaClock.getCurrentTimeMs()
     ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 
@@ -1211,7 +1213,7 @@ class TopicControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1,
-      currentTimestamp
+      fakeOppiaClock.getCurrentTimeMs()
     ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 
@@ -1221,7 +1223,7 @@ class TopicControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_1,
       TEST_EXPLORATION_ID_1,
-      currentTimestamp
+      fakeOppiaClock.getCurrentTimeMs()
     ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 
@@ -1231,7 +1233,7 @@ class TopicControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      currentTimestamp
+      fakeOppiaClock.getCurrentTimeMs()
     ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 
@@ -1241,7 +1243,7 @@ class TopicControllerTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_1,
-      currentTimestamp
+      fakeOppiaClock.getCurrentTimeMs()
     ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 
@@ -1326,7 +1328,7 @@ class TopicControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

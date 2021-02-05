@@ -2,6 +2,7 @@ package org.oppia.android.domain.question
 
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Qualifier
 
 @Qualifier
@@ -19,5 +20,5 @@ class QuestionModule {
 
   @Provides
   @QuestionTrainingSeed
-  fun provideQuestionTrainingSeed(): Long = System.currentTimeMillis()
+  fun provideQuestionTrainingSeed(oppiaClock: OppiaClock): Long = oppiaClock.getCurrentTimeMs()
 }
