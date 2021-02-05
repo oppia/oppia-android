@@ -43,7 +43,7 @@ class AudioFragmentTestActivityPresenter @Inject constructor(
             )
             .putVoiceoverMapping(
               "hi",
-              Voiceover.newBuilder().setFileName("content-es-i0nhu49z0q.mp3").build()
+              Voiceover.newBuilder().setFileName("content-hi-2hn6btuei5.mp3").build()
             )
             .build()
         ).build()

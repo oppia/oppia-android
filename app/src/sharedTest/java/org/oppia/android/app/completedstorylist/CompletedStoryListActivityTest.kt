@@ -87,6 +87,7 @@ import javax.inject.Singleton
 class CompletedStoryListActivityTest {
 
   private val internalProfileId = 0
+  private val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -103,14 +104,13 @@ class CompletedStoryListActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
 
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     storyProfileTestHelper.markFullStoryProgressForFractions(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
   }
 

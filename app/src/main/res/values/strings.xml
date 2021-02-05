@@ -257,6 +257,7 @@
   <string name="admin_settings_cancel">Cancel</string>
   <string name="admin_settings_submit">Submit</string>
   <string name="admin_settings_incorrect">Incorrect Administrator PIN. Please try again.</string>
+  <string name="admin_settings_enter_user_new_pin">%1$s\'s New PIN.</string>
   <!-- ResetPinDialogFragment -->
   <string name="reset_pin_enter">Enter a New Pin</string>
   <!-- MyDownloadsActivity -->
