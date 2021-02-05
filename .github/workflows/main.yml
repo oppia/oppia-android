@@ -54,7 +54,7 @@ jobs:
 
     - name: Java lint check
       run: |
-        sh /home/runner/work/oppia-android/oppia-android/scripts/checkstyle_lint_check.sh /home/runner/work/oppia-android
+        sh /home/runner/work/oppia-android/oppia-android/scripts/checkstyle_lint_check.sh /home/runner/work
 
     - name: Kotlin lint check
       run: |
