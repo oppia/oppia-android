@@ -12,8 +12,8 @@ import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import javax.inject.Inject
 
-private const val INTERNAL_TOPIC_ID_EXTRA_KEY = "TopicActivity.topic_activity_topic_id"
-private const val INTERNAL_STORY_ID_EXTRA_KEY = "TopicActivity.topic_activity_story_id"
+private const val INTERNAL_TOPIC_ID_EXTRA_KEY = "TopicActivity.internal_topic_id"
+private const val INTERNAL_STORY_ID_EXTRA_KEY = "TopicActivity.internal_story_id"
 
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity :

@@ -19,7 +19,7 @@ import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
 const val INTERNAL_SKILL_ID_LIST_EXTRA_KEY =
-  "QuestionPlayerActivity.question_player_activity_skill_id_list"
+  "QuestionPlayerActivity.internal_skill_id_list"
 private const val TAG_STOP_TRAINING_SESSION_DIALOG = "STOP_TRAINING_SESSION_DIALOG"
 
 /** Activity for QuestionPlayer in train mode. */

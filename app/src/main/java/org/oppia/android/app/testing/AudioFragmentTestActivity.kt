@@ -7,7 +7,7 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 const val INTERNAL_PROFILE_ID_EXTRA_KEY =
-  "AudioFragmentTestActivity.audio_fragment_test_profile_id"
+  "AudioFragmentTestActivity.internal_profile_id"
 
 /** Test Activity used for testing AudioFragment */
 class AudioFragmentTestActivity : InjectableAppCompatActivity() {
