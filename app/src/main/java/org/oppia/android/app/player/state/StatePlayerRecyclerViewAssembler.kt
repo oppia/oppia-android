@@ -765,9 +765,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       yPosition = height / 2,
       minAngle = 180.0,
       maxAngle = 270.0,
-      timeToLiveMs,
+      timeToLiveMs = timeToLiveMs,
       delayMs = 0L,
-      colorsList
+      colorsList = colorsList
     )
     config.startConfettiBurst(
       confettiView,
@@ -775,9 +775,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       yPosition = height / 2,
       minAngle = 270.0,
       maxAngle = 370.0,
-      timeToLiveMs,
+      timeToLiveMs = timeToLiveMs,
       delayMs = 0L,
-      colorsList
+      colorsList = colorsList
     )
   }
 
@@ -821,9 +821,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       yPosition = 0f,
       minAngle = -90.0,
       maxAngle = 90.0,
-      timeToLiveMillis,
-      delayMillis,
-      colorsList
+      timeToLiveMs = timeToLiveMillis,
+      delayMs = delayMillis,
+      colorsList = colorsList
     )
     config.startConfettiBurst(
       confettiView,
@@ -831,9 +831,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       yPosition = 0f,
       minAngle = 90.0,
       maxAngle = 270.0,
-      timeToLiveMillis,
-      delayMillis,
-      colorsList
+      timeToLiveMs = timeToLiveMillis,
+      delayMs = delayMillis,
+      colorsList = colorsList
     )
   }
 
@@ -1269,7 +1269,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     fun hasConversationView(hasConversationView: Boolean): Builder {
       this.hasConversationView = hasConversationView
-      featureSets += PlayerFeatureSet(showCongratulationsOnCorrectAnswer = true)
+      featureSets += PlayerFeatureSet(showCelebrationOnCorrectAnswer = true)
       return this
     }
 

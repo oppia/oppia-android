@@ -101,11 +101,6 @@ class StateFragmentPresenter @Inject constructor(
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
-
-    savedInstanceState?.let {
-      recyclerViewAssembler.restoreState(savedInstanceState)
-    }
-
     binding = StateFragmentBinding.inflate(
       inflater,
       container,
@@ -117,6 +112,9 @@ class StateFragmentPresenter @Inject constructor(
       binding.congratulationsTextConfettiView,
       binding.fullScreenConfettiView
     )
+    savedInstanceState?.let {
+      recyclerViewAssembler.restoreState(savedInstanceState)
+    }
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
     val rhsStateRecyclerViewAdapter = recyclerViewAssembler.rhsAdapter
