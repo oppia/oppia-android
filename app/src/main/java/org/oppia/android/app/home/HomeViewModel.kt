@@ -161,10 +161,8 @@ class HomeViewModel(
   ): List<PromotedStoryViewModel> {
     with(promotedStoryList) {
       val storyList = when {
-        suggestedStoryCount != 0 -> {
-          if (recentlyPlayedStoryCount != 0 ||
-            olderPlayedStoryCount != 0
-          ) {
+        suggestedStoryList.isNotEmpty() -> {
+          if (recentlyPlayedStoryList.isNotEmpty() || olderPlayedStoryList.isNotEmpty()) {
             recentlyPlayedStoryList +
               olderPlayedStoryList +
               suggestedStoryList
@@ -172,7 +170,7 @@ class HomeViewModel(
             suggestedStoryList
           }
         }
-        recentlyPlayedStoryCount != 0 -> {
+        recentlyPlayedStoryList.isNotEmpty() -> {
           recentlyPlayedStoryList
         }
         else -> {
@@ -180,7 +178,8 @@ class HomeViewModel(
         }
       }
 
-      // Check if at least one story in topic is completed. Prioritize recommended story over completed story topic.
+      // Check if at least one story in topic is completed. Prioritize recommended story over
+      // completed story topic.
       val sortedStoryList = storyList.sortedByDescending { !it.isTopicLearned }
       return sortedStoryList.take(promotedStoryListLimit)
         .map { promotedStory ->
