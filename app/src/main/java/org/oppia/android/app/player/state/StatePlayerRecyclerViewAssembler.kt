@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -92,6 +93,10 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 /** The fragment tag corresponding to the concept card dialog fragment. */
 const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
+const val KEY_TRACKED_WRONG_ANSWER_COUNT = "TRACKED_WRONG_ANSWER_COUNT"
+const val KEY_PREVIOUS_HELP_INDEX = "PREVIOUS_HELP_INDEX"
+const val KEY_HINT_SEQUENCE_NUMBER = "HINT_SEQUENCE_NUMBER"
+const val KEY_IS_HINT_VISIBLE_IN_LATEST_STATE = "IS_HINT_VISIBLE_IN_LATEST_STATE"
 
 /**
  * An assembler for generating the list of view models to bind to the state player recycler view.
@@ -149,6 +154,20 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private var hasPreviousResponsesExpanded: Boolean = false
 
   val isCorrectAnswer = ObservableField<Boolean>(false)
+
+  fun saveState(bundle: Bundle) {
+    bundle.putInt(KEY_TRACKED_WRONG_ANSWER_COUNT, hintHandler.trackedWrongAnswerCount)
+    // bundle.putSerializable(KEY_PREVIOUS_HELP_INDEX, hintHandler.previousHelpIndex as Serializable)
+    bundle.putInt(KEY_HINT_SEQUENCE_NUMBER, hintHandler.hintSequenceNumber)
+    bundle.putBoolean(KEY_IS_HINT_VISIBLE_IN_LATEST_STATE, hintHandler.isHintVisibleInLatestState)
+  }
+
+  fun restoreState(bundle: Bundle) {
+    hintHandler.trackedWrongAnswerCount = bundle.getInt(KEY_TRACKED_WRONG_ANSWER_COUNT)
+    // hintHandler.previousHelpIndex = bundle.get(KEY_PREVIOUS_HELP_INDEX) as HelpIndex
+    hintHandler.hintSequenceNumber = bundle.getInt(KEY_HINT_SEQUENCE_NUMBER)
+    hintHandler.isHintVisibleInLatestState = bundle.getBoolean(KEY_IS_HINT_VISIBLE_IN_LATEST_STATE)
+  }
 
   private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
@@ -1309,10 +1328,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val delayShowAdditionalHintsMs: Long,
     private val delayShowAdditionalHintsFromWrongAnswerMs: Long
   ) {
-    private var trackedWrongAnswerCount = 0
-    private var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
-    private var hintSequenceNumber = 0
-    private var isHintVisibleInLatestState = false
+    var trackedWrongAnswerCount = 0
+    var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
+    var hintSequenceNumber = 0
+    var isHintVisibleInLatestState = false
 
     /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
     fun reset() {
@@ -1376,7 +1395,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
       } else {
         // See if the learner's new wrong answer justifies showing a hint.
-        if (isFirstHint && nextUnrevealedHintIndex.hintIndex == 0) {
+        if (isFirstHint) {
           if (wrongAnswerCount > 1) {
             // If more than one answer has been submitted and no hint has yet been shown, show a
             // hint immediately since the learner is probably stuck.
