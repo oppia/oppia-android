@@ -2,7 +2,6 @@ package org.oppia.android.app.onboarding
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
-import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import javax.inject.Inject
 

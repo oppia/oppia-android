@@ -23,8 +23,7 @@ import javax.inject.Inject
 class OnboardingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
-  private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>
+  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>
 ) : OnboardingNavigationListener {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var binding: OnboardingFragmentBinding

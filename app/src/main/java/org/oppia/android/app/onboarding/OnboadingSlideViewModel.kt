@@ -6,7 +6,6 @@ import android.content.res.Resources
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
-import org.oppia.android.app.viewmodel.ObservableViewModel
 
 const val TOTAL_NUMBER_OF_SLIDES = 4
 
