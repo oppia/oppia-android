@@ -63,6 +63,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/options/LoadAppLanguageListListener.kt",
     "src/main/java/org/oppia/android/app/options/LoadAudioLanguageListListener.kt",
     "src/main/java/org/oppia/android/app/options/LoadReadingTextSizeListener.kt",
+    "src/main/java/org/oppia/android/app/options/LanguageRadioButtonListener.kt",
     "src/main/java/org/oppia/android/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/android/app/options/RouteToAudioLanguageListListener.kt",
     "src/main/java/org/oppia/android/app/options/RouteToReadingTextSizeListener.kt",
@@ -178,6 +179,8 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/onboarding/ViewPagerSlide.kt",
     "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicItemViewModel.kt",
     "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicListViewModel.kt",
+    "src/main/java/org/oppia/android/app/options/LanguageItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/options/LanguageSelectionViewModel.kt",
     "src/main/java/org/oppia/android/app/options/OptionControlsViewModel.kt",
     "src/main/java/org/oppia/android/app/options/OptionsAppLanguageViewModel.kt",
     "src/main/java/org/oppia/android/app/options/OptionsAudioLanguageViewModel.kt",
@@ -229,6 +232,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryItemViewModel.kt",
     "src/main/java/org/oppia/android/app/story/StoryViewModel.kt",
+    "src/main/java/org/oppia/android/app/testing/BindableAdapterTestDataModel.kt",
     "src/main/java/org/oppia/android/app/testing/BindableAdapterTestViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/conceptcard/ConceptCardViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/StorySummaryViewModel.kt",
@@ -507,6 +511,7 @@ android_library(
         artifact("com.google.android.material:material"),
         artifact("de.hdodenhof:circleimageview:3.0.1"),
         artifact("javax.annotation:javax.annotation-api"),
+        artifact("nl.dionsegijn:konfetti:1.2.5"),
     ],
 )
 
