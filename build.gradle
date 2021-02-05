@@ -8,6 +8,7 @@ buildscript {
     google()
     jcenter()
     gradlePluginPortal()
+    mavenCentral()
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:3.6.1'

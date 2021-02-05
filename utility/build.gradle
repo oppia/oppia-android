@@ -2,6 +2,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'jacoco'
+
+jacoco {
+  toolVersion = "0.8.2"
+  version "0.7.1.201405082137"
+}
 
 android {
   compileSdkVersion 29
@@ -12,6 +18,8 @@ android {
     targetSdkVersion 29
     versionCode 1
     versionName "1.0"
+    multiDexEnabled true
+    testInstrumentationRunner "org.oppia.android.testing.OppiaTestRunner"
     javaCompileOptions {
       annotationProcessorOptions {
         includeCompileClasspath true
@@ -29,6 +37,8 @@ android {
   }
 
   testOptions {
+    execution 'ANDROID_TEST_ORCHESTRATOR'
+    animationsDisabled true
     unitTests {
       includeAndroidResources = true
       all {
@@ -55,6 +65,9 @@ android {
       minifyEnabled true
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
+    debug {
+      testCoverageEnabled true
+    }
   }
 }
 
@@ -70,7 +83,7 @@ dependencies {
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
       'com.google.firebase:firebase-core:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
-      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+      "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version",
   )
   testImplementation(
       'androidx.test.ext:junit:1.1.1',
@@ -83,7 +96,12 @@ dependencies {
       'org.mockito:mockito-core:2.19.0',
       'org.robolectric:robolectric:4.3',
       project(":testing"),
+      "org.junit.jupiter:junit-jupiter-api:5.3.0-RC1",
   )
+
+  androidTestUtil 'androidx.test:orchestrator:1.1.0'
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.3.0-RC1"
+
   kapt(
       'com.github.bumptech.glide:compiler:4.11.0',
       'com.google.dagger:dagger-compiler:2.24'
@@ -96,9 +114,38 @@ dependencies {
   // controlled more directly than in Gradle.
   implementation project(':model')
 }
+repositories {
+  mavenCentral()
+}
+
 // The GeneratedMessageLite implementations of protobufs are depending on protobuf-java
 // instead of protobuf-lite after Android Studio 3.5,
 // The below command stops that from happening: https://github.com/google/tink/issues/282
 configurations {
   all*.exclude module: 'protobuf-java'
+}
+tasks.withType(Test) {
+  jacoco.includeNoLocationClasses = true
+}
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+
+  reports {
+    xml.enabled = true
+    html.enabled = true
+    csv.enabled false
+  }
+  def fileFilter = [
+      '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*', '**/*$[0-9].*'
+  ]
+
+
+  def mainSrc = "$project.projectDir/src/main/kotlin"
+  def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+  def kotlinDebugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
+
+  classDirectories.from = files([debugTree], [kotlinDebugTree])
+  sourceDirectories.setFrom(files([mainSrc]))
+  executionData.setFrom(fileTree(dir: project.buildDir, includes: [
+      'jacoco/testDebugUnitTest.exec', 'outputs/code_coverage/debugAndroidTest/connected/**/*.ec'
+  ]))
 }
