@@ -37,8 +37,9 @@ jobs:
     - name: Download Checkstyle
       run: |
         cd $HOME/oppia-android-tools
-        echo $(ls)
-        echo $(ls ../oppia-android/scripts/)
+        ls -l .
+        ./oppia-android/scripts/checkstyle_download.sh
+        ls -l ./oppia-android/scripts
 
     - name: Download Ktlint
       run: |
