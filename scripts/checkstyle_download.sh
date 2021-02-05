@@ -1,5 +1,3 @@
-#!/bin/sh
-
 # Download checkstyle
 CHECKSTYLE="8.37"
 echo Using Checkstyle version $CHECKSTYLE
