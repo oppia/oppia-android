@@ -237,7 +237,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_explorationLoads_changeConfiguration_buttonIsNotVisible() {
+  fun testStateFragment_loadExp_explorationLoads_configChange_buttonIsNotVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -260,7 +260,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_explorationHasContinueButton() {
+  fun testStateFragment_loadExp_configChange_explorationHasContinueButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -287,7 +287,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_secondState_hasSubmitButton() {
+  fun testStateFragment_loadExp_configChange_secondState_hasSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       rotateToLandscape()
