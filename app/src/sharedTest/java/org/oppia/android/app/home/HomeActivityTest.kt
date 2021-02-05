@@ -132,9 +132,7 @@ class HomeActivityTest {
 
   private val internalProfileId: Int = 0
   private val internalProfileId1: Int = 1
-  private val internalProfileId2: Int = 2
   private val longNameInternalProfileId: Int = 3
-  private val internalProfileId4: Int = 4
   private lateinit var oppiaClock: OppiaClock
 
   @Before
@@ -147,9 +145,6 @@ class HomeActivityTest {
 
   @After
   fun tearDown() {
-    context.filesDir.listFiles { file ->
-      file.deleteRecursively()
-    }
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
@@ -308,7 +303,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0DoneForFraction_displaysRecommendedStories() {
-    val profileId1 = createProfileId(internalProfileId4)
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markChapDoneFrac0Story0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -318,7 +313,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId4)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -362,7 +357,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_markStory0DoneForRatiosAndFirstTestTopic_displaysRecommendedStories() {
-    val profileId1 = createProfileId(internalProfileId2)
+    val profileId1 = createProfileId(internalProfileId1)
     storyProgressTestHelper.markChapterDoneFirstTestTopicStory0Exploration0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
@@ -382,7 +377,7 @@ class HomeActivityTest {
       timestampOlderThanOneWeek = false
     )
     testCoroutineDispatchers.runCurrent()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId2)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
