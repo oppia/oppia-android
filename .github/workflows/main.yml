@@ -37,14 +37,12 @@ jobs:
     - name: Download Checkstyle
       run: |
         cd $HOME/oppia-android-tools
-        chmod +x ../oppia-android/scripts/checkstyle_download.sh
-        sh ../oppia-android/scripts/checkstyle_download.sh
+        sh ./scripts/checkstyle_download.sh
 
     - name: Download Ktlint
       run: |
         cd $HOME/oppia-android-tools
-        chmod +x ../oppia-android/scripts/ktlint_download.sh
-        sh ../oppia-android/scripts/ktlint_download.sh
+        sh ./scripts/ktlint_download.sh
 
     - name: Download buf
       run: |
@@ -56,13 +54,11 @@ jobs:
 
     - name: Java lint check
       run: |
-        chmod +x ../oppia-android/scripts/checkstyle_lint_check.sh
-        sh ../oppia-android/scripts/checkstyle_lint_check.sh
+        sh ./scripts/checkstyle_lint_check.sh
 
     - name: Kotlin lint check
       run: |
-        chmod +x ../oppia-android/scripts/ktlint_lint_check.sh
-        sh ../oppia-android/scripts/ktlint_lint_check.sh
+        sh ./scripts/ktlint_lint_check.sh
 
     - name: Protobuf lint check
       run: $HOME/oppia-android-tools/buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
