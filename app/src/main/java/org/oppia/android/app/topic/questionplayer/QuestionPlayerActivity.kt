@@ -18,7 +18,7 @@ import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
-const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_EXTRA_KEY =
+const val INTERNAL_SKILL_ID_LIST_EXTRA_KEY =
   "QuestionPlayerActivity.question_player_activity_skill_id_list"
 private const val TAG_STOP_TRAINING_SESSION_DIALOG = "STOP_TRAINING_SESSION_DIALOG"
 
@@ -74,12 +74,12 @@ class QuestionPlayerActivity :
       skillIdList: ArrayList<String>
     ): Intent {
       val intent = Intent(context, QuestionPlayerActivity::class.java)
-      intent.putExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_EXTRA_KEY, skillIdList)
+      intent.putExtra(INTERNAL_SKILL_ID_LIST_EXTRA_KEY, skillIdList)
       return intent
     }
 
     fun getIntentKey(): String {
-      return QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_EXTRA_KEY
+      return INTERNAL_SKILL_ID_LIST_EXTRA_KEY
     }
   }
 
