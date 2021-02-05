@@ -36,8 +36,10 @@ jobs:
 
     - name: Download Checkstyle
       run: |
+        cd $GITHUB_WORKSPACE
+        chmod a+x $HOME/oppia-android/scripts/checkstyle_download.sh
         cd $HOME/oppia-android-tools
-        sh ./oppia-android/scripts/checkstyle_download.sh
+        $HOME/oppia-android/scripts/checkstyle_download.sh
 
     - name: Download Ktlint
       run: |
