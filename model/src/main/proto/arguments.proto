@@ -13,12 +13,12 @@ message ExitProfileDialogArguments {
 
   oneof admin_controls_or_nav_drawer_items {
     // Whether the request for switching/exiting profile was made from Administrator Controls
-    // Fragment/Activity or not.
+    // or not.
     bool is_administrator_controls_selected = 2;
 
-    // The id of the menu item from the Navigation Drawer that was checked before
+    // The value of the menu item from the Navigation Drawer that was checked before
     // the Exit Profile Dialog appears.
-    int32 last_checked_menu_item = 3;
+    LastCheckedMenuItem last_checked_menu_item = 3;
   }
 }
 

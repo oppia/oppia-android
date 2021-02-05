@@ -56,7 +56,7 @@ class ExitProfileDialogFragment : DialogFragment() {
         is Argument.LastCheckedMenuItem -> {
           ExitProfileDialogArguments.newBuilder()
             .setRestoreLastCheckedMenuItem(restoreLastCheckedMenuItem)
-            .setLastCheckedMenuItem(argument.navigationDrawerItem.value)
+            .setLastCheckedMenuItemValue(argument.navigationDrawerItem.value)
             .build()
         }
       }
@@ -94,7 +94,7 @@ class ExitProfileDialogFragment : DialogFragment() {
               )
               else -> Argument.LastCheckedMenuItem(
                 getNavigationDrawerItem(
-                  exitProfileDialogArguments.lastCheckedMenuItem
+                  exitProfileDialogArguments.lastCheckedMenuItemValue
                 )
               )
             }
