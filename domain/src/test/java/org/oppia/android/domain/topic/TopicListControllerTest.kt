@@ -891,8 +891,20 @@ class TopicListControllerTest {
     assertThat(promotedActivityListResultCaptor.value.isSuccess()).isTrue()
   }
 
-  private fun recordRecentlyPlayedChapter(profileId: ProfileId, topicId: String, storyId: String, expId: String, timestamp: Long) {
-    val recordResultDataProvider = profileTestHelper.recordRecentlyPlayedChapter(profileId, topicId, storyId, expId, timestamp)
+  private fun recordRecentlyPlayedChapter(
+    profileId: ProfileId,
+    topicId: String,
+    storyId: String,
+    expId: String,
+    timestamp: Long
+  ) {
+    val recordResultDataProvider = profileTestHelper.recordRecentlyPlayedChapter(
+      profileId,
+      topicId,
+      storyId,
+      expId,
+      timestamp
+    )
     reset(mockUpdateResultObserver)
     val recordResultLiveData = recordResultDataProvider.toLiveData()
     recordResultLiveData.observeForever(mockUpdateResultObserver)
@@ -902,8 +914,20 @@ class TopicListControllerTest {
     assertThat(updateResultCaptor.value.isSuccess()).isTrue()
   }
 
-  private fun recordCompletedChapter(profileId: ProfileId, topicId: String, storyId: String, expId: String, timestamp: Long) {
-    val recordResultDataProvider = profileTestHelper.recordCompletedChapter(profileId, topicId, storyId, expId, timestamp)
+  private fun recordCompletedChapter(
+    profileId: ProfileId,
+    topicId: String,
+    storyId: String,
+    expId: String,
+    timestamp: Long
+  ) {
+    val recordResultDataProvider = profileTestHelper.recordCompletedChapter(
+      profileId,
+      topicId,
+      storyId,
+      expId,
+      timestamp
+    )
     reset(mockUpdateResultObserver)
     val recordResultLiveData = recordResultDataProvider.toLiveData()
     recordResultLiveData.observeForever(mockUpdateResultObserver)

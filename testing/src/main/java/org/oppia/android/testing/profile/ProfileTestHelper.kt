@@ -2,9 +2,6 @@ package org.oppia.android.testing.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.test.runner.intent.IntentStubberRegistry.reset
-import com.google.common.base.Verify.verify
-import org.hamcrest.MatcherAssert.assertThat
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.StoryProgressController
@@ -162,11 +159,12 @@ class ProfileTestHelper @Inject constructor(
     timestamp: Long
   ): DataProvider<Any?> {
     return storyProgressController.recordRecentlyPlayedChapter(
-        profileId,
-        topicId,
-        storyId,
-        expId,
-        timestamp)
+      profileId,
+      topicId,
+      storyId,
+      expId,
+      timestamp
+    )
   }
 
   fun recordCompletedChapter(
@@ -181,6 +179,7 @@ class ProfileTestHelper @Inject constructor(
       topicId,
       storyId,
       expId,
-      timestamp)
+      timestamp
+    )
   }
 }
