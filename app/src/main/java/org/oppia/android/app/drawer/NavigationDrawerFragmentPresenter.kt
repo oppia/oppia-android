@@ -59,7 +59,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private var previousMenuItemId: Int? = null
   private var internalProfileId: Int = -1
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     binding = DrawerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.fragmentDrawerNavView.setNavigationItemSelectedListener(this)
 
@@ -241,24 +241,29 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           if (previousFragment != null) {
             fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
           }
-          val lastCheckedMenuItemId: Int
-          val isAdministratorControlsSelected: Boolean
-          if (getFooterViewModel().isAdministratorControlsSelected.get() == true) {
-            getFooterViewModel().isAdministratorControlsSelected.set(false)
-            isAdministratorControlsSelected = true
-            lastCheckedMenuItemId = -1
-          } else {
-            isAdministratorControlsSelected = false
-            lastCheckedMenuItemId = previousMenuItemId ?: -1
-          }
+          val argument: Argument =
+            if (getFooterViewModel().isAdministratorControlsSelected.get() == true) {
+              getFooterViewModel().isAdministratorControlsSelected.set(false)
+              Argument.IsAdministratorControlsSelected(value = true)
+            } else {
+              Argument.LastCheckedMenuItem(
+                navigationDrawerItem = when (previousMenuItemId) {
+                  0 -> NavigationDrawerItem.HOME
+                  1 -> NavigationDrawerItem.OPTIONS
+                  2 -> NavigationDrawerItem.HELP
+                  3 -> NavigationDrawerItem.DOWNLOADS
+                  4 -> NavigationDrawerItem.SWITCH_PROFILE
+                  else -> NavigationDrawerItem.HOME
+                }
+              )
+            }
           binding.fragmentDrawerNavView.menu.getItem(
             NavigationDrawerItem.SWITCH_PROFILE.ordinal
           ).isChecked = true
           val dialogFragment = ExitProfileDialogFragment
             .newInstance(
               restoreLastCheckedMenuItem = true,
-              isAdministratorControlsSelected = isAdministratorControlsSelected,
-              lastCheckedMenuItemId = lastCheckedMenuItemId
+              argument = argument
             )
           dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
         }
@@ -277,25 +282,15 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     )
   }
 
-  fun checkLastCheckedItemAndCloseDrawer(
-    lastCheckedMenuItemId: Int,
-    isAdministratorControlsSelected: Boolean
-  ) {
-    if (isAdministratorControlsSelected) {
-      getFooterViewModel().isAdministratorControlsSelected.set(true)
-      uncheckAllMenuItemsWhenAdministratorControlsIsChecked()
-    } else if (lastCheckedMenuItemId != -1) {
-      getFooterViewModel().isAdministratorControlsSelected.set(false)
-      val checkedMenuItemPosition =
-        when (lastCheckedMenuItemId) {
-          NavigationDrawerItem.HOME.value -> 0
-          NavigationDrawerItem.OPTIONS.value -> 1
-          NavigationDrawerItem.HELP.value -> 2
-          NavigationDrawerItem.DOWNLOADS.value -> 3
-          else -> 4
-        }
-      if (checkedMenuItemPosition != 4) {
-        binding.fragmentDrawerNavView.menu.getItem(checkedMenuItemPosition).isChecked = true
+  fun checkLastCheckedItemAndCloseDrawer(argument: Argument) {
+    when (argument) {
+      is Argument.IsAdministratorControlsSelected -> {
+        getFooterViewModel().isAdministratorControlsSelected.set(argument.value)
+        uncheckAllMenuItemsWhenAdministratorControlsIsChecked()
+      }
+      is Argument.LastCheckedMenuItem -> {
+        binding.fragmentDrawerNavView.menu
+          .getItem(argument.navigationDrawerItem.ordinal).isChecked = true
       }
     }
     drawerLayout.closeDrawers()

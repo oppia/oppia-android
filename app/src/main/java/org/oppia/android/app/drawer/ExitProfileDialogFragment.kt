@@ -27,20 +27,38 @@ class ExitProfileDialogFragment : DialogFragment() {
      */
     fun newInstance(
       restoreLastCheckedMenuItem: Boolean,
-      isAdministratorControlsSelected: Boolean,
-      lastCheckedMenuItemId: Int
+      argument: Argument
     ): ExitProfileDialogFragment {
       val exitProfileDialogFragment = ExitProfileDialogFragment()
       val args = Bundle()
-      val exitProfileDialogArguments =
-        ExitProfileDialogArguments.newBuilder()
-          .setRestoreLastCheckedMenuItem(restoreLastCheckedMenuItem)
-          .setIsAdministratorControlsSelected(isAdministratorControlsSelected)
-          .setLastCheckedMenuItemId(lastCheckedMenuItemId).build()
+      val exitProfileDialogArguments = createExitProfileDialogFragmentProto(
+        argument = argument,
+        restoreLastCheckedMenuItem = restoreLastCheckedMenuItem
+      )
+
       args.putProto(EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO, exitProfileDialogArguments)
 
       exitProfileDialogFragment.arguments = args
       return exitProfileDialogFragment
+    }
+
+    private fun createExitProfileDialogFragmentProto(
+      argument: Argument, restoreLastCheckedMenuItem: Boolean
+    ): ExitProfileDialogArguments {
+      return when (argument) {
+        is Argument.IsAdministratorControlsSelected -> {
+          ExitProfileDialogArguments.newBuilder()
+            .setRestoreLastCheckedMenuItem(restoreLastCheckedMenuItem)
+            .setIsAdministratorControlsSelected(argument.value)
+            .build()
+        }
+        is Argument.LastCheckedMenuItem -> {
+          ExitProfileDialogArguments.newBuilder()
+            .setRestoreLastCheckedMenuItem(restoreLastCheckedMenuItem)
+            .setLastCheckedMenuItem(argument.navigationDrawerItem.value)
+            .build()
+        }
+      }
     }
   }
 
@@ -56,8 +74,7 @@ class ExitProfileDialogFragment : DialogFragment() {
     )
 
     val restoreLastCheckedMenuItem = exitProfileDialogArguments.restoreLastCheckedMenuItem
-    val isAdministratorControlsSelected = exitProfileDialogArguments.isAdministratorControlsSelected
-    val lastCheckedMenuItemId = exitProfileDialogArguments.lastCheckedMenuItemId
+    val argument = exitProfileDialogArguments.adminControlsOrNavDrawerItemsCase
 
     if (restoreLastCheckedMenuItem) {
       exitProfileDialogInterface =
@@ -70,8 +87,16 @@ class ExitProfileDialogFragment : DialogFragment() {
       .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
         if (restoreLastCheckedMenuItem) {
           exitProfileDialogInterface.checkLastCheckedItemAndCloseDrawer(
-            lastCheckedMenuItemId,
-            isAdministratorControlsSelected
+            when (argument.number) {
+              2 -> Argument.IsAdministratorControlsSelected(
+                exitProfileDialogArguments.isAdministratorControlsSelected
+              )
+              else -> Argument.LastCheckedMenuItem(
+                getNavigationDrawerItem(
+                  exitProfileDialogArguments.lastCheckedMenuItem
+                )
+              )
+            }
           )
           exitProfileDialogInterface.unCheckSwitchProfileItemAndCloseDrawer()
         }
@@ -86,5 +111,16 @@ class ExitProfileDialogFragment : DialogFragment() {
         activity!!.startActivity(intent)
       }
       .create()
+  }
+
+  private fun getNavigationDrawerItem(value: Int): NavigationDrawerItem {
+    return when (value) {
+      0 -> NavigationDrawerItem.HOME
+      1 -> NavigationDrawerItem.OPTIONS
+      2 -> NavigationDrawerItem.HELP
+      3 -> NavigationDrawerItem.DOWNLOADS
+      4 -> NavigationDrawerItem.SWITCH_PROFILE
+      else -> NavigationDrawerItem.HOME
+    }
   }
 }

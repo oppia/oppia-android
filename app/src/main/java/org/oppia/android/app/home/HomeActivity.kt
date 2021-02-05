@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.drawer.Argument
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
@@ -48,11 +49,11 @@ class HomeActivity :
     if (previousFragment != null) {
       supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
+    val argument = Argument.IsAdministratorControlsSelected(false)
     val dialogFragment = ExitProfileDialogFragment
       .newInstance(
         restoreLastCheckedMenuItem = false,
-        isAdministratorControlsSelected = false,
-        lastCheckedMenuItemId = -1
+        argument = argument
       )
     dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }

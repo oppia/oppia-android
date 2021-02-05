@@ -5,15 +5,27 @@ package model;
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
-// Represents the arguments associated with ExitProfileDialogFragment.
+// The fragment arguments passed to instances of ExitProfileDialogFragment.
 message ExitProfileDialogArguments {
-  // The last checked menu item needs to be restored or not.
-  bool restore_last_checked_menu_item = 3;
+  // Whether the last checked navigation drawer menu item needs to be restored(highlighted) or
+  // not after cancelling the Exit Profile Dialog.
+  bool restore_last_checked_menu_item = 1;
 
-  // The request for switching/exiting profile was made from Administrator Controls
-  // Fragment/Activity or not.
-  bool is_administrator_controls_selected = 2;
+  oneof admin_controls_or_nav_drawer_items {
+    // Whether the request for switching/exiting profile was made from Administrator Controls
+    // Fragment/Activity or not.
+    bool is_administrator_controls_selected = 2;
 
-  // The id of the menu item that was checked before the Exit Profile Dialog appears.
-  int32 last_checked_menu_item_id = 1;
+    // The id of the menu item from the Navigation Drawer that was checked before
+    // the Exit Profile Dialog appears.
+    int32 last_checked_menu_item = 3;
+  }
+}
+
+enum LastCheckedMenuItem {
+  HOME_MENU_ITEM = 0;
+  OPTIONS_MENU_ITEM = 1;
+  HELP_MENU_ITEM = 2;
+  DOWNLOADS_MENU_ITEM = 3;
+  SWITCH_PROFILE_ITEM = 4;
 }
