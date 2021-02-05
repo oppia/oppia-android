@@ -2,16 +2,22 @@ package org.oppia.android.testing.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.test.runner.intent.IntentStubberRegistry.reset
+import com.google.common.base.Verify.verify
+import org.hamcrest.MatcherAssert.assertThat
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** This helper allows tests to easily create new profiles and switch between them. */
 class ProfileTestHelper @Inject constructor(
   private val profileManagementController: ProfileManagementController,
+  private val storyProgressController: StoryProgressController,
   private val testCoroutineDispatchers: TestCoroutineDispatchers
 ) {
 
@@ -50,6 +56,22 @@ class ProfileTestHelper @Inject constructor(
     )
     profileManagementController.addProfile(
       name = "Natrajan Subramanniyam Balaguruswamy",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = -10710042,
+      isAdmin = false
+    )
+    profileManagementController.addProfile(
+      name = "Veena",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = -10710042,
+      isAdmin = false
+    )
+    profileManagementController.addProfile(
+      name = "Rajat",
       pin = "123",
       avatarImagePath = null,
       allowDownloadAccess = false,
@@ -130,5 +152,35 @@ class ProfileTestHelper @Inject constructor(
    */
   fun waitForOperationToComplete(data: LiveData<AsyncResult<Any?>>) {
     data.observeForever(observer)
+  }
+
+  fun recordRecentlyPlayedChapter(
+    profileId: ProfileId,
+    topicId: String,
+    storyId: String,
+    expId: String,
+    timestamp: Long
+  ): DataProvider<Any?> {
+    return storyProgressController.recordRecentlyPlayedChapter(
+        profileId,
+        topicId,
+        storyId,
+        expId,
+        timestamp)
+  }
+
+  fun recordCompletedChapter(
+    profileId: ProfileId,
+    topicId: String,
+    storyId: String,
+    expId: String,
+    timestamp: Long
+  ): DataProvider<Any?> {
+    return storyProgressController.recordCompletedChapter(
+      profileId,
+      topicId,
+      storyId,
+      expId,
+      timestamp)
   }
 }
