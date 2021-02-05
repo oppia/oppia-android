@@ -10,26 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.home.HomeFragmentPresenter
-import org.oppia.android.app.home.HomeItemViewModel
-import org.oppia.android.app.home.WelcomeViewModel
-import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
-import org.oppia.android.app.home.recentlyplayed.SectionTitleViewModel
-import org.oppia.android.app.home.topiclist.AllTopicsViewModel
-import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
-import org.oppia.android.app.options.LanguageItemViewModel
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
-import org.oppia.android.databinding.AllTopicsBinding
-import org.oppia.android.databinding.LanguageItemsBinding
 import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.databinding.OnboardingSlideBinding
-import org.oppia.android.databinding.OnboardingSlideBindingImpl
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
-import org.oppia.android.databinding.PromotedStoryListBinding
-import org.oppia.android.databinding.SectionTitleBinding
-import org.oppia.android.databinding.TopicSummaryViewBinding
-import org.oppia.android.databinding.WelcomeBinding
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -63,8 +48,6 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager() {
-//    val adapter =
-//      OnboardingPagerAdapter(fragment.requireContext(), getOnboardingSlideFinalViewModel())
     binding.onboardingSlideViewPager.adapter = createRecyclerViewAdapter()
     binding.onboardingSlideViewPager.registerOnPageChangeCallback(
       object : ViewPager2.OnPageChangeCallback() {
@@ -171,13 +154,6 @@ class OnboardingFragmentPresenter @Inject constructor(
 
   private fun getOnboardingViewModel(): OnboardingViewModel {
     return viewModelProvider.getForFragment(fragment, OnboardingViewModel::class.java)
-  }
-
-  private fun getOnboardingSlideFinalViewModel(): OnboardingSlideFinalViewModel {
-    return viewModelProviderFinalSlide.getForFragment(
-      fragment,
-      OnboardingSlideFinalViewModel::class.java
-    )
   }
 
   private fun addDots() {
