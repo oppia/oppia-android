@@ -43,7 +43,8 @@ class ExitProfileDialogFragment : DialogFragment() {
     }
 
     private fun createExitProfileDialogFragmentProto(
-      argument: Argument, restoreLastCheckedMenuItem: Boolean
+      argument: Argument,
+      restoreLastCheckedMenuItem: Boolean
     ): ExitProfileDialogArguments {
       return when (argument) {
         is Argument.IsAdministratorControlsSelected -> {
