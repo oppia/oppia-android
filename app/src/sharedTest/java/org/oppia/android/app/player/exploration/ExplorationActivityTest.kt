@@ -285,7 +285,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
+  
   @Test
   fun testAudioWithNoVoiceover_openPrototypeExploration_configChange_checkAudioButtonIsHidden() {
     launch<ExplorationActivity>(
@@ -347,7 +347,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
+  
   @Test
   fun testAudWithCell_openRatioExp_clickAudIcon_changeConfig_checkOpensCellAudDialog() {
     setupAudio()
@@ -371,7 +371,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
+ 
   @Test
   fun testAudWithCell_openRatioExp_clickAudIcon_clickNegative_checkAudFragIsHidden() {
     setupAudio()
@@ -404,7 +404,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
+  
   @Test
   fun testAudWithCell_openRatioExp_clickAudIcon_clickPositive_checkAudFragmentIsVisible() {
     setupAudio()
@@ -446,7 +446,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
+
   @Test
   fun testAudWithCell_openRatioExp_clickNegative_AudIcon_checkAudFragHidden_NoDialogDisplay() {
     setupAudio()
@@ -483,7 +483,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
+  
   @Test
   fun testAudWithCell_openRatioExp_clickPositive_AudIconTwice_checkAudVisible_NoDialogDisplay() {
     setupAudio()
@@ -521,7 +521,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
+  
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
@@ -557,7 +557,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
+  
   @Test
   fun testAudWithWifi_openFractionsExp_changeLang_clickNext_checkLangIsHinglish() {
     setupAudioForFraction()
@@ -604,7 +604,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
+ 
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
@@ -685,7 +685,7 @@ class ExplorationActivityTest {
     }
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
+  
   // TODO(#89): Check this test case too. It works in pair with below test case.
   @Test
   fun testExplorationActivity_onBackPressed_showsStopExpDialog_clickCancel_dismissesDialog() {
@@ -703,7 +703,7 @@ class ExplorationActivityTest {
     assertThat(explorationActivityTestRule.activity.isFinishing).isFalse()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
+  
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
