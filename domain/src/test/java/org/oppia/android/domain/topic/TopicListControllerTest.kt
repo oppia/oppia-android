@@ -51,7 +51,6 @@ import org.oppia.android.util.parser.ImageDownloadUrlTemplate
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Date
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
