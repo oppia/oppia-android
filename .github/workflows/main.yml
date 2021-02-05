@@ -58,7 +58,7 @@ jobs:
 
     - name: Kotlin lint check
       run: |
-        sh /home/runner/work/oppia-android/oppia-android/scripts/ktlint_lint_check.sh
+        sh /home/runner/work/oppia-android/oppia-android/scripts/ktlint_lint_check.sh $HOME
 
     - name: Protobuf lint check
       run: $HOME/oppia-android-tools/buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
