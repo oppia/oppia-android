@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -28,6 +27,9 @@ import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.audio.AudioFragment
 import org.oppia.android.app.player.audio.AudioUiManager
+import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
+import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
+import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.utility.SplitScreenManager
@@ -86,12 +88,6 @@ class StateFragmentPresenter @Inject constructor(
     explorationProgressController.getCurrentState().toLiveData()
   }
 
-  private val confettiColors = listOf(
-    R.color.confetti_red,
-    R.color.confetti_yellow,
-    R.color.confetti_blue
-  ).map { getColor(context, it) }
-
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -113,7 +109,8 @@ class StateFragmentPresenter @Inject constructor(
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, entityType),
       binding.congratulationsTextView,
-      binding.congratulationsTextConfettiView
+      binding.congratulationsTextConfettiView,
+      binding.fullScreenConfettiView
     )
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
@@ -231,8 +228,10 @@ class StateFragmentPresenter @Inject constructor(
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
     congratulationsTextView: TextView,
-    congratulationsTextConfettiView: KonfettiView
+    congratulationsTextConfettiView: KonfettiView,
+    fullScreenConfettiView: KonfettiView
   ): StatePlayerRecyclerViewAssembler {
+    val isTablet = context.resources.getBoolean(R.bool.isTablet)
     return builder
       .hasConversationView(hasConversationView)
       .addContentSupport()
@@ -246,7 +245,11 @@ class StateFragmentPresenter @Inject constructor(
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,
         congratulationsTextConfettiView,
-        confettiColors
+        MINI_CONFETTI_BURST
+      )
+      .addCelebrationForEndOfSession(
+        fullScreenConfettiView,
+        if (isTablet) LARGE_CONFETTI_BURST else MEDIUM_CONFETTI_BURST
       )
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(
