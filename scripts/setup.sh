@@ -10,19 +10,14 @@
 #
 # NOTE: this script should be run once after the initial codebase setup
 
-# Move file from script folder to .git/hooks folder
-cp scripts/pre-push.sh .git/hooks/pre-push
+bash scripts/setup_deps.sh
 
 # Create a folder where all the set up files will be downloaded
 mkdir -p ../oppia-android-tools
 cd ../oppia-android-tools
 
 # Download ktlint
-KTLINT="0.37.1"
-echo Using Ktlint $KTLINT
-curl -sSLOC - https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
-chmod a+x ktlint
-echo Ktlint file downloaded
+bash ../oppia-android/scripts/ktlint_download.sh
 
 # Download checkstyle
-bash scripts/download_checkstyle.sh
+bash ../oppia-android/scripts/checkstyle_download.sh
