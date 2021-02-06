@@ -183,7 +183,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_morningTimestamp_goodMorningMessageIsDisplayed() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -198,7 +198,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_afternoonTimestamp_goodAfternoonMessageIsDisplayed() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -213,7 +213,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_eveningTimestamp_goodEveningMessageIsDisplayed() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -561,7 +561,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_allTopicsCompleted_hidesPromotedStories() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
@@ -582,7 +582,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_partialProgressForFractionsAndRatios_showsRecentlyPlayedStories() {
     val profileId = createProfileId(internalProfileId)
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
@@ -608,7 +608,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicsHeader() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
@@ -626,7 +626,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicCards() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
@@ -718,7 +718,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_mobileShows3PromotedStories() {
     val profileId = createProfileId(internalProfileId)
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
       profileId = profileId,
       timestampOlderThanOneWeek = false
@@ -756,7 +756,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletPortraitShows3PromotedStories() {
     val profileId = createProfileId(internalProfileId)
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
       profileId = profileId,
       timestampOlderThanOneWeek = false
@@ -794,7 +794,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletLandscapeShows4PromotedStories() {
     val profileId = createProfileId(internalProfileId)
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
       profileId = profileId,
       timestampOlderThanOneWeek = false
@@ -833,7 +833,7 @@ class HomeActivityTest {
   fun testHomeActivity_onScrollDown_promotedStoryListViewStillShows() {
     // This test is to catch a bug introduced and then fixed in #2246
     // (see https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462)
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     val profileId = createProfileId(internalProfileId)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId, timestampOlderThanOneWeek = false

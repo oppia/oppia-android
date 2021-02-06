@@ -22,13 +22,13 @@ import javax.inject.Singleton
 @Singleton
 class FakeOppiaClock @Inject constructor() : OppiaClock {
   private var fixedFakeTimeMs: Long = 0
-  private var fakeTimeMode: FakeTimeMode = FakeTimeMode.USE_WALL_CLOCK_TIME
+  private var fakeTimeMode: FakeTimeMode = FakeTimeMode.MODE_WALL_CLOCK_TIME
 
   override fun getCurrentTimeMs(): Long {
     return when (fakeTimeMode) {
-      FakeTimeMode.USE_WALL_CLOCK_TIME -> System.currentTimeMillis()
-      FakeTimeMode.USE_FIXED_FAKE_TIME -> fixedFakeTimeMs
-      FakeTimeMode.USE_UPTIME_MILLIS -> SystemClock.uptimeMillis()
+      FakeTimeMode.MODE_WALL_CLOCK_TIME -> System.currentTimeMillis()
+      FakeTimeMode.MODE_FIXED_FAKE_TIME -> fixedFakeTimeMs
+      FakeTimeMode.MODE_UPTIME_MILLIS -> SystemClock.uptimeMillis()
     }
   }
 
@@ -41,11 +41,11 @@ class FakeOppiaClock @Inject constructor() : OppiaClock {
   /**
    * Sets the current wall-clock time in milliseconds since the Unix epoch, in UTC.
    *
-   * This can only be used if the current time mode is [FakeTimeMode.USE_FIXED_FAKE_TIME].
+   * This can only be used if the current time mode is [FakeTimeMode.MODE_FIXED_FAKE_TIME].
    */
   fun setCurrentTimeMs(currentTimeMs: Long) {
-    check(fakeTimeMode == FakeTimeMode.USE_FIXED_FAKE_TIME) {
-      "Cannot change set time unless time mode is USE_FIXED_FAKE_TIME."
+    check(fakeTimeMode == FakeTimeMode.MODE_FIXED_FAKE_TIME) {
+      "Cannot change set time unless time mode is MODE_FIXED_FAKE_TIME."
     }
     fixedFakeTimeMs = currentTimeMs
   }
@@ -73,6 +73,7 @@ class FakeOppiaClock @Inject constructor() : OppiaClock {
   /** Returns the current time mode set by [setFakeTimeMode] or defaulted upon clock init. */
   fun getFakeTimeMode() = fakeTimeMode
 
+  @SuppressLint("SimpleDateFormat")
   private fun getUtcTimeOfDayAsAdjustedUtcTimestampAccountForTimezone(utcTimeMs: Long): Long {
     val format = SimpleDateFormat("yyyy-MM-dd hh:mm a")
     val utcTimeAsDateTimeString = format.format(utcTimeMs)
@@ -100,14 +101,14 @@ class FakeOppiaClock @Inject constructor() : OppiaClock {
      * Indicates that the fake clock should use the system wall clock for tracking time. This is the
      * default behavior since it matches the production version of [OppiaClock].
      */
-    USE_WALL_CLOCK_TIME,
+    MODE_WALL_CLOCK_TIME,
 
     /**
      * Indicates that the fake clock should default to an initial time of 0 and only return the time
      * set by [setCurrentTimeMs]. This is the only mode that can be used if the test wishes to
      * change time.
      */
-    USE_FIXED_FAKE_TIME,
+    MODE_FIXED_FAKE_TIME,
 
     /**
      * Indicates that the fake clock should use [SystemClock.uptimeMillis] to provide time, instead.
@@ -122,6 +123,6 @@ class FakeOppiaClock @Inject constructor() : OppiaClock {
      * across test boundaries since each individual test is treated like a device restart from the
      * perspective of uptime tracking.
      */
-    USE_UPTIME_MILLIS
+    MODE_UPTIME_MILLIS
   }
 }

@@ -140,7 +140,7 @@ class NavigationDrawerActivityTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProfileTestHelper.markCompletedRatiosStory0(
       ProfileId.newBuilder().setInternalId(
         internalProfileId

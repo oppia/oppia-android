@@ -86,7 +86,7 @@ class WelcomeViewModelTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
   }
 
   @Test

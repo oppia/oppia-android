@@ -106,7 +106,7 @@ class OngoingTopicListActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProfileTestHelper.markCompletedRatiosStory0(
       profileId,
       timestampOlderThanOneWeek = false

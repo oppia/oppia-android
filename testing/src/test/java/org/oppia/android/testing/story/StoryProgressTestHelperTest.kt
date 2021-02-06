@@ -121,7 +121,7 @@ class StoryProgressTestHelperTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   private fun setUpTestApplicationComponent() {

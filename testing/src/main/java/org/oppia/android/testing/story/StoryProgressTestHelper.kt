@@ -754,7 +754,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   private fun verifyClockMode() {
-    check(fakeOppiaClock.getFakeTimeMode() == FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS) {
+    check(fakeOppiaClock.getFakeTimeMode() == FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS) {
       "Proper usage of StoryProgressTestHelper requires using uptime millis otherwise it's " +
         "highly likely tests depending on this utility will be flaky."
     }

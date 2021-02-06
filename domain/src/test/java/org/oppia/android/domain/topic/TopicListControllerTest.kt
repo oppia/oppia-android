@@ -100,7 +100,7 @@ class TopicListControllerTest {
 
     // Use uptime millis for time tracking since that allows proper time management for recorded
     // activities that need to be measurably apart from one another (such as completed chapters).
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   private fun setUpTestApplicationComponent() {
