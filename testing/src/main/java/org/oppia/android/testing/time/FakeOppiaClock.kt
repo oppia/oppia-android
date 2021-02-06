@@ -1,8 +1,12 @@
 package org.oppia.android.testing.time
 
+import android.annotation.SuppressLint
 import android.os.SystemClock
 import org.oppia.android.util.system.OppiaClock
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.TimeZone
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -46,9 +50,48 @@ class FakeOppiaClock @Inject constructor() : OppiaClock {
     fixedFakeTimeMs = currentTimeMs
   }
 
+  /**
+   * Sets the clock's current time to a new UTC timestamp based on the specified one that takes
+   * place at the same time of day on the same date as the specified timestamp, except accounting
+   * for the local user's timezone.
+   *
+   * This is useful for ensuring that local calculations which depend on the device's timezone can
+   * be tested for timestamps that must occur at a particular time of day or on a particular date.
+   *
+   * Note that this has the same restrictions as [setCurrentTimeMs] with regards to this clock's
+   * time mode.
+   */
+  fun setCurrentTimeToSameDateTime(utcTimeMs: Long) {
+    setCurrentTimeMs(getUtcTimeOfDayAsAdjustedUtcTimestampAccountForTimezone(utcTimeMs))
+  }
+
   /** Sets the current mode used to compute time for [getCurrentTimeMs] and [getCurrentCalendar]. */
   fun setFakeTimeMode(fakeTimeMode: FakeTimeMode) {
     this.fakeTimeMode = fakeTimeMode
+  }
+
+  /** Returns the current time mode set by [setFakeTimeMode] or defaulted upon clock init. */
+  fun getFakeTimeMode() = fakeTimeMode
+
+  private fun getUtcTimeOfDayAsAdjustedUtcTimestampAccountForTimezone(utcTimeMs: Long): Long {
+    val format = SimpleDateFormat("yyyy-MM-dd hh:mm a")
+    val utcTimeAsDateTimeString = format.format(utcTimeMs)
+    val date =
+      format.parse(utcTimeAsDateTimeString)
+        ?: error("Expected to parse date for time: $utcTimeAsDateTimeString")
+    return getLocalToUtcDate(date) ?: error("Failed to convert date to UTC: $date")
+  }
+
+  @SuppressLint("SimpleDateFormat")
+  private fun getLocalToUtcDate(date: Date): Long? {
+    val calendar = Calendar.getInstance()
+    calendar.time = date
+    calendar.timeZone = TimeZone.getTimeZone("UTC")
+    val time = calendar.time
+    val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    outputFormat.timeZone = TimeZone.getTimeZone("UTC")
+    val newDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(outputFormat.format(time))
+    return newDate?.time
   }
 
   /** Determines the type of mode the clock should operate in. */
