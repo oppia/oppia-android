@@ -1,0 +1,25 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "observable_array_list",
+    srcs = [
+        "ObservableArrayList.kt",
+    ],
+    deps = [
+        artifact("androidx.databinding:databinding-adapters"),
+    ],
+)
+
+kt_android_library(
+    name = "observable_view_model",
+    srcs = [
+        "ObservableViewModel.kt",
+    ],
+    deps = [
+        artifact("androidx.databinding:databinding-adapters"),
+        artifact("androidx.lifecycle:lifecycle-extensions:2.2.0"),
+        artifact("androidx.lifecycle:lifecycle-livedata-core:2.2.0"),
+        artifact("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"),
+    ],
+)

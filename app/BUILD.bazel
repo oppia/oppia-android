@@ -249,8 +249,6 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/topic/revision/TopicRevisionViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/revisioncard/RevisionCardViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/TopicViewModel.kt",
-    "src/main/java/org/oppia/android/app/viewmodel/ObservableArrayList.kt",
-    "src/main/java/org/oppia/android/app/viewmodel/ObservableViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/end/WalkthroughFinalViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/topiclistviewmodel/WalkthroughTopicHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/topiclistviewmodel/WalkthroughTopicSummaryViewModel.kt",
