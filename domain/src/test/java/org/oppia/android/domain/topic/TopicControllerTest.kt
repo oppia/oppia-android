@@ -1157,35 +1157,35 @@ class TopicControllerTest {
   }
 
   private fun markFractionsStory0Chapter0AsCompleted() {
-    storyProgressTestHelper.markChapDoneFracStory0Exp0(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId1,
       timestampOlderThanOneWeek = false
     )
   }
 
   private fun markFractionsStory0Chapter1AsCompleted() {
-    storyProgressTestHelper.markChapDoneFracStory0Exp1(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp1(
       profileId1,
       timestampOlderThanOneWeek = false
     )
   }
 
   private fun markSecondStory1Chapter1AsCompleted() {
-    storyProgressTestHelper.markChapDoneTestTopic0Story1Exp1(
+    storyProgressTestHelper.markCompletedTestTopic0Story1Exp1(
       profileId1,
       timestampOlderThanOneWeek = false
     )
   }
 
   private fun markRatiosStory0Chapter0AsCompleted() {
-    storyProgressTestHelper.markChapDoneRatiosStory0Exp0(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId1,
       timestampOlderThanOneWeek = false
     )
   }
 
   private fun markRatiosStory0Chapter1AsCompleted() {
-    storyProgressTestHelper.markChapDoneRatiosStory0Exp1(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp1(
       profileId1,
       timestampOlderThanOneWeek = false
     )

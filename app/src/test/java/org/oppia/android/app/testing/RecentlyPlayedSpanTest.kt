@@ -91,11 +91,11 @@ class RecentlyPlayedSpanTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = true
     )

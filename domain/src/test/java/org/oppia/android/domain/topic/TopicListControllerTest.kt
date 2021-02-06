@@ -50,7 +50,6 @@ import org.oppia.android.util.parser.DefaultGcsPrefix
 import org.oppia.android.util.parser.ImageDownloadUrlTemplate
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -248,7 +247,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_ongoingStoryListIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -263,7 +262,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetPromotedStoryList_markChapDoneFracStory0Exp0_ongoingStoryListIsCorrect() {
-    storyProgressTestHelper.markChapDoneFracStory0Exp0(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -278,11 +277,11 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_ongoingStoryListCorrect() {
-    storyProgressTestHelper.markChapDoneFracStory0Exp0(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration1(
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp1(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -297,7 +296,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetPromotedStoryList_markAllChapsDoneInFractions_suggestedStoryListIsCorrect() {
-    storyProgressTestHelper.markFullStoryProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -317,7 +316,11 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markRecentPlayedFirstChapInAllStoriesInRatios_ongoingStoryListIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0AndStory1Exploration2(
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp2(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -335,7 +338,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markExp0DoneAndExp2InRatios_promotedStoryListIsCorrect() {
-    storyProgressTestHelper.markRatiosStory0Done(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -350,11 +353,11 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markStoryDoneOfRatiosAndFirstTestTopic_suggestedStoryListIsCorrect() {
-    storyProgressTestHelper.markTestTopic0Story0Done(
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRatiosStory0Done(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -370,7 +373,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markRecentlyPlayedFirstTestTopic_defaultSuggestedStoryListIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedForTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -394,7 +397,7 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrievePromotedActivityList_markAllChapDoneInAllTopics_comingSoonTopicListIsCorrect() {
-    storyProgressTestHelper.markFullProgressForAllTopics(
+    storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -407,7 +410,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markAllChapDoneInSecondTestTopic_doesNotPromoteAnyStories() {
-    storyProgressTestHelper.markFullProgressForSecondTestTopic(
+    storyProgressTestHelper.markCompletedTestTopic1Story2(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -423,7 +426,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markAllChapDoneInSecondTestTopic_comingSoonTopicListIsCorrect() {
-    storyProgressTestHelper.markFullProgressForSecondTestTopic(
+    storyProgressTestHelper.markCompletedTestTopic1Story2(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -442,15 +445,15 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_ongoingListIsCorrect() {
-    storyProgressTestHelper.markChapDoneFracStory0Exp0(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markChapDoneRatiosStory0Exp0(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markChapDoneRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -471,15 +474,15 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markFirstExpOfEveryStoryDoneWithinLastMonth_ongoingOlderListIsCorrect() {
-    storyProgressTestHelper.markChapDoneFracStory0Exp0(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = true
     )
-    storyProgressTestHelper.markChapDoneRatiosStory0Exp0(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = true
     )
-    storyProgressTestHelper.markChapDoneRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId0,
       timestampOlderThanOneWeek = true
     )
@@ -500,7 +503,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markRecentlyPlayedForFirstTestTopic_ongoingStoryListIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedForTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -515,7 +518,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markOneStoryDoneForFirstTestTopic_suggestedStoryListIsCorrect() {
-    storyProgressTestHelper.markTestTopic0Story0Done(
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -531,11 +534,11 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markOneStoryDoneAndPlayNextStoryOfFirstTestTopic_ongoingListIsCorrect() {
-    storyProgressTestHelper.markTestTopic0Story0Done(
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedForTestTopic0Story1Exp1(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp1(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -552,15 +555,15 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_story0DonePlayStory1FirstTestTopic_playRatios_firstTestTopicisLearned() {
-    storyProgressTestHelper.markTestTopic0Story0Done(
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedForTestTopic0Story1Exp1(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp1(
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -582,15 +585,15 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveStoryList_markFirstExpOfEveryStoryDoneWithinLastMonth_ongoingListIsCorrect() {
-    storyProgressTestHelper.markChapDoneFracStory0Exp0(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = true
     )
-    storyProgressTestHelper.markChapDoneRatiosStory0Exp0(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = true
     )
-    storyProgressTestHelper.markChapDoneRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId0,
       timestampOlderThanOneWeek = false
     )

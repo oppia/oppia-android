@@ -107,11 +107,11 @@ class OngoingTopicListActivityTest {
     testCoroutineDispatchers.registerIdlingResource()
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
-    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProfileTestHelper.markCompletedRatiosStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProfileTestHelper.markPartialTopicProgressForFractions(
+    storyProfileTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )

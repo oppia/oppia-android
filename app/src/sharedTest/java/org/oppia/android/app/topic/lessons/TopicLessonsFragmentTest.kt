@@ -150,7 +150,7 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_completeStoryProgress_isDisplayed() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -162,7 +162,11 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_partialStoryProgress_isDisplayed() {
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId,
       timestampOlderThanOneWeek = false
     )

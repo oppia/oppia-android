@@ -110,11 +110,11 @@ class CompletedStoryListActivityTest {
     testCoroutineDispatchers.registerIdlingResource()
 
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.USE_UPTIME_MILLIS)
-    storyProfileTestHelper.markFullStoryProgressForFractions(
+    storyProfileTestHelper.markCompletedFractionsStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProfileTestHelper.markCompletedRatiosStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )

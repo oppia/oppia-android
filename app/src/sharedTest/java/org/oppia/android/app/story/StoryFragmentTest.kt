@@ -504,7 +504,7 @@ class StoryFragmentTest {
   }
 
   private fun setStoryPartialProgressForFractions() {
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )

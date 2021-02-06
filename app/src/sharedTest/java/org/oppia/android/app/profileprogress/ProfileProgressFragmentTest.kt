@@ -259,11 +259,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_ongoingTopicCountIsTwo() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -280,11 +284,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_twoPartialStoryProgress_ongoingTopicCountIsTwo() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -315,11 +323,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_ongoingTopicDescriptionIsCorrect() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -336,11 +348,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_ongoingTopicDescriptionIsCorrect() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -371,11 +387,11 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesCountIsTwo() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markFullStoryProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -404,11 +420,11 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesDescriptionIsCorrect() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markFullStoryProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -557,11 +573,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickTopicCount_opensOngoingTopicListActivity() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -582,11 +602,11 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickStoryCount_opensCompletedStoryListActivity() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markFullStoryProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )

@@ -66,26 +66,10 @@ class StoryProgressTestHelper @Inject constructor(
     MockitoAnnotations.initMocks(this)
   }
 
-  // TODO: reorganize, rename, and maybe simplify API. Simplify KDocs.
+  /* Test topic completion methods. */
 
   /**
-   * Marks full topic progress on all topics for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting topic progress for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markFullProgressForAllTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markFullTopicProgressForFractions(profileId, timestampOlderThanOneWeek)
-    markFullTopicProgressForTestTopics(profileId, timestampOlderThanOneWeek)
-    markFullTopicProgressForRatios(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Creates a partial story progress for a particular profile.
+   * Marks the first chapter of test topic 0 story 0 as completed.
    *
    * Note that this function will advance the clock & synchronize all background execution to ensure
    * that any operations needed to achieve the requested state are completed and successful.
@@ -94,358 +78,160 @@ class StoryProgressTestHelper @Inject constructor(
    * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
    *     ago
    */
-  fun markPartialStoryProgressForFractions(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markChapDoneFracStory0Exp0(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markChapDoneFracStory0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic0Story0Exp2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     recordCompletedChapter(
       profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
       timestampOlderThanOneWeek
     )
   }
 
   /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the second chapter of test topic 0 story 0 as completed, and any needed prerequisites.
+   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * and any other nuances.
    */
-  fun markChapDoneFracStory0Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic0Story0Exp5(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Must complete prerequisite chapter first.
-    markChapDoneFracStory0Exp0(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story0Exp2(profileId, timestampOlderThanOneWeek)
     recordCompletedChapter(
       profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_1,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
       timestampOlderThanOneWeek
     )
   }
 
   /**
-   * Creates a partial topic progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction topic for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the first chapter of test topic 0 story 1 as completed, and any needed prerequisites.
+   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * and any other nuances.
    */
-  fun markPartialTopicProgressForFractions(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markPartialStoryProgressForFractions(profileId, timestampOlderThanOneWeek)
+  fun markCompletedTestTopic0Story1Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_1,
+      TEST_EXPLORATION_ID_1,
+      timestampOlderThanOneWeek
+    )
   }
 
   /**
-   *  Marks full story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting full on the fraction story progress for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the second chapter of test topic 0 story 1 as completed, and any needed prerequisites.
+   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * and any other nuances.
    */
-  fun markFullStoryProgressForFractions(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic0Story1Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    // Must complete prerequisite chapter first.
+    markCompletedTestTopic0Story1Exp1(profileId, timestampOlderThanOneWeek)
+    recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_1,
+      TEST_EXPLORATION_ID_0,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the third chapter of test topic 0 story 1 as completed, and any needed prerequisites.
+   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * and any other nuances.
+   */
+  fun markCompletedTestTopic0Story1Exp3(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    // Must complete prerequisite chapter first.
+    markCompletedTestTopic0Story1Exp0(profileId, timestampOlderThanOneWeek)
+    recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_1,
+      TEST_EXPLORATION_ID_3,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the only chapter of test topic 1 story 2 as completed, and any needed prerequisites.
+   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * and any other nuances.
+   */
+  fun markCompletedTestTopic1Story2Exp4(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_4,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks test topic 0's story 0 as completed. See [markCompletedTestTopic0Story0Exp2] for
+   * specifics on the parameters passed to this method, and any other nuances.
+   */
+  fun markCompletedTestTopic0Story0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Complete last chapter (+ previous automatically).
-    markChapDoneFracStory0Exp1(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story0Exp5(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks full topic progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting fraction topic progress for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks test topic 0's story 1 as completed. See [markCompletedTestTopic0Story0Exp2] for
+   * specifics on the parameters passed to this method, and any other nuances.
    */
-  fun markFullTopicProgressForFractions(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markFullStoryProgressForFractions(profileId, timestampOlderThanOneWeek)
+  fun markCompletedTestTopic0Story1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    // Complete last chapter (+ previous automatically).
+    markCompletedTestTopic0Story1Exp3(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks full topic progress on Test Topics for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting topic progress for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks test topic 1's story 2 as completed. See [markCompletedTestTopic0Story0Exp2] for
+   * specifics on the parameters passed to this method, and any other nuances.
    */
-  fun markFullTopicProgressForTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic1Story2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markCompletedTestTopic1Story2Exp4(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks all stories in topic 0 as completed. See [markCompletedTestTopic0Story0Exp2] for
+   * specifics on the parameters passed to this method, and any other nuances.
+   */
+  fun markCompletedTestTopic0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markCompletedTestTopic0Story0(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story1(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks all stories in topic 1 as completed. See [markCompletedTestTopic0Story0Exp2] for
+   * specifics on the parameters passed to this method, and any other nuances.
+   */
+  fun markCompletedTestTopic1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markCompletedTestTopic1Story2(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks all test topics as completed. See [markCompletedTestTopic0Story0Exp2] for specifics on
+   * the parameters passed to this method, and any other nuances.
+   */
+  fun markCompletedTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Stories and Explorations for "Test Topic"s are not in chronological order so we want to
     // ensure that the combinations of Topic / Story / Exploration that are visible will be marked
     // as completed.
-    markFullTopicProgressForTestTopic0(profileId, timestampOlderThanOneWeek)
-    markFullTopicProgressForTestTopic1(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic1(profileId, timestampOlderThanOneWeek)
   }
 
-  /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markChapDoneTestTopic0Story0Exp2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    recordCompletedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      timestampOlderThanOneWeek
-    )
-  }
+  /* Ratios completion methods. */
 
   /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the first chapter of ratios topic story 0 as completed, and any needed prerequisites. See
+   * [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method, and
+   * any other nuances.
    */
-  fun markChapDoneTestTopic0Story0Exp5(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    // Must complete prerequisite chapter first.
-    markChapDoneTestTopic0Story0Exp2(profileId, timestampOlderThanOneWeek)
-    recordCompletedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markChapDoneTestTopic0Story1Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    recordCompletedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_1,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markChapDoneTestTopic0Story1Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    // Must complete prerequisite chapter first.
-    markChapDoneTestTopic0Story1Exp1(profileId, timestampOlderThanOneWeek)
-    recordCompletedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_0,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markChapDoneTestTopic0Story1Exp3(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    // Must complete prerequisite chapter first.
-    markChapDoneTestTopic0Story1Exp0(profileId, timestampOlderThanOneWeek)
-    recordCompletedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_3,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markChapDoneTestTopic1Story2Exp4(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    recordCompletedChapter(
-      profileId,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_2,
-      TEST_EXPLORATION_ID_4,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markTestTopic0Story0Done(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    // Complete last chapter (+ previous automatically).
-    markChapDoneTestTopic0Story0Exp5(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markTestTopic0Story1Done(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    // Complete last chapter (+ previous automatically).
-    markChapDoneTestTopic0Story1Exp3(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markTestTopic1Story2Done(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markChapDoneTestTopic1Story2Exp4(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Marks full topic progress on Ratios for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting topic progress for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markFullTopicProgressForTestTopic0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markTestTopic0Story0Done(profileId, timestampOlderThanOneWeek)
-    markTestTopic0Story1Done(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Marks full topic progress on Ratios for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting topic progress for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markFullTopicProgressForTestTopic1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markTestTopic1Story2Done(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Marks full topic progress on Ratios for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting topic progress for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markFullTopicProgressForRatios(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRatiosStory0Done(profileId, timestampOlderThanOneWeek)
-    markRatiosStory1Done(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Marks full topic progress on the second test topic for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting topic progress for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markFullProgressForSecondTestTopic(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markTestTopic1Story2Done(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markChapDoneRatiosStory0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     recordCompletedChapter(
       profileId,
       RATIOS_TOPIC_ID,
@@ -456,18 +242,13 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the second chapter of ratios topic story 0 as completed, and any needed prerequisites.
+   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * and any other nuances.
    */
-  fun markChapDoneRatiosStory0Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory0Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Must complete prerequisite chapter first.
-    markChapDoneRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
+    markCompletedRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
     recordCompletedChapter(
       profileId,
       RATIOS_TOPIC_ID,
@@ -477,17 +258,13 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
+
   /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the first chapter of ratios topic story 1 as completed, and any needed prerequisites. See
+   * [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method, and
+   * any other nuances.
    */
-  fun markChapDoneRatiosStory1Exp2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory1Exp2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     recordCompletedChapter(
       profileId,
       RATIOS_TOPIC_ID,
@@ -498,18 +275,13 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the second chapter of ratios topic story 1 as completed, and any needed prerequisites.
+   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * and any other nuances.
    */
-  fun markChapDoneRatiosStory1Exp3(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory1Exp3(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Must complete prerequisite chapter first.
-    markChapDoneRatiosStory1Exp2(profileId, timestampOlderThanOneWeek)
+    markCompletedRatiosStory1Exp2(profileId, timestampOlderThanOneWeek)
     recordCompletedChapter(
       profileId,
       RATIOS_TOPIC_ID,
@@ -520,81 +292,92 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks ratios topic story 0 as completed. See [markCompletedTestTopic0Story0Exp2] for specifics
+   * on the parameters passed to this method, and any other nuances.
    */
-  fun markRatiosStory0Done(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Complete last chapter (+ previous automatically).
-    markChapDoneRatiosStory0Exp1(profileId, timestampOlderThanOneWeek)
+    markCompletedRatiosStory0Exp1(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Creates a partial story progress for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting partial progress of the fraction story for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks ratios topic story 1 as completed. See [markCompletedTestTopic0Story0Exp2] for specifics
+   * on the parameters passed to this method, and any other nuances.
    */
-  fun markRatiosStory1Done(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Complete last chapter (+ previous automatically).
-    markChapDoneRatiosStory1Exp3(profileId, timestampOlderThanOneWeek)
+    markCompletedRatiosStory1Exp3(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks one story progress fully complete in the ratios topic for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting topic progress on ratios for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks all ratios stories as completed. See [markCompletedTestTopic0Story0Exp2] for specifics on
+   * the parameters passed to this method, and any other nuances.
    */
-  fun markFullStoryPartialTopicProgressForRatios(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markRatiosStory0Done(profileId, timestampOlderThanOneWeek)
+  fun markCompletedRatiosTopic(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markCompletedRatiosStory0(profileId, timestampOlderThanOneWeek)
+    markCompletedRatiosStory1(profileId, timestampOlderThanOneWeek)
+  }
+
+  /* Fractions completion methods. */
+
+  /**
+   * Marks the first chapter of fractions topic story 0 as completed, and any needed prerequisites.
+   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * and any other nuances.
+   */
+  fun markCompletedFractionsStory0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    recordCompletedChapter(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      timestampOlderThanOneWeek
+    )
   }
 
   /**
-   * Marks two partial story progress in ratios exploration for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting topic progress on ratios for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the second chapter of fractions topic story 0 as completed, and any needed prerequisites.
+   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * and any other nuances.
    */
-  fun markTwoPartialStoryProgressForRatios(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markChapDoneRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
-    markChapDoneRatiosStory1Exp2(profileId, timestampOlderThanOneWeek)
+  fun markCompletedFractionsStory0Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    // Must complete prerequisite chapter first.
+    markCompletedFractionsStory0Exp0(profileId, timestampOlderThanOneWeek)
+    recordCompletedChapter(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_1,
+      timestampOlderThanOneWeek
+    )
   }
 
   /**
-   * Marks an exploration as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks fractions topic story 0 as completed. See [markCompletedTestTopic0Story0Exp2] for
+   * specifics on the parameters passed to this method, and any other nuances.
    */
-  fun markRecentlyPlayedForTestTopic0Story0Exp2(
+  fun markCompletedFractionsStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    // Complete last chapter (+ previous automatically).
+    markCompletedFractionsStory0Exp1(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks all fractions stories as completed. See [markCompletedTestTopic0Story0Exp2] for specifics
+   * on the parameters passed to this method, and any other nuances.
+   */
+  fun markCompletedFractionsTopic(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markCompletedFractionsStory0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /* Test topic partial completion methods. */
+
+  /**
+   * Marks the first chapter of test topic 0 story 0 as recently played. Note that this may require
+   * completing prerequisite chapters before the chapter can be marked as a prerequisite. See
+   * [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method, and
+   * any other nuances.
+   */
+  fun markRecentlyPlayedTestTopic0Story0Exp2(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
@@ -608,21 +391,15 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks an exploration as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the second chapter of test topic 0 story 0 as recently played. For specifics on
+   * parameters and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForTestTopic0Story0Exp5(
+  fun markRecentlyPlayedTestTopic0Story0Exp5(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapter first.
-    markChapDoneTestTopic0Story0Exp2(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story0Exp2(profileId, timestampOlderThanOneWeek)
     recordRecentlyPlayedChapter(
       profileId,
       TEST_TOPIC_ID_0,
@@ -633,16 +410,10 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks an exploration as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the first chapter of test topic 0 story 1 as recently played. For specifics on parameters
+   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForTestTopic0Story1Exp1(
+  fun markRecentlyPlayedTestTopic0Story1Exp1(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
@@ -656,21 +427,15 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks an exploration as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the second chapter of test topic 0 story 1 as recently played. For specifics on
+   * parameters and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForTestTopic0Story1Exp0(
+  fun markRecentlyPlayedTestTopic0Story1Exp0(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapter first.
-    markChapDoneTestTopic0Story1Exp1(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story1Exp1(profileId, timestampOlderThanOneWeek)
     recordRecentlyPlayedChapter(
       profileId,
       TEST_TOPIC_ID_0,
@@ -681,21 +446,15 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks an exploration as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the third chapter of test topic 0 story 1 as recently played. For specifics on parameters
+   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForTestTopic0Story1Exp3(
+  fun markRecentlyPlayedTestTopic0Story1Exp3(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapters first.
-    markChapDoneTestTopic0Story1Exp0(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story1Exp0(profileId, timestampOlderThanOneWeek)
     recordRecentlyPlayedChapter(
       profileId,
       TEST_TOPIC_ID_0,
@@ -706,16 +465,10 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks an exploration as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the only chapter of test topic 1 story 2 as recently played. For specifics on parameters
+   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForTestTopic1Story2Exp4(
+  fun markRecentlyPlayedTestTopic1Story2Exp4(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
@@ -729,118 +482,146 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks an exploration as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks test topic 0's story 0 as recently played. For specifics on parameters and nuances, see:
+   * [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForTestTopic0Story0(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markRecentlyPlayedForTestTopic0Story0Exp2(profileId, timestampOlderThanOneWeek)
+  fun markRecentlyPlayedTestTopic0Story0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markRecentlyPlayedTestTopic0Story0Exp2(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks an exploration as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks test topic 0's story 1 as recently played. For specifics on parameters and nuances, see:
+   * [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForTestTopic0Story1(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markRecentlyPlayedForTestTopic0Story1Exp1(profileId, timestampOlderThanOneWeek)
+  fun markRecentlyPlayedTestTopic0Story1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markRecentlyPlayedTestTopic0Story1Exp1(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks an exploration as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks test topic 1's story 2 as recently played. For specifics on parameters and nuances, see:
+   * [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForTestTopic1Story2(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markRecentlyPlayedForTestTopic1Story2Exp4(profileId, timestampOlderThanOneWeek)
+  fun markRecentlyPlayedTestTopic1Story2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markRecentlyPlayedTestTopic1Story2Exp4(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks an exploration as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks test topic 0 as recently played. For specifics on parameters and nuances, see:
+   * [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForTestTopic0(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markRecentlyPlayedForTestTopic0Story0(profileId, timestampOlderThanOneWeek)
+  fun markRecentlyPlayedTestTopic0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markRecentlyPlayedTestTopic0Story0(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks an exploration as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks test topic 1 as recently played. For specifics on parameters and nuances, see:
+   * [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForTestTopic1(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markRecentlyPlayedForTestTopic1Story2(profileId, timestampOlderThanOneWeek)
+  fun markRecentlyPlayedTestTopic1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markRecentlyPlayedTestTopic1Story2(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks an exploration as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks all test topics as recently played. See [markCompletedTestTopic0Story0Exp2] for specifics
+   * on the parameters passed to this method, and any other nuances.
    */
-  fun markRecentlyPlayedForTestTopics(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markRecentlyPlayedForTestTopic0(profileId, timestampOlderThanOneWeek)
+  fun markRecentlyPlayedTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markRecentlyPlayedTestTopic0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /* Ratios partial completion methods. */
+
+  /**
+   * Marks the first chapter of ratios story 0 as recently played. For specifics on parameters and
+   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   */
+  fun markRecentlyPlayedRatiosStory0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    recordRecentlyPlayedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      timestampOlderThanOneWeek
+    )
   }
 
   /**
-   * Marks exploration [FRACTIONS_EXPLORATION_ID_0] as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the second chapter of ratios story 0 as recently played. For specifics on parameters and
+   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForFractionsStory0Exploration0(
+  fun markRecentlyPlayedRatiosStory0Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    // Must complete the previous chapters first.
+    markCompletedRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
+    recordRecentlyPlayedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_1,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the first chapter of ratios story 1 as recently played. For specifics on parameters and
+   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   */
+  fun markRecentlyPlayedRatiosStory1Exp2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    recordRecentlyPlayedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_1,
+      RATIOS_EXPLORATION_ID_2,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the second chapter of ratios story 1 as recently played. For specifics on parameters and
+   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   */
+  fun markRecentlyPlayedRatiosStory1Exp3(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    // Must complete the previous chapters first.
+    markCompletedRatiosStory1Exp2(profileId, timestampOlderThanOneWeek)
+    recordRecentlyPlayedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_1,
+      RATIOS_EXPLORATION_ID_3,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks ratios story 0 as recently played. For specifics on parameters and nuances, see:
+   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   */
+  fun markRecentlyPlayedRatiosStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markRecentlyPlayedRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks ratios story 1 as recently played. For specifics on parameters and nuances, see:
+   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   */
+  fun markRecentlyPlayedRatiosStory1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markRecentlyPlayedRatiosStory1Exp2(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks the ratios topic as recently played. For specifics on parameters and nuances, see:
+   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   */
+  fun markRecentlyPlayedRatios(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markRecentlyPlayedRatiosStory0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /* Fractions partial completion methods. */
+
+  /**
+   * Marks the first chapter of fractions story 0 as recently played. For specifics on parameters
+   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   */
+  fun markRecentlyPlayedFractionsStory0Exp0(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
@@ -854,21 +635,15 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks exploration [FRACTIONS_EXPLORATION_ID_1] as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the second chapter of fractions story 0 as recently played. For specifics on parameters
+   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForFractionsStory0Exploration1(
+  fun markRecentlyPlayedFractionsStory0Exp1(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapters first.
-    markChapDoneFracStory0Exp0(profileId, timestampOlderThanOneWeek)
+    markCompletedFractionsStory0Exp0(profileId, timestampOlderThanOneWeek)
     recordRecentlyPlayedChapter(
       profileId,
       FRACTIONS_TOPIC_ID,
@@ -879,306 +654,42 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks exploration [FRACTIONS_EXPLORATION_ID_1] as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks fractions story 0 as recently played. For specifics on parameters and nuances, see:
+   * [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForFractionsStory0(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markRecentlyPlayedForFractionsStory0Exploration0(profileId, timestampOlderThanOneWeek)
+  fun markRecentlyPlayedFractionsStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markRecentlyPlayedFractionsStory0Exp0(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks exploration [FRACTIONS_EXPLORATION_ID_1] as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks the fractions topic as recently played. For specifics on parameters and nuances, see:
+   * [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForFractions(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markRecentlyPlayedForFractionsStory0(profileId, timestampOlderThanOneWeek)
+  fun markRecentlyPlayedFractions(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markRecentlyPlayedFractionsStory0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /* Cross-topics functions. */
+
+  /**
+   * Marks all lessons as completed. See [markCompletedTestTopic0Story0Exp2] for specifics on the
+   * parameters passed to this method, and any other nuances.
+   */
+  fun markAllTopicsAsCompleted(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markCompletedTestTopics(profileId, timestampOlderThanOneWeek)
+    markCompletedRatiosTopic(profileId, timestampOlderThanOneWeek)
+    markCompletedFractionsTopic(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks exploration [RATIOS_EXPLORATION_ID_0] as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
+   * Marks all lessons as recently played. For specifics on parameters and nuances, see:
+   * [markRecentlyPlayedTestTopic0Story0Exp2].
    */
-  fun markRecentlyPlayedForRatiosStory0Exploration0(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    recordRecentlyPlayedChapter(
-      profileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Marks exploration [RATIOS_EXPLORATION_ID_0] as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markRecentlyPlayedForRatiosStory0Exploration1(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    // Must complete the previous chapters first.
-    markChapDoneRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
-    recordRecentlyPlayedChapter(
-      profileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_1,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Marks exploration [RATIOS_EXPLORATION_ID_0] as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markRecentlyPlayedForRatiosStory1Exploration2(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    recordRecentlyPlayedChapter(
-      profileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_1,
-      RATIOS_EXPLORATION_ID_2,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Marks exploration [RATIOS_EXPLORATION_ID_0] as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markRecentlyPlayedForRatiosStory1Exploration3(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    // Must complete the previous chapters first.
-    markChapDoneRatiosStory1Exp2(profileId, timestampOlderThanOneWeek)
-    recordRecentlyPlayedChapter(
-      profileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_1,
-      RATIOS_EXPLORATION_ID_3,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Marks exploration [RATIOS_EXPLORATION_ID_0] as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markRecentlyPlayedForRatiosStory0(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markRecentlyPlayedForRatiosStory0Exploration0(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Marks exploration [RATIOS_EXPLORATION_ID_0] as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markRecentlyPlayedForRatiosStory1(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markRecentlyPlayedForRatiosStory1Exploration2(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Marks exploration [RATIOS_EXPLORATION_ID_0] as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markRecentlyPlayedForRatios(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markRecentlyPlayedForRatiosStory0(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Marks exploration [FRACTIONS_EXPLORATION_ID_1] as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markRecentlyPlayedForAllTopics(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    markRecentlyPlayedForTestTopic0(profileId, timestampOlderThanOneWeek)
-    markRecentlyPlayedForTestTopic1(profileId, timestampOlderThanOneWeek)
-    markRecentlyPlayedForRatios(profileId, timestampOlderThanOneWeek)
-    markRecentlyPlayedForFractions(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Marks first exploration in both stories of Ratios as recently played for a particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markRecentlyPlayedForRatiosStory0Exploration0AndStory1Exploration2(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    recordRecentlyPlayedChapter(
-      profileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      timestampOlderThanOneWeek
-    )
-
-    recordRecentlyPlayedChapter(
-      profileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_1,
-      RATIOS_EXPLORATION_ID_2,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Marks first exploration in all stories of Ratios & Fractions as recently played for a
-   * particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for.
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    recordRecentlyPlayedChapter(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      timestampOlderThanOneWeek
-    )
-
-    recordRecentlyPlayedChapter(
-      profileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      timestampOlderThanOneWeek
-    )
-
-    recordRecentlyPlayedChapter(
-      profileId,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_1,
-      RATIOS_EXPLORATION_ID_2,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Marks one explorations in each of the two two test topics as recently played for a
-   * particular profile.
-   *
-   * Note that this function will advance the clock & synchronize all background execution to ensure
-   * that any operations needed to achieve the requested state are completed and successful.
-   *
-   * @param profileId the profile we are setting recently played for
-   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
-   *     ago
-   */
-  fun markRecentlyPlayedForOneExplorationInTestTopics1And2(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    recordRecentlyPlayedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      timestampOlderThanOneWeek
-    )
-    recordRecentlyPlayedChapter(
-      profileId,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_2,
-      TEST_EXPLORATION_ID_4,
-      timestampOlderThanOneWeek
-    )
+  fun markAllTopicsAsRecentlyPlayed(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markRecentlyPlayedTestTopic0(profileId, timestampOlderThanOneWeek)
+    markRecentlyPlayedTestTopic1(profileId, timestampOlderThanOneWeek)
+    markRecentlyPlayedRatios(profileId, timestampOlderThanOneWeek)
+    markRecentlyPlayedFractions(profileId, timestampOlderThanOneWeek)
   }
 
   private fun recordCompletedChapter(
