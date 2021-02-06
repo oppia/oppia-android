@@ -258,7 +258,6 @@ class StoryProgressTestHelper @Inject constructor(
     )
   }
 
-
   /**
    * Marks the first chapter of ratios topic story 1 as completed, and any needed prerequisites. See
    * [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method, and
