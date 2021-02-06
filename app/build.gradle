@@ -232,6 +232,5 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
   sourceDirectories.setFrom(files([mainSrc]))
   executionData.setFrom(fileTree(dir: project.buildDir, includes: [
       'jacoco/testDebugUnitTest.exec', 'outputs/code_coverage/debugAndroidTest/connected/**/*.ec'
-  ]
-  ))
+  ]))
 }
