@@ -64,6 +64,10 @@ class TextInputViewModel(
     return userAnswerBuilder.build()
   }
 
+  override fun setPendingAnswer(userAnswer: UserAnswer) {
+//    TODO("Not yet implemented")
+  }
+
   private fun deriveHintText(interaction: Interaction): CharSequence {
     // The default placeholder for text input is empty.
     return interaction.customizationArgsMap["placeholder"]?.subtitledUnicode?.unicodeStr ?: ""

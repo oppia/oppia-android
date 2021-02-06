@@ -84,4 +84,8 @@ class NumericInputViewModel(
     }
     return userAnswerBuilder.build()
   }
+
+  override fun setPendingAnswer(userAnswer: UserAnswer) {
+//    TODO("Not yet implemented")
+  }
 }

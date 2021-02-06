@@ -58,6 +58,13 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
     ) ?: UserAnswer.getDefaultInstance()
   }
 
+  fun setPendingAnswer(
+    userAnswer: UserAnswer,
+    retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
+  ) {
+    retrieveAnswerHandler(getAnswerItemList())?.setPendingAnswer(userAnswer)
+  }
+
   private fun getPendingAnswerWithoutError(
     answerHandler: InteractionAnswerHandler?
   ): UserAnswer? {

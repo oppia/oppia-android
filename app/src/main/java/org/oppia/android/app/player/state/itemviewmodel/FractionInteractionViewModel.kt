@@ -3,6 +3,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -23,7 +24,7 @@ class FractionInteractionViewModel(
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
-  var answerText: CharSequence = ""
+  var answerText = ObservableField<String>("")
   var isAnswerAvailable = ObservableField<Boolean>(false)
   var errorMessage = ObservableField<String>("")
 
@@ -36,7 +37,7 @@ class FractionInteractionViewModel(
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            answerText.isNotEmpty()
+            answerText.get()!!.isNotEmpty()
           )
         }
       }
@@ -46,8 +47,8 @@ class FractionInteractionViewModel(
 
   override fun getPendingAnswer(): UserAnswer {
     val userAnswerBuilder = UserAnswer.newBuilder()
-    if (answerText.isNotEmpty()) {
-      val answerTextString = answerText.toString()
+    if (answerText.get()!!.isNotEmpty()) {
+      val answerTextString = answerText.get().toString()
       userAnswerBuilder.answer = InteractionObject.newBuilder()
         .setFraction(stringToFractionParser.parseFractionFromString(answerTextString))
         .build()
@@ -56,19 +57,24 @@ class FractionInteractionViewModel(
     return userAnswerBuilder.build()
   }
 
+  override fun setPendingAnswer(userAnswer: UserAnswer) {
+    answerText.set(userAnswer.plainAnswer)
+    Log.d("testSingleton", "i've set the value finally it is ${userAnswer.plainAnswer}")
+  }
+
   /** It checks the pending error for the current fraction input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
-    if (answerText.isNotEmpty()) {
+    if (answerText.get()!!.isNotEmpty()) {
       when (category) {
         AnswerErrorCategory.REAL_TIME ->
           pendingAnswerError =
-            stringToFractionParser.getRealTimeAnswerError(answerText.toString())
+            stringToFractionParser.getRealTimeAnswerError(answerText.get().toString())
               .getErrorMessageFromStringRes(
                 context
               )
         AnswerErrorCategory.SUBMIT_TIME ->
           pendingAnswerError =
-            stringToFractionParser.getSubmitTimeError(answerText.toString())
+            stringToFractionParser.getSubmitTimeError(answerText.get().toString())
               .getErrorMessageFromStringRes(
                 context
               )
@@ -84,12 +90,14 @@ class FractionInteractionViewModel(
       }
 
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
-        answerText = answer.toString().trim()
-        val isAnswerTextAvailable = answerText.isNotEmpty()
-        if (isAnswerTextAvailable != isAnswerAvailable.get()) {
-          isAnswerAvailable.set(isAnswerTextAvailable)
+        if (answer.isNotEmpty()) {
+          answerText.set(answer.toString().trim())
+          val isAnswerTextAvailable = answerText.get()!!.isNotEmpty()
+          if (isAnswerTextAvailable != isAnswerAvailable.get()) {
+            isAnswerAvailable.set(isAnswerTextAvailable)
+          }
+          checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
         }
-        checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
       }
 
       override fun afterTextChanged(s: Editable) {

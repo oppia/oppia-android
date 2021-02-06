@@ -527,6 +527,7 @@ class StateFragmentPresenter @Inject constructor(
 
   fun handleOnResume() {
     RetriveUserAnswer.getUserAnswer()?.let {
+      viewModel.setPendingAnswer(it, recyclerViewAssembler::getPendingAnswerHandler)
       Log.d("testSingleton", "userAnswer -> ${it.answer}")
       Log.d("testSingleton", "userAnswer -> $it")
     }

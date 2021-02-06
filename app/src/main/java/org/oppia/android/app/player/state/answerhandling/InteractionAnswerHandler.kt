@@ -26,6 +26,8 @@ interface InteractionAnswerHandler {
   fun getPendingAnswer(): UserAnswer? {
     return null
   }
+
+  fun setPendingAnswer(userAnswer: UserAnswer)
 }
 
 /**

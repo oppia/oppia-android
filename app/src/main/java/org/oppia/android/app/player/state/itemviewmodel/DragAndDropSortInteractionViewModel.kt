@@ -106,6 +106,10 @@ class DragAndDropSortInteractionViewModel(
     return userAnswerBuilder.build()
   }
 
+  override fun setPendingAnswer(userAnswer: UserAnswer) {
+//    TODO("Not yet implemented")
+  }
+
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
   private fun convertItemsToAnswer(htmlItems: List<StringList>): ListOfSetsOfHtmlStrings {
     return ListOfSetsOfHtmlStrings.newBuilder()

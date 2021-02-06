@@ -139,4 +139,8 @@ class StateFragment :
     super.onDestroyView()
     stateFragmentPresenter.handleDestroyView()
   }
+
+  override fun setPendingAnswer(userAnswer: UserAnswer) {
+//    TODO("Not yet implemented")
+  }
 }
