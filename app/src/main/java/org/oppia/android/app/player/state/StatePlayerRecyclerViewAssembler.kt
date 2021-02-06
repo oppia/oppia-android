@@ -89,6 +89,8 @@ import org.oppia.android.databinding.SubmittedAnswerItemBinding
 import org.oppia.android.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.parser.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
@@ -169,14 +171,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   fun saveState(bundle: Bundle) {
     bundle.putInt(KEY_TRACKED_WRONG_ANSWER_COUNT, hintHandler.trackedWrongAnswerCount)
-    // bundle.putSerializable(KEY_PREVIOUS_HELP_INDEX, hintHandler.previousHelpIndex as Serializable)
+    bundle.putProto(KEY_PREVIOUS_HELP_INDEX, hintHandler.previousHelpIndex)
     bundle.putInt(KEY_HINT_SEQUENCE_NUMBER, hintHandler.hintSequenceNumber)
     bundle.putBoolean(KEY_IS_HINT_VISIBLE_IN_LATEST_STATE, hintHandler.isHintVisibleInLatestState)
   }
 
   fun restoreState(bundle: Bundle) {
     hintHandler.trackedWrongAnswerCount = bundle.getInt(KEY_TRACKED_WRONG_ANSWER_COUNT)
-    // hintHandler.previousHelpIndex = bundle.get(KEY_PREVIOUS_HELP_INDEX) as HelpIndex
+    hintHandler.previousHelpIndex = bundle.getProto(
+      KEY_PREVIOUS_HELP_INDEX,
+      HelpIndex.getDefaultInstance()
+    )
     hintHandler.hintSequenceNumber = bundle.getInt(KEY_HINT_SEQUENCE_NUMBER)
     hintHandler.isHintVisibleInLatestState = bundle.getBoolean(KEY_IS_HINT_VISIBLE_IN_LATEST_STATE)
   }
