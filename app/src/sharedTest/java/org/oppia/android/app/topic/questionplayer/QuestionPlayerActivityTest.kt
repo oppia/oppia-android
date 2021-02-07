@@ -11,12 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -104,7 +107,10 @@ private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = QuestionPlayerActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class QuestionPlayerActivityTest {
-  // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
+  // TODO(#503): Add more test-cases
+  //  1. verifying the toolbar title
+  //  2. Dialog appears on back press or clicking on cross mark in toolbar
+  //
   // TODO(#1273): add tests for Hints and Solution in Question Player.
 
   @get:Rule
@@ -145,6 +151,64 @@ class QuestionPlayerActivityTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
+  @Test
+  fun testQuestionPlayer_toolbarTitle_isDisplayedSuccessfully() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      onView(withId(R.id.question_player_toolbar)).check(
+        matches(
+          hasDescendant(
+            withText(R.string.question_player_title)
+          )
+        )
+      )
+
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_onConfigurationChange_toolbarTitle_isDisplayedSuccessfully() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      rotateToLandscape()
+      onView(withId(R.id.question_player_toolbar)).check(
+        matches(
+          hasDescendant(
+            withText(R.string.question_player_title)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_onBackPressed_showsStopQuestionPlayerDialog() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      pressBack()
+      onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_onBackPressed_onConfigurationChange_showsStopQuestionPlayerDialog() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      pressBack()
+      rotateToLandscape()
+      onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_onToolbarClosePressed_showsStopQuestionPlayerDialog() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      onView(ViewMatchers.withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(
+        click()
+      )
+      onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
   }
 
   @Test
