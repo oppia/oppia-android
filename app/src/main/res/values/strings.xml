@@ -200,6 +200,7 @@
   <string name="admin_auth_pin">Administrator\'s PIN</string>
   <string name="admin_auth_incorrect">Incorrect Administrator PIN. Please try again.</string>
   <string name="admin_auth_submit">Submit</string>
+  <string name="admin_auth_submit_disabled">Disabled Submit</string>
   <string name="admin_auth_close">Close</string>
   <!-- AdminPinActivity -->
   <string name="admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize downloads and manage profiles on the device.</string>
