@@ -47,7 +47,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shadow_radius="8" />
+            app:shadow_radius="8"
+            android:contentDescription="@string/add_profile_current_profile"/>
 
           <ImageView
             android:id="@+id/add_profile_activity_edit_user_image_view"
@@ -58,7 +59,8 @@
             android:src="@drawable/rounded_white_background_with_shadow"
             app:layout_constraintBottom_toBottomOf="@+id/add_profile_activity_user_image_view"
             app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view"
-            app:layout_constraintRight_toRightOf="@+id/add_profile_activity_user_image_view" />
+            app:layout_constraintRight_toRightOf="@+id/add_profile_activity_user_image_view"
+            android:contentDescription="@string/add_profile_edit_profile"/>
 
           <TextView
             android:id="@+id/add_profile_activity_required_heading_text_view"
@@ -70,7 +72,8 @@
             android:text="@string/add_profile_required"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="12sp"
-            app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view" />
+            app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view"
+            android:contentDescription="@string/add_profile_asterisk_required"/>
 
           <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/add_profile_activity_user_name"
@@ -116,7 +119,8 @@
             android:padding="12dp"
             android:src="@drawable/ic_info_icon"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/add_profile_activity_pin_check_box" />
+            app:layout_constraintTop_toTopOf="@+id/add_profile_activity_pin_check_box"
+            android:contentDescription="@string/add_profile_info"/>
 
           <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/add_profile_activity_pin_constraint_layout"
