@@ -21,8 +21,6 @@ kt_android_library(
     deps = [
         artifact("androidx.databinding:databinding-adapters"),
         artifact("androidx.lifecycle:lifecycle-extensions:2.2.0"),
-        artifact("androidx.lifecycle:lifecycle-livedata-core:2.2.0"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"),
     ],
 )
 
@@ -36,9 +34,6 @@ kt_android_library(
     deps = [
         artifact("javax.inject:javax.inject:1"),
         artifact("androidx.appcompat:appcompat"),
-        artifact("androidx.databinding:databinding-adapters"),
         artifact("androidx.lifecycle:lifecycle-extensions:2.2.0"),
-        artifact("androidx.lifecycle:lifecycle-livedata-core:2.2.0"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"),
     ],
 )
