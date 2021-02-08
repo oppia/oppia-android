@@ -32,8 +32,8 @@ kt_android_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        artifact("javax.inject:javax.inject:1"),
         artifact("androidx.appcompat:appcompat"),
         artifact("androidx.lifecycle:lifecycle-extensions:2.2.0"),
+        artifact("javax.inject:javax.inject:1"),
     ],
 )
