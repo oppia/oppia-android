@@ -225,9 +225,9 @@
   <string name="add_profile_error_name_only_letters">Names can only have letters. Try another name?</string>
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
-  <string name="add_profile_required_content_description">Fields marked with an * are required.</string>
-  <string name="add_profile_current_profile_content_description">Current profile picture.</string>
-  <string name="add_profile_edit_profile_content_description">Edit profile picture.</string>
+  <string name="add_profile_required_fields_content_description">Fields marked with an * are required.</string>
+  <string name="add_profile_current_profile_picture_content_description">Current profile picture.</string>
+  <string name="add_profile_edit_profile_picture_content_description">Edit profile picture.</string>
   <string name="add_profile_info_content_description">More information on 3-digit PINs.</string>
   <!-- OnboardingActivity -->
   <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
