@@ -6,15 +6,19 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.story.StoryFragmentPresenter
+import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
+import org.oppia.android.databinding.StoryChapterViewBinding
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -86,17 +90,35 @@ class OnboardingFragmentPresenter @Inject constructor(
         }
       }
       .setLifecycleOwner(fragment)
-      .registerViewDataBinder(
+      .registerViewBinder(
         viewType = ViewType.ONBOARDING_SLIDE,
-        inflateDataBinding = OnboardingSlideBinding::inflate,
-        setViewModel = OnboardingSlideBinding::setViewModel,
-        transformViewModel = { it as OnboardingSlideViewModel }
+        inflateView = { parent ->
+          OnboardingSlideBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<OnboardingSlideBinding>(view)!!
+          val onboardingSlideViewModel = viewModel as OnboardingSlideViewModel
+          binding.viewModel = onboardingSlideViewModel
+        }
       )
-      .registerViewDataBinder(
+      .registerViewBinder(
         viewType = ViewType.ONBOARDING_FINAL_SLIDE,
-        inflateDataBinding = OnboardingSlideFinalBinding::inflate,
-        setViewModel = OnboardingSlideFinalBinding::setViewModel,
-        transformViewModel = { it as OnboardingSlideFinalViewModel }
+        inflateView = { parent ->
+          OnboardingSlideFinalBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<OnboardingSlideFinalBinding>(view)!!
+          val onboardingSlideFinalViewModel = viewModel as OnboardingSlideFinalViewModel
+          binding.viewModel = onboardingSlideFinalViewModel
+        }
       )
       .build()
   }
