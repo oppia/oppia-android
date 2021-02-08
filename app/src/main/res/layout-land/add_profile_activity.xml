@@ -25,16 +25,15 @@
       android:layout_height="match_parent">
 
       <ScrollView
-        android:id="@+id/add_profile_activity_scroll_view"
         android:layout_width="match_parent"
+        android:id="@+id/add_profile_activity_scroll_view"
+
         android:layout_height="match_parent"
         android:background="@color/addProfileBackground">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:paddingStart="136dp"
-          android:paddingTop="52dp"
           android:paddingEnd="136dp"
           android:paddingBottom="224dp">
 
