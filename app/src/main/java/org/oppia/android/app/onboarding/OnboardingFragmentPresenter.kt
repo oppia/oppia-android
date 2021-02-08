@@ -12,13 +12,10 @@ import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.story.StoryFragmentPresenter
-import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
-import org.oppia.android.databinding.StoryChapterViewBinding
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
