@@ -85,7 +85,7 @@ class MyDownloadsFragmentTest {
         )
       ).check(
         matches(
-          withText("My Downloads")
+          withText(R.string.my_downloads)
         )
       )
     }
