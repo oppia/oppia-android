@@ -416,6 +416,6 @@
     description="The default hint text for the ratio interaction if the placeholder text is not available.">
     Enter a ratio in the form x:y.
   </string>
-  <string name="smallest_textsize">Smallest text size</string>
-  <string name="largest_textsize">Largest text size</string>
+  <string name="smallest_text_size_content_description">Smallest text size</string>
+  <string name="largest_text_size_content_description">Largest text size</string>
 </resources>
