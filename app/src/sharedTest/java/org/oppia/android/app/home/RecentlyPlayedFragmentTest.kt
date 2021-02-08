@@ -73,13 +73,13 @@ import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
@@ -121,11 +121,11 @@ class RecentlyPlayedFragmentTest {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
       profileId,
-      timestampOlderThanAWeek = true
+      timestampOlderThanOneWeek = true
     )
   }
 
@@ -603,7 +603,7 @@ class RecentlyPlayedFragmentTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
