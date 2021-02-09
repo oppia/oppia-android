@@ -20,6 +20,7 @@ kt_android_library(
         ":dagger",
         "//domain",
         "//utility",
+        artifact("nl.dionsegijn:konfetti"),
         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
         artifact("org.robolectric:robolectric"),
         artifact("org.jetbrains.kotlin:kotlin-reflect"),
@@ -84,9 +85,9 @@ testing_test(
 
 kt_android_library(
     name = "assertion_helpers",
+    testonly = True,
     srcs = ["src/main/java/org/oppia/android/testing/AssertionHelpers.kt"],
     visibility = ["//visibility:public"],
-    testonly = True,
     deps = [
         artifact("org.jetbrains.kotlin:kotlin-reflect"),
         artifact("junit:junit:4.12"),
