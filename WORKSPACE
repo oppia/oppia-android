@@ -5,6 +5,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
 # https://docs.bazel.build/versions/master/be/android.html#android_sdk_repository
@@ -15,26 +16,18 @@ android_sdk_repository(
 )
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
-RULES_JVM_EXTERNAL_TAG = "2.9"
-
-RULES_JVM_EXTERNAL_SHA = "e5b97a31a3e8feed91636f42e19b11c49487b85e5de2f387c999ea14d77c7f45"
-
 http_archive(
     name = "rules_jvm_external",
-    sha256 = RULES_JVM_EXTERNAL_SHA,
-    strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["sha"],
+    strip_prefix = "rules_jvm_external-%s" % HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["version"],
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["version"],
 )
 
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
-RULES_KOTLIN_VERSION = "v1.5.0-alpha-2"
-
-RULES_KOTLIN_SHA = "6194a864280e1989b6d8118a4aee03bb50edeeae4076e5bc30eef8a98dcd4f07"
-
 http_archive(
     name = "io_bazel_rules_kotlin",
-    sha256 = RULES_KOTLIN_SHA,
-    urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % RULES_KOTLIN_VERSION],
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["sha"],
+    urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
 )
 
 # TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
@@ -68,8 +61,8 @@ bind(
 # The rules_java contains the java_lite_proto_library rule used in the model module.
 http_archive(
     name = "rules_java",
-    sha256 = "220b87d8cfabd22d1c6d8e3cdb4249abd4c93dcc152e0667db061fb1b957ee68",
-    url = "https://github.com/bazelbuild/rules_java/releases/download/0.1.1/rules_java-0.1.1.tar.gz",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_java"]["sha"],
+    url = "https://github.com/bazelbuild/rules_java/releases/download/{0}/rules_java-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_java"]["version"]),
 )
 
 load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
@@ -81,9 +74,9 @@ rules_java_toolchains()
 # The rules_proto contains the proto_library rule used in the model module.
 http_archive(
     name = "rules_proto",
-    sha256 = "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",
-    strip_prefix = "rules_proto-97d8af4dc474595af3900dd85cb3a29ad28cc313",
-    urls = ["https://github.com/bazelbuild/rules_proto/archive/97d8af4dc474595af3900dd85cb3a29ad28cc313.tar.gz"],
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_proto"]["sha"],
+    strip_prefix = "rules_proto-%s" % HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"],
+    urls = ["https://github.com/bazelbuild/rules_proto/archive/%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"]],
 )
 
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
@@ -93,15 +86,11 @@ rules_proto_dependencies()
 rules_proto_toolchains()
 
 # Add support for Dagger
-DAGGER_TAG = "2.28.1"
-
-DAGGER_SHA = "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd"
-
 http_archive(
     name = "dagger",
-    sha256 = DAGGER_SHA,
-    strip_prefix = "dagger-dagger-%s" % DAGGER_TAG,
-    urls = ["https://github.com/google/dagger/archive/dagger-%s.zip" % DAGGER_TAG],
+    sha256 = HTTP_DEPENDENCY_VERSIONS["dagger"]["sha"],
+    strip_prefix = "dagger-dagger-%s" % HTTP_DEPENDENCY_VERSIONS["dagger"]["version"],
+    urls = ["https://github.com/google/dagger/archive/dagger-%s.zip" % HTTP_DEPENDENCY_VERSIONS["dagger"]["version"]],
 )
 
 load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
@@ -140,7 +129,6 @@ bind(
 )
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
-load("//third_party:versions.bzl", "get_maven_dependencies")
 
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(

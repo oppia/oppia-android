@@ -13,8 +13,8 @@ the dependency "android.arch.core:core-testing": "1.1.1" will be referencable wi
 updated here).
 """
 
-# Note to developers: Please keep this list sorted by key to make it easier to find dependencies.
-DEPENDENCY_VERSIONS = {
+# Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
+MAVEN_DEPENDENCY_VERSIONS = {
     "android.arch.core:core-testing": "1.1.1",
     "androidx.annotation:annotation": "1.1.0",
     "androidx.appcompat:appcompat": "1.0.2",
@@ -78,8 +78,32 @@ DEPENDENCY_VERSIONS = {
     "org.robolectric:robolectric": "4.3",
 }
 
+# Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
+HTTP_DEPENDENCY_VERSIONS = {
+    "dagger": {
+        "sha": "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd",
+        "version": "2.28.1",
+    },
+    "rules_java": {
+        "sha": "220b87d8cfabd22d1c6d8e3cdb4249abd4c93dcc152e0667db061fb1b957ee68",
+        "version": "0.1.1",
+    },
+    "rules_jvm": {
+        "sha": "e5b97a31a3e8feed91636f42e19b11c49487b85e5de2f387c999ea14d77c7f45",
+        "version": "2.9",
+    },
+    "rules_kotlin": {
+        "sha": "6194a864280e1989b6d8118a4aee03bb50edeeae4076e5bc30eef8a98dcd4f07",
+        "version": "v1.5.0-alpha-2",
+    },
+    "rules_proto": {
+        "sha": "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",
+        "version": "97d8af4dc474595af3900dd85cb3a29ad28cc313",
+    },
+}
+
 def get_maven_dependencies():
     """
     Returns a list of maven dependencies to install to fulfill third-party dependencies.
     """
-    return ["%s:%s" % (name, version) for name, version in DEPENDENCY_VERSIONS.items()]
+    return ["%s:%s" % (name, version) for name, version in MAVEN_DEPENDENCY_VERSIONS.items()]

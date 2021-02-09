@@ -40,7 +40,7 @@ TEST_DEPS = [
     "//model",
     "//app:crashlytics",
     "//app:crashlytics_deps",
-    "@robolectric//bazel:android-all",
+    "//third_party:robolectric_android-all",
     artifact("org.jetbrains.kotlin:kotlin-reflect"),
     artifact("com.google.truth:truth"),
     artifact("androidx.test.ext:junit"),
