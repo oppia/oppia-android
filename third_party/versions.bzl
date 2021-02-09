@@ -14,11 +14,10 @@ updated here).
 """
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
-MAVEN_DEPENDENCY_VERSIONS = {
-    "android.arch.core:core-testing": "1.1.1",
+# This list should contain only production (non-test) dependencies.
+MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.annotation:annotation": "1.1.0",
     "androidx.appcompat:appcompat": "1.0.2",
-    "androidx.arch.core:core-testing": "2.1.0",
     "androidx.constraintlayout:constraintlayout": "1.1.3",
     "androidx.core:core": "1.0.1",
     "androidx.core:core-ktx": "1.0.1",
@@ -39,43 +38,51 @@ MAVEN_DEPENDENCY_VERSIONS = {
     "androidx.navigation:navigation-ui-ktx": "2.0.0",
     "androidx.recyclerview:recyclerview": "1.0.0",
     "androidx.room:room-runtime": "2.2.5",
-    "androidx.test.espresso:espresso-contrib": "3.1.0",
-    "androidx.test.espresso:espresso-core": "3.2.0",
-    "androidx.test.espresso:espresso-intents": "3.1.0",
-    "androidx.test.ext:junit": "1.1.1",
-    "androidx.test:runner": "1.2.0",
     "androidx.viewpager:viewpager": "1.0.0",
     "androidx.viewpager2:viewpager2": "1.0.0",
     "androidx.work:work-runtime": "2.4.0",
     "androidx.work:work-runtime-ktx": "2.4.0",
-    "androidx.work:work-testing": "2.4.0",
     "com.android.support:support-annotations": "28.0.0",
     "com.caverock:androidsvg-aar": "1.4",
     "com.chaos.view:pinview": "1.4.4",
     "com.crashlytics.sdk.android:crashlytics": "2.9.8",
     "com.github.bumptech.glide:glide": "4.11.0",
-    "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.android.material:material": "1.2.0-alpha02",
     "com.google.android:flexbox": "2.0.1",
     "com.google.firebase:firebase-analytics": "17.5.0",
     "com.google.firebase:firebase-crashlytics": "17.1.1",
     "com.google.gms:google-services": "4.3.3",
     "com.google.guava:guava": "28.1-android",
-    "com.google.truth:truth": "0.43",
     "com.squareup.retrofit2:converter-gson": "2.5.0",
     "com.squareup.retrofit2:retrofit": "2.9.0",
     "de.hdodenhof:circleimageview": "3.0.1",
     "io.fabric.sdk.android:fabric": "1.4.7",
     "javax.annotation:javax.annotation-api:jar": "1.3.2",
-    "junit:junit": "4.12",
     "nl.dionsegijn:konfetti": "1.2.5",
-    "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar": "1.3.72",
-    "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.3.2",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.2.1",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.2.2",
     "org.jetbrains:annotations:jar": "13.0",
+}
+
+# Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
+# This list should only contain test-only dependencies. These are dependencies that are guaranteed
+# cannot be included in production builds of the app.
+MAVEN_TEST_DEPENDENCY_VERSIONS = {
+    "android.arch.core:core-testing": "1.1.1",
+    "androidx.arch.core:core-testing": "2.1.0",
+    "androidx.test.espresso:espresso-contrib": "3.1.0",
+    "androidx.test.espresso:espresso-core": "3.2.0",
+    "androidx.test.espresso:espresso-intents": "3.1.0",
+    "androidx.test.ext:junit": "1.1.1",
+    "androidx.test:runner": "1.2.0",
+    "androidx.work:work-testing": "2.4.0",
+    "com.github.bumptech.glide:mocks": "4.11.0",
+    "com.google.truth:truth": "0.43",
+    "junit:junit": "4.12",
+    "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",
+    "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.2.2",
     "org.mockito:mockito-core": "2.19.0",
     "org.robolectric:annotations": "4.3",
     "org.robolectric:robolectric": "4.3",
@@ -109,4 +116,5 @@ def get_maven_dependencies():
     """
     Returns a list of maven dependencies to install to fulfill third-party dependencies.
     """
-    return ["%s:%s" % (name, version) for name, version in MAVEN_DEPENDENCY_VERSIONS.items()]
+    return (["%s:%s" % (name, version) for name, version in MAVEN_PRODUCTION_DEPENDENCY_VERSIONS.items()] +
+            ["%s:%s" % (name, version) for name, version in MAVEN_TEST_DEPENDENCY_VERSIONS.items()])
