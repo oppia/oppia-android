@@ -85,13 +85,13 @@ message AnsweredQuestionOutcome {
 // The final score and mastery calculations of the user after completing a training session.
 message QuestionAssessmentPerformance {
   // User's total session score as a percentage.
-  double totalScore = 1;
+  double total_score = 1;
 
   // User's score per skill for the training session.
   // This maps a skill id to a score.
-  map<string, double> scorePerSkillMapping = 2;
+  map<string, double> score_per_skill_mapping = 2;
 
   // User's mastery per skill for the training session.
   // This maps a skill id to a mastery.
-  map<string, double> masteryPerSkillMapping = 3;
+  map<string, double> mastery_per_skill_mapping = 3;
 }
