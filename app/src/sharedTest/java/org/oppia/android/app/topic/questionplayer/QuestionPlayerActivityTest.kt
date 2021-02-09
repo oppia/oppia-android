@@ -139,7 +139,8 @@ class QuestionPlayerActivityTest {
    *                                                - after some time extra hints will be visible
    *
    * CORRECT ANSWER SUBMISSION
-   *  testQuestionPlayer_submitCorrectAnswer_textFieldIsVanished  - if multiple options type then options will be vanished
+   *  testQuestionPlayer_submitCorrectAnswer_textFieldIsVanished
+   *                                     - if multiple options type then options will be vanished
    *  testQuestionPlayer_submitCorrectAnswer_correctMarkerDisplaysForSomeTime
    *  testQuestionPlayer_onHintAvailable_selectCorrectAnswer_hintButtonVanished
    *  testQuestionPlayer_submitCorrectAnswer_continueButtonDisplayed
