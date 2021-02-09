@@ -1,0 +1,22 @@
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
+kt_android_library(
+    name = "oppia_date_time_formatter",
+    srcs = ["OppiaDateTimeFormatter.kt"],
+    visibility = ["//visibility:public"],
+    deps = [
+        artifact("com.google.firebase:firebase-crashlytics"),
+    ],
+)
+
+
+kt_android_library(
+    name = "oppia_clock",
+    srcs = ["OppiaClock.kt"],
+    visibility = ["//visibility:public"],
+    deps = [
+        artifact("androidx.annotation:annotation"),
+        artifact("com.google.firebase:firebase-crashlytics"),
+    ],
+)
