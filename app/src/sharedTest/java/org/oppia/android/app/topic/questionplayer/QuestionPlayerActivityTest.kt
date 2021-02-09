@@ -128,13 +128,15 @@ class QuestionPlayerActivityTest {
    * testQuestionPlayer_submitButtonIsDisplayed
    * testQuestionPlayer_configChange_submitButtonIsDisplayed
    * testQuestionPlayer_enterAnswer_submitButtonIsClickable
-   * testQuestionPlayer_enterAnswer_configChange_submitButtonIsClickable - this needs to solved, not working currently
+   * testQuestionPlayer_enterAnswer_configChange_submitButtonIsClickable
+   *                                              - this needs to solved, not working currently
    * testQuestionPlayer_submitIncorrectAnswer_submitButtonIsDisabled
    * testQuestionPlayer_submitIncorrectAnswer_configChange_submitButtonIsDisabled
    *
    *  testQuestionPlayer_submitIncorrectAnswer_textFieldIsEmpty
    *  testQuestionPlayer_submitIncorrectAnswer_hintIsAvailable - maybe 2 incorrect answers
-   *  testQuestionPlayer_submitIncorrectAnswer_hintIsAvailable_openAndCloseHint_dotOnHintDisabled - after some time extra hints will be visible
+   *  testQuestionPlayer_submitIncorrectAnswer_hintIsAvailable_openAndCloseHint_dotOnHintDisabled
+   *                                                - after some time extra hints will be visible
    *
    * CORRECT ANSWER SUBMISSION
    *  testQuestionPlayer_submitCorrectAnswer_textFieldIsVanished  - if multiple options type then options will be vanished
