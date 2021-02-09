@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlideApp.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$fractioninput_FractionInputHasDenominatorEqualToRuleClassifierProviderTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.util.parser</a> &gt; <span class="el_source">GlideApp.java</span></div><h1>GlideApp.java</h1><pre class="source lang-java linenums">package org.oppia.android.util.parser;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
+import android.view.View;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.GlideBuilder;
+import java.io.File;
+
+/**
+ * The entry point for interacting with Glide for Applications
+ *
+ * &lt;p&gt;Includes all generated APIs from all
+ * {@link com.bumptech.glide.annotation.GlideExtension}s in source and dependent libraries.
+ *
+ * &lt;p&gt;This class is generated and should not be modified
+ * @see Glide
+ */
+public final class GlideApp {
+  private GlideApp() {
+  }
+
+  /**
+   * @see Glide#getPhotoCacheDir(Context)
+   */
+  @Nullable
+  public static File getPhotoCacheDir(@NonNull Context context) {
+<span class="nc" id="L34">    return Glide.getPhotoCacheDir(context);</span>
+  }
+
+  /**
+   * @see Glide#getPhotoCacheDir(Context, String)
+   */
+  @Nullable
+  public static File getPhotoCacheDir(@NonNull Context context, @NonNull String string) {
+<span class="nc" id="L42">    return Glide.getPhotoCacheDir(context, string);</span>
+  }
+
+  /**
+   * @see Glide#get(Context)
+   */
+  @NonNull
+  public static Glide get(@NonNull Context context) {
+<span class="nc" id="L50">    return Glide.get(context);</span>
+  }
+
+  /**
+   * @see Glide#init(Glide)
+   */
+  @Deprecated
+  @VisibleForTesting
+  @SuppressLint(&quot;VisibleForTests&quot;)
+  public static void init(Glide glide) {
+<span class="nc" id="L60">    Glide.init(glide);</span>
+<span class="nc" id="L61">  }</span>
+
+  /**
+   * @see Glide#init(Context, GlideBuilder)
+   */
+  @VisibleForTesting
+  @SuppressLint(&quot;VisibleForTests&quot;)
+  public static void init(@NonNull Context context, @NonNull GlideBuilder builder) {
+<span class="nc" id="L69">    Glide.init(context, builder);</span>
+<span class="nc" id="L70">  }</span>
+
+  /**
+   * @see Glide#tearDown()
+   */
+  @VisibleForTesting
+  @SuppressLint(&quot;VisibleForTests&quot;)
+  public static void tearDown() {
+<span class="nc" id="L78">    Glide.tearDown();</span>
+<span class="nc" id="L79">  }</span>
+
+  /**
+   * @see Glide#with(Context)
+   */
+  @NonNull
+  public static GlideRequests with(@NonNull Context context) {
+<span class="nc" id="L86">    return (GlideRequests) Glide.with(context);</span>
+  }
+
+  /**
+   * @see Glide#with(Activity)
+   */
+  @NonNull
+  public static GlideRequests with(@NonNull Activity activity) {
+<span class="nc" id="L94">    return (GlideRequests) Glide.with(activity);</span>
+  }
+
+  /**
+   * @see Glide#with(FragmentActivity)
+   */
+  @NonNull
+  public static GlideRequests with(@NonNull FragmentActivity activity) {
+<span class="nc" id="L102">    return (GlideRequests) Glide.with(activity);</span>
+  }
+
+  /**
+   * @see Glide#with(Fragment)
+   */
+  @NonNull
+  public static GlideRequests with(@NonNull Fragment fragment) {
+<span class="nc" id="L110">    return (GlideRequests) Glide.with(fragment);</span>
+  }
+
+  /**
+   * @see Glide#with(Fragment)
+   */
+  @Deprecated
+  @NonNull
+  public static GlideRequests with(@NonNull android.app.Fragment fragment) {
+<span class="nc" id="L119">    return (GlideRequests) Glide.with(fragment);</span>
+  }
+
+  /**
+   * @see Glide#with(View)
+   */
+  @NonNull
+  public static GlideRequests with(@NonNull View view) {
+<span class="nc" id="L127">    return (GlideRequests) Glide.with(view);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,696 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CollectionsKt___CollectionsKt</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">kotlin.collections</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CollectionsKt___CollectionsKt (kotlin.collections)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CollectionsKt___CollectionsKt</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/ 5)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;// IntelliJ API Decompiler stub source generated from a class file
+<i>2</i>&nbsp;// Implementation of methods is not available
+<i>3</i>&nbsp;
+<i>4</i>&nbsp;package kotlin.collections
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;@kotlin.PublishedApi @kotlin.SinceKotlin @kotlin.internal.InlineOnly internal inline fun checkCountOverflow(count: kotlin.Int): kotlin.Int { /* compiled code */ }
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;@kotlin.PublishedApi @kotlin.SinceKotlin @kotlin.internal.InlineOnly internal inline fun checkIndexOverflow(index: kotlin.Int): kotlin.Int { /* compiled code */ }
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;@kotlin.internal.InlineOnly internal inline fun copyToArrayImpl(collection: kotlin.collections.Collection&lt;*&gt;): kotlin.Array&lt;kotlin.Any?&gt; { /* compiled code */ }
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;@kotlin.internal.InlineOnly internal inline fun &lt;T&gt; copyToArrayImpl(collection: kotlin.collections.Collection&lt;*&gt;, array: kotlin.Array&lt;T&gt;): kotlin.Array&lt;T&gt; { /* compiled code */ }
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;public fun &lt;T&gt; listOf(element: T): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;internal fun &lt;T&gt; kotlin.Array&lt;out T&gt;.copyToArrayOfAny(isVarargs: kotlin.Boolean): kotlin.Array&lt;out kotlin.Any?&gt; { /* compiled code */ }
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; java.util.Enumeration&lt;T&gt;.toList(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;public val kotlin.collections.Collection&lt;*&gt;.indices: kotlin.ranges.IntRange /* compiled code */
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;public val &lt;T&gt; kotlin.collections.List&lt;T&gt;.lastIndex: kotlin.Int /* compiled code */
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;@kotlin.SinceKotlin @kotlin.internal.InlineOnly public inline fun &lt;T&gt; List(size: kotlin.Int, init: (kotlin.Int) -&gt; T): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;@kotlin.SinceKotlin @kotlin.internal.InlineOnly public inline fun &lt;T&gt; MutableList(size: kotlin.Int, init: (kotlin.Int) -&gt; T): kotlin.collections.MutableList&lt;T&gt; { /* compiled code */ }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;@kotlin.SinceKotlin @kotlin.internal.InlineOnly public inline fun &lt;T&gt; arrayListOf(): kotlin.collections.ArrayList&lt;T&gt; /* = java.util.ArrayList&lt;T&gt; */ { /* compiled code */ }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;public fun &lt;T&gt; arrayListOf(vararg elements: T): kotlin.collections.ArrayList&lt;T&gt; /* = java.util.ArrayList&lt;T&gt; */ { /* compiled code */ }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi @kotlin.internal.InlineOnly public inline fun &lt;E&gt; buildList(capacity: kotlin.Int, @kotlin.BuilderInference builderAction: kotlin.collections.MutableList&lt;E&gt;.() -&gt; kotlin.Unit): kotlin.collections.List&lt;E&gt; { contract { /* compiled contract */ }; /* compiled code */ }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi @kotlin.internal.InlineOnly public inline fun &lt;E&gt; buildList(@kotlin.BuilderInference builderAction: kotlin.collections.MutableList&lt;E&gt;.() -&gt; kotlin.Unit): kotlin.collections.List&lt;E&gt; { contract { /* compiled contract */ }; /* compiled code */ }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;public fun &lt;T&gt; emptyList(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; listOf(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;public fun &lt;T&gt; listOf(vararg elements: T): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;public fun &lt;T : kotlin.Any&gt; listOfNotNull(element: T?): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;public fun &lt;T : kotlin.Any&gt; listOfNotNull(vararg elements: T?): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;@kotlin.SinceKotlin @kotlin.internal.InlineOnly public inline fun &lt;T&gt; mutableListOf(): kotlin.collections.MutableList&lt;T&gt; { /* compiled code */ }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;public fun &lt;T&gt; mutableListOf(vararg elements: T): kotlin.collections.MutableList&lt;T&gt; { /* compiled code */ }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;private fun rangeCheck(size: kotlin.Int, fromIndex: kotlin.Int, toIndex: kotlin.Int): kotlin.Unit { /* compiled code */ }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;@kotlin.PublishedApi @kotlin.SinceKotlin internal fun throwCountOverflow(): kotlin.Unit { /* compiled code */ }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;@kotlin.PublishedApi @kotlin.SinceKotlin internal fun throwIndexOverflow(): kotlin.Unit { /* compiled code */ }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;internal fun &lt;T&gt; kotlin.Array&lt;out T&gt;.asCollection(): kotlin.collections.Collection&lt;T&gt; { /* compiled code */ }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.binarySearch(element: T, comparator: kotlin.Comparator&lt;in T&gt; /* = java.util.Comparator&lt;in T&gt; */, fromIndex: kotlin.Int /* = compiled code */, toIndex: kotlin.Int /* = compiled code */): kotlin.Int { /* compiled code */ }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.binarySearch(fromIndex: kotlin.Int /* = compiled code */, toIndex: kotlin.Int /* = compiled code */, comparison: (T) -&gt; kotlin.Int): kotlin.Int { /* compiled code */ }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;public fun &lt;T : kotlin.Comparable&lt;T&gt;&gt; kotlin.collections.List&lt;T?&gt;.binarySearch(element: T?, fromIndex: kotlin.Int /* = compiled code */, toIndex: kotlin.Int /* = compiled code */): kotlin.Int { /* compiled code */ }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;public inline fun &lt;T, K : kotlin.Comparable&lt;K&gt;&gt; kotlin.collections.List&lt;T&gt;.binarySearchBy(key: K?, fromIndex: kotlin.Int /* = compiled code */, toIndex: kotlin.Int /* = compiled code */, crossinline selector: (T) -&gt; K?): kotlin.Int { /* compiled code */ }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;@kotlin.internal.OnlyInputTypes T&gt; kotlin.collections.Collection&lt;T&gt;.containsAll(elements: kotlin.collections.Collection&lt;T&gt;): kotlin.Boolean { /* compiled code */ }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;@kotlin.SinceKotlin @kotlin.internal.InlineOnly public inline fun &lt;C : kotlin.collections.Collection&lt;*&gt;, R&gt; C.ifEmpty(defaultValue: () -&gt; R): R where C : R { /* compiled code */ }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;.isNotEmpty(): kotlin.Boolean { /* compiled code */ }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;@kotlin.SinceKotlin @kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;?.isNullOrEmpty(): kotlin.Boolean { contract { /* compiled contract */ }; /* compiled code */ }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;internal fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.optimizeReadOnlyList(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;?.orEmpty(): kotlin.collections.Collection&lt;T&gt; { /* compiled code */ }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.List&lt;T&gt;?.orEmpty(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; Iterable(crossinline iterator: () -&gt; kotlin.collections.Iterator&lt;T&gt;): kotlin.collections.Iterable&lt;T&gt; { /* compiled code */ }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;@kotlin.PublishedApi internal fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.collectionSizeOrDefault(default: kotlin.Int): kotlin.Int { /* compiled code */ }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;@kotlin.PublishedApi internal fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.collectionSizeOrNull(): kotlin.Int? { /* compiled code */ }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;internal fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.convertToSetForSetOperation(): kotlin.collections.Collection&lt;T&gt; { /* compiled code */ }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;internal fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.convertToSetForSetOperationWith(source: kotlin.collections.Iterable&lt;T&gt;): kotlin.collections.Collection&lt;T&gt; { /* compiled code */ }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;kotlin.collections.Iterable&lt;T&gt;&gt;.flatten(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;private fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;.safeToConvertToSet(): kotlin.Boolean { /* compiled code */ }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;public fun &lt;T, R&gt; kotlin.collections.Iterable&lt;kotlin.Pair&lt;T, R&gt;&gt;.unzip(): kotlin.Pair&lt;kotlin.collections.List&lt;T&gt;, kotlin.collections.List&lt;R&gt;&gt; { /* compiled code */ }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;public operator fun &lt;T&gt; java.util.Enumeration&lt;T&gt;.iterator(): kotlin.collections.Iterator&lt;T&gt; { /* compiled code */ }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterator&lt;T&gt;.forEach(operation: (T) -&gt; kotlin.Unit): kotlin.Unit { /* compiled code */ }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.Iterator&lt;T&gt;.iterator(): kotlin.collections.Iterator&lt;T&gt; { /* compiled code */ }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterator&lt;T&gt;.withIndex(): kotlin.collections.Iterator&lt;kotlin.collections.IndexedValue&lt;T&gt;&gt; { /* compiled code */ }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;@kotlin.internal.InlineOnly @kotlin.SinceKotlin public inline fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.fill(value: T): kotlin.Unit { /* compiled code */ }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;@kotlin.internal.InlineOnly @kotlin.SinceKotlin public inline fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.shuffle(): kotlin.Unit { /* compiled code */ }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;@kotlin.internal.InlineOnly @kotlin.SinceKotlin public inline fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.shuffle(random: java.util.Random): kotlin.Unit { /* compiled code */ }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;@kotlin.SinceKotlin public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.shuffled(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;@kotlin.SinceKotlin public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.shuffled(random: java.util.Random): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;public fun &lt;T : kotlin.Comparable&lt;T&gt;&gt; kotlin.collections.MutableList&lt;T&gt;.sort(): kotlin.Unit { /* compiled code */ }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;@kotlin.Deprecated @kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.sort(comparison: (T, T) -&gt; kotlin.Int): kotlin.Unit { /* compiled code */ }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;@kotlin.Deprecated @kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.sort(comparator: kotlin.Comparator&lt;in T&gt; /* = java.util.Comparator&lt;in T&gt; */): kotlin.Unit { /* compiled code */ }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.sortWith(comparator: kotlin.Comparator&lt;in T&gt; /* = java.util.Comparator&lt;in T&gt; */): kotlin.Unit { /* compiled code */ }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.addAll(elements: kotlin.Array&lt;out T&gt;): kotlin.Boolean { /* compiled code */ }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.addAll(elements: kotlin.collections.Iterable&lt;T&gt;): kotlin.Boolean { /* compiled code */ }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.addAll(elements: kotlin.sequences.Sequence&lt;T&gt;): kotlin.Boolean { /* compiled code */ }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;private fun &lt;T&gt; kotlin.collections.MutableIterable&lt;T&gt;.filterInPlace(predicate: (T) -&gt; kotlin.Boolean, predicateResultToRemove: kotlin.Boolean): kotlin.Boolean { /* compiled code */ }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;private fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.filterInPlace(predicate: (T) -&gt; kotlin.Boolean, predicateResultToRemove: kotlin.Boolean): kotlin.Boolean { /* compiled code */ }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.minusAssign(element: T): kotlin.Unit { /* compiled code */ }
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.minusAssign(elements: kotlin.Array&lt;T&gt;): kotlin.Unit { /* compiled code */ }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.minusAssign(elements: kotlin.collections.Iterable&lt;T&gt;): kotlin.Unit { /* compiled code */ }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.minusAssign(elements: kotlin.sequences.Sequence&lt;T&gt;): kotlin.Unit { /* compiled code */ }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.plusAssign(element: T): kotlin.Unit { /* compiled code */ }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.plusAssign(elements: kotlin.Array&lt;T&gt;): kotlin.Unit { /* compiled code */ }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.plusAssign(elements: kotlin.collections.Iterable&lt;T&gt;): kotlin.Unit { /* compiled code */ }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.plusAssign(elements: kotlin.sequences.Sequence&lt;T&gt;): kotlin.Unit { /* compiled code */ }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;@kotlin.internal.OnlyInputTypes T&gt; kotlin.collections.MutableCollection&lt;out T&gt;.remove(element: T): kotlin.Boolean { /* compiled code */ }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;@kotlin.Deprecated @kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.remove(index: kotlin.Int): T { /* compiled code */ }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.removeAll(elements: kotlin.Array&lt;out T&gt;): kotlin.Boolean { /* compiled code */ }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.removeAll(elements: kotlin.collections.Iterable&lt;T&gt;): kotlin.Boolean { /* compiled code */ }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.removeAll(elements: kotlin.sequences.Sequence&lt;T&gt;): kotlin.Boolean { /* compiled code */ }
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;@kotlin.internal.OnlyInputTypes T&gt; kotlin.collections.MutableCollection&lt;out T&gt;.removeAll(elements: kotlin.collections.Collection&lt;T&gt;): kotlin.Boolean { /* compiled code */ }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableIterable&lt;T&gt;.removeAll(predicate: (T) -&gt; kotlin.Boolean): kotlin.Boolean { /* compiled code */ }
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.removeAll(predicate: (T) -&gt; kotlin.Boolean): kotlin.Boolean { /* compiled code */ }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi public fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.removeFirst(): T { /* compiled code */ }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi public fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.removeFirstOrNull(): T? { /* compiled code */ }
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi public fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.removeLast(): T { /* compiled code */ }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi public fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.removeLastOrNull(): T? { /* compiled code */ }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.retainAll(elements: kotlin.Array&lt;out T&gt;): kotlin.Boolean { /* compiled code */ }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.retainAll(elements: kotlin.collections.Iterable&lt;T&gt;): kotlin.Boolean { /* compiled code */ }
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableCollection&lt;in T&gt;.retainAll(elements: kotlin.sequences.Sequence&lt;T&gt;): kotlin.Boolean { /* compiled code */ }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;@kotlin.internal.OnlyInputTypes T&gt; kotlin.collections.MutableCollection&lt;out T&gt;.retainAll(elements: kotlin.collections.Collection&lt;T&gt;): kotlin.Boolean { /* compiled code */ }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableIterable&lt;T&gt;.retainAll(predicate: (T) -&gt; kotlin.Boolean): kotlin.Boolean { /* compiled code */ }
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.retainAll(predicate: (T) -&gt; kotlin.Boolean): kotlin.Boolean { /* compiled code */ }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;private fun kotlin.collections.MutableCollection&lt;*&gt;.retainNothing(): kotlin.Boolean { /* compiled code */ }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;@kotlin.SinceKotlin public fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.shuffle(random: kotlin.random.Random): kotlin.Unit { /* compiled code */ }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;@kotlin.SinceKotlin public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.shuffled(random: kotlin.random.Random): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.asReversed(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;@kotlin.jvm.JvmName public fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.asReversed(): kotlin.collections.MutableList&lt;T&gt; { /* compiled code */ }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;private fun kotlin.collections.List&lt;*&gt;.reverseElementIndex(index: kotlin.Int): kotlin.Int { /* compiled code */ }
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;private fun kotlin.collections.List&lt;*&gt;.reversePositionIndex(index: kotlin.Int): kotlin.Int { /* compiled code */ }
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;public fun &lt;R&gt; kotlin.collections.Iterable&lt;*&gt;.filterIsInstance(klass: java.lang.Class&lt;R&gt;): kotlin.collections.List&lt;R&gt; { /* compiled code */ }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;public fun &lt;C : kotlin.collections.MutableCollection&lt;in R&gt;, R&gt; kotlin.collections.Iterable&lt;*&gt;.filterIsInstanceTo(destination: C, klass: java.lang.Class&lt;R&gt;): C { /* compiled code */ }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;public fun &lt;T&gt; kotlin.collections.MutableList&lt;T&gt;.reverse(): kotlin.Unit { /* compiled code */ }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;public fun &lt;T : kotlin.Comparable&lt;T&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.toSortedSet(): java.util.SortedSet&lt;T&gt; { /* compiled code */ }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.toSortedSet(comparator: kotlin.Comparator&lt;in T&gt; /* = java.util.Comparator&lt;in T&gt; */): java.util.SortedSet&lt;T&gt; { /* compiled code */ }
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.all(predicate: (T) -&gt; kotlin.Boolean): kotlin.Boolean { /* compiled code */ }
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.any(): kotlin.Boolean { /* compiled code */ }
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.any(predicate: (T) -&gt; kotlin.Boolean): kotlin.Boolean { /* compiled code */ }
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.asIterable(): kotlin.collections.Iterable&lt;T&gt; { /* compiled code */ }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.asSequence(): kotlin.sequences.Sequence&lt;T&gt; { /* compiled code */ }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;public inline fun &lt;T, K, V&gt; kotlin.collections.Iterable&lt;T&gt;.associate(transform: (T) -&gt; kotlin.Pair&lt;K, V&gt;): kotlin.collections.Map&lt;K, V&gt; { /* compiled code */ }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;public inline fun &lt;T, K&gt; kotlin.collections.Iterable&lt;T&gt;.associateBy(keySelector: (T) -&gt; K): kotlin.collections.Map&lt;K, T&gt; { /* compiled code */ }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;public inline fun &lt;T, K, V&gt; kotlin.collections.Iterable&lt;T&gt;.associateBy(keySelector: (T) -&gt; K, valueTransform: (T) -&gt; V): kotlin.collections.Map&lt;K, V&gt; { /* compiled code */ }
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;public inline fun &lt;T, K, M : kotlin.collections.MutableMap&lt;in K, in T&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.associateByTo(destination: M, keySelector: (T) -&gt; K): M { /* compiled code */ }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;public inline fun &lt;T, K, V, M : kotlin.collections.MutableMap&lt;in K, in V&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.associateByTo(destination: M, keySelector: (T) -&gt; K, valueTransform: (T) -&gt; V): M { /* compiled code */ }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;public inline fun &lt;T, K, V, M : kotlin.collections.MutableMap&lt;in K, in V&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.associateTo(destination: M, transform: (T) -&gt; kotlin.Pair&lt;K, V&gt;): M { /* compiled code */ }
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;@kotlin.SinceKotlin public inline fun &lt;K, V&gt; kotlin.collections.Iterable&lt;K&gt;.associateWith(valueSelector: (K) -&gt; V): kotlin.collections.Map&lt;K, V&gt; { /* compiled code */ }
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;@kotlin.SinceKotlin public inline fun &lt;K, V, M : kotlin.collections.MutableMap&lt;in K, in V&gt;&gt; kotlin.collections.Iterable&lt;K&gt;.associateWithTo(destination: M, valueSelector: (K) -&gt; V): M { /* compiled code */ }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;@kotlin.jvm.JvmName public fun kotlin.collections.Iterable&lt;kotlin.Byte&gt;.average(): kotlin.Double { /* compiled code */ }
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;@kotlin.jvm.JvmName public fun kotlin.collections.Iterable&lt;kotlin.Double&gt;.average(): kotlin.Double { /* compiled code */ }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;@kotlin.jvm.JvmName public fun kotlin.collections.Iterable&lt;kotlin.Float&gt;.average(): kotlin.Double { /* compiled code */ }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;@kotlin.jvm.JvmName public fun kotlin.collections.Iterable&lt;kotlin.Int&gt;.average(): kotlin.Double { /* compiled code */ }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;@kotlin.jvm.JvmName public fun kotlin.collections.Iterable&lt;kotlin.Long&gt;.average(): kotlin.Double { /* compiled code */ }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;@kotlin.jvm.JvmName public fun kotlin.collections.Iterable&lt;kotlin.Short&gt;.average(): kotlin.Double { /* compiled code */ }
+<i>245</i>&nbsp;
+<i>246</i>&nbsp;@kotlin.SinceKotlin public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.chunked(size: kotlin.Int): kotlin.collections.List&lt;kotlin.collections.List&lt;T&gt;&gt; { /* compiled code */ }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;@kotlin.SinceKotlin public fun &lt;T, R&gt; kotlin.collections.Iterable&lt;T&gt;.chunked(size: kotlin.Int, transform: (kotlin.collections.List&lt;T&gt;) -&gt; R): kotlin.collections.List&lt;R&gt; { /* compiled code */ }
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.component1(): T { /* compiled code */ }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.component2(): T { /* compiled code */ }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.component3(): T { /* compiled code */ }
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.component4(): T { /* compiled code */ }
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;@kotlin.internal.InlineOnly public inline operator fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.component5(): T { /* compiled code */ }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;public operator fun &lt;@kotlin.internal.OnlyInputTypes T&gt; kotlin.collections.Iterable&lt;T&gt;.contains(element: T): kotlin.Boolean { /* compiled code */ }
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;.count(): kotlin.Int { /* compiled code */ }
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.count(): kotlin.Int { /* compiled code */ }
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.count(predicate: (T) -&gt; kotlin.Boolean): kotlin.Int { /* compiled code */ }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.distinct(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;public inline fun &lt;T, K&gt; kotlin.collections.Iterable&lt;T&gt;.distinctBy(selector: (T) -&gt; K): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.drop(n: kotlin.Int): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.dropLast(n: kotlin.Int): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.dropLastWhile(predicate: (T) -&gt; kotlin.Boolean): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.dropWhile(predicate: (T) -&gt; kotlin.Boolean): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.elementAt(index: kotlin.Int): T { /* compiled code */ }
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.elementAt(index: kotlin.Int): T { /* compiled code */ }
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.elementAtOrElse(index: kotlin.Int, defaultValue: (kotlin.Int) -&gt; T): T { /* compiled code */ }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.elementAtOrElse(index: kotlin.Int, defaultValue: (kotlin.Int) -&gt; T): T { /* compiled code */ }
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.elementAtOrNull(index: kotlin.Int): T? { /* compiled code */ }
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.elementAtOrNull(index: kotlin.Int): T? { /* compiled code */ }
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.filter(predicate: (T) -&gt; kotlin.Boolean): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.filterIndexed(predicate: (kotlin.Int, T) -&gt; kotlin.Boolean): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>295</i>&nbsp;
+<i>296</i>&nbsp;public inline fun &lt;T, C : kotlin.collections.MutableCollection&lt;in T&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.filterIndexedTo(destination: C, predicate: (kotlin.Int, T) -&gt; kotlin.Boolean): C { /* compiled code */ }
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;public inline fun &lt;reified R&gt; kotlin.collections.Iterable&lt;*&gt;.filterIsInstance(): kotlin.collections.List&lt;@kotlin.internal.NoInfer R&gt; { /* compiled code */ }
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;public inline fun &lt;reified R, C : kotlin.collections.MutableCollection&lt;in R&gt;&gt; kotlin.collections.Iterable&lt;*&gt;.filterIsInstanceTo(destination: C): C { /* compiled code */ }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.filterNot(predicate: (T) -&gt; kotlin.Boolean): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;public fun &lt;T : kotlin.Any&gt; kotlin.collections.Iterable&lt;T?&gt;.filterNotNull(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;public fun &lt;C : kotlin.collections.MutableCollection&lt;in T&gt;, T : kotlin.Any&gt; kotlin.collections.Iterable&lt;T?&gt;.filterNotNullTo(destination: C): C { /* compiled code */ }
+<i>307</i>&nbsp;
+<i>308</i>&nbsp;public inline fun &lt;T, C : kotlin.collections.MutableCollection&lt;in T&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.filterNotTo(destination: C, predicate: (T) -&gt; kotlin.Boolean): C { /* compiled code */ }
+<i>309</i>&nbsp;
+<i>310</i>&nbsp;public inline fun &lt;T, C : kotlin.collections.MutableCollection&lt;in T&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.filterTo(destination: C, predicate: (T) -&gt; kotlin.Boolean): C { /* compiled code */ }
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.find(predicate: (T) -&gt; kotlin.Boolean): T? { /* compiled code */ }
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.findLast(predicate: (T) -&gt; kotlin.Boolean): T? { /* compiled code */ }
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.findLast(predicate: (T) -&gt; kotlin.Boolean): T? { /* compiled code */ }
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.first(): T { /* compiled code */ }
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.first(predicate: (T) -&gt; kotlin.Boolean): T { /* compiled code */ }
+<i>321</i>&nbsp;
+<i>322</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.first(): T { /* compiled code */ }
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.firstOrNull(): T? { /* compiled code */ }
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.firstOrNull(predicate: (T) -&gt; kotlin.Boolean): T? { /* compiled code */ }
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.firstOrNull(): T? { /* compiled code */ }
+<i>329</i>&nbsp;
+<i>330</i>&nbsp;public inline fun &lt;T, R&gt; kotlin.collections.Iterable&lt;T&gt;.flatMap(transform: (T) -&gt; kotlin.collections.Iterable&lt;R&gt;): kotlin.collections.List&lt;R&gt; { /* compiled code */ }
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;public inline fun &lt;T, R, C : kotlin.collections.MutableCollection&lt;in R&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.flatMapTo(destination: C, transform: (T) -&gt; kotlin.collections.Iterable&lt;R&gt;): C { /* compiled code */ }
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;public inline fun &lt;T, R&gt; kotlin.collections.Iterable&lt;T&gt;.fold(initial: R, operation: (R, T) -&gt; R): R { /* compiled code */ }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;public inline fun &lt;T, R&gt; kotlin.collections.Iterable&lt;T&gt;.foldIndexed(initial: R, operation: (kotlin.Int, R, T) -&gt; R): R { /* compiled code */ }
+<i>337</i>&nbsp;
+<b class="fc"><i>338</i>&nbsp;public inline fun &lt;T, R&gt; kotlin.collections.List&lt;T&gt;.foldRight(initial: R, operation: (T, R) -&gt; R): R { /* compiled code */ }</b>
+<b class="pc"><i>339</i>&nbsp;</b>
+<b class="fc"><i>340</i>&nbsp;public inline fun &lt;T, R&gt; kotlin.collections.List&lt;T&gt;.foldRightIndexed(initial: R, operation: (kotlin.Int, T, R) -&gt; R): R { /* compiled code */ }</b>
+<b class="fc"><i>341</i>&nbsp;</b>
+<i>342</i>&nbsp;@kotlin.internal.HidesMembers public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.forEach(action: (T) -&gt; kotlin.Unit): kotlin.Unit { /* compiled code */ }
+<i>343</i>&nbsp;
+<b class="nc"><i>344</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.forEachIndexed(action: (kotlin.Int, T) -&gt; kotlin.Unit): kotlin.Unit { /* compiled code */ }</b>
+<i>345</i>&nbsp;
+<i>346</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.getOrElse(index: kotlin.Int, defaultValue: (kotlin.Int) -&gt; T): T { /* compiled code */ }
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.getOrNull(index: kotlin.Int): T? { /* compiled code */ }
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;public inline fun &lt;T, K&gt; kotlin.collections.Iterable&lt;T&gt;.groupBy(keySelector: (T) -&gt; K): kotlin.collections.Map&lt;K, kotlin.collections.List&lt;T&gt;&gt; { /* compiled code */ }
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;public inline fun &lt;T, K, V&gt; kotlin.collections.Iterable&lt;T&gt;.groupBy(keySelector: (T) -&gt; K, valueTransform: (T) -&gt; V): kotlin.collections.Map&lt;K, kotlin.collections.List&lt;V&gt;&gt; { /* compiled code */ }
+<i>353</i>&nbsp;
+<i>354</i>&nbsp;public inline fun &lt;T, K, M : kotlin.collections.MutableMap&lt;in K, kotlin.collections.MutableList&lt;T&gt;&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.groupByTo(destination: M, keySelector: (T) -&gt; K): M { /* compiled code */ }
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;public inline fun &lt;T, K, V, M : kotlin.collections.MutableMap&lt;in K, kotlin.collections.MutableList&lt;V&gt;&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.groupByTo(destination: M, keySelector: (T) -&gt; K, valueTransform: (T) -&gt; V): M { /* compiled code */ }
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;@kotlin.SinceKotlin public inline fun &lt;T, K&gt; kotlin.collections.Iterable&lt;T&gt;.groupingBy(crossinline keySelector: (T) -&gt; K): kotlin.collections.Grouping&lt;T, K&gt; { /* compiled code */ }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;public fun &lt;@kotlin.internal.OnlyInputTypes T&gt; kotlin.collections.Iterable&lt;T&gt;.indexOf(element: T): kotlin.Int { /* compiled code */ }
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;public fun &lt;@kotlin.internal.OnlyInputTypes T&gt; kotlin.collections.List&lt;T&gt;.indexOf(element: T): kotlin.Int { /* compiled code */ }
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.indexOfFirst(predicate: (T) -&gt; kotlin.Boolean): kotlin.Int { /* compiled code */ }
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.indexOfFirst(predicate: (T) -&gt; kotlin.Boolean): kotlin.Int { /* compiled code */ }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.indexOfLast(predicate: (T) -&gt; kotlin.Boolean): kotlin.Int { /* compiled code */ }
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.indexOfLast(predicate: (T) -&gt; kotlin.Boolean): kotlin.Int { /* compiled code */ }
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;public infix fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.intersect(other: kotlin.collections.Iterable&lt;T&gt;): kotlin.collections.Set&lt;T&gt; { /* compiled code */ }
+<i>373</i>&nbsp;
+<i>374</i>&nbsp;public fun &lt;T, A : kotlin.text.Appendable /* = java.lang.Appendable */&gt; kotlin.collections.Iterable&lt;T&gt;.joinTo(buffer: A, separator: kotlin.CharSequence /* = compiled code */, prefix: kotlin.CharSequence /* = compiled code */, postfix: kotlin.CharSequence /* = compiled code */, limit: kotlin.Int /* = compiled code */, truncated: kotlin.CharSequence /* = compiled code */, transform: ((T) -&gt; kotlin.CharSequence)? /* = compiled code */): A { /* compiled code */ }
+<i>375</i>&nbsp;
+<i>376</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.joinToString(separator: kotlin.CharSequence /* = compiled code */, prefix: kotlin.CharSequence /* = compiled code */, postfix: kotlin.CharSequence /* = compiled code */, limit: kotlin.Int /* = compiled code */, truncated: kotlin.CharSequence /* = compiled code */, transform: ((T) -&gt; kotlin.CharSequence)? /* = compiled code */): kotlin.String { /* compiled code */ }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.last(): T { /* compiled code */ }
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.last(predicate: (T) -&gt; kotlin.Boolean): T { /* compiled code */ }
+<i>381</i>&nbsp;
+<i>382</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.last(): T { /* compiled code */ }
+<i>383</i>&nbsp;
+<i>384</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.last(predicate: (T) -&gt; kotlin.Boolean): T { /* compiled code */ }
+<i>385</i>&nbsp;
+<i>386</i>&nbsp;public fun &lt;@kotlin.internal.OnlyInputTypes T&gt; kotlin.collections.Iterable&lt;T&gt;.lastIndexOf(element: T): kotlin.Int { /* compiled code */ }
+<i>387</i>&nbsp;
+<i>388</i>&nbsp;public fun &lt;@kotlin.internal.OnlyInputTypes T&gt; kotlin.collections.List&lt;T&gt;.lastIndexOf(element: T): kotlin.Int { /* compiled code */ }
+<i>389</i>&nbsp;
+<i>390</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.lastOrNull(): T? { /* compiled code */ }
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.lastOrNull(predicate: (T) -&gt; kotlin.Boolean): T? { /* compiled code */ }
+<i>393</i>&nbsp;
+<i>394</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.lastOrNull(): T? { /* compiled code */ }
+<i>395</i>&nbsp;
+<i>396</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.lastOrNull(predicate: (T) -&gt; kotlin.Boolean): T? { /* compiled code */ }
+<i>397</i>&nbsp;
+<i>398</i>&nbsp;public inline fun &lt;T, R&gt; kotlin.collections.Iterable&lt;T&gt;.map(transform: (T) -&gt; R): kotlin.collections.List&lt;R&gt; { /* compiled code */ }
+<i>399</i>&nbsp;
+<i>400</i>&nbsp;public inline fun &lt;T, R&gt; kotlin.collections.Iterable&lt;T&gt;.mapIndexed(transform: (kotlin.Int, T) -&gt; R): kotlin.collections.List&lt;R&gt; { /* compiled code */ }
+<i>401</i>&nbsp;
+<i>402</i>&nbsp;public inline fun &lt;T, R : kotlin.Any&gt; kotlin.collections.Iterable&lt;T&gt;.mapIndexedNotNull(transform: (kotlin.Int, T) -&gt; R?): kotlin.collections.List&lt;R&gt; { /* compiled code */ }
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;public inline fun &lt;T, R : kotlin.Any, C : kotlin.collections.MutableCollection&lt;in R&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.mapIndexedNotNullTo(destination: C, transform: (kotlin.Int, T) -&gt; R?): C { /* compiled code */ }
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;public inline fun &lt;T, R, C : kotlin.collections.MutableCollection&lt;in R&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.mapIndexedTo(destination: C, transform: (kotlin.Int, T) -&gt; R): C { /* compiled code */ }
+<i>407</i>&nbsp;
+<i>408</i>&nbsp;public inline fun &lt;T, R : kotlin.Any&gt; kotlin.collections.Iterable&lt;T&gt;.mapNotNull(transform: (T) -&gt; R?): kotlin.collections.List&lt;R&gt; { /* compiled code */ }
+<i>409</i>&nbsp;
+<i>410</i>&nbsp;public inline fun &lt;T, R : kotlin.Any, C : kotlin.collections.MutableCollection&lt;in R&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.mapNotNullTo(destination: C, transform: (T) -&gt; R?): C { /* compiled code */ }
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;public inline fun &lt;T, R, C : kotlin.collections.MutableCollection&lt;in R&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.mapTo(destination: C, transform: (T) -&gt; R): C { /* compiled code */ }
+<i>413</i>&nbsp;
+<i>414</i>&nbsp;public fun &lt;T : kotlin.Comparable&lt;T&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.max(): T? { /* compiled code */ }
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;@kotlin.SinceKotlin public fun kotlin.collections.Iterable&lt;kotlin.Double&gt;.max(): kotlin.Double? { /* compiled code */ }
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;@kotlin.SinceKotlin public fun kotlin.collections.Iterable&lt;kotlin.Float&gt;.max(): kotlin.Float? { /* compiled code */ }
+<i>419</i>&nbsp;
+<i>420</i>&nbsp;public inline fun &lt;T, R : kotlin.Comparable&lt;R&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.maxBy(selector: (T) -&gt; R): T? { /* compiled code */ }
+<i>421</i>&nbsp;
+<i>422</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.maxWith(comparator: kotlin.Comparator&lt;in T&gt; /* = java.util.Comparator&lt;in T&gt; */): T? { /* compiled code */ }
+<i>423</i>&nbsp;
+<i>424</i>&nbsp;public fun &lt;T : kotlin.Comparable&lt;T&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.min(): T? { /* compiled code */ }
+<i>425</i>&nbsp;
+<i>426</i>&nbsp;@kotlin.SinceKotlin public fun kotlin.collections.Iterable&lt;kotlin.Double&gt;.min(): kotlin.Double? { /* compiled code */ }
+<i>427</i>&nbsp;
+<i>428</i>&nbsp;@kotlin.SinceKotlin public fun kotlin.collections.Iterable&lt;kotlin.Float&gt;.min(): kotlin.Float? { /* compiled code */ }
+<i>429</i>&nbsp;
+<i>430</i>&nbsp;public inline fun &lt;T, R : kotlin.Comparable&lt;R&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.minBy(selector: (T) -&gt; R): T? { /* compiled code */ }
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.minWith(comparator: kotlin.Comparator&lt;in T&gt; /* = java.util.Comparator&lt;in T&gt; */): T? { /* compiled code */ }
+<i>433</i>&nbsp;
+<i>434</i>&nbsp;public operator fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.minus(element: T): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>435</i>&nbsp;
+<i>436</i>&nbsp;public operator fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.minus(elements: kotlin.Array&lt;out T&gt;): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>437</i>&nbsp;
+<i>438</i>&nbsp;public operator fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.minus(elements: kotlin.collections.Iterable&lt;T&gt;): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>439</i>&nbsp;
+<i>440</i>&nbsp;public operator fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.minus(elements: kotlin.sequences.Sequence&lt;T&gt;): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>441</i>&nbsp;
+<i>442</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.minusElement(element: T): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>443</i>&nbsp;
+<i>444</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.none(): kotlin.Boolean { /* compiled code */ }
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.none(predicate: (T) -&gt; kotlin.Boolean): kotlin.Boolean { /* compiled code */ }
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;@kotlin.SinceKotlin public inline fun &lt;T, C : kotlin.collections.Iterable&lt;T&gt;&gt; C.onEach(action: (T) -&gt; kotlin.Unit): C { /* compiled code */ }
+<i>449</i>&nbsp;
+<i>450</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.partition(predicate: (T) -&gt; kotlin.Boolean): kotlin.Pair&lt;kotlin.collections.List&lt;T&gt;, kotlin.collections.List&lt;T&gt;&gt; { /* compiled code */ }
+<i>451</i>&nbsp;
+<i>452</i>&nbsp;public operator fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;.plus(element: T): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>453</i>&nbsp;
+<i>454</i>&nbsp;public operator fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;.plus(elements: kotlin.Array&lt;out T&gt;): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>455</i>&nbsp;
+<i>456</i>&nbsp;public operator fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;.plus(elements: kotlin.collections.Iterable&lt;T&gt;): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>457</i>&nbsp;
+<i>458</i>&nbsp;public operator fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;.plus(elements: kotlin.sequences.Sequence&lt;T&gt;): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>459</i>&nbsp;
+<i>460</i>&nbsp;public operator fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.plus(element: T): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>461</i>&nbsp;
+<i>462</i>&nbsp;public operator fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.plus(elements: kotlin.Array&lt;out T&gt;): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>463</i>&nbsp;
+<i>464</i>&nbsp;public operator fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.plus(elements: kotlin.collections.Iterable&lt;T&gt;): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;public operator fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.plus(elements: kotlin.sequences.Sequence&lt;T&gt;): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>467</i>&nbsp;
+<i>468</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;.plusElement(element: T): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>469</i>&nbsp;
+<i>470</i>&nbsp;@kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.plusElement(element: T): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>471</i>&nbsp;
+<i>472</i>&nbsp;@kotlin.SinceKotlin @kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;.random(): T { /* compiled code */ }
+<i>473</i>&nbsp;
+<i>474</i>&nbsp;@kotlin.SinceKotlin public fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;.random(random: kotlin.random.Random): T { /* compiled code */ }
+<i>475</i>&nbsp;
+<i>476</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi @kotlin.internal.InlineOnly public inline fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;.randomOrNull(): T? { /* compiled code */ }
+<i>477</i>&nbsp;
+<i>478</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi public fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;.randomOrNull(random: kotlin.random.Random): T? { /* compiled code */ }
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;public inline fun &lt;S, T : S&gt; kotlin.collections.Iterable&lt;T&gt;.reduce(operation: (S, T) -&gt; S): S { /* compiled code */ }
+<i>481</i>&nbsp;
+<i>482</i>&nbsp;public inline fun &lt;S, T : S&gt; kotlin.collections.Iterable&lt;T&gt;.reduceIndexed(operation: (kotlin.Int, S, T) -&gt; S): S { /* compiled code */ }
+<i>483</i>&nbsp;
+<i>484</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi public inline fun &lt;S, T : S&gt; kotlin.collections.Iterable&lt;T&gt;.reduceOrNull(operation: (S, T) -&gt; S): S? { /* compiled code */ }
+<i>485</i>&nbsp;
+<i>486</i>&nbsp;public inline fun &lt;S, T : S&gt; kotlin.collections.List&lt;T&gt;.reduceRight(operation: (T, S) -&gt; S): S { /* compiled code */ }
+<i>487</i>&nbsp;
+<i>488</i>&nbsp;public inline fun &lt;S, T : S&gt; kotlin.collections.List&lt;T&gt;.reduceRightIndexed(operation: (kotlin.Int, T, S) -&gt; S): S { /* compiled code */ }
+<i>489</i>&nbsp;
+<i>490</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi public inline fun &lt;S, T : S&gt; kotlin.collections.List&lt;T&gt;.reduceRightOrNull(operation: (T, S) -&gt; S): S? { /* compiled code */ }
+<i>491</i>&nbsp;
+<i>492</i>&nbsp;public fun &lt;T : kotlin.Any&gt; kotlin.collections.Iterable&lt;T?&gt;.requireNoNulls(): kotlin.collections.Iterable&lt;T&gt; { /* compiled code */ }
+<i>493</i>&nbsp;
+<i>494</i>&nbsp;public fun &lt;T : kotlin.Any&gt; kotlin.collections.List&lt;T?&gt;.requireNoNulls(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.reversed(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>497</i>&nbsp;
+<i>498</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi public inline fun &lt;T, R&gt; kotlin.collections.Iterable&lt;T&gt;.scan(initial: R, operation: (R, T) -&gt; R): kotlin.collections.List&lt;R&gt; { /* compiled code */ }
+<i>499</i>&nbsp;
+<i>500</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi public inline fun &lt;T, R&gt; kotlin.collections.Iterable&lt;T&gt;.scanIndexed(initial: R, operation: (kotlin.Int, R, T) -&gt; R): kotlin.collections.List&lt;R&gt; { /* compiled code */ }
+<i>501</i>&nbsp;
+<i>502</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi public inline fun &lt;S, T : S&gt; kotlin.collections.Iterable&lt;T&gt;.scanReduce(operation: (S, T) -&gt; S): kotlin.collections.List&lt;S&gt; { /* compiled code */ }
+<i>503</i>&nbsp;
+<i>504</i>&nbsp;@kotlin.SinceKotlin @kotlin.ExperimentalStdlibApi public inline fun &lt;S, T : S&gt; kotlin.collections.Iterable&lt;T&gt;.scanReduceIndexed(operation: (kotlin.Int, S, T) -&gt; S): kotlin.collections.List&lt;S&gt; { /* compiled code */ }
+<i>505</i>&nbsp;
+<i>506</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.single(): T { /* compiled code */ }
+<i>507</i>&nbsp;
+<i>508</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.single(predicate: (T) -&gt; kotlin.Boolean): T { /* compiled code */ }
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.single(): T { /* compiled code */ }
+<i>511</i>&nbsp;
+<i>512</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.singleOrNull(): T? { /* compiled code */ }
+<i>513</i>&nbsp;
+<i>514</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.singleOrNull(predicate: (T) -&gt; kotlin.Boolean): T? { /* compiled code */ }
+<i>515</i>&nbsp;
+<i>516</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.singleOrNull(): T? { /* compiled code */ }
+<i>517</i>&nbsp;
+<i>518</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.slice(indices: kotlin.collections.Iterable&lt;kotlin.Int&gt;): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>519</i>&nbsp;
+<i>520</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.slice(indices: kotlin.ranges.IntRange): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>521</i>&nbsp;
+<i>522</i>&nbsp;public inline fun &lt;T, R : kotlin.Comparable&lt;R&gt;&gt; kotlin.collections.MutableList&lt;T&gt;.sortBy(crossinline selector: (T) -&gt; R?): kotlin.Unit { /* compiled code */ }
+<i>523</i>&nbsp;
+<i>524</i>&nbsp;public inline fun &lt;T, R : kotlin.Comparable&lt;R&gt;&gt; kotlin.collections.MutableList&lt;T&gt;.sortByDescending(crossinline selector: (T) -&gt; R?): kotlin.Unit { /* compiled code */ }
+<i>525</i>&nbsp;
+<i>526</i>&nbsp;public fun &lt;T : kotlin.Comparable&lt;T&gt;&gt; kotlin.collections.MutableList&lt;T&gt;.sortDescending(): kotlin.Unit { /* compiled code */ }
+<i>527</i>&nbsp;
+<i>528</i>&nbsp;public fun &lt;T : kotlin.Comparable&lt;T&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.sorted(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>529</i>&nbsp;
+<i>530</i>&nbsp;public inline fun &lt;T, R : kotlin.Comparable&lt;R&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.sortedBy(crossinline selector: (T) -&gt; R?): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>531</i>&nbsp;
+<i>532</i>&nbsp;public inline fun &lt;T, R : kotlin.Comparable&lt;R&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.sortedByDescending(crossinline selector: (T) -&gt; R?): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>533</i>&nbsp;
+<i>534</i>&nbsp;public fun &lt;T : kotlin.Comparable&lt;T&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.sortedDescending(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>535</i>&nbsp;
+<i>536</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.sortedWith(comparator: kotlin.Comparator&lt;in T&gt; /* = java.util.Comparator&lt;in T&gt; */): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>537</i>&nbsp;
+<i>538</i>&nbsp;public infix fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.subtract(other: kotlin.collections.Iterable&lt;T&gt;): kotlin.collections.Set&lt;T&gt; { /* compiled code */ }
+<i>539</i>&nbsp;
+<i>540</i>&nbsp;@kotlin.jvm.JvmName public fun kotlin.collections.Iterable&lt;kotlin.Byte&gt;.sum(): kotlin.Int { /* compiled code */ }
+<i>541</i>&nbsp;
+<i>542</i>&nbsp;@kotlin.jvm.JvmName public fun kotlin.collections.Iterable&lt;kotlin.Double&gt;.sum(): kotlin.Double { /* compiled code */ }
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;@kotlin.jvm.JvmName public fun kotlin.collections.Iterable&lt;kotlin.Float&gt;.sum(): kotlin.Float { /* compiled code */ }
+<i>545</i>&nbsp;
+<i>546</i>&nbsp;@kotlin.jvm.JvmName public fun kotlin.collections.Iterable&lt;kotlin.Int&gt;.sum(): kotlin.Int { /* compiled code */ }
+<i>547</i>&nbsp;
+<i>548</i>&nbsp;@kotlin.jvm.JvmName public fun kotlin.collections.Iterable&lt;kotlin.Long&gt;.sum(): kotlin.Long { /* compiled code */ }
+<i>549</i>&nbsp;
+<i>550</i>&nbsp;@kotlin.jvm.JvmName public fun kotlin.collections.Iterable&lt;kotlin.Short&gt;.sum(): kotlin.Int { /* compiled code */ }
+<i>551</i>&nbsp;
+<i>552</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.sumBy(selector: (T) -&gt; kotlin.Int): kotlin.Int { /* compiled code */ }
+<i>553</i>&nbsp;
+<i>554</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.sumByDouble(selector: (T) -&gt; kotlin.Double): kotlin.Double { /* compiled code */ }
+<i>555</i>&nbsp;
+<i>556</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.take(n: kotlin.Int): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>557</i>&nbsp;
+<i>558</i>&nbsp;public fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.takeLast(n: kotlin.Int): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>559</i>&nbsp;
+<i>560</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.List&lt;T&gt;.takeLastWhile(predicate: (T) -&gt; kotlin.Boolean): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>561</i>&nbsp;
+<i>562</i>&nbsp;public inline fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.takeWhile(predicate: (T) -&gt; kotlin.Boolean): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>563</i>&nbsp;
+<i>564</i>&nbsp;public fun kotlin.collections.Collection&lt;kotlin.Boolean&gt;.toBooleanArray(): kotlin.BooleanArray { /* compiled code */ }
+<i>565</i>&nbsp;
+<i>566</i>&nbsp;public fun kotlin.collections.Collection&lt;kotlin.Byte&gt;.toByteArray(): kotlin.ByteArray { /* compiled code */ }
+<i>567</i>&nbsp;
+<i>568</i>&nbsp;public fun kotlin.collections.Collection&lt;kotlin.Char&gt;.toCharArray(): kotlin.CharArray { /* compiled code */ }
+<i>569</i>&nbsp;
+<i>570</i>&nbsp;public fun &lt;T, C : kotlin.collections.MutableCollection&lt;in T&gt;&gt; kotlin.collections.Iterable&lt;T&gt;.toCollection(destination: C): C { /* compiled code */ }
+<i>571</i>&nbsp;
+<i>572</i>&nbsp;public fun kotlin.collections.Collection&lt;kotlin.Double&gt;.toDoubleArray(): kotlin.DoubleArray { /* compiled code */ }
+<i>573</i>&nbsp;
+<i>574</i>&nbsp;public fun kotlin.collections.Collection&lt;kotlin.Float&gt;.toFloatArray(): kotlin.FloatArray { /* compiled code */ }
+<i>575</i>&nbsp;
+<i>576</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.toHashSet(): kotlin.collections.HashSet&lt;T&gt; /* = java.util.HashSet&lt;T&gt; */ { /* compiled code */ }
+<i>577</i>&nbsp;
+<i>578</i>&nbsp;public fun kotlin.collections.Collection&lt;kotlin.Int&gt;.toIntArray(): kotlin.IntArray { /* compiled code */ }
+<i>579</i>&nbsp;
+<i>580</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.toList(): kotlin.collections.List&lt;T&gt; { /* compiled code */ }
+<i>581</i>&nbsp;
+<i>582</i>&nbsp;public fun kotlin.collections.Collection&lt;kotlin.Long&gt;.toLongArray(): kotlin.LongArray { /* compiled code */ }
+<i>583</i>&nbsp;
+<i>584</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Collection&lt;T&gt;.toMutableList(): kotlin.collections.MutableList&lt;T&gt; { /* compiled code */ }
+<i>585</i>&nbsp;
+<i>586</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.toMutableList(): kotlin.collections.MutableList&lt;T&gt; { /* compiled code */ }
+<i>587</i>&nbsp;
+<i>588</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.toMutableSet(): kotlin.collections.MutableSet&lt;T&gt; { /* compiled code */ }
+<i>589</i>&nbsp;
+<i>590</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.toSet(): kotlin.collections.Set&lt;T&gt; { /* compiled code */ }
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;public fun kotlin.collections.Collection&lt;kotlin.Short&gt;.toShortArray(): kotlin.ShortArray { /* compiled code */ }
+<i>593</i>&nbsp;
+<i>594</i>&nbsp;public infix fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.union(other: kotlin.collections.Iterable&lt;T&gt;): kotlin.collections.Set&lt;T&gt; { /* compiled code */ }
+<i>595</i>&nbsp;
+<i>596</i>&nbsp;@kotlin.SinceKotlin public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.windowed(size: kotlin.Int, step: kotlin.Int /* = compiled code */, partialWindows: kotlin.Boolean /* = compiled code */): kotlin.collections.List&lt;kotlin.collections.List&lt;T&gt;&gt; { /* compiled code */ }
+<i>597</i>&nbsp;
+<i>598</i>&nbsp;@kotlin.SinceKotlin public fun &lt;T, R&gt; kotlin.collections.Iterable&lt;T&gt;.windowed(size: kotlin.Int, step: kotlin.Int /* = compiled code */, partialWindows: kotlin.Boolean /* = compiled code */, transform: (kotlin.collections.List&lt;T&gt;) -&gt; R): kotlin.collections.List&lt;R&gt; { /* compiled code */ }
+<i>599</i>&nbsp;
+<i>600</i>&nbsp;public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.withIndex(): kotlin.collections.Iterable&lt;kotlin.collections.IndexedValue&lt;T&gt;&gt; { /* compiled code */ }
+<i>601</i>&nbsp;
+<i>602</i>&nbsp;public infix fun &lt;T, R&gt; kotlin.collections.Iterable&lt;T&gt;.zip(other: kotlin.Array&lt;out R&gt;): kotlin.collections.List&lt;kotlin.Pair&lt;T, R&gt;&gt; { /* compiled code */ }
+<i>603</i>&nbsp;
+<i>604</i>&nbsp;public inline fun &lt;T, R, V&gt; kotlin.collections.Iterable&lt;T&gt;.zip(other: kotlin.Array&lt;out R&gt;, transform: (T, R) -&gt; V): kotlin.collections.List&lt;V&gt; { /* compiled code */ }
+<i>605</i>&nbsp;
+<i>606</i>&nbsp;public infix fun &lt;T, R&gt; kotlin.collections.Iterable&lt;T&gt;.zip(other: kotlin.collections.Iterable&lt;R&gt;): kotlin.collections.List&lt;kotlin.Pair&lt;T, R&gt;&gt; { /* compiled code */ }
+<i>607</i>&nbsp;
+<i>608</i>&nbsp;public inline fun &lt;T, R, V&gt; kotlin.collections.Iterable&lt;T&gt;.zip(other: kotlin.collections.Iterable&lt;R&gt;, transform: (T, R) -&gt; V): kotlin.collections.List&lt;V&gt; { /* compiled code */ }
+<i>609</i>&nbsp;
+<i>610</i>&nbsp;@kotlin.SinceKotlin public fun &lt;T&gt; kotlin.collections.Iterable&lt;T&gt;.zipWithNext(): kotlin.collections.List&lt;kotlin.Pair&lt;T, T&gt;&gt; { /* compiled code */ }
+<i>611</i>&nbsp;
+<i>612</i>&nbsp;@kotlin.SinceKotlin public inline fun &lt;T, R&gt; kotlin.collections.Iterable&lt;T&gt;.zipWithNext(transform: (T, T) -&gt; R): kotlin.collections.List&lt;R&gt; { /* compiled code */ }
+<i>613</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-02-01 23:16</div>
+</div>
+</body>
+</html>

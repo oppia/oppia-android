@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExplorationDataControllerTest_TestModule_ProvideGlobalLogLevelFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$fractioninput_FractionInputHasDenominatorEqualToRuleClassifierProviderTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.domain.exploration</a> &gt; <span class="el_source">ExplorationDataControllerTest_TestModule_ProvideGlobalLogLevelFactory.java</span></div><h1>ExplorationDataControllerTest_TestModule_ProvideGlobalLogLevelFactory.java</h1><pre class="source lang-java linenums">package org.oppia.android.domain.exploration;
+
+import dagger.internal.Factory;
+import dagger.internal.Preconditions;
+import javax.annotation.Generated;
+import org.oppia.android.util.logging.LogLevel;
+
+@Generated(
+    value = &quot;dagger.internal.codegen.ComponentProcessor&quot;,
+    comments = &quot;https://dagger.dev&quot;
+)
+@SuppressWarnings({
+    &quot;unchecked&quot;,
+    &quot;rawtypes&quot;
+})
+public final class ExplorationDataControllerTest_TestModule_ProvideGlobalLogLevelFactory implements Factory&lt;LogLevel&gt; {
+  private final ExplorationDataControllerTest.TestModule module;
+
+  public ExplorationDataControllerTest_TestModule_ProvideGlobalLogLevelFactory(
+<span class="nc" id="L20">      ExplorationDataControllerTest.TestModule module) {</span>
+<span class="nc" id="L21">    this.module = module;</span>
+<span class="nc" id="L22">  }</span>
+
+  @Override
+  public LogLevel get() {
+<span class="nc" id="L26">    return provideGlobalLogLevel(module);</span>
+  }
+
+  public static ExplorationDataControllerTest_TestModule_ProvideGlobalLogLevelFactory create(
+      ExplorationDataControllerTest.TestModule module) {
+<span class="nc" id="L31">    return new ExplorationDataControllerTest_TestModule_ProvideGlobalLogLevelFactory(module);</span>
+  }
+
+  public static LogLevel provideGlobalLogLevel(ExplorationDataControllerTest.TestModule instance) {
+<span class="nc" id="L35">    return Preconditions.checkNotNull(instance.provideGlobalLogLevel(), &quot;Cannot return null from a non-@Nullable @Provides method&quot;);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

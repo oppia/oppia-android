@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DaggerFractionInputHasNoFractionalPartRuleClassifierProviderTest_TestApplicationComponent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$CellularAudioDialogControllerTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.domain.classify.rules.fractioninput</a> &gt; <span class="el_source">DaggerFractionInputHasNoFractionalPartRuleClassifierProviderTest_TestApplicationComponent.java</span></div><h1>DaggerFractionInputHasNoFractionalPartRuleClassifierProviderTest_TestApplicationComponent.java</h1><pre class="source lang-java linenums">package org.oppia.android.domain.classify.rules.fractioninput;
+
+import android.app.Application;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import dagger.internal.DoubleCheck;
+import dagger.internal.Preconditions;
+import javax.annotation.Generated;
+import javax.inject.Provider;
+import org.oppia.android.domain.classify.rules.GenericRuleClassifier;
+import org.oppia.android.domain.classify.rules.InteractionObjectTypeExtractorRepository;
+import org.oppia.android.domain.classify.rules.InteractionObjectTypeExtractorRepository_Factory;
+
+@Generated(
+    value = &quot;dagger.internal.codegen.ComponentProcessor&quot;,
+    comments = &quot;https://dagger.dev&quot;
+)
+@SuppressWarnings({
+    &quot;unchecked&quot;,
+    &quot;rawtypes&quot;
+})
+public final class DaggerFractionInputHasNoFractionalPartRuleClassifierProviderTest_TestApplicationComponent implements FractionInputHasNoFractionalPartRuleClassifierProviderTest.TestApplicationComponent {
+  private Provider&lt;InteractionObjectTypeExtractorRepository&gt; interactionObjectTypeExtractorRepositoryProvider;
+
+  private DaggerFractionInputHasNoFractionalPartRuleClassifierProviderTest_TestApplicationComponent(
+<span class="nc" id="L25">      Application setApplication) {</span>
+
+<span class="nc" id="L27">    initialize(setApplication);</span>
+<span class="nc" id="L28">  }</span>
+
+  public static FractionInputHasNoFractionalPartRuleClassifierProviderTest.TestApplicationComponent.Builder builder(
+      ) {
+<span class="nc" id="L32">    return new Builder();</span>
+  }
+
+  private GenericRuleClassifier.Factory getGenericRuleClassifierFactory() {
+<span class="nc" id="L36">    return new GenericRuleClassifier.Factory(interactionObjectTypeExtractorRepositoryProvider.get());}</span>
+
+  private FractionInputHasNoFractionalPartRuleClassifierProvider getFractionInputHasNoFractionalPartRuleClassifierProvider(
+      ) {
+<span class="nc" id="L40">    return new FractionInputHasNoFractionalPartRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  private void initialize(final Application setApplication) {
+<span class="nc" id="L44">    this.interactionObjectTypeExtractorRepositoryProvider = DoubleCheck.provider(InteractionObjectTypeExtractorRepository_Factory.create());</span>
+<span class="nc" id="L45">  }</span>
+
+  @Override
+  public void inject(FractionInputHasNoFractionalPartRuleClassifierProviderTest test) {
+<span class="nc" id="L49">    injectFractionInputHasNoFractionalPartRuleClassifierProviderTest(test);}</span>
+
+  @CanIgnoreReturnValue
+  private FractionInputHasNoFractionalPartRuleClassifierProviderTest injectFractionInputHasNoFractionalPartRuleClassifierProviderTest(
+      FractionInputHasNoFractionalPartRuleClassifierProviderTest instance) {
+<span class="nc" id="L54">    FractionInputHasNoFractionalPartRuleClassifierProviderTest_MembersInjector.injectFractionInputHasNoFractionalPartRuleClassifierProvider(instance, getFractionInputHasNoFractionalPartRuleClassifierProvider());</span>
+<span class="nc" id="L55">    return instance;</span>
+  }
+
+  private static final class Builder implements FractionInputHasNoFractionalPartRuleClassifierProviderTest.TestApplicationComponent.Builder {
+    private Application setApplication;
+
+    @Override
+    public Builder setApplication(Application application) {
+<span class="nc" id="L63">      this.setApplication = Preconditions.checkNotNull(application);</span>
+<span class="nc" id="L64">      return this;</span>
+    }
+
+    @Override
+    public FractionInputHasNoFractionalPartRuleClassifierProviderTest.TestApplicationComponent build(
+        ) {
+<span class="nc" id="L70">      Preconditions.checkBuilderRequirement(setApplication, Application.class);</span>
+<span class="nc" id="L71">      return new DaggerFractionInputHasNoFractionalPartRuleClassifierProviderTest_TestApplicationComponent(setApplication);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

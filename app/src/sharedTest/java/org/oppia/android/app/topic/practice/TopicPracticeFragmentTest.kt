@@ -21,15 +21,11 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -65,7 +61,9 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
+import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -77,6 +75,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [TopicPracticeFragment]. */
@@ -90,322 +89,241 @@ class TopicPracticeFragmentTest {
 
   private var skillIdList = ArrayList<String>()
   private val internalProfileId = 0
-  private lateinit var activityScenario: ActivityScenario<TopicActivity>
 
-  @get:Rule
-  var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
-    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-    activityScenario = launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
     Intents.init()
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
     skillIdList.add("5RM9KPfQxobH")
     skillIdList.add("B39yK4cbHZYI")
   }
 
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
   @Test
-  // TODO(#973): Fix TopicPracticeFragmentTest
-  @Ignore
   fun testTopicPracticeFragment_loadFragment_displaySubtopics_startButtonIsInactive() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      clickPracticeTab()
       onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          0,
+          R.id.master_skills_text_view
         )
-      ).perform(click())
-      onView(withId(R.id.master_skills_text_view))
-        .check(
-          matches(
-            withText(
-              R.string.topic_practice_master_these_skills
-            )
+      ).check(
+        matches(
+          withText(
+            R.string.topic_practice_master_these_skills
           )
         )
-      onView(withId(R.id.topic_practice_skill_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          10
-        )
       )
-      onView(withId(R.id.topic_practice_start_button)).check(matches(isCompletelyDisplayed()))
-      onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 5)
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          5,
+          R.id.topic_practice_start_button
+        )
+      ).check(matches(isCompletelyDisplayed()))
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          5,
+          R.id.topic_practice_start_button
+        )
+      ).check(matches(not(isClickable())))
     }
   }
 
   @Test
-  // TODO(#973): Fix TopicPracticeFragmentTest
-  @Ignore
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_isSuccessful() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
+      clickPracticeTab()
+      clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          1, R.id.subtopic_check_box
+          1,
+          R.id.subtopic_check_box
         )
-      ).perform(
-        click()
-      )
+      ).check(matches(isChecked()))
+      clickPracticeItem(position = 2, targetViewId = R.id.subtopic_check_box)
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          2, R.id.subtopic_check_box
+          2,
+          R.id.subtopic_check_box
         )
-      ).perform(
-        click()
-      )
+      ).check(matches(isChecked()))
     }
   }
 
   @Test
-  // TODO(#973): Fix TopicPracticeFragmentTest
-  @Ignore
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_startButtonIsActive() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
+      clickPracticeTab()
+      clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 5)
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          1, R.id.subtopic_check_box
+          5,
+          R.id.topic_practice_start_button
         )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.topic_practice_skill_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          10
-        )
-      )
-      onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))
+      ).check(matches(isClickable()))
     }
   }
 
   @Test
-  // TODO(#973): Fix TopicPracticeFragmentTest
-  @Ignore
-  fun testTopicPracticeFragment_loadFragment_selectSubtopics_deselectSubtopics_isSuccessful() {
+  fun testTopicPracticeFragment_loadFragment_selectSubtopics_thenDeselect_selectsCorrectTopic() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
+      clickPracticeTab()
+      clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
+      clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          1, R.id.subtopic_check_box
+          1,
+          R.id.subtopic_check_box
         )
-      ).perform(
-        click()
-      )
-      onView(
-        atPositionOnView(
-          R.id.topic_practice_skill_list,
-          1, R.id.subtopic_check_box
-        )
-      ).perform(
-        click()
-      )
+      ).check(matches(not(isChecked())))
     }
   }
 
   @Test
-  // TODO(#973): Fix TopicPracticeFragmentTest
-  @Ignore
-  fun testTopicPracticeFragment_loadFragment_selectSubtopics_deselectsubtopics_startButtonIsInactive() { // ktlint-disable max-line-length
+  fun testTopicPracticeFragment_loadFragment_selectSubtopics_thenDeselect_startButtonIsInactive() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.topic_practice_skill_list,
-          1, R.id.subtopic_check_box
-        )
-      ).perform(
-        click()
-      )
+      clickPracticeTab()
+      clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
+      clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
+      scrollToPosition(position = 5)
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          1, R.id.subtopic_check_box
+          5,
+          R.id.topic_practice_start_button
         )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.topic_practice_skill_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          10
-        )
-      )
-      onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
+      ).check(matches(not(isClickable())))
     }
   }
 
   @Test
-  // TODO(#973): Fix TopicPracticeFragmentTest
-  @Ignore
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() { // ktlint-disable max-line-length
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
-    onView(
-      allOf(
-        withText(TopicTab.getTabForPosition(2).name),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
-    onView(
-      atPositionOnView(
-        R.id.topic_practice_skill_list,
-        1, R.id.subtopic_check_box
-      )
-    ).perform(
-      click()
-    )
-    onView(withId(R.id.topic_practice_skill_list)).perform(
-      scrollToPosition<RecyclerView.ViewHolder>(
-        5
-      )
-    )
-    onView(withId(R.id.topic_practice_start_button)).perform(click())
+    clickPracticeTab()
+    clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
+    scrollToPosition(position = 5)
+    clickPracticeItem(position = 5, targetViewId = R.id.topic_practice_start_button)
     intended(hasComponent(QuestionPlayerActivity::class.java.name))
     intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
   }
 
   @Test
-  // TODO(#973): Fix TopicPracticeFragmentTest
-  @Ignore
   fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.topic_practice_skill_list,
-          1, R.id.subtopic_check_box
-        )
-      ).perform(
-        click()
-      )
+      clickPracticeTab()
+      clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          1, R.id.subtopic_check_box
+          1,
+          R.id.subtopic_check_box
         )
-      ).check(
-        matches(isChecked())
-      )
+      ).check(matches(isChecked()))
     }
   }
 
   @Test
-  // TODO(#973): Fix TopicPracticeFragmentTest
-  @Ignore
   fun testTopicPracticeFragment_loadFragment_configurationChange_startButtonRemainsInactive() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(withId(R.id.topic_practice_skill_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          5
-        )
-      )
-      onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.topic_practice_skill_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          5
-        )
-      )
-      onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
-    }
-  }
-
-  @Test
-  // TODO(#973): Fix TopicPracticeFragmentTest
-  @Ignore
-  fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() { // ktlint-disable max-line-length
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
+      clickPracticeTab()
+      scrollToPosition(position = 5)
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           R.id.topic_practice_skill_list,
-          1, R.id.subtopic_check_box
+          5,
+          R.id.topic_practice_start_button
         )
-      ).perform(
-        click()
-      )
+      ).check(matches(not(isClickable())))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.topic_practice_skill_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          5
+      scrollToPosition(position = 5)
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          5,
+          R.id.topic_practice_start_button
         )
-      )
-      onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))
+      ).check(matches(not(isClickable())))
     }
   }
 
   @Test
-  // TODO(#973): Fix TopicPracticeFragmentTest
-  @Ignore
+  fun testTopicPracticeFragment_loadFragment_selectSkills_configChange_startButtonRemainsActive() {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      clickPracticeTab()
+      clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 5)
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          5,
+          R.id.topic_practice_start_button
+        )
+      ).check(matches(isClickable()))
+    }
+  }
+
+  @Test
   fun testTopicPracticeFragment_loadFragment_changeOrientation_titleIsCorrect() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      clickPracticeTab()
       onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          0,
+          R.id.master_skills_text_view
         )
-      ).perform(click())
-      onView(withId(R.id.master_skills_text_view))
-        .check(
-          matches(
-            withText(
-              R.string.topic_practice_master_these_skills
-            )
+      ).check(
+        matches(
+          withText(
+            R.string.topic_practice_master_these_skills
           )
         )
+      )
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.master_skills_text_view))
-        .check(
-          matches(
-            withText(
-              R.string.topic_practice_master_these_skills
-            )
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          0,
+          R.id.master_skills_text_view
+        )
+      ).check(
+        matches(
+          withText(
+            R.string.topic_practice_master_these_skills
           )
         )
+      )
     }
   }
 
@@ -422,9 +340,35 @@ class TopicPracticeFragmentTest {
     return ActivityScenario.launch(intent)
   }
 
-  @After
-  fun tearDown() {
-    Intents.release()
+  private fun clickPracticeTab() {
+    testCoroutineDispatchers.runCurrent()
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(2).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun scrollToPosition(position: Int) {
+    onView(withId(R.id.topic_practice_skill_list)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        position
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickPracticeItem(position: Int, targetViewId: Int) {
+    onView(
+      atPositionOnView(
+        R.id.topic_practice_skill_list,
+        position,
+        targetViewId
+      )
+    ).perform(click())
+    testCoroutineDispatchers.runCurrent()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -432,6 +376,7 @@ class TopicPracticeFragmentTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

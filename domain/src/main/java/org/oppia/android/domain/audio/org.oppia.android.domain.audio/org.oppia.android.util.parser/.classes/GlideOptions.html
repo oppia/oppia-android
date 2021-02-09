@@ -1,0 +1,707 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GlideOptions</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.oppia.android.util.parser</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GlideOptions (org.oppia.android.util.parser)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GlideOptions</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 73)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 91)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package org.oppia.android.util.parser;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.content.res.Resources;
+<i>4</i>&nbsp;import android.graphics.Bitmap;
+<i>5</i>&nbsp;import android.graphics.drawable.Drawable;
+<i>6</i>&nbsp;import androidx.annotation.CheckResult;
+<i>7</i>&nbsp;import androidx.annotation.DrawableRes;
+<i>8</i>&nbsp;import androidx.annotation.FloatRange;
+<i>9</i>&nbsp;import androidx.annotation.IntRange;
+<i>10</i>&nbsp;import androidx.annotation.NonNull;
+<i>11</i>&nbsp;import androidx.annotation.Nullable;
+<i>12</i>&nbsp;import com.bumptech.glide.Priority;
+<i>13</i>&nbsp;import com.bumptech.glide.load.DecodeFormat;
+<i>14</i>&nbsp;import com.bumptech.glide.load.Key;
+<i>15</i>&nbsp;import com.bumptech.glide.load.Option;
+<i>16</i>&nbsp;import com.bumptech.glide.load.Transformation;
+<i>17</i>&nbsp;import com.bumptech.glide.load.engine.DiskCacheStrategy;
+<i>18</i>&nbsp;import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
+<i>19</i>&nbsp;import com.bumptech.glide.request.BaseRequestOptions;
+<i>20</i>&nbsp;import com.bumptech.glide.request.RequestOptions;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;/**
+<i>23</i>&nbsp; * Automatically generated from {@link com.bumptech.glide.annotation.GlideExtension} annotated classes.
+<i>24</i>&nbsp; *
+<i>25</i>&nbsp; * @see RequestOptions
+<i>26</i>&nbsp; */
+<i>27</i>&nbsp;@SuppressWarnings(&quot;deprecation&quot;)
+<b class="nc"><i>28</i>&nbsp;public final class GlideOptions extends RequestOptions implements Cloneable {</b>
+<i>29</i>&nbsp;  private static GlideOptions fitCenterTransform0;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;  private static GlideOptions centerInsideTransform1;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;  private static GlideOptions centerCropTransform2;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;  private static GlideOptions circleCropTransform3;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;  private static GlideOptions noTransformation4;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;  private static GlideOptions noAnimation5;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;  /**
+<i>42</i>&nbsp;   * @see RequestOptions#sizeMultiplierOf(float)
+<i>43</i>&nbsp;   */
+<i>44</i>&nbsp;  @CheckResult
+<i>45</i>&nbsp;  @NonNull
+<i>46</i>&nbsp;  public static GlideOptions sizeMultiplierOf(@FloatRange(from = 0.0, to = 1.0) float value) {
+<b class="nc"><i>47</i>&nbsp;    return new GlideOptions().sizeMultiplier(value);</b>
+<i>48</i>&nbsp;  }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;  /**
+<i>51</i>&nbsp;   * @see RequestOptions#diskCacheStrategyOf(DiskCacheStrategy)
+<i>52</i>&nbsp;   */
+<i>53</i>&nbsp;  @CheckResult
+<i>54</i>&nbsp;  @NonNull
+<i>55</i>&nbsp;  public static GlideOptions diskCacheStrategyOf(@NonNull DiskCacheStrategy strategy) {
+<b class="nc"><i>56</i>&nbsp;    return new GlideOptions().diskCacheStrategy(strategy);</b>
+<i>57</i>&nbsp;  }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;  /**
+<i>60</i>&nbsp;   * @see RequestOptions#priorityOf(Priority)
+<i>61</i>&nbsp;   */
+<i>62</i>&nbsp;  @CheckResult
+<i>63</i>&nbsp;  @NonNull
+<i>64</i>&nbsp;  public static GlideOptions priorityOf(@NonNull Priority priority) {
+<b class="nc"><i>65</i>&nbsp;    return new GlideOptions().priority(priority);</b>
+<i>66</i>&nbsp;  }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;  /**
+<i>69</i>&nbsp;   * @see RequestOptions#placeholderOf(Drawable)
+<i>70</i>&nbsp;   */
+<i>71</i>&nbsp;  @CheckResult
+<i>72</i>&nbsp;  @NonNull
+<i>73</i>&nbsp;  public static GlideOptions placeholderOf(@Nullable Drawable drawable) {
+<b class="nc"><i>74</i>&nbsp;    return new GlideOptions().placeholder(drawable);</b>
+<i>75</i>&nbsp;  }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;  /**
+<i>78</i>&nbsp;   * @see RequestOptions#placeholderOf(int)
+<i>79</i>&nbsp;   */
+<i>80</i>&nbsp;  @CheckResult
+<i>81</i>&nbsp;  @NonNull
+<i>82</i>&nbsp;  public static GlideOptions placeholderOf(@DrawableRes int id) {
+<b class="nc"><i>83</i>&nbsp;    return new GlideOptions().placeholder(id);</b>
+<i>84</i>&nbsp;  }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;  /**
+<i>87</i>&nbsp;   * @see RequestOptions#errorOf(Drawable)
+<i>88</i>&nbsp;   */
+<i>89</i>&nbsp;  @CheckResult
+<i>90</i>&nbsp;  @NonNull
+<i>91</i>&nbsp;  public static GlideOptions errorOf(@Nullable Drawable drawable) {
+<b class="nc"><i>92</i>&nbsp;    return new GlideOptions().error(drawable);</b>
+<i>93</i>&nbsp;  }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;  /**
+<i>96</i>&nbsp;   * @see RequestOptions#errorOf(int)
+<i>97</i>&nbsp;   */
+<i>98</i>&nbsp;  @CheckResult
+<i>99</i>&nbsp;  @NonNull
+<i>100</i>&nbsp;  public static GlideOptions errorOf(@DrawableRes int id) {
+<b class="nc"><i>101</i>&nbsp;    return new GlideOptions().error(id);</b>
+<i>102</i>&nbsp;  }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;  /**
+<i>105</i>&nbsp;   * @see RequestOptions#skipMemoryCacheOf(boolean)
+<i>106</i>&nbsp;   */
+<i>107</i>&nbsp;  @CheckResult
+<i>108</i>&nbsp;  @NonNull
+<i>109</i>&nbsp;  public static GlideOptions skipMemoryCacheOf(boolean skipMemoryCache) {
+<b class="nc"><i>110</i>&nbsp;    return new GlideOptions().skipMemoryCache(skipMemoryCache);</b>
+<i>111</i>&nbsp;  }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;  /**
+<i>114</i>&nbsp;   * @see RequestOptions#overrideOf(int, int)
+<i>115</i>&nbsp;   */
+<i>116</i>&nbsp;  @CheckResult
+<i>117</i>&nbsp;  @NonNull
+<i>118</i>&nbsp;  public static GlideOptions overrideOf(int width, int height) {
+<b class="nc"><i>119</i>&nbsp;    return new GlideOptions().override(width, height);</b>
+<i>120</i>&nbsp;  }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;  /**
+<i>123</i>&nbsp;   * @see RequestOptions#overrideOf(int)
+<i>124</i>&nbsp;   */
+<i>125</i>&nbsp;  @CheckResult
+<i>126</i>&nbsp;  @NonNull
+<i>127</i>&nbsp;  public static GlideOptions overrideOf(int size) {
+<b class="nc"><i>128</i>&nbsp;    return new GlideOptions().override(size);</b>
+<i>129</i>&nbsp;  }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;  /**
+<i>132</i>&nbsp;   * @see RequestOptions#signatureOf(Key)
+<i>133</i>&nbsp;   */
+<i>134</i>&nbsp;  @CheckResult
+<i>135</i>&nbsp;  @NonNull
+<i>136</i>&nbsp;  public static GlideOptions signatureOf(@NonNull Key key) {
+<b class="nc"><i>137</i>&nbsp;    return new GlideOptions().signature(key);</b>
+<i>138</i>&nbsp;  }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;  /**
+<i>141</i>&nbsp;   * @see RequestOptions#fitCenterTransform()
+<i>142</i>&nbsp;   */
+<i>143</i>&nbsp;  @CheckResult
+<i>144</i>&nbsp;  @NonNull
+<i>145</i>&nbsp;  public static GlideOptions fitCenterTransform() {
+<b class="nc"><i>146</i>&nbsp;    if (GlideOptions.fitCenterTransform0 == null) {</b>
+<b class="nc"><i>147</i>&nbsp;      GlideOptions.fitCenterTransform0 =</b>
+<b class="nc"><i>148</i>&nbsp;          new GlideOptions().fitCenter().autoClone();</b>
+<i>149</i>&nbsp;    }
+<b class="nc"><i>150</i>&nbsp;    return GlideOptions.fitCenterTransform0;</b>
+<i>151</i>&nbsp;  }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;  /**
+<i>154</i>&nbsp;   * @see RequestOptions#centerInsideTransform()
+<i>155</i>&nbsp;   */
+<i>156</i>&nbsp;  @CheckResult
+<i>157</i>&nbsp;  @NonNull
+<i>158</i>&nbsp;  public static GlideOptions centerInsideTransform() {
+<b class="nc"><i>159</i>&nbsp;    if (GlideOptions.centerInsideTransform1 == null) {</b>
+<b class="nc"><i>160</i>&nbsp;      GlideOptions.centerInsideTransform1 =</b>
+<b class="nc"><i>161</i>&nbsp;          new GlideOptions().centerInside().autoClone();</b>
+<i>162</i>&nbsp;    }
+<b class="nc"><i>163</i>&nbsp;    return GlideOptions.centerInsideTransform1;</b>
+<i>164</i>&nbsp;  }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;  /**
+<i>167</i>&nbsp;   * @see RequestOptions#centerCropTransform()
+<i>168</i>&nbsp;   */
+<i>169</i>&nbsp;  @CheckResult
+<i>170</i>&nbsp;  @NonNull
+<i>171</i>&nbsp;  public static GlideOptions centerCropTransform() {
+<b class="nc"><i>172</i>&nbsp;    if (GlideOptions.centerCropTransform2 == null) {</b>
+<b class="nc"><i>173</i>&nbsp;      GlideOptions.centerCropTransform2 =</b>
+<b class="nc"><i>174</i>&nbsp;          new GlideOptions().centerCrop().autoClone();</b>
+<i>175</i>&nbsp;    }
+<b class="nc"><i>176</i>&nbsp;    return GlideOptions.centerCropTransform2;</b>
+<i>177</i>&nbsp;  }
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;  /**
+<i>180</i>&nbsp;   * @see RequestOptions#circleCropTransform()
+<i>181</i>&nbsp;   */
+<i>182</i>&nbsp;  @CheckResult
+<i>183</i>&nbsp;  @NonNull
+<i>184</i>&nbsp;  public static GlideOptions circleCropTransform() {
+<b class="nc"><i>185</i>&nbsp;    if (GlideOptions.circleCropTransform3 == null) {</b>
+<b class="nc"><i>186</i>&nbsp;      GlideOptions.circleCropTransform3 =</b>
+<b class="nc"><i>187</i>&nbsp;          new GlideOptions().circleCrop().autoClone();</b>
+<i>188</i>&nbsp;    }
+<b class="nc"><i>189</i>&nbsp;    return GlideOptions.circleCropTransform3;</b>
+<i>190</i>&nbsp;  }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;  /**
+<i>193</i>&nbsp;   * @see RequestOptions#bitmapTransform(Transformation)
+<i>194</i>&nbsp;   */
+<i>195</i>&nbsp;  @CheckResult
+<i>196</i>&nbsp;  @NonNull
+<i>197</i>&nbsp;  public static GlideOptions bitmapTransform(@NonNull Transformation&lt;Bitmap&gt; transformation) {
+<b class="nc"><i>198</i>&nbsp;    return new GlideOptions().transform(transformation);</b>
+<i>199</i>&nbsp;  }
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;  /**
+<i>202</i>&nbsp;   * @see RequestOptions#noTransformation()
+<i>203</i>&nbsp;   */
+<i>204</i>&nbsp;  @CheckResult
+<i>205</i>&nbsp;  @NonNull
+<i>206</i>&nbsp;  public static GlideOptions noTransformation() {
+<b class="nc"><i>207</i>&nbsp;    if (GlideOptions.noTransformation4 == null) {</b>
+<b class="nc"><i>208</i>&nbsp;      GlideOptions.noTransformation4 =</b>
+<b class="nc"><i>209</i>&nbsp;          new GlideOptions().dontTransform().autoClone();</b>
+<i>210</i>&nbsp;    }
+<b class="nc"><i>211</i>&nbsp;    return GlideOptions.noTransformation4;</b>
+<i>212</i>&nbsp;  }
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;  /**
+<i>215</i>&nbsp;   * @see RequestOptions#option(Option, T)
+<i>216</i>&nbsp;   */
+<i>217</i>&nbsp;  @CheckResult
+<i>218</i>&nbsp;  @NonNull
+<i>219</i>&nbsp;  public static &lt;T&gt; GlideOptions option(@NonNull Option&lt;T&gt; option, @NonNull T t) {
+<b class="nc"><i>220</i>&nbsp;    return new GlideOptions().set(option, t);</b>
+<i>221</i>&nbsp;  }
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;  /**
+<i>224</i>&nbsp;   * @see RequestOptions#decodeTypeOf(Class)
+<i>225</i>&nbsp;   */
+<i>226</i>&nbsp;  @CheckResult
+<i>227</i>&nbsp;  @NonNull
+<i>228</i>&nbsp;  public static GlideOptions decodeTypeOf(@NonNull Class&lt;?&gt; clazz) {
+<b class="nc"><i>229</i>&nbsp;    return new GlideOptions().decode(clazz);</b>
+<i>230</i>&nbsp;  }
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;  /**
+<i>233</i>&nbsp;   * @see RequestOptions#formatOf(DecodeFormat)
+<i>234</i>&nbsp;   */
+<i>235</i>&nbsp;  @CheckResult
+<i>236</i>&nbsp;  @NonNull
+<i>237</i>&nbsp;  public static GlideOptions formatOf(@NonNull DecodeFormat format) {
+<b class="nc"><i>238</i>&nbsp;    return new GlideOptions().format(format);</b>
+<i>239</i>&nbsp;  }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;  /**
+<i>242</i>&nbsp;   * @see RequestOptions#frameOf(long)
+<i>243</i>&nbsp;   */
+<i>244</i>&nbsp;  @CheckResult
+<i>245</i>&nbsp;  @NonNull
+<i>246</i>&nbsp;  public static GlideOptions frameOf(@IntRange(from = 0) long value) {
+<b class="nc"><i>247</i>&nbsp;    return new GlideOptions().frame(value);</b>
+<i>248</i>&nbsp;  }
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;  /**
+<i>251</i>&nbsp;   * @see RequestOptions#downsampleOf(DownsampleStrategy)
+<i>252</i>&nbsp;   */
+<i>253</i>&nbsp;  @CheckResult
+<i>254</i>&nbsp;  @NonNull
+<i>255</i>&nbsp;  public static GlideOptions downsampleOf(@NonNull DownsampleStrategy strategy) {
+<b class="nc"><i>256</i>&nbsp;    return new GlideOptions().downsample(strategy);</b>
+<i>257</i>&nbsp;  }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;  /**
+<i>260</i>&nbsp;   * @see RequestOptions#timeoutOf(int)
+<i>261</i>&nbsp;   */
+<i>262</i>&nbsp;  @CheckResult
+<i>263</i>&nbsp;  @NonNull
+<i>264</i>&nbsp;  public static GlideOptions timeoutOf(@IntRange(from = 0) int value) {
+<b class="nc"><i>265</i>&nbsp;    return new GlideOptions().timeout(value);</b>
+<i>266</i>&nbsp;  }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;  /**
+<i>269</i>&nbsp;   * @see RequestOptions#encodeQualityOf(int)
+<i>270</i>&nbsp;   */
+<i>271</i>&nbsp;  @CheckResult
+<i>272</i>&nbsp;  @NonNull
+<i>273</i>&nbsp;  public static GlideOptions encodeQualityOf(@IntRange(from = 0, to = 100) int value) {
+<b class="nc"><i>274</i>&nbsp;    return new GlideOptions().encodeQuality(value);</b>
+<i>275</i>&nbsp;  }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;  /**
+<i>278</i>&nbsp;   * @see RequestOptions#encodeFormatOf(CompressFormat)
+<i>279</i>&nbsp;   */
+<i>280</i>&nbsp;  @CheckResult
+<i>281</i>&nbsp;  @NonNull
+<i>282</i>&nbsp;  public static GlideOptions encodeFormatOf(@NonNull Bitmap.CompressFormat format) {
+<b class="nc"><i>283</i>&nbsp;    return new GlideOptions().encodeFormat(format);</b>
+<i>284</i>&nbsp;  }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;  /**
+<i>287</i>&nbsp;   * @see RequestOptions#noAnimation()
+<i>288</i>&nbsp;   */
+<i>289</i>&nbsp;  @CheckResult
+<i>290</i>&nbsp;  @NonNull
+<i>291</i>&nbsp;  public static GlideOptions noAnimation() {
+<b class="nc"><i>292</i>&nbsp;    if (GlideOptions.noAnimation5 == null) {</b>
+<b class="nc"><i>293</i>&nbsp;      GlideOptions.noAnimation5 =</b>
+<b class="nc"><i>294</i>&nbsp;          new GlideOptions().dontAnimate().autoClone();</b>
+<i>295</i>&nbsp;    }
+<b class="nc"><i>296</i>&nbsp;    return GlideOptions.noAnimation5;</b>
+<i>297</i>&nbsp;  }
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;  @Override
+<i>300</i>&nbsp;  @NonNull
+<i>301</i>&nbsp;  @CheckResult
+<i>302</i>&nbsp;  public GlideOptions sizeMultiplier(@FloatRange(from = 0.0, to = 1.0) float value) {
+<b class="nc"><i>303</i>&nbsp;    return (GlideOptions) super.sizeMultiplier(value);</b>
+<i>304</i>&nbsp;  }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;  @Override
+<i>307</i>&nbsp;  @NonNull
+<i>308</i>&nbsp;  @CheckResult
+<i>309</i>&nbsp;  public GlideOptions useUnlimitedSourceGeneratorsPool(boolean flag) {
+<b class="nc"><i>310</i>&nbsp;    return (GlideOptions) super.useUnlimitedSourceGeneratorsPool(flag);</b>
+<i>311</i>&nbsp;  }
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;  @Override
+<i>314</i>&nbsp;  @NonNull
+<i>315</i>&nbsp;  @CheckResult
+<i>316</i>&nbsp;  public GlideOptions useAnimationPool(boolean flag) {
+<b class="nc"><i>317</i>&nbsp;    return (GlideOptions) super.useAnimationPool(flag);</b>
+<i>318</i>&nbsp;  }
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;  @Override
+<i>321</i>&nbsp;  @NonNull
+<i>322</i>&nbsp;  @CheckResult
+<i>323</i>&nbsp;  public GlideOptions onlyRetrieveFromCache(boolean flag) {
+<b class="nc"><i>324</i>&nbsp;    return (GlideOptions) super.onlyRetrieveFromCache(flag);</b>
+<i>325</i>&nbsp;  }
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;  @Override
+<i>328</i>&nbsp;  @NonNull
+<i>329</i>&nbsp;  @CheckResult
+<i>330</i>&nbsp;  public GlideOptions diskCacheStrategy(@NonNull DiskCacheStrategy strategy) {
+<b class="nc"><i>331</i>&nbsp;    return (GlideOptions) super.diskCacheStrategy(strategy);</b>
+<i>332</i>&nbsp;  }
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;  @Override
+<i>335</i>&nbsp;  @NonNull
+<i>336</i>&nbsp;  @CheckResult
+<i>337</i>&nbsp;  public GlideOptions priority(@NonNull Priority priority) {
+<b class="nc"><i>338</i>&nbsp;    return (GlideOptions) super.priority(priority);</b>
+<i>339</i>&nbsp;  }
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;  @Override
+<i>342</i>&nbsp;  @NonNull
+<i>343</i>&nbsp;  @CheckResult
+<i>344</i>&nbsp;  public GlideOptions placeholder(@Nullable Drawable drawable) {
+<b class="nc"><i>345</i>&nbsp;    return (GlideOptions) super.placeholder(drawable);</b>
+<i>346</i>&nbsp;  }
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;  @Override
+<i>349</i>&nbsp;  @NonNull
+<i>350</i>&nbsp;  @CheckResult
+<i>351</i>&nbsp;  public GlideOptions placeholder(@DrawableRes int id) {
+<b class="nc"><i>352</i>&nbsp;    return (GlideOptions) super.placeholder(id);</b>
+<i>353</i>&nbsp;  }
+<i>354</i>&nbsp;
+<i>355</i>&nbsp;  @Override
+<i>356</i>&nbsp;  @NonNull
+<i>357</i>&nbsp;  @CheckResult
+<i>358</i>&nbsp;  public GlideOptions fallback(@Nullable Drawable drawable) {
+<b class="nc"><i>359</i>&nbsp;    return (GlideOptions) super.fallback(drawable);</b>
+<i>360</i>&nbsp;  }
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;  @Override
+<i>363</i>&nbsp;  @NonNull
+<i>364</i>&nbsp;  @CheckResult
+<i>365</i>&nbsp;  public GlideOptions fallback(@DrawableRes int id) {
+<b class="nc"><i>366</i>&nbsp;    return (GlideOptions) super.fallback(id);</b>
+<i>367</i>&nbsp;  }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;  @Override
+<i>370</i>&nbsp;  @NonNull
+<i>371</i>&nbsp;  @CheckResult
+<i>372</i>&nbsp;  public GlideOptions error(@Nullable Drawable drawable) {
+<b class="nc"><i>373</i>&nbsp;    return (GlideOptions) super.error(drawable);</b>
+<i>374</i>&nbsp;  }
+<i>375</i>&nbsp;
+<i>376</i>&nbsp;  @Override
+<i>377</i>&nbsp;  @NonNull
+<i>378</i>&nbsp;  @CheckResult
+<i>379</i>&nbsp;  public GlideOptions error(@DrawableRes int id) {
+<b class="nc"><i>380</i>&nbsp;    return (GlideOptions) super.error(id);</b>
+<i>381</i>&nbsp;  }
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;  @Override
+<i>384</i>&nbsp;  @NonNull
+<i>385</i>&nbsp;  @CheckResult
+<i>386</i>&nbsp;  public GlideOptions theme(@Nullable Resources.Theme theme) {
+<b class="nc"><i>387</i>&nbsp;    return (GlideOptions) super.theme(theme);</b>
+<i>388</i>&nbsp;  }
+<i>389</i>&nbsp;
+<i>390</i>&nbsp;  @Override
+<i>391</i>&nbsp;  @NonNull
+<i>392</i>&nbsp;  @CheckResult
+<i>393</i>&nbsp;  public GlideOptions skipMemoryCache(boolean skip) {
+<b class="nc"><i>394</i>&nbsp;    return (GlideOptions) super.skipMemoryCache(skip);</b>
+<i>395</i>&nbsp;  }
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;  @Override
+<i>398</i>&nbsp;  @NonNull
+<i>399</i>&nbsp;  @CheckResult
+<i>400</i>&nbsp;  public GlideOptions override(int width, int height) {
+<b class="nc"><i>401</i>&nbsp;    return (GlideOptions) super.override(width, height);</b>
+<i>402</i>&nbsp;  }
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;  @Override
+<i>405</i>&nbsp;  @NonNull
+<i>406</i>&nbsp;  @CheckResult
+<i>407</i>&nbsp;  public GlideOptions override(int size) {
+<b class="nc"><i>408</i>&nbsp;    return (GlideOptions) super.override(size);</b>
+<i>409</i>&nbsp;  }
+<i>410</i>&nbsp;
+<i>411</i>&nbsp;  @Override
+<i>412</i>&nbsp;  @NonNull
+<i>413</i>&nbsp;  @CheckResult
+<i>414</i>&nbsp;  public GlideOptions signature(@NonNull Key key) {
+<b class="nc"><i>415</i>&nbsp;    return (GlideOptions) super.signature(key);</b>
+<i>416</i>&nbsp;  }
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;  @Override
+<i>419</i>&nbsp;  @CheckResult
+<i>420</i>&nbsp;  public GlideOptions clone() {
+<b class="nc"><i>421</i>&nbsp;    return (GlideOptions) super.clone();</b>
+<i>422</i>&nbsp;  }
+<i>423</i>&nbsp;
+<i>424</i>&nbsp;  @Override
+<i>425</i>&nbsp;  @NonNull
+<i>426</i>&nbsp;  @CheckResult
+<i>427</i>&nbsp;  public &lt;Y&gt; GlideOptions set(@NonNull Option&lt;Y&gt; option, @NonNull Y y) {
+<b class="nc"><i>428</i>&nbsp;    return (GlideOptions) super.set(option, y);</b>
+<i>429</i>&nbsp;  }
+<i>430</i>&nbsp;
+<i>431</i>&nbsp;  @Override
+<i>432</i>&nbsp;  @NonNull
+<i>433</i>&nbsp;  @CheckResult
+<i>434</i>&nbsp;  public GlideOptions decode(@NonNull Class&lt;?&gt; clazz) {
+<b class="nc"><i>435</i>&nbsp;    return (GlideOptions) super.decode(clazz);</b>
+<i>436</i>&nbsp;  }
+<i>437</i>&nbsp;
+<i>438</i>&nbsp;  @Override
+<i>439</i>&nbsp;  @NonNull
+<i>440</i>&nbsp;  @CheckResult
+<i>441</i>&nbsp;  public GlideOptions encodeFormat(@NonNull Bitmap.CompressFormat format) {
+<b class="nc"><i>442</i>&nbsp;    return (GlideOptions) super.encodeFormat(format);</b>
+<i>443</i>&nbsp;  }
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;  @Override
+<i>446</i>&nbsp;  @NonNull
+<i>447</i>&nbsp;  @CheckResult
+<i>448</i>&nbsp;  public GlideOptions encodeQuality(@IntRange(from = 0, to = 100) int value) {
+<b class="nc"><i>449</i>&nbsp;    return (GlideOptions) super.encodeQuality(value);</b>
+<i>450</i>&nbsp;  }
+<i>451</i>&nbsp;
+<i>452</i>&nbsp;  @Override
+<i>453</i>&nbsp;  @NonNull
+<i>454</i>&nbsp;  @CheckResult
+<i>455</i>&nbsp;  public GlideOptions frame(@IntRange(from = 0) long value) {
+<b class="nc"><i>456</i>&nbsp;    return (GlideOptions) super.frame(value);</b>
+<i>457</i>&nbsp;  }
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;  @Override
+<i>460</i>&nbsp;  @NonNull
+<i>461</i>&nbsp;  @CheckResult
+<i>462</i>&nbsp;  public GlideOptions format(@NonNull DecodeFormat format) {
+<b class="nc"><i>463</i>&nbsp;    return (GlideOptions) super.format(format);</b>
+<i>464</i>&nbsp;  }
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;  @Override
+<i>467</i>&nbsp;  @NonNull
+<i>468</i>&nbsp;  @CheckResult
+<i>469</i>&nbsp;  public GlideOptions disallowHardwareConfig() {
+<b class="nc"><i>470</i>&nbsp;    return (GlideOptions) super.disallowHardwareConfig();</b>
+<i>471</i>&nbsp;  }
+<i>472</i>&nbsp;
+<i>473</i>&nbsp;  @Override
+<i>474</i>&nbsp;  @NonNull
+<i>475</i>&nbsp;  @CheckResult
+<i>476</i>&nbsp;  public GlideOptions downsample(@NonNull DownsampleStrategy strategy) {
+<b class="nc"><i>477</i>&nbsp;    return (GlideOptions) super.downsample(strategy);</b>
+<i>478</i>&nbsp;  }
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;  @Override
+<i>481</i>&nbsp;  @NonNull
+<i>482</i>&nbsp;  @CheckResult
+<i>483</i>&nbsp;  public GlideOptions timeout(@IntRange(from = 0) int value) {
+<b class="nc"><i>484</i>&nbsp;    return (GlideOptions) super.timeout(value);</b>
+<i>485</i>&nbsp;  }
+<i>486</i>&nbsp;
+<i>487</i>&nbsp;  @Override
+<i>488</i>&nbsp;  @NonNull
+<i>489</i>&nbsp;  @CheckResult
+<i>490</i>&nbsp;  public GlideOptions optionalCenterCrop() {
+<b class="nc"><i>491</i>&nbsp;    return (GlideOptions) super.optionalCenterCrop();</b>
+<i>492</i>&nbsp;  }
+<i>493</i>&nbsp;
+<i>494</i>&nbsp;  @Override
+<i>495</i>&nbsp;  @NonNull
+<i>496</i>&nbsp;  @CheckResult
+<i>497</i>&nbsp;  public GlideOptions centerCrop() {
+<b class="nc"><i>498</i>&nbsp;    return (GlideOptions) super.centerCrop();</b>
+<i>499</i>&nbsp;  }
+<i>500</i>&nbsp;
+<i>501</i>&nbsp;  @Override
+<i>502</i>&nbsp;  @NonNull
+<i>503</i>&nbsp;  @CheckResult
+<i>504</i>&nbsp;  public GlideOptions optionalFitCenter() {
+<b class="nc"><i>505</i>&nbsp;    return (GlideOptions) super.optionalFitCenter();</b>
+<i>506</i>&nbsp;  }
+<i>507</i>&nbsp;
+<i>508</i>&nbsp;  @Override
+<i>509</i>&nbsp;  @NonNull
+<i>510</i>&nbsp;  @CheckResult
+<i>511</i>&nbsp;  public GlideOptions fitCenter() {
+<b class="nc"><i>512</i>&nbsp;    return (GlideOptions) super.fitCenter();</b>
+<i>513</i>&nbsp;  }
+<i>514</i>&nbsp;
+<i>515</i>&nbsp;  @Override
+<i>516</i>&nbsp;  @NonNull
+<i>517</i>&nbsp;  @CheckResult
+<i>518</i>&nbsp;  public GlideOptions optionalCenterInside() {
+<b class="nc"><i>519</i>&nbsp;    return (GlideOptions) super.optionalCenterInside();</b>
+<i>520</i>&nbsp;  }
+<i>521</i>&nbsp;
+<i>522</i>&nbsp;  @Override
+<i>523</i>&nbsp;  @NonNull
+<i>524</i>&nbsp;  @CheckResult
+<i>525</i>&nbsp;  public GlideOptions centerInside() {
+<b class="nc"><i>526</i>&nbsp;    return (GlideOptions) super.centerInside();</b>
+<i>527</i>&nbsp;  }
+<i>528</i>&nbsp;
+<i>529</i>&nbsp;  @Override
+<i>530</i>&nbsp;  @NonNull
+<i>531</i>&nbsp;  @CheckResult
+<i>532</i>&nbsp;  public GlideOptions optionalCircleCrop() {
+<b class="nc"><i>533</i>&nbsp;    return (GlideOptions) super.optionalCircleCrop();</b>
+<i>534</i>&nbsp;  }
+<i>535</i>&nbsp;
+<i>536</i>&nbsp;  @Override
+<i>537</i>&nbsp;  @NonNull
+<i>538</i>&nbsp;  @CheckResult
+<i>539</i>&nbsp;  public GlideOptions circleCrop() {
+<b class="nc"><i>540</i>&nbsp;    return (GlideOptions) super.circleCrop();</b>
+<i>541</i>&nbsp;  }
+<i>542</i>&nbsp;
+<i>543</i>&nbsp;  @Override
+<i>544</i>&nbsp;  @NonNull
+<i>545</i>&nbsp;  @CheckResult
+<i>546</i>&nbsp;  public GlideOptions transform(@NonNull Transformation&lt;Bitmap&gt; transformation) {
+<b class="nc"><i>547</i>&nbsp;    return (GlideOptions) super.transform(transformation);</b>
+<i>548</i>&nbsp;  }
+<i>549</i>&nbsp;
+<i>550</i>&nbsp;  @Override
+<i>551</i>&nbsp;  @SafeVarargs
+<i>552</i>&nbsp;  @SuppressWarnings(&quot;varargs&quot;)
+<i>553</i>&nbsp;  @NonNull
+<i>554</i>&nbsp;  @CheckResult
+<i>555</i>&nbsp;  public final GlideOptions transform(@NonNull Transformation&lt;Bitmap&gt;... transformations) {
+<b class="nc"><i>556</i>&nbsp;    return (GlideOptions) super.transform(transformations);</b>
+<i>557</i>&nbsp;  }
+<i>558</i>&nbsp;
+<i>559</i>&nbsp;  @Override
+<i>560</i>&nbsp;  @SafeVarargs
+<i>561</i>&nbsp;  @SuppressWarnings(&quot;varargs&quot;)
+<i>562</i>&nbsp;  @Deprecated
+<i>563</i>&nbsp;  @NonNull
+<i>564</i>&nbsp;  @CheckResult
+<i>565</i>&nbsp;  public final GlideOptions transforms(@NonNull Transformation&lt;Bitmap&gt;... transformations) {
+<b class="nc"><i>566</i>&nbsp;    return (GlideOptions) super.transforms(transformations);</b>
+<i>567</i>&nbsp;  }
+<i>568</i>&nbsp;
+<i>569</i>&nbsp;  @Override
+<i>570</i>&nbsp;  @NonNull
+<i>571</i>&nbsp;  @CheckResult
+<i>572</i>&nbsp;  public GlideOptions optionalTransform(@NonNull Transformation&lt;Bitmap&gt; transformation) {
+<b class="nc"><i>573</i>&nbsp;    return (GlideOptions) super.optionalTransform(transformation);</b>
+<i>574</i>&nbsp;  }
+<i>575</i>&nbsp;
+<i>576</i>&nbsp;  @Override
+<i>577</i>&nbsp;  @NonNull
+<i>578</i>&nbsp;  @CheckResult
+<i>579</i>&nbsp;  public &lt;Y&gt; GlideOptions optionalTransform(@NonNull Class&lt;Y&gt; clazz,
+<i>580</i>&nbsp;      @NonNull Transformation&lt;Y&gt; transformation) {
+<b class="nc"><i>581</i>&nbsp;    return (GlideOptions) super.optionalTransform(clazz, transformation);</b>
+<i>582</i>&nbsp;  }
+<i>583</i>&nbsp;
+<i>584</i>&nbsp;  @Override
+<i>585</i>&nbsp;  @NonNull
+<i>586</i>&nbsp;  @CheckResult
+<i>587</i>&nbsp;  public &lt;Y&gt; GlideOptions transform(@NonNull Class&lt;Y&gt; clazz,
+<i>588</i>&nbsp;      @NonNull Transformation&lt;Y&gt; transformation) {
+<b class="nc"><i>589</i>&nbsp;    return (GlideOptions) super.transform(clazz, transformation);</b>
+<i>590</i>&nbsp;  }
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;  @Override
+<i>593</i>&nbsp;  @NonNull
+<i>594</i>&nbsp;  @CheckResult
+<i>595</i>&nbsp;  public GlideOptions dontTransform() {
+<b class="nc"><i>596</i>&nbsp;    return (GlideOptions) super.dontTransform();</b>
+<i>597</i>&nbsp;  }
+<i>598</i>&nbsp;
+<i>599</i>&nbsp;  @Override
+<i>600</i>&nbsp;  @NonNull
+<i>601</i>&nbsp;  @CheckResult
+<i>602</i>&nbsp;  public GlideOptions dontAnimate() {
+<b class="nc"><i>603</i>&nbsp;    return (GlideOptions) super.dontAnimate();</b>
+<i>604</i>&nbsp;  }
+<i>605</i>&nbsp;
+<i>606</i>&nbsp;  @Override
+<i>607</i>&nbsp;  @NonNull
+<i>608</i>&nbsp;  @CheckResult
+<i>609</i>&nbsp;  public GlideOptions apply(@NonNull BaseRequestOptions&lt;?&gt; options) {
+<b class="nc"><i>610</i>&nbsp;    return (GlideOptions) super.apply(options);</b>
+<i>611</i>&nbsp;  }
+<i>612</i>&nbsp;
+<i>613</i>&nbsp;  @Override
+<i>614</i>&nbsp;  @NonNull
+<i>615</i>&nbsp;  public GlideOptions lock() {
+<b class="nc"><i>616</i>&nbsp;    return (GlideOptions) super.lock();</b>
+<i>617</i>&nbsp;  }
+<i>618</i>&nbsp;
+<i>619</i>&nbsp;  @Override
+<i>620</i>&nbsp;  @NonNull
+<i>621</i>&nbsp;  public GlideOptions autoClone() {
+<b class="nc"><i>622</i>&nbsp;    return (GlideOptions) super.autoClone();</b>
+<i>623</i>&nbsp;  }
+<i>624</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-02-01 18:39</div>
+</div>
+</body>
+</html>

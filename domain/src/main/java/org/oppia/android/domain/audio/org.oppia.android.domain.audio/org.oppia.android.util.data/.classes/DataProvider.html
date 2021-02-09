@@ -1,0 +1,113 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DataProvider</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.oppia.android.util.data</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DataProvider (org.oppia.android.util.data)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DataProvider</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package org.oppia.android.util.data
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.content.Context
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;/**
+<i>6</i>&nbsp; * Represents a provider of data that can be delivered and changed asynchronously.
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; * @param &lt;T&gt; The type of data being provided.
+<i>9</i>&nbsp; */
+<b class="nc"><i>10</i>&nbsp;abstract class DataProvider&lt;T&gt;(internal val context: Context) {</b>
+<i>11</i>&nbsp;  // TODO(#6): Finalize the interfaces for this API beyond a basic prototype for the initial project
+<i>12</i>&nbsp;  //  intro.
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;  /**
+<i>15</i>&nbsp;   * Returns a unique identifier that corresponds to this data provider. This should be a trivially
+<i>16</i>&nbsp;   * copyable and immutable object. This ID is used to determine which data provider subscribers
+<i>17</i>&nbsp;   * should be notified of changes to the data.
+<i>18</i>&nbsp;   */
+<i>19</i>&nbsp;  abstract fun getId(): Any
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;  /**
+<i>22</i>&nbsp;   * Returns the latest copy of data available by the provider, potentially performing a blocking
+<i>23</i>&nbsp;   * call in order to retrieve the data. It&#39;s up to the implementation to decide how caching should
+<i>24</i>&nbsp;   * work. Implementations should remain agnostic of the specific subscribers associated with them
+<i>25</i>&nbsp;   * (ie, they should not perform logic corresponding to a particular subscription since this can be
+<i>26</i>&nbsp;   * highly error-prone when considering that subscribers may be bound to Android UI component
+<i>27</i>&nbsp;   * lifecycles).
+<i>28</i>&nbsp;   */
+<i>29</i>&nbsp;  abstract suspend fun retrieveData(): AsyncResult&lt;T&gt;
+<i>30</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-02-01 18:39</div>
+</div>
+</body>
+</html>

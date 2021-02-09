@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeneratedAppGlideModuleImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$CellularAudioDialogControllerTest.exec</a> &gt; <a href="index.source.html" class="el_package">com.bumptech.glide</a> &gt; <span class="el_source">GeneratedAppGlideModuleImpl.java</span></div><h1>GeneratedAppGlideModuleImpl.java</h1><pre class="source lang-java linenums">package com.bumptech.glide;
+
+import android.content.Context;
+import android.util.Log;
+import androidx.annotation.NonNull;
+import java.util.Collections;
+import java.util.Set;
+import org.oppia.android.util.parser.RepositoryGlideModule;
+
+@SuppressWarnings(&quot;deprecation&quot;)
+final class GeneratedAppGlideModuleImpl extends GeneratedAppGlideModule {
+  private final RepositoryGlideModule appGlideModule;
+
+<span class="nc" id="L14">  public GeneratedAppGlideModuleImpl(Context context) {</span>
+<span class="nc" id="L15">    appGlideModule = new RepositoryGlideModule();</span>
+<span class="nc bnc" id="L16" title="All 2 branches missed.">    if (Log.isLoggable(&quot;Glide&quot;, Log.DEBUG)) {</span>
+<span class="nc" id="L17">      Log.d(&quot;Glide&quot;, &quot;Discovered AppGlideModule from annotation: org.oppia.android.util.parser.RepositoryGlideModule&quot;);</span>
+    }
+<span class="nc" id="L19">  }</span>
+
+  @Override
+  public void applyOptions(@NonNull Context context, @NonNull GlideBuilder builder) {
+<span class="nc" id="L23">    appGlideModule.applyOptions(context, builder);</span>
+<span class="nc" id="L24">  }</span>
+
+  @Override
+  public void registerComponents(@NonNull Context context, @NonNull Glide glide,
+      @NonNull Registry registry) {
+<span class="nc" id="L29">    appGlideModule.registerComponents(context, glide, registry);</span>
+<span class="nc" id="L30">  }</span>
+
+  @Override
+  public boolean isManifestParsingEnabled() {
+<span class="nc" id="L34">    return appGlideModule.isManifestParsingEnabled();</span>
+  }
+
+  @Override
+  @NonNull
+  public Set&lt;Class&lt;?&gt;&gt; getExcludedModuleClasses() {
+<span class="nc" id="L40">    return Collections.emptySet();</span>
+  }
+
+  @Override
+  @NonNull
+  GeneratedRequestManagerFactory getRequestManagerFactory() {
+<span class="nc" id="L46">    return new GeneratedRequestManagerFactory();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

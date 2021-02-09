@@ -1,0 +1,180 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ViewBindingAdapters</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.oppia.android.app.databinding</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ViewBindingAdapters (org.oppia.android.app.databinding)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ViewBindingAdapters</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ViewBindingAdapters$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ViewBindingAdapters$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 18)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package org.oppia.android.app.databinding;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.animation.ValueAnimator;
+<i>4</i>&nbsp;import android.view.View;
+<i>5</i>&nbsp;import android.view.ViewGroup;
+<i>6</i>&nbsp;import androidx.annotation.NonNull;
+<i>7</i>&nbsp;import androidx.databinding.BindingAdapter;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;/**
+<i>10</i>&nbsp; * Holds all custom binding adapters that set miscellaneous values.
+<i>11</i>&nbsp; */
+<b class="nc"><i>12</i>&nbsp;public final class ViewBindingAdapters {</b>
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;  /**
+<i>15</i>&nbsp;   * BindingAdapter to set the height of a View.
+<i>16</i>&nbsp;   */
+<i>17</i>&nbsp;  @BindingAdapter(&quot;android:layout_height&quot;)
+<i>18</i>&nbsp;  public static void setLayoutHeight(@NonNull View view, float height) {
+<b class="nc"><i>19</i>&nbsp;    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();</b>
+<b class="nc"><i>20</i>&nbsp;    layoutParams.height = (int) height;</b>
+<b class="nc"><i>21</i>&nbsp;    view.setLayoutParams(layoutParams);</b>
+<i>22</i>&nbsp;  }
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;  @BindingAdapter(
+<i>25</i>&nbsp;      value = {
+<i>26</i>&nbsp;          &quot;app:isRotationAnimationClockwise&quot;,
+<i>27</i>&nbsp;          &quot;app:rotationAnimationAngle&quot;
+<i>28</i>&nbsp;      },
+<i>29</i>&nbsp;      requireAll = true
+<i>30</i>&nbsp;  )
+<i>31</i>&nbsp;  public static void setRotationAnimation(View view, boolean isClockwise, float angle) {
+<b class="nc"><i>32</i>&nbsp;    if (isClockwise) {</b>
+<b class="nc"><i>33</i>&nbsp;      ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, angle);</b>
+<b class="nc"><i>34</i>&nbsp;      valueAnimator.setDuration(300);</b>
+<b class="nc"><i>35</i>&nbsp;      valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {</b>
+<i>36</i>&nbsp;        public void onAnimationUpdate(ValueAnimator animation) {
+<b class="nc"><i>37</i>&nbsp;          view.setRotation((float) animation.getAnimatedValue());</b>
+<i>38</i>&nbsp;        }
+<i>39</i>&nbsp;      });
+<b class="nc"><i>40</i>&nbsp;      valueAnimator.start();</b>
+<b class="nc"><i>41</i>&nbsp;    } else {</b>
+<b class="nc"><i>42</i>&nbsp;      ValueAnimator valueAnimator = ValueAnimator.ofFloat(angle, 0f);</b>
+<b class="nc"><i>43</i>&nbsp;      valueAnimator.setDuration(300);</b>
+<b class="nc"><i>44</i>&nbsp;      valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {</b>
+<i>45</i>&nbsp;        public void onAnimationUpdate(ValueAnimator animation) {
+<b class="nc"><i>46</i>&nbsp;          view.setRotation((float) animation.getAnimatedValue());</b>
+<i>47</i>&nbsp;        }
+<i>48</i>&nbsp;      });
+<b class="nc"><i>49</i>&nbsp;      valueAnimator.start();</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;  }
+<i>52</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-02-01 18:39</div>
+</div>
+</body>
+</html>

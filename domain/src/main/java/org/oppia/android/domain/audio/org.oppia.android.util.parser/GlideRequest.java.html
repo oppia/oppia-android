@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlideRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$CellularAudioDialogControllerTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.util.parser</a> &gt; <span class="el_source">GlideRequest.java</span></div><h1>GlideRequest.java</h1><pre class="source lang-java linenums">package org.oppia.android.util.parser;
+
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import androidx.annotation.CheckResult;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.FloatRange;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RawRes;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.TransitionOptions;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.Key;
+import com.bumptech.glide.load.Option;
+import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
+import com.bumptech.glide.request.BaseRequestOptions;
+import com.bumptech.glide.request.RequestListener;
+import java.io.File;
+import java.net.URL;
+
+/**
+ * Contains all public methods from {@link RequestBuilder&lt;TranscodeType&gt;}, all options from
+ * {@link com.bumptech.glide.request.RequestOptions} and all generated options from
+ * {@link com.bumptech.glide.annotation.GlideOption} in annotated methods in
+ * {@link com.bumptech.glide.annotation.GlideExtension} annotated classes.
+ *
+ * &lt;p&gt;Generated code, do not modify.
+ *
+ * @see RequestBuilder&lt;TranscodeType&gt;
+ * @see com.bumptech.glide.request.RequestOptions
+ */
+@SuppressWarnings({
+    &quot;unused&quot;,
+    &quot;deprecation&quot;
+})
+public class GlideRequest&lt;TranscodeType&gt; extends RequestBuilder&lt;TranscodeType&gt; implements Cloneable {
+  GlideRequest(@NonNull Class&lt;TranscodeType&gt; transcodeClass, @NonNull RequestBuilder&lt;?&gt; other) {
+<span class="nc" id="L48">    super(transcodeClass, other);</span>
+<span class="nc" id="L49">  }</span>
+
+  GlideRequest(@NonNull Glide glide, @NonNull RequestManager requestManager,
+      @NonNull Class&lt;TranscodeType&gt; transcodeClass, @NonNull Context context) {
+<span class="nc" id="L53">    super(glide, requestManager ,transcodeClass, context);</span>
+<span class="nc" id="L54">  }</span>
+
+  @Override
+  @CheckResult
+  @NonNull
+  protected GlideRequest&lt;File&gt; getDownloadOnlyRequest() {
+<span class="nc" id="L60">    return new GlideRequest&lt;&gt;(File.class, this).apply(DOWNLOAD_ONLY_OPTIONS);</span>
+  }
+
+  /**
+   * @see GlideOptions#sizeMultiplier(float)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; sizeMultiplier(@FloatRange(from = 0.0, to = 1.0) float value) {
+<span class="nc" id="L69">    return (GlideRequest&lt;TranscodeType&gt;) super.sizeMultiplier(value);</span>
+  }
+
+  /**
+   * @see GlideOptions#useUnlimitedSourceGeneratorsPool(boolean)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; useUnlimitedSourceGeneratorsPool(boolean flag) {
+<span class="nc" id="L78">    return (GlideRequest&lt;TranscodeType&gt;) super.useUnlimitedSourceGeneratorsPool(flag);</span>
+  }
+
+  /**
+   * @see GlideOptions#useAnimationPool(boolean)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; useAnimationPool(boolean flag) {
+<span class="nc" id="L87">    return (GlideRequest&lt;TranscodeType&gt;) super.useAnimationPool(flag);</span>
+  }
+
+  /**
+   * @see GlideOptions#onlyRetrieveFromCache(boolean)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; onlyRetrieveFromCache(boolean flag) {
+<span class="nc" id="L96">    return (GlideRequest&lt;TranscodeType&gt;) super.onlyRetrieveFromCache(flag);</span>
+  }
+
+  /**
+   * @see GlideOptions#diskCacheStrategy(DiskCacheStrategy)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; diskCacheStrategy(@NonNull DiskCacheStrategy strategy) {
+<span class="nc" id="L105">    return (GlideRequest&lt;TranscodeType&gt;) super.diskCacheStrategy(strategy);</span>
+  }
+
+  /**
+   * @see GlideOptions#priority(Priority)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; priority(@NonNull Priority priority) {
+<span class="nc" id="L114">    return (GlideRequest&lt;TranscodeType&gt;) super.priority(priority);</span>
+  }
+
+  /**
+   * @see GlideOptions#placeholder(Drawable)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; placeholder(@Nullable Drawable drawable) {
+<span class="nc" id="L123">    return (GlideRequest&lt;TranscodeType&gt;) super.placeholder(drawable);</span>
+  }
+
+  /**
+   * @see GlideOptions#placeholder(int)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; placeholder(@DrawableRes int id) {
+<span class="nc" id="L132">    return (GlideRequest&lt;TranscodeType&gt;) super.placeholder(id);</span>
+  }
+
+  /**
+   * @see GlideOptions#fallback(Drawable)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; fallback(@Nullable Drawable drawable) {
+<span class="nc" id="L141">    return (GlideRequest&lt;TranscodeType&gt;) super.fallback(drawable);</span>
+  }
+
+  /**
+   * @see GlideOptions#fallback(int)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; fallback(@DrawableRes int id) {
+<span class="nc" id="L150">    return (GlideRequest&lt;TranscodeType&gt;) super.fallback(id);</span>
+  }
+
+  /**
+   * @see GlideOptions#error(Drawable)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; error(@Nullable Drawable drawable) {
+<span class="nc" id="L159">    return (GlideRequest&lt;TranscodeType&gt;) super.error(drawable);</span>
+  }
+
+  /**
+   * @see GlideOptions#error(int)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; error(@DrawableRes int id) {
+<span class="nc" id="L168">    return (GlideRequest&lt;TranscodeType&gt;) super.error(id);</span>
+  }
+
+  /**
+   * @see GlideOptions#theme(Resources.Theme)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; theme(@Nullable Resources.Theme theme) {
+<span class="nc" id="L177">    return (GlideRequest&lt;TranscodeType&gt;) super.theme(theme);</span>
+  }
+
+  /**
+   * @see GlideOptions#skipMemoryCache(boolean)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; skipMemoryCache(boolean skip) {
+<span class="nc" id="L186">    return (GlideRequest&lt;TranscodeType&gt;) super.skipMemoryCache(skip);</span>
+  }
+
+  /**
+   * @see GlideOptions#override(int, int)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; override(int width, int height) {
+<span class="nc" id="L195">    return (GlideRequest&lt;TranscodeType&gt;) super.override(width, height);</span>
+  }
+
+  /**
+   * @see GlideOptions#override(int)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; override(int size) {
+<span class="nc" id="L204">    return (GlideRequest&lt;TranscodeType&gt;) super.override(size);</span>
+  }
+
+  /**
+   * @see GlideOptions#signature(Key)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; signature(@NonNull Key key) {
+<span class="nc" id="L213">    return (GlideRequest&lt;TranscodeType&gt;) super.signature(key);</span>
+  }
+
+  /**
+   * @see GlideOptions#set(Option&lt;Y&gt;, Y)
+   */
+  @NonNull
+  @CheckResult
+  public &lt;Y&gt; GlideRequest&lt;TranscodeType&gt; set(@NonNull Option&lt;Y&gt; option, @NonNull Y y) {
+<span class="nc" id="L222">    return (GlideRequest&lt;TranscodeType&gt;) super.set(option, y);</span>
+  }
+
+  /**
+   * @see GlideOptions#decode(Class&lt;?&gt;)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; decode(@NonNull Class&lt;?&gt; clazz) {
+<span class="nc" id="L231">    return (GlideRequest&lt;TranscodeType&gt;) super.decode(clazz);</span>
+  }
+
+  /**
+   * @see GlideOptions#encodeFormat(Bitmap.CompressFormat)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; encodeFormat(@NonNull Bitmap.CompressFormat format) {
+<span class="nc" id="L240">    return (GlideRequest&lt;TranscodeType&gt;) super.encodeFormat(format);</span>
+  }
+
+  /**
+   * @see GlideOptions#encodeQuality(int)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; encodeQuality(@IntRange(from = 0, to = 100) int value) {
+<span class="nc" id="L249">    return (GlideRequest&lt;TranscodeType&gt;) super.encodeQuality(value);</span>
+  }
+
+  /**
+   * @see GlideOptions#frame(long)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; frame(@IntRange(from = 0) long value) {
+<span class="nc" id="L258">    return (GlideRequest&lt;TranscodeType&gt;) super.frame(value);</span>
+  }
+
+  /**
+   * @see GlideOptions#format(DecodeFormat)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; format(@NonNull DecodeFormat format) {
+<span class="nc" id="L267">    return (GlideRequest&lt;TranscodeType&gt;) super.format(format);</span>
+  }
+
+  /**
+   * @see GlideOptions#disallowHardwareConfig()
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; disallowHardwareConfig() {
+<span class="nc" id="L276">    return (GlideRequest&lt;TranscodeType&gt;) super.disallowHardwareConfig();</span>
+  }
+
+  /**
+   * @see GlideOptions#downsample(DownsampleStrategy)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; downsample(@NonNull DownsampleStrategy strategy) {
+<span class="nc" id="L285">    return (GlideRequest&lt;TranscodeType&gt;) super.downsample(strategy);</span>
+  }
+
+  /**
+   * @see GlideOptions#timeout(int)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; timeout(@IntRange(from = 0) int value) {
+<span class="nc" id="L294">    return (GlideRequest&lt;TranscodeType&gt;) super.timeout(value);</span>
+  }
+
+  /**
+   * @see GlideOptions#optionalCenterCrop()
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; optionalCenterCrop() {
+<span class="nc" id="L303">    return (GlideRequest&lt;TranscodeType&gt;) super.optionalCenterCrop();</span>
+  }
+
+  /**
+   * @see GlideOptions#centerCrop()
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; centerCrop() {
+<span class="nc" id="L312">    return (GlideRequest&lt;TranscodeType&gt;) super.centerCrop();</span>
+  }
+
+  /**
+   * @see GlideOptions#optionalFitCenter()
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; optionalFitCenter() {
+<span class="nc" id="L321">    return (GlideRequest&lt;TranscodeType&gt;) super.optionalFitCenter();</span>
+  }
+
+  /**
+   * @see GlideOptions#fitCenter()
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; fitCenter() {
+<span class="nc" id="L330">    return (GlideRequest&lt;TranscodeType&gt;) super.fitCenter();</span>
+  }
+
+  /**
+   * @see GlideOptions#optionalCenterInside()
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; optionalCenterInside() {
+<span class="nc" id="L339">    return (GlideRequest&lt;TranscodeType&gt;) super.optionalCenterInside();</span>
+  }
+
+  /**
+   * @see GlideOptions#centerInside()
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; centerInside() {
+<span class="nc" id="L348">    return (GlideRequest&lt;TranscodeType&gt;) super.centerInside();</span>
+  }
+
+  /**
+   * @see GlideOptions#optionalCircleCrop()
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; optionalCircleCrop() {
+<span class="nc" id="L357">    return (GlideRequest&lt;TranscodeType&gt;) super.optionalCircleCrop();</span>
+  }
+
+  /**
+   * @see GlideOptions#circleCrop()
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; circleCrop() {
+<span class="nc" id="L366">    return (GlideRequest&lt;TranscodeType&gt;) super.circleCrop();</span>
+  }
+
+  /**
+   * @see GlideOptions#transform(Transformation&lt;Bitmap&gt;)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; transform(@NonNull Transformation&lt;Bitmap&gt; transformation) {
+<span class="nc" id="L375">    return (GlideRequest&lt;TranscodeType&gt;) super.transform(transformation);</span>
+  }
+
+  /**
+   * @see GlideOptions#transform(Transformation&lt;Bitmap&gt;[])
+   */
+  @NonNull
+  @CheckResult
+  @SuppressWarnings({
+      &quot;unchecked&quot;,
+      &quot;varargs&quot;
+  })
+  public GlideRequest&lt;TranscodeType&gt; transform(@NonNull Transformation&lt;Bitmap&gt;... transformations) {
+<span class="nc" id="L388">    return (GlideRequest&lt;TranscodeType&gt;) super.transform(transformations);</span>
+  }
+
+  /**
+   * @see GlideOptions#transforms(Transformation&lt;Bitmap&gt;[])
+   */
+  @Deprecated
+  @NonNull
+  @CheckResult
+  @SuppressWarnings({
+      &quot;unchecked&quot;,
+      &quot;varargs&quot;
+  })
+  public GlideRequest&lt;TranscodeType&gt; transforms(@NonNull Transformation&lt;Bitmap&gt;... transformations) {
+<span class="nc" id="L402">    return (GlideRequest&lt;TranscodeType&gt;) super.transforms(transformations);</span>
+  }
+
+  /**
+   * @see GlideOptions#optionalTransform(Transformation&lt;Bitmap&gt;)
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; optionalTransform(@NonNull Transformation&lt;Bitmap&gt; transformation) {
+<span class="nc" id="L411">    return (GlideRequest&lt;TranscodeType&gt;) super.optionalTransform(transformation);</span>
+  }
+
+  /**
+   * @see GlideOptions#optionalTransform(Class&lt;Y&gt;, Transformation&lt;Y&gt;)
+   */
+  @NonNull
+  @CheckResult
+  public &lt;Y&gt; GlideRequest&lt;TranscodeType&gt; optionalTransform(@NonNull Class&lt;Y&gt; clazz,
+      @NonNull Transformation&lt;Y&gt; transformation) {
+<span class="nc" id="L421">    return (GlideRequest&lt;TranscodeType&gt;) super.optionalTransform(clazz, transformation);</span>
+  }
+
+  /**
+   * @see GlideOptions#transform(Class&lt;Y&gt;, Transformation&lt;Y&gt;)
+   */
+  @NonNull
+  @CheckResult
+  public &lt;Y&gt; GlideRequest&lt;TranscodeType&gt; transform(@NonNull Class&lt;Y&gt; clazz,
+      @NonNull Transformation&lt;Y&gt; transformation) {
+<span class="nc" id="L431">    return (GlideRequest&lt;TranscodeType&gt;) super.transform(clazz, transformation);</span>
+  }
+
+  /**
+   * @see GlideOptions#dontTransform()
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; dontTransform() {
+<span class="nc" id="L440">    return (GlideRequest&lt;TranscodeType&gt;) super.dontTransform();</span>
+  }
+
+  /**
+   * @see GlideOptions#dontAnimate()
+   */
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; dontAnimate() {
+<span class="nc" id="L449">    return (GlideRequest&lt;TranscodeType&gt;) super.dontAnimate();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; apply(@NonNull BaseRequestOptions&lt;?&gt; options) {
+<span class="nc" id="L456">    return (GlideRequest&lt;TranscodeType&gt;) super.apply(options);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; transition(@NonNull TransitionOptions&lt;?, ? super TranscodeType&gt; options) {
+<span class="nc" id="L463">    return (GlideRequest&lt;TranscodeType&gt;) super.transition(options);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; listener(@Nullable RequestListener&lt;TranscodeType&gt; listener) {
+<span class="nc" id="L470">    return (GlideRequest&lt;TranscodeType&gt;) super.listener(listener);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; addListener(@Nullable RequestListener&lt;TranscodeType&gt; listener) {
+<span class="nc" id="L477">    return (GlideRequest&lt;TranscodeType&gt;) super.addListener(listener);</span>
+  }
+
+  @Override
+  @NonNull
+  public GlideRequest&lt;TranscodeType&gt; error(@Nullable RequestBuilder&lt;TranscodeType&gt; builder) {
+<span class="nc" id="L483">    return (GlideRequest&lt;TranscodeType&gt;) super.error(builder);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; thumbnail(@Nullable RequestBuilder&lt;TranscodeType&gt; builder) {
+<span class="nc" id="L490">    return (GlideRequest&lt;TranscodeType&gt;) super.thumbnail(builder);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  @SafeVarargs
+  @SuppressWarnings(&quot;varargs&quot;)
+  public final GlideRequest&lt;TranscodeType&gt; thumbnail(@Nullable RequestBuilder&lt;TranscodeType&gt;... builders) {
+<span class="nc" id="L499">    return (GlideRequest&lt;TranscodeType&gt;) super.thumbnail(builders);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; thumbnail(float sizeMultiplier) {
+<span class="nc" id="L506">    return (GlideRequest&lt;TranscodeType&gt;) super.thumbnail(sizeMultiplier);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; load(@Nullable Object o) {
+<span class="nc" id="L513">    return (GlideRequest&lt;TranscodeType&gt;) super.load(o);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; load(@Nullable Bitmap bitmap) {
+<span class="nc" id="L520">    return (GlideRequest&lt;TranscodeType&gt;) super.load(bitmap);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; load(@Nullable Drawable drawable) {
+<span class="nc" id="L527">    return (GlideRequest&lt;TranscodeType&gt;) super.load(drawable);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; load(@Nullable String string) {
+<span class="nc" id="L534">    return (GlideRequest&lt;TranscodeType&gt;) super.load(string);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; load(@Nullable Uri uri) {
+<span class="nc" id="L541">    return (GlideRequest&lt;TranscodeType&gt;) super.load(uri);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; load(@Nullable File file) {
+<span class="nc" id="L548">    return (GlideRequest&lt;TranscodeType&gt;) super.load(file);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; load(@RawRes @DrawableRes @Nullable Integer id) {
+<span class="nc" id="L555">    return (GlideRequest&lt;TranscodeType&gt;) super.load(id);</span>
+  }
+
+  @Override
+  @Deprecated
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; load(@Nullable URL url) {
+<span class="nc" id="L562">    return (GlideRequest&lt;TranscodeType&gt;) super.load(url);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; load(@Nullable byte[] bytes) {
+<span class="nc" id="L569">    return (GlideRequest&lt;TranscodeType&gt;) super.load(bytes);</span>
+  }
+
+  @Override
+  @CheckResult
+  public GlideRequest&lt;TranscodeType&gt; clone() {
+<span class="nc" id="L575">    return (GlideRequest&lt;TranscodeType&gt;) super.clone();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

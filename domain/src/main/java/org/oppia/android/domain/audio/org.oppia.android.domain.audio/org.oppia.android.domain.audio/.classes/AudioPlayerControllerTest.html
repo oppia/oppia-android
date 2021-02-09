@@ -1,0 +1,701 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AudioPlayerControllerTest</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.oppia.android.domain.audio</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AudioPlayerControllerTest (org.oppia.android.domain.audio)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AudioPlayerControllerTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.8%
+  </span>
+  <span class="absValue">
+    (36/ 41)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96.3%
+  </span>
+  <span class="absValue">
+    (181/ 188)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">AudioPlayerControllerTest$TestApplicationComponent</td>
+  </tr>
+  <tr>
+    <td class="name">AudioPlayerControllerTest$TestApplicationComponent$Builder</td>
+  </tr>
+  <tr>
+    <td class="name">AudioPlayerControllerTest$testController_notInitialized_releasePlayer_fails$exception$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">AudioPlayerControllerTest$testError_notPrepared_invokePause_fails$exception$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">AudioPlayerControllerTest$testError_notPrepared_invokePlay_fails$exception$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">AudioPlayerControllerTest$testError_notPrepared_invokeSeekTo_fails$exception$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">AudioPlayerControllerTest$TestModule</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    90.2%
+  </span>
+  <span class="absValue">
+    (46/ 51)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96.5%
+  </span>
+  <span class="absValue">
+    (191/ 198)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package org.oppia.android.domain.audio
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.app.Application
+<i>4</i>&nbsp;import android.content.Context
+<i>5</i>&nbsp;import android.net.Uri
+<i>6</i>&nbsp;import androidx.lifecycle.Observer
+<i>7</i>&nbsp;import androidx.test.core.app.ApplicationProvider
+<i>8</i>&nbsp;import androidx.test.ext.junit.runners.AndroidJUnit4
+<i>9</i>&nbsp;import com.google.common.truth.Truth.assertThat
+<i>10</i>&nbsp;import dagger.BindsInstance
+<i>11</i>&nbsp;import dagger.Component
+<i>12</i>&nbsp;import dagger.Module
+<i>13</i>&nbsp;import dagger.Provides
+<i>14</i>&nbsp;import org.junit.Before
+<i>15</i>&nbsp;import org.junit.Rule
+<i>16</i>&nbsp;import org.junit.Test
+<i>17</i>&nbsp;import org.junit.runner.RunWith
+<i>18</i>&nbsp;import org.mockito.ArgumentCaptor
+<i>19</i>&nbsp;import org.mockito.Captor
+<i>20</i>&nbsp;import org.mockito.Mock
+<i>21</i>&nbsp;import org.mockito.Mockito.atLeastOnce
+<i>22</i>&nbsp;import org.mockito.Mockito.verify
+<i>23</i>&nbsp;import org.mockito.junit.MockitoJUnit
+<i>24</i>&nbsp;import org.mockito.junit.MockitoRule
+<i>25</i>&nbsp;import org.oppia.android.domain.audio.AudioPlayerController.PlayProgress
+<i>26</i>&nbsp;import org.oppia.android.domain.audio.AudioPlayerController.PlayStatus
+<i>27</i>&nbsp;import org.oppia.android.domain.oppialogger.LogStorageModule
+<i>28</i>&nbsp;import org.oppia.android.testing.FakeExceptionLogger
+<i>29</i>&nbsp;import org.oppia.android.testing.TestCoroutineDispatchers
+<i>30</i>&nbsp;import org.oppia.android.testing.TestDispatcherModule
+<i>31</i>&nbsp;import org.oppia.android.testing.TestLogReportingModule
+<i>32</i>&nbsp;import org.oppia.android.util.caching.CacheAssetsLocally
+<i>33</i>&nbsp;import org.oppia.android.util.data.AsyncResult
+<i>34</i>&nbsp;import org.oppia.android.util.logging.EnableConsoleLog
+<i>35</i>&nbsp;import org.oppia.android.util.logging.EnableFileLog
+<i>36</i>&nbsp;import org.oppia.android.util.logging.GlobalLogLevel
+<i>37</i>&nbsp;import org.oppia.android.util.logging.LogLevel
+<i>38</i>&nbsp;import org.robolectric.Shadows
+<i>39</i>&nbsp;import org.robolectric.annotation.Config
+<i>40</i>&nbsp;import org.robolectric.annotation.LooperMode
+<i>41</i>&nbsp;import org.robolectric.shadows.ShadowMediaPlayer
+<i>42</i>&nbsp;import org.robolectric.shadows.util.DataSource
+<i>43</i>&nbsp;import java.io.IOException
+<i>44</i>&nbsp;import javax.inject.Inject
+<i>45</i>&nbsp;import javax.inject.Singleton
+<i>46</i>&nbsp;import kotlin.reflect.KClass
+<i>47</i>&nbsp;import kotlin.reflect.full.cast
+<i>48</i>&nbsp;import kotlin.test.fail
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;/** Tests for [AudioPlayerControllerTest]. */
+<i>51</i>&nbsp;@RunWith(AndroidJUnit4::class)
+<i>52</i>&nbsp;@LooperMode(LooperMode.Mode.PAUSED)
+<i>53</i>&nbsp;@Config(manifest = Config.NONE)
+<b class="fc"><i>54</i>&nbsp;class AudioPlayerControllerTest {</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;  @Rule
+<i>57</i>&nbsp;  @JvmField
+<b class="fc"><i>58</i>&nbsp;  val mockitoRule: MockitoRule = MockitoJUnit.rule()</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;  @Mock
+<b class="nc"><i>61</i>&nbsp;  lateinit var mockAudioPlayerObserver: Observer&lt;AsyncResult&lt;PlayProgress&gt;&gt;</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;  @Captor
+<b class="nc"><i>64</i>&nbsp;  lateinit var audioPlayerResultCaptor:</b>
+<i>65</i>&nbsp;    ArgumentCaptor&lt;AsyncResult&lt;PlayProgress&gt;&gt;
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;  @Inject
+<b class="nc"><i>68</i>&nbsp;  lateinit var context: Context</b>
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;  @Inject
+<b class="pc"><i>71</i>&nbsp;  lateinit var audioPlayerController: AudioPlayerController</b>
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;  @Inject
+<b class="nc"><i>74</i>&nbsp;  lateinit var fakeExceptionLogger: FakeExceptionLogger</b>
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;  @Inject
+<b class="nc"><i>77</i>&nbsp;  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;  private lateinit var shadowMediaPlayer: ShadowMediaPlayer
+<i>80</i>&nbsp;
+<b class="fc"><i>81</i>&nbsp;  private val TEST_URL = &quot;https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3&quot;</b>
+<b class="fc"><i>82</i>&nbsp;  private val TEST_URL2 = &quot;https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3&quot;</b>
+<b class="fc"><i>83</i>&nbsp;  private val TEST_FAIL_URL = &quot;https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2&quot;</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;  @Before
+<i>86</i>&nbsp;  fun setUp() {
+<b class="fc"><i>87</i>&nbsp;    setUpTestApplicationComponent()</b>
+<b class="fc"><i>88</i>&nbsp;    addMediaInfo()</b>
+<b class="pc"><i>89</i>&nbsp;    shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())</b>
+<b class="pc"><i>90</i>&nbsp;    shadowMediaPlayer.dataSource = DataSource.toDataSource(context, Uri.parse(TEST_URL))</b>
+<i>91</i>&nbsp;  }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;  @Test
+<i>94</i>&nbsp;  fun testController_initializePlayer_invokePrepared_reportsSuccessfulInit() {
+<b class="pc"><i>95</i>&nbsp;    audioPlayerController.initializeMediaPlayer()</b>
+<b class="pc"><i>96</i>&nbsp;    audioPlayerController.changeDataSource(TEST_URL)</b>
+<i>97</i>&nbsp;
+<b class="pc"><i>98</i>&nbsp;    shadowMediaPlayer.invokePreparedListener()</b>
+<i>99</i>&nbsp;
+<b class="pc"><i>100</i>&nbsp;    assertThat(shadowMediaPlayer.isPrepared).isTrue()</b>
+<b class="pc"><i>101</i>&nbsp;    assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()</b>
+<i>102</i>&nbsp;  }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;  @Test
+<i>105</i>&nbsp;  fun testController_preparePlayer_invokePlay_checkIsPlaying() {
+<b class="fc"><i>106</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>107</i>&nbsp;
+<b class="pc"><i>108</i>&nbsp;    audioPlayerController.play()</b>
+<i>109</i>&nbsp;
+<b class="pc"><i>110</i>&nbsp;    assertThat(shadowMediaPlayer.isReallyPlaying).isTrue()</b>
+<i>111</i>&nbsp;  }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;  @Test
+<i>114</i>&nbsp;  fun testController_preparePlayer_invokePause_checkNotIsPlaying() {
+<b class="fc"><i>115</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>116</i>&nbsp;
+<b class="pc"><i>117</i>&nbsp;    audioPlayerController.pause()</b>
+<i>118</i>&nbsp;
+<b class="pc"><i>119</i>&nbsp;    assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()</b>
+<i>120</i>&nbsp;  }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;  @Test
+<i>123</i>&nbsp;  fun testController_preparePlayer_invokeSeekTo_hasCorrectProgress() {
+<b class="fc"><i>124</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>125</i>&nbsp;
+<b class="pc"><i>126</i>&nbsp;    audioPlayerController.seekTo(500)</b>
+<b class="pc"><i>127</i>&nbsp;    testCoroutineDispatchers.runCurrent()</b>
+<i>128</i>&nbsp;
+<b class="pc"><i>129</i>&nbsp;    assertThat(shadowMediaPlayer.currentPositionRaw).isEqualTo(500)</b>
+<i>130</i>&nbsp;  }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;  @Test
+<i>133</i>&nbsp;  fun testController_preparePlayer_releaseMediaPlayer_hasEndState() {
+<b class="fc"><i>134</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>135</i>&nbsp;
+<b class="pc"><i>136</i>&nbsp;    audioPlayerController.releaseMediaPlayer()</b>
+<i>137</i>&nbsp;
+<b class="pc"><i>138</i>&nbsp;    assertThat(shadowMediaPlayer.state).isEqualTo(ShadowMediaPlayer.State.END)</b>
+<i>139</i>&nbsp;  }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;  @Test
+<i>142</i>&nbsp;  fun testController_preparePlayer_invokePrepare_capturesPreparedState() {
+<b class="fc"><i>143</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>144</i>&nbsp;
+<b class="pc"><i>145</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>146</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()</b>
+<b class="pc"><i>147</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PREPARED)</b>
+<i>148</i>&nbsp;  }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;  @Test
+<i>151</i>&nbsp;  fun testController_releasePlayer_initializePlayer_capturesPendingState() {
+<b class="pc"><i>152</i>&nbsp;    audioPlayerController.initializeMediaPlayer()</b>
+<i>153</i>&nbsp;
+<b class="pc"><i>154</i>&nbsp;    audioPlayerController.releaseMediaPlayer()</b>
+<b class="pc"><i>155</i>&nbsp;    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)</b>
+<b class="pc"><i>156</i>&nbsp;    audioPlayerController.changeDataSource(TEST_URL)</b>
+<i>157</i>&nbsp;
+<b class="pc"><i>158</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>159</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.isPending()).isTrue()</b>
+<i>160</i>&nbsp;  }
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;  @Test
+<i>163</i>&nbsp;  fun tesObserver_preparePlayer_invokeCompletion_capturesCompletedState() {
+<b class="fc"><i>164</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>165</i>&nbsp;
+<b class="pc"><i>166</i>&nbsp;    shadowMediaPlayer.invokeCompletionListener()</b>
+<i>167</i>&nbsp;
+<b class="pc"><i>168</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>169</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()</b>
+<b class="pc"><i>170</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.COMPLETED)</b>
+<b class="pc"><i>171</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.getOrThrow().position).isEqualTo(0)</b>
+<i>172</i>&nbsp;  }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;  @Test
+<i>175</i>&nbsp;  fun testObserver_preparePlayer_invokeChangeDataSource_capturesPendingState() {
+<b class="fc"><i>176</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>177</i>&nbsp;
+<b class="pc"><i>178</i>&nbsp;    audioPlayerController.changeDataSource(TEST_URL2)</b>
+<i>179</i>&nbsp;
+<b class="pc"><i>180</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>181</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.isPending()).isTrue()</b>
+<i>182</i>&nbsp;  }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;  @Test
+<i>185</i>&nbsp;  fun testObserver_preparePlayer_invokeChangeDataSourceAfterPlay_capturesPendingState() {
+<b class="fc"><i>186</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>187</i>&nbsp;
+<b class="pc"><i>188</i>&nbsp;    audioPlayerController.play()</b>
+<b class="pc"><i>189</i>&nbsp;    audioPlayerController.changeDataSource(TEST_URL2)</b>
+<i>190</i>&nbsp;
+<b class="pc"><i>191</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>192</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.isPending()).isTrue()</b>
+<i>193</i>&nbsp;  }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;  @Test
+<i>196</i>&nbsp;  fun testObserver_preparePlayer_invokePlay_capturesPlayingState() {
+<b class="fc"><i>197</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>198</i>&nbsp;
+<b class="pc"><i>199</i>&nbsp;    audioPlayerController.play()</b>
+<b class="pc"><i>200</i>&nbsp;    testCoroutineDispatchers.runCurrent()</b>
+<i>201</i>&nbsp;
+<b class="pc"><i>202</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>203</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()</b>
+<b class="pc"><i>204</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PLAYING)</b>
+<i>205</i>&nbsp;  }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;  @Test
+<i>208</i>&nbsp;  fun testObserver_preparePlayer_invokePlayAndAdvance_capturesManyPlayingStates() {
+<b class="fc"><i>209</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    // Wait for 1 second for the player to enter a playing state, then forcibly trigger completion.
+<b class="pc"><i>212</i>&nbsp;    audioPlayerController.play()</b>
+<b class="pc"><i>213</i>&nbsp;    testCoroutineDispatchers.advanceTimeBy(1000)</b>
+<b class="pc"><i>214</i>&nbsp;    shadowMediaPlayer.invokeCompletionListener()</b>
+<i>215</i>&nbsp;
+<b class="pc"><i>216</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>217</i>&nbsp;    val results = audioPlayerResultCaptor.allValues</b>
+<b class="fc"><i>218</i>&nbsp;    val pendingIndex = results.indexOfLast { it.isPending() }</b>
+<b class="fc"><i>219</i>&nbsp;    val preparedIndex = results.indexOfLast { it.hasStatus(PlayStatus.PREPARED) }</b>
+<b class="fc"><i>220</i>&nbsp;    val playingIndex = results.indexOfLast { it.hasStatus(PlayStatus.PLAYING) }</b>
+<b class="pc"><i>221</i>&nbsp;    val completedIndex = results.indexOfLast { it.hasStatus(PlayStatus.COMPLETED) }</b>
+<i>222</i>&nbsp;    // Verify that there are at least 4 statuses: pending, prepared, playing, and completed, and in
+<i>223</i>&nbsp;    // that order.
+<b class="fc"><i>224</i>&nbsp;    assertThat(results.size).isGreaterThan(4)</b>
+<b class="fc"><i>225</i>&nbsp;    assertThat(pendingIndex).isLessThan(preparedIndex)</b>
+<b class="fc"><i>226</i>&nbsp;    assertThat(preparedIndex).isLessThan(playingIndex)</b>
+<b class="fc"><i>227</i>&nbsp;    assertThat(playingIndex).isLessThan(completedIndex)</b>
+<i>228</i>&nbsp;  }
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;  @Test
+<i>231</i>&nbsp;  fun testObserver_preparePlayer_invokePause_capturesPausedState() {
+<b class="fc"><i>232</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>233</i>&nbsp;
+<b class="pc"><i>234</i>&nbsp;    audioPlayerController.play()</b>
+<b class="pc"><i>235</i>&nbsp;    audioPlayerController.pause()</b>
+<i>236</i>&nbsp;
+<b class="pc"><i>237</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>238</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()</b>
+<b class="pc"><i>239</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PAUSED)</b>
+<i>240</i>&nbsp;  }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;  @Test
+<i>243</i>&nbsp;  fun testObserver_preparePlayer_invokePrepared_capturesCorrectPosition() {
+<b class="fc"><i>244</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>245</i>&nbsp;
+<b class="pc"><i>246</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>247</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.getOrThrow().position).isEqualTo(0)</b>
+<i>248</i>&nbsp;  }
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;  @Test
+<i>251</i>&nbsp;  fun testObserver_preparePlayer_invokeSeekTo_capturesCorrectPosition() {
+<b class="fc"><i>252</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>253</i>&nbsp;
+<b class="pc"><i>254</i>&nbsp;    audioPlayerController.seekTo(500)</b>
+<b class="pc"><i>255</i>&nbsp;    testCoroutineDispatchers.runCurrent()</b>
+<b class="pc"><i>256</i>&nbsp;    audioPlayerController.play()</b>
+<b class="pc"><i>257</i>&nbsp;    testCoroutineDispatchers.runCurrent()</b>
+<i>258</i>&nbsp;
+<b class="pc"><i>259</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>260</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.getOrThrow().position).isEqualTo(500)</b>
+<i>261</i>&nbsp;  }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;  @Test
+<i>264</i>&nbsp;  fun testObserver_preparePlayer_invokePlay_capturesCorrectDuration() {
+<b class="fc"><i>265</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>266</i>&nbsp;
+<b class="pc"><i>267</i>&nbsp;    audioPlayerController.play()</b>
+<i>268</i>&nbsp;
+<b class="pc"><i>269</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>270</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.getOrThrow().duration).isEqualTo(2000)</b>
+<i>271</i>&nbsp;  }
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;  @Test
+<i>274</i>&nbsp;  fun testObserver_preparePlayer_invokeChangeDataSource_capturesCorrectPosition() {
+<b class="fc"><i>275</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>276</i>&nbsp;
+<b class="pc"><i>277</i>&nbsp;    audioPlayerController.seekTo(500)</b>
+<b class="pc"><i>278</i>&nbsp;    audioPlayerController.changeDataSource(TEST_URL2)</b>
+<b class="pc"><i>279</i>&nbsp;    shadowMediaPlayer.invokePreparedListener()</b>
+<b class="pc"><i>280</i>&nbsp;    audioPlayerController.play()</b>
+<i>281</i>&nbsp;
+<b class="pc"><i>282</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>283</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.getOrThrow().position).isEqualTo(0)</b>
+<i>284</i>&nbsp;  }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;  @Test
+<i>287</i>&nbsp;  fun testObserver_observeInitPlayer_releasePlayer_initPlayer_checkNoNewUpdates() {
+<b class="fc"><i>288</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>289</i>&nbsp;
+<b class="pc"><i>290</i>&nbsp;    audioPlayerController.releaseMediaPlayer()</b>
+<b class="pc"><i>291</i>&nbsp;    audioPlayerController.initializeMediaPlayer()</b>
+<i>292</i>&nbsp;
+<b class="pc"><i>293</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<i>294</i>&nbsp;    // If the observer was still getting updates, the result would be pending
+<b class="pc"><i>295</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()</b>
+<b class="pc"><i>296</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PREPARED)</b>
+<i>297</i>&nbsp;  }
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;  @Test
+<i>300</i>&nbsp;  fun testScheduling_preparePlayer_invokePauseAndAdvance_verifyTestDoesNotHang() {
+<b class="fc"><i>301</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>302</i>&nbsp;
+<b class="pc"><i>303</i>&nbsp;    audioPlayerController.play()</b>
+<b class="pc"><i>304</i>&nbsp;    testCoroutineDispatchers.advanceTimeBy(500) // Play part of the audio track before pausing.</b>
+<b class="pc"><i>305</i>&nbsp;    audioPlayerController.pause()</b>
+<b class="pc"><i>306</i>&nbsp;    testCoroutineDispatchers.advanceTimeBy(2000)</b>
+<i>307</i>&nbsp;
+<b class="pc"><i>308</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>309</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PAUSED)</b>
+<i>310</i>&nbsp;    // Verify: If the test does not hang, the behavior is correct.
+<i>311</i>&nbsp;  }
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;  @Test
+<i>314</i>&nbsp;  fun testScheduling_preparePlayer_invokeCompletionAndAdvance_verifyTestDoesNotHang() {
+<b class="fc"><i>315</i>&nbsp;    arrangeMediaPlayer()</b>
+<i>316</i>&nbsp;
+<b class="pc"><i>317</i>&nbsp;    audioPlayerController.play()</b>
+<b class="pc"><i>318</i>&nbsp;    testCoroutineDispatchers.advanceTimeBy(2000)</b>
+<b class="pc"><i>319</i>&nbsp;    shadowMediaPlayer.invokeCompletionListener()</b>
+<b class="pc"><i>320</i>&nbsp;    testCoroutineDispatchers.advanceTimeBy(2000)</b>
+<i>321</i>&nbsp;
+<b class="pc"><i>322</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>323</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.COMPLETED)</b>
+<i>324</i>&nbsp;    // Verify: If the test does not hang, the behavior is correct.
+<i>325</i>&nbsp;  }
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;  @Test
+<i>328</i>&nbsp;  fun testScheduling_observeData_removeObserver_verifyTestDoesNotHang() {
+<b class="pc"><i>329</i>&nbsp;    val playProgress = audioPlayerController.initializeMediaPlayer()</b>
+<b class="pc"><i>330</i>&nbsp;    audioPlayerController.changeDataSource(TEST_URL)</b>
+<b class="pc"><i>331</i>&nbsp;    testCoroutineDispatchers.runCurrent()</b>
+<i>332</i>&nbsp;
+<b class="pc"><i>333</i>&nbsp;    playProgress.observeForever(mockAudioPlayerObserver)</b>
+<b class="pc"><i>334</i>&nbsp;    audioPlayerController.play()</b>
+<b class="pc"><i>335</i>&nbsp;    testCoroutineDispatchers.advanceTimeBy(2000)</b>
+<b class="pc"><i>336</i>&nbsp;    playProgress.removeObserver(mockAudioPlayerObserver)</b>
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    // Verify: If the test does not hang, the behavior is correct.
+<i>339</i>&nbsp;  }
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;  @Test
+<i>342</i>&nbsp;  fun testScheduling_addAndRemoveObservers_verifyTestDoesNotHang() {
+<b class="fc"><i>343</i>&nbsp;    val playProgress =</b>
+<b class="pc"><i>344</i>&nbsp;      audioPlayerController.initializeMediaPlayer()</b>
+<b class="pc"><i>345</i>&nbsp;    audioPlayerController.changeDataSource(TEST_URL)</b>
+<b class="pc"><i>346</i>&nbsp;    testCoroutineDispatchers.runCurrent()</b>
+<i>347</i>&nbsp;
+<b class="pc"><i>348</i>&nbsp;    audioPlayerController.play()</b>
+<b class="pc"><i>349</i>&nbsp;    testCoroutineDispatchers.advanceTimeBy(2000)</b>
+<b class="pc"><i>350</i>&nbsp;    playProgress.observeForever(mockAudioPlayerObserver)</b>
+<b class="pc"><i>351</i>&nbsp;    audioPlayerController.pause()</b>
+<b class="pc"><i>352</i>&nbsp;    playProgress.removeObserver(mockAudioPlayerObserver)</b>
+<b class="pc"><i>353</i>&nbsp;    audioPlayerController.play()</b>
+<i>354</i>&nbsp;
+<i>355</i>&nbsp;    // Verify: If the test does not hang, the behavior is correct.
+<i>356</i>&nbsp;  }
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;  @Test
+<i>359</i>&nbsp;  fun testController_invokeErrorListener_invokePrepared_verifyAudioStatusIsFailure() {
+<b class="pc"><i>360</i>&nbsp;    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)</b>
+<b class="pc"><i>361</i>&nbsp;    audioPlayerController.changeDataSource(TEST_URL)</b>
+<i>362</i>&nbsp;
+<b class="pc"><i>363</i>&nbsp;    shadowMediaPlayer.invokeErrorListener(/* what= */ 0, /* extra= */ 0)</b>
+<b class="pc"><i>364</i>&nbsp;    shadowMediaPlayer.invokePreparedListener()</b>
+<i>365</i>&nbsp;
+<b class="pc"><i>366</i>&nbsp;    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())</b>
+<b class="pc"><i>367</i>&nbsp;    assertThat(audioPlayerResultCaptor.value.isFailure()).isTrue()</b>
+<i>368</i>&nbsp;  }
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;  @Test
+<i>371</i>&nbsp;  fun testController_notInitialized_releasePlayer_fails() {
+<b class="fc"><i>372</i>&nbsp;    val exception = assertThrows(IllegalStateException::class) {</b>
+<b class="fc"><i>373</i>&nbsp;      audioPlayerController.releaseMediaPlayer()</b>
+<i>374</i>&nbsp;    }
+<i>375</i>&nbsp;
+<b class="fc"><i>376</i>&nbsp;    assertThat(exception).hasMessageThat()</b>
+<b class="fc"><i>377</i>&nbsp;      .contains(&quot;Media player has not been previously initialized&quot;)</b>
+<i>378</i>&nbsp;  }
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;  @Test
+<i>381</i>&nbsp;  fun testError_notPrepared_invokePlay_fails() {
+<b class="fc"><i>382</i>&nbsp;    val exception = assertThrows(IllegalStateException::class) {</b>
+<b class="fc"><i>383</i>&nbsp;      audioPlayerController.play()</b>
+<i>384</i>&nbsp;    }
+<i>385</i>&nbsp;
+<b class="fc"><i>386</i>&nbsp;    assertThat(exception).hasMessageThat().contains(&quot;Media Player not in a prepared state&quot;)</b>
+<i>387</i>&nbsp;  }
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;  @Test
+<i>390</i>&nbsp;  fun testError_notPrepared_invokePause_fails() {
+<b class="fc"><i>391</i>&nbsp;    val exception = assertThrows(IllegalStateException::class) {</b>
+<b class="fc"><i>392</i>&nbsp;      audioPlayerController.pause()</b>
+<i>393</i>&nbsp;    }
+<i>394</i>&nbsp;
+<b class="fc"><i>395</i>&nbsp;    assertThat(exception).hasMessageThat().contains(&quot;Media Player not in a prepared state&quot;)</b>
+<i>396</i>&nbsp;  }
+<i>397</i>&nbsp;
+<i>398</i>&nbsp;  @Test
+<i>399</i>&nbsp;  fun testError_notPrepared_invokeSeekTo_fails() {
+<b class="fc"><i>400</i>&nbsp;    val exception = assertThrows(IllegalStateException::class) {</b>
+<b class="fc"><i>401</i>&nbsp;      audioPlayerController.seekTo(500)</b>
+<i>402</i>&nbsp;    }
+<i>403</i>&nbsp;
+<b class="fc"><i>404</i>&nbsp;    assertThat(exception).hasMessageThat().contains(&quot;Media Player not in a prepared state&quot;)</b>
+<i>405</i>&nbsp;  }
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;  @Test
+<i>408</i>&nbsp;  fun testController_initializePlayer_invokePrepared_reportsfailure_logsException() {
+<b class="pc"><i>409</i>&nbsp;    audioPlayerController.initializeMediaPlayer()</b>
+<b class="pc"><i>410</i>&nbsp;    audioPlayerController.changeDataSource(TEST_FAIL_URL)</b>
+<i>411</i>&nbsp;
+<b class="pc"><i>412</i>&nbsp;    shadowMediaPlayer.invokePreparedListener()</b>
+<b class="pc"><i>413</i>&nbsp;    val exception = fakeExceptionLogger.getMostRecentException()</b>
+<i>414</i>&nbsp;
+<b class="fc"><i>415</i>&nbsp;    assertThat(exception).isInstanceOf(IOException::class.java)</b>
+<b class="fc"><i>416</i>&nbsp;    assertThat(exception).hasMessageThat().contains(&quot;Invalid URL&quot;)</b>
+<i>417</i>&nbsp;  }
+<i>418</i>&nbsp;
+<i>419</i>&nbsp;  private fun arrangeMediaPlayer() {
+<b class="pc"><i>420</i>&nbsp;    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)</b>
+<b class="pc"><i>421</i>&nbsp;    audioPlayerController.changeDataSource(TEST_URL)</b>
+<b class="pc"><i>422</i>&nbsp;    shadowMediaPlayer.invokePreparedListener()</b>
+<b class="pc"><i>423</i>&nbsp;    testCoroutineDispatchers.runCurrent()</b>
+<i>424</i>&nbsp;  }
+<i>425</i>&nbsp;
+<i>426</i>&nbsp;  private fun addMediaInfo() {
+<b class="pc"><i>427</i>&nbsp;    val dataSource = DataSource.toDataSource(context, Uri.parse(TEST_URL))</b>
+<b class="pc"><i>428</i>&nbsp;    val dataSource2 = DataSource.toDataSource(context, Uri.parse(TEST_URL2))</b>
+<b class="pc"><i>429</i>&nbsp;    val dataSource3 = DataSource.toDataSource(context, Uri.parse(TEST_FAIL_URL))</b>
+<b class="fc"><i>430</i>&nbsp;    val mediaInfo = ShadowMediaPlayer.MediaInfo(</b>
+<b class="fc"><i>431</i>&nbsp;      /* duration= */ 2000,</b>
+<b class="fc"><i>432</i>&nbsp;      /* preparationDelay= */ 0</b>
+<i>433</i>&nbsp;    )
+<b class="fc"><i>434</i>&nbsp;    ShadowMediaPlayer.addMediaInfo(dataSource, mediaInfo)</b>
+<b class="fc"><i>435</i>&nbsp;    ShadowMediaPlayer.addMediaInfo(dataSource2, mediaInfo)</b>
+<b class="fc"><i>436</i>&nbsp;    ShadowMediaPlayer.addException(dataSource3, IOException(&quot;Invalid URL&quot;))</b>
+<i>437</i>&nbsp;  }
+<i>438</i>&nbsp;
+<i>439</i>&nbsp;  // TODO(#89): Move to a common test library.
+<i>440</i>&nbsp;  private fun &lt;T : Throwable&gt; assertThrows(type: KClass&lt;T&gt;, operation: () -&gt; Unit): T {
+<b class="fc"><i>441</i>&nbsp;    try {</b>
+<b class="fc"><i>442</i>&nbsp;      operation()</b>
+<b class="nc"><i>443</i>&nbsp;      fail(&quot;Expected to encounter exception of $type&quot;)</b>
+<b class="fc"><i>444</i>&nbsp;    } catch (t: Throwable) {</b>
+<b class="pc"><i>445</i>&nbsp;      if (type.isInstance(t)) {</b>
+<b class="fc"><i>446</i>&nbsp;        return type.cast(t)</b>
+<i>447</i>&nbsp;      }
+<i>448</i>&nbsp;      // Unexpected exception; throw it.
+<b class="nc"><i>449</i>&nbsp;      throw t</b>
+<i>450</i>&nbsp;    }
+<i>451</i>&nbsp;  }
+<i>452</i>&nbsp;
+<i>453</i>&nbsp;  private fun AsyncResult&lt;PlayProgress&gt;.hasStatus(playStatus: PlayStatus): Boolean {
+<b class="pc"><i>454</i>&nbsp;    return isCompleted() &amp;&amp; getOrThrow().type == playStatus</b>
+<i>455</i>&nbsp;  }
+<i>456</i>&nbsp;
+<i>457</i>&nbsp;  private fun setUpTestApplicationComponent() {
+<b class="fc"><i>458</i>&nbsp;    DaggerAudioPlayerControllerTest_TestApplicationComponent.builder()</b>
+<b class="fc"><i>459</i>&nbsp;      .setApplication(ApplicationProvider.getApplicationContext())</b>
+<b class="fc"><i>460</i>&nbsp;      .build()</b>
+<b class="fc"><i>461</i>&nbsp;      .inject(this)</b>
+<i>462</i>&nbsp;  }
+<i>463</i>&nbsp;
+<i>464</i>&nbsp;  // TODO(#89): Move this to a common test application component.
+<i>465</i>&nbsp;  @Module
+<b class="fc"><i>466</i>&nbsp;  class TestModule {</b>
+<i>467</i>&nbsp;    @Provides
+<i>468</i>&nbsp;    @Singleton
+<i>469</i>&nbsp;    fun provideContext(application: Application): Context {
+<b class="fc"><i>470</i>&nbsp;      return application</b>
+<i>471</i>&nbsp;    }
+<i>472</i>&nbsp;
+<i>473</i>&nbsp;    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
+<i>474</i>&nbsp;    // module in tests to avoid needing to specify these settings for tests.
+<i>475</i>&nbsp;    @EnableConsoleLog
+<i>476</i>&nbsp;    @Provides
+<b class="fc"><i>477</i>&nbsp;    fun provideEnableConsoleLog(): Boolean = true</b>
+<i>478</i>&nbsp;
+<i>479</i>&nbsp;    @EnableFileLog
+<i>480</i>&nbsp;    @Provides
+<b class="fc"><i>481</i>&nbsp;    fun provideEnableFileLog(): Boolean = false</b>
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;    @GlobalLogLevel
+<i>484</i>&nbsp;    @Provides
+<b class="fc"><i>485</i>&nbsp;    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE</b>
+<i>486</i>&nbsp;
+<i>487</i>&nbsp;    @CacheAssetsLocally
+<i>488</i>&nbsp;    @Provides
+<b class="fc"><i>489</i>&nbsp;    fun provideCacheAssetsLocally(): Boolean = false</b>
+<i>490</i>&nbsp;  }
+<i>491</i>&nbsp;
+<i>492</i>&nbsp;  // TODO(#89): Move this to a common test application component.
+<i>493</i>&nbsp;  @Singleton
+<i>494</i>&nbsp;  @Component(
+<i>495</i>&nbsp;    modules = [
+<i>496</i>&nbsp;      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+<i>497</i>&nbsp;      TestDispatcherModule::class
+<i>498</i>&nbsp;    ]
+<i>499</i>&nbsp;  )
+<i>500</i>&nbsp;  interface TestApplicationComponent {
+<i>501</i>&nbsp;    @Component.Builder
+<i>502</i>&nbsp;    interface Builder {
+<i>503</i>&nbsp;      @BindsInstance
+<i>504</i>&nbsp;      fun setApplication(application: Application): Builder
+<i>505</i>&nbsp;      fun build(): TestApplicationComponent
+<i>506</i>&nbsp;    }
+<i>507</i>&nbsp;
+<i>508</i>&nbsp;    fun inject(audioPlayerControllerTest: AudioPlayerControllerTest)
+<i>509</i>&nbsp;  }
+<i>510</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-02-01 23:16</div>
+</div>
+</body>
+</html>

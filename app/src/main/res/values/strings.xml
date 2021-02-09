@@ -9,7 +9,7 @@
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="administrator_controls">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
-  <string name="drawer_close_content_description">>Navigation Menu Close</string>
+  <string name="drawer_close_content_description">Navigation Menu Close</string>
   <string name="welcome_text">Welcome to Oppia!</string>
   <string name="welcome_back_text">Welcome back to Oppia!</string>
   <string name="audio_play_description">Play audio</string>
@@ -63,6 +63,7 @@
   <string name="topic_play_chapter_index">%s.</string>
   <string name="chapter_name">Chapter %s: %s</string>
   <string name="chapter_completed">Chapter %s: %s is completed.</string>
+  <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
@@ -80,7 +81,7 @@
   <string name="recently_played_activity">Recently-Played Stories</string>
   <string name="topic_downloaded">Topic Downloaded</string>
   <string name="downloaded">Downloaded</string>
-  <string name="question_player_title">Train Mode</string>
+  <string name="question_player_title">Practice Mode</string>
   <string name="question_training_session_progress">Question %d of %d</string>
   <string name="question_training_session_progress_finished">Complete</string>
   <string name="question_training_session_finished_header">Finished</string>
@@ -224,6 +225,10 @@
   <string name="add_profile_error_name_only_letters">Names can only have letters. Try another name?</string>
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
+  <string name="add_profile_info_content_description">More information on 3-digit PINs.</string>
+  <string name="required_fields_content_description">Fields marked with an * are required.</string>
+  <string name="current_profile_picture_content_description">Current profile picture.</string>
+  <string name="edit_profile_picture_content_description">Edit profile picture.</string>
   <!-- OnboardingActivity -->
   <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
   <string name="onboarding_slide_0_description">Learn anything you want in an effective and enjoyable way.</string>
@@ -256,6 +261,7 @@
   <string name="admin_settings_cancel">Cancel</string>
   <string name="admin_settings_submit">Submit</string>
   <string name="admin_settings_incorrect">Incorrect Administrator PIN. Please try again.</string>
+  <string name="admin_settings_enter_user_new_pin">%1$s\'s New PIN.</string>
   <!-- ResetPinDialogFragment -->
   <string name="reset_pin_enter">Enter a New Pin</string>
   <!-- MyDownloadsActivity -->
@@ -414,6 +420,6 @@
     description="The default hint text for the ratio interaction if the placeholder text is not available.">
     Enter a ratio in the form x:y.
   </string>
-
-
+  <string name="smallest_text_size_content_description">Smallest text size</string>
+  <string name="largest_text_size_content_description">Largest text size</string>
 </resources>

@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DaggerAnswerClassificationControllerTest_TestApplicationComponent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$FractionInputHasDenominatorEqualToRuleClassifierProviderTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.domain.classify</a> &gt; <span class="el_source">DaggerAnswerClassificationControllerTest_TestApplicationComponent.java</span></div><h1>DaggerAnswerClassificationControllerTest_TestApplicationComponent.java</h1><pre class="source lang-java linenums">package org.oppia.android.domain.classify;
+
+import android.app.Application;
+import com.google.common.collect.ImmutableMap;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import dagger.internal.DoubleCheck;
+import dagger.internal.Preconditions;
+import java.util.Map;
+import javax.annotation.Generated;
+import javax.inject.Provider;
+import org.oppia.android.domain.classify.rules.GenericRuleClassifier;
+import org.oppia.android.domain.classify.rules.InteractionObjectTypeExtractorRepository;
+import org.oppia.android.domain.classify.rules.InteractionObjectTypeExtractorRepository_Factory;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputHasElementXAtPositionYClassifierProvider;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputHasElementXBeforeElementYClassifierProvider;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputIsEqualToOrderingClassifierProvider;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule_ProvideDragDropSortInputHasElementXAtPositionYRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule_ProvideDragDropSortInputHasElementXBeforeElementYRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule_ProvideDragDropSortInputIsEqualToOrderingRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule_ProvideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasDenominatorEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasIntegerPartEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasNoFractionalPartRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasNumeratorEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsEquivalentToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsExactlyEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsGreaterThanRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsLessThanRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputHasDenominatorEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputHasFractionalPartExactlyEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputHasIntegerPartEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputHasNoFractionalPartRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputHasNumeratorEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputIsEquivalentToAndInSimplestFormRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputIsEquivalentToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputIsExactlyEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputIsGreaterThanRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputIsLessThanRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputIsInRegionRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule;
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule_ProvideImageClickInputIsInRegionRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputIsProperSubsetOfRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule_ProvideItemSelectionInputContainsAtLeastOneOfRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule_ProvideItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule_ProvideItemSelectionInputEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule_ProvideItemSelectionInputIsProperSubsetOfRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule;
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule_ProvideMultipleChoiceInputEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsIsEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsIsEquivalentToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule;
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule_ProvideNumberWithUnitsIsEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule_ProvideNumberWithUnitsIsEquivalentToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsGreaterThanOrEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsGreaterThanRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsInclusivelyBetweenRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsLessThanOrEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsLessThanRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsWithinToleranceRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputIsGreaterThanOrEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputIsGreaterThanRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputIsInclusivelyBetweenRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputIsLessThanOrEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputIsLessThanRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputIsWithinToleranceRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputHasNumberOfTermsEqualToClassifierProvider;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputIsEquivalentRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule_ProvideRatioInputEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule_ProvideRatioInputHasNumberOfTermsEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule_ProvideRatioInputIsEquivalentRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputCaseSensitiveEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.textinput.TextInputContainsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.textinput.TextInputEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.textinput.TextInputFuzzyEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule;
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule_ProvideTextInputCaseSensitiveEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule_ProvideTextInputContainsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule_ProvideTextInputEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule_ProvideTextInputFuzzyEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule_ProvideTextInputStartsWithRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputStartsWithRuleClassifierProvider;
+
+@Generated(
+    value = &quot;dagger.internal.codegen.ComponentProcessor&quot;,
+    comments = &quot;https://dagger.dev&quot;
+)
+@SuppressWarnings({
+    &quot;unchecked&quot;,
+    &quot;rawtypes&quot;
+})
+public final class DaggerAnswerClassificationControllerTest_TestApplicationComponent implements AnswerClassificationControllerTest.TestApplicationComponent {
+  private final InteractionsModule interactionsModule;
+
+  private final FractionInputModule fractionInputModule;
+
+  private final ItemSelectionInputModule itemSelectionInputModule;
+
+  private final MultipleChoiceInputModule multipleChoiceInputModule;
+
+  private final NumberWithUnitsRuleModule numberWithUnitsRuleModule;
+
+  private final NumericInputRuleModule numericInputRuleModule;
+
+  private final TextInputRuleModule textInputRuleModule;
+
+  private final DragDropSortInputModule dragDropSortInputModule;
+
+  private final ImageClickInputModule imageClickInputModule;
+
+  private final RatioInputModule ratioInputModule;
+
+  private Provider&lt;InteractionObjectTypeExtractorRepository&gt; interactionObjectTypeExtractorRepositoryProvider;
+
+  private DaggerAnswerClassificationControllerTest_TestApplicationComponent(
+      FractionInputModule fractionInputModuleParam,
+      ItemSelectionInputModule itemSelectionInputModuleParam,
+      MultipleChoiceInputModule multipleChoiceInputModuleParam,
+      NumberWithUnitsRuleModule numberWithUnitsRuleModuleParam,
+      NumericInputRuleModule numericInputRuleModuleParam,
+      TextInputRuleModule textInputRuleModuleParam,
+      DragDropSortInputModule dragDropSortInputModuleParam,
+      InteractionsModule interactionsModuleParam, ImageClickInputModule imageClickInputModuleParam,
+<span class="nc" id="L138">      RatioInputModule ratioInputModuleParam, Application setApplication) {</span>
+<span class="nc" id="L139">    this.interactionsModule = interactionsModuleParam;</span>
+<span class="nc" id="L140">    this.fractionInputModule = fractionInputModuleParam;</span>
+<span class="nc" id="L141">    this.itemSelectionInputModule = itemSelectionInputModuleParam;</span>
+<span class="nc" id="L142">    this.multipleChoiceInputModule = multipleChoiceInputModuleParam;</span>
+<span class="nc" id="L143">    this.numberWithUnitsRuleModule = numberWithUnitsRuleModuleParam;</span>
+<span class="nc" id="L144">    this.numericInputRuleModule = numericInputRuleModuleParam;</span>
+<span class="nc" id="L145">    this.textInputRuleModule = textInputRuleModuleParam;</span>
+<span class="nc" id="L146">    this.dragDropSortInputModule = dragDropSortInputModuleParam;</span>
+<span class="nc" id="L147">    this.imageClickInputModule = imageClickInputModuleParam;</span>
+<span class="nc" id="L148">    this.ratioInputModule = ratioInputModuleParam;</span>
+<span class="nc" id="L149">    initialize(fractionInputModuleParam, itemSelectionInputModuleParam, multipleChoiceInputModuleParam, numberWithUnitsRuleModuleParam, numericInputRuleModuleParam, textInputRuleModuleParam, dragDropSortInputModuleParam, interactionsModuleParam, imageClickInputModuleParam, ratioInputModuleParam, setApplication);</span>
+<span class="nc" id="L150">  }</span>
+
+  public static AnswerClassificationControllerTest.TestApplicationComponent.Builder builder() {
+<span class="nc" id="L153">    return new Builder();</span>
+  }
+
+  private InteractionClassifier getProvideContinueInteractionClassifier() {
+<span class="nc" id="L157">    return InteractionsModule_ProvideContinueInteractionClassifierFactory.provideContinueInteractionClassifier(interactionsModule, ImmutableMap.&lt;String, RuleClassifier&gt;of());}</span>
+
+  private GenericRuleClassifier.Factory getGenericRuleClassifierFactory() {
+<span class="nc" id="L160">    return new GenericRuleClassifier.Factory(interactionObjectTypeExtractorRepositoryProvider.get());}</span>
+
+  private FractionInputHasDenominatorEqualToRuleClassifierProvider getFractionInputHasDenominatorEqualToRuleClassifierProvider(
+      ) {
+<span class="nc" id="L164">    return new FractionInputHasDenominatorEqualToRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideFractionInputHasDenominatorEqualToRuleClassifier$domain_debug() {
+<span class="nc" id="L167">    return FractionInputModule_ProvideFractionInputHasDenominatorEqualToRuleClassifier$domain_debugFactory.provideFractionInputHasDenominatorEqualToRuleClassifier$domain_debug(fractionInputModule, getFractionInputHasDenominatorEqualToRuleClassifierProvider());}</span>
+
+  private FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider getFractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider(
+      ) {
+<span class="nc" id="L171">    return new FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideFractionInputHasFractionalPartExactlyEqualToRuleClassifier$domain_debug(
+      ) {
+<span class="nc" id="L175">    return FractionInputModule_ProvideFractionInputHasFractionalPartExactlyEqualToRuleClassifier$domain_debugFactory.provideFractionInputHasFractionalPartExactlyEqualToRuleClassifier$domain_debug(fractionInputModule, getFractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider());}</span>
+
+  private FractionInputHasIntegerPartEqualToRuleClassifierProvider getFractionInputHasIntegerPartEqualToRuleClassifierProvider(
+      ) {
+<span class="nc" id="L179">    return new FractionInputHasIntegerPartEqualToRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideFractionInputHasIntegerPartEqualToRuleClassifier$domain_debug() {
+<span class="nc" id="L182">    return FractionInputModule_ProvideFractionInputHasIntegerPartEqualToRuleClassifier$domain_debugFactory.provideFractionInputHasIntegerPartEqualToRuleClassifier$domain_debug(fractionInputModule, getFractionInputHasIntegerPartEqualToRuleClassifierProvider());}</span>
+
+  private FractionInputHasNoFractionalPartRuleClassifierProvider getFractionInputHasNoFractionalPartRuleClassifierProvider(
+      ) {
+<span class="nc" id="L186">    return new FractionInputHasNoFractionalPartRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideFractionInputHasNoFractionalPartRuleClassifier$domain_debug() {
+<span class="nc" id="L189">    return FractionInputModule_ProvideFractionInputHasNoFractionalPartRuleClassifier$domain_debugFactory.provideFractionInputHasNoFractionalPartRuleClassifier$domain_debug(fractionInputModule, getFractionInputHasNoFractionalPartRuleClassifierProvider());}</span>
+
+  private FractionInputHasNumeratorEqualToRuleClassifierProvider getFractionInputHasNumeratorEqualToRuleClassifierProvider(
+      ) {
+<span class="nc" id="L193">    return new FractionInputHasNumeratorEqualToRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideFractionInputHasNumeratorEqualToRuleClassifier$domain_debug() {
+<span class="nc" id="L196">    return FractionInputModule_ProvideFractionInputHasNumeratorEqualToRuleClassifier$domain_debugFactory.provideFractionInputHasNumeratorEqualToRuleClassifier$domain_debug(fractionInputModule, getFractionInputHasNumeratorEqualToRuleClassifierProvider());}</span>
+
+  private FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider getFractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider(
+      ) {
+<span class="nc" id="L200">    return new FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideFractionInputIsEquivalentToAndInSimplestFormRuleClassifier$domain_debug(
+      ) {
+<span class="nc" id="L204">    return FractionInputModule_ProvideFractionInputIsEquivalentToAndInSimplestFormRuleClassifier$domain_debugFactory.provideFractionInputIsEquivalentToAndInSimplestFormRuleClassifier$domain_debug(fractionInputModule, getFractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider());}</span>
+
+  private FractionInputIsEquivalentToRuleClassifierProvider getFractionInputIsEquivalentToRuleClassifierProvider(
+      ) {
+<span class="nc" id="L208">    return new FractionInputIsEquivalentToRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideFractionInputIsEquivalentToRuleClassifier$domain_debug() {
+<span class="nc" id="L211">    return FractionInputModule_ProvideFractionInputIsEquivalentToRuleClassifier$domain_debugFactory.provideFractionInputIsEquivalentToRuleClassifier$domain_debug(fractionInputModule, getFractionInputIsEquivalentToRuleClassifierProvider());}</span>
+
+  private FractionInputIsExactlyEqualToRuleClassifierProvider getFractionInputIsExactlyEqualToRuleClassifierProvider(
+      ) {
+<span class="nc" id="L215">    return new FractionInputIsExactlyEqualToRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideFractionInputIsExactlyEqualToRuleClassifier$domain_debug() {
+<span class="nc" id="L218">    return FractionInputModule_ProvideFractionInputIsExactlyEqualToRuleClassifier$domain_debugFactory.provideFractionInputIsExactlyEqualToRuleClassifier$domain_debug(fractionInputModule, getFractionInputIsExactlyEqualToRuleClassifierProvider());}</span>
+
+  private FractionInputIsGreaterThanRuleClassifierProvider getFractionInputIsGreaterThanRuleClassifierProvider(
+      ) {
+<span class="nc" id="L222">    return new FractionInputIsGreaterThanRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideFractionInputIsGreaterThanRuleClassifier$domain_debug() {
+<span class="nc" id="L225">    return FractionInputModule_ProvideFractionInputIsGreaterThanRuleClassifier$domain_debugFactory.provideFractionInputIsGreaterThanRuleClassifier$domain_debug(fractionInputModule, getFractionInputIsGreaterThanRuleClassifierProvider());}</span>
+
+  private FractionInputIsLessThanRuleClassifierProvider getFractionInputIsLessThanRuleClassifierProvider(
+      ) {
+<span class="nc" id="L229">    return new FractionInputIsLessThanRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideFractionInputIsLessThanRuleClassifier$domain_debug() {
+<span class="nc" id="L232">    return FractionInputModule_ProvideFractionInputIsLessThanRuleClassifier$domain_debugFactory.provideFractionInputIsLessThanRuleClassifier$domain_debug(fractionInputModule, getFractionInputIsLessThanRuleClassifierProvider());}</span>
+
+  private Map&lt;String, RuleClassifier&gt; getFractionInputRulesMapOfStringAndRuleClassifier() {
+<span class="nc" id="L235">    return ImmutableMap.&lt;String, RuleClassifier&gt;builderWithExpectedSize(10).put(&quot;HasDenominatorEqualTo&quot;, getProvideFractionInputHasDenominatorEqualToRuleClassifier$domain_debug()).put(&quot;HasFractionalPartExactlyEqualTo&quot;, getProvideFractionInputHasFractionalPartExactlyEqualToRuleClassifier$domain_debug()).put(&quot;HasIntegerPartEqualTo&quot;, getProvideFractionInputHasIntegerPartEqualToRuleClassifier$domain_debug()).put(&quot;HasNoFractionalPart&quot;, getProvideFractionInputHasNoFractionalPartRuleClassifier$domain_debug()).put(&quot;HasNumeratorEqualTo&quot;, getProvideFractionInputHasNumeratorEqualToRuleClassifier$domain_debug()).put(&quot;IsEquivalentToAndInSimplestForm&quot;, getProvideFractionInputIsEquivalentToAndInSimplestFormRuleClassifier$domain_debug()).put(&quot;IsEquivalentTo&quot;, getProvideFractionInputIsEquivalentToRuleClassifier$domain_debug()).put(&quot;IsExactlyEqualTo&quot;, getProvideFractionInputIsExactlyEqualToRuleClassifier$domain_debug()).put(&quot;IsGreaterThan&quot;, getProvideFractionInputIsGreaterThanRuleClassifier$domain_debug()).put(&quot;IsLessThan&quot;, getProvideFractionInputIsLessThanRuleClassifier$domain_debug()).build();}</span>
+
+  private InteractionClassifier getProvideFractionInputInteractionClassifier() {
+<span class="nc" id="L238">    return InteractionsModule_ProvideFractionInputInteractionClassifierFactory.provideFractionInputInteractionClassifier(interactionsModule, getFractionInputRulesMapOfStringAndRuleClassifier());}</span>
+
+  private ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider getItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider(
+      ) {
+<span class="nc" id="L242">    return new ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideItemSelectionInputContainsAtLeastOneOfRuleClassifier$domain_debug(
+      ) {
+<span class="nc" id="L246">    return ItemSelectionInputModule_ProvideItemSelectionInputContainsAtLeastOneOfRuleClassifier$domain_debugFactory.provideItemSelectionInputContainsAtLeastOneOfRuleClassifier$domain_debug(itemSelectionInputModule, getItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider());}</span>
+
+  private ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider getItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider(
+      ) {
+<span class="nc" id="L250">    return new ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifier$domain_debug(
+      ) {
+<span class="nc" id="L254">    return ItemSelectionInputModule_ProvideItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifier$domain_debugFactory.provideItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifier$domain_debug(itemSelectionInputModule, getItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider());}</span>
+
+  private ItemSelectionInputEqualsRuleClassifierProvider getItemSelectionInputEqualsRuleClassifierProvider(
+      ) {
+<span class="nc" id="L258">    return new ItemSelectionInputEqualsRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideItemSelectionInputEqualsRuleClassifier$domain_debug() {
+<span class="nc" id="L261">    return ItemSelectionInputModule_ProvideItemSelectionInputEqualsRuleClassifier$domain_debugFactory.provideItemSelectionInputEqualsRuleClassifier$domain_debug(itemSelectionInputModule, getItemSelectionInputEqualsRuleClassifierProvider());}</span>
+
+  private ItemSelectionInputIsProperSubsetOfRuleClassifierProvider getItemSelectionInputIsProperSubsetOfRuleClassifierProvider(
+      ) {
+<span class="nc" id="L265">    return new ItemSelectionInputIsProperSubsetOfRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideItemSelectionInputIsProperSubsetOfRuleClassifier$domain_debug() {
+<span class="nc" id="L268">    return ItemSelectionInputModule_ProvideItemSelectionInputIsProperSubsetOfRuleClassifier$domain_debugFactory.provideItemSelectionInputIsProperSubsetOfRuleClassifier$domain_debug(itemSelectionInputModule, getItemSelectionInputIsProperSubsetOfRuleClassifierProvider());}</span>
+
+  private Map&lt;String, RuleClassifier&gt; getItemSelectionInputRulesMapOfStringAndRuleClassifier() {
+<span class="nc" id="L271">    return ImmutableMap.&lt;String, RuleClassifier&gt;of(&quot;ContainsAtLeastOneOf&quot;, getProvideItemSelectionInputContainsAtLeastOneOfRuleClassifier$domain_debug(), &quot;DoesNotContainAtLeastOneOf&quot;, getProvideItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifier$domain_debug(), &quot;Equals&quot;, getProvideItemSelectionInputEqualsRuleClassifier$domain_debug(), &quot;IsProperSubsetOf&quot;, getProvideItemSelectionInputIsProperSubsetOfRuleClassifier$domain_debug());}</span>
+
+  private InteractionClassifier getProvideItemSelectionInputInteractionClassifier() {
+<span class="nc" id="L274">    return InteractionsModule_ProvideItemSelectionInputInteractionClassifierFactory.provideItemSelectionInputInteractionClassifier(interactionsModule, getItemSelectionInputRulesMapOfStringAndRuleClassifier());}</span>
+
+  private MultipleChoiceInputEqualsRuleClassifierProvider getMultipleChoiceInputEqualsRuleClassifierProvider(
+      ) {
+<span class="nc" id="L278">    return new MultipleChoiceInputEqualsRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideMultipleChoiceInputEqualsRuleClassifier$domain_debug() {
+<span class="nc" id="L281">    return MultipleChoiceInputModule_ProvideMultipleChoiceInputEqualsRuleClassifier$domain_debugFactory.provideMultipleChoiceInputEqualsRuleClassifier$domain_debug(multipleChoiceInputModule, getMultipleChoiceInputEqualsRuleClassifierProvider());}</span>
+
+  private Map&lt;String, RuleClassifier&gt; getMultipleChoiceInputRulesMapOfStringAndRuleClassifier() {
+<span class="nc" id="L284">    return ImmutableMap.&lt;String, RuleClassifier&gt;of(&quot;Equals&quot;, getProvideMultipleChoiceInputEqualsRuleClassifier$domain_debug());}</span>
+
+  private InteractionClassifier getProvideMultipleChoiceInputInteractionClassifier() {
+<span class="nc" id="L287">    return InteractionsModule_ProvideMultipleChoiceInputInteractionClassifierFactory.provideMultipleChoiceInputInteractionClassifier(interactionsModule, getMultipleChoiceInputRulesMapOfStringAndRuleClassifier());}</span>
+
+  private NumberWithUnitsIsEqualToRuleClassifierProvider getNumberWithUnitsIsEqualToRuleClassifierProvider(
+      ) {
+<span class="nc" id="L291">    return new NumberWithUnitsIsEqualToRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideNumberWithUnitsIsEqualToRuleClassifier$domain_debug() {
+<span class="nc" id="L294">    return NumberWithUnitsRuleModule_ProvideNumberWithUnitsIsEqualToRuleClassifier$domain_debugFactory.provideNumberWithUnitsIsEqualToRuleClassifier$domain_debug(numberWithUnitsRuleModule, getNumberWithUnitsIsEqualToRuleClassifierProvider());}</span>
+
+  private NumberWithUnitsIsEquivalentToRuleClassifierProvider getNumberWithUnitsIsEquivalentToRuleClassifierProvider(
+      ) {
+<span class="nc" id="L298">    return new NumberWithUnitsIsEquivalentToRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideNumberWithUnitsIsEquivalentToRuleClassifier$domain_debug() {
+<span class="nc" id="L301">    return NumberWithUnitsRuleModule_ProvideNumberWithUnitsIsEquivalentToRuleClassifier$domain_debugFactory.provideNumberWithUnitsIsEquivalentToRuleClassifier$domain_debug(numberWithUnitsRuleModule, getNumberWithUnitsIsEquivalentToRuleClassifierProvider());}</span>
+
+  private Map&lt;String, RuleClassifier&gt; getNumberWithUnitsRulesMapOfStringAndRuleClassifier() {
+<span class="nc" id="L304">    return ImmutableMap.&lt;String, RuleClassifier&gt;of(&quot;IsEqualTo&quot;, getProvideNumberWithUnitsIsEqualToRuleClassifier$domain_debug(), &quot;IsEquivalentTo&quot;, getProvideNumberWithUnitsIsEquivalentToRuleClassifier$domain_debug());}</span>
+
+  private InteractionClassifier getProvideNumberWithUnitsInteractionClassifier() {
+<span class="nc" id="L307">    return InteractionsModule_ProvideNumberWithUnitsInteractionClassifierFactory.provideNumberWithUnitsInteractionClassifier(interactionsModule, getNumberWithUnitsRulesMapOfStringAndRuleClassifier());}</span>
+
+  private NumericInputEqualsRuleClassifierProvider getNumericInputEqualsRuleClassifierProvider() {
+<span class="nc" id="L310">    return new NumericInputEqualsRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideNumericInputEqualsRuleClassifier$domain_debug() {
+<span class="nc" id="L313">    return NumericInputRuleModule_ProvideNumericInputEqualsRuleClassifier$domain_debugFactory.provideNumericInputEqualsRuleClassifier$domain_debug(numericInputRuleModule, getNumericInputEqualsRuleClassifierProvider());}</span>
+
+  private NumericInputIsGreaterThanOrEqualToRuleClassifierProvider getNumericInputIsGreaterThanOrEqualToRuleClassifierProvider(
+      ) {
+<span class="nc" id="L317">    return new NumericInputIsGreaterThanOrEqualToRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideNumericInputIsGreaterThanOrEqualToRuleClassifier$domain_debug() {
+<span class="nc" id="L320">    return NumericInputRuleModule_ProvideNumericInputIsGreaterThanOrEqualToRuleClassifier$domain_debugFactory.provideNumericInputIsGreaterThanOrEqualToRuleClassifier$domain_debug(numericInputRuleModule, getNumericInputIsGreaterThanOrEqualToRuleClassifierProvider());}</span>
+
+  private NumericInputIsGreaterThanRuleClassifierProvider getNumericInputIsGreaterThanRuleClassifierProvider(
+      ) {
+<span class="nc" id="L324">    return new NumericInputIsGreaterThanRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideNumericInputIsGreaterThanRuleClassifier$domain_debug() {
+<span class="nc" id="L327">    return NumericInputRuleModule_ProvideNumericInputIsGreaterThanRuleClassifier$domain_debugFactory.provideNumericInputIsGreaterThanRuleClassifier$domain_debug(numericInputRuleModule, getNumericInputIsGreaterThanRuleClassifierProvider());}</span>
+
+  private NumericInputIsInclusivelyBetweenRuleClassifierProvider getNumericInputIsInclusivelyBetweenRuleClassifierProvider(
+      ) {
+<span class="nc" id="L331">    return new NumericInputIsInclusivelyBetweenRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideNumericInputIsInclusivelyBetweenRuleClassifier$domain_debug() {
+<span class="nc" id="L334">    return NumericInputRuleModule_ProvideNumericInputIsInclusivelyBetweenRuleClassifier$domain_debugFactory.provideNumericInputIsInclusivelyBetweenRuleClassifier$domain_debug(numericInputRuleModule, getNumericInputIsInclusivelyBetweenRuleClassifierProvider());}</span>
+
+  private NumericInputIsLessThanOrEqualToRuleClassifierProvider getNumericInputIsLessThanOrEqualToRuleClassifierProvider(
+      ) {
+<span class="nc" id="L338">    return new NumericInputIsLessThanOrEqualToRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideNumericInputIsLessThanOrEqualToRuleClassifier$domain_debug() {
+<span class="nc" id="L341">    return NumericInputRuleModule_ProvideNumericInputIsLessThanOrEqualToRuleClassifier$domain_debugFactory.provideNumericInputIsLessThanOrEqualToRuleClassifier$domain_debug(numericInputRuleModule, getNumericInputIsLessThanOrEqualToRuleClassifierProvider());}</span>
+
+  private NumericInputIsLessThanRuleClassifierProvider getNumericInputIsLessThanRuleClassifierProvider(
+      ) {
+<span class="nc" id="L345">    return new NumericInputIsLessThanRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideNumericInputIsLessThanRuleClassifier$domain_debug() {
+<span class="nc" id="L348">    return NumericInputRuleModule_ProvideNumericInputIsLessThanRuleClassifier$domain_debugFactory.provideNumericInputIsLessThanRuleClassifier$domain_debug(numericInputRuleModule, getNumericInputIsLessThanRuleClassifierProvider());}</span>
+
+  private NumericInputIsWithinToleranceRuleClassifierProvider getNumericInputIsWithinToleranceRuleClassifierProvider(
+      ) {
+<span class="nc" id="L352">    return new NumericInputIsWithinToleranceRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideNumericInputIsWithinToleranceRuleClassifier$domain_debug() {
+<span class="nc" id="L355">    return NumericInputRuleModule_ProvideNumericInputIsWithinToleranceRuleClassifier$domain_debugFactory.provideNumericInputIsWithinToleranceRuleClassifier$domain_debug(numericInputRuleModule, getNumericInputIsWithinToleranceRuleClassifierProvider());}</span>
+
+  private Map&lt;String, RuleClassifier&gt; getNumericInputRulesMapOfStringAndRuleClassifier() {
+<span class="nc" id="L358">    return ImmutableMap.&lt;String, RuleClassifier&gt;builderWithExpectedSize(7).put(&quot;Equals&quot;, getProvideNumericInputEqualsRuleClassifier$domain_debug()).put(&quot;IsGreaterThanOrEqualTo&quot;, getProvideNumericInputIsGreaterThanOrEqualToRuleClassifier$domain_debug()).put(&quot;IsGreaterThan&quot;, getProvideNumericInputIsGreaterThanRuleClassifier$domain_debug()).put(&quot;IsInclusivelyBetween&quot;, getProvideNumericInputIsInclusivelyBetweenRuleClassifier$domain_debug()).put(&quot;IsLessThanOrEqualTo&quot;, getProvideNumericInputIsLessThanOrEqualToRuleClassifier$domain_debug()).put(&quot;IsLessThan&quot;, getProvideNumericInputIsLessThanRuleClassifier$domain_debug()).put(&quot;IsWithinTolerance&quot;, getProvideNumericInputIsWithinToleranceRuleClassifier$domain_debug()).build();}</span>
+
+  private InteractionClassifier getProvideNumericInputInteractionClassifier() {
+<span class="nc" id="L361">    return InteractionsModule_ProvideNumericInputInteractionClassifierFactory.provideNumericInputInteractionClassifier(interactionsModule, getNumericInputRulesMapOfStringAndRuleClassifier());}</span>
+
+  private TextInputCaseSensitiveEqualsRuleClassifierProvider getTextInputCaseSensitiveEqualsRuleClassifierProvider(
+      ) {
+<span class="nc" id="L365">    return new TextInputCaseSensitiveEqualsRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideTextInputCaseSensitiveEqualsRuleClassifier$domain_debug() {
+<span class="nc" id="L368">    return TextInputRuleModule_ProvideTextInputCaseSensitiveEqualsRuleClassifier$domain_debugFactory.provideTextInputCaseSensitiveEqualsRuleClassifier$domain_debug(textInputRuleModule, getTextInputCaseSensitiveEqualsRuleClassifierProvider());}</span>
+
+  private TextInputContainsRuleClassifierProvider getTextInputContainsRuleClassifierProvider() {
+<span class="nc" id="L371">    return new TextInputContainsRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideTextInputContainsRuleClassifier$domain_debug() {
+<span class="nc" id="L374">    return TextInputRuleModule_ProvideTextInputContainsRuleClassifier$domain_debugFactory.provideTextInputContainsRuleClassifier$domain_debug(textInputRuleModule, getTextInputContainsRuleClassifierProvider());}</span>
+
+  private TextInputEqualsRuleClassifierProvider getTextInputEqualsRuleClassifierProvider() {
+<span class="nc" id="L377">    return new TextInputEqualsRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideTextInputEqualsRuleClassifier$domain_debug() {
+<span class="nc" id="L380">    return TextInputRuleModule_ProvideTextInputEqualsRuleClassifier$domain_debugFactory.provideTextInputEqualsRuleClassifier$domain_debug(textInputRuleModule, getTextInputEqualsRuleClassifierProvider());}</span>
+
+  private TextInputFuzzyEqualsRuleClassifierProvider getTextInputFuzzyEqualsRuleClassifierProvider(
+      ) {
+<span class="nc" id="L384">    return new TextInputFuzzyEqualsRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideTextInputFuzzyEqualsRuleClassifier$domain_debug() {
+<span class="nc" id="L387">    return TextInputRuleModule_ProvideTextInputFuzzyEqualsRuleClassifier$domain_debugFactory.provideTextInputFuzzyEqualsRuleClassifier$domain_debug(textInputRuleModule, getTextInputFuzzyEqualsRuleClassifierProvider());}</span>
+
+  private TextInputStartsWithRuleClassifierProvider getTextInputStartsWithRuleClassifierProvider() {
+<span class="nc" id="L390">    return new TextInputStartsWithRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideTextInputStartsWithRuleClassifier$domain_debug() {
+<span class="nc" id="L393">    return TextInputRuleModule_ProvideTextInputStartsWithRuleClassifier$domain_debugFactory.provideTextInputStartsWithRuleClassifier$domain_debug(textInputRuleModule, getTextInputStartsWithRuleClassifierProvider());}</span>
+
+  private Map&lt;String, RuleClassifier&gt; getTextInputRulesMapOfStringAndRuleClassifier() {
+<span class="nc" id="L396">    return ImmutableMap.&lt;String, RuleClassifier&gt;of(&quot;CaseSensitiveEquals&quot;, getProvideTextInputCaseSensitiveEqualsRuleClassifier$domain_debug(), &quot;Contains&quot;, getProvideTextInputContainsRuleClassifier$domain_debug(), &quot;Equals&quot;, getProvideTextInputEqualsRuleClassifier$domain_debug(), &quot;FuzzyEquals&quot;, getProvideTextInputFuzzyEqualsRuleClassifier$domain_debug(), &quot;StartsWith&quot;, getProvideTextInputStartsWithRuleClassifier$domain_debug());}</span>
+
+  private InteractionClassifier getProvideTextInputInteractionClassifier() {
+<span class="nc" id="L399">    return InteractionsModule_ProvideTextInputInteractionClassifierFactory.provideTextInputInteractionClassifier(interactionsModule, getTextInputRulesMapOfStringAndRuleClassifier());}</span>
+
+  private DragDropSortInputHasElementXAtPositionYClassifierProvider getDragDropSortInputHasElementXAtPositionYClassifierProvider(
+      ) {
+<span class="nc" id="L403">    return new DragDropSortInputHasElementXAtPositionYClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideDragDropSortInputHasElementXAtPositionYRuleClassifier$domain_debug(
+      ) {
+<span class="nc" id="L407">    return DragDropSortInputModule_ProvideDragDropSortInputHasElementXAtPositionYRuleClassifier$domain_debugFactory.provideDragDropSortInputHasElementXAtPositionYRuleClassifier$domain_debug(dragDropSortInputModule, getDragDropSortInputHasElementXAtPositionYClassifierProvider());}</span>
+
+  private DragDropSortInputIsEqualToOrderingClassifierProvider getDragDropSortInputIsEqualToOrderingClassifierProvider(
+      ) {
+<span class="nc" id="L411">    return new DragDropSortInputIsEqualToOrderingClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideDragDropSortInputIsEqualToOrderingRuleClassifier$domain_debug() {
+<span class="nc" id="L414">    return DragDropSortInputModule_ProvideDragDropSortInputIsEqualToOrderingRuleClassifier$domain_debugFactory.provideDragDropSortInputIsEqualToOrderingRuleClassifier$domain_debug(dragDropSortInputModule, getDragDropSortInputIsEqualToOrderingClassifierProvider());}</span>
+
+  private DragDropSortInputHasElementXBeforeElementYClassifierProvider getDragDropSortInputHasElementXBeforeElementYClassifierProvider(
+      ) {
+<span class="nc" id="L418">    return new DragDropSortInputHasElementXBeforeElementYClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideDragDropSortInputHasElementXBeforeElementYRuleClassifier$domain_debug(
+      ) {
+<span class="nc" id="L422">    return DragDropSortInputModule_ProvideDragDropSortInputHasElementXBeforeElementYRuleClassifier$domain_debugFactory.provideDragDropSortInputHasElementXBeforeElementYRuleClassifier$domain_debug(dragDropSortInputModule, getDragDropSortInputHasElementXBeforeElementYClassifierProvider());}</span>
+
+  private DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider getDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider(
+      ) {
+<span class="nc" id="L426">    return new DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier$domain_debug(
+      ) {
+<span class="nc" id="L430">    return DragDropSortInputModule_ProvideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier$domain_debugFactory.provideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier$domain_debug(dragDropSortInputModule, getDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider());}</span>
+
+  private Map&lt;String, RuleClassifier&gt; getDragDropSortInputRulesMapOfStringAndRuleClassifier() {
+<span class="nc" id="L433">    return ImmutableMap.&lt;String, RuleClassifier&gt;of(&quot;HasElementXAtPositionY&quot;, getProvideDragDropSortInputHasElementXAtPositionYRuleClassifier$domain_debug(), &quot;IsEqualToOrdering&quot;, getProvideDragDropSortInputIsEqualToOrderingRuleClassifier$domain_debug(), &quot;HasElementXBeforeElementY&quot;, getProvideDragDropSortInputHasElementXBeforeElementYRuleClassifier$domain_debug(), &quot;IsEqualToOrderingWithOneItemAtIncorrectPosition&quot;, getProvideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier$domain_debug());}</span>
+
+  private InteractionClassifier getProvideDragAndDropSortInputInteractionClassifier() {
+<span class="nc" id="L436">    return InteractionsModule_ProvideDragAndDropSortInputInteractionClassifierFactory.provideDragAndDropSortInputInteractionClassifier(interactionsModule, getDragDropSortInputRulesMapOfStringAndRuleClassifier());}</span>
+
+  private ImageClickInputIsInRegionRuleClassifierProvider getImageClickInputIsInRegionRuleClassifierProvider(
+      ) {
+<span class="nc" id="L440">    return new ImageClickInputIsInRegionRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideImageClickInputIsInRegionRuleClassifier$domain_debug() {
+<span class="nc" id="L443">    return ImageClickInputModule_ProvideImageClickInputIsInRegionRuleClassifier$domain_debugFactory.provideImageClickInputIsInRegionRuleClassifier$domain_debug(imageClickInputModule, getImageClickInputIsInRegionRuleClassifierProvider());}</span>
+
+  private Map&lt;String, RuleClassifier&gt; getImageClickInputRulesMapOfStringAndRuleClassifier() {
+<span class="nc" id="L446">    return ImmutableMap.&lt;String, RuleClassifier&gt;of(&quot;IsInRegion&quot;, getProvideImageClickInputIsInRegionRuleClassifier$domain_debug());}</span>
+
+  private InteractionClassifier getProvideImageClickInputInteractionClassifier() {
+<span class="nc" id="L449">    return InteractionsModule_ProvideImageClickInputInteractionClassifierFactory.provideImageClickInputInteractionClassifier(interactionsModule, getImageClickInputRulesMapOfStringAndRuleClassifier());}</span>
+
+  private RatioInputEqualsRuleClassifierProvider getRatioInputEqualsRuleClassifierProvider() {
+<span class="nc" id="L452">    return new RatioInputEqualsRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideRatioInputEqualsRuleClassifier$domain_debug() {
+<span class="nc" id="L455">    return RatioInputModule_ProvideRatioInputEqualsRuleClassifier$domain_debugFactory.provideRatioInputEqualsRuleClassifier$domain_debug(ratioInputModule, getRatioInputEqualsRuleClassifierProvider());}</span>
+
+  private RatioInputIsEquivalentRuleClassifierProvider getRatioInputIsEquivalentRuleClassifierProvider(
+      ) {
+<span class="nc" id="L459">    return new RatioInputIsEquivalentRuleClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideRatioInputIsEquivalentRuleClassifier$domain_debug() {
+<span class="nc" id="L462">    return RatioInputModule_ProvideRatioInputIsEquivalentRuleClassifier$domain_debugFactory.provideRatioInputIsEquivalentRuleClassifier$domain_debug(ratioInputModule, getRatioInputIsEquivalentRuleClassifierProvider());}</span>
+
+  private RatioInputHasNumberOfTermsEqualToClassifierProvider getRatioInputHasNumberOfTermsEqualToClassifierProvider(
+      ) {
+<span class="nc" id="L466">    return new RatioInputHasNumberOfTermsEqualToClassifierProvider(getGenericRuleClassifierFactory());}</span>
+
+  private RuleClassifier getProvideRatioInputHasNumberOfTermsEqualToRuleClassifier$domain_debug() {
+<span class="nc" id="L469">    return RatioInputModule_ProvideRatioInputHasNumberOfTermsEqualToRuleClassifier$domain_debugFactory.provideRatioInputHasNumberOfTermsEqualToRuleClassifier$domain_debug(ratioInputModule, getRatioInputHasNumberOfTermsEqualToClassifierProvider());}</span>
+
+  private Map&lt;String, RuleClassifier&gt; getRatioExpressionInputRulesMapOfStringAndRuleClassifier() {
+<span class="nc" id="L472">    return ImmutableMap.&lt;String, RuleClassifier&gt;of(&quot;Equals&quot;, getProvideRatioInputEqualsRuleClassifier$domain_debug(), &quot;IsEquivalent&quot;, getProvideRatioInputIsEquivalentRuleClassifier$domain_debug(), &quot;HasNumberOfTermsEqualTo&quot;, getProvideRatioInputHasNumberOfTermsEqualToRuleClassifier$domain_debug());}</span>
+
+  private InteractionClassifier getProvideRatioExpressionInputInteractionClassifier() {
+<span class="nc" id="L475">    return InteractionsModule_ProvideRatioExpressionInputInteractionClassifierFactory.provideRatioExpressionInputInteractionClassifier(interactionsModule, getRatioExpressionInputRulesMapOfStringAndRuleClassifier());}</span>
+
+  private Map&lt;String, InteractionClassifier&gt; getMapOfStringAndInteractionClassifier() {
+<span class="nc" id="L478">    return ImmutableMap.&lt;String, InteractionClassifier&gt;builderWithExpectedSize(10).put(&quot;Continue&quot;, getProvideContinueInteractionClassifier()).put(&quot;FractionInput&quot;, getProvideFractionInputInteractionClassifier()).put(&quot;ItemSelectionInput&quot;, getProvideItemSelectionInputInteractionClassifier()).put(&quot;MultipleChoiceInput&quot;, getProvideMultipleChoiceInputInteractionClassifier()).put(&quot;NumberWithUnits&quot;, getProvideNumberWithUnitsInteractionClassifier()).put(&quot;NumericInput&quot;, getProvideNumericInputInteractionClassifier()).put(&quot;TextInput&quot;, getProvideTextInputInteractionClassifier()).put(&quot;DragAndDropSortInput&quot;, getProvideDragAndDropSortInputInteractionClassifier()).put(&quot;ImageClickInput&quot;, getProvideImageClickInputInteractionClassifier()).put(&quot;RatioExpressionInput&quot;, getProvideRatioExpressionInputInteractionClassifier()).build();}</span>
+
+  private AnswerClassificationController getAnswerClassificationController() {
+<span class="nc" id="L481">    return new AnswerClassificationController(getMapOfStringAndInteractionClassifier());}</span>
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  private void initialize(final FractionInputModule fractionInputModuleParam,
+      final ItemSelectionInputModule itemSelectionInputModuleParam,
+      final MultipleChoiceInputModule multipleChoiceInputModuleParam,
+      final NumberWithUnitsRuleModule numberWithUnitsRuleModuleParam,
+      final NumericInputRuleModule numericInputRuleModuleParam,
+      final TextInputRuleModule textInputRuleModuleParam,
+      final DragDropSortInputModule dragDropSortInputModuleParam,
+      final InteractionsModule interactionsModuleParam,
+      final ImageClickInputModule imageClickInputModuleParam,
+      final RatioInputModule ratioInputModuleParam, final Application setApplication) {
+<span class="nc" id="L494">    this.interactionObjectTypeExtractorRepositoryProvider = DoubleCheck.provider(InteractionObjectTypeExtractorRepository_Factory.create());</span>
+<span class="nc" id="L495">  }</span>
+
+  @Override
+  public void inject(AnswerClassificationControllerTest answerClassificationControllerTest) {
+<span class="nc" id="L499">    injectAnswerClassificationControllerTest(answerClassificationControllerTest);}</span>
+
+  @CanIgnoreReturnValue
+  private AnswerClassificationControllerTest injectAnswerClassificationControllerTest(
+      AnswerClassificationControllerTest instance) {
+<span class="nc" id="L504">    AnswerClassificationControllerTest_MembersInjector.injectAnswerClassificationController(instance, getAnswerClassificationController());</span>
+<span class="nc" id="L505">    return instance;</span>
+  }
+
+  private static final class Builder implements AnswerClassificationControllerTest.TestApplicationComponent.Builder {
+    private Application setApplication;
+
+    @Override
+    public Builder setApplication(Application application) {
+<span class="nc" id="L513">      this.setApplication = Preconditions.checkNotNull(application);</span>
+<span class="nc" id="L514">      return this;</span>
+    }
+
+    @Override
+    public AnswerClassificationControllerTest.TestApplicationComponent build() {
+<span class="nc" id="L519">      Preconditions.checkBuilderRequirement(setApplication, Application.class);</span>
+<span class="nc" id="L520">      return new DaggerAnswerClassificationControllerTest_TestApplicationComponent(new FractionInputModule(), new ItemSelectionInputModule(), new MultipleChoiceInputModule(), new NumberWithUnitsRuleModule(), new NumericInputRuleModule(), new TextInputRuleModule(), new DragDropSortInputModule(), new InteractionsModule(), new ImageClickInputModule(), new RatioInputModule(), setApplication);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

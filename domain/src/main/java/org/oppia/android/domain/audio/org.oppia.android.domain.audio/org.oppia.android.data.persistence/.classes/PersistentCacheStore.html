@@ -1,0 +1,433 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PersistentCacheStore</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.oppia.android.data.persistence</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PersistentCacheStore (org.oppia.android.data.persistence)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PersistentCacheStore</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 54)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PersistentCacheStore$Factory</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 69)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package org.oppia.android.data.persistence
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.content.Context
+<i>4</i>&nbsp;import androidx.annotation.GuardedBy
+<i>5</i>&nbsp;import com.google.protobuf.MessageLite
+<i>6</i>&nbsp;import kotlinx.coroutines.Deferred
+<i>7</i>&nbsp;import org.oppia.android.app.model.ProfileId
+<i>8</i>&nbsp;import org.oppia.android.util.data.AsyncDataSubscriptionManager
+<i>9</i>&nbsp;import org.oppia.android.util.data.AsyncResult
+<i>10</i>&nbsp;import org.oppia.android.util.data.DataProvider
+<i>11</i>&nbsp;import org.oppia.android.util.data.InMemoryBlockingCache
+<i>12</i>&nbsp;import org.oppia.android.util.profile.DirectoryManagementUtil
+<i>13</i>&nbsp;import java.io.File
+<i>14</i>&nbsp;import java.io.FileInputStream
+<i>15</i>&nbsp;import java.io.FileOutputStream
+<i>16</i>&nbsp;import java.io.IOException
+<i>17</i>&nbsp;import java.util.concurrent.locks.ReentrantLock
+<i>18</i>&nbsp;import javax.inject.Inject
+<i>19</i>&nbsp;import javax.inject.Singleton
+<i>20</i>&nbsp;import kotlin.concurrent.withLock
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;/**
+<i>23</i>&nbsp; * An on-disk persistent cache for proto messages that ensures reads and writes happen in a
+<i>24</i>&nbsp; * well-defined order. Note that if this cache is used like a [DataProvider], there is a race
+<i>25</i>&nbsp; * condition between the initial store&#39;s data being retrieved and any early writes to the store
+<i>26</i>&nbsp; * (writes generally win). If this is not ideal, callers should use [primeCacheAsync] to
+<i>27</i>&nbsp; * synchronously kick-off a read update to the store that is guaranteed to complete before any
+<i>28</i>&nbsp; * writes. This will be reflected in the first time the store&#39;s state is delivered to a subscriber
+<i>29</i>&nbsp; * to a LiveData version of this data provider.
+<i>30</i>&nbsp; *
+<i>31</i>&nbsp; * Note that this is a fast-response data provider, meaning it will provide a pending [AsyncResult]
+<i>32</i>&nbsp; * to subscribers immediately until the actual store is retrieved from disk.
+<i>33</i>&nbsp; */
+<b class="nc"><i>34</i>&nbsp;class PersistentCacheStore&lt;T : MessageLite&gt; private constructor(</b>
+<i>35</i>&nbsp;  context: Context,
+<i>36</i>&nbsp;  cacheFactory: InMemoryBlockingCache.Factory,
+<i>37</i>&nbsp;  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+<i>38</i>&nbsp;  cacheName: String,
+<i>39</i>&nbsp;  private val initialValue: T,
+<b class="nc"><i>40</i>&nbsp;  directory: File = context.filesDir</b>
+<b class="nc"><i>41</i>&nbsp;) : DataProvider&lt;T&gt;(context) {</b>
+<b class="nc"><i>42</i>&nbsp;  private val cacheFileName = &quot;$cacheName.cache&quot;</b>
+<b class="nc"><i>43</i>&nbsp;  private val providerId = PersistentCacheStoreId(cacheFileName)</b>
+<b class="nc"><i>44</i>&nbsp;  private val failureLock = ReentrantLock()</b>
+<i>45</i>&nbsp;
+<b class="nc"><i>46</i>&nbsp;  private val cacheFile = File(directory, cacheFileName)</b>
+<i>47</i>&nbsp;  @GuardedBy(&quot;failureLock&quot;)
+<i>48</i>&nbsp;  private var deferredLoadCacheFailure: Throwable? = null
+<i>49</i>&nbsp;  private val cache =
+<b class="nc"><i>50</i>&nbsp;    cacheFactory.create(CachePayload(state = CacheState.UNLOADED, value = initialValue))</b>
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;  init {
+<b class="nc"><i>53</i>&nbsp;    cache.observeChanges {</b>
+<i>54</i>&nbsp;      asyncDataSubscriptionManager.notifyChange(providerId)
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;  }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;  override fun getId(): Any {
+<b class="nc"><i>59</i>&nbsp;    return providerId</b>
+<i>60</i>&nbsp;  }
+<i>61</i>&nbsp;
+<b class="nc"><i>62</i>&nbsp;  override suspend fun retrieveData(): AsyncResult&lt;T&gt; {</b>
+<b class="nc"><i>63</i>&nbsp;    cache.readIfPresentAsync().await().let { cachePayload -&gt;</b>
+<i>64</i>&nbsp;      // First, determine whether the current cache has been attempted to be retrieved from disk.
+<b class="nc"><i>65</i>&nbsp;      if (cachePayload.state == CacheState.UNLOADED) {</b>
+<b class="nc"><i>66</i>&nbsp;        deferLoadFile()</b>
+<b class="nc"><i>67</i>&nbsp;        return AsyncResult.pending()</b>
+<i>68</i>&nbsp;      }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;      // Second, check if a previous deferred read failed. The store stays in a failed state until
+<i>71</i>&nbsp;      // the next storeData() call to avoid hitting the same failure again. Eventually, the class
+<i>72</i>&nbsp;      // could be updated with some sort of retry or recovery mechanism if failures show up in real
+<i>73</i>&nbsp;      // use cases.
+<b class="nc"><i>74</i>&nbsp;      failureLock.withLock {</b>
+<b class="nc"><i>75</i>&nbsp;        deferredLoadCacheFailure?.let {</b>
+<i>76</i>&nbsp;          // A previous read failed.
+<b class="nc"><i>77</i>&nbsp;          return AsyncResult.failed(it)</b>
+<b class="nc"><i>78</i>&nbsp;        }</b>
+<i>79</i>&nbsp;      }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;      // Finally, check if there&#39;s an in-memory cached value that can be loaded now.
+<i>82</i>&nbsp;      // Otherwise, there should be a guaranteed in-memory value to use, instead.
+<b class="nc"><i>83</i>&nbsp;      return AsyncResult.success(cachePayload.value)</b>
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;  }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;  /**
+<i>88</i>&nbsp;   * Kicks off a read operation to update the in-memory cache. This operation blocks against calls
+<i>89</i>&nbsp;   * to [storeDataAsync] and deferred calls to [retrieveData].
+<i>90</i>&nbsp;   *
+<i>91</i>&nbsp;   * @param forceUpdate indicates whether to force a reset of the in-memory cache. Note that this
+<i>92</i>&nbsp;   *     only forces a load; if the load fails then the store will remain in its same state. If this
+<i>93</i>&nbsp;   *     value is false (the default), it will only perform file I/O if the cache is not already
+<i>94</i>&nbsp;   *     loaded into memory.
+<i>95</i>&nbsp;   * @returns a [Deferred] that completes upon the completion of priming the cache, or failure to do
+<i>96</i>&nbsp;   *     so with the failed exception. Note that the failure reason will not be propagated to a
+<i>97</i>&nbsp;   *     LiveData-converted version of this data provider, so it must be handled at the callsite for
+<i>98</i>&nbsp;   *     this method.
+<i>99</i>&nbsp;   */
+<b class="nc"><i>100</i>&nbsp;  fun primeCacheAsync(forceUpdate: Boolean = false): Deferred&lt;Any&gt; {</b>
+<b class="nc"><i>101</i>&nbsp;    return cache.updateIfPresentAsync { cachePayload -&gt;</b>
+<i>102</i>&nbsp;      if (forceUpdate || cachePayload.state == CacheState.UNLOADED) {
+<i>103</i>&nbsp;        // Store the retrieved on-disk cache, if it&#39;s present (otherwise set up state such that
+<i>104</i>&nbsp;        // retrieveData() does not attempt to load the file from disk again since the attempt was
+<i>105</i>&nbsp;        // made here).
+<i>106</i>&nbsp;        loadFileCache(cachePayload)
+<i>107</i>&nbsp;      } else {
+<i>108</i>&nbsp;        // Otherwise, keep the cache the same.
+<i>109</i>&nbsp;        cachePayload
+<i>110</i>&nbsp;      }
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;  }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;  /**
+<i>115</i>&nbsp;   * Callers should use this read function if they they don&#39;t care or specifically do not want to
+<i>116</i>&nbsp;   * observe changes to the underlying store. If the file is not in memory, it will loaded from disk
+<i>117</i>&nbsp;   * and observers will be notified.
+<i>118</i>&nbsp;   *
+<i>119</i>&nbsp;   * @return a deferred value that contains the value of the cached payload.
+<i>120</i>&nbsp;   */
+<i>121</i>&nbsp;  fun readDataAsync(): Deferred&lt;T&gt; {
+<b class="nc"><i>122</i>&nbsp;    val deferred = cache.updateWithCustomChannelIfPresentAsync { cachePayload -&gt;</b>
+<i>123</i>&nbsp;      if (cachePayload.state == CacheState.UNLOADED) {
+<i>124</i>&nbsp;        val filePayload = loadFileCache(cachePayload)
+<i>125</i>&nbsp;        Pair(filePayload, filePayload.value)
+<i>126</i>&nbsp;      } else {
+<i>127</i>&nbsp;        Pair(cachePayload, cachePayload.value)
+<i>128</i>&nbsp;      }
+<i>129</i>&nbsp;    }
+<b class="nc"><i>130</i>&nbsp;    deferred.invokeOnCompletion {</b>
+<i>131</i>&nbsp;      failureLock.withLock {
+<i>132</i>&nbsp;        deferredLoadCacheFailure = it ?: deferredLoadCacheFailure
+<i>133</i>&nbsp;      }
+<i>134</i>&nbsp;    }
+<b class="nc"><i>135</i>&nbsp;    return deferred</b>
+<i>136</i>&nbsp;  }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;  /**
+<i>139</i>&nbsp;   * Calls the specified value with the current on-disk contents and saves the result of the
+<i>140</i>&nbsp;   * function to disk. Note that the function used here should be non-blocking, thread-safe, and
+<i>141</i>&nbsp;   * should have no side effects.
+<i>142</i>&nbsp;   *
+<i>143</i>&nbsp;   * @param updateInMemoryCache indicates whether this change to the on-disk store should also
+<i>144</i>&nbsp;   *     update the in-memory store, and propagate that change to all subscribers to this data
+<i>145</i>&nbsp;   *     provider. This may be ideal if callers want to control &quot;snapshots&quot; of the store that
+<i>146</i>&nbsp;   *     subscribers have access to, however it&#39;s recommended to keep all store calls consistent in
+<i>147</i>&nbsp;   *     whether they update the in-memory cache to avoid complex potential in-memory/on-disk sync
+<i>148</i>&nbsp;   *     issues.
+<i>149</i>&nbsp;   */
+<b class="nc"><i>150</i>&nbsp;  fun storeDataAsync(updateInMemoryCache: Boolean = true, update: (T) -&gt; T): Deferred&lt;Any&gt; {</b>
+<b class="nc"><i>151</i>&nbsp;    return cache.updateIfPresentAsync { cachedPayload -&gt;</b>
+<i>152</i>&nbsp;      val updatedPayload = storeFileCache(cachedPayload, update)
+<i>153</i>&nbsp;      if (updateInMemoryCache) updatedPayload else cachedPayload
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;  }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;  /** See [storeDataAsync]. Stores data and allows for a custom deferred result. */
+<i>158</i>&nbsp;  fun &lt;V&gt; storeDataWithCustomChannelAsync(
+<b class="nc"><i>159</i>&nbsp;    updateInMemoryCache: Boolean = true,</b>
+<i>160</i>&nbsp;    update: (T) -&gt; Pair&lt;T, V&gt;
+<i>161</i>&nbsp;  ): Deferred&lt;V&gt; {
+<b class="nc"><i>162</i>&nbsp;    return cache.updateWithCustomChannelIfPresentAsync { cachedPayload -&gt;</b>
+<i>163</i>&nbsp;      val (updatedPayload, customResult) = storeFileCacheWithCustomChannel(cachedPayload, update)
+<i>164</i>&nbsp;      if (updateInMemoryCache) Pair(updatedPayload, customResult) else Pair(
+<i>165</i>&nbsp;        cachedPayload,
+<i>166</i>&nbsp;        customResult
+<i>167</i>&nbsp;      )
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;  }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;  /**
+<i>172</i>&nbsp;   * Returns a [Deferred] indicating when the cache was cleared and its on-disk file, removed. This
+<i>173</i>&nbsp;   * does notify subscribers.
+<i>174</i>&nbsp;   */
+<i>175</i>&nbsp;  fun clearCacheAsync(): Deferred&lt;Any&gt; {
+<b class="nc"><i>176</i>&nbsp;    return cache.updateIfPresentAsync {</b>
+<i>177</i>&nbsp;      if (cacheFile.exists()) {
+<i>178</i>&nbsp;        cacheFile.delete()
+<i>179</i>&nbsp;      }
+<i>180</i>&nbsp;      failureLock.withLock {
+<i>181</i>&nbsp;        deferredLoadCacheFailure = null
+<i>182</i>&nbsp;      }
+<i>183</i>&nbsp;      // Always clear the in-memory cache and reset it to the initial value (the cache itself should
+<i>184</i>&nbsp;      // never be fully deleted since the rest of the store assumes a value is always present in
+<i>185</i>&nbsp;      // it).
+<i>186</i>&nbsp;      CachePayload(state = CacheState.UNLOADED, value = initialValue)
+<i>187</i>&nbsp;    }
+<i>188</i>&nbsp;  }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;  private fun deferLoadFile() {
+<b class="nc"><i>191</i>&nbsp;    cache.updateIfPresentAsync { cachePayload -&gt;</b>
+<i>192</i>&nbsp;      loadFileCache(cachePayload)
+<b class="nc"><i>193</i>&nbsp;    }.invokeOnCompletion {</b>
+<i>194</i>&nbsp;      failureLock.withLock {
+<i>195</i>&nbsp;        // Other failures should be captured for reporting.
+<i>196</i>&nbsp;        deferredLoadCacheFailure = it ?: deferredLoadCacheFailure
+<i>197</i>&nbsp;      }
+<i>198</i>&nbsp;    }
+<i>199</i>&nbsp;  }
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;  /**
+<i>202</i>&nbsp;   * Loads the file store from disk, and returns the most up-to-date cache payload. This should only
+<i>203</i>&nbsp;   * be called from the cache&#39;s update thread.
+<i>204</i>&nbsp;   */
+<i>205</i>&nbsp;  @Suppress(&quot;UNCHECKED_CAST&quot;) // Cast is ensured since root proto is initialValue with type T.
+<i>206</i>&nbsp;  private fun loadFileCache(currentPayload: CachePayload&lt;T&gt;): CachePayload&lt;T&gt; {
+<b class="nc"><i>207</i>&nbsp;    if (!cacheFile.exists()) {</b>
+<i>208</i>&nbsp;      // The store is not yet persisted on disk.
+<b class="nc"><i>209</i>&nbsp;      return currentPayload.moveToState(CacheState.IN_MEMORY_ONLY)</b>
+<i>210</i>&nbsp;    }
+<i>211</i>&nbsp;
+<b class="nc"><i>212</i>&nbsp;    val cacheBuilder = currentPayload.value.toBuilder()</b>
+<b class="nc"><i>213</i>&nbsp;    return try {</b>
+<b class="nc"><i>214</i>&nbsp;      CachePayload(</b>
+<b class="nc"><i>215</i>&nbsp;        state = CacheState.IN_MEMORY_AND_ON_DISK,</b>
+<b class="nc"><i>216</i>&nbsp;        value = FileInputStream(cacheFile).use { cacheBuilder.mergeFrom(it) }.build() as T</b>
+<i>217</i>&nbsp;      )
+<b class="nc"><i>218</i>&nbsp;    } catch (e: IOException) {</b>
+<b class="nc"><i>219</i>&nbsp;      failureLock.withLock {</b>
+<b class="nc"><i>220</i>&nbsp;        deferredLoadCacheFailure = e</b>
+<b class="nc"><i>221</i>&nbsp;      }</b>
+<i>222</i>&nbsp;      // Update the cache to have an in-memory copy of the current payload since on-disk retrieval
+<i>223</i>&nbsp;      // failed.
+<b class="nc"><i>224</i>&nbsp;      CachePayload(</b>
+<b class="nc"><i>225</i>&nbsp;        state = CacheState.IN_MEMORY_ONLY,</b>
+<b class="nc"><i>226</i>&nbsp;        value = currentPayload.value</b>
+<i>227</i>&nbsp;      )
+<i>228</i>&nbsp;    }
+<i>229</i>&nbsp;  }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;  /**
+<i>232</i>&nbsp;   * Stores the file store to disk, and returns the persisted payload. This should only be called
+<i>233</i>&nbsp;   * from the cache&#39;s update thread.
+<i>234</i>&nbsp;   */
+<i>235</i>&nbsp;  private fun storeFileCache(currentPayload: CachePayload&lt;T&gt;, update: (T) -&gt; T): CachePayload&lt;T&gt; {
+<b class="nc"><i>236</i>&nbsp;    val updatedCacheValue = update(currentPayload.value)</b>
+<b class="nc"><i>237</i>&nbsp;    FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }</b>
+<b class="nc"><i>238</i>&nbsp;    return CachePayload(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue)</b>
+<i>239</i>&nbsp;  }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;  /** See [storeFileCache]. Returns payload and custom result. */
+<i>242</i>&nbsp;  private fun &lt;V&gt; storeFileCacheWithCustomChannel(
+<i>243</i>&nbsp;    currentPayload: CachePayload&lt;T&gt;,
+<i>244</i>&nbsp;    update: (T) -&gt; Pair&lt;T, V&gt;
+<i>245</i>&nbsp;  ): Pair&lt;CachePayload&lt;T&gt;, V&gt; {
+<b class="nc"><i>246</i>&nbsp;    val (updatedCacheValue, customResult) = update(currentPayload.value)</b>
+<b class="nc"><i>247</i>&nbsp;    FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }</b>
+<b class="nc"><i>248</i>&nbsp;    return Pair(</b>
+<b class="nc"><i>249</i>&nbsp;      CachePayload(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue),</b>
+<b class="nc"><i>250</i>&nbsp;      customResult</b>
+<i>251</i>&nbsp;    )
+<i>252</i>&nbsp;  }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;  private data class PersistentCacheStoreId(private val id: String)
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;  /** Represents different states the cache store can be in. */
+<i>257</i>&nbsp;  private enum class CacheState {
+<i>258</i>&nbsp;    /** Indicates that the cache has not yet been attempted to be retrieved from disk. */
+<i>259</i>&nbsp;    UNLOADED,
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;    /** Indicates that the cache exists only in memory and not on disk. */
+<i>262</i>&nbsp;    IN_MEMORY_ONLY,
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;    /** Indicates that the cache exists both in memory and on disk. */
+<i>265</i>&nbsp;    IN_MEMORY_AND_ON_DISK
+<i>266</i>&nbsp;  }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;  private data class CachePayload&lt;T&gt;(val state: CacheState, val value: T) {
+<i>269</i>&nbsp;    /** Returns a copy of this payload with the new, specified [CacheState]. */
+<i>270</i>&nbsp;    fun moveToState(newState: CacheState): CachePayload&lt;T&gt; {
+<i>271</i>&nbsp;      return CachePayload(state = newState, value = value)
+<i>272</i>&nbsp;    }
+<i>273</i>&nbsp;  }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;  // TODO(#59): Use @ApplicationContext instead of Context once package dependencies allow for
+<i>276</i>&nbsp;  //  cross-module circular ependencies. Currently, the data module cannot depend on the app module.
+<i>277</i>&nbsp;  /**
+<i>278</i>&nbsp;   * An injectable factory for [PersistentCacheStore]s. The stores themselves should be retrievable
+<i>279</i>&nbsp;   * from central controllers since they can&#39;t be placed directly in the Dagger graph.
+<i>280</i>&nbsp;   */
+<i>281</i>&nbsp;  @Singleton
+<b class="nc"><i>282</i>&nbsp;  class Factory @Inject constructor(</b>
+<i>283</i>&nbsp;    private val context: Context,
+<i>284</i>&nbsp;    private val cacheFactory: InMemoryBlockingCache.Factory,
+<i>285</i>&nbsp;    private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+<i>286</i>&nbsp;    private val directoryManagementUtil: DirectoryManagementUtil
+<i>287</i>&nbsp;  ) {
+<i>288</i>&nbsp;    /**
+<i>289</i>&nbsp;     * Returns a new [PersistentCacheStore] with the specified cache name and initial value under
+<i>290</i>&nbsp;     * the shared directory context.filesDir.
+<i>291</i>&nbsp;     *
+<i>292</i>&nbsp;     * Use this method when data is shared by all profiles.
+<i>293</i>&nbsp;     */
+<i>294</i>&nbsp;    fun &lt;T : MessageLite&gt; create(cacheName: String, initialValue: T): PersistentCacheStore&lt;T&gt; {
+<b class="nc"><i>295</i>&nbsp;      return PersistentCacheStore(</b>
+<b class="nc"><i>296</i>&nbsp;        context,</b>
+<b class="nc"><i>297</i>&nbsp;        cacheFactory,</b>
+<b class="nc"><i>298</i>&nbsp;        asyncDataSubscriptionManager,</b>
+<b class="nc"><i>299</i>&nbsp;        cacheName,</b>
+<b class="nc"><i>300</i>&nbsp;        initialValue</b>
+<i>301</i>&nbsp;      )
+<i>302</i>&nbsp;    }
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;    /**
+<i>305</i>&nbsp;     * Returns a new [PersistentCacheStore] with the specified cache name and initial value under
+<i>306</i>&nbsp;     * the directory specified by profileId. Use this method when data is unique to each profile.
+<i>307</i>&nbsp;     */
+<i>308</i>&nbsp;    fun &lt;T : MessageLite&gt; createPerProfile(
+<i>309</i>&nbsp;      cacheName: String,
+<i>310</i>&nbsp;      initialValue: T,
+<i>311</i>&nbsp;      profileId: ProfileId
+<i>312</i>&nbsp;    ): PersistentCacheStore&lt;T&gt; {
+<b class="nc"><i>313</i>&nbsp;      val profileDirectory = directoryManagementUtil.getOrCreateDir(profileId.internalId.toString())</b>
+<b class="nc"><i>314</i>&nbsp;      return PersistentCacheStore(</b>
+<b class="nc"><i>315</i>&nbsp;        context,</b>
+<b class="nc"><i>316</i>&nbsp;        cacheFactory,</b>
+<b class="nc"><i>317</i>&nbsp;        asyncDataSubscriptionManager,</b>
+<b class="nc"><i>318</i>&nbsp;        cacheName,</b>
+<b class="nc"><i>319</i>&nbsp;        initialValue,</b>
+<b class="nc"><i>320</i>&nbsp;        profileDirectory</b>
+<i>321</i>&nbsp;      )
+<i>322</i>&nbsp;    }
+<i>323</i>&nbsp;  }
+<i>324</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-02-01 18:39</div>
+</div>
+</body>
+</html>

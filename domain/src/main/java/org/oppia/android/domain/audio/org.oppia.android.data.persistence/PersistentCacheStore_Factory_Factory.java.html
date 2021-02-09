@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PersistentCacheStore_Factory_Factory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$CellularAudioDialogControllerTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.data.persistence</a> &gt; <span class="el_source">PersistentCacheStore_Factory_Factory.java</span></div><h1>PersistentCacheStore_Factory_Factory.java</h1><pre class="source lang-java linenums">package org.oppia.android.data.persistence;
+
+import android.content.Context;
+import dagger.internal.Factory;
+import javax.annotation.Generated;
+import javax.inject.Provider;
+import org.oppia.android.util.data.AsyncDataSubscriptionManager;
+import org.oppia.android.util.data.InMemoryBlockingCache;
+import org.oppia.android.util.profile.DirectoryManagementUtil;
+
+@Generated(
+    value = &quot;dagger.internal.codegen.ComponentProcessor&quot;,
+    comments = &quot;https://dagger.dev&quot;
+)
+@SuppressWarnings({
+    &quot;unchecked&quot;,
+    &quot;rawtypes&quot;
+})
+public final class PersistentCacheStore_Factory_Factory implements Factory&lt;PersistentCacheStore.Factory&gt; {
+  private final Provider&lt;Context&gt; contextProvider;
+
+  private final Provider&lt;InMemoryBlockingCache.Factory&gt; cacheFactoryProvider;
+
+  private final Provider&lt;AsyncDataSubscriptionManager&gt; asyncDataSubscriptionManagerProvider;
+
+  private final Provider&lt;DirectoryManagementUtil&gt; directoryManagementUtilProvider;
+
+  public PersistentCacheStore_Factory_Factory(Provider&lt;Context&gt; contextProvider,
+      Provider&lt;InMemoryBlockingCache.Factory&gt; cacheFactoryProvider,
+      Provider&lt;AsyncDataSubscriptionManager&gt; asyncDataSubscriptionManagerProvider,
+<span class="nc" id="L31">      Provider&lt;DirectoryManagementUtil&gt; directoryManagementUtilProvider) {</span>
+<span class="nc" id="L32">    this.contextProvider = contextProvider;</span>
+<span class="nc" id="L33">    this.cacheFactoryProvider = cacheFactoryProvider;</span>
+<span class="nc" id="L34">    this.asyncDataSubscriptionManagerProvider = asyncDataSubscriptionManagerProvider;</span>
+<span class="nc" id="L35">    this.directoryManagementUtilProvider = directoryManagementUtilProvider;</span>
+<span class="nc" id="L36">  }</span>
+
+  @Override
+  public PersistentCacheStore.Factory get() {
+<span class="nc" id="L40">    return new PersistentCacheStore.Factory(contextProvider.get(), cacheFactoryProvider.get(), asyncDataSubscriptionManagerProvider.get(), directoryManagementUtilProvider.get());</span>
+  }
+
+  public static PersistentCacheStore_Factory_Factory create(Provider&lt;Context&gt; contextProvider,
+      Provider&lt;InMemoryBlockingCache.Factory&gt; cacheFactoryProvider,
+      Provider&lt;AsyncDataSubscriptionManager&gt; asyncDataSubscriptionManagerProvider,
+      Provider&lt;DirectoryManagementUtil&gt; directoryManagementUtilProvider) {
+<span class="nc" id="L47">    return new PersistentCacheStore_Factory_Factory(contextProvider, cacheFactoryProvider, asyncDataSubscriptionManagerProvider, directoryManagementUtilProvider);</span>
+  }
+
+  public static PersistentCacheStore.Factory newInstance(Context context,
+      InMemoryBlockingCache.Factory cacheFactory,
+      AsyncDataSubscriptionManager asyncDataSubscriptionManager,
+      DirectoryManagementUtil directoryManagementUtil) {
+<span class="nc" id="L54">    return new PersistentCacheStore.Factory(context, cacheFactory, asyncDataSubscriptionManager, directoryManagementUtil);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

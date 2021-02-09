@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TopicControllerTest_MembersInjector.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$FractionInputHasDenominatorEqualToRuleClassifierProviderTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.domain.topic</a> &gt; <span class="el_source">TopicControllerTest_MembersInjector.java</span></div><h1>TopicControllerTest_MembersInjector.java</h1><pre class="source lang-java linenums">package org.oppia.android.domain.topic;
+
+import dagger.MembersInjector;
+import javax.annotation.Generated;
+import javax.inject.Provider;
+import org.oppia.android.testing.FakeExceptionLogger;
+import org.oppia.android.testing.TestCoroutineDispatchers;
+import org.oppia.android.util.data.DataProviders;
+
+@Generated(
+    value = &quot;dagger.internal.codegen.ComponentProcessor&quot;,
+    comments = &quot;https://dagger.dev&quot;
+)
+@SuppressWarnings({
+    &quot;unchecked&quot;,
+    &quot;rawtypes&quot;
+})
+public final class TopicControllerTest_MembersInjector implements MembersInjector&lt;TopicControllerTest&gt; {
+  private final Provider&lt;StoryProgressController&gt; storyProgressControllerProvider;
+
+  private final Provider&lt;TopicController&gt; topicControllerProvider;
+
+  private final Provider&lt;FakeExceptionLogger&gt; fakeExceptionLoggerProvider;
+
+  private final Provider&lt;DataProviders&gt; dataProvidersProvider;
+
+  private final Provider&lt;TestCoroutineDispatchers&gt; testCoroutineDispatchersProvider;
+
+  public TopicControllerTest_MembersInjector(
+      Provider&lt;StoryProgressController&gt; storyProgressControllerProvider,
+      Provider&lt;TopicController&gt; topicControllerProvider,
+      Provider&lt;FakeExceptionLogger&gt; fakeExceptionLoggerProvider,
+      Provider&lt;DataProviders&gt; dataProvidersProvider,
+<span class="nc" id="L34">      Provider&lt;TestCoroutineDispatchers&gt; testCoroutineDispatchersProvider) {</span>
+<span class="nc" id="L35">    this.storyProgressControllerProvider = storyProgressControllerProvider;</span>
+<span class="nc" id="L36">    this.topicControllerProvider = topicControllerProvider;</span>
+<span class="nc" id="L37">    this.fakeExceptionLoggerProvider = fakeExceptionLoggerProvider;</span>
+<span class="nc" id="L38">    this.dataProvidersProvider = dataProvidersProvider;</span>
+<span class="nc" id="L39">    this.testCoroutineDispatchersProvider = testCoroutineDispatchersProvider;</span>
+<span class="nc" id="L40">  }</span>
+
+  public static MembersInjector&lt;TopicControllerTest&gt; create(
+      Provider&lt;StoryProgressController&gt; storyProgressControllerProvider,
+      Provider&lt;TopicController&gt; topicControllerProvider,
+      Provider&lt;FakeExceptionLogger&gt; fakeExceptionLoggerProvider,
+      Provider&lt;DataProviders&gt; dataProvidersProvider,
+      Provider&lt;TestCoroutineDispatchers&gt; testCoroutineDispatchersProvider) {
+<span class="nc" id="L48">    return new TopicControllerTest_MembersInjector(storyProgressControllerProvider, topicControllerProvider, fakeExceptionLoggerProvider, dataProvidersProvider, testCoroutineDispatchersProvider);}</span>
+
+  @Override
+  public void injectMembers(TopicControllerTest instance) {
+<span class="nc" id="L52">    injectStoryProgressController(instance, storyProgressControllerProvider.get());</span>
+<span class="nc" id="L53">    injectTopicController(instance, topicControllerProvider.get());</span>
+<span class="nc" id="L54">    injectFakeExceptionLogger(instance, fakeExceptionLoggerProvider.get());</span>
+<span class="nc" id="L55">    injectDataProviders(instance, dataProvidersProvider.get());</span>
+<span class="nc" id="L56">    injectTestCoroutineDispatchers(instance, testCoroutineDispatchersProvider.get());</span>
+<span class="nc" id="L57">  }</span>
+
+  public static void injectStoryProgressController(TopicControllerTest instance,
+      StoryProgressController storyProgressController) {
+<span class="nc" id="L61">    instance.storyProgressController = storyProgressController;</span>
+<span class="nc" id="L62">  }</span>
+
+  public static void injectTopicController(TopicControllerTest instance,
+      TopicController topicController) {
+<span class="nc" id="L66">    instance.topicController = topicController;</span>
+<span class="nc" id="L67">  }</span>
+
+  public static void injectFakeExceptionLogger(TopicControllerTest instance,
+      FakeExceptionLogger fakeExceptionLogger) {
+<span class="nc" id="L71">    instance.fakeExceptionLogger = fakeExceptionLogger;</span>
+<span class="nc" id="L72">  }</span>
+
+  public static void injectDataProviders(TopicControllerTest instance,
+      DataProviders dataProviders) {
+<span class="nc" id="L76">    instance.dataProviders = dataProviders;</span>
+<span class="nc" id="L77">  }</span>
+
+  public static void injectTestCoroutineDispatchers(TopicControllerTest instance,
+      TestCoroutineDispatchers testCoroutineDispatchers) {
+<span class="nc" id="L81">    instance.testCoroutineDispatchers = testCoroutineDispatchers;</span>
+<span class="nc" id="L82">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

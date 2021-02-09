@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AppStartupStateControllerTest_MembersInjector.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$FractionInputHasDenominatorEqualToRuleClassifierProviderTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.domain.onboarding</a> &gt; <span class="el_source">AppStartupStateControllerTest_MembersInjector.java</span></div><h1>AppStartupStateControllerTest_MembersInjector.java</h1><pre class="source lang-java linenums">package org.oppia.android.domain.onboarding;
+
+import android.content.Context;
+import dagger.MembersInjector;
+import javax.annotation.Generated;
+import javax.inject.Provider;
+import org.oppia.android.data.persistence.PersistentCacheStore;
+import org.oppia.android.testing.TestCoroutineDispatchers;
+
+@Generated(
+    value = &quot;dagger.internal.codegen.ComponentProcessor&quot;,
+    comments = &quot;https://dagger.dev&quot;
+)
+@SuppressWarnings({
+    &quot;unchecked&quot;,
+    &quot;rawtypes&quot;
+})
+public final class AppStartupStateControllerTest_MembersInjector implements MembersInjector&lt;AppStartupStateControllerTest&gt; {
+  private final Provider&lt;Context&gt; contextProvider;
+
+  private final Provider&lt;AppStartupStateController&gt; appStartupStateControllerProvider;
+
+  private final Provider&lt;PersistentCacheStore.Factory&gt; cacheFactoryProvider;
+
+  private final Provider&lt;TestCoroutineDispatchers&gt; testCoroutineDispatchersProvider;
+
+  public AppStartupStateControllerTest_MembersInjector(Provider&lt;Context&gt; contextProvider,
+      Provider&lt;AppStartupStateController&gt; appStartupStateControllerProvider,
+      Provider&lt;PersistentCacheStore.Factory&gt; cacheFactoryProvider,
+<span class="nc" id="L30">      Provider&lt;TestCoroutineDispatchers&gt; testCoroutineDispatchersProvider) {</span>
+<span class="nc" id="L31">    this.contextProvider = contextProvider;</span>
+<span class="nc" id="L32">    this.appStartupStateControllerProvider = appStartupStateControllerProvider;</span>
+<span class="nc" id="L33">    this.cacheFactoryProvider = cacheFactoryProvider;</span>
+<span class="nc" id="L34">    this.testCoroutineDispatchersProvider = testCoroutineDispatchersProvider;</span>
+<span class="nc" id="L35">  }</span>
+
+  public static MembersInjector&lt;AppStartupStateControllerTest&gt; create(
+      Provider&lt;Context&gt; contextProvider,
+      Provider&lt;AppStartupStateController&gt; appStartupStateControllerProvider,
+      Provider&lt;PersistentCacheStore.Factory&gt; cacheFactoryProvider,
+      Provider&lt;TestCoroutineDispatchers&gt; testCoroutineDispatchersProvider) {
+<span class="nc" id="L42">    return new AppStartupStateControllerTest_MembersInjector(contextProvider, appStartupStateControllerProvider, cacheFactoryProvider, testCoroutineDispatchersProvider);}</span>
+
+  @Override
+  public void injectMembers(AppStartupStateControllerTest instance) {
+<span class="nc" id="L46">    injectContext(instance, contextProvider.get());</span>
+<span class="nc" id="L47">    injectAppStartupStateController(instance, appStartupStateControllerProvider.get());</span>
+<span class="nc" id="L48">    injectCacheFactory(instance, cacheFactoryProvider.get());</span>
+<span class="nc" id="L49">    injectTestCoroutineDispatchers(instance, testCoroutineDispatchersProvider.get());</span>
+<span class="nc" id="L50">  }</span>
+
+  public static void injectContext(AppStartupStateControllerTest instance, Context context) {
+<span class="nc" id="L53">    instance.context = context;</span>
+<span class="nc" id="L54">  }</span>
+
+  public static void injectAppStartupStateController(AppStartupStateControllerTest instance,
+      AppStartupStateController appStartupStateController) {
+<span class="nc" id="L58">    instance.appStartupStateController = appStartupStateController;</span>
+<span class="nc" id="L59">  }</span>
+
+  public static void injectCacheFactory(AppStartupStateControllerTest instance,
+      PersistentCacheStore.Factory cacheFactory) {
+<span class="nc" id="L63">    instance.cacheFactory = cacheFactory;</span>
+<span class="nc" id="L64">  }</span>
+
+  public static void injectTestCoroutineDispatchers(AppStartupStateControllerTest instance,
+      TestCoroutineDispatchers testCoroutineDispatchers) {
+<span class="nc" id="L68">    instance.testCoroutineDispatchers = testCoroutineDispatchers;</span>
+<span class="nc" id="L69">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

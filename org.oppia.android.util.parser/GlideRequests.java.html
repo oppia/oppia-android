@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlideRequests.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$fractioninput_FractionInputHasDenominatorEqualToRuleClassifierProviderTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.util.parser</a> &gt; <span class="el_source">GlideRequests.java</span></div><h1>GlideRequests.java</h1><pre class="source lang-java linenums">package org.oppia.android.util.parser;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import androidx.annotation.CheckResult;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RawRes;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.manager.Lifecycle;
+import com.bumptech.glide.manager.RequestManagerTreeNode;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import java.io.File;
+import java.net.URL;
+
+/**
+ * Includes all additions from methods in {@link com.bumptech.glide.annotation.GlideExtension}s
+ * annotated with {@link com.bumptech.glide.annotation.GlideType}
+ *
+ * &lt;p&gt;Generated code, do not modify
+ */
+@SuppressWarnings(&quot;deprecation&quot;)
+public class GlideRequests extends RequestManager {
+  public GlideRequests(@NonNull Glide glide, @NonNull Lifecycle lifecycle,
+      @NonNull RequestManagerTreeNode treeNode, @NonNull Context context) {
+<span class="nc" id="L32">    super(glide, lifecycle, treeNode, context);</span>
+<span class="nc" id="L33">  }</span>
+
+  @Override
+  @CheckResult
+  @NonNull
+  public &lt;ResourceType&gt; GlideRequest&lt;ResourceType&gt; as(@NonNull Class&lt;ResourceType&gt; resourceClass) {
+<span class="nc" id="L39">    return new GlideRequest&lt;&gt;(glide, this, resourceClass, context);</span>
+  }
+
+  @Override
+  @NonNull
+  public synchronized GlideRequests applyDefaultRequestOptions(@NonNull RequestOptions options) {
+<span class="nc" id="L45">    return (GlideRequests) super.applyDefaultRequestOptions(options);</span>
+  }
+
+  @Override
+  @NonNull
+  public synchronized GlideRequests setDefaultRequestOptions(@NonNull RequestOptions options) {
+<span class="nc" id="L51">    return (GlideRequests) super.setDefaultRequestOptions(options);</span>
+  }
+
+  @Override
+  @NonNull
+  public GlideRequests addDefaultRequestListener(RequestListener&lt;Object&gt; listener) {
+<span class="nc" id="L57">    return (GlideRequests) super.addDefaultRequestListener(listener);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;Bitmap&gt; asBitmap() {
+<span class="nc" id="L64">    return (GlideRequest&lt;Bitmap&gt;) super.asBitmap();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;GifDrawable&gt; asGif() {
+<span class="nc" id="L71">    return (GlideRequest&lt;GifDrawable&gt;) super.asGif();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;Drawable&gt; asDrawable() {
+<span class="nc" id="L78">    return (GlideRequest&lt;Drawable&gt;) super.asDrawable();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;Drawable&gt; load(@Nullable Bitmap bitmap) {
+<span class="nc" id="L85">    return (GlideRequest&lt;Drawable&gt;) super.load(bitmap);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;Drawable&gt; load(@Nullable Drawable drawable) {
+<span class="nc" id="L92">    return (GlideRequest&lt;Drawable&gt;) super.load(drawable);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;Drawable&gt; load(@Nullable String string) {
+<span class="nc" id="L99">    return (GlideRequest&lt;Drawable&gt;) super.load(string);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;Drawable&gt; load(@Nullable Uri uri) {
+<span class="nc" id="L106">    return (GlideRequest&lt;Drawable&gt;) super.load(uri);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;Drawable&gt; load(@Nullable File file) {
+<span class="nc" id="L113">    return (GlideRequest&lt;Drawable&gt;) super.load(file);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;Drawable&gt; load(@RawRes @DrawableRes @Nullable Integer id) {
+<span class="nc" id="L120">    return (GlideRequest&lt;Drawable&gt;) super.load(id);</span>
+  }
+
+  @Override
+  @Deprecated
+  @CheckResult
+  public GlideRequest&lt;Drawable&gt; load(@Nullable URL url) {
+<span class="nc" id="L127">    return (GlideRequest&lt;Drawable&gt;) super.load(url);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;Drawable&gt; load(@Nullable byte[] bytes) {
+<span class="nc" id="L134">    return (GlideRequest&lt;Drawable&gt;) super.load(bytes);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;Drawable&gt; load(@Nullable Object o) {
+<span class="nc" id="L141">    return (GlideRequest&lt;Drawable&gt;) super.load(o);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;File&gt; downloadOnly() {
+<span class="nc" id="L148">    return (GlideRequest&lt;File&gt;) super.downloadOnly();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;File&gt; download(@Nullable Object o) {
+<span class="nc" id="L155">    return (GlideRequest&lt;File&gt;) super.download(o);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideRequest&lt;File&gt; asFile() {
+<span class="nc" id="L162">    return (GlideRequest&lt;File&gt;) super.asFile();</span>
+  }
+
+  @Override
+  protected void setRequestOptions(@NonNull RequestOptions toSet) {
+<span class="nc bnc" id="L167" title="All 2 branches missed.">    if (toSet instanceof org.oppia.android.util.parser.GlideOptions) {</span>
+<span class="nc" id="L168">      super.setRequestOptions(toSet);</span>
+    } else {
+<span class="nc" id="L170">      super.setRequestOptions(new org.oppia.android.util.parser.GlideOptions().apply(toSet));</span>
+    }
+<span class="nc" id="L172">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

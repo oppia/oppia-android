@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DaggerQuestionAssessmentProgressControllerTest_TestApplicationComponent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$FractionInputHasDenominatorEqualToRuleClassifierProviderTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.domain.question</a> &gt; <span class="el_source">DaggerQuestionAssessmentProgressControllerTest_TestApplicationComponent.java</span></div><h1>DaggerQuestionAssessmentProgressControllerTest_TestApplicationComponent.java</h1><pre class="source lang-java linenums">package org.oppia.android.domain.question;
+
+import android.app.Application;
+import android.content.Context;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import dagger.internal.DoubleCheck;
+import dagger.internal.InstanceFactory;
+import dagger.internal.MapFactory;
+import dagger.internal.Preconditions;
+import dagger.internal.SingleCheck;
+import java.util.Map;
+import javax.annotation.Generated;
+import javax.inject.Provider;
+import kotlinx.coroutines.CoroutineDispatcher;
+import org.oppia.android.data.persistence.PersistentCacheStore;
+import org.oppia.android.data.persistence.PersistentCacheStore_Factory_Factory;
+import org.oppia.android.domain.classify.AnswerClassificationController;
+import org.oppia.android.domain.classify.AnswerClassificationController_Factory;
+import org.oppia.android.domain.classify.InteractionClassifier;
+import org.oppia.android.domain.classify.InteractionsModule;
+import org.oppia.android.domain.classify.InteractionsModule_ProvideContinueInteractionClassifierFactory;
+import org.oppia.android.domain.classify.InteractionsModule_ProvideDragAndDropSortInputInteractionClassifierFactory;
+import org.oppia.android.domain.classify.InteractionsModule_ProvideFractionInputInteractionClassifierFactory;
+import org.oppia.android.domain.classify.InteractionsModule_ProvideImageClickInputInteractionClassifierFactory;
+import org.oppia.android.domain.classify.InteractionsModule_ProvideItemSelectionInputInteractionClassifierFactory;
+import org.oppia.android.domain.classify.InteractionsModule_ProvideMultipleChoiceInputInteractionClassifierFactory;
+import org.oppia.android.domain.classify.InteractionsModule_ProvideNumberWithUnitsInteractionClassifierFactory;
+import org.oppia.android.domain.classify.InteractionsModule_ProvideNumericInputInteractionClassifierFactory;
+import org.oppia.android.domain.classify.InteractionsModule_ProvideRatioExpressionInputInteractionClassifierFactory;
+import org.oppia.android.domain.classify.InteractionsModule_ProvideTextInputInteractionClassifierFactory;
+import org.oppia.android.domain.classify.RuleClassifier;
+import org.oppia.android.domain.classify.rules.GenericRuleClassifier;
+import org.oppia.android.domain.classify.rules.GenericRuleClassifier_Factory_Factory;
+import org.oppia.android.domain.classify.rules.InteractionObjectTypeExtractorRepository;
+import org.oppia.android.domain.classify.rules.InteractionObjectTypeExtractorRepository_Factory;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputHasElementXAtPositionYClassifierProvider;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputHasElementXAtPositionYClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputHasElementXBeforeElementYClassifierProvider;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputHasElementXBeforeElementYClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputIsEqualToOrderingClassifierProvider;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputIsEqualToOrderingClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule_ProvideDragDropSortInputHasElementXAtPositionYRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule_ProvideDragDropSortInputHasElementXBeforeElementYRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule_ProvideDragDropSortInputIsEqualToOrderingRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule_ProvideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasDenominatorEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasDenominatorEqualToRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasIntegerPartEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasIntegerPartEqualToRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasNoFractionalPartRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasNoFractionalPartRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasNumeratorEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputHasNumeratorEqualToRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsEquivalentToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsEquivalentToRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsExactlyEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsExactlyEqualToRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsGreaterThanRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsGreaterThanRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsLessThanRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputIsLessThanRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputHasDenominatorEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputHasFractionalPartExactlyEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputHasIntegerPartEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputHasNoFractionalPartRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputHasNumeratorEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputIsEquivalentToAndInSimplestFormRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputIsEquivalentToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputIsExactlyEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputIsGreaterThanRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule_ProvideFractionInputIsLessThanRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputIsInRegionRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputIsInRegionRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule;
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule_ProvideImageClickInputIsInRegionRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputEqualsRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputIsProperSubsetOfRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputIsProperSubsetOfRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule_ProvideItemSelectionInputContainsAtLeastOneOfRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule_ProvideItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule_ProvideItemSelectionInputEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule_ProvideItemSelectionInputIsProperSubsetOfRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputEqualsRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule;
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule_ProvideMultipleChoiceInputEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsIsEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsIsEqualToRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsIsEquivalentToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsIsEquivalentToRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule;
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule_ProvideNumberWithUnitsIsEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule_ProvideNumberWithUnitsIsEquivalentToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputEqualsRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsGreaterThanOrEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsGreaterThanOrEqualToRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsGreaterThanRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsGreaterThanRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsInclusivelyBetweenRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsInclusivelyBetweenRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsLessThanOrEqualToRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsLessThanOrEqualToRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsLessThanRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsLessThanRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsWithinToleranceRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputIsWithinToleranceRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputIsGreaterThanOrEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputIsGreaterThanRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputIsInclusivelyBetweenRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputIsLessThanOrEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputIsLessThanRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule_ProvideNumericInputIsWithinToleranceRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputEqualsRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputHasNumberOfTermsEqualToClassifierProvider;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputHasNumberOfTermsEqualToClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputIsEquivalentRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputIsEquivalentRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule_ProvideRatioInputEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule_ProvideRatioInputHasNumberOfTermsEqualToRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule_ProvideRatioInputIsEquivalentRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputCaseSensitiveEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.textinput.TextInputCaseSensitiveEqualsRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputContainsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.textinput.TextInputContainsRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.textinput.TextInputEqualsRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputFuzzyEqualsRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.textinput.TextInputFuzzyEqualsRuleClassifierProvider_Factory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule;
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule_ProvideTextInputCaseSensitiveEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule_ProvideTextInputContainsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule_ProvideTextInputEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule_ProvideTextInputFuzzyEqualsRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule_ProvideTextInputStartsWithRuleClassifier$domain_debugFactory;
+import org.oppia.android.domain.classify.rules.textinput.TextInputStartsWithRuleClassifierProvider;
+import org.oppia.android.domain.classify.rules.textinput.TextInputStartsWithRuleClassifierProvider_Factory;
+import org.oppia.android.domain.oppialogger.LogStorageModule;
+import org.oppia.android.domain.oppialogger.LogStorageModule_ProvideExceptionLogStorageCacheSizeFactory;
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController;
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController_Factory;
+import org.oppia.android.domain.topic.ConceptCardRetriever;
+import org.oppia.android.domain.topic.ConceptCardRetriever_Factory;
+import org.oppia.android.domain.topic.RevisionCardRetriever;
+import org.oppia.android.domain.topic.RevisionCardRetriever_Factory;
+import org.oppia.android.domain.topic.StoryProgressController;
+import org.oppia.android.domain.topic.StoryProgressController_Factory;
+import org.oppia.android.domain.topic.TopicController;
+import org.oppia.android.domain.topic.TopicController_Factory;
+import org.oppia.android.domain.util.JsonAssetRetriever;
+import org.oppia.android.domain.util.JsonAssetRetriever_Factory;
+import org.oppia.android.domain.util.StateRetriever;
+import org.oppia.android.domain.util.StateRetriever_Factory;
+import org.oppia.android.testing.FakeExceptionLogger;
+import org.oppia.android.testing.FakeExceptionLogger_Factory;
+import org.oppia.android.testing.FakeSystemClock;
+import org.oppia.android.testing.FakeSystemClock_Factory;
+import org.oppia.android.testing.TestCoroutineDispatcher;
+import org.oppia.android.testing.TestCoroutineDispatcherEspressoImpl_FactoryImpl_Factory;
+import org.oppia.android.testing.TestCoroutineDispatcherRobolectricImpl;
+import org.oppia.android.testing.TestCoroutineDispatcherRobolectricImpl_FactoryImpl_Factory;
+import org.oppia.android.testing.TestCoroutineDispatchers;
+import org.oppia.android.testing.TestCoroutineDispatchersEspressoImpl;
+import org.oppia.android.testing.TestCoroutineDispatchersEspressoImpl_Factory;
+import org.oppia.android.testing.TestCoroutineDispatchersRobolectricImpl;
+import org.oppia.android.testing.TestCoroutineDispatchersRobolectricImpl_Factory;
+import org.oppia.android.testing.TestDispatcherModule;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBackgroundDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBackgroundTestDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBlockingDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBlockingTestDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideIsOnRobolectricFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideTestCoroutineDispatcherFactoryFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideTestCoroutineDispatchersFactory;
+import org.oppia.android.util.caching.AssetRepository;
+import org.oppia.android.util.caching.AssetRepository_Factory;
+import org.oppia.android.util.data.AsyncDataSubscriptionManager;
+import org.oppia.android.util.data.AsyncDataSubscriptionManager_Factory;
+import org.oppia.android.util.data.DataProviders;
+import org.oppia.android.util.data.DataProviders_Factory;
+import org.oppia.android.util.data.InMemoryBlockingCache;
+import org.oppia.android.util.data.InMemoryBlockingCache_Factory_Factory;
+import org.oppia.android.util.logging.ConsoleLogger;
+import org.oppia.android.util.logging.ConsoleLogger_Factory;
+import org.oppia.android.util.logging.LogLevel;
+import org.oppia.android.util.networking.NetworkConnectionUtil;
+import org.oppia.android.util.networking.NetworkConnectionUtil_Factory;
+import org.oppia.android.util.profile.DirectoryManagementUtil;
+import org.oppia.android.util.profile.DirectoryManagementUtil_Factory;
+import org.oppia.android.util.system.OppiaClock;
+import org.oppia.android.util.system.OppiaClock_Factory;
+
+@Generated(
+    value = &quot;dagger.internal.codegen.ComponentProcessor&quot;,
+    comments = &quot;https://dagger.dev&quot;
+)
+@SuppressWarnings({
+    &quot;unchecked&quot;,
+    &quot;rawtypes&quot;
+})
+public final class DaggerQuestionAssessmentProgressControllerTest_TestApplicationComponent implements QuestionAssessmentProgressControllerTest.TestApplicationComponent {
+  private final TestDispatcherModule testDispatcherModule;
+
+  private Provider&lt;Application&gt; setApplicationProvider;
+
+  private Provider&lt;Context&gt; provideContextProvider;
+
+  private Provider&lt;Boolean&gt; provideIsOnRobolectricProvider;
+
+  private Provider&lt;FakeSystemClock&gt; fakeSystemClockProvider;
+
+  private Provider&lt;TestCoroutineDispatcherRobolectricImpl.FactoryImpl&gt; factoryImplProvider;
+
+  private Provider&lt;TestCoroutineDispatcher.Factory&gt; provideTestCoroutineDispatcherFactoryProvider;
+
+  private Provider&lt;TestCoroutineDispatcher&gt; provideBackgroundTestDispatcherProvider;
+
+  private Provider&lt;CoroutineDispatcher&gt; provideBackgroundDispatcherProvider;
+
+  private Provider&lt;AsyncDataSubscriptionManager&gt; asyncDataSubscriptionManagerProvider;
+
+  private Provider&lt;FakeExceptionLogger&gt; fakeExceptionLoggerProvider;
+
+  private Provider&lt;DataProviders&gt; dataProvidersProvider;
+
+  private Provider&lt;InteractionClassifier&gt; provideContinueInteractionClassifierProvider;
+
+  private Provider&lt;InteractionObjectTypeExtractorRepository&gt; interactionObjectTypeExtractorRepositoryProvider;
+
+  private Provider&lt;GenericRuleClassifier.Factory&gt; factoryProvider;
+
+  private Provider&lt;FractionInputHasDenominatorEqualToRuleClassifierProvider&gt; fractionInputHasDenominatorEqualToRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideFractionInputHasDenominatorEqualToRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider&gt; fractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideFractionInputHasFractionalPartExactlyEqualToRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;FractionInputHasIntegerPartEqualToRuleClassifierProvider&gt; fractionInputHasIntegerPartEqualToRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideFractionInputHasIntegerPartEqualToRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;FractionInputHasNoFractionalPartRuleClassifierProvider&gt; fractionInputHasNoFractionalPartRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideFractionInputHasNoFractionalPartRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;FractionInputHasNumeratorEqualToRuleClassifierProvider&gt; fractionInputHasNumeratorEqualToRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideFractionInputHasNumeratorEqualToRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider&gt; fractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideFractionInputIsEquivalentToAndInSimplestFormRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;FractionInputIsEquivalentToRuleClassifierProvider&gt; fractionInputIsEquivalentToRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideFractionInputIsEquivalentToRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;FractionInputIsExactlyEqualToRuleClassifierProvider&gt; fractionInputIsExactlyEqualToRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideFractionInputIsExactlyEqualToRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;FractionInputIsGreaterThanRuleClassifierProvider&gt; fractionInputIsGreaterThanRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideFractionInputIsGreaterThanRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;FractionInputIsLessThanRuleClassifierProvider&gt; fractionInputIsLessThanRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideFractionInputIsLessThanRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;Map&lt;String, RuleClassifier&gt;&gt; fractionInputRulesMapOfStringAndRuleClassifierProvider;
+
+  private Provider&lt;InteractionClassifier&gt; provideFractionInputInteractionClassifierProvider;
+
+  private Provider&lt;ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider&gt; itemSelectionInputContainsAtLeastOneOfRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideItemSelectionInputContainsAtLeastOneOfRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider&gt; itemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;ItemSelectionInputEqualsRuleClassifierProvider&gt; itemSelectionInputEqualsRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideItemSelectionInputEqualsRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;ItemSelectionInputIsProperSubsetOfRuleClassifierProvider&gt; itemSelectionInputIsProperSubsetOfRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideItemSelectionInputIsProperSubsetOfRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;Map&lt;String, RuleClassifier&gt;&gt; itemSelectionInputRulesMapOfStringAndRuleClassifierProvider;
+
+  private Provider&lt;InteractionClassifier&gt; provideItemSelectionInputInteractionClassifierProvider;
+
+  private Provider&lt;MultipleChoiceInputEqualsRuleClassifierProvider&gt; multipleChoiceInputEqualsRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideMultipleChoiceInputEqualsRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;Map&lt;String, RuleClassifier&gt;&gt; multipleChoiceInputRulesMapOfStringAndRuleClassifierProvider;
+
+  private Provider&lt;InteractionClassifier&gt; provideMultipleChoiceInputInteractionClassifierProvider;
+
+  private Provider&lt;NumberWithUnitsIsEqualToRuleClassifierProvider&gt; numberWithUnitsIsEqualToRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideNumberWithUnitsIsEqualToRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;NumberWithUnitsIsEquivalentToRuleClassifierProvider&gt; numberWithUnitsIsEquivalentToRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideNumberWithUnitsIsEquivalentToRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;Map&lt;String, RuleClassifier&gt;&gt; numberWithUnitsRulesMapOfStringAndRuleClassifierProvider;
+
+  private Provider&lt;InteractionClassifier&gt; provideNumberWithUnitsInteractionClassifierProvider;
+
+  private Provider&lt;NumericInputEqualsRuleClassifierProvider&gt; numericInputEqualsRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideNumericInputEqualsRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;NumericInputIsGreaterThanOrEqualToRuleClassifierProvider&gt; numericInputIsGreaterThanOrEqualToRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideNumericInputIsGreaterThanOrEqualToRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;NumericInputIsGreaterThanRuleClassifierProvider&gt; numericInputIsGreaterThanRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideNumericInputIsGreaterThanRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;NumericInputIsInclusivelyBetweenRuleClassifierProvider&gt; numericInputIsInclusivelyBetweenRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideNumericInputIsInclusivelyBetweenRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;NumericInputIsLessThanOrEqualToRuleClassifierProvider&gt; numericInputIsLessThanOrEqualToRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideNumericInputIsLessThanOrEqualToRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;NumericInputIsLessThanRuleClassifierProvider&gt; numericInputIsLessThanRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideNumericInputIsLessThanRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;NumericInputIsWithinToleranceRuleClassifierProvider&gt; numericInputIsWithinToleranceRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideNumericInputIsWithinToleranceRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;Map&lt;String, RuleClassifier&gt;&gt; numericInputRulesMapOfStringAndRuleClassifierProvider;
+
+  private Provider&lt;InteractionClassifier&gt; provideNumericInputInteractionClassifierProvider;
+
+  private Provider&lt;TextInputCaseSensitiveEqualsRuleClassifierProvider&gt; textInputCaseSensitiveEqualsRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideTextInputCaseSensitiveEqualsRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;TextInputContainsRuleClassifierProvider&gt; textInputContainsRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideTextInputContainsRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;TextInputEqualsRuleClassifierProvider&gt; textInputEqualsRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideTextInputEqualsRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;TextInputFuzzyEqualsRuleClassifierProvider&gt; textInputFuzzyEqualsRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideTextInputFuzzyEqualsRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;TextInputStartsWithRuleClassifierProvider&gt; textInputStartsWithRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideTextInputStartsWithRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;Map&lt;String, RuleClassifier&gt;&gt; textInputRulesMapOfStringAndRuleClassifierProvider;
+
+  private Provider&lt;InteractionClassifier&gt; provideTextInputInteractionClassifierProvider;
+
+  private Provider&lt;DragDropSortInputHasElementXAtPositionYClassifierProvider&gt; dragDropSortInputHasElementXAtPositionYClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideDragDropSortInputHasElementXAtPositionYRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;DragDropSortInputIsEqualToOrderingClassifierProvider&gt; dragDropSortInputIsEqualToOrderingClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideDragDropSortInputIsEqualToOrderingRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;DragDropSortInputHasElementXBeforeElementYClassifierProvider&gt; dragDropSortInputHasElementXBeforeElementYClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideDragDropSortInputHasElementXBeforeElementYRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider&gt; dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;Map&lt;String, RuleClassifier&gt;&gt; dragDropSortInputRulesMapOfStringAndRuleClassifierProvider;
+
+  private Provider&lt;InteractionClassifier&gt; provideDragAndDropSortInputInteractionClassifierProvider;
+
+  private Provider&lt;ImageClickInputIsInRegionRuleClassifierProvider&gt; imageClickInputIsInRegionRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideImageClickInputIsInRegionRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;Map&lt;String, RuleClassifier&gt;&gt; imageClickInputRulesMapOfStringAndRuleClassifierProvider;
+
+  private Provider&lt;InteractionClassifier&gt; provideImageClickInputInteractionClassifierProvider;
+
+  private Provider&lt;RatioInputEqualsRuleClassifierProvider&gt; ratioInputEqualsRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideRatioInputEqualsRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;RatioInputIsEquivalentRuleClassifierProvider&gt; ratioInputIsEquivalentRuleClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideRatioInputIsEquivalentRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;RatioInputHasNumberOfTermsEqualToClassifierProvider&gt; ratioInputHasNumberOfTermsEqualToClassifierProvider;
+
+  private Provider&lt;RuleClassifier&gt; provideRatioInputHasNumberOfTermsEqualToRuleClassifier$domain_debugProvider;
+
+  private Provider&lt;Map&lt;String, RuleClassifier&gt;&gt; ratioExpressionInputRulesMapOfStringAndRuleClassifierProvider;
+
+  private Provider&lt;InteractionClassifier&gt; provideRatioExpressionInputInteractionClassifierProvider;
+
+  private Provider&lt;Map&lt;String, InteractionClassifier&gt;&gt; mapOfStringAndInteractionClassifierProvider;
+
+  private Provider&lt;AnswerClassificationController&gt; answerClassificationControllerProvider;
+
+  private Provider&lt;TestCoroutineDispatcher&gt; provideBlockingTestDispatcherProvider;
+
+  private Provider&lt;CoroutineDispatcher&gt; provideBlockingDispatcherProvider;
+
+  private Provider&lt;InMemoryBlockingCache.Factory&gt; factoryProvider2;
+
+  private Provider&lt;DirectoryManagementUtil&gt; directoryManagementUtilProvider;
+
+  private Provider&lt;PersistentCacheStore.Factory&gt; factoryProvider3;
+
+  private Provider&lt;Boolean&gt; provideEnableConsoleLogProvider;
+
+  private Provider&lt;Boolean&gt; provideEnableFileLogProvider;
+
+  private Provider&lt;LogLevel&gt; provideGlobalLogLevelProvider;
+
+  private Provider&lt;ConsoleLogger&gt; consoleLoggerProvider;
+
+  private Provider&lt;NetworkConnectionUtil&gt; networkConnectionUtilProvider;
+
+  private Provider&lt;Integer&gt; provideExceptionLogStorageCacheSizeProvider;
+
+  private Provider&lt;ExceptionsController&gt; exceptionsControllerProvider;
+
+  private Provider&lt;OppiaClock&gt; oppiaClockProvider;
+
+  private Provider&lt;QuestionAssessmentProgressController&gt; questionAssessmentProgressControllerProvider;
+
+  private Provider&lt;AssetRepository&gt; assetRepositoryProvider;
+
+  private Provider&lt;JsonAssetRetriever&gt; jsonAssetRetrieverProvider;
+
+  private Provider&lt;StateRetriever&gt; stateRetrieverProvider;
+
+  private Provider&lt;QuestionRetriever&gt; questionRetrieverProvider;
+
+  private Provider&lt;ConceptCardRetriever&gt; conceptCardRetrieverProvider;
+
+  private Provider&lt;RevisionCardRetriever&gt; revisionCardRetrieverProvider;
+
+  private Provider&lt;StoryProgressController&gt; storyProgressControllerProvider;
+
+  private Provider&lt;TopicController&gt; topicControllerProvider;
+
+  private Provider&lt;Integer&gt; provideQuestionCountPerTrainingSessionProvider;
+
+  private Provider&lt;Long&gt; provideQuestionTrainingSeedProvider;
+
+  private Provider&lt;QuestionTrainingController&gt; questionTrainingControllerProvider;
+
+  private Provider&lt;TestCoroutineDispatchersRobolectricImpl&gt; testCoroutineDispatchersRobolectricImplProvider;
+
+  private Provider&lt;TestCoroutineDispatchersEspressoImpl&gt; testCoroutineDispatchersEspressoImplProvider;
+
+  private DaggerQuestionAssessmentProgressControllerTest_TestApplicationComponent(
+      QuestionAssessmentProgressControllerTest.TestModule testModuleParam,
+      QuestionAssessmentProgressControllerTest.TestQuestionModule testQuestionModuleParam,
+      FractionInputModule fractionInputModuleParam,
+      ItemSelectionInputModule itemSelectionInputModuleParam,
+      MultipleChoiceInputModule multipleChoiceInputModuleParam,
+      NumberWithUnitsRuleModule numberWithUnitsRuleModuleParam,
+      NumericInputRuleModule numericInputRuleModuleParam,
+      TextInputRuleModule textInputRuleModuleParam, InteractionsModule interactionsModuleParam,
+      DragDropSortInputModule dragDropSortInputModuleParam,
+      ImageClickInputModule imageClickInputModuleParam, LogStorageModule logStorageModuleParam,
+      TestDispatcherModule testDispatcherModuleParam, RatioInputModule ratioInputModuleParam,
+<span class="nc" id="L504">      Application setApplicationParam) {</span>
+<span class="nc" id="L505">    this.testDispatcherModule = testDispatcherModuleParam;</span>
+<span class="nc" id="L506">    initialize(testModuleParam, testQuestionModuleParam, fractionInputModuleParam, itemSelectionInputModuleParam, multipleChoiceInputModuleParam, numberWithUnitsRuleModuleParam, numericInputRuleModuleParam, textInputRuleModuleParam, interactionsModuleParam, dragDropSortInputModuleParam, imageClickInputModuleParam, logStorageModuleParam, testDispatcherModuleParam, ratioInputModuleParam, setApplicationParam);</span>
+<span class="nc" id="L507">    initialize2(testModuleParam, testQuestionModuleParam, fractionInputModuleParam, itemSelectionInputModuleParam, multipleChoiceInputModuleParam, numberWithUnitsRuleModuleParam, numericInputRuleModuleParam, textInputRuleModuleParam, interactionsModuleParam, dragDropSortInputModuleParam, imageClickInputModuleParam, logStorageModuleParam, testDispatcherModuleParam, ratioInputModuleParam, setApplicationParam);</span>
+<span class="nc" id="L508">  }</span>
+
+  public static QuestionAssessmentProgressControllerTest.TestApplicationComponent.Builder builder(
+      ) {
+<span class="nc" id="L512">    return new Builder();</span>
+  }
+
+  private TestCoroutineDispatchers getTestCoroutineDispatchers() {
+<span class="nc" id="L516">    return TestDispatcherModule_ProvideTestCoroutineDispatchersFactory.provideTestCoroutineDispatchers(testDispatcherModule, provideIsOnRobolectricProvider.get(), testCoroutineDispatchersRobolectricImplProvider, testCoroutineDispatchersEspressoImplProvider);}</span>
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  private void initialize(final QuestionAssessmentProgressControllerTest.TestModule testModuleParam,
+      final QuestionAssessmentProgressControllerTest.TestQuestionModule testQuestionModuleParam,
+      final FractionInputModule fractionInputModuleParam,
+      final ItemSelectionInputModule itemSelectionInputModuleParam,
+      final MultipleChoiceInputModule multipleChoiceInputModuleParam,
+      final NumberWithUnitsRuleModule numberWithUnitsRuleModuleParam,
+      final NumericInputRuleModule numericInputRuleModuleParam,
+      final TextInputRuleModule textInputRuleModuleParam,
+      final InteractionsModule interactionsModuleParam,
+      final DragDropSortInputModule dragDropSortInputModuleParam,
+      final ImageClickInputModule imageClickInputModuleParam,
+      final LogStorageModule logStorageModuleParam,
+      final TestDispatcherModule testDispatcherModuleParam,
+      final RatioInputModule ratioInputModuleParam, final Application setApplicationParam) {
+<span class="nc" id="L533">    this.setApplicationProvider = InstanceFactory.create(setApplicationParam);</span>
+<span class="nc" id="L534">    this.provideContextProvider = DoubleCheck.provider(QuestionAssessmentProgressControllerTest_TestModule_ProvideContextFactory.create(testModuleParam, setApplicationProvider));</span>
+<span class="nc" id="L535">    this.provideIsOnRobolectricProvider = DoubleCheck.provider(TestDispatcherModule_ProvideIsOnRobolectricFactory.create(testDispatcherModuleParam));</span>
+<span class="nc" id="L536">    this.fakeSystemClockProvider = DoubleCheck.provider(FakeSystemClock_Factory.create(provideIsOnRobolectricProvider));</span>
+<span class="nc" id="L537">    this.factoryImplProvider = TestCoroutineDispatcherRobolectricImpl_FactoryImpl_Factory.create(fakeSystemClockProvider);</span>
+<span class="nc" id="L538">    this.provideTestCoroutineDispatcherFactoryProvider = TestDispatcherModule_ProvideTestCoroutineDispatcherFactoryFactory.create(testDispatcherModuleParam, provideIsOnRobolectricProvider, factoryImplProvider, TestCoroutineDispatcherEspressoImpl_FactoryImpl_Factory.create());</span>
+<span class="nc" id="L539">    this.provideBackgroundTestDispatcherProvider = DoubleCheck.provider(TestDispatcherModule_ProvideBackgroundTestDispatcherFactory.create(testDispatcherModuleParam, provideTestCoroutineDispatcherFactoryProvider));</span>
+<span class="nc" id="L540">    this.provideBackgroundDispatcherProvider = TestDispatcherModule_ProvideBackgroundDispatcherFactory.create(testDispatcherModuleParam, provideBackgroundTestDispatcherProvider);</span>
+<span class="nc" id="L541">    this.asyncDataSubscriptionManagerProvider = DoubleCheck.provider(AsyncDataSubscriptionManager_Factory.create(provideBackgroundDispatcherProvider));</span>
+<span class="nc" id="L542">    this.fakeExceptionLoggerProvider = DoubleCheck.provider(FakeExceptionLogger_Factory.create());</span>
+<span class="nc" id="L543">    this.dataProvidersProvider = SingleCheck.provider(DataProviders_Factory.create(provideContextProvider, provideBackgroundDispatcherProvider, asyncDataSubscriptionManagerProvider, (Provider) fakeExceptionLoggerProvider));</span>
+<span class="nc" id="L544">    this.provideContinueInteractionClassifierProvider = InteractionsModule_ProvideContinueInteractionClassifierFactory.create(interactionsModuleParam, MapFactory.&lt;String, RuleClassifier&gt;emptyMapProvider());</span>
+<span class="nc" id="L545">    this.interactionObjectTypeExtractorRepositoryProvider = DoubleCheck.provider(InteractionObjectTypeExtractorRepository_Factory.create());</span>
+<span class="nc" id="L546">    this.factoryProvider = GenericRuleClassifier_Factory_Factory.create(interactionObjectTypeExtractorRepositoryProvider);</span>
+<span class="nc" id="L547">    this.fractionInputHasDenominatorEqualToRuleClassifierProvider = FractionInputHasDenominatorEqualToRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L548">    this.provideFractionInputHasDenominatorEqualToRuleClassifier$domain_debugProvider = FractionInputModule_ProvideFractionInputHasDenominatorEqualToRuleClassifier$domain_debugFactory.create(fractionInputModuleParam, fractionInputHasDenominatorEqualToRuleClassifierProvider);</span>
+<span class="nc" id="L549">    this.fractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider = FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L550">    this.provideFractionInputHasFractionalPartExactlyEqualToRuleClassifier$domain_debugProvider = FractionInputModule_ProvideFractionInputHasFractionalPartExactlyEqualToRuleClassifier$domain_debugFactory.create(fractionInputModuleParam, fractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider);</span>
+<span class="nc" id="L551">    this.fractionInputHasIntegerPartEqualToRuleClassifierProvider = FractionInputHasIntegerPartEqualToRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L552">    this.provideFractionInputHasIntegerPartEqualToRuleClassifier$domain_debugProvider = FractionInputModule_ProvideFractionInputHasIntegerPartEqualToRuleClassifier$domain_debugFactory.create(fractionInputModuleParam, fractionInputHasIntegerPartEqualToRuleClassifierProvider);</span>
+<span class="nc" id="L553">    this.fractionInputHasNoFractionalPartRuleClassifierProvider = FractionInputHasNoFractionalPartRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L554">    this.provideFractionInputHasNoFractionalPartRuleClassifier$domain_debugProvider = FractionInputModule_ProvideFractionInputHasNoFractionalPartRuleClassifier$domain_debugFactory.create(fractionInputModuleParam, fractionInputHasNoFractionalPartRuleClassifierProvider);</span>
+<span class="nc" id="L555">    this.fractionInputHasNumeratorEqualToRuleClassifierProvider = FractionInputHasNumeratorEqualToRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L556">    this.provideFractionInputHasNumeratorEqualToRuleClassifier$domain_debugProvider = FractionInputModule_ProvideFractionInputHasNumeratorEqualToRuleClassifier$domain_debugFactory.create(fractionInputModuleParam, fractionInputHasNumeratorEqualToRuleClassifierProvider);</span>
+<span class="nc" id="L557">    this.fractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider = FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L558">    this.provideFractionInputIsEquivalentToAndInSimplestFormRuleClassifier$domain_debugProvider = FractionInputModule_ProvideFractionInputIsEquivalentToAndInSimplestFormRuleClassifier$domain_debugFactory.create(fractionInputModuleParam, fractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider);</span>
+<span class="nc" id="L559">    this.fractionInputIsEquivalentToRuleClassifierProvider = FractionInputIsEquivalentToRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L560">    this.provideFractionInputIsEquivalentToRuleClassifier$domain_debugProvider = FractionInputModule_ProvideFractionInputIsEquivalentToRuleClassifier$domain_debugFactory.create(fractionInputModuleParam, fractionInputIsEquivalentToRuleClassifierProvider);</span>
+<span class="nc" id="L561">    this.fractionInputIsExactlyEqualToRuleClassifierProvider = FractionInputIsExactlyEqualToRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L562">    this.provideFractionInputIsExactlyEqualToRuleClassifier$domain_debugProvider = FractionInputModule_ProvideFractionInputIsExactlyEqualToRuleClassifier$domain_debugFactory.create(fractionInputModuleParam, fractionInputIsExactlyEqualToRuleClassifierProvider);</span>
+<span class="nc" id="L563">    this.fractionInputIsGreaterThanRuleClassifierProvider = FractionInputIsGreaterThanRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L564">    this.provideFractionInputIsGreaterThanRuleClassifier$domain_debugProvider = FractionInputModule_ProvideFractionInputIsGreaterThanRuleClassifier$domain_debugFactory.create(fractionInputModuleParam, fractionInputIsGreaterThanRuleClassifierProvider);</span>
+<span class="nc" id="L565">    this.fractionInputIsLessThanRuleClassifierProvider = FractionInputIsLessThanRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L566">    this.provideFractionInputIsLessThanRuleClassifier$domain_debugProvider = FractionInputModule_ProvideFractionInputIsLessThanRuleClassifier$domain_debugFactory.create(fractionInputModuleParam, fractionInputIsLessThanRuleClassifierProvider);</span>
+<span class="nc" id="L567">    this.fractionInputRulesMapOfStringAndRuleClassifierProvider = MapFactory.&lt;String, RuleClassifier&gt;builder(10).put(&quot;HasDenominatorEqualTo&quot;, provideFractionInputHasDenominatorEqualToRuleClassifier$domain_debugProvider).put(&quot;HasFractionalPartExactlyEqualTo&quot;, provideFractionInputHasFractionalPartExactlyEqualToRuleClassifier$domain_debugProvider).put(&quot;HasIntegerPartEqualTo&quot;, provideFractionInputHasIntegerPartEqualToRuleClassifier$domain_debugProvider).put(&quot;HasNoFractionalPart&quot;, provideFractionInputHasNoFractionalPartRuleClassifier$domain_debugProvider).put(&quot;HasNumeratorEqualTo&quot;, provideFractionInputHasNumeratorEqualToRuleClassifier$domain_debugProvider).put(&quot;IsEquivalentToAndInSimplestForm&quot;, provideFractionInputIsEquivalentToAndInSimplestFormRuleClassifier$domain_debugProvider).put(&quot;IsEquivalentTo&quot;, provideFractionInputIsEquivalentToRuleClassifier$domain_debugProvider).put(&quot;IsExactlyEqualTo&quot;, provideFractionInputIsExactlyEqualToRuleClassifier$domain_debugProvider).put(&quot;IsGreaterThan&quot;, provideFractionInputIsGreaterThanRuleClassifier$domain_debugProvider).put(&quot;IsLessThan&quot;, provideFractionInputIsLessThanRuleClassifier$domain_debugProvider).build();</span>
+<span class="nc" id="L568">    this.provideFractionInputInteractionClassifierProvider = InteractionsModule_ProvideFractionInputInteractionClassifierFactory.create(interactionsModuleParam, fractionInputRulesMapOfStringAndRuleClassifierProvider);</span>
+<span class="nc" id="L569">    this.itemSelectionInputContainsAtLeastOneOfRuleClassifierProvider = ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L570">    this.provideItemSelectionInputContainsAtLeastOneOfRuleClassifier$domain_debugProvider = ItemSelectionInputModule_ProvideItemSelectionInputContainsAtLeastOneOfRuleClassifier$domain_debugFactory.create(itemSelectionInputModuleParam, itemSelectionInputContainsAtLeastOneOfRuleClassifierProvider);</span>
+<span class="nc" id="L571">    this.itemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider = ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L572">    this.provideItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifier$domain_debugProvider = ItemSelectionInputModule_ProvideItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifier$domain_debugFactory.create(itemSelectionInputModuleParam, itemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider);</span>
+<span class="nc" id="L573">    this.itemSelectionInputEqualsRuleClassifierProvider = ItemSelectionInputEqualsRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L574">    this.provideItemSelectionInputEqualsRuleClassifier$domain_debugProvider = ItemSelectionInputModule_ProvideItemSelectionInputEqualsRuleClassifier$domain_debugFactory.create(itemSelectionInputModuleParam, itemSelectionInputEqualsRuleClassifierProvider);</span>
+<span class="nc" id="L575">    this.itemSelectionInputIsProperSubsetOfRuleClassifierProvider = ItemSelectionInputIsProperSubsetOfRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L576">    this.provideItemSelectionInputIsProperSubsetOfRuleClassifier$domain_debugProvider = ItemSelectionInputModule_ProvideItemSelectionInputIsProperSubsetOfRuleClassifier$domain_debugFactory.create(itemSelectionInputModuleParam, itemSelectionInputIsProperSubsetOfRuleClassifierProvider);</span>
+<span class="nc" id="L577">    this.itemSelectionInputRulesMapOfStringAndRuleClassifierProvider = MapFactory.&lt;String, RuleClassifier&gt;builder(4).put(&quot;ContainsAtLeastOneOf&quot;, provideItemSelectionInputContainsAtLeastOneOfRuleClassifier$domain_debugProvider).put(&quot;DoesNotContainAtLeastOneOf&quot;, provideItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifier$domain_debugProvider).put(&quot;Equals&quot;, provideItemSelectionInputEqualsRuleClassifier$domain_debugProvider).put(&quot;IsProperSubsetOf&quot;, provideItemSelectionInputIsProperSubsetOfRuleClassifier$domain_debugProvider).build();</span>
+<span class="nc" id="L578">    this.provideItemSelectionInputInteractionClassifierProvider = InteractionsModule_ProvideItemSelectionInputInteractionClassifierFactory.create(interactionsModuleParam, itemSelectionInputRulesMapOfStringAndRuleClassifierProvider);</span>
+<span class="nc" id="L579">    this.multipleChoiceInputEqualsRuleClassifierProvider = MultipleChoiceInputEqualsRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L580">    this.provideMultipleChoiceInputEqualsRuleClassifier$domain_debugProvider = MultipleChoiceInputModule_ProvideMultipleChoiceInputEqualsRuleClassifier$domain_debugFactory.create(multipleChoiceInputModuleParam, multipleChoiceInputEqualsRuleClassifierProvider);</span>
+<span class="nc" id="L581">    this.multipleChoiceInputRulesMapOfStringAndRuleClassifierProvider = MapFactory.&lt;String, RuleClassifier&gt;builder(1).put(&quot;Equals&quot;, provideMultipleChoiceInputEqualsRuleClassifier$domain_debugProvider).build();</span>
+<span class="nc" id="L582">    this.provideMultipleChoiceInputInteractionClassifierProvider = InteractionsModule_ProvideMultipleChoiceInputInteractionClassifierFactory.create(interactionsModuleParam, multipleChoiceInputRulesMapOfStringAndRuleClassifierProvider);</span>
+<span class="nc" id="L583">    this.numberWithUnitsIsEqualToRuleClassifierProvider = NumberWithUnitsIsEqualToRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L584">    this.provideNumberWithUnitsIsEqualToRuleClassifier$domain_debugProvider = NumberWithUnitsRuleModule_ProvideNumberWithUnitsIsEqualToRuleClassifier$domain_debugFactory.create(numberWithUnitsRuleModuleParam, numberWithUnitsIsEqualToRuleClassifierProvider);</span>
+<span class="nc" id="L585">    this.numberWithUnitsIsEquivalentToRuleClassifierProvider = NumberWithUnitsIsEquivalentToRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L586">    this.provideNumberWithUnitsIsEquivalentToRuleClassifier$domain_debugProvider = NumberWithUnitsRuleModule_ProvideNumberWithUnitsIsEquivalentToRuleClassifier$domain_debugFactory.create(numberWithUnitsRuleModuleParam, numberWithUnitsIsEquivalentToRuleClassifierProvider);</span>
+<span class="nc" id="L587">    this.numberWithUnitsRulesMapOfStringAndRuleClassifierProvider = MapFactory.&lt;String, RuleClassifier&gt;builder(2).put(&quot;IsEqualTo&quot;, provideNumberWithUnitsIsEqualToRuleClassifier$domain_debugProvider).put(&quot;IsEquivalentTo&quot;, provideNumberWithUnitsIsEquivalentToRuleClassifier$domain_debugProvider).build();</span>
+<span class="nc" id="L588">    this.provideNumberWithUnitsInteractionClassifierProvider = InteractionsModule_ProvideNumberWithUnitsInteractionClassifierFactory.create(interactionsModuleParam, numberWithUnitsRulesMapOfStringAndRuleClassifierProvider);</span>
+<span class="nc" id="L589">    this.numericInputEqualsRuleClassifierProvider = NumericInputEqualsRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L590">    this.provideNumericInputEqualsRuleClassifier$domain_debugProvider = NumericInputRuleModule_ProvideNumericInputEqualsRuleClassifier$domain_debugFactory.create(numericInputRuleModuleParam, numericInputEqualsRuleClassifierProvider);</span>
+<span class="nc" id="L591">    this.numericInputIsGreaterThanOrEqualToRuleClassifierProvider = NumericInputIsGreaterThanOrEqualToRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L592">    this.provideNumericInputIsGreaterThanOrEqualToRuleClassifier$domain_debugProvider = NumericInputRuleModule_ProvideNumericInputIsGreaterThanOrEqualToRuleClassifier$domain_debugFactory.create(numericInputRuleModuleParam, numericInputIsGreaterThanOrEqualToRuleClassifierProvider);</span>
+<span class="nc" id="L593">    this.numericInputIsGreaterThanRuleClassifierProvider = NumericInputIsGreaterThanRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L594">    this.provideNumericInputIsGreaterThanRuleClassifier$domain_debugProvider = NumericInputRuleModule_ProvideNumericInputIsGreaterThanRuleClassifier$domain_debugFactory.create(numericInputRuleModuleParam, numericInputIsGreaterThanRuleClassifierProvider);</span>
+<span class="nc" id="L595">    this.numericInputIsInclusivelyBetweenRuleClassifierProvider = NumericInputIsInclusivelyBetweenRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L596">    this.provideNumericInputIsInclusivelyBetweenRuleClassifier$domain_debugProvider = NumericInputRuleModule_ProvideNumericInputIsInclusivelyBetweenRuleClassifier$domain_debugFactory.create(numericInputRuleModuleParam, numericInputIsInclusivelyBetweenRuleClassifierProvider);</span>
+<span class="nc" id="L597">    this.numericInputIsLessThanOrEqualToRuleClassifierProvider = NumericInputIsLessThanOrEqualToRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L598">    this.provideNumericInputIsLessThanOrEqualToRuleClassifier$domain_debugProvider = NumericInputRuleModule_ProvideNumericInputIsLessThanOrEqualToRuleClassifier$domain_debugFactory.create(numericInputRuleModuleParam, numericInputIsLessThanOrEqualToRuleClassifierProvider);</span>
+<span class="nc" id="L599">    this.numericInputIsLessThanRuleClassifierProvider = NumericInputIsLessThanRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L600">    this.provideNumericInputIsLessThanRuleClassifier$domain_debugProvider = NumericInputRuleModule_ProvideNumericInputIsLessThanRuleClassifier$domain_debugFactory.create(numericInputRuleModuleParam, numericInputIsLessThanRuleClassifierProvider);</span>
+<span class="nc" id="L601">    this.numericInputIsWithinToleranceRuleClassifierProvider = NumericInputIsWithinToleranceRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L602">    this.provideNumericInputIsWithinToleranceRuleClassifier$domain_debugProvider = NumericInputRuleModule_ProvideNumericInputIsWithinToleranceRuleClassifier$domain_debugFactory.create(numericInputRuleModuleParam, numericInputIsWithinToleranceRuleClassifierProvider);</span>
+<span class="nc" id="L603">    this.numericInputRulesMapOfStringAndRuleClassifierProvider = MapFactory.&lt;String, RuleClassifier&gt;builder(7).put(&quot;Equals&quot;, provideNumericInputEqualsRuleClassifier$domain_debugProvider).put(&quot;IsGreaterThanOrEqualTo&quot;, provideNumericInputIsGreaterThanOrEqualToRuleClassifier$domain_debugProvider).put(&quot;IsGreaterThan&quot;, provideNumericInputIsGreaterThanRuleClassifier$domain_debugProvider).put(&quot;IsInclusivelyBetween&quot;, provideNumericInputIsInclusivelyBetweenRuleClassifier$domain_debugProvider).put(&quot;IsLessThanOrEqualTo&quot;, provideNumericInputIsLessThanOrEqualToRuleClassifier$domain_debugProvider).put(&quot;IsLessThan&quot;, provideNumericInputIsLessThanRuleClassifier$domain_debugProvider).put(&quot;IsWithinTolerance&quot;, provideNumericInputIsWithinToleranceRuleClassifier$domain_debugProvider).build();</span>
+<span class="nc" id="L604">    this.provideNumericInputInteractionClassifierProvider = InteractionsModule_ProvideNumericInputInteractionClassifierFactory.create(interactionsModuleParam, numericInputRulesMapOfStringAndRuleClassifierProvider);</span>
+<span class="nc" id="L605">    this.textInputCaseSensitiveEqualsRuleClassifierProvider = TextInputCaseSensitiveEqualsRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L606">    this.provideTextInputCaseSensitiveEqualsRuleClassifier$domain_debugProvider = TextInputRuleModule_ProvideTextInputCaseSensitiveEqualsRuleClassifier$domain_debugFactory.create(textInputRuleModuleParam, textInputCaseSensitiveEqualsRuleClassifierProvider);</span>
+<span class="nc" id="L607">    this.textInputContainsRuleClassifierProvider = TextInputContainsRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L608">    this.provideTextInputContainsRuleClassifier$domain_debugProvider = TextInputRuleModule_ProvideTextInputContainsRuleClassifier$domain_debugFactory.create(textInputRuleModuleParam, textInputContainsRuleClassifierProvider);</span>
+<span class="nc" id="L609">    this.textInputEqualsRuleClassifierProvider = TextInputEqualsRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L610">    this.provideTextInputEqualsRuleClassifier$domain_debugProvider = TextInputRuleModule_ProvideTextInputEqualsRuleClassifier$domain_debugFactory.create(textInputRuleModuleParam, textInputEqualsRuleClassifierProvider);</span>
+<span class="nc" id="L611">    this.textInputFuzzyEqualsRuleClassifierProvider = TextInputFuzzyEqualsRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L612">    this.provideTextInputFuzzyEqualsRuleClassifier$domain_debugProvider = TextInputRuleModule_ProvideTextInputFuzzyEqualsRuleClassifier$domain_debugFactory.create(textInputRuleModuleParam, textInputFuzzyEqualsRuleClassifierProvider);</span>
+<span class="nc" id="L613">    this.textInputStartsWithRuleClassifierProvider = TextInputStartsWithRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L614">    this.provideTextInputStartsWithRuleClassifier$domain_debugProvider = TextInputRuleModule_ProvideTextInputStartsWithRuleClassifier$domain_debugFactory.create(textInputRuleModuleParam, textInputStartsWithRuleClassifierProvider);</span>
+<span class="nc" id="L615">    this.textInputRulesMapOfStringAndRuleClassifierProvider = MapFactory.&lt;String, RuleClassifier&gt;builder(5).put(&quot;CaseSensitiveEquals&quot;, provideTextInputCaseSensitiveEqualsRuleClassifier$domain_debugProvider).put(&quot;Contains&quot;, provideTextInputContainsRuleClassifier$domain_debugProvider).put(&quot;Equals&quot;, provideTextInputEqualsRuleClassifier$domain_debugProvider).put(&quot;FuzzyEquals&quot;, provideTextInputFuzzyEqualsRuleClassifier$domain_debugProvider).put(&quot;StartsWith&quot;, provideTextInputStartsWithRuleClassifier$domain_debugProvider).build();</span>
+<span class="nc" id="L616">    this.provideTextInputInteractionClassifierProvider = InteractionsModule_ProvideTextInputInteractionClassifierFactory.create(interactionsModuleParam, textInputRulesMapOfStringAndRuleClassifierProvider);</span>
+<span class="nc" id="L617">    this.dragDropSortInputHasElementXAtPositionYClassifierProvider = DragDropSortInputHasElementXAtPositionYClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L618">    this.provideDragDropSortInputHasElementXAtPositionYRuleClassifier$domain_debugProvider = DragDropSortInputModule_ProvideDragDropSortInputHasElementXAtPositionYRuleClassifier$domain_debugFactory.create(dragDropSortInputModuleParam, dragDropSortInputHasElementXAtPositionYClassifierProvider);</span>
+<span class="nc" id="L619">    this.dragDropSortInputIsEqualToOrderingClassifierProvider = DragDropSortInputIsEqualToOrderingClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L620">    this.provideDragDropSortInputIsEqualToOrderingRuleClassifier$domain_debugProvider = DragDropSortInputModule_ProvideDragDropSortInputIsEqualToOrderingRuleClassifier$domain_debugFactory.create(dragDropSortInputModuleParam, dragDropSortInputIsEqualToOrderingClassifierProvider);</span>
+<span class="nc" id="L621">    this.dragDropSortInputHasElementXBeforeElementYClassifierProvider = DragDropSortInputHasElementXBeforeElementYClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L622">    this.provideDragDropSortInputHasElementXBeforeElementYRuleClassifier$domain_debugProvider = DragDropSortInputModule_ProvideDragDropSortInputHasElementXBeforeElementYRuleClassifier$domain_debugFactory.create(dragDropSortInputModuleParam, dragDropSortInputHasElementXBeforeElementYClassifierProvider);</span>
+<span class="nc" id="L623">    this.dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider = DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L624">    this.provideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier$domain_debugProvider = DragDropSortInputModule_ProvideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier$domain_debugFactory.create(dragDropSortInputModuleParam, dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider);</span>
+<span class="nc" id="L625">    this.dragDropSortInputRulesMapOfStringAndRuleClassifierProvider = MapFactory.&lt;String, RuleClassifier&gt;builder(4).put(&quot;HasElementXAtPositionY&quot;, provideDragDropSortInputHasElementXAtPositionYRuleClassifier$domain_debugProvider).put(&quot;IsEqualToOrdering&quot;, provideDragDropSortInputIsEqualToOrderingRuleClassifier$domain_debugProvider).put(&quot;HasElementXBeforeElementY&quot;, provideDragDropSortInputHasElementXBeforeElementYRuleClassifier$domain_debugProvider).put(&quot;IsEqualToOrderingWithOneItemAtIncorrectPosition&quot;, provideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier$domain_debugProvider).build();</span>
+<span class="nc" id="L626">    this.provideDragAndDropSortInputInteractionClassifierProvider = InteractionsModule_ProvideDragAndDropSortInputInteractionClassifierFactory.create(interactionsModuleParam, dragDropSortInputRulesMapOfStringAndRuleClassifierProvider);</span>
+<span class="nc" id="L627">    this.imageClickInputIsInRegionRuleClassifierProvider = ImageClickInputIsInRegionRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L628">    this.provideImageClickInputIsInRegionRuleClassifier$domain_debugProvider = ImageClickInputModule_ProvideImageClickInputIsInRegionRuleClassifier$domain_debugFactory.create(imageClickInputModuleParam, imageClickInputIsInRegionRuleClassifierProvider);</span>
+<span class="nc" id="L629">    this.imageClickInputRulesMapOfStringAndRuleClassifierProvider = MapFactory.&lt;String, RuleClassifier&gt;builder(1).put(&quot;IsInRegion&quot;, provideImageClickInputIsInRegionRuleClassifier$domain_debugProvider).build();</span>
+<span class="nc" id="L630">    this.provideImageClickInputInteractionClassifierProvider = InteractionsModule_ProvideImageClickInputInteractionClassifierFactory.create(interactionsModuleParam, imageClickInputRulesMapOfStringAndRuleClassifierProvider);</span>
+<span class="nc" id="L631">    this.ratioInputEqualsRuleClassifierProvider = RatioInputEqualsRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L632">    this.provideRatioInputEqualsRuleClassifier$domain_debugProvider = RatioInputModule_ProvideRatioInputEqualsRuleClassifier$domain_debugFactory.create(ratioInputModuleParam, ratioInputEqualsRuleClassifierProvider);</span>
+<span class="nc" id="L633">  }</span>
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  private void initialize2(
+      final QuestionAssessmentProgressControllerTest.TestModule testModuleParam,
+      final QuestionAssessmentProgressControllerTest.TestQuestionModule testQuestionModuleParam,
+      final FractionInputModule fractionInputModuleParam,
+      final ItemSelectionInputModule itemSelectionInputModuleParam,
+      final MultipleChoiceInputModule multipleChoiceInputModuleParam,
+      final NumberWithUnitsRuleModule numberWithUnitsRuleModuleParam,
+      final NumericInputRuleModule numericInputRuleModuleParam,
+      final TextInputRuleModule textInputRuleModuleParam,
+      final InteractionsModule interactionsModuleParam,
+      final DragDropSortInputModule dragDropSortInputModuleParam,
+      final ImageClickInputModule imageClickInputModuleParam,
+      final LogStorageModule logStorageModuleParam,
+      final TestDispatcherModule testDispatcherModuleParam,
+      final RatioInputModule ratioInputModuleParam, final Application setApplicationParam) {
+<span class="nc" id="L651">    this.ratioInputIsEquivalentRuleClassifierProvider = RatioInputIsEquivalentRuleClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L652">    this.provideRatioInputIsEquivalentRuleClassifier$domain_debugProvider = RatioInputModule_ProvideRatioInputIsEquivalentRuleClassifier$domain_debugFactory.create(ratioInputModuleParam, ratioInputIsEquivalentRuleClassifierProvider);</span>
+<span class="nc" id="L653">    this.ratioInputHasNumberOfTermsEqualToClassifierProvider = RatioInputHasNumberOfTermsEqualToClassifierProvider_Factory.create(factoryProvider);</span>
+<span class="nc" id="L654">    this.provideRatioInputHasNumberOfTermsEqualToRuleClassifier$domain_debugProvider = RatioInputModule_ProvideRatioInputHasNumberOfTermsEqualToRuleClassifier$domain_debugFactory.create(ratioInputModuleParam, ratioInputHasNumberOfTermsEqualToClassifierProvider);</span>
+<span class="nc" id="L655">    this.ratioExpressionInputRulesMapOfStringAndRuleClassifierProvider = MapFactory.&lt;String, RuleClassifier&gt;builder(3).put(&quot;Equals&quot;, provideRatioInputEqualsRuleClassifier$domain_debugProvider).put(&quot;IsEquivalent&quot;, provideRatioInputIsEquivalentRuleClassifier$domain_debugProvider).put(&quot;HasNumberOfTermsEqualTo&quot;, provideRatioInputHasNumberOfTermsEqualToRuleClassifier$domain_debugProvider).build();</span>
+<span class="nc" id="L656">    this.provideRatioExpressionInputInteractionClassifierProvider = InteractionsModule_ProvideRatioExpressionInputInteractionClassifierFactory.create(interactionsModuleParam, ratioExpressionInputRulesMapOfStringAndRuleClassifierProvider);</span>
+<span class="nc" id="L657">    this.mapOfStringAndInteractionClassifierProvider = MapFactory.&lt;String, InteractionClassifier&gt;builder(10).put(&quot;Continue&quot;, provideContinueInteractionClassifierProvider).put(&quot;FractionInput&quot;, provideFractionInputInteractionClassifierProvider).put(&quot;ItemSelectionInput&quot;, provideItemSelectionInputInteractionClassifierProvider).put(&quot;MultipleChoiceInput&quot;, provideMultipleChoiceInputInteractionClassifierProvider).put(&quot;NumberWithUnits&quot;, provideNumberWithUnitsInteractionClassifierProvider).put(&quot;NumericInput&quot;, provideNumericInputInteractionClassifierProvider).put(&quot;TextInput&quot;, provideTextInputInteractionClassifierProvider).put(&quot;DragAndDropSortInput&quot;, provideDragAndDropSortInputInteractionClassifierProvider).put(&quot;ImageClickInput&quot;, provideImageClickInputInteractionClassifierProvider).put(&quot;RatioExpressionInput&quot;, provideRatioExpressionInputInteractionClassifierProvider).build();</span>
+<span class="nc" id="L658">    this.answerClassificationControllerProvider = AnswerClassificationController_Factory.create(mapOfStringAndInteractionClassifierProvider);</span>
+<span class="nc" id="L659">    this.provideBlockingTestDispatcherProvider = DoubleCheck.provider(TestDispatcherModule_ProvideBlockingTestDispatcherFactory.create(testDispatcherModuleParam, provideTestCoroutineDispatcherFactoryProvider));</span>
+<span class="nc" id="L660">    this.provideBlockingDispatcherProvider = TestDispatcherModule_ProvideBlockingDispatcherFactory.create(testDispatcherModuleParam, provideBlockingTestDispatcherProvider);</span>
+<span class="nc" id="L661">    this.factoryProvider2 = DoubleCheck.provider(InMemoryBlockingCache_Factory_Factory.create(provideBlockingDispatcherProvider));</span>
+<span class="nc" id="L662">    this.directoryManagementUtilProvider = DoubleCheck.provider(DirectoryManagementUtil_Factory.create(provideContextProvider));</span>
+<span class="nc" id="L663">    this.factoryProvider3 = DoubleCheck.provider(PersistentCacheStore_Factory_Factory.create(provideContextProvider, factoryProvider2, asyncDataSubscriptionManagerProvider, directoryManagementUtilProvider));</span>
+<span class="nc" id="L664">    this.provideEnableConsoleLogProvider = QuestionAssessmentProgressControllerTest_TestModule_ProvideEnableConsoleLogFactory.create(testModuleParam);</span>
+<span class="nc" id="L665">    this.provideEnableFileLogProvider = QuestionAssessmentProgressControllerTest_TestModule_ProvideEnableFileLogFactory.create(testModuleParam);</span>
+<span class="nc" id="L666">    this.provideGlobalLogLevelProvider = QuestionAssessmentProgressControllerTest_TestModule_ProvideGlobalLogLevelFactory.create(testModuleParam);</span>
+<span class="nc" id="L667">    this.consoleLoggerProvider = DoubleCheck.provider(ConsoleLogger_Factory.create(provideContextProvider, provideBlockingDispatcherProvider, provideEnableConsoleLogProvider, provideEnableFileLogProvider, provideGlobalLogLevelProvider));</span>
+<span class="nc" id="L668">    this.networkConnectionUtilProvider = DoubleCheck.provider(NetworkConnectionUtil_Factory.create(provideContextProvider));</span>
+<span class="nc" id="L669">    this.provideExceptionLogStorageCacheSizeProvider = LogStorageModule_ProvideExceptionLogStorageCacheSizeFactory.create(logStorageModuleParam);</span>
+<span class="nc" id="L670">    this.exceptionsControllerProvider = ExceptionsController_Factory.create((Provider) fakeExceptionLoggerProvider, factoryProvider3, consoleLoggerProvider, networkConnectionUtilProvider, provideExceptionLogStorageCacheSizeProvider);</span>
+<span class="nc" id="L671">    this.oppiaClockProvider = DoubleCheck.provider(OppiaClock_Factory.create());</span>
+<span class="nc" id="L672">    this.questionAssessmentProgressControllerProvider = DoubleCheck.provider(QuestionAssessmentProgressController_Factory.create(dataProvidersProvider, asyncDataSubscriptionManagerProvider, answerClassificationControllerProvider, exceptionsControllerProvider, oppiaClockProvider));</span>
+<span class="nc" id="L673">    this.assetRepositoryProvider = DoubleCheck.provider(AssetRepository_Factory.create(provideContextProvider, consoleLoggerProvider));</span>
+<span class="nc" id="L674">    this.jsonAssetRetrieverProvider = JsonAssetRetriever_Factory.create(assetRepositoryProvider);</span>
+<span class="nc" id="L675">    this.stateRetrieverProvider = StateRetriever_Factory.create(jsonAssetRetrieverProvider);</span>
+<span class="nc" id="L676">    this.questionRetrieverProvider = QuestionRetriever_Factory.create(jsonAssetRetrieverProvider, stateRetrieverProvider);</span>
+<span class="nc" id="L677">    this.conceptCardRetrieverProvider = ConceptCardRetriever_Factory.create(jsonAssetRetrieverProvider);</span>
+<span class="nc" id="L678">    this.revisionCardRetrieverProvider = RevisionCardRetriever_Factory.create(jsonAssetRetrieverProvider);</span>
+<span class="nc" id="L679">    this.storyProgressControllerProvider = DoubleCheck.provider(StoryProgressController_Factory.create(factoryProvider3, dataProvidersProvider, consoleLoggerProvider));</span>
+<span class="nc" id="L680">    this.topicControllerProvider = DoubleCheck.provider(TopicController_Factory.create(dataProvidersProvider, jsonAssetRetrieverProvider, questionRetrieverProvider, conceptCardRetrieverProvider, revisionCardRetrieverProvider, storyProgressControllerProvider, exceptionsControllerProvider, oppiaClockProvider));</span>
+<span class="nc" id="L681">    this.provideQuestionCountPerTrainingSessionProvider = QuestionAssessmentProgressControllerTest_TestQuestionModule_ProvideQuestionCountPerTrainingSessionFactory.create(testQuestionModuleParam);</span>
+<span class="nc" id="L682">    this.provideQuestionTrainingSeedProvider = QuestionAssessmentProgressControllerTest_TestQuestionModule_ProvideQuestionTrainingSeedFactory.create(testQuestionModuleParam);</span>
+<span class="nc" id="L683">    this.questionTrainingControllerProvider = DoubleCheck.provider(QuestionTrainingController_Factory.create(questionAssessmentProgressControllerProvider, topicControllerProvider, exceptionsControllerProvider, oppiaClockProvider, provideQuestionCountPerTrainingSessionProvider, provideQuestionTrainingSeedProvider));</span>
+<span class="nc" id="L684">    this.testCoroutineDispatchersRobolectricImplProvider = TestCoroutineDispatchersRobolectricImpl_Factory.create(provideBackgroundTestDispatcherProvider, provideBlockingTestDispatcherProvider, fakeSystemClockProvider);</span>
+<span class="nc" id="L685">    this.testCoroutineDispatchersEspressoImplProvider = TestCoroutineDispatchersEspressoImpl_Factory.create(provideBackgroundTestDispatcherProvider, provideBlockingTestDispatcherProvider);</span>
+<span class="nc" id="L686">  }</span>
+
+  @Override
+  public DataProviders getDataProviders() {
+<span class="nc" id="L690">    return dataProvidersProvider.get();}</span>
+
+  @Override
+  public void inject(QuestionAssessmentProgressControllerTest controllerTest) {
+<span class="nc" id="L694">    injectQuestionAssessmentProgressControllerTest(controllerTest);}</span>
+
+  @CanIgnoreReturnValue
+  private QuestionAssessmentProgressControllerTest injectQuestionAssessmentProgressControllerTest(
+      QuestionAssessmentProgressControllerTest instance) {
+<span class="nc" id="L699">    QuestionAssessmentProgressControllerTest_MembersInjector.injectQuestionTrainingController(instance, questionTrainingControllerProvider.get());</span>
+<span class="nc" id="L700">    QuestionAssessmentProgressControllerTest_MembersInjector.injectQuestionAssessmentProgressController(instance, questionAssessmentProgressControllerProvider.get());</span>
+<span class="nc" id="L701">    QuestionAssessmentProgressControllerTest_MembersInjector.injectFakeExceptionLogger(instance, fakeExceptionLoggerProvider.get());</span>
+<span class="nc" id="L702">    QuestionAssessmentProgressControllerTest_MembersInjector.injectTestCoroutineDispatchers(instance, getTestCoroutineDispatchers());</span>
+<span class="nc" id="L703">    return instance;</span>
+  }
+
+  private static final class Builder implements QuestionAssessmentProgressControllerTest.TestApplicationComponent.Builder {
+    private Application setApplication;
+
+    @Override
+    public Builder setApplication(Application application) {
+<span class="nc" id="L711">      this.setApplication = Preconditions.checkNotNull(application);</span>
+<span class="nc" id="L712">      return this;</span>
+    }
+
+    @Override
+    public QuestionAssessmentProgressControllerTest.TestApplicationComponent build() {
+<span class="nc" id="L717">      Preconditions.checkBuilderRequirement(setApplication, Application.class);</span>
+<span class="nc" id="L718">      return new DaggerQuestionAssessmentProgressControllerTest_TestApplicationComponent(new QuestionAssessmentProgressControllerTest.TestModule(), new QuestionAssessmentProgressControllerTest.TestQuestionModule(), new FractionInputModule(), new ItemSelectionInputModule(), new MultipleChoiceInputModule(), new NumberWithUnitsRuleModule(), new NumericInputRuleModule(), new TextInputRuleModule(), new InteractionsModule(), new DragDropSortInputModule(), new ImageClickInputModule(), new LogStorageModule(), new TestDispatcherModule(), new RatioInputModule(), setApplication);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

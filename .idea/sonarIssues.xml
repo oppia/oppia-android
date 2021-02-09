@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="issues">
+    <option name="index">
+      <map>
+        <entry key="/Dummy.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="/fragment.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/build/generated/source/navigation-args/debug/com/scainitiative/kotlinscainitiativeproject/view/home/HomeFragmentDirections.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/AndroidManifest.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/java/com/scainitiative/kotlinscainitiativeproject/MainActivity.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/java/com/scainitiative/kotlinscainitiativeproject/db/NoteDao.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/java/com/scainitiative/kotlinscainitiativeproject/db/Notedb.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/java/com/scainitiative/kotlinscainitiativeproject/model/Note.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/java/com/scainitiative/kotlinscainitiativeproject/ui/SplashscreenActivity.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/java/com/scainitiative/kotlinscainitiativeproject/ui/SplashscreenFragment.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/java/com/scainitiative/kotlinscainitiativeproject/view/addNote/AddNoteFragment.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/java/com/scainitiative/kotlinscainitiativeproject/view/home/HomeFragment.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/java/com/scainitiative/kotlinscainitiativeproject/view/home/HomeFragmentAdapter.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/res/layout/activity_main.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/res/layout/activity_splashscreen.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/res/layout/fragment_splashscreen.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/res/menu/menu.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../Kotlin-SCA-Initiative-Project/app/src/main/res/navigation/nav_graph.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../SleepTrackerApp/app/src/main/java/com/pecpaker/sleeptrackerapp/ui/sleepTraker/SleepTrackerAdapter.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/.idea/gradle.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/.idea/sonarIssues.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/data/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/domain/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/domain/build/generated/source/kapt/debug/org/oppia/android/domain/audio/CellularAudioDialogController_Factory.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/domain/build/reports/coverage/debug/org.oppia.android.domain.audio/AudioPlayerController$AudioMutableLiveData.html">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/domain/build/reports/coverage/debug/org.oppia.android.domain.audio/AudioPlayerController$AudioPlayerException.html">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/domain/build/reports/coverage/debug/org.oppia.android.domain.audio/AudioPlayerController$PlayProgress.html">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/domain/build/test-results/testDebugUnitTest/TEST-org.oppia.android.domain.audio.CellularAudioDialogControllerTest.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/domain/build/tmp/expandedArchives/org.jacoco.agent-0.8.2.jar_2aca8b620b19ecd063f63feff8caaa38/org/jacoco/agent/AgentJar.class">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/gradle.properties">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/model/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/testing/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/utility/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DaggerCellularAudioDialogControllerTest_TestApplicationComponent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$CellularAudioDialogControllerTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.domain.audio</a> &gt; <span class="el_source">DaggerCellularAudioDialogControllerTest_TestApplicationComponent.java</span></div><h1>DaggerCellularAudioDialogControllerTest_TestApplicationComponent.java</h1><pre class="source lang-java linenums">package org.oppia.android.domain.audio;
+
+import android.app.Application;
+import android.content.Context;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import dagger.internal.DoubleCheck;
+import dagger.internal.InstanceFactory;
+import dagger.internal.Preconditions;
+import dagger.internal.SingleCheck;
+import javax.annotation.Generated;
+import javax.inject.Provider;
+import kotlinx.coroutines.CoroutineDispatcher;
+import org.oppia.android.data.persistence.PersistentCacheStore;
+import org.oppia.android.data.persistence.PersistentCacheStore_Factory_Factory;
+import org.oppia.android.testing.FakeExceptionLogger;
+import org.oppia.android.testing.FakeExceptionLogger_Factory;
+import org.oppia.android.testing.FakeSystemClock;
+import org.oppia.android.testing.FakeSystemClock_Factory;
+import org.oppia.android.testing.TestCoroutineDispatcher;
+import org.oppia.android.testing.TestCoroutineDispatcherEspressoImpl_FactoryImpl_Factory;
+import org.oppia.android.testing.TestCoroutineDispatcherRobolectricImpl;
+import org.oppia.android.testing.TestCoroutineDispatcherRobolectricImpl_FactoryImpl_Factory;
+import org.oppia.android.testing.TestCoroutineDispatchers;
+import org.oppia.android.testing.TestCoroutineDispatchersEspressoImpl;
+import org.oppia.android.testing.TestCoroutineDispatchersEspressoImpl_Factory;
+import org.oppia.android.testing.TestCoroutineDispatchersRobolectricImpl;
+import org.oppia.android.testing.TestCoroutineDispatchersRobolectricImpl_Factory;
+import org.oppia.android.testing.TestDispatcherModule;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBackgroundDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBackgroundTestDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBlockingDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBlockingTestDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideIsOnRobolectricFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideTestCoroutineDispatcherFactoryFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideTestCoroutineDispatchersFactory;
+import org.oppia.android.util.data.AsyncDataSubscriptionManager;
+import org.oppia.android.util.data.AsyncDataSubscriptionManager_Factory;
+import org.oppia.android.util.data.DataProviders;
+import org.oppia.android.util.data.DataProviders_Factory;
+import org.oppia.android.util.data.InMemoryBlockingCache;
+import org.oppia.android.util.data.InMemoryBlockingCache_Factory_Factory;
+import org.oppia.android.util.logging.ConsoleLogger;
+import org.oppia.android.util.logging.ConsoleLogger_Factory;
+import org.oppia.android.util.logging.LogLevel;
+import org.oppia.android.util.profile.DirectoryManagementUtil;
+import org.oppia.android.util.profile.DirectoryManagementUtil_Factory;
+
+@Generated(
+    value = &quot;dagger.internal.codegen.ComponentProcessor&quot;,
+    comments = &quot;https://dagger.dev&quot;
+)
+@SuppressWarnings({
+    &quot;unchecked&quot;,
+    &quot;rawtypes&quot;
+})
+public final class DaggerCellularAudioDialogControllerTest_TestApplicationComponent implements CellularAudioDialogControllerTest.TestApplicationComponent {
+  private final TestDispatcherModule testDispatcherModule;
+
+  private Provider&lt;Application&gt; setApplicationProvider;
+
+  private Provider&lt;Context&gt; provideContextProvider;
+
+  private Provider&lt;Boolean&gt; provideIsOnRobolectricProvider;
+
+  private Provider&lt;FakeSystemClock&gt; fakeSystemClockProvider;
+
+  private Provider&lt;TestCoroutineDispatcherRobolectricImpl.FactoryImpl&gt; factoryImplProvider;
+
+  private Provider&lt;TestCoroutineDispatcher.Factory&gt; provideTestCoroutineDispatcherFactoryProvider;
+
+  private Provider&lt;TestCoroutineDispatcher&gt; provideBackgroundTestDispatcherProvider;
+
+  private Provider&lt;CoroutineDispatcher&gt; provideBackgroundDispatcherProvider;
+
+  private Provider&lt;AsyncDataSubscriptionManager&gt; asyncDataSubscriptionManagerProvider;
+
+  private Provider&lt;FakeExceptionLogger&gt; fakeExceptionLoggerProvider;
+
+  private Provider&lt;DataProviders&gt; dataProvidersProvider;
+
+  private Provider&lt;TestCoroutineDispatcher&gt; provideBlockingTestDispatcherProvider;
+
+  private Provider&lt;CoroutineDispatcher&gt; provideBlockingDispatcherProvider;
+
+  private Provider&lt;InMemoryBlockingCache.Factory&gt; factoryProvider;
+
+  private Provider&lt;DirectoryManagementUtil&gt; directoryManagementUtilProvider;
+
+  private Provider&lt;PersistentCacheStore.Factory&gt; factoryProvider2;
+
+  private Provider&lt;Boolean&gt; provideEnableConsoleLogProvider;
+
+  private Provider&lt;Boolean&gt; provideEnableFileLogProvider;
+
+  private Provider&lt;LogLevel&gt; provideGlobalLogLevelProvider;
+
+  private Provider&lt;ConsoleLogger&gt; consoleLoggerProvider;
+
+  private Provider&lt;CellularAudioDialogController&gt; cellularAudioDialogControllerProvider;
+
+  private Provider&lt;TestCoroutineDispatchersRobolectricImpl&gt; testCoroutineDispatchersRobolectricImplProvider;
+
+  private Provider&lt;TestCoroutineDispatchersEspressoImpl&gt; testCoroutineDispatchersEspressoImplProvider;
+
+  private DaggerCellularAudioDialogControllerTest_TestApplicationComponent(
+      TestDispatcherModule testDispatcherModuleParam,
+      CellularAudioDialogControllerTest.TestModule testModuleParam,
+<span class="nc" id="L108">      Application setApplicationParam) {</span>
+<span class="nc" id="L109">    this.testDispatcherModule = testDispatcherModuleParam;</span>
+<span class="nc" id="L110">    initialize(testDispatcherModuleParam, testModuleParam, setApplicationParam);</span>
+<span class="nc" id="L111">  }</span>
+
+  public static CellularAudioDialogControllerTest.TestApplicationComponent.Builder builder() {
+<span class="nc" id="L114">    return new Builder();</span>
+  }
+
+  private TestCoroutineDispatchers getTestCoroutineDispatchers() {
+<span class="nc" id="L118">    return TestDispatcherModule_ProvideTestCoroutineDispatchersFactory.provideTestCoroutineDispatchers(testDispatcherModule, provideIsOnRobolectricProvider.get(), testCoroutineDispatchersRobolectricImplProvider, testCoroutineDispatchersEspressoImplProvider);}</span>
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  private void initialize(final TestDispatcherModule testDispatcherModuleParam,
+      final CellularAudioDialogControllerTest.TestModule testModuleParam,
+      final Application setApplicationParam) {
+<span class="nc" id="L124">    this.setApplicationProvider = InstanceFactory.create(setApplicationParam);</span>
+<span class="nc" id="L125">    this.provideContextProvider = DoubleCheck.provider(CellularAudioDialogControllerTest_TestModule_ProvideContextFactory.create(testModuleParam, setApplicationProvider));</span>
+<span class="nc" id="L126">    this.provideIsOnRobolectricProvider = DoubleCheck.provider(TestDispatcherModule_ProvideIsOnRobolectricFactory.create(testDispatcherModuleParam));</span>
+<span class="nc" id="L127">    this.fakeSystemClockProvider = DoubleCheck.provider(FakeSystemClock_Factory.create(provideIsOnRobolectricProvider));</span>
+<span class="nc" id="L128">    this.factoryImplProvider = TestCoroutineDispatcherRobolectricImpl_FactoryImpl_Factory.create(fakeSystemClockProvider);</span>
+<span class="nc" id="L129">    this.provideTestCoroutineDispatcherFactoryProvider = TestDispatcherModule_ProvideTestCoroutineDispatcherFactoryFactory.create(testDispatcherModuleParam, provideIsOnRobolectricProvider, factoryImplProvider, TestCoroutineDispatcherEspressoImpl_FactoryImpl_Factory.create());</span>
+<span class="nc" id="L130">    this.provideBackgroundTestDispatcherProvider = DoubleCheck.provider(TestDispatcherModule_ProvideBackgroundTestDispatcherFactory.create(testDispatcherModuleParam, provideTestCoroutineDispatcherFactoryProvider));</span>
+<span class="nc" id="L131">    this.provideBackgroundDispatcherProvider = TestDispatcherModule_ProvideBackgroundDispatcherFactory.create(testDispatcherModuleParam, provideBackgroundTestDispatcherProvider);</span>
+<span class="nc" id="L132">    this.asyncDataSubscriptionManagerProvider = DoubleCheck.provider(AsyncDataSubscriptionManager_Factory.create(provideBackgroundDispatcherProvider));</span>
+<span class="nc" id="L133">    this.fakeExceptionLoggerProvider = DoubleCheck.provider(FakeExceptionLogger_Factory.create());</span>
+<span class="nc" id="L134">    this.dataProvidersProvider = SingleCheck.provider(DataProviders_Factory.create(provideContextProvider, provideBackgroundDispatcherProvider, asyncDataSubscriptionManagerProvider, (Provider) fakeExceptionLoggerProvider));</span>
+<span class="nc" id="L135">    this.provideBlockingTestDispatcherProvider = DoubleCheck.provider(TestDispatcherModule_ProvideBlockingTestDispatcherFactory.create(testDispatcherModuleParam, provideTestCoroutineDispatcherFactoryProvider));</span>
+<span class="nc" id="L136">    this.provideBlockingDispatcherProvider = TestDispatcherModule_ProvideBlockingDispatcherFactory.create(testDispatcherModuleParam, provideBlockingTestDispatcherProvider);</span>
+<span class="nc" id="L137">    this.factoryProvider = DoubleCheck.provider(InMemoryBlockingCache_Factory_Factory.create(provideBlockingDispatcherProvider));</span>
+<span class="nc" id="L138">    this.directoryManagementUtilProvider = DoubleCheck.provider(DirectoryManagementUtil_Factory.create(provideContextProvider));</span>
+<span class="nc" id="L139">    this.factoryProvider2 = DoubleCheck.provider(PersistentCacheStore_Factory_Factory.create(provideContextProvider, factoryProvider, asyncDataSubscriptionManagerProvider, directoryManagementUtilProvider));</span>
+<span class="nc" id="L140">    this.provideEnableConsoleLogProvider = CellularAudioDialogControllerTest_TestModule_ProvideEnableConsoleLogFactory.create(testModuleParam);</span>
+<span class="nc" id="L141">    this.provideEnableFileLogProvider = CellularAudioDialogControllerTest_TestModule_ProvideEnableFileLogFactory.create(testModuleParam);</span>
+<span class="nc" id="L142">    this.provideGlobalLogLevelProvider = CellularAudioDialogControllerTest_TestModule_ProvideGlobalLogLevelFactory.create(testModuleParam);</span>
+<span class="nc" id="L143">    this.consoleLoggerProvider = DoubleCheck.provider(ConsoleLogger_Factory.create(provideContextProvider, provideBlockingDispatcherProvider, provideEnableConsoleLogProvider, provideEnableFileLogProvider, provideGlobalLogLevelProvider));</span>
+<span class="nc" id="L144">    this.cellularAudioDialogControllerProvider = DoubleCheck.provider(CellularAudioDialogController_Factory.create(factoryProvider2, consoleLoggerProvider));</span>
+<span class="nc" id="L145">    this.testCoroutineDispatchersRobolectricImplProvider = TestCoroutineDispatchersRobolectricImpl_Factory.create(provideBackgroundTestDispatcherProvider, provideBlockingTestDispatcherProvider, fakeSystemClockProvider);</span>
+<span class="nc" id="L146">    this.testCoroutineDispatchersEspressoImplProvider = TestCoroutineDispatchersEspressoImpl_Factory.create(provideBackgroundTestDispatcherProvider, provideBlockingTestDispatcherProvider);</span>
+<span class="nc" id="L147">  }</span>
+
+  @Override
+  public DataProviders getDataProviders() {
+<span class="nc" id="L151">    return dataProvidersProvider.get();}</span>
+
+  @Override
+  public void inject(CellularAudioDialogControllerTest cellularDataControllerTest) {
+<span class="nc" id="L155">    injectCellularAudioDialogControllerTest(cellularDataControllerTest);}</span>
+
+  @CanIgnoreReturnValue
+  private CellularAudioDialogControllerTest injectCellularAudioDialogControllerTest(
+      CellularAudioDialogControllerTest instance) {
+<span class="nc" id="L160">    CellularAudioDialogControllerTest_MembersInjector.injectCellularAudioDialogController(instance, cellularAudioDialogControllerProvider.get());</span>
+<span class="nc" id="L161">    CellularAudioDialogControllerTest_MembersInjector.injectTestCoroutineDispatchers(instance, getTestCoroutineDispatchers());</span>
+<span class="nc" id="L162">    return instance;</span>
+  }
+
+  private static final class Builder implements CellularAudioDialogControllerTest.TestApplicationComponent.Builder {
+    private Application setApplication;
+
+    @Override
+    public Builder setApplication(Application application) {
+<span class="nc" id="L170">      this.setApplication = Preconditions.checkNotNull(application);</span>
+<span class="nc" id="L171">      return this;</span>
+    }
+
+    @Override
+    public CellularAudioDialogControllerTest.TestApplicationComponent build() {
+<span class="nc" id="L176">      Preconditions.checkBuilderRequirement(setApplication, Application.class);</span>
+<span class="nc" id="L177">      return new DaggerCellularAudioDialogControllerTest_TestApplicationComponent(new TestDispatcherModule(), new CellularAudioDialogControllerTest.TestModule(), setApplication);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

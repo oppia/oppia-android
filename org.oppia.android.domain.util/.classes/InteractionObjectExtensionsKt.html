@@ -1,0 +1,227 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: InteractionObjectExtensionsKt</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.oppia.android.domain.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: InteractionObjectExtensionsKt (org.oppia.android.domain.util)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InteractionObjectExtensionsKt</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (6/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30.6%
+  </span>
+  <span class="absValue">
+    (11/ 36)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">InteractionObjectExtensionsKt$toAnswerString$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">InteractionObjectExtensionsKt$toAnswerString$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">InteractionObjectExtensionsKt$WhenMappings</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (8/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    37.5%
+  </span>
+  <span class="absValue">
+    (15/ 40)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><b class="fc"><i>1</i>&nbsp;package org.oppia.android.domain.util</b>
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import org.oppia.android.app.model.ClickOnImage
+<i>4</i>&nbsp;import org.oppia.android.app.model.Fraction
+<i>5</i>&nbsp;import org.oppia.android.app.model.ImageWithRegions
+<i>6</i>&nbsp;import org.oppia.android.app.model.InteractionObject
+<i>7</i>&nbsp;import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.BOOL_VALUE
+<i>8</i>&nbsp;import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.CLICK_ON_IMAGE
+<i>9</i>&nbsp;import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.FRACTION
+<i>10</i>&nbsp;import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.IMAGE_WITH_REGIONS
+<i>11</i>&nbsp;import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING
+<i>12</i>&nbsp;import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT
+<i>13</i>&nbsp;import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NORMALIZED_STRING
+<i>14</i>&nbsp;import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS
+<i>15</i>&nbsp;import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.OBJECTTYPE_NOT_SET
+<i>16</i>&nbsp;import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
+<i>17</i>&nbsp;import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.REAL
+<i>18</i>&nbsp;import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING
+<i>19</i>&nbsp;import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.SIGNED_INT
+<i>20</i>&nbsp;import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+<i>21</i>&nbsp;import org.oppia.android.app.model.NumberUnit
+<i>22</i>&nbsp;import org.oppia.android.app.model.NumberWithUnits
+<i>23</i>&nbsp;import org.oppia.android.app.model.StringList
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;/** Returns a parsable string representation of a user-submitted answer version of this [InteractionObject]. */
+<i>26</i>&nbsp;fun InteractionObject.toAnswerString(): String {
+<b class="fc"><i>27</i>&nbsp;  return when (checkNotNull(objectTypeCase)) {</b>
+<b class="nc"><i>28</i>&nbsp;    NORMALIZED_STRING -&gt; normalizedString</b>
+<b class="nc"><i>29</i>&nbsp;    SIGNED_INT -&gt; signedInt.toString()</b>
+<b class="nc"><i>30</i>&nbsp;    NON_NEGATIVE_INT -&gt; nonNegativeInt.toString()</b>
+<b class="nc"><i>31</i>&nbsp;    REAL -&gt; real.toString()</b>
+<b class="nc"><i>32</i>&nbsp;    BOOL_VALUE -&gt; boolValue.toString()</b>
+<b class="nc"><i>33</i>&nbsp;    NUMBER_WITH_UNITS -&gt; numberWithUnits.toAnswerString()</b>
+<b class="nc"><i>34</i>&nbsp;    SET_OF_HTML_STRING -&gt; setOfHtmlString.toAnswerString()</b>
+<b class="nc"><i>35</i>&nbsp;    FRACTION -&gt; fraction.toAnswerString()</b>
+<b class="fc"><i>36</i>&nbsp;    LIST_OF_SETS_OF_HTML_STRING -&gt; listOfSetsOfHtmlString.toAnswerString()</b>
+<b class="fc"><i>37</i>&nbsp;    IMAGE_WITH_REGIONS -&gt; imageWithRegions.toAnswerString()</b>
+<b class="fc"><i>38</i>&nbsp;    CLICK_ON_IMAGE -&gt; clickOnImage.toAnswerString()</b>
+<b class="fc"><i>39</i>&nbsp;    RATIO_EXPRESSION -&gt; ratioExpression.toAnswerString()</b>
+<b class="nc"><i>40</i>&nbsp;    OBJECTTYPE_NOT_SET -&gt; &quot;&quot; // The default InteractionObject should be an empty string.</b>
+<i>41</i>&nbsp;  }
+<i>42</i>&nbsp;}
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;// https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/NumberWithUnitsObjectFactory.ts#L50
+<i>45</i>&nbsp;private fun NumberWithUnits.toAnswerString(): String {
+<b class="nc"><i>46</i>&nbsp;  val prefixedUnits = unitList.filter(::isPrefixUnit)</b>
+<b class="nc"><i>47</i>&nbsp;  val suffixedUnits = unitList.filterNot(::isPrefixUnit)</b>
+<i>48</i>&nbsp;
+<b class="nc"><i>49</i>&nbsp;  val prefixString = prefixedUnits.joinToString(separator = &quot; &quot;)</b>
+<b class="nc"><i>50</i>&nbsp;  val suffixedString =</b>
+<b class="nc"><i>51</i>&nbsp;    suffixedUnits.joinToString(separator = &quot; &quot;, transform = NumberUnit::toAnswerStringPart)</b>
+<b class="nc"><i>52</i>&nbsp;  val valueString = if (numberTypeCase == NumberWithUnits.NumberTypeCase.REAL) {</b>
+<b class="nc"><i>53</i>&nbsp;    real.toString()</b>
+<i>54</i>&nbsp;  } else {
+<b class="nc"><i>55</i>&nbsp;    fraction.toAnswerString()</b>
+<i>56</i>&nbsp;  }
+<i>57</i>&nbsp;
+<b class="nc"><i>58</i>&nbsp;  return &quot;$prefixString$valueString $suffixedString&quot;.trim()</b>
+<i>59</i>&nbsp;}
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;// TODO(#152): Standardize these with a currency library.
+<i>62</i>&nbsp;private fun isPrefixUnit(numberUnit: NumberUnit): Boolean {
+<b class="nc"><i>63</i>&nbsp;  return numberUnit.unit in listOf(&quot;$&quot;, &quot;Rs&quot;, &quot;₹&quot;, &quot;€&quot;, &quot;£&quot;, &quot;¥&quot;)</b>
+<i>64</i>&nbsp;}
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;// https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/UnitsObjectFactory.ts#L49
+<i>67</i>&nbsp;private fun NumberUnit.toAnswerStringPart(): String {
+<b class="nc"><i>68</i>&nbsp;  return if (exponent == 1) unit else &quot;^$unit&quot;</b>
+<i>69</i>&nbsp;}
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;private fun StringList.toAnswerString(): String {
+<b class="fc"><i>72</i>&nbsp;  return htmlList.joinToString()</b>
+<i>73</i>&nbsp;}
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;private fun ListOfSetsOfHtmlStrings.toAnswerString(): String {
+<b class="fc"><i>76</i>&nbsp;  return setOfHtmlStringsList.joinToString { &quot;[${it.toAnswerString()}]&quot; }</b>
+<i>77</i>&nbsp;}
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;private fun ImageWithRegions.toAnswerString(): String =
+<b class="fc"><i>80</i>&nbsp;  labelRegionsOrBuilderList.joinToString {</b>
+<b class="fc"><i>81</i>&nbsp;    &quot;[${it.region.regionType} ${it.label} (${it.region.area.upperLeft.x}, &quot; +</b>
+<b class="fc"><i>82</i>&nbsp;      &quot;${it.region.area.upperLeft.y}), (${it.region.area.lowerRight.x}, &quot; +</b>
+<b class="fc"><i>83</i>&nbsp;      &quot;${it.region.area.lowerRight.y})]&quot;</b>
+<b class="fc"><i>84</i>&nbsp;  }</b>
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;private fun ClickOnImage.toAnswerString(): String =
+<b class="fc"><i>87</i>&nbsp;  &quot;[(${clickedRegionsList.joinToString()}), (${clickPosition.x}, ${clickPosition.y})]&quot;</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;// https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/FractionObjectFactory.ts#L47
+<i>90</i>&nbsp;private fun Fraction.toAnswerString(): String {
+<b class="nc"><i>91</i>&nbsp;  val fractionString = if (numerator != 0) &quot;$numerator/$denominator&quot; else &quot;&quot;</b>
+<b class="nc"><i>92</i>&nbsp;  val mixedString = if (wholeNumber != 0) &quot;$wholeNumber $fractionString&quot; else &quot;&quot;</b>
+<b class="nc"><i>93</i>&nbsp;  val positiveFractionString = if (mixedString.isNotEmpty()) mixedString else fractionString</b>
+<b class="nc"><i>94</i>&nbsp;  val negativeString = if (isNegative) &quot;-&quot; else &quot;&quot;</b>
+<b class="nc"><i>95</i>&nbsp;  return if (positiveFractionString.isNotEmpty()) &quot;$negativeString$positiveFractionString&quot; else &quot;0&quot;</b>
+<i>96</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-12-22 23:19</div>
+</div>
+</body>
+</html>

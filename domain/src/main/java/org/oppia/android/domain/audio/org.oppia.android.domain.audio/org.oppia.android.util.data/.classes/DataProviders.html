@@ -1,0 +1,451 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DataProviders</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.oppia.android.util.data</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DataProviders (org.oppia.android.util.data)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DataProviders</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package org.oppia.android.util.data
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.content.Context
+<i>4</i>&nbsp;import androidx.lifecycle.LiveData
+<i>5</i>&nbsp;import dagger.Reusable
+<i>6</i>&nbsp;import kotlinx.coroutines.CoroutineDispatcher
+<i>7</i>&nbsp;import kotlinx.coroutines.CoroutineScope
+<i>8</i>&nbsp;import kotlinx.coroutines.Job
+<i>9</i>&nbsp;import kotlinx.coroutines.launch
+<i>10</i>&nbsp;import org.oppia.android.util.logging.ExceptionLogger
+<i>11</i>&nbsp;import org.oppia.android.util.threading.BackgroundDispatcher
+<i>12</i>&nbsp;import java.util.concurrent.atomic.AtomicBoolean
+<i>13</i>&nbsp;import java.util.concurrent.atomic.AtomicReference
+<i>14</i>&nbsp;import javax.inject.Inject
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;/**
+<i>17</i>&nbsp; * Various functions to create or manipulate [DataProvider]s.
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; * It&#39;s recommended to transform providers rather than [LiveData] since the latter occurs on the
+<i>20</i>&nbsp; * main thread, and the former can occur safely on background threads to reduce UI lag and user
+<i>21</i>&nbsp; * perceived latency.
+<i>22</i>&nbsp; */
+<i>23</i>&nbsp;@Reusable // Since otherwise a new provider will be created for each companion object call.
+<b class="nc"><i>24</i>&nbsp;class DataProviders @Inject constructor(</b>
+<i>25</i>&nbsp;  private val context: Context,
+<i>26</i>&nbsp;  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
+<i>27</i>&nbsp;  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+<i>28</i>&nbsp;  private val exceptionLogger: ExceptionLogger
+<i>29</i>&nbsp;) {
+<i>30</i>&nbsp;  companion object {
+<i>31</i>&nbsp;    /**
+<i>32</i>&nbsp;     * Returns a new [DataProvider] that applies the specified function each time new data is
+<i>33</i>&nbsp;     * available to this data provider, and provides the transformed data to its own subscribers.
+<i>34</i>&nbsp;     *
+<i>35</i>&nbsp;     * Notifications to the original data provider will also notify subscribers to the transformed
+<i>36</i>&nbsp;     * data provider of changes, but not vice versa.
+<i>37</i>&nbsp;     *
+<i>38</i>&nbsp;     * Note that the input transformation function should be non-blocking, have no side effects, and
+<i>39</i>&nbsp;     * be thread-safe since it may be called on different background threads at different times. It
+<i>40</i>&nbsp;     * should perform no UI operations or otherwise interact with UI components.
+<i>41</i>&nbsp;     */
+<i>42</i>&nbsp;    fun &lt;I, O&gt; DataProvider&lt;I&gt;.transform(newId: Any, function: (I) -&gt; O): DataProvider&lt;O&gt; {
+<i>43</i>&nbsp;      val dataProviders = getDataProviders()
+<i>44</i>&nbsp;      dataProviders.asyncDataSubscriptionManager.associateIds(newId, getId())
+<i>45</i>&nbsp;      return object : DataProvider&lt;O&gt;(context) {
+<i>46</i>&nbsp;        override fun getId(): Any = newId
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;        override suspend fun retrieveData(): AsyncResult&lt;O&gt; {
+<i>49</i>&nbsp;          return try {
+<i>50</i>&nbsp;            this@transform.retrieveData().transform(function)
+<i>51</i>&nbsp;          } catch (e: Exception) {
+<i>52</i>&nbsp;            dataProviders.exceptionLogger.logException(e)
+<i>53</i>&nbsp;            AsyncResult.failed(e)
+<i>54</i>&nbsp;          }
+<i>55</i>&nbsp;        }
+<i>56</i>&nbsp;      }
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    /**
+<i>60</i>&nbsp;     * Returns a transformed [DataProvider] in the same way as [transform] except the transformation
+<i>61</i>&nbsp;     * function can be blocking.
+<i>62</i>&nbsp;     */
+<i>63</i>&nbsp;    fun &lt;I, O&gt; DataProvider&lt;I&gt;.transformAsync(
+<i>64</i>&nbsp;      newId: Any,
+<i>65</i>&nbsp;      function: suspend (I) -&gt; AsyncResult&lt;O&gt;
+<i>66</i>&nbsp;    ): DataProvider&lt;O&gt; {
+<i>67</i>&nbsp;      val dataProviders = getDataProviders()
+<i>68</i>&nbsp;      dataProviders.asyncDataSubscriptionManager.associateIds(newId, getId())
+<i>69</i>&nbsp;      return object : DataProvider&lt;O&gt;(context) {
+<i>70</i>&nbsp;        override fun getId(): Any = newId
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;        override suspend fun retrieveData(): AsyncResult&lt;O&gt; {
+<i>73</i>&nbsp;          return this@transformAsync.retrieveData().transformAsync(function)
+<i>74</i>&nbsp;        }
+<i>75</i>&nbsp;      }
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    /**
+<i>79</i>&nbsp;     * Returns a new [NestedTransformedDataProvider] based on the current provider. By default, the
+<i>80</i>&nbsp;     * data provider returned by this function behaves the same as [transformAsync]&#39;s, except this
+<i>81</i>&nbsp;     * one supports changing its based provider. If callers do not plan to change the underlying
+<i>82</i>&nbsp;     * base provider, [transformAsync] should be used, instead.
+<i>83</i>&nbsp;     */
+<i>84</i>&nbsp;    fun &lt;I, O&gt; DataProvider&lt;I&gt;.transformNested(
+<i>85</i>&nbsp;      newId: Any,
+<i>86</i>&nbsp;      function: suspend (I) -&gt; AsyncResult&lt;O&gt;
+<i>87</i>&nbsp;    ): NestedTransformedDataProvider&lt;O&gt; {
+<i>88</i>&nbsp;      return NestedTransformedDataProvider.createNestedTransformedDataProvider(
+<i>89</i>&nbsp;        context, newId, this, function, getDataProviders().asyncDataSubscriptionManager
+<i>90</i>&nbsp;      )
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    /**
+<i>94</i>&nbsp;     * Returns a new [DataProvider] that combines this provider with another by applying the
+<i>95</i>&nbsp;     * specified function to produce a new value each time either data provider changes.
+<i>96</i>&nbsp;     *
+<i>97</i>&nbsp;     * Notifications to the original data providers will also notify subscribers to the combined
+<i>98</i>&nbsp;     * data provider of changes, but not vice versa.
+<i>99</i>&nbsp;     *
+<i>100</i>&nbsp;     * Note that the combine function should be non-blocking, have no side effects, and be
+<i>101</i>&nbsp;     * thread-safe since it may be called on different background threads at different times. It
+<i>102</i>&nbsp;     * should perform no UI operations or otherwise interact with UI components.
+<i>103</i>&nbsp;     */
+<i>104</i>&nbsp;    fun &lt;O, T1, T2&gt; DataProvider&lt;T1&gt;.combineWith(
+<i>105</i>&nbsp;      dataProvider: DataProvider&lt;T2&gt;,
+<i>106</i>&nbsp;      newId: Any,
+<i>107</i>&nbsp;      function: (T1, T2) -&gt; O
+<i>108</i>&nbsp;    ): DataProvider&lt;O&gt; {
+<i>109</i>&nbsp;      val dataProviders = getDataProviders()
+<i>110</i>&nbsp;      dataProviders.asyncDataSubscriptionManager.associateIds(newId, getId())
+<i>111</i>&nbsp;      dataProviders.asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
+<i>112</i>&nbsp;      return object : DataProvider&lt;O&gt;(context) {
+<i>113</i>&nbsp;        override fun getId(): Any {
+<i>114</i>&nbsp;          return newId
+<i>115</i>&nbsp;        }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;        override suspend fun retrieveData(): AsyncResult&lt;O&gt; {
+<i>118</i>&nbsp;          return try {
+<i>119</i>&nbsp;            this@combineWith.retrieveData().combineWith(dataProvider.retrieveData(), function)
+<i>120</i>&nbsp;          } catch (e: Exception) {
+<i>121</i>&nbsp;            dataProviders.exceptionLogger.logException(e)
+<i>122</i>&nbsp;            AsyncResult.failed(e)
+<i>123</i>&nbsp;          }
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;      }
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    /**
+<i>129</i>&nbsp;     * Returns a transformed [DataProvider] in the same way as [combineWith] except the combine
+<i>130</i>&nbsp;     * function can be blocking.
+<i>131</i>&nbsp;     */
+<i>132</i>&nbsp;    fun &lt;O, T1, T2&gt; DataProvider&lt;T1&gt;.combineWithAsync(
+<i>133</i>&nbsp;      dataProvider: DataProvider&lt;T2&gt;,
+<i>134</i>&nbsp;      newId: Any,
+<i>135</i>&nbsp;      function: suspend (T1, T2) -&gt; AsyncResult&lt;O&gt;
+<i>136</i>&nbsp;    ): DataProvider&lt;O&gt; {
+<i>137</i>&nbsp;      val dataProviders = getDataProviders()
+<i>138</i>&nbsp;      dataProviders.asyncDataSubscriptionManager.associateIds(newId, getId())
+<i>139</i>&nbsp;      dataProviders.asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
+<i>140</i>&nbsp;      return object : DataProvider&lt;O&gt;(context) {
+<i>141</i>&nbsp;        override fun getId(): Any {
+<i>142</i>&nbsp;          return newId
+<i>143</i>&nbsp;        }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;        override suspend fun retrieveData(): AsyncResult&lt;O&gt; {
+<i>146</i>&nbsp;          return this@combineWithAsync.retrieveData().combineWithAsync(
+<i>147</i>&nbsp;            dataProvider.retrieveData(), function
+<i>148</i>&nbsp;          )
+<i>149</i>&nbsp;        }
+<i>150</i>&nbsp;      }
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    /**
+<i>154</i>&nbsp;     * Converts a [DataProvider] to [LiveData]. This will use a background executor to handle
+<i>155</i>&nbsp;     * processing of the coroutine, but [LiveData] guarantees that final delivery of the result will
+<i>156</i>&nbsp;     * happen on the main thread.
+<i>157</i>&nbsp;     */
+<i>158</i>&nbsp;    fun &lt;T&gt; DataProvider&lt;T&gt;.toLiveData(): LiveData&lt;AsyncResult&lt;T&gt;&gt; {
+<i>159</i>&nbsp;      val dataProviders = getDataProviders()
+<i>160</i>&nbsp;      return NotifiableAsyncLiveData(
+<i>161</i>&nbsp;        dataProviders.backgroundDispatcher, dataProviders.asyncDataSubscriptionManager, this
+<i>162</i>&nbsp;      )
+<i>163</i>&nbsp;    }
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    private fun &lt;T&gt; DataProvider&lt;T&gt;.getDataProviders(): DataProviders {
+<i>166</i>&nbsp;      val injectorProvider = context.applicationContext as DataProvidersInjectorProvider
+<i>167</i>&nbsp;      return injectorProvider.getDataProvidersInjector().getDataProviders()
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;  }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;  /**
+<i>172</i>&nbsp;   * Returns a new in-memory [DataProvider] with the specified function being called each time the
+<i>173</i>&nbsp;   * provider&#39;s data is retrieved, and the specified identifier.
+<i>174</i>&nbsp;   *
+<i>175</i>&nbsp;   * Note that the loadFromMemory function should be non-blocking, and have no side effects. It
+<i>176</i>&nbsp;   * should also be thread safe since it can be called from different background threads. It also
+<i>177</i>&nbsp;   * should never interact with UI components or perform UI operations.
+<i>178</i>&nbsp;   *
+<i>179</i>&nbsp;   * Changes to the returned data provider can be propagated using calls to
+<i>180</i>&nbsp;   * [AsyncDataSubscriptionManager.notifyChange] with the in-memory provider&#39;s identifier.
+<i>181</i>&nbsp;   */
+<i>182</i>&nbsp;  fun &lt;T&gt; createInMemoryDataProvider(id: Any, loadFromMemory: () -&gt; T): DataProvider&lt;T&gt; {
+<b class="nc"><i>183</i>&nbsp;    return object : DataProvider&lt;T&gt;(context) {</b>
+<i>184</i>&nbsp;      override fun getId(): Any {
+<i>185</i>&nbsp;        return id
+<i>186</i>&nbsp;      }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;      override suspend fun retrieveData(): AsyncResult&lt;T&gt; {
+<i>189</i>&nbsp;        return try {
+<i>190</i>&nbsp;          AsyncResult.success(loadFromMemory())
+<i>191</i>&nbsp;        } catch (e: Exception) {
+<i>192</i>&nbsp;          exceptionLogger.logException(e)
+<i>193</i>&nbsp;          AsyncResult.failed(e)
+<i>194</i>&nbsp;        }
+<i>195</i>&nbsp;      }
+<i>196</i>&nbsp;    }
+<i>197</i>&nbsp;  }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;  /**
+<i>200</i>&nbsp;   * Returns a new in-memory [DataProvider] in the same way as [createInMemoryDataProvider] except
+<i>201</i>&nbsp;   * the load function can be blocking.
+<i>202</i>&nbsp;   */
+<i>203</i>&nbsp;  fun &lt;T&gt; createInMemoryDataProviderAsync(
+<i>204</i>&nbsp;    id: Any,
+<i>205</i>&nbsp;    loadFromMemoryAsync: suspend () -&gt; AsyncResult&lt;T&gt;
+<i>206</i>&nbsp;  ): DataProvider&lt;T&gt; {
+<b class="nc"><i>207</i>&nbsp;    return object : DataProvider&lt;T&gt;(context) {</b>
+<i>208</i>&nbsp;      override fun getId(): Any {
+<i>209</i>&nbsp;        return id
+<i>210</i>&nbsp;      }
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;      override suspend fun retrieveData(): AsyncResult&lt;T&gt; {
+<i>213</i>&nbsp;        return loadFromMemoryAsync()
+<i>214</i>&nbsp;      }
+<i>215</i>&nbsp;    }
+<i>216</i>&nbsp;  }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;  /**
+<i>219</i>&nbsp;   * A [DataProvider] that acts in the same way as [transformAsync] except the underlying base data
+<i>220</i>&nbsp;   * provider can change.
+<i>221</i>&nbsp;   */
+<i>222</i>&nbsp;  class NestedTransformedDataProvider&lt;O&gt; private constructor(
+<i>223</i>&nbsp;    context: Context,
+<i>224</i>&nbsp;    private val id: Any,
+<i>225</i>&nbsp;    private var baseId: Any,
+<i>226</i>&nbsp;    private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+<i>227</i>&nbsp;    private var retrieveTransformedData: suspend () -&gt; AsyncResult&lt;O&gt;
+<i>228</i>&nbsp;  ) : DataProvider&lt;O&gt;(context) {
+<i>229</i>&nbsp;    init {
+<i>230</i>&nbsp;      initializeTransformer()
+<i>231</i>&nbsp;    }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;    override fun getId(): Any = id
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;    override suspend fun retrieveData(): AsyncResult&lt;O&gt; {
+<i>236</i>&nbsp;      return retrieveTransformedData()
+<i>237</i>&nbsp;    }
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    /**
+<i>240</i>&nbsp;     * Sets a new base [DataProvider] and transform function from which to derive this data
+<i>241</i>&nbsp;     * provider.
+<i>242</i>&nbsp;     *
+<i>243</i>&nbsp;     * Note that this will notify any observers of this provider so that they receive the latest
+<i>244</i>&nbsp;     * transformed value.
+<i>245</i>&nbsp;     */
+<i>246</i>&nbsp;    fun &lt;I&gt; setBaseDataProvider(
+<i>247</i>&nbsp;      dataProvider: DataProvider&lt;I&gt;,
+<i>248</i>&nbsp;      transform: suspend (I) -&gt; AsyncResult&lt;O&gt;
+<i>249</i>&nbsp;    ) {
+<i>250</i>&nbsp;      asyncDataSubscriptionManager.dissociateIds(id, baseId)
+<i>251</i>&nbsp;      baseId = dataProvider.getId()
+<i>252</i>&nbsp;      retrieveTransformedData = { dataProvider.retrieveData().transformAsync(transform) }
+<i>253</i>&nbsp;      initializeTransformer()
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;      // Notify subscribers that the base provider has changed.
+<i>256</i>&nbsp;      asyncDataSubscriptionManager.notifyChangeAsync(id)
+<i>257</i>&nbsp;    }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    private fun initializeTransformer() {
+<i>260</i>&nbsp;      asyncDataSubscriptionManager.associateIds(id, baseId)
+<i>261</i>&nbsp;    }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    companion object {
+<i>264</i>&nbsp;      /** Returns a new [NestedTransformedDataProvider]. */
+<i>265</i>&nbsp;      internal fun &lt;I, O&gt; createNestedTransformedDataProvider(
+<i>266</i>&nbsp;        context: Context,
+<i>267</i>&nbsp;        id: Any,
+<i>268</i>&nbsp;        baseDataProvider: DataProvider&lt;I&gt;,
+<i>269</i>&nbsp;        transform: suspend (I) -&gt; AsyncResult&lt;O&gt;,
+<i>270</i>&nbsp;        asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+<i>271</i>&nbsp;      ): NestedTransformedDataProvider&lt;O&gt; {
+<i>272</i>&nbsp;        return NestedTransformedDataProvider(
+<i>273</i>&nbsp;          context, id, baseDataProvider.getId(), asyncDataSubscriptionManager
+<i>274</i>&nbsp;        ) {
+<i>275</i>&nbsp;          baseDataProvider.retrieveData().transformAsync(transform)
+<i>276</i>&nbsp;        }
+<i>277</i>&nbsp;      }
+<i>278</i>&nbsp;    }
+<i>279</i>&nbsp;  }
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;  /**
+<i>282</i>&nbsp;   * A version of [LiveData] which automatically pipes data from a specified [DataProvider] to
+<i>283</i>&nbsp;   * LiveData observers in a thread-safe and lifecycle-safe way.
+<i>284</i>&nbsp;   *
+<i>285</i>&nbsp;   * This class will immediately retrieve the latest state of its input [DataProvider] at the first
+<i>286</i>&nbsp;   * occurrence of an active observer, but not before then. It guarantees that all active observers
+<i>287</i>&nbsp;   * (including new ones) will receive an eventually consistent state of the data provider. It also
+<i>288</i>&nbsp;   * will not deliver the same value more than once in a row to avoid over-alerting observers of
+<i>289</i>&nbsp;   * changes.
+<i>290</i>&nbsp;   */
+<i>291</i>&nbsp;  private class NotifiableAsyncLiveData&lt;T&gt;(
+<i>292</i>&nbsp;    private val dispatcher: CoroutineDispatcher,
+<i>293</i>&nbsp;    private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+<i>294</i>&nbsp;    private val dataProvider: DataProvider&lt;T&gt;
+<i>295</i>&nbsp;  ) : LiveData&lt;AsyncResult&lt;T&gt;&gt;() {
+<i>296</i>&nbsp;    private val asyncSubscriber: ObserveAsyncChange = this::handleDataProviderUpdate
+<i>297</i>&nbsp;    private val isActive = AtomicBoolean(false)
+<i>298</i>&nbsp;    private val runningJob = AtomicReference&lt;Job?&gt;(null)
+<i>299</i>&nbsp;    private var cache: AsyncResult&lt;T&gt;? = null // only accessed on the main thread
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;    override fun onActive() {
+<i>302</i>&nbsp;      super.onActive()
+<i>303</i>&nbsp;      // Subscribe to the ID immediately in case there&#39;s a value in the data provider already ready.
+<i>304</i>&nbsp;      asyncDataSubscriptionManager.subscribe(dataProvider.getId(), asyncSubscriber)
+<i>305</i>&nbsp;      isActive.set(true)
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;      // If there&#39;s no currently cached value or soon-to-be cached value, kick-off a data retrieval
+<i>308</i>&nbsp;      // so that new observers can receive the most up-to-date value.
+<i>309</i>&nbsp;      if (runningJob.get() == null) {
+<i>310</i>&nbsp;        val job = CoroutineScope(dispatcher).launch {
+<i>311</i>&nbsp;          handleDataProviderUpdate()
+<i>312</i>&nbsp;        }
+<i>313</i>&nbsp;        // Note that this can race against handleDataProviderUpdate() clearing the job, but in
+<i>314</i>&nbsp;        // either outcome the behavior should still be correct (eventual consistency).
+<i>315</i>&nbsp;        runningJob.set(job)
+<i>316</i>&nbsp;      }
+<i>317</i>&nbsp;    }
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;    override fun onInactive() {
+<i>320</i>&nbsp;      super.onInactive()
+<i>321</i>&nbsp;      // Stop watching for updates immediately, then cancel any existing operations.
+<i>322</i>&nbsp;      asyncDataSubscriptionManager.unsubscribe(dataProvider.getId(), asyncSubscriber)
+<i>323</i>&nbsp;      isActive.set(false)
+<i>324</i>&nbsp;      // This can cancel downstream operations that may want to complete side effects.
+<i>325</i>&nbsp;      runningJob.getAndSet(null)?.cancel()
+<i>326</i>&nbsp;    }
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;    override fun setValue(value: AsyncResult&lt;T&gt;?) {
+<i>329</i>&nbsp;      checkNotNull(value) { &quot;Null values should not be posted to NotifiableAsyncLiveData.&quot; }
+<i>330</i>&nbsp;      val currentCache = cache // This is safe because cache can only be changed on the main thread.
+<i>331</i>&nbsp;      if (currentCache != null) {
+<i>332</i>&nbsp;        if (value.isNewerThanOrSameAgeAs(currentCache) &amp;&amp; currentCache != value) {
+<i>333</i>&nbsp;          // Only propagate the value if it&#39;s changed and is newer since it&#39;s possible for observer
+<i>334</i>&nbsp;          // callbacks to happen out-of-order.
+<i>335</i>&nbsp;          cache = value
+<i>336</i>&nbsp;          super.setValue(value)
+<i>337</i>&nbsp;        }
+<i>338</i>&nbsp;      } else {
+<i>339</i>&nbsp;        cache = value
+<i>340</i>&nbsp;        super.setValue(value)
+<i>341</i>&nbsp;      }
+<i>342</i>&nbsp;    }
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    private suspend fun handleDataProviderUpdate() {
+<i>345</i>&nbsp;      // This doesn&#39;t guarantee that retrieveData() is only called when the live data is active
+<i>346</i>&nbsp;      // (e.g. it can become inactive right after the value is posted &amp; before it&#39;s dispatched), but
+<i>347</i>&nbsp;      // it does guarantee that it won&#39;t be called when the live data is currently inactive. This
+<i>348</i>&nbsp;      // also safely passes the value to the main thread and relies on LiveData&#39;s own internal
+<i>349</i>&nbsp;      // mechanism which in turn always calls setValue(), even if there are no active observers. See
+<i>350</i>&nbsp;      // the override of setValue() above for the adjusted semantics this class requires to ensure
+<i>351</i>&nbsp;      // its own cache remains up-to-date.
+<i>352</i>&nbsp;      retrieveFromDataProvider()?.let {
+<i>353</i>&nbsp;        super.postValue(it)
+<i>354</i>&nbsp;        runningJob.set(null)
+<i>355</i>&nbsp;      }
+<i>356</i>&nbsp;    }
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    private suspend fun retrieveFromDataProvider(): AsyncResult&lt;T&gt;? {
+<i>359</i>&nbsp;      return if (isActive.get()) {
+<i>360</i>&nbsp;        // Although it&#39;s possible for the live data to become inactive after this point, this
+<i>361</i>&nbsp;        // follows the expected contract of the data provider (it may have its data retrieved and
+<i>362</i>&nbsp;        // not delivered), and it guarantees eventual consistency since the class still caches the
+<i>363</i>&nbsp;        // results in case a new observer is added later.
+<i>364</i>&nbsp;        dataProvider.retrieveData()
+<i>365</i>&nbsp;      } else null
+<i>366</i>&nbsp;    }
+<i>367</i>&nbsp;  }
+<i>368</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-02-01 18:39</div>
+</div>
+</body>
+</html>

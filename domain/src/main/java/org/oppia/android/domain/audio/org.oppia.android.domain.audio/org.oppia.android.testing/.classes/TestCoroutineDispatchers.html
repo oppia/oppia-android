@@ -1,0 +1,141 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TestCoroutineDispatchers</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.oppia.android.testing</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TestCoroutineDispatchers (org.oppia.android.testing)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">TestCoroutineDispatchers</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package org.oppia.android.testing
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;// TODO(#1274): Add thorough testing for this class.
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;/**
+<i>6</i>&nbsp; * Helper class to coordinate execution between all threads currently running in a test environment
+<i>7</i>&nbsp; * in a way that&#39;s interoperable with both Robolectric &amp; Espresso to guarantee background &amp; UI
+<i>8</i>&nbsp; * thread synchronization and determinism.
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * This class should be used at any point in a test where the test should ensure that a clean thread
+<i>11</i>&nbsp; * synchronization point is needed (such as after an async operation is kicked off). This class can
+<i>12</i>&nbsp; * guarantee that all threads enter a truly idle state (e.g. even in cases where execution &quot;ping
+<i>13</i>&nbsp; * pongs&quot; across multiple threads will still be resolved with a single call to [runCurrent],
+<i>14</i>&nbsp; * [advanceTimeBy], or [advanceUntilIdle]).
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; * Note that it&#39;s recommended all Robolectric tests that utilize this class run in a PAUSED looper
+<i>17</i>&nbsp; * mode so that clock coordination is consistent between Robolectric&#39;s scheduler and this utility
+<i>18</i>&nbsp; * class, otherwise unexpected inconsistencies may arise.
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; * It&#39;s also recommended that all Espresso tests register the idling resource provided by this class
+<i>21</i>&nbsp; * (see [registerIdlingResource]) to get the same synchronization benefits of the
+<i>22</i>&nbsp; * Robolectric-specific API methods (e.g. [runCurrent], [advanceTimeBy], and [advanceUntilIdle]).
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; * *NOTE TO DEVELOPERS*: This class is NOT yet ready for broad use in Espresso until after #89 is
+<i>25</i>&nbsp; * fully resolved. Please ask in oppia-android-dev if you have a use case that you think requires
+<i>26</i>&nbsp; * this class. Specific cases will be allowed to integrate with if other options are infeasible.
+<i>27</i>&nbsp; * Other tests should rely on existing mechanisms until this utility is ready for broad use. All
+<i>28</i>&nbsp; * Robolectric tests should use this class instead of manually creating their own test dispatchers.
+<i>29</i>&nbsp; */
+<i>30</i>&nbsp;interface TestCoroutineDispatchers {
+<i>31</i>&nbsp;  /**
+<i>32</i>&nbsp;   * Registers an Espresso idling resource.
+<i>33</i>&nbsp;   *
+<i>34</i>&nbsp;   * Espresso tests use a real-time clock which means the normal synchronization mechanisms that
+<i>35</i>&nbsp;   * this API provides (e.g. [runCurrent] and [advanceTimeBy]) are insufficient for proper
+<i>36</i>&nbsp;   * synchronization (in fact, these methods effectively do nothing for Espresso tests). Instead, an
+<i>37</i>&nbsp;   * idling resource allows the Espresso framework to synchronize the main thread against background
+<i>38</i>&nbsp;   * coroutine dispatchers--it will stop Espresso actions &amp; matchers from running while there are
+<i>39</i>&nbsp;   * pending tasks. To ensure deterministic behavior, this class guarantees *all* coroutines will be
+<i>40</i>&nbsp;   * completed prior to Espresso reaching an idle state (even if those coroutines are scheduled for
+<i>41</i>&nbsp;   * the feature or are scheduled as the result of another coroutine executing).
+<i>42</i>&nbsp;   *
+<i>43</i>&nbsp;   * All tests targeting Espresso &amp; Robolectric should make use of both the idling resource &amp; direct
+<i>44</i>&nbsp;   * synchronization APIs that this class provides.
+<i>45</i>&nbsp;   *
+<i>46</i>&nbsp;   * [unregisterIdlingResource] should be used during test tear-down to ensure the resource is
+<i>47</i>&nbsp;   * de-registered.
+<i>48</i>&nbsp;   */
+<i>49</i>&nbsp;  fun registerIdlingResource()
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;  /**
+<i>52</i>&nbsp;   * Unregisters a previously registered idling resource. See [registerIdlingResource] for
+<i>53</i>&nbsp;   * specifics.
+<i>54</i>&nbsp;   */
+<i>55</i>&nbsp;  fun unregisterIdlingResource()
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;  /**
+<i>58</i>&nbsp;   * Runs all current tasks pending, but does not follow up with executing any tasks that are
+<i>59</i>&nbsp;   * scheduled after this method finishes.
+<i>60</i>&nbsp;   *
+<i>61</i>&nbsp;   * It&#39;s recommended to always use this method when trying to bring a test to a reasonable idle
+<i>62</i>&nbsp;   * state since it doesn&#39;t change the clock time. If a test needs to advance time to complete some
+<i>63</i>&nbsp;   * operation, it should use [advanceTimeBy].
+<i>64</i>&nbsp;   */
+<i>65</i>&nbsp;  fun runCurrent()
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;  /**
+<i>68</i>&nbsp;   * Advances the system clock by the specified time in milliseconds and then ensures any new tasks
+<i>69</i>&nbsp;   * that were scheduled are fully executed before proceeding. This does not guarantee the
+<i>70</i>&nbsp;   * dispatchers enter an idle state, but it should guarantee that any tasks previously not executed
+<i>71</i>&nbsp;   * due to it not yet being the time for them to be executed may now run if the clock was
+<i>72</i>&nbsp;   * sufficiently forwarded. That is, running [runCurrent] after this method returns will do
+<i>73</i>&nbsp;   * nothing.
+<i>74</i>&nbsp;   *
+<i>75</i>&nbsp;   * It&#39;s recommended to always use this method when a test needs to wait for a specific future task
+<i>76</i>&nbsp;   * to complete. If a test doesn&#39;t require time to change to reach an idle state, [runCurrent]
+<i>77</i>&nbsp;   * should be used, instead. [advanceUntilIdle] should be reserved for cases when the test needs to
+<i>78</i>&nbsp;   * wait for a future operation, but doesn&#39;t know how long.
+<i>79</i>&nbsp;   */
+<i>80</i>&nbsp;  fun advanceTimeBy(delayTimeMillis: Long)
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;  /**
+<i>83</i>&nbsp;   * Runs all tasks on all tracked threads &amp; coroutine dispatchers until no other tasks are pending.
+<i>84</i>&nbsp;   * However, tasks that require the clock to be advanced will likely not be run (depending on
+<i>85</i>&nbsp;   * whether the test under question is using a paused execution model, which is recommended for
+<i>86</i>&nbsp;   * Robolectric tests).
+<i>87</i>&nbsp;   *
+<i>88</i>&nbsp;   * It&#39;s only recommended to use this method in cases when a test needs to wait for a future task
+<i>89</i>&nbsp;   * to complete, but is unaware how long it needs to wait. [advanceTimeBy] and [runCurrent] are
+<i>90</i>&nbsp;   * preferred methods for synchronizing execution with tests since this method may have the
+<i>91</i>&nbsp;   * unintentional side effect of executing future tasks before the test anticipates it.
+<i>92</i>&nbsp;   */
+<i>93</i>&nbsp;  fun advanceUntilIdle()
+<i>94</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-02-01 18:39</div>
+</div>
+</body>
+</html>

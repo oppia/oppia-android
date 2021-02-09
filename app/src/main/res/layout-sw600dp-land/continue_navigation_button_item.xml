@@ -26,8 +26,8 @@
     app:explorationSplitViewPaddingTop="@{@dimen/space_0dp}"
     app:explorationViewMarginApplicable="@{buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
     app:explorationViewMarginBottom="@{@dimen/space_0dp}"
-    app:explorationViewMarginEnd="@{@dimen/space_176dp}"
-    app:explorationViewMarginStart="@{@dimen/space_176dp}"
+    app:explorationViewMarginEnd="@{@dimen/continue_navigation_item_exploration_view_margin_end}"
+    app:explorationViewMarginStart="@{@dimen/continue_navigation_item_exploration_view_margin_start}"
     app:explorationViewMarginTop="@{@dimen/continue_navigation_item_exploration_view_margin_top}"
     app:explorationViewPaddingApplicable="@{buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
     app:explorationViewPaddingBottom="@{@dimen/space_0dp}"
@@ -46,8 +46,8 @@
     app:questionSplitViewPaddingTop="@{@dimen/space_0dp}"
     app:questionViewMarginApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
     app:questionViewMarginBottom="@{@dimen/space_0dp}"
-    app:questionViewMarginEnd="@{@dimen/space_192dp}"
-    app:questionViewMarginStart="@{@dimen/space_192dp}"
+    app:questionViewMarginEnd="@{@dimen/continue_navigation_item_question_view_margin_end}"
+    app:questionViewMarginStart="@{@dimen/continue_navigation_item_question_view_margin_start}"
     app:questionViewMarginTop="@{@dimen/continue_navigation_item_question_view_margin_top}"
     app:questionViewPaddingApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
     app:questionViewPaddingBottom="@{@dimen/space_0dp}"
@@ -66,22 +66,21 @@
       android:onClick="@{(v) -> buttonViewModel.previousNavigationButtonListener.onPreviousButtonClicked()}"
       android:padding="16dp"
       android:src="@drawable/ic_arrow_back_oppia_dark_blue_24dp"
-      app:layout_constraintTop_toTopOf="parent"
+      android:visibility="@{buttonViewModel.hasPreviousButton ? View.VISIBLE: View.GONE, default=gone}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      android:visibility="@{buttonViewModel.hasPreviousButton ? View.VISIBLE: View.GONE, default=gone}" />
+      app:layout_constraintTop_toTopOf="parent" />
 
     <Button
       android:id="@+id/continue_navigation_button"
       style="@style/StateButtonActive"
-      android:layout_height="0dp"
+      android:layout_height="48dp"
       android:button="@drawable/state_button_primary_background"
       android:onClick="@{(v) -> buttonViewModel.continueNavigationButtonListener.onContinueButtonClicked()}"
       android:text="@string/state_continue_button"
       android:textColor="@color/white"
-      app:layout_constraintHeight_min="48dp"
-      app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent" />
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

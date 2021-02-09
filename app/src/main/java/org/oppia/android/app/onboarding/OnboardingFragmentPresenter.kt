@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -24,7 +24,6 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>
 ) : OnboardingNavigationListener {
   private val dotsList = ArrayList<ImageView>()
-  private lateinit var onboardingPagerAdapter: OnboardingPagerAdapter
   private lateinit var binding: OnboardingFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -46,12 +45,11 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager() {
-    onboardingPagerAdapter =
+    val adapter =
       OnboardingPagerAdapter(fragment.requireContext(), getOnboardingSlideFinalViewModel())
-    binding.onboardingSlideViewPager.adapter = onboardingPagerAdapter
-    binding.onboardingSlideViewPager.addOnPageChangeListener(
-      object :
-        ViewPager.OnPageChangeListener {
+    binding.onboardingSlideViewPager.adapter = adapter
+    binding.onboardingSlideViewPager.registerOnPageChangeCallback(
+      object : ViewPager2.OnPageChangeCallback() {
         override fun onPageScrollStateChanged(state: Int) {
         }
 

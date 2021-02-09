@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlideOptions.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$fractioninput_FractionInputHasDenominatorEqualToRuleClassifierProviderTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.util.parser</a> &gt; <span class="el_source">GlideOptions.java</span></div><h1>GlideOptions.java</h1><pre class="source lang-java linenums">package org.oppia.android.util.parser;
+
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import androidx.annotation.CheckResult;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.FloatRange;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.Key;
+import com.bumptech.glide.load.Option;
+import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
+import com.bumptech.glide.request.BaseRequestOptions;
+import com.bumptech.glide.request.RequestOptions;
+
+/**
+ * Automatically generated from {@link com.bumptech.glide.annotation.GlideExtension} annotated classes.
+ *
+ * @see RequestOptions
+ */
+@SuppressWarnings(&quot;deprecation&quot;)
+<span class="nc" id="L28">public final class GlideOptions extends RequestOptions implements Cloneable {</span>
+  private static GlideOptions fitCenterTransform0;
+
+  private static GlideOptions centerInsideTransform1;
+
+  private static GlideOptions centerCropTransform2;
+
+  private static GlideOptions circleCropTransform3;
+
+  private static GlideOptions noTransformation4;
+
+  private static GlideOptions noAnimation5;
+
+  /**
+   * @see RequestOptions#sizeMultiplierOf(float)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions sizeMultiplierOf(@FloatRange(from = 0.0, to = 1.0) float value) {
+<span class="nc" id="L47">    return new GlideOptions().sizeMultiplier(value);</span>
+  }
+
+  /**
+   * @see RequestOptions#diskCacheStrategyOf(DiskCacheStrategy)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions diskCacheStrategyOf(@NonNull DiskCacheStrategy strategy) {
+<span class="nc" id="L56">    return new GlideOptions().diskCacheStrategy(strategy);</span>
+  }
+
+  /**
+   * @see RequestOptions#priorityOf(Priority)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions priorityOf(@NonNull Priority priority) {
+<span class="nc" id="L65">    return new GlideOptions().priority(priority);</span>
+  }
+
+  /**
+   * @see RequestOptions#placeholderOf(Drawable)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions placeholderOf(@Nullable Drawable drawable) {
+<span class="nc" id="L74">    return new GlideOptions().placeholder(drawable);</span>
+  }
+
+  /**
+   * @see RequestOptions#placeholderOf(int)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions placeholderOf(@DrawableRes int id) {
+<span class="nc" id="L83">    return new GlideOptions().placeholder(id);</span>
+  }
+
+  /**
+   * @see RequestOptions#errorOf(Drawable)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions errorOf(@Nullable Drawable drawable) {
+<span class="nc" id="L92">    return new GlideOptions().error(drawable);</span>
+  }
+
+  /**
+   * @see RequestOptions#errorOf(int)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions errorOf(@DrawableRes int id) {
+<span class="nc" id="L101">    return new GlideOptions().error(id);</span>
+  }
+
+  /**
+   * @see RequestOptions#skipMemoryCacheOf(boolean)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions skipMemoryCacheOf(boolean skipMemoryCache) {
+<span class="nc" id="L110">    return new GlideOptions().skipMemoryCache(skipMemoryCache);</span>
+  }
+
+  /**
+   * @see RequestOptions#overrideOf(int, int)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions overrideOf(int width, int height) {
+<span class="nc" id="L119">    return new GlideOptions().override(width, height);</span>
+  }
+
+  /**
+   * @see RequestOptions#overrideOf(int)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions overrideOf(int size) {
+<span class="nc" id="L128">    return new GlideOptions().override(size);</span>
+  }
+
+  /**
+   * @see RequestOptions#signatureOf(Key)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions signatureOf(@NonNull Key key) {
+<span class="nc" id="L137">    return new GlideOptions().signature(key);</span>
+  }
+
+  /**
+   * @see RequestOptions#fitCenterTransform()
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions fitCenterTransform() {
+<span class="nc bnc" id="L146" title="All 2 branches missed.">    if (GlideOptions.fitCenterTransform0 == null) {</span>
+<span class="nc" id="L147">      GlideOptions.fitCenterTransform0 =</span>
+<span class="nc" id="L148">          new GlideOptions().fitCenter().autoClone();</span>
+    }
+<span class="nc" id="L150">    return GlideOptions.fitCenterTransform0;</span>
+  }
+
+  /**
+   * @see RequestOptions#centerInsideTransform()
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions centerInsideTransform() {
+<span class="nc bnc" id="L159" title="All 2 branches missed.">    if (GlideOptions.centerInsideTransform1 == null) {</span>
+<span class="nc" id="L160">      GlideOptions.centerInsideTransform1 =</span>
+<span class="nc" id="L161">          new GlideOptions().centerInside().autoClone();</span>
+    }
+<span class="nc" id="L163">    return GlideOptions.centerInsideTransform1;</span>
+  }
+
+  /**
+   * @see RequestOptions#centerCropTransform()
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions centerCropTransform() {
+<span class="nc bnc" id="L172" title="All 2 branches missed.">    if (GlideOptions.centerCropTransform2 == null) {</span>
+<span class="nc" id="L173">      GlideOptions.centerCropTransform2 =</span>
+<span class="nc" id="L174">          new GlideOptions().centerCrop().autoClone();</span>
+    }
+<span class="nc" id="L176">    return GlideOptions.centerCropTransform2;</span>
+  }
+
+  /**
+   * @see RequestOptions#circleCropTransform()
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions circleCropTransform() {
+<span class="nc bnc" id="L185" title="All 2 branches missed.">    if (GlideOptions.circleCropTransform3 == null) {</span>
+<span class="nc" id="L186">      GlideOptions.circleCropTransform3 =</span>
+<span class="nc" id="L187">          new GlideOptions().circleCrop().autoClone();</span>
+    }
+<span class="nc" id="L189">    return GlideOptions.circleCropTransform3;</span>
+  }
+
+  /**
+   * @see RequestOptions#bitmapTransform(Transformation)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions bitmapTransform(@NonNull Transformation&lt;Bitmap&gt; transformation) {
+<span class="nc" id="L198">    return new GlideOptions().transform(transformation);</span>
+  }
+
+  /**
+   * @see RequestOptions#noTransformation()
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions noTransformation() {
+<span class="nc bnc" id="L207" title="All 2 branches missed.">    if (GlideOptions.noTransformation4 == null) {</span>
+<span class="nc" id="L208">      GlideOptions.noTransformation4 =</span>
+<span class="nc" id="L209">          new GlideOptions().dontTransform().autoClone();</span>
+    }
+<span class="nc" id="L211">    return GlideOptions.noTransformation4;</span>
+  }
+
+  /**
+   * @see RequestOptions#option(Option, T)
+   */
+  @CheckResult
+  @NonNull
+  public static &lt;T&gt; GlideOptions option(@NonNull Option&lt;T&gt; option, @NonNull T t) {
+<span class="nc" id="L220">    return new GlideOptions().set(option, t);</span>
+  }
+
+  /**
+   * @see RequestOptions#decodeTypeOf(Class)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions decodeTypeOf(@NonNull Class&lt;?&gt; clazz) {
+<span class="nc" id="L229">    return new GlideOptions().decode(clazz);</span>
+  }
+
+  /**
+   * @see RequestOptions#formatOf(DecodeFormat)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions formatOf(@NonNull DecodeFormat format) {
+<span class="nc" id="L238">    return new GlideOptions().format(format);</span>
+  }
+
+  /**
+   * @see RequestOptions#frameOf(long)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions frameOf(@IntRange(from = 0) long value) {
+<span class="nc" id="L247">    return new GlideOptions().frame(value);</span>
+  }
+
+  /**
+   * @see RequestOptions#downsampleOf(DownsampleStrategy)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions downsampleOf(@NonNull DownsampleStrategy strategy) {
+<span class="nc" id="L256">    return new GlideOptions().downsample(strategy);</span>
+  }
+
+  /**
+   * @see RequestOptions#timeoutOf(int)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions timeoutOf(@IntRange(from = 0) int value) {
+<span class="nc" id="L265">    return new GlideOptions().timeout(value);</span>
+  }
+
+  /**
+   * @see RequestOptions#encodeQualityOf(int)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions encodeQualityOf(@IntRange(from = 0, to = 100) int value) {
+<span class="nc" id="L274">    return new GlideOptions().encodeQuality(value);</span>
+  }
+
+  /**
+   * @see RequestOptions#encodeFormatOf(CompressFormat)
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions encodeFormatOf(@NonNull Bitmap.CompressFormat format) {
+<span class="nc" id="L283">    return new GlideOptions().encodeFormat(format);</span>
+  }
+
+  /**
+   * @see RequestOptions#noAnimation()
+   */
+  @CheckResult
+  @NonNull
+  public static GlideOptions noAnimation() {
+<span class="nc bnc" id="L292" title="All 2 branches missed.">    if (GlideOptions.noAnimation5 == null) {</span>
+<span class="nc" id="L293">      GlideOptions.noAnimation5 =</span>
+<span class="nc" id="L294">          new GlideOptions().dontAnimate().autoClone();</span>
+    }
+<span class="nc" id="L296">    return GlideOptions.noAnimation5;</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions sizeMultiplier(@FloatRange(from = 0.0, to = 1.0) float value) {
+<span class="nc" id="L303">    return (GlideOptions) super.sizeMultiplier(value);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions useUnlimitedSourceGeneratorsPool(boolean flag) {
+<span class="nc" id="L310">    return (GlideOptions) super.useUnlimitedSourceGeneratorsPool(flag);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions useAnimationPool(boolean flag) {
+<span class="nc" id="L317">    return (GlideOptions) super.useAnimationPool(flag);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions onlyRetrieveFromCache(boolean flag) {
+<span class="nc" id="L324">    return (GlideOptions) super.onlyRetrieveFromCache(flag);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions diskCacheStrategy(@NonNull DiskCacheStrategy strategy) {
+<span class="nc" id="L331">    return (GlideOptions) super.diskCacheStrategy(strategy);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions priority(@NonNull Priority priority) {
+<span class="nc" id="L338">    return (GlideOptions) super.priority(priority);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions placeholder(@Nullable Drawable drawable) {
+<span class="nc" id="L345">    return (GlideOptions) super.placeholder(drawable);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions placeholder(@DrawableRes int id) {
+<span class="nc" id="L352">    return (GlideOptions) super.placeholder(id);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions fallback(@Nullable Drawable drawable) {
+<span class="nc" id="L359">    return (GlideOptions) super.fallback(drawable);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions fallback(@DrawableRes int id) {
+<span class="nc" id="L366">    return (GlideOptions) super.fallback(id);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions error(@Nullable Drawable drawable) {
+<span class="nc" id="L373">    return (GlideOptions) super.error(drawable);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions error(@DrawableRes int id) {
+<span class="nc" id="L380">    return (GlideOptions) super.error(id);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions theme(@Nullable Resources.Theme theme) {
+<span class="nc" id="L387">    return (GlideOptions) super.theme(theme);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions skipMemoryCache(boolean skip) {
+<span class="nc" id="L394">    return (GlideOptions) super.skipMemoryCache(skip);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions override(int width, int height) {
+<span class="nc" id="L401">    return (GlideOptions) super.override(width, height);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions override(int size) {
+<span class="nc" id="L408">    return (GlideOptions) super.override(size);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions signature(@NonNull Key key) {
+<span class="nc" id="L415">    return (GlideOptions) super.signature(key);</span>
+  }
+
+  @Override
+  @CheckResult
+  public GlideOptions clone() {
+<span class="nc" id="L421">    return (GlideOptions) super.clone();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public &lt;Y&gt; GlideOptions set(@NonNull Option&lt;Y&gt; option, @NonNull Y y) {
+<span class="nc" id="L428">    return (GlideOptions) super.set(option, y);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions decode(@NonNull Class&lt;?&gt; clazz) {
+<span class="nc" id="L435">    return (GlideOptions) super.decode(clazz);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions encodeFormat(@NonNull Bitmap.CompressFormat format) {
+<span class="nc" id="L442">    return (GlideOptions) super.encodeFormat(format);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions encodeQuality(@IntRange(from = 0, to = 100) int value) {
+<span class="nc" id="L449">    return (GlideOptions) super.encodeQuality(value);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions frame(@IntRange(from = 0) long value) {
+<span class="nc" id="L456">    return (GlideOptions) super.frame(value);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions format(@NonNull DecodeFormat format) {
+<span class="nc" id="L463">    return (GlideOptions) super.format(format);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions disallowHardwareConfig() {
+<span class="nc" id="L470">    return (GlideOptions) super.disallowHardwareConfig();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions downsample(@NonNull DownsampleStrategy strategy) {
+<span class="nc" id="L477">    return (GlideOptions) super.downsample(strategy);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions timeout(@IntRange(from = 0) int value) {
+<span class="nc" id="L484">    return (GlideOptions) super.timeout(value);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions optionalCenterCrop() {
+<span class="nc" id="L491">    return (GlideOptions) super.optionalCenterCrop();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions centerCrop() {
+<span class="nc" id="L498">    return (GlideOptions) super.centerCrop();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions optionalFitCenter() {
+<span class="nc" id="L505">    return (GlideOptions) super.optionalFitCenter();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions fitCenter() {
+<span class="nc" id="L512">    return (GlideOptions) super.fitCenter();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions optionalCenterInside() {
+<span class="nc" id="L519">    return (GlideOptions) super.optionalCenterInside();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions centerInside() {
+<span class="nc" id="L526">    return (GlideOptions) super.centerInside();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions optionalCircleCrop() {
+<span class="nc" id="L533">    return (GlideOptions) super.optionalCircleCrop();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions circleCrop() {
+<span class="nc" id="L540">    return (GlideOptions) super.circleCrop();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions transform(@NonNull Transformation&lt;Bitmap&gt; transformation) {
+<span class="nc" id="L547">    return (GlideOptions) super.transform(transformation);</span>
+  }
+
+  @Override
+  @SafeVarargs
+  @SuppressWarnings(&quot;varargs&quot;)
+  @NonNull
+  @CheckResult
+  public final GlideOptions transform(@NonNull Transformation&lt;Bitmap&gt;... transformations) {
+<span class="nc" id="L556">    return (GlideOptions) super.transform(transformations);</span>
+  }
+
+  @Override
+  @SafeVarargs
+  @SuppressWarnings(&quot;varargs&quot;)
+  @Deprecated
+  @NonNull
+  @CheckResult
+  public final GlideOptions transforms(@NonNull Transformation&lt;Bitmap&gt;... transformations) {
+<span class="nc" id="L566">    return (GlideOptions) super.transforms(transformations);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions optionalTransform(@NonNull Transformation&lt;Bitmap&gt; transformation) {
+<span class="nc" id="L573">    return (GlideOptions) super.optionalTransform(transformation);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public &lt;Y&gt; GlideOptions optionalTransform(@NonNull Class&lt;Y&gt; clazz,
+      @NonNull Transformation&lt;Y&gt; transformation) {
+<span class="nc" id="L581">    return (GlideOptions) super.optionalTransform(clazz, transformation);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public &lt;Y&gt; GlideOptions transform(@NonNull Class&lt;Y&gt; clazz,
+      @NonNull Transformation&lt;Y&gt; transformation) {
+<span class="nc" id="L589">    return (GlideOptions) super.transform(clazz, transformation);</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions dontTransform() {
+<span class="nc" id="L596">    return (GlideOptions) super.dontTransform();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions dontAnimate() {
+<span class="nc" id="L603">    return (GlideOptions) super.dontAnimate();</span>
+  }
+
+  @Override
+  @NonNull
+  @CheckResult
+  public GlideOptions apply(@NonNull BaseRequestOptions&lt;?&gt; options) {
+<span class="nc" id="L610">    return (GlideOptions) super.apply(options);</span>
+  }
+
+  @Override
+  @NonNull
+  public GlideOptions lock() {
+<span class="nc" id="L616">    return (GlideOptions) super.lock();</span>
+  }
+
+  @Override
+  @NonNull
+  public GlideOptions autoClone() {
+<span class="nc" id="L622">    return (GlideOptions) super.autoClone();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

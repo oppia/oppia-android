@@ -1,0 +1,128 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ProfileTestHelper_Factory</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.oppia.android.testing.profile</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ProfileTestHelper_Factory (org.oppia.android.testing.profile)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProfileTestHelper_Factory</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package org.oppia.android.testing.profile;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import dagger.internal.Factory;
+<i>4</i>&nbsp;import javax.annotation.Generated;
+<i>5</i>&nbsp;import javax.inject.Provider;
+<i>6</i>&nbsp;import org.oppia.android.domain.profile.ProfileManagementController;
+<i>7</i>&nbsp;import org.oppia.android.testing.TestCoroutineDispatchers;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;@Generated(
+<i>10</i>&nbsp;    value = &quot;dagger.internal.codegen.ComponentProcessor&quot;,
+<i>11</i>&nbsp;    comments = &quot;https://dagger.dev&quot;
+<i>12</i>&nbsp;)
+<i>13</i>&nbsp;@SuppressWarnings({
+<i>14</i>&nbsp;    &quot;unchecked&quot;,
+<i>15</i>&nbsp;    &quot;rawtypes&quot;
+<i>16</i>&nbsp;})
+<i>17</i>&nbsp;public final class ProfileTestHelper_Factory implements Factory&lt;ProfileTestHelper&gt; {
+<i>18</i>&nbsp;  private final Provider&lt;ProfileManagementController&gt; profileManagementControllerProvider;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;  private final Provider&lt;TestCoroutineDispatchers&gt; testCoroutineDispatchersProvider;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;  public ProfileTestHelper_Factory(
+<i>23</i>&nbsp;      Provider&lt;ProfileManagementController&gt; profileManagementControllerProvider,
+<b class="nc"><i>24</i>&nbsp;      Provider&lt;TestCoroutineDispatchers&gt; testCoroutineDispatchersProvider) {</b>
+<b class="nc"><i>25</i>&nbsp;    this.profileManagementControllerProvider = profileManagementControllerProvider;</b>
+<b class="nc"><i>26</i>&nbsp;    this.testCoroutineDispatchersProvider = testCoroutineDispatchersProvider;</b>
+<i>27</i>&nbsp;  }
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;  @Override
+<i>30</i>&nbsp;  public ProfileTestHelper get() {
+<b class="nc"><i>31</i>&nbsp;    return new ProfileTestHelper(profileManagementControllerProvider.get(), testCoroutineDispatchersProvider.get());</b>
+<i>32</i>&nbsp;  }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;  public static ProfileTestHelper_Factory create(
+<i>35</i>&nbsp;      Provider&lt;ProfileManagementController&gt; profileManagementControllerProvider,
+<i>36</i>&nbsp;      Provider&lt;TestCoroutineDispatchers&gt; testCoroutineDispatchersProvider) {
+<b class="nc"><i>37</i>&nbsp;    return new ProfileTestHelper_Factory(profileManagementControllerProvider, testCoroutineDispatchersProvider);</b>
+<i>38</i>&nbsp;  }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;  public static ProfileTestHelper newInstance(
+<i>41</i>&nbsp;      ProfileManagementController profileManagementController,
+<i>42</i>&nbsp;      TestCoroutineDispatchers testCoroutineDispatchers) {
+<b class="nc"><i>43</i>&nbsp;    return new ProfileTestHelper(profileManagementController, testCoroutineDispatchers);</b>
+<i>44</i>&nbsp;  }
+<i>45</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-02-01 18:39</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExplorationProgressControllerTest_MembersInjector.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$FractionInputHasDenominatorEqualToRuleClassifierProviderTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.domain.exploration</a> &gt; <span class="el_source">ExplorationProgressControllerTest_MembersInjector.java</span></div><h1>ExplorationProgressControllerTest_MembersInjector.java</h1><pre class="source lang-java linenums">package org.oppia.android.domain.exploration;
+
+import dagger.MembersInjector;
+import javax.annotation.Generated;
+import javax.inject.Provider;
+import org.oppia.android.testing.FakeExceptionLogger;
+import org.oppia.android.testing.TestCoroutineDispatchers;
+
+@Generated(
+    value = &quot;dagger.internal.codegen.ComponentProcessor&quot;,
+    comments = &quot;https://dagger.dev&quot;
+)
+@SuppressWarnings({
+    &quot;unchecked&quot;,
+    &quot;rawtypes&quot;
+})
+public final class ExplorationProgressControllerTest_MembersInjector implements MembersInjector&lt;ExplorationProgressControllerTest&gt; {
+  private final Provider&lt;ExplorationDataController&gt; explorationDataControllerProvider;
+
+  private final Provider&lt;ExplorationProgressController&gt; explorationProgressControllerProvider;
+
+  private final Provider&lt;ExplorationRetriever&gt; explorationRetrieverProvider;
+
+  private final Provider&lt;FakeExceptionLogger&gt; fakeExceptionLoggerProvider;
+
+  private final Provider&lt;TestCoroutineDispatchers&gt; testCoroutineDispatchersProvider;
+
+  public ExplorationProgressControllerTest_MembersInjector(
+      Provider&lt;ExplorationDataController&gt; explorationDataControllerProvider,
+      Provider&lt;ExplorationProgressController&gt; explorationProgressControllerProvider,
+      Provider&lt;ExplorationRetriever&gt; explorationRetrieverProvider,
+      Provider&lt;FakeExceptionLogger&gt; fakeExceptionLoggerProvider,
+<span class="nc" id="L33">      Provider&lt;TestCoroutineDispatchers&gt; testCoroutineDispatchersProvider) {</span>
+<span class="nc" id="L34">    this.explorationDataControllerProvider = explorationDataControllerProvider;</span>
+<span class="nc" id="L35">    this.explorationProgressControllerProvider = explorationProgressControllerProvider;</span>
+<span class="nc" id="L36">    this.explorationRetrieverProvider = explorationRetrieverProvider;</span>
+<span class="nc" id="L37">    this.fakeExceptionLoggerProvider = fakeExceptionLoggerProvider;</span>
+<span class="nc" id="L38">    this.testCoroutineDispatchersProvider = testCoroutineDispatchersProvider;</span>
+<span class="nc" id="L39">  }</span>
+
+  public static MembersInjector&lt;ExplorationProgressControllerTest&gt; create(
+      Provider&lt;ExplorationDataController&gt; explorationDataControllerProvider,
+      Provider&lt;ExplorationProgressController&gt; explorationProgressControllerProvider,
+      Provider&lt;ExplorationRetriever&gt; explorationRetrieverProvider,
+      Provider&lt;FakeExceptionLogger&gt; fakeExceptionLoggerProvider,
+      Provider&lt;TestCoroutineDispatchers&gt; testCoroutineDispatchersProvider) {
+<span class="nc" id="L47">    return new ExplorationProgressControllerTest_MembersInjector(explorationDataControllerProvider, explorationProgressControllerProvider, explorationRetrieverProvider, fakeExceptionLoggerProvider, testCoroutineDispatchersProvider);}</span>
+
+  @Override
+  public void injectMembers(ExplorationProgressControllerTest instance) {
+<span class="nc" id="L51">    injectExplorationDataController(instance, explorationDataControllerProvider.get());</span>
+<span class="nc" id="L52">    injectExplorationProgressController(instance, explorationProgressControllerProvider.get());</span>
+<span class="nc" id="L53">    injectExplorationRetriever(instance, explorationRetrieverProvider.get());</span>
+<span class="nc" id="L54">    injectFakeExceptionLogger(instance, fakeExceptionLoggerProvider.get());</span>
+<span class="nc" id="L55">    injectTestCoroutineDispatchers(instance, testCoroutineDispatchersProvider.get());</span>
+<span class="nc" id="L56">  }</span>
+
+  public static void injectExplorationDataController(ExplorationProgressControllerTest instance,
+      ExplorationDataController explorationDataController) {
+<span class="nc" id="L60">    instance.explorationDataController = explorationDataController;</span>
+<span class="nc" id="L61">  }</span>
+
+  public static void injectExplorationProgressController(ExplorationProgressControllerTest instance,
+      ExplorationProgressController explorationProgressController) {
+<span class="nc" id="L65">    instance.explorationProgressController = explorationProgressController;</span>
+<span class="nc" id="L66">  }</span>
+
+  public static void injectExplorationRetriever(ExplorationProgressControllerTest instance,
+      ExplorationRetriever explorationRetriever) {
+<span class="nc" id="L70">    instance.explorationRetriever = explorationRetriever;</span>
+<span class="nc" id="L71">  }</span>
+
+  public static void injectFakeExceptionLogger(ExplorationProgressControllerTest instance,
+      FakeExceptionLogger fakeExceptionLogger) {
+<span class="nc" id="L75">    instance.fakeExceptionLogger = fakeExceptionLogger;</span>
+<span class="nc" id="L76">  }</span>
+
+  public static void injectTestCoroutineDispatchers(ExplorationProgressControllerTest instance,
+      TestCoroutineDispatchers testCoroutineDispatchers) {
+<span class="nc" id="L80">    instance.testCoroutineDispatchers = testCoroutineDispatchers;</span>
+<span class="nc" id="L81">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DaggerOppiaLoggerTest_TestApplicationComponent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$fractioninput_FractionInputHasDenominatorEqualToRuleClassifierProviderTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.domain.oppialogger</a> &gt; <span class="el_source">DaggerOppiaLoggerTest_TestApplicationComponent.java</span></div><h1>DaggerOppiaLoggerTest_TestApplicationComponent.java</h1><pre class="source lang-java linenums">package org.oppia.android.domain.oppialogger;
+
+import android.app.Application;
+import android.content.Context;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import dagger.internal.DoubleCheck;
+import dagger.internal.InstanceFactory;
+import dagger.internal.Preconditions;
+import javax.annotation.Generated;
+import javax.inject.Provider;
+import kotlinx.coroutines.CoroutineDispatcher;
+import org.oppia.android.data.persistence.PersistentCacheStore;
+import org.oppia.android.data.persistence.PersistentCacheStore_Factory_Factory;
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController;
+import org.oppia.android.testing.FakeEventLogger;
+import org.oppia.android.testing.FakeEventLogger_Factory;
+import org.oppia.android.testing.FakeExceptionLogger;
+import org.oppia.android.testing.FakeExceptionLogger_Factory;
+import org.oppia.android.testing.FakeSystemClock;
+import org.oppia.android.testing.FakeSystemClock_Factory;
+import org.oppia.android.testing.TestCoroutineDispatcher;
+import org.oppia.android.testing.TestCoroutineDispatcherEspressoImpl_FactoryImpl_Factory;
+import org.oppia.android.testing.TestCoroutineDispatcherRobolectricImpl;
+import org.oppia.android.testing.TestCoroutineDispatcherRobolectricImpl_FactoryImpl_Factory;
+import org.oppia.android.testing.TestDispatcherModule;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBackgroundDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBackgroundTestDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBlockingDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBlockingTestDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideIsOnRobolectricFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideTestCoroutineDispatcherFactoryFactory;
+import org.oppia.android.util.data.AsyncDataSubscriptionManager;
+import org.oppia.android.util.data.AsyncDataSubscriptionManager_Factory;
+import org.oppia.android.util.data.InMemoryBlockingCache;
+import org.oppia.android.util.data.InMemoryBlockingCache_Factory_Factory;
+import org.oppia.android.util.logging.ConsoleLogger;
+import org.oppia.android.util.logging.ConsoleLogger_Factory;
+import org.oppia.android.util.logging.LogLevel;
+import org.oppia.android.util.networking.NetworkConnectionUtil;
+import org.oppia.android.util.networking.NetworkConnectionUtil_Factory;
+import org.oppia.android.util.profile.DirectoryManagementUtil;
+import org.oppia.android.util.profile.DirectoryManagementUtil_Factory;
+
+@Generated(
+    value = &quot;dagger.internal.codegen.ComponentProcessor&quot;,
+    comments = &quot;https://dagger.dev&quot;
+)
+@SuppressWarnings({
+    &quot;unchecked&quot;,
+    &quot;rawtypes&quot;
+})
+public final class DaggerOppiaLoggerTest_TestApplicationComponent implements OppiaLoggerTest.TestApplicationComponent {
+  private final OppiaLoggerTest.TestLogStorageModule testLogStorageModule;
+
+  private Provider&lt;FakeEventLogger&gt; fakeEventLoggerProvider;
+
+  private Provider&lt;Application&gt; setApplicationProvider;
+
+  private Provider&lt;Context&gt; provideContextProvider;
+
+  private Provider&lt;Boolean&gt; provideIsOnRobolectricProvider;
+
+  private Provider&lt;FakeSystemClock&gt; fakeSystemClockProvider;
+
+  private Provider&lt;TestCoroutineDispatcherRobolectricImpl.FactoryImpl&gt; factoryImplProvider;
+
+  private Provider&lt;TestCoroutineDispatcher.Factory&gt; provideTestCoroutineDispatcherFactoryProvider;
+
+  private Provider&lt;TestCoroutineDispatcher&gt; provideBlockingTestDispatcherProvider;
+
+  private Provider&lt;CoroutineDispatcher&gt; provideBlockingDispatcherProvider;
+
+  private Provider&lt;InMemoryBlockingCache.Factory&gt; factoryProvider;
+
+  private Provider&lt;TestCoroutineDispatcher&gt; provideBackgroundTestDispatcherProvider;
+
+  private Provider&lt;CoroutineDispatcher&gt; provideBackgroundDispatcherProvider;
+
+  private Provider&lt;AsyncDataSubscriptionManager&gt; asyncDataSubscriptionManagerProvider;
+
+  private Provider&lt;DirectoryManagementUtil&gt; directoryManagementUtilProvider;
+
+  private Provider&lt;PersistentCacheStore.Factory&gt; factoryProvider2;
+
+  private Provider&lt;Boolean&gt; provideEnableConsoleLogProvider;
+
+  private Provider&lt;Boolean&gt; provideEnableFileLogProvider;
+
+  private Provider&lt;LogLevel&gt; provideGlobalLogLevelProvider;
+
+  private Provider&lt;ConsoleLogger&gt; consoleLoggerProvider;
+
+  private Provider&lt;NetworkConnectionUtil&gt; networkConnectionUtilProvider;
+
+  private Provider&lt;FakeExceptionLogger&gt; fakeExceptionLoggerProvider;
+
+  private DaggerOppiaLoggerTest_TestApplicationComponent(OppiaLoggerTest.TestModule testModuleParam,
+      OppiaLoggerTest.TestLogStorageModule testLogStorageModuleParam,
+<span class="nc" id="L99">      TestDispatcherModule testDispatcherModuleParam, Application setApplicationParam) {</span>
+<span class="nc" id="L100">    this.testLogStorageModule = testLogStorageModuleParam;</span>
+<span class="nc" id="L101">    initialize(testModuleParam, testLogStorageModuleParam, testDispatcherModuleParam, setApplicationParam);</span>
+<span class="nc" id="L102">  }</span>
+
+  public static OppiaLoggerTest.TestApplicationComponent.Builder builder() {
+<span class="nc" id="L105">    return new Builder();</span>
+  }
+
+  private AnalyticsController getAnalyticsController() {
+<span class="nc" id="L109">    return new AnalyticsController(fakeEventLoggerProvider.get(), factoryProvider2.get(), consoleLoggerProvider.get(), networkConnectionUtilProvider.get(), fakeExceptionLoggerProvider.get(), testLogStorageModule.provideEventLogStorageCacheSize());}</span>
+
+  private OppiaLogger getOppiaLogger() {
+<span class="nc" id="L112">    return new OppiaLogger(getAnalyticsController());}</span>
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  private void initialize(final OppiaLoggerTest.TestModule testModuleParam,
+      final OppiaLoggerTest.TestLogStorageModule testLogStorageModuleParam,
+      final TestDispatcherModule testDispatcherModuleParam, final Application setApplicationParam) {
+<span class="nc" id="L118">    this.fakeEventLoggerProvider = DoubleCheck.provider(FakeEventLogger_Factory.create());</span>
+<span class="nc" id="L119">    this.setApplicationProvider = InstanceFactory.create(setApplicationParam);</span>
+<span class="nc" id="L120">    this.provideContextProvider = DoubleCheck.provider(OppiaLoggerTest_TestModule_ProvideContextFactory.create(testModuleParam, setApplicationProvider));</span>
+<span class="nc" id="L121">    this.provideIsOnRobolectricProvider = DoubleCheck.provider(TestDispatcherModule_ProvideIsOnRobolectricFactory.create(testDispatcherModuleParam));</span>
+<span class="nc" id="L122">    this.fakeSystemClockProvider = DoubleCheck.provider(FakeSystemClock_Factory.create(provideIsOnRobolectricProvider));</span>
+<span class="nc" id="L123">    this.factoryImplProvider = TestCoroutineDispatcherRobolectricImpl_FactoryImpl_Factory.create(fakeSystemClockProvider);</span>
+<span class="nc" id="L124">    this.provideTestCoroutineDispatcherFactoryProvider = TestDispatcherModule_ProvideTestCoroutineDispatcherFactoryFactory.create(testDispatcherModuleParam, provideIsOnRobolectricProvider, factoryImplProvider, TestCoroutineDispatcherEspressoImpl_FactoryImpl_Factory.create());</span>
+<span class="nc" id="L125">    this.provideBlockingTestDispatcherProvider = DoubleCheck.provider(TestDispatcherModule_ProvideBlockingTestDispatcherFactory.create(testDispatcherModuleParam, provideTestCoroutineDispatcherFactoryProvider));</span>
+<span class="nc" id="L126">    this.provideBlockingDispatcherProvider = TestDispatcherModule_ProvideBlockingDispatcherFactory.create(testDispatcherModuleParam, provideBlockingTestDispatcherProvider);</span>
+<span class="nc" id="L127">    this.factoryProvider = DoubleCheck.provider(InMemoryBlockingCache_Factory_Factory.create(provideBlockingDispatcherProvider));</span>
+<span class="nc" id="L128">    this.provideBackgroundTestDispatcherProvider = DoubleCheck.provider(TestDispatcherModule_ProvideBackgroundTestDispatcherFactory.create(testDispatcherModuleParam, provideTestCoroutineDispatcherFactoryProvider));</span>
+<span class="nc" id="L129">    this.provideBackgroundDispatcherProvider = TestDispatcherModule_ProvideBackgroundDispatcherFactory.create(testDispatcherModuleParam, provideBackgroundTestDispatcherProvider);</span>
+<span class="nc" id="L130">    this.asyncDataSubscriptionManagerProvider = DoubleCheck.provider(AsyncDataSubscriptionManager_Factory.create(provideBackgroundDispatcherProvider));</span>
+<span class="nc" id="L131">    this.directoryManagementUtilProvider = DoubleCheck.provider(DirectoryManagementUtil_Factory.create(provideContextProvider));</span>
+<span class="nc" id="L132">    this.factoryProvider2 = DoubleCheck.provider(PersistentCacheStore_Factory_Factory.create(provideContextProvider, factoryProvider, asyncDataSubscriptionManagerProvider, directoryManagementUtilProvider));</span>
+<span class="nc" id="L133">    this.provideEnableConsoleLogProvider = OppiaLoggerTest_TestModule_ProvideEnableConsoleLogFactory.create(testModuleParam);</span>
+<span class="nc" id="L134">    this.provideEnableFileLogProvider = OppiaLoggerTest_TestModule_ProvideEnableFileLogFactory.create(testModuleParam);</span>
+<span class="nc" id="L135">    this.provideGlobalLogLevelProvider = OppiaLoggerTest_TestModule_ProvideGlobalLogLevelFactory.create(testModuleParam);</span>
+<span class="nc" id="L136">    this.consoleLoggerProvider = DoubleCheck.provider(ConsoleLogger_Factory.create(provideContextProvider, provideBlockingDispatcherProvider, provideEnableConsoleLogProvider, provideEnableFileLogProvider, provideGlobalLogLevelProvider));</span>
+<span class="nc" id="L137">    this.networkConnectionUtilProvider = DoubleCheck.provider(NetworkConnectionUtil_Factory.create(provideContextProvider));</span>
+<span class="nc" id="L138">    this.fakeExceptionLoggerProvider = DoubleCheck.provider(FakeExceptionLogger_Factory.create());</span>
+<span class="nc" id="L139">  }</span>
+
+  @Override
+  public void inject(OppiaLoggerTest oppiaLoggerTest) {
+<span class="nc" id="L143">    injectOppiaLoggerTest(oppiaLoggerTest);}</span>
+
+  @CanIgnoreReturnValue
+  private OppiaLoggerTest injectOppiaLoggerTest(OppiaLoggerTest instance) {
+<span class="nc" id="L147">    OppiaLoggerTest_MembersInjector.injectOppiaLogger(instance, getOppiaLogger());</span>
+<span class="nc" id="L148">    return instance;</span>
+  }
+
+  private static final class Builder implements OppiaLoggerTest.TestApplicationComponent.Builder {
+    private Application setApplication;
+
+    @Override
+    public Builder setApplication(Application application) {
+<span class="nc" id="L156">      this.setApplication = Preconditions.checkNotNull(application);</span>
+<span class="nc" id="L157">      return this;</span>
+    }
+
+    @Override
+    public OppiaLoggerTest.TestApplicationComponent build() {
+<span class="nc" id="L162">      Preconditions.checkBuilderRequirement(setApplication, Application.class);</span>
+<span class="nc" id="L163">      return new DaggerOppiaLoggerTest_TestApplicationComponent(new OppiaLoggerTest.TestModule(), new OppiaLoggerTest.TestLogStorageModule(), new TestDispatcherModule(), setApplication);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

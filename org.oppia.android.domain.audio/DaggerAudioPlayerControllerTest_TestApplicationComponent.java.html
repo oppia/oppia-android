@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DaggerAudioPlayerControllerTest_TestApplicationComponent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$fractioninput_FractionInputHasDenominatorEqualToRuleClassifierProviderTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.domain.audio</a> &gt; <span class="el_source">DaggerAudioPlayerControllerTest_TestApplicationComponent.java</span></div><h1>DaggerAudioPlayerControllerTest_TestApplicationComponent.java</h1><pre class="source lang-java linenums">package org.oppia.android.domain.audio;
+
+import android.app.Application;
+import android.content.Context;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import dagger.internal.DoubleCheck;
+import dagger.internal.InstanceFactory;
+import dagger.internal.Preconditions;
+import javax.annotation.Generated;
+import javax.inject.Provider;
+import kotlinx.coroutines.CoroutineDispatcher;
+import org.oppia.android.data.persistence.PersistentCacheStore;
+import org.oppia.android.data.persistence.PersistentCacheStore_Factory_Factory;
+import org.oppia.android.domain.oppialogger.LogStorageModule;
+import org.oppia.android.domain.oppialogger.LogStorageModule_ProvideExceptionLogStorageCacheSizeFactory;
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController;
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController_Factory;
+import org.oppia.android.testing.FakeExceptionLogger;
+import org.oppia.android.testing.FakeExceptionLogger_Factory;
+import org.oppia.android.testing.FakeSystemClock;
+import org.oppia.android.testing.FakeSystemClock_Factory;
+import org.oppia.android.testing.TestCoroutineDispatcher;
+import org.oppia.android.testing.TestCoroutineDispatcherEspressoImpl_FactoryImpl_Factory;
+import org.oppia.android.testing.TestCoroutineDispatcherRobolectricImpl;
+import org.oppia.android.testing.TestCoroutineDispatcherRobolectricImpl_FactoryImpl_Factory;
+import org.oppia.android.testing.TestCoroutineDispatchers;
+import org.oppia.android.testing.TestCoroutineDispatchersEspressoImpl;
+import org.oppia.android.testing.TestCoroutineDispatchersEspressoImpl_Factory;
+import org.oppia.android.testing.TestCoroutineDispatchersRobolectricImpl;
+import org.oppia.android.testing.TestCoroutineDispatchersRobolectricImpl_Factory;
+import org.oppia.android.testing.TestDispatcherModule;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBackgroundDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBackgroundTestDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBlockingDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBlockingTestDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideIsOnRobolectricFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideTestCoroutineDispatcherFactoryFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideTestCoroutineDispatchersFactory;
+import org.oppia.android.util.caching.AssetRepository;
+import org.oppia.android.util.caching.AssetRepository_Factory;
+import org.oppia.android.util.data.AsyncDataSubscriptionManager;
+import org.oppia.android.util.data.AsyncDataSubscriptionManager_Factory;
+import org.oppia.android.util.data.InMemoryBlockingCache;
+import org.oppia.android.util.data.InMemoryBlockingCache_Factory_Factory;
+import org.oppia.android.util.logging.ConsoleLogger;
+import org.oppia.android.util.logging.ConsoleLogger_Factory;
+import org.oppia.android.util.logging.LogLevel;
+import org.oppia.android.util.networking.NetworkConnectionUtil;
+import org.oppia.android.util.networking.NetworkConnectionUtil_Factory;
+import org.oppia.android.util.profile.DirectoryManagementUtil;
+import org.oppia.android.util.profile.DirectoryManagementUtil_Factory;
+import org.oppia.android.util.system.OppiaClock;
+import org.oppia.android.util.system.OppiaClock_Factory;
+
+@Generated(
+    value = &quot;dagger.internal.codegen.ComponentProcessor&quot;,
+    comments = &quot;https://dagger.dev&quot;
+)
+@SuppressWarnings({
+    &quot;unchecked&quot;,
+    &quot;rawtypes&quot;
+})
+public final class DaggerAudioPlayerControllerTest_TestApplicationComponent implements AudioPlayerControllerTest.TestApplicationComponent {
+  private final TestDispatcherModule testDispatcherModule;
+
+  private Provider&lt;Application&gt; setApplicationProvider;
+
+  private Provider&lt;Context&gt; provideContextProvider;
+
+  private Provider&lt;Boolean&gt; provideIsOnRobolectricProvider;
+
+  private Provider&lt;FakeSystemClock&gt; fakeSystemClockProvider;
+
+  private Provider&lt;TestCoroutineDispatcherRobolectricImpl.FactoryImpl&gt; factoryImplProvider;
+
+  private Provider&lt;TestCoroutineDispatcher.Factory&gt; provideTestCoroutineDispatcherFactoryProvider;
+
+  private Provider&lt;TestCoroutineDispatcher&gt; provideBlockingTestDispatcherProvider;
+
+  private Provider&lt;CoroutineDispatcher&gt; provideBlockingDispatcherProvider;
+
+  private Provider&lt;Boolean&gt; provideEnableConsoleLogProvider;
+
+  private Provider&lt;Boolean&gt; provideEnableFileLogProvider;
+
+  private Provider&lt;LogLevel&gt; provideGlobalLogLevelProvider;
+
+  private Provider&lt;ConsoleLogger&gt; consoleLoggerProvider;
+
+  private Provider&lt;AssetRepository&gt; assetRepositoryProvider;
+
+  private Provider&lt;FakeExceptionLogger&gt; fakeExceptionLoggerProvider;
+
+  private Provider&lt;InMemoryBlockingCache.Factory&gt; factoryProvider;
+
+  private Provider&lt;TestCoroutineDispatcher&gt; provideBackgroundTestDispatcherProvider;
+
+  private Provider&lt;CoroutineDispatcher&gt; provideBackgroundDispatcherProvider;
+
+  private Provider&lt;AsyncDataSubscriptionManager&gt; asyncDataSubscriptionManagerProvider;
+
+  private Provider&lt;DirectoryManagementUtil&gt; directoryManagementUtilProvider;
+
+  private Provider&lt;PersistentCacheStore.Factory&gt; factoryProvider2;
+
+  private Provider&lt;NetworkConnectionUtil&gt; networkConnectionUtilProvider;
+
+  private Provider&lt;Integer&gt; provideExceptionLogStorageCacheSizeProvider;
+
+  private Provider&lt;ExceptionsController&gt; exceptionsControllerProvider;
+
+  private Provider&lt;OppiaClock&gt; oppiaClockProvider;
+
+  private Provider&lt;Boolean&gt; provideCacheAssetsLocallyProvider;
+
+  private Provider&lt;AudioPlayerController&gt; audioPlayerControllerProvider;
+
+  private Provider&lt;TestCoroutineDispatchersRobolectricImpl&gt; testCoroutineDispatchersRobolectricImplProvider;
+
+  private Provider&lt;TestCoroutineDispatchersEspressoImpl&gt; testCoroutineDispatchersEspressoImplProvider;
+
+  private DaggerAudioPlayerControllerTest_TestApplicationComponent(
+      AudioPlayerControllerTest.TestModule testModuleParam, LogStorageModule logStorageModuleParam,
+<span class="nc" id="L124">      TestDispatcherModule testDispatcherModuleParam, Application setApplicationParam) {</span>
+<span class="nc" id="L125">    this.testDispatcherModule = testDispatcherModuleParam;</span>
+<span class="nc" id="L126">    initialize(testModuleParam, logStorageModuleParam, testDispatcherModuleParam, setApplicationParam);</span>
+<span class="nc" id="L127">  }</span>
+
+  public static AudioPlayerControllerTest.TestApplicationComponent.Builder builder() {
+<span class="nc" id="L130">    return new Builder();</span>
+  }
+
+  private TestCoroutineDispatchers getTestCoroutineDispatchers() {
+<span class="nc" id="L134">    return TestDispatcherModule_ProvideTestCoroutineDispatchersFactory.provideTestCoroutineDispatchers(testDispatcherModule, provideIsOnRobolectricProvider.get(), testCoroutineDispatchersRobolectricImplProvider, testCoroutineDispatchersEspressoImplProvider);}</span>
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  private void initialize(final AudioPlayerControllerTest.TestModule testModuleParam,
+      final LogStorageModule logStorageModuleParam,
+      final TestDispatcherModule testDispatcherModuleParam, final Application setApplicationParam) {
+<span class="nc" id="L140">    this.setApplicationProvider = InstanceFactory.create(setApplicationParam);</span>
+<span class="nc" id="L141">    this.provideContextProvider = DoubleCheck.provider(AudioPlayerControllerTest_TestModule_ProvideContextFactory.create(testModuleParam, setApplicationProvider));</span>
+<span class="nc" id="L142">    this.provideIsOnRobolectricProvider = DoubleCheck.provider(TestDispatcherModule_ProvideIsOnRobolectricFactory.create(testDispatcherModuleParam));</span>
+<span class="nc" id="L143">    this.fakeSystemClockProvider = DoubleCheck.provider(FakeSystemClock_Factory.create(provideIsOnRobolectricProvider));</span>
+<span class="nc" id="L144">    this.factoryImplProvider = TestCoroutineDispatcherRobolectricImpl_FactoryImpl_Factory.create(fakeSystemClockProvider);</span>
+<span class="nc" id="L145">    this.provideTestCoroutineDispatcherFactoryProvider = TestDispatcherModule_ProvideTestCoroutineDispatcherFactoryFactory.create(testDispatcherModuleParam, provideIsOnRobolectricProvider, factoryImplProvider, TestCoroutineDispatcherEspressoImpl_FactoryImpl_Factory.create());</span>
+<span class="nc" id="L146">    this.provideBlockingTestDispatcherProvider = DoubleCheck.provider(TestDispatcherModule_ProvideBlockingTestDispatcherFactory.create(testDispatcherModuleParam, provideTestCoroutineDispatcherFactoryProvider));</span>
+<span class="nc" id="L147">    this.provideBlockingDispatcherProvider = TestDispatcherModule_ProvideBlockingDispatcherFactory.create(testDispatcherModuleParam, provideBlockingTestDispatcherProvider);</span>
+<span class="nc" id="L148">    this.provideEnableConsoleLogProvider = AudioPlayerControllerTest_TestModule_ProvideEnableConsoleLogFactory.create(testModuleParam);</span>
+<span class="nc" id="L149">    this.provideEnableFileLogProvider = AudioPlayerControllerTest_TestModule_ProvideEnableFileLogFactory.create(testModuleParam);</span>
+<span class="nc" id="L150">    this.provideGlobalLogLevelProvider = AudioPlayerControllerTest_TestModule_ProvideGlobalLogLevelFactory.create(testModuleParam);</span>
+<span class="nc" id="L151">    this.consoleLoggerProvider = DoubleCheck.provider(ConsoleLogger_Factory.create(provideContextProvider, provideBlockingDispatcherProvider, provideEnableConsoleLogProvider, provideEnableFileLogProvider, provideGlobalLogLevelProvider));</span>
+<span class="nc" id="L152">    this.assetRepositoryProvider = DoubleCheck.provider(AssetRepository_Factory.create(provideContextProvider, consoleLoggerProvider));</span>
+<span class="nc" id="L153">    this.fakeExceptionLoggerProvider = DoubleCheck.provider(FakeExceptionLogger_Factory.create());</span>
+<span class="nc" id="L154">    this.factoryProvider = DoubleCheck.provider(InMemoryBlockingCache_Factory_Factory.create(provideBlockingDispatcherProvider));</span>
+<span class="nc" id="L155">    this.provideBackgroundTestDispatcherProvider = DoubleCheck.provider(TestDispatcherModule_ProvideBackgroundTestDispatcherFactory.create(testDispatcherModuleParam, provideTestCoroutineDispatcherFactoryProvider));</span>
+<span class="nc" id="L156">    this.provideBackgroundDispatcherProvider = TestDispatcherModule_ProvideBackgroundDispatcherFactory.create(testDispatcherModuleParam, provideBackgroundTestDispatcherProvider);</span>
+<span class="nc" id="L157">    this.asyncDataSubscriptionManagerProvider = DoubleCheck.provider(AsyncDataSubscriptionManager_Factory.create(provideBackgroundDispatcherProvider));</span>
+<span class="nc" id="L158">    this.directoryManagementUtilProvider = DoubleCheck.provider(DirectoryManagementUtil_Factory.create(provideContextProvider));</span>
+<span class="nc" id="L159">    this.factoryProvider2 = DoubleCheck.provider(PersistentCacheStore_Factory_Factory.create(provideContextProvider, factoryProvider, asyncDataSubscriptionManagerProvider, directoryManagementUtilProvider));</span>
+<span class="nc" id="L160">    this.networkConnectionUtilProvider = DoubleCheck.provider(NetworkConnectionUtil_Factory.create(provideContextProvider));</span>
+<span class="nc" id="L161">    this.provideExceptionLogStorageCacheSizeProvider = LogStorageModule_ProvideExceptionLogStorageCacheSizeFactory.create(logStorageModuleParam);</span>
+<span class="nc" id="L162">    this.exceptionsControllerProvider = ExceptionsController_Factory.create((Provider) fakeExceptionLoggerProvider, factoryProvider2, consoleLoggerProvider, networkConnectionUtilProvider, provideExceptionLogStorageCacheSizeProvider);</span>
+<span class="nc" id="L163">    this.oppiaClockProvider = DoubleCheck.provider(OppiaClock_Factory.create());</span>
+<span class="nc" id="L164">    this.provideCacheAssetsLocallyProvider = AudioPlayerControllerTest_TestModule_ProvideCacheAssetsLocallyFactory.create(testModuleParam);</span>
+<span class="nc" id="L165">    this.audioPlayerControllerProvider = DoubleCheck.provider(AudioPlayerController_Factory.create(consoleLoggerProvider, assetRepositoryProvider, exceptionsControllerProvider, oppiaClockProvider, provideBackgroundDispatcherProvider, provideCacheAssetsLocallyProvider));</span>
+<span class="nc" id="L166">    this.testCoroutineDispatchersRobolectricImplProvider = TestCoroutineDispatchersRobolectricImpl_Factory.create(provideBackgroundTestDispatcherProvider, provideBlockingTestDispatcherProvider, fakeSystemClockProvider);</span>
+<span class="nc" id="L167">    this.testCoroutineDispatchersEspressoImplProvider = TestCoroutineDispatchersEspressoImpl_Factory.create(provideBackgroundTestDispatcherProvider, provideBlockingTestDispatcherProvider);</span>
+<span class="nc" id="L168">  }</span>
+
+  @Override
+  public void inject(AudioPlayerControllerTest audioPlayerControllerTest) {
+<span class="nc" id="L172">    injectAudioPlayerControllerTest(audioPlayerControllerTest);}</span>
+
+  @CanIgnoreReturnValue
+  private AudioPlayerControllerTest injectAudioPlayerControllerTest(
+      AudioPlayerControllerTest instance) {
+<span class="nc" id="L177">    AudioPlayerControllerTest_MembersInjector.injectContext(instance, provideContextProvider.get());</span>
+<span class="nc" id="L178">    AudioPlayerControllerTest_MembersInjector.injectAudioPlayerController(instance, audioPlayerControllerProvider.get());</span>
+<span class="nc" id="L179">    AudioPlayerControllerTest_MembersInjector.injectFakeExceptionLogger(instance, fakeExceptionLoggerProvider.get());</span>
+<span class="nc" id="L180">    AudioPlayerControllerTest_MembersInjector.injectTestCoroutineDispatchers(instance, getTestCoroutineDispatchers());</span>
+<span class="nc" id="L181">    return instance;</span>
+  }
+
+  private static final class Builder implements AudioPlayerControllerTest.TestApplicationComponent.Builder {
+    private Application setApplication;
+
+    @Override
+    public Builder setApplication(Application application) {
+<span class="nc" id="L189">      this.setApplication = Preconditions.checkNotNull(application);</span>
+<span class="nc" id="L190">      return this;</span>
+    }
+
+    @Override
+    public AudioPlayerControllerTest.TestApplicationComponent build() {
+<span class="nc" id="L195">      Preconditions.checkBuilderRequirement(setApplication, Application.class);</span>
+<span class="nc" id="L196">      return new DaggerAudioPlayerControllerTest_TestApplicationComponent(new AudioPlayerControllerTest.TestModule(), new LogStorageModule(), new TestDispatcherModule(), setApplication);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

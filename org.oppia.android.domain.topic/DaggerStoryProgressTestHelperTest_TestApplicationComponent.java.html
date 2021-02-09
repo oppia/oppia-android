@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DaggerStoryProgressTestHelperTest_TestApplicationComponent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">oppia_android$fractioninput_FractionInputHasDenominatorEqualToRuleClassifierProviderTest.exec</a> &gt; <a href="index.source.html" class="el_package">org.oppia.android.domain.topic</a> &gt; <span class="el_source">DaggerStoryProgressTestHelperTest_TestApplicationComponent.java</span></div><h1>DaggerStoryProgressTestHelperTest_TestApplicationComponent.java</h1><pre class="source lang-java linenums">package org.oppia.android.domain.topic;
+
+import android.app.Application;
+import android.content.Context;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import dagger.internal.DoubleCheck;
+import dagger.internal.InstanceFactory;
+import dagger.internal.Preconditions;
+import dagger.internal.SingleCheck;
+import javax.annotation.Generated;
+import javax.inject.Provider;
+import kotlinx.coroutines.CoroutineDispatcher;
+import org.oppia.android.data.persistence.PersistentCacheStore;
+import org.oppia.android.data.persistence.PersistentCacheStore_Factory_Factory;
+import org.oppia.android.domain.oppialogger.LogStorageModule;
+import org.oppia.android.domain.oppialogger.LogStorageModule_ProvideExceptionLogStorageCacheSizeFactory;
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController;
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController_Factory;
+import org.oppia.android.domain.question.QuestionRetriever;
+import org.oppia.android.domain.question.QuestionRetriever_Factory;
+import org.oppia.android.domain.util.JsonAssetRetriever;
+import org.oppia.android.domain.util.JsonAssetRetriever_Factory;
+import org.oppia.android.domain.util.StateRetriever;
+import org.oppia.android.domain.util.StateRetriever_Factory;
+import org.oppia.android.testing.FakeExceptionLogger;
+import org.oppia.android.testing.FakeExceptionLogger_Factory;
+import org.oppia.android.testing.FakeSystemClock;
+import org.oppia.android.testing.FakeSystemClock_Factory;
+import org.oppia.android.testing.TestCoroutineDispatcher;
+import org.oppia.android.testing.TestCoroutineDispatcherEspressoImpl_FactoryImpl_Factory;
+import org.oppia.android.testing.TestCoroutineDispatcherRobolectricImpl;
+import org.oppia.android.testing.TestCoroutineDispatcherRobolectricImpl_FactoryImpl_Factory;
+import org.oppia.android.testing.TestCoroutineDispatchers;
+import org.oppia.android.testing.TestCoroutineDispatchersEspressoImpl;
+import org.oppia.android.testing.TestCoroutineDispatchersEspressoImpl_Factory;
+import org.oppia.android.testing.TestCoroutineDispatchersRobolectricImpl;
+import org.oppia.android.testing.TestCoroutineDispatchersRobolectricImpl_Factory;
+import org.oppia.android.testing.TestDispatcherModule;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBackgroundDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBackgroundTestDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBlockingDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideBlockingTestDispatcherFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideIsOnRobolectricFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideTestCoroutineDispatcherFactoryFactory;
+import org.oppia.android.testing.TestDispatcherModule_ProvideTestCoroutineDispatchersFactory;
+import org.oppia.android.util.caching.AssetRepository;
+import org.oppia.android.util.caching.AssetRepository_Factory;
+import org.oppia.android.util.data.AsyncDataSubscriptionManager;
+import org.oppia.android.util.data.AsyncDataSubscriptionManager_Factory;
+import org.oppia.android.util.data.DataProviders;
+import org.oppia.android.util.data.DataProviders_Factory;
+import org.oppia.android.util.data.InMemoryBlockingCache;
+import org.oppia.android.util.data.InMemoryBlockingCache_Factory_Factory;
+import org.oppia.android.util.logging.ConsoleLogger;
+import org.oppia.android.util.logging.ConsoleLogger_Factory;
+import org.oppia.android.util.logging.LogLevel;
+import org.oppia.android.util.networking.NetworkConnectionUtil;
+import org.oppia.android.util.networking.NetworkConnectionUtil_Factory;
+import org.oppia.android.util.profile.DirectoryManagementUtil;
+import org.oppia.android.util.profile.DirectoryManagementUtil_Factory;
+import org.oppia.android.util.system.OppiaClock;
+import org.oppia.android.util.system.OppiaClock_Factory;
+
+@Generated(
+    value = &quot;dagger.internal.codegen.ComponentProcessor&quot;,
+    comments = &quot;https://dagger.dev&quot;
+)
+@SuppressWarnings({
+    &quot;unchecked&quot;,
+    &quot;rawtypes&quot;
+})
+public final class DaggerStoryProgressTestHelperTest_TestApplicationComponent implements StoryProgressTestHelperTest.TestApplicationComponent {
+  private final TestDispatcherModule testDispatcherModule;
+
+  private Provider&lt;Application&gt; setApplicationProvider;
+
+  private Provider&lt;Context&gt; provideContextProvider;
+
+  private Provider&lt;Boolean&gt; provideIsOnRobolectricProvider;
+
+  private Provider&lt;FakeSystemClock&gt; fakeSystemClockProvider;
+
+  private Provider&lt;TestCoroutineDispatcherRobolectricImpl.FactoryImpl&gt; factoryImplProvider;
+
+  private Provider&lt;TestCoroutineDispatcher.Factory&gt; provideTestCoroutineDispatcherFactoryProvider;
+
+  private Provider&lt;TestCoroutineDispatcher&gt; provideBackgroundTestDispatcherProvider;
+
+  private Provider&lt;CoroutineDispatcher&gt; provideBackgroundDispatcherProvider;
+
+  private Provider&lt;AsyncDataSubscriptionManager&gt; asyncDataSubscriptionManagerProvider;
+
+  private Provider&lt;FakeExceptionLogger&gt; fakeExceptionLoggerProvider;
+
+  private Provider&lt;DataProviders&gt; dataProvidersProvider;
+
+  private Provider&lt;TestCoroutineDispatcher&gt; provideBlockingTestDispatcherProvider;
+
+  private Provider&lt;CoroutineDispatcher&gt; provideBlockingDispatcherProvider;
+
+  private Provider&lt;InMemoryBlockingCache.Factory&gt; factoryProvider;
+
+  private Provider&lt;DirectoryManagementUtil&gt; directoryManagementUtilProvider;
+
+  private Provider&lt;PersistentCacheStore.Factory&gt; factoryProvider2;
+
+  private Provider&lt;Boolean&gt; provideEnableConsoleLogProvider;
+
+  private Provider&lt;Boolean&gt; provideEnableFileLogProvider;
+
+  private Provider&lt;LogLevel&gt; provideGlobalLogLevelProvider;
+
+  private Provider&lt;ConsoleLogger&gt; consoleLoggerProvider;
+
+  private Provider&lt;StoryProgressController&gt; storyProgressControllerProvider;
+
+  private Provider&lt;AssetRepository&gt; assetRepositoryProvider;
+
+  private Provider&lt;JsonAssetRetriever&gt; jsonAssetRetrieverProvider;
+
+  private Provider&lt;StateRetriever&gt; stateRetrieverProvider;
+
+  private Provider&lt;QuestionRetriever&gt; questionRetrieverProvider;
+
+  private Provider&lt;ConceptCardRetriever&gt; conceptCardRetrieverProvider;
+
+  private Provider&lt;RevisionCardRetriever&gt; revisionCardRetrieverProvider;
+
+  private Provider&lt;NetworkConnectionUtil&gt; networkConnectionUtilProvider;
+
+  private Provider&lt;Integer&gt; provideExceptionLogStorageCacheSizeProvider;
+
+  private Provider&lt;ExceptionsController&gt; exceptionsControllerProvider;
+
+  private Provider&lt;OppiaClock&gt; oppiaClockProvider;
+
+  private Provider&lt;TopicController&gt; topicControllerProvider;
+
+  private Provider&lt;TopicListController&gt; topicListControllerProvider;
+
+  private Provider&lt;TestCoroutineDispatchersRobolectricImpl&gt; testCoroutineDispatchersRobolectricImplProvider;
+
+  private Provider&lt;TestCoroutineDispatchersEspressoImpl&gt; testCoroutineDispatchersEspressoImplProvider;
+
+  private DaggerStoryProgressTestHelperTest_TestApplicationComponent(
+      StoryProgressTestHelperTest.TestModule testModuleParam,
+      LogStorageModule logStorageModuleParam, TestDispatcherModule testDispatcherModuleParam,
+<span class="nc" id="L148">      Application setApplicationParam) {</span>
+<span class="nc" id="L149">    this.testDispatcherModule = testDispatcherModuleParam;</span>
+<span class="nc" id="L150">    initialize(testModuleParam, logStorageModuleParam, testDispatcherModuleParam, setApplicationParam);</span>
+<span class="nc" id="L151">  }</span>
+
+  public static StoryProgressTestHelperTest.TestApplicationComponent.Builder builder() {
+<span class="nc" id="L154">    return new Builder();</span>
+  }
+
+  private StoryProgressTestHelper getStoryProgressTestHelper() {
+<span class="nc" id="L158">    return new StoryProgressTestHelper(storyProgressControllerProvider.get());}</span>
+
+  private TestCoroutineDispatchers getTestCoroutineDispatchers() {
+<span class="nc" id="L161">    return TestDispatcherModule_ProvideTestCoroutineDispatchersFactory.provideTestCoroutineDispatchers(testDispatcherModule, provideIsOnRobolectricProvider.get(), testCoroutineDispatchersRobolectricImplProvider, testCoroutineDispatchersEspressoImplProvider);}</span>
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  private void initialize(final StoryProgressTestHelperTest.TestModule testModuleParam,
+      final LogStorageModule logStorageModuleParam,
+      final TestDispatcherModule testDispatcherModuleParam, final Application setApplicationParam) {
+<span class="nc" id="L167">    this.setApplicationProvider = InstanceFactory.create(setApplicationParam);</span>
+<span class="nc" id="L168">    this.provideContextProvider = DoubleCheck.provider(StoryProgressTestHelperTest_TestModule_ProvideContextFactory.create(testModuleParam, setApplicationProvider));</span>
+<span class="nc" id="L169">    this.provideIsOnRobolectricProvider = DoubleCheck.provider(TestDispatcherModule_ProvideIsOnRobolectricFactory.create(testDispatcherModuleParam));</span>
+<span class="nc" id="L170">    this.fakeSystemClockProvider = DoubleCheck.provider(FakeSystemClock_Factory.create(provideIsOnRobolectricProvider));</span>
+<span class="nc" id="L171">    this.factoryImplProvider = TestCoroutineDispatcherRobolectricImpl_FactoryImpl_Factory.create(fakeSystemClockProvider);</span>
+<span class="nc" id="L172">    this.provideTestCoroutineDispatcherFactoryProvider = TestDispatcherModule_ProvideTestCoroutineDispatcherFactoryFactory.create(testDispatcherModuleParam, provideIsOnRobolectricProvider, factoryImplProvider, TestCoroutineDispatcherEspressoImpl_FactoryImpl_Factory.create());</span>
+<span class="nc" id="L173">    this.provideBackgroundTestDispatcherProvider = DoubleCheck.provider(TestDispatcherModule_ProvideBackgroundTestDispatcherFactory.create(testDispatcherModuleParam, provideTestCoroutineDispatcherFactoryProvider));</span>
+<span class="nc" id="L174">    this.provideBackgroundDispatcherProvider = TestDispatcherModule_ProvideBackgroundDispatcherFactory.create(testDispatcherModuleParam, provideBackgroundTestDispatcherProvider);</span>
+<span class="nc" id="L175">    this.asyncDataSubscriptionManagerProvider = DoubleCheck.provider(AsyncDataSubscriptionManager_Factory.create(provideBackgroundDispatcherProvider));</span>
+<span class="nc" id="L176">    this.fakeExceptionLoggerProvider = DoubleCheck.provider(FakeExceptionLogger_Factory.create());</span>
+<span class="nc" id="L177">    this.dataProvidersProvider = SingleCheck.provider(DataProviders_Factory.create(provideContextProvider, provideBackgroundDispatcherProvider, asyncDataSubscriptionManagerProvider, (Provider) fakeExceptionLoggerProvider));</span>
+<span class="nc" id="L178">    this.provideBlockingTestDispatcherProvider = DoubleCheck.provider(TestDispatcherModule_ProvideBlockingTestDispatcherFactory.create(testDispatcherModuleParam, provideTestCoroutineDispatcherFactoryProvider));</span>
+<span class="nc" id="L179">    this.provideBlockingDispatcherProvider = TestDispatcherModule_ProvideBlockingDispatcherFactory.create(testDispatcherModuleParam, provideBlockingTestDispatcherProvider);</span>
+<span class="nc" id="L180">    this.factoryProvider = DoubleCheck.provider(InMemoryBlockingCache_Factory_Factory.create(provideBlockingDispatcherProvider));</span>
+<span class="nc" id="L181">    this.directoryManagementUtilProvider = DoubleCheck.provider(DirectoryManagementUtil_Factory.create(provideContextProvider));</span>
+<span class="nc" id="L182">    this.factoryProvider2 = DoubleCheck.provider(PersistentCacheStore_Factory_Factory.create(provideContextProvider, factoryProvider, asyncDataSubscriptionManagerProvider, directoryManagementUtilProvider));</span>
+<span class="nc" id="L183">    this.provideEnableConsoleLogProvider = StoryProgressTestHelperTest_TestModule_ProvideEnableConsoleLogFactory.create(testModuleParam);</span>
+<span class="nc" id="L184">    this.provideEnableFileLogProvider = StoryProgressTestHelperTest_TestModule_ProvideEnableFileLogFactory.create(testModuleParam);</span>
+<span class="nc" id="L185">    this.provideGlobalLogLevelProvider = StoryProgressTestHelperTest_TestModule_ProvideGlobalLogLevelFactory.create(testModuleParam);</span>
+<span class="nc" id="L186">    this.consoleLoggerProvider = DoubleCheck.provider(ConsoleLogger_Factory.create(provideContextProvider, provideBlockingDispatcherProvider, provideEnableConsoleLogProvider, provideEnableFileLogProvider, provideGlobalLogLevelProvider));</span>
+<span class="nc" id="L187">    this.storyProgressControllerProvider = DoubleCheck.provider(StoryProgressController_Factory.create(factoryProvider2, dataProvidersProvider, consoleLoggerProvider));</span>
+<span class="nc" id="L188">    this.assetRepositoryProvider = DoubleCheck.provider(AssetRepository_Factory.create(provideContextProvider, consoleLoggerProvider));</span>
+<span class="nc" id="L189">    this.jsonAssetRetrieverProvider = JsonAssetRetriever_Factory.create(assetRepositoryProvider);</span>
+<span class="nc" id="L190">    this.stateRetrieverProvider = StateRetriever_Factory.create(jsonAssetRetrieverProvider);</span>
+<span class="nc" id="L191">    this.questionRetrieverProvider = QuestionRetriever_Factory.create(jsonAssetRetrieverProvider, stateRetrieverProvider);</span>
+<span class="nc" id="L192">    this.conceptCardRetrieverProvider = ConceptCardRetriever_Factory.create(jsonAssetRetrieverProvider);</span>
+<span class="nc" id="L193">    this.revisionCardRetrieverProvider = RevisionCardRetriever_Factory.create(jsonAssetRetrieverProvider);</span>
+<span class="nc" id="L194">    this.networkConnectionUtilProvider = DoubleCheck.provider(NetworkConnectionUtil_Factory.create(provideContextProvider));</span>
+<span class="nc" id="L195">    this.provideExceptionLogStorageCacheSizeProvider = LogStorageModule_ProvideExceptionLogStorageCacheSizeFactory.create(logStorageModuleParam);</span>
+<span class="nc" id="L196">    this.exceptionsControllerProvider = ExceptionsController_Factory.create((Provider) fakeExceptionLoggerProvider, factoryProvider2, consoleLoggerProvider, networkConnectionUtilProvider, provideExceptionLogStorageCacheSizeProvider);</span>
+<span class="nc" id="L197">    this.oppiaClockProvider = DoubleCheck.provider(OppiaClock_Factory.create());</span>
+<span class="nc" id="L198">    this.topicControllerProvider = DoubleCheck.provider(TopicController_Factory.create(dataProvidersProvider, jsonAssetRetrieverProvider, questionRetrieverProvider, conceptCardRetrieverProvider, revisionCardRetrieverProvider, storyProgressControllerProvider, exceptionsControllerProvider, oppiaClockProvider));</span>
+<span class="nc" id="L199">    this.topicListControllerProvider = DoubleCheck.provider(TopicListController_Factory.create(jsonAssetRetrieverProvider, topicControllerProvider, storyProgressControllerProvider));</span>
+<span class="nc" id="L200">    this.testCoroutineDispatchersRobolectricImplProvider = TestCoroutineDispatchersRobolectricImpl_Factory.create(provideBackgroundTestDispatcherProvider, provideBlockingTestDispatcherProvider, fakeSystemClockProvider);</span>
+<span class="nc" id="L201">    this.testCoroutineDispatchersEspressoImplProvider = TestCoroutineDispatchersEspressoImpl_Factory.create(provideBackgroundTestDispatcherProvider, provideBlockingTestDispatcherProvider);</span>
+<span class="nc" id="L202">  }</span>
+
+  @Override
+  public DataProviders getDataProviders() {
+<span class="nc" id="L206">    return dataProvidersProvider.get();}</span>
+
+  @Override
+  public void inject(StoryProgressTestHelperTest storyProgressTestHelperTest) {
+<span class="nc" id="L210">    injectStoryProgressTestHelperTest(storyProgressTestHelperTest);}</span>
+
+  @CanIgnoreReturnValue
+  private StoryProgressTestHelperTest injectStoryProgressTestHelperTest(
+      StoryProgressTestHelperTest instance) {
+<span class="nc" id="L215">    StoryProgressTestHelperTest_MembersInjector.injectContext(instance, provideContextProvider.get());</span>
+<span class="nc" id="L216">    StoryProgressTestHelperTest_MembersInjector.injectStoryProgressTestHelper(instance, getStoryProgressTestHelper());</span>
+<span class="nc" id="L217">    StoryProgressTestHelperTest_MembersInjector.injectTopicController(instance, topicControllerProvider.get());</span>
+<span class="nc" id="L218">    StoryProgressTestHelperTest_MembersInjector.injectTopicListController(instance, topicListControllerProvider.get());</span>
+<span class="nc" id="L219">    StoryProgressTestHelperTest_MembersInjector.injectTestCoroutineDispatchers(instance, getTestCoroutineDispatchers());</span>
+<span class="nc" id="L220">    return instance;</span>
+  }
+
+  private static final class Builder implements StoryProgressTestHelperTest.TestApplicationComponent.Builder {
+    private Application setApplication;
+
+    @Override
+    public Builder setApplication(Application application) {
+<span class="nc" id="L228">      this.setApplication = Preconditions.checkNotNull(application);</span>
+<span class="nc" id="L229">      return this;</span>
+    }
+
+    @Override
+    public StoryProgressTestHelperTest.TestApplicationComponent build() {
+<span class="nc" id="L234">      Preconditions.checkBuilderRequirement(setApplication, Application.class);</span>
+<span class="nc" id="L235">      return new DaggerStoryProgressTestHelperTest_TestApplicationComponent(new StoryProgressTestHelperTest.TestModule(), new LogStorageModule(), new TestDispatcherModule(), setApplication);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

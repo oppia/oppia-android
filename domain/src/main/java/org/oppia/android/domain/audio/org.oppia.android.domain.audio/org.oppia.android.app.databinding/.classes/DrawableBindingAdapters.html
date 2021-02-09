@@ -1,0 +1,135 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DrawableBindingAdapters</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.oppia.android.app.databinding</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DrawableBindingAdapters (org.oppia.android.app.databinding)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DrawableBindingAdapters</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package org.oppia.android.app.databinding;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.graphics.drawable.GradientDrawable;
+<i>4</i>&nbsp;import android.view.View;
+<i>5</i>&nbsp;import android.widget.Button;
+<i>6</i>&nbsp;import androidx.annotation.ColorInt;
+<i>7</i>&nbsp;import androidx.annotation.DrawableRes;
+<i>8</i>&nbsp;import androidx.annotation.NonNull;
+<i>9</i>&nbsp;import androidx.databinding.BindingAdapter;
+<i>10</i>&nbsp;import org.oppia.android.R;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;/** Holds all custom binding adapters that set background drawables. */
+<b class="nc"><i>13</i>&nbsp;public final class DrawableBindingAdapters {</b>
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;  /** Used to set a rounded-rect background drawable with a data-bound color. */
+<i>16</i>&nbsp;  @BindingAdapter(&quot;app:roundedRectDrawableWithColor&quot;)
+<i>17</i>&nbsp;  public static void setBackgroundDrawable(@NonNull View view, @ColorInt int colorRgb) {
+<b class="nc"><i>18</i>&nbsp;    view.setBackgroundResource(R.drawable.rounded_rect_background);</b>
+<i>19</i>&nbsp;    // The input color needs to have alpha channel prepended to it.
+<b class="nc"><i>20</i>&nbsp;    GradientDrawable background = (GradientDrawable) view.getBackground();</b>
+<b class="nc"><i>21</i>&nbsp;    background.setColor(0xff000000 | colorRgb);</b>
+<i>22</i>&nbsp;  }
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;  @BindingAdapter(&quot;app:topRoundedRectDrawableWithColor&quot;)
+<i>25</i>&nbsp;  public static void setTopBackgroundDrawable(@NonNull View view, @ColorInt int colorRgb) {
+<b class="nc"><i>26</i>&nbsp;    view.setBackgroundResource(R.drawable.top_rounded_rect_background);</b>
+<i>27</i>&nbsp;    // The input color needs to have alpha channel prepended to it.
+<b class="nc"><i>28</i>&nbsp;    GradientDrawable background = (GradientDrawable) view.getBackground();</b>
+<b class="nc"><i>29</i>&nbsp;    background.setColor(0xff000000 | colorRgb);</b>
+<i>30</i>&nbsp;  }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;  @BindingAdapter(&quot;app:bottomRoundedRectDrawableWithColor&quot;)
+<i>33</i>&nbsp;  public static void setBottomBackgroundDrawable(@NonNull View view, @ColorInt int colorRgb) {
+<b class="nc"><i>34</i>&nbsp;    view.setBackgroundResource(R.drawable.bottom_rounded_rect_background);</b>
+<i>35</i>&nbsp;    // The input color needs to have alpha channel prepended to it.
+<b class="nc"><i>36</i>&nbsp;    GradientDrawable background = (GradientDrawable) view.getBackground();</b>
+<b class="nc"><i>37</i>&nbsp;    background.setColor(0xff000000 | colorRgb);</b>
+<i>38</i>&nbsp;  }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;  @BindingAdapter(&quot;app:rectangleDrawableWithColor&quot;)
+<i>41</i>&nbsp;  public static void setRectangleBackgroundDrawable(@NonNull View view, @ColorInt int colorRgb) {
+<b class="nc"><i>42</i>&nbsp;    view.setBackgroundResource(R.drawable.rectangle_background);</b>
+<i>43</i>&nbsp;    // The input color needs to have alpha channel prepended to it.
+<b class="nc"><i>44</i>&nbsp;    GradientDrawable background = (GradientDrawable) view.getBackground();</b>
+<b class="nc"><i>45</i>&nbsp;    background.setColor(0xff000000 | colorRgb);</b>
+<i>46</i>&nbsp;  }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;  @BindingAdapter(&quot;android:button&quot;)
+<i>49</i>&nbsp;  public static void setBackgroundResource(@NonNull Button button, @DrawableRes int resource) {
+<b class="nc"><i>50</i>&nbsp;    button.setBackgroundResource(resource);</b>
+<i>51</i>&nbsp;  }
+<i>52</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-02-01 18:39</div>
+</div>
+</body>
+</html>

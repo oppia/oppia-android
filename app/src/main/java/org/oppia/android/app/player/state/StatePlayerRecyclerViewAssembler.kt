@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -7,6 +8,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getColor
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -15,8 +17,10 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
+import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.EphemeralState.StateTypeCase
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.android.app.model.Interaction
@@ -93,6 +97,9 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 /** The fragment tag corresponding to the concept card dialog fragment. */
 const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
+private const val CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS: Long = 600
+private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
+
 /**
  * An assembler for generating the list of view models to bind to the state player recycler view.
  * This class also handles some non-recycler view feature management, such as the congratulations
@@ -120,7 +127,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
   val rhsAdapter: BindableAdapter<StateItemViewModel>,
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
+  private val context: Context,
   private val congratulationsTextView: TextView?,
+  private val congratulationsTextConfettiView: KonfettiView?,
+  private val congratulationsTextConfettiConfig: ConfettiConfig?,
+  private val fullScreenConfettiView: KonfettiView?,
+  private val endOfSessionConfettiConfig: ConfettiConfig?,
   private val canSubmitAnswer: ObservableField<Boolean>?,
   private val audioActivityId: String?,
   private val currentStateName: ObservableField<String>?,
@@ -206,7 +218,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     val interaction = ephemeralState.state.interaction
 
-    if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
+    if (ephemeralState.stateTypeCase == StateTypeCase.PENDING_STATE) {
       addPreviousAnswers(
         conversationPendingItemList,
         extraInteractionPendingItemList,
@@ -227,7 +239,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
           gcsEntityId
         )
       }
-    } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
+    } else if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE) {
+      // Ensure the answer is marked in situations where that's guaranteed (e.g. completed state)
+      // so that the UI always has the correct answer indication, even after configuration changes.
+      isCorrectAnswer.set(true)
       addPreviousAnswers(
         conversationPendingItemList,
         extraInteractionPendingItemList,
@@ -238,10 +253,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hintHandler.hideHint()
     }
 
+    val isTerminalState = ephemeralState.stateTypeCase == StateTypeCase.TERMINAL_STATE
     var canContinueToNextState = false
     var hasGeneralContinueButton = false
-    if (ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.TERMINAL_STATE) {
-      if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE &&
+    if (!isTerminalState) {
+      if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE &&
         !ephemeralState.hasNextState
       ) {
         hasGeneralContinueButton = true
@@ -267,13 +283,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
     }
 
+    if (isTerminalState && playerFeatureSet.showCelebrationAtEndOfSession) {
+      maybeShowCelebrationForEndOfSession()
+    }
+
     maybeAddNavigationButtons(
       conversationPendingItemList,
       extraInteractionPendingItemList,
       hasPreviousState,
       canContinueToNextState,
       hasGeneralContinueButton,
-      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
+      isTerminalState
     )
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
@@ -423,37 +443,44 @@ class StatePlayerRecyclerViewAssembler private constructor(
     hasPreviousResponsesExpanded = false
   }
 
-  /** Shows a congratulations message due to the learner having submitted a correct answer. */
-  fun showCongratulationMessageOnCorrectAnswer() {
-    check(playerFeatureSet.showCongratulationsOnCorrectAnswer) {
+  /**
+   * Shows a celebratory animation with a congratulations message and confetti when the learner submits
+   * a correct answer.
+   */
+  fun showCelebrationOnCorrectAnswer() {
+    check(playerFeatureSet.showCelebrationOnCorrectAnswer) {
       "Cannot show congratulations message for assembler that doesn't support it"
     }
     val textView = checkNotNull(congratulationsTextView) {
       "Expected non-null reference to congratulations text view"
     }
-    textView.visibility = View.VISIBLE
+    val confettiView = checkNotNull(congratulationsTextConfettiView) {
+      "Expected non-null reference to congratulations text confetti view"
+    }
+    val confettiConfig = checkNotNull(congratulationsTextConfettiConfig) {
+      "Expected non-null reference to confetti animation configuration"
+    }
 
-    val fadeIn = AlphaAnimation(0f, 1f)
-    fadeIn.interpolator = DecelerateInterpolator()
-    fadeIn.duration = 2000
+    createBannerConfetti(confettiView, confettiConfig)
+    animateCongratulationsTextView(textView)
+  }
 
-    val fadeOut = AlphaAnimation(1f, 0f)
-    fadeOut.interpolator = AccelerateInterpolator()
-    fadeOut.startOffset = 1000
-    fadeOut.duration = 1000
-
-    val animation = AnimationSet(false)
-    animation.addAnimation(fadeIn)
-    animation.addAnimation(fadeOut)
-    textView.animation = animation
-
-    lifecycleSafeTimerFactory.createTimer(2000).observe(
-      fragment,
-      Observer {
-        textView.clearAnimation()
-        textView.visibility = View.INVISIBLE
-      }
-    )
+  /** Shows confetti when the learner reaches the end of an exploration session. */
+  private fun maybeShowCelebrationForEndOfSession() {
+    check(playerFeatureSet.showCelebrationAtEndOfSession) {
+      "Cannot show end of session confetti for assembler that doesn't support it"
+    }
+    val confettiView = checkNotNull(fullScreenConfettiView) {
+      "Expected non-null reference to full screen confetti view"
+    }
+    val confettiConfig = checkNotNull(endOfSessionConfettiConfig) {
+      "Expected non-null reference to confetti animation configuration"
+    }
+    if (!confettiView.isActive()) {
+      // If learners toggle back and forth from the end of the exploration we only show the confetti one
+      // instance at a time.
+      createEndOfSessionConfetti(confettiView, confettiConfig)
+    }
   }
 
   /**
@@ -708,6 +735,93 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
+  private fun createBannerConfetti(confettiView: KonfettiView, config: ConfettiConfig) {
+    val width = confettiView.width.toFloat()
+    val height = confettiView.height.toFloat()
+    // Set confetti lifetime to be the same as the congratulations text view.
+    val timeToLiveMs = CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS +
+      CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS +
+      CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS
+    val colorsList = ConfettiConfig.primaryColors.map { getColor(context, it) }
+
+    config.startConfettiBurst(
+      confettiView,
+      xPosition = width / 3,
+      yPosition = height / 2,
+      minAngle = 180.0,
+      maxAngle = 270.0,
+      timeToLiveMs,
+      delayMs = 0L,
+      colorsList
+    )
+    config.startConfettiBurst(
+      confettiView,
+      xPosition = width * 2 / 3,
+      yPosition = height / 2,
+      minAngle = 270.0,
+      maxAngle = 370.0,
+      timeToLiveMs,
+      delayMs = 0L,
+      colorsList
+    )
+  }
+
+  private fun animateCongratulationsTextView(congratulationsText: TextView) {
+    congratulationsText.visibility = View.VISIBLE
+    val fullAnimationMs = CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS +
+      CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS + CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS
+
+    val fadeIn = AlphaAnimation(0f, 1f)
+    fadeIn.interpolator = DecelerateInterpolator()
+    fadeIn.duration = CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS
+
+    val fadeOut = AlphaAnimation(1f, 0f)
+    fadeOut.interpolator = AccelerateInterpolator()
+    fadeOut.startOffset = CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS +
+      CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS
+    fadeOut.duration = CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS
+
+    val animation = AnimationSet(false)
+    animation.addAnimation(fadeIn)
+    animation.addAnimation(fadeOut)
+    congratulationsText.animation = animation
+
+    lifecycleSafeTimerFactory.createTimer(fullAnimationMs).observe(
+      fragment,
+      Observer {
+        congratulationsText.clearAnimation()
+        congratulationsText.visibility = View.INVISIBLE
+      }
+    )
+  }
+
+  private fun createEndOfSessionConfetti(confettiView: KonfettiView, config: ConfettiConfig) {
+    val timeToLiveMillis = 4000L
+    val delayMillis = 500L
+    val colorsList = ConfettiConfig.primaryColors.map { getColor(context, it) }
+
+    config.startConfettiBurst(
+      confettiView,
+      xPosition = 0f,
+      yPosition = 0f,
+      minAngle = -90.0,
+      maxAngle = 90.0,
+      timeToLiveMillis,
+      delayMillis,
+      colorsList
+    )
+    config.startConfettiBurst(
+      confettiView,
+      xPosition = confettiView.width.toFloat(),
+      yPosition = 0f,
+      minAngle = 90.0,
+      maxAngle = 270.0,
+      timeToLiveMillis,
+      delayMillis,
+      colorsList
+    )
+  }
+
   /**
    * Returns whether there is currently a pending interaction that requires an additional user
    * action to submit the answer.
@@ -746,6 +860,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val resourceBucketName: String,
     private val entityType: String,
     private val fragment: Fragment,
+    private val context: Context,
     private val interactionViewModelFactoryMap: Map<String, InteractionViewModelFactory>,
     private val backgroundCoroutineDispatcher: CoroutineDispatcher,
     private val delayShowInitialHintMs: Long,
@@ -761,6 +876,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
+    private var congratulationsTextConfettiView: KonfettiView? = null
+    private var congratulationsTextConfettiConfig: ConfettiConfig? = null
+    private var fullScreenConfettiView: KonfettiView? = null
+    private var endOfSessionConfettiConfig: ConfettiConfig? = null
     private var hasConversationView: Boolean = true
     private var canSubmitAnswer: ObservableField<Boolean>? = null
     private var audioActivityId: String? = null
@@ -1104,9 +1223,29 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * Adds support for displaying a congratulations answer when the learner submits a correct
      * answer.
      */
-    fun addCongratulationsForCorrectAnswers(congratulationsTextView: TextView): Builder {
+    fun addCelebrationForCorrectAnswers(
+      congratulationsTextView: TextView,
+      congratulationsTextConfettiView: KonfettiView,
+      confettiConfig: ConfettiConfig
+    ): Builder {
       this.congratulationsTextView = congratulationsTextView
-      featureSets += PlayerFeatureSet(showCongratulationsOnCorrectAnswer = true)
+      this.congratulationsTextConfettiView = congratulationsTextConfettiView
+      this.congratulationsTextConfettiConfig = confettiConfig
+      featureSets += PlayerFeatureSet(showCelebrationOnCorrectAnswer = true)
+      return this
+    }
+
+    /**
+     * Adds support for displaying a confetti animation when the learner completes an entire
+     * exploration.
+     */
+    fun addCelebrationForEndOfSession(
+      fullScreenConfettiView: KonfettiView,
+      confettiConfig: ConfettiConfig
+    ): Builder {
+      this.endOfSessionConfettiConfig = confettiConfig
+      this.fullScreenConfettiView = fullScreenConfettiView
+      featureSets += PlayerFeatureSet(showCelebrationAtEndOfSession = true)
       return this
     }
 
@@ -1115,7 +1254,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     fun hasConversationView(hasConversationView: Boolean): Builder {
       this.hasConversationView = hasConversationView
-      featureSets += PlayerFeatureSet(showCongratulationsOnCorrectAnswer = true)
       return this
     }
 
@@ -1172,7 +1310,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
         /* rhsAdapter= */ adapterBuilder.build(),
         playerFeatureSet,
         fragment,
+        context,
         congratulationsTextView,
+        congratulationsTextConfettiView,
+        congratulationsTextConfettiConfig,
+        fullScreenConfettiView,
+        endOfSessionConfettiConfig,
         canSubmitAnswer,
         audioActivityId,
         currentStateName,
@@ -1195,6 +1338,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     class Factory @Inject constructor(
       private val htmlParserFactory: HtmlParser.Factory,
       private val fragment: Fragment,
+      private val context: Context,
       private val interactionViewModelFactoryMap: Map<
         String, @JvmSuppressWildcards InteractionViewModelFactory>,
       @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
@@ -1212,6 +1356,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           resourceBucketName,
           entityType,
           fragment,
+          context,
           interactionViewModelFactoryMap,
           backgroundCoroutineDispatcher,
           delayShowInitialHintMs,
@@ -1233,7 +1378,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val forwardNavigation: Boolean = false,
     val replaySupport: Boolean = false,
     val returnToTopicNavigation: Boolean = false,
-    val showCongratulationsOnCorrectAnswer: Boolean = false,
+    val showCelebrationOnCorrectAnswer: Boolean = false,
+    val showCelebrationAtEndOfSession: Boolean = false,
     val hintsAndSolutionsSupport: Boolean = false,
     val supportAudioVoiceovers: Boolean = false,
     val conceptCardSupport: Boolean = false
@@ -1253,8 +1399,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
         forwardNavigation = forwardNavigation || other.forwardNavigation,
         replaySupport = replaySupport || other.replaySupport,
         returnToTopicNavigation = returnToTopicNavigation || other.returnToTopicNavigation,
-        showCongratulationsOnCorrectAnswer = showCongratulationsOnCorrectAnswer ||
-          other.showCongratulationsOnCorrectAnswer,
+        showCelebrationOnCorrectAnswer = showCelebrationOnCorrectAnswer ||
+          other.showCelebrationOnCorrectAnswer,
+        showCelebrationAtEndOfSession = showCelebrationAtEndOfSession ||
+          other.showCelebrationAtEndOfSession,
         hintsAndSolutionsSupport = hintsAndSolutionsSupport || other.hintsAndSolutionsSupport,
         supportAudioVoiceovers = supportAudioVoiceovers || other.supportAudioVoiceovers,
         conceptCardSupport = conceptCardSupport || other.conceptCardSupport

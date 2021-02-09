@@ -1,0 +1,212 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GlideApp</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">org.oppia.android.util.parser</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GlideApp (org.oppia.android.util.parser)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GlideApp</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package org.oppia.android.util.parser;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.annotation.SuppressLint;
+<i>4</i>&nbsp;import android.app.Activity;
+<i>5</i>&nbsp;import android.content.Context;
+<i>6</i>&nbsp;import android.view.View;
+<i>7</i>&nbsp;import androidx.annotation.NonNull;
+<i>8</i>&nbsp;import androidx.annotation.Nullable;
+<i>9</i>&nbsp;import androidx.annotation.VisibleForTesting;
+<i>10</i>&nbsp;import androidx.fragment.app.Fragment;
+<i>11</i>&nbsp;import androidx.fragment.app.FragmentActivity;
+<i>12</i>&nbsp;import com.bumptech.glide.Glide;
+<i>13</i>&nbsp;import com.bumptech.glide.GlideBuilder;
+<i>14</i>&nbsp;import java.io.File;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;/**
+<i>17</i>&nbsp; * The entry point for interacting with Glide for Applications
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; * &lt;p&gt;Includes all generated APIs from all
+<i>20</i>&nbsp; * {@link com.bumptech.glide.annotation.GlideExtension}s in source and dependent libraries.
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; * &lt;p&gt;This class is generated and should not be modified
+<i>23</i>&nbsp; * @see Glide
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;public final class GlideApp {
+<b class="nc"><i>26</i>&nbsp;  private GlideApp() {</b>
+<i>27</i>&nbsp;  }
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;  /**
+<i>30</i>&nbsp;   * @see Glide#getPhotoCacheDir(Context)
+<i>31</i>&nbsp;   */
+<i>32</i>&nbsp;  @Nullable
+<i>33</i>&nbsp;  public static File getPhotoCacheDir(@NonNull Context context) {
+<b class="nc"><i>34</i>&nbsp;    return Glide.getPhotoCacheDir(context);</b>
+<i>35</i>&nbsp;  }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;  /**
+<i>38</i>&nbsp;   * @see Glide#getPhotoCacheDir(Context, String)
+<i>39</i>&nbsp;   */
+<i>40</i>&nbsp;  @Nullable
+<i>41</i>&nbsp;  public static File getPhotoCacheDir(@NonNull Context context, @NonNull String string) {
+<b class="nc"><i>42</i>&nbsp;    return Glide.getPhotoCacheDir(context, string);</b>
+<i>43</i>&nbsp;  }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;  /**
+<i>46</i>&nbsp;   * @see Glide#get(Context)
+<i>47</i>&nbsp;   */
+<i>48</i>&nbsp;  @NonNull
+<i>49</i>&nbsp;  public static Glide get(@NonNull Context context) {
+<b class="nc"><i>50</i>&nbsp;    return Glide.get(context);</b>
+<i>51</i>&nbsp;  }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;  /**
+<i>54</i>&nbsp;   * @see Glide#init(Glide)
+<i>55</i>&nbsp;   */
+<i>56</i>&nbsp;  @Deprecated
+<i>57</i>&nbsp;  @VisibleForTesting
+<i>58</i>&nbsp;  @SuppressLint(&quot;VisibleForTests&quot;)
+<i>59</i>&nbsp;  public static void init(Glide glide) {
+<b class="nc"><i>60</i>&nbsp;    Glide.init(glide);</b>
+<i>61</i>&nbsp;  }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;  /**
+<i>64</i>&nbsp;   * @see Glide#init(Context, GlideBuilder)
+<i>65</i>&nbsp;   */
+<i>66</i>&nbsp;  @VisibleForTesting
+<i>67</i>&nbsp;  @SuppressLint(&quot;VisibleForTests&quot;)
+<i>68</i>&nbsp;  public static void init(@NonNull Context context, @NonNull GlideBuilder builder) {
+<b class="nc"><i>69</i>&nbsp;    Glide.init(context, builder);</b>
+<i>70</i>&nbsp;  }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;  /**
+<i>73</i>&nbsp;   * @see Glide#tearDown()
+<i>74</i>&nbsp;   */
+<i>75</i>&nbsp;  @VisibleForTesting
+<i>76</i>&nbsp;  @SuppressLint(&quot;VisibleForTests&quot;)
+<i>77</i>&nbsp;  public static void tearDown() {
+<b class="nc"><i>78</i>&nbsp;    Glide.tearDown();</b>
+<i>79</i>&nbsp;  }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;  /**
+<i>82</i>&nbsp;   * @see Glide#with(Context)
+<i>83</i>&nbsp;   */
+<i>84</i>&nbsp;  @NonNull
+<i>85</i>&nbsp;  public static GlideRequests with(@NonNull Context context) {
+<b class="nc"><i>86</i>&nbsp;    return (GlideRequests) Glide.with(context);</b>
+<i>87</i>&nbsp;  }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;  /**
+<i>90</i>&nbsp;   * @see Glide#with(Activity)
+<i>91</i>&nbsp;   */
+<i>92</i>&nbsp;  @NonNull
+<i>93</i>&nbsp;  public static GlideRequests with(@NonNull Activity activity) {
+<b class="nc"><i>94</i>&nbsp;    return (GlideRequests) Glide.with(activity);</b>
+<i>95</i>&nbsp;  }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;  /**
+<i>98</i>&nbsp;   * @see Glide#with(FragmentActivity)
+<i>99</i>&nbsp;   */
+<i>100</i>&nbsp;  @NonNull
+<i>101</i>&nbsp;  public static GlideRequests with(@NonNull FragmentActivity activity) {
+<b class="nc"><i>102</i>&nbsp;    return (GlideRequests) Glide.with(activity);</b>
+<i>103</i>&nbsp;  }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;  /**
+<i>106</i>&nbsp;   * @see Glide#with(Fragment)
+<i>107</i>&nbsp;   */
+<i>108</i>&nbsp;  @NonNull
+<i>109</i>&nbsp;  public static GlideRequests with(@NonNull Fragment fragment) {
+<b class="nc"><i>110</i>&nbsp;    return (GlideRequests) Glide.with(fragment);</b>
+<i>111</i>&nbsp;  }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;  /**
+<i>114</i>&nbsp;   * @see Glide#with(Fragment)
+<i>115</i>&nbsp;   */
+<i>116</i>&nbsp;  @Deprecated
+<i>117</i>&nbsp;  @NonNull
+<i>118</i>&nbsp;  public static GlideRequests with(@NonNull android.app.Fragment fragment) {
+<b class="nc"><i>119</i>&nbsp;    return (GlideRequests) Glide.with(fragment);</b>
+<i>120</i>&nbsp;  }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;  /**
+<i>123</i>&nbsp;   * @see Glide#with(View)
+<i>124</i>&nbsp;   */
+<i>125</i>&nbsp;  @NonNull
+<i>126</i>&nbsp;  public static GlideRequests with(@NonNull View view) {
+<b class="nc"><i>127</i>&nbsp;    return (GlideRequests) Glide.with(view);</b>
+<i>128</i>&nbsp;  }
+<i>129</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-02-01 18:39</div>
+</div>
+</body>
+</html>
