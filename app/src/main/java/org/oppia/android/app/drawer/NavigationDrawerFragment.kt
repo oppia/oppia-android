@@ -41,6 +41,6 @@ class NavigationDrawerFragment :
   }
 
   override fun restoreLastCheckedMenuItem() {
-    navigationDrawerFragmentPresenter.markHomeMenuCloseDrawer()
+    navigationDrawerFragmentPresenter.restoreLastCheckedMenuItem()
   }
 }

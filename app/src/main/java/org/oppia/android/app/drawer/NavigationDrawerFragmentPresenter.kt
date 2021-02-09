@@ -21,6 +21,7 @@ import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.OngoingTopicList
+import org.oppia.android.app.model.OppiaLogger
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
@@ -266,7 +267,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     )
   }
 
-  fun markHomeMenuCloseDrawer() {
+  fun restoreLastCheckedMenuItem() {
     if (previousMenuItemId != null) {
       val lastCheckedMenuItemValue: Int = previousMenuItemId!!
       if (lastCheckedMenuItemValue == 0) {
