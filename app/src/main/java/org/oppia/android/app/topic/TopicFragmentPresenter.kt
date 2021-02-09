@@ -45,7 +45,8 @@ class TopicFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     internalProfileId: Int,
     topicId: String,
-    storyId: String
+    storyId: String,
+    isConfigChanged: Boolean
   ): View? {
     val binding = TopicFragmentBinding.inflate(
       inflater,
@@ -72,7 +73,7 @@ class TopicFragmentPresenter @Inject constructor(
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
 
-    setUpViewPager(viewPager, topicId)
+    setUpViewPager(viewPager, topicId, isConfigChanged)
     return binding.root
   }
 
@@ -81,7 +82,7 @@ class TopicFragmentPresenter @Inject constructor(
     logTopicEvents(tab)
   }
 
-  private fun setUpViewPager(viewPager2: ViewPager2, topicId: String) {
+  private fun setUpViewPager(viewPager2: ViewPager2, topicId: String, isConfigChanged: Boolean) {
     val adapter =
       ViewPagerAdapter(fragment, internalProfileId, topicId, storyId)
     viewPager2.adapter = adapter
@@ -105,10 +106,12 @@ class TopicFragmentPresenter @Inject constructor(
         }
       }
     }.attach()
-    if (topicId.isNotEmpty() && storyId.isNotEmpty())
-      setCurrentTab(TopicTab.LESSONS)
-    else if (topicId.isNotEmpty() && storyId.isEmpty())
-      setCurrentTab(TopicTab.INFO)
+    if (isConfigChanged) {
+      if (topicId.isNotEmpty() && storyId.isNotEmpty())
+        setCurrentTab(TopicTab.LESSONS)
+      else if (topicId.isNotEmpty() && storyId.isEmpty())
+        setCurrentTab(TopicTab.INFO)
+    }
   }
 
   private fun getTopicViewModel(): TopicViewModel {
