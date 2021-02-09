@@ -3,10 +3,9 @@
 This library contains utilities that all other modules, minus model, depend on.
 """
 
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("//:oppia_android_test.bzl", "oppia_android_test")
 load("//utility:utility_test.bzl", "utility_test")
 
 # Library for general-purpose utilities.
@@ -14,7 +13,7 @@ kt_android_library(
     name = "utility",
     srcs = glob(
         ["src/main/java/org/oppia/android/util/**/*.kt"],
-        exclude = ["**/system/**"]
+        exclude = ["**/system/**"],
     ),
     custom_package = "org.oppia.android.util",
     manifest = "src/main/AndroidManifest.xml",
@@ -25,8 +24,8 @@ kt_android_library(
         "//app:crashlytics",
         "//app:crashlytics_deps",
         "//model",
-        "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
         artifact("androidx.appcompat:appcompat"),
         artifact("androidx.room:room-runtime"),

@@ -10,7 +10,6 @@ kt_android_library(
     ],
 )
 
-
 kt_android_library(
     name = "oppia_clock",
     srcs = ["OppiaClock.kt"],
