@@ -54,6 +54,7 @@ module while helping us avoid the unnecessary compilation of protoc. Referecence
 - https://github.com/google/startup-os/blob/5f30a62/WORKSPACE#L179-L187
 - https://github.com/bazelbuild/bazel/issues/7095
 """
+
 bind(
     name = "proto_compiler",
     actual = "//tools:protoc",
@@ -139,6 +140,7 @@ bind(
 )
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
+load("//third_party:versions.bzl", "get_maven_dependencies")
 
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
@@ -146,7 +148,6 @@ maven_install(
         "androidx.annotation:annotation:1.1.0",
         "androidx.appcompat:appcompat:1.0.2",
         "androidx.arch.core:core-testing:2.1.0",
-        "androidx.constraintlayout:constraintlayout:1.1.3",
         "androidx.core:core-ktx:1.0.1",
         "androidx.core:core:1.0.1",
         "androidx.databinding:databinding-adapters:3.4.2",
@@ -204,7 +205,7 @@ maven_install(
         "org.mockito:mockito-core:2.7.22",
         "org.robolectric:annotations:4.3",
         "org.robolectric:robolectric:4.3",
-    ],
+    ] + get_maven_dependencies(),
     repositories = DAGGER_REPOSITORIES + [
         "https://bintray.com/bintray/jcenter",
         "https://jcenter.bintray.com/",
