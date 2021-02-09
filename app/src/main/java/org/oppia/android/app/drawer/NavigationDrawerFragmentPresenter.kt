@@ -272,7 +272,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       if (lastCheckedMenuItemValue == 0) {
         getFooterViewModel().isAdministratorControlsSelected.set(true)
         uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
-        binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.SWITCH_PROFILE.ordinal).isChecked =
+        binding.fragmentDrawerNavView.menu.getItem(
+          NavigationDrawerItem.SWITCH_PROFILE.ordinal
+        ).isChecked =
           false
       } else {
         binding.fragmentDrawerNavView.menu.getItem(
@@ -288,7 +290,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun uncheckAllMenuItemsWhenAdministratorControlsIsSelected() {
     binding.fragmentDrawerNavView.menu.forEach {
-      it.isCheckable = false;
+      it.isCheckable = false
     }
   }
 
