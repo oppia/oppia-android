@@ -49,7 +49,7 @@ class HomeActivity :
       supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = ExitProfileDialogFragment
-      .newInstance(isFromNavigationDrawer = false)
+      .newInstance(restoreLastCheckedMenuItem = false)
     dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 

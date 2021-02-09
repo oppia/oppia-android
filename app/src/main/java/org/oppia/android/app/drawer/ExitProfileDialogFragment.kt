@@ -15,18 +15,18 @@ class ExitProfileDialogFragment : DialogFragment() {
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
-      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
+    const val BOOL_RESTORE_LAST_CHECKED_MENU_ITEM_KEY =
+      "BOOL_RESTORE_LAST_CHECKED_MENU_ITEM_KEY"
 
     /**
      * This function is responsible for displaying content in DialogFragment.
      *
      * @return [ExitProfileDialogFragment]: DialogFragment
      */
-    fun newInstance(isFromNavigationDrawer: Boolean): ExitProfileDialogFragment {
+    fun newInstance(restoreLastCheckedMenuItem: Boolean): ExitProfileDialogFragment {
       val exitProfileDialogFragment = ExitProfileDialogFragment()
       val args = Bundle()
-      args.putBoolean(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
+      args.putBoolean(BOOL_RESTORE_LAST_CHECKED_MENU_ITEM_KEY, restoreLastCheckedMenuItem)
       exitProfileDialogFragment.arguments = args
       return exitProfileDialogFragment
     }
@@ -38,33 +38,35 @@ class ExitProfileDialogFragment : DialogFragment() {
     val args =
       checkNotNull(arguments) { "Expected arguments to be pass to ExitProfileDialogFragment" }
 
-    val isFromNavigationDrawer = args.getBoolean(
-      BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+    val restoreLastCheckedMenuItem = args.getBoolean(
+      BOOL_RESTORE_LAST_CHECKED_MENU_ITEM_KEY,
       false
     )
 
-    if (isFromNavigationDrawer) {
+    if (restoreLastCheckedMenuItem) {
       exitProfileDialogInterface =
         parentFragment as ExitProfileDialogInterface
     }
 
-    return AlertDialog
+    val alertDialog = AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.AlertDialogTheme))
       .setMessage(R.string.home_activity_back_dialog_message)
       .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
-        if (isFromNavigationDrawer) {
-          exitProfileDialogInterface.markHomeMenuCloseDrawer()
+        if (restoreLastCheckedMenuItem) {
+          exitProfileDialogInterface.restoreLastCheckedMenuItem()
         }
         dialog.dismiss()
       }
       .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
         // TODO(#322): Need to start intent for ProfileChooserActivity to get update. Change to finish when live data bug is fixed.
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
-        if (!isFromNavigationDrawer) {
+        if (!restoreLastCheckedMenuItem) {
           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
         activity!!.startActivity(intent)
       }
       .create()
+    alertDialog.setCanceledOnTouchOutside(false)
+    return alertDialog
   }
 }

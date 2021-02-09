@@ -105,9 +105,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             return@setOnClickListener
           }
 
-          binding.fragmentDrawerNavView.menu.forEach { menuItem ->
-            menuItem.isCheckable = false
-          }
+          uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
 
           drawerLayout.closeDrawers()
           getFooterViewModel().isAdministratorControlsSelected.set(true)
@@ -244,8 +242,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           if (previousFragment != null) {
             fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
           }
+          getFooterViewModel().isAdministratorControlsSelected.set(false)
+          binding.fragmentDrawerNavView.menu.getItem(
+            NavigationDrawerItem.SWITCH_PROFILE.ordinal
+          ).isChecked =
+            true
           val dialogFragment = ExitProfileDialogFragment
-            .newInstance(isFromNavigationDrawer = true)
+            .newInstance(restoreLastCheckedMenuItem = true)
           dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
         }
       }
@@ -264,11 +267,29 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   fun markHomeMenuCloseDrawer() {
-    binding.fragmentDrawerNavView.menu.getItem(
-      NavigationDrawerItem.HOME.ordinal
-    ).isChecked =
-      true
+    if (previousMenuItemId != null) {
+      val lastCheckedMenuItemValue: Int = previousMenuItemId!!
+      if (lastCheckedMenuItemValue == 0) {
+        getFooterViewModel().isAdministratorControlsSelected.set(true)
+        uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
+        binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.SWITCH_PROFILE.ordinal).isChecked =
+          false
+      } else {
+        binding.fragmentDrawerNavView.menu.getItem(
+          NavigationDrawerItem.valueFromNavId(
+            lastCheckedMenuItemValue
+          ).ordinal
+        ).isChecked =
+          true
+      }
+    }
     drawerLayout.closeDrawers()
+  }
+
+  private fun uncheckAllMenuItemsWhenAdministratorControlsIsSelected() {
+    binding.fragmentDrawerNavView.menu.forEach {
+      it.isCheckable = false;
+    }
   }
 
   /**
@@ -345,6 +366,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     } else {
       // For showing navigation drawer in AdministratorControlsActivity
       getFooterViewModel().isAdministratorControlsSelected.set(true)
+      uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
       this.drawerLayout = drawerLayout
       drawerToggle = object : ActionBarDrawerToggle(
         fragment.activity,
