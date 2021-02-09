@@ -135,8 +135,8 @@ class DragAndDropSortInteractionViewModel(
       dragDropInteractionContentViewModel.itemIndex = index
       dragDropInteractionContentViewModel.listSize = choiceItems.size
     }
-    // to update the content of grouped item
     (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
+    adapter.notifyDataSetChanged()
   }
 
   fun unlinkElement(itemIndex: Int, adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {

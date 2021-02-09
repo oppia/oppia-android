@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.recyclerview.BindableAdapter.MultiTypeBuilder.Companion.newBuilder
 import org.oppia.android.app.recyclerview.BindableAdapter.SingleTypeBuilder.Companion.newBuilder
@@ -40,11 +41,15 @@ class BindableAdapter<T : Any> internal constructor(
 
   /** Sets the data of this adapter. This is expected to be called by Android via data-binding. */
   private fun setData(newDataList: List<T>) {
+
+    val result = DiffUtil.calculateDiff(
+      RecyclerDataDiffCallback(dataList, newDataList),
+      /* detectMoves= */ true
+    )
+
     dataList.clear()
     dataList += newDataList
-    // TODO(#171): Introduce diffing to notify subsets of the view to properly support animations
-    //  rather than re-binding the entire list upon any change.
-    notifyDataSetChanged()
+    result.dispatchUpdatesTo(this)
   }
 
   /**
