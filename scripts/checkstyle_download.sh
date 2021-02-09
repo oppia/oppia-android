@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Download checkstyle
 CHECKSTYLE="8.37"

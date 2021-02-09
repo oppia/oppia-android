@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Download ktlint
 KTLINT="0.37.1"

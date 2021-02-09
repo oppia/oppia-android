@@ -10,11 +10,11 @@ import java.util.List;
 
 /** Holds all custom binding adapters that bind to [RecyclerView]. */
 public final class RecyclerViewBindingAdapter {
-    /**
-     * Binds the specified generic data to the adapter of the [RecyclerView]. This is called by
-     * Android's data binding framework and should not be used directly. For reference:
-     * https://android.jlelse.eu/1bd08b4796b4.
-     */
+  /**
+   * Binds the specified generic data to the adapter of the [RecyclerView]. This is called by
+   * Android's data binding framework and should not be used directly. For reference:
+   * https://android.jlelse.eu/1bd08b4796b4.
+   */
   @BindingAdapter("data")
   public static <T> void bindToRecyclerViewAdapterWithLiveData(
       @NonNull RecyclerView recyclerView,

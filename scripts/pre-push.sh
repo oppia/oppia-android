@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This script will run the pre-push checks in the given order
 #  - ktlint
