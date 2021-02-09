@@ -45,6 +45,7 @@ android {
     }
     debug {
       testCoverageEnabled true
+      pseudoLocalesEnabled true
     }
   }
   splits {
