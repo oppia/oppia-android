@@ -15,11 +15,8 @@ import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -60,7 +57,6 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -112,13 +108,6 @@ private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 @Config(application = QuestionPlayerActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class QuestionPlayerActivityTest {
   // TODO(#503): Add more test-cases
-  //  1. verifying the toolbar title
-  //  2. Dialog appears on back press or clicking on cross mark in toolbar
-  //  3. Selecting yes and no respectively on dialog appearing
-  //  testQuestionPlayer_onBackPressed_showsStopQuestionPlayerDialog_clickCancel_dismissesDialog
-  //  testQuestionPlayer_onBackPressed_showsStopQuestionPlayerDialog_clickOk_activityCloses
-  //  4.hint clicking and dot on hint button showing hint appears
-  //
   // TODO(#1273): add tests for Hints and Solution in Question Player.
   /**
    * Tests for QuestionPlayerActivityTest
