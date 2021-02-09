@@ -140,7 +140,8 @@ class QuestionAssessmentProgressController @Inject constructor(
           val topPendingState = progress.stateDeck.getPendingTopState()
           val answerGroup =
             answerClassificationController.classify(topPendingState.interaction, answer.answer)
-          answeredQuestionOutcome = progress.stateList.computeAnswerOutcomeForResult(answerGroup.outcome)
+          answeredQuestionOutcome =
+            progress.stateList.computeAnswerOutcomeForResult(answerGroup.outcome)
           progress.stateDeck.submitAnswer(answer, answeredQuestionOutcome.feedback)
           // Do not proceed unless the user submitted the correct answer.
           if (answeredQuestionOutcome.isCorrectAnswer) {
