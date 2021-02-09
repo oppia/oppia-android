@@ -2,14 +2,18 @@
 """
 This package contains all third-party dependencies that the project depends on. Each maven artifact
 should correspond to a single wrapper android_library, and versions should go in versions.bzl.
+
+Note to developers: new dependencies should go in versions.bzl, not here.
 """
 
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load(":versions.bzl", "DEPENDENCY_VERSIONS")
 
-android_library(
-    name = "androidx_constraintlayout_constraintlayout",
+# Create an android library wrapper for all dependencies.
+[android_library(
+    name = name.replace(":", "_").replace(".", "_"),
     visibility = ["//visibility:public"],
     exports = [
-        artifact("androidx.constraintlayout:constraintlayout"),
+        artifact("%s:%s" % (name, version)),
     ],
-)
+) for name, version in DEPENDENCY_VERSIONS.items()]
