@@ -12,7 +12,10 @@ load("//utility:utility_test.bzl", "utility_test")
 # Library for general-purpose utilities.
 kt_android_library(
     name = "utility",
-    srcs = glob(["src/main/java/org/oppia/android/util/**/*.kt"]),
+    srcs = glob(
+        ["src/main/java/org/oppia/android/util/**/*.kt"],
+        exclude = ["src/main/java/org/oppia/android/util/accessibility/**"],
+    ),
     custom_package = "org.oppia.android.util",
     manifest = "src/main/AndroidManifest.xml",
     resource_files = glob(["src/main/res/**/*.xml"]),
@@ -22,6 +25,10 @@ kt_android_library(
         "//app:crashlytics",
         "//app:crashlytics_deps",
         "//model",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:accessibility_module",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:android_accessibility_manager",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:custom_accessibility_manager",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:fake_accessibility_manager",
         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
         artifact("androidx.appcompat:appcompat"),
         artifact("androidx.room:room-runtime"),
@@ -40,6 +47,10 @@ TEST_DEPS = [
     "//model",
     "//app:crashlytics",
     "//app:crashlytics_deps",
+    "//utility/src/main/java/org/oppia/android/util/accessibility:accessibility_module",
+    "//utility/src/main/java/org/oppia/android/util/accessibility:android_accessibility_manager",
+    "//utility/src/main/java/org/oppia/android/util/accessibility:custom_accessibility_manager",
+    "//utility/src/main/java/org/oppia/android/util/accessibility:fake_accessibility_manager",
     "@robolectric//bazel:android-all",
     artifact("org.jetbrains.kotlin:kotlin-reflect"),
     artifact("com.google.truth:truth"),
