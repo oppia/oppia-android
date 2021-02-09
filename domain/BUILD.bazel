@@ -4,7 +4,6 @@ This library contains the frontend controller and business service logic for the
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//domain:domain_test.bzl", "domain_test")
 
@@ -19,23 +18,24 @@ kt_android_library(
     deps = [
         ":dagger",
         "//data:persistent_cache_store",
-        artifact("androidx.work:work-runtime-ktx:2.4.0"),
+        "//third_party:androidx_work_work-runtime-ktx",
     ],
 )
 
+# keep sorted
 TEST_DEPS = [
     ":dagger",
     ":domain",
     "//data:persistent_cache_store",
     "//model",
     "//testing",
+    "//third_party:androidx_arch_core_core-testing",
+    "//third_party:androidx_test_ext_junit",
+    "//third_party:androidx_work_work-testing",
+    "//third_party:com_google_truth_truth",
+    "//third_party:org_jetbrains_kotlin_kotlin-reflect",
+    "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     "//third_party:robolectric_android-all",
-    artifact("androidx.arch.core:core-testing"),
-    artifact("androidx.test.ext:junit"),
-    artifact("androidx.work:work-testing"),
-    artifact("com.google.truth:truth"),
-    artifact("org.jetbrains.kotlin:kotlin-test-junit"),
-    artifact("org.jetbrains.kotlin:kotlin-reflect"),
 ]
 
 domain_test(
