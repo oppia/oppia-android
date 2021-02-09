@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
@@ -24,7 +23,8 @@ import javax.inject.Inject
 class OnboardingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>
+  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
+  private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>
 ) : OnboardingNavigationListener {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var binding: OnboardingFragmentBinding
@@ -49,6 +49,14 @@ class OnboardingFragmentPresenter @Inject constructor(
 
   private fun setUpViewPager() {
     binding.onboardingSlideViewPager.adapter = createRecyclerViewAdapter()
+    binding.onboardingSlideViewPager.adapter.setData(
+      listOf(
+        OnboardingSlideViewModel(context = activity, viewPagerSlide = ViewPagerSlide.SLIDE_0),
+        OnboardingSlideViewModel(context = activity, viewPagerSlide = ViewPagerSlide.SLIDE_1),
+        OnboardingSlideViewModel(context = activity, viewPagerSlide = ViewPagerSlide.SLIDE_2),
+        getOnboardingSlideFinalViewModel()
+      )
+    )
     binding.onboardingSlideViewPager.registerOnPageChangeCallback(
       object : ViewPager2.OnPageChangeCallback() {
         override fun onPageScrollStateChanged(state: Int) {
@@ -77,51 +85,39 @@ class OnboardingFragmentPresenter @Inject constructor(
       })
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<OnBoardingViewPagerViewModel> {
+  private fun createRecyclerViewAdapter(): BindableAdapter<OnboardingViewPagerViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<OnBoardingViewPagerViewModel, ViewType> { viewModel ->
+      .newBuilder<OnboardingViewPagerViewModel, ViewType> { viewModel ->
         when (viewModel) {
-          is OnboardingSlideViewModel -> ViewType.ONBOARDING_SLIDE
+          is OnboardingSlideViewModel -> ViewType.ONBOARDING_MIDDLE_SLIDE
           is OnboardingSlideFinalViewModel -> ViewType.ONBOARDING_FINAL_SLIDE
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
-      .setLifecycleOwner(fragment)
-      .registerViewBinder(
-        viewType = ViewType.ONBOARDING_SLIDE,
-        inflateView = { parent ->
-          OnboardingSlideBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<OnboardingSlideBinding>(view)!!
-          val onboardingSlideViewModel = viewModel as OnboardingSlideViewModel
-          binding.viewModel = onboardingSlideViewModel
-        }
+      .registerViewDataBinder(
+        viewType = ViewType.ONBOARDING_MIDDLE_SLIDE,
+        inflateDataBinding = OnboardingSlideBinding::inflate,
+        setViewModel = OnboardingSlideBinding::setViewModel,
+        transformViewModel = { it as OnboardingSlideViewModel }
       )
-      .registerViewBinder(
+      .registerViewDataBinder(
         viewType = ViewType.ONBOARDING_FINAL_SLIDE,
-        inflateView = { parent ->
-          OnboardingSlideFinalBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<OnboardingSlideFinalBinding>(view)!!
-          val onboardingSlideFinalViewModel = viewModel as OnboardingSlideFinalViewModel
-          binding.viewModel = onboardingSlideFinalViewModel
-        }
+        inflateDataBinding = OnboardingSlideFinalBinding::inflate,
+        setViewModel = OnboardingSlideFinalBinding::setViewModel,
+        transformViewModel = { it as OnboardingSlideFinalViewModel }
       )
       .build()
   }
 
+  private fun getOnboardingSlideFinalViewModel(): OnboardingSlideFinalViewModel {
+    return viewModelProviderFinalSlide.getForFragment(
+      fragment,
+      OnboardingSlideFinalViewModel::class.java
+    )
+  }
+
   private enum class ViewType {
-    ONBOARDING_SLIDE,
+    ONBOARDING_MIDDLE_SLIDE,
     ONBOARDING_FINAL_SLIDE
   }
 
