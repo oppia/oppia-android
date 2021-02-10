@@ -47,4 +47,8 @@ class NavigationDrawerFragment :
   override fun highlightAdministratorControlsItem() {
     navigationDrawerFragmentPresenter.highlightAdministratorControlsItem()
   }
+
+  override fun unhighlightSwitchProfileMenuItem() {
+    navigationDrawerFragmentPresenter.unhighlightSwitchProfileMenuItem()
+  }
 }

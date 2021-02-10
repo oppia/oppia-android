@@ -62,6 +62,7 @@ class ExitProfileDialogFragment : DialogFragment() {
       .setMessage(R.string.home_activity_back_dialog_message)
       .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
         if (restoreLastCheckedItem) {
+          exitProfileDialogInterface.unhighlightSwitchProfileMenuItem()
           if (exitProfileDialogArguments.highlightItemCase ==
             ExitProfileDialogArguments.HighlightItemCase.HIGHLIGHT_LAST_CHECKED_MENU_ITEM
           ) {

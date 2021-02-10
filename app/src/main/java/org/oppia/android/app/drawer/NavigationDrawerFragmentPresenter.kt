@@ -293,13 +293,16 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   fun highlightAdministratorControlsItem() {
+    getFooterViewModel().isAdministratorControlsSelected.set(true)
+    uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
+    drawerLayout.closeDrawers()
+  }
+
+  fun unhighlightSwitchProfileMenuItem() {
     binding.fragmentDrawerNavView.menu.getItem(
       NavigationDrawerItem.SWITCH_PROFILE.ordinal
     ).isChecked =
       false
-    getFooterViewModel().isAdministratorControlsSelected.set(true)
-    uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
-    drawerLayout.closeDrawers()
   }
 
   private fun uncheckAllMenuItemsWhenAdministratorControlsIsSelected() {
