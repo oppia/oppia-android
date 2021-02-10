@@ -298,7 +298,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   fun highlightAdministratorControlsItem() {
-    binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.SWITCH_PROFILE.ordinal).isChecked =
+    binding.fragmentDrawerNavView.menu.getItem(
+      NavigationDrawerItem.SWITCH_PROFILE.ordinal
+    ).isChecked =
       false
     getFooterViewModel().isAdministratorControlsSelected.set(true)
     uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
