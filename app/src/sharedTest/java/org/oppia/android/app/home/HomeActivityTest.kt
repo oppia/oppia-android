@@ -120,8 +120,8 @@ class HomeActivityTest {
     @Inject
     lateinit var profileTestHelper: ProfileTestHelper
 
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+    @Inject
+    lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
   @Inject
   lateinit var context: Context
