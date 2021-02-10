@@ -48,8 +48,8 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager() {
-    binding.onboardingSlideViewPager.adapter = createRecyclerViewAdapter()
-    binding.onboardingSlideViewPager.adapter.setData(
+     val adapter = createRecyclerViewAdapter()
+    adapter.setData(
       listOf(
         OnboardingSlideViewModel(context = activity, viewPagerSlide = ViewPagerSlide.SLIDE_0),
         OnboardingSlideViewModel(context = activity, viewPagerSlide = ViewPagerSlide.SLIDE_1),
@@ -57,6 +57,7 @@ class OnboardingFragmentPresenter @Inject constructor(
         getOnboardingSlideFinalViewModel()
       )
     )
+    binding.onboardingSlideViewPager.adapter = adapter
     binding.onboardingSlideViewPager.registerOnPageChangeCallback(
       object : ViewPager2.OnPageChangeCallback() {
         override fun onPageScrollStateChanged(state: Int) {
