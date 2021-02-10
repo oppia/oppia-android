@@ -22,10 +22,8 @@ import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
-import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
-import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.PendingState
@@ -170,7 +168,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   val isCorrectAnswer = ObservableField<Boolean>(false)
 
   fun saveState(bundle: Bundle) {
-    val hintState:HintState = HintState.newBuilder().apply {
+    val hintState: HintState = HintState.newBuilder().apply {
       wrongAnswerCount = hintHandler.trackedWrongAnswerCount
       helpIndex = hintHandler.previousHelpIndex
       hintSequenceNumber = hintHandler.hintSequenceNumber
