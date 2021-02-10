@@ -39,6 +39,7 @@ android {
     }
     debug {
       pseudoLocalesEnabled true
+      multiDexKeepProguard file('proguard-multidex-rules.pro')
     }
   }
   splits {
