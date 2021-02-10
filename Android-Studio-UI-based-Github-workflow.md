@@ -58,6 +58,8 @@ Once you push a branch to Git you wont be able to rename it so, be sure about th
 
 <img width="1676" alt="16" src="https://user-images.githubusercontent.com/54615666/72599241-53322080-3937-11ea-8ef6-3253acd58215.png">
 
+### How to Fix Push Failures?
+
 If you are using Command line to push and if you have any file formatting issues, the code will not get pushed and it will show you an error like this:
 
 <img src="https://i.ibb.co/MS2VgTb/Screenshot-2021-02-10-at-10-00-04.png" />
