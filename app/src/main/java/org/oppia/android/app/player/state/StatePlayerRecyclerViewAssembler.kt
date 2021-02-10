@@ -22,8 +22,11 @@ import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
+import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
+import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.State
@@ -99,10 +102,7 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 /** The fragment tag corresponding to the concept card dialog fragment. */
 const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
-const val KEY_TRACKED_WRONG_ANSWER_COUNT = "TRACKED_WRONG_ANSWER_COUNT"
-const val KEY_PREVIOUS_HELP_INDEX = "PREVIOUS_HELP_INDEX"
-const val KEY_HINT_SEQUENCE_NUMBER = "HINT_SEQUENCE_NUMBER"
-const val KEY_IS_HINT_VISIBLE_IN_LATEST_STATE = "IS_HINT_VISIBLE_IN_LATEST_STATE"
+const val KEY_HINT_STATE = "HINT_STATE"
 
 private const val CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS: Long = 600
 private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
@@ -170,20 +170,21 @@ class StatePlayerRecyclerViewAssembler private constructor(
   val isCorrectAnswer = ObservableField<Boolean>(false)
 
   fun saveState(bundle: Bundle) {
-    bundle.putInt(KEY_TRACKED_WRONG_ANSWER_COUNT, hintHandler.trackedWrongAnswerCount)
-    bundle.putProto(KEY_PREVIOUS_HELP_INDEX, hintHandler.previousHelpIndex)
-    bundle.putInt(KEY_HINT_SEQUENCE_NUMBER, hintHandler.hintSequenceNumber)
-    bundle.putBoolean(KEY_IS_HINT_VISIBLE_IN_LATEST_STATE, hintHandler.isHintVisibleInLatestState)
+    val hintState:HintState = HintState.newBuilder().apply {
+      wrongAnswerCount = hintHandler.trackedWrongAnswerCount
+      helpIndex = hintHandler.previousHelpIndex
+      hintSequenceNumber = hintHandler.hintSequenceNumber
+      isHintVisibleInLatestState = hintHandler.isHintVisibleInLatestState
+    }.build()
+    bundle.putProto(KEY_HINT_STATE, hintState)
   }
 
   fun restoreState(bundle: Bundle) {
-    hintHandler.trackedWrongAnswerCount = bundle.getInt(KEY_TRACKED_WRONG_ANSWER_COUNT)
-    hintHandler.previousHelpIndex = bundle.getProto(
-      KEY_PREVIOUS_HELP_INDEX,
-      HelpIndex.getDefaultInstance()
-    )
-    hintHandler.hintSequenceNumber = bundle.getInt(KEY_HINT_SEQUENCE_NUMBER)
-    hintHandler.isHintVisibleInLatestState = bundle.getBoolean(KEY_IS_HINT_VISIBLE_IN_LATEST_STATE)
+    val hintState = bundle.getProto(KEY_HINT_STATE, HintState.newBuilder().build())
+    hintHandler.trackedWrongAnswerCount = hintState.wrongAnswerCount
+    hintHandler.previousHelpIndex = hintState.helpIndex
+    hintHandler.hintSequenceNumber = hintState.hintSequenceNumber
+    hintHandler.isHintVisibleInLatestState = hintState.isHintVisibleInLatestState
   }
 
   private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
