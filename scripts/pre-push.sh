@@ -5,14 +5,11 @@
 #  - checkstyle
 #  - (others in the future)
 
-if bash scripts/ktlint_lint_check.sh ; then
-  if bash scripts/checkstyle_lint_check.sh ; then
-    exit 0
-  else
-    exit 1
-  fi
+if bash scripts/ktlint_lint_check.sh && bash scripts/checkstyle_lint_check.sh ; then
+  echo "All checks passed successfully"
+  exit 0
 else
- exit 1
+  exit 1
 fi
 
 # TODO(#1736): Add Bazel Linter to the project
