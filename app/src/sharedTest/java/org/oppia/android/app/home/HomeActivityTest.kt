@@ -117,8 +117,8 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
 )
 class HomeActivityTest {
 
-    @Inject
-    lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper
