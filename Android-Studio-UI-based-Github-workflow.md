@@ -58,6 +58,27 @@ Once you push a branch to Git you wont be able to rename it so, be sure about th
 
 <img width="1676" alt="16" src="https://user-images.githubusercontent.com/54615666/72599241-53322080-3937-11ea-8ef6-3253acd58215.png">
 
+If you are using Command line to push and if you have any file formatting issues, the code will not get pushed and it will show you an error like this:
+
+<img src="https://i.ibb.co/MS2VgTb/Screenshot-2021-02-10-at-10-00-04.png" />
+
+<br></br>
+If you are using Android Studio VCS>Git to push the code, you will get the failure result like this:
+
+<img src="https://i.ibb.co/dW38jz1/Screenshot-2021-02-10-at-10-07-42.png" />
+
+While using Android Studio VCS>Git you will not be able to see much detail on what the failure is, but you can try running below commands to checks the failure details:
+
+If you have failure related to kotlin, then use this script to get a detailed failure result:
+```
+scripts/ktlint_lint_check.sh
+```
+
+If you have failure related to checkstyle/java, then use this script to get a detailed failure result:
+```
+scripts/checkstyle_lint_check.sh
+```
+
 ## Pull changes from Develop
 
 Once you push your new branch to "develop" you are ready to merge new changes from remote(upstream). Make sure the new branch's base branch is "develop" and the new branch is up-to-date with changes in "develop".
