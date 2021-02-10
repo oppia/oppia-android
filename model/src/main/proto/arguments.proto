@@ -8,7 +8,7 @@ option java_multiple_files = true;
 // The fragment arguments passed to instances of ExitProfileDialogFragment.
 message ExitProfileDialogArguments {
   // Decides the correct menu item to be highlighted after canceling the ExitProfile dialog.
-  oneof highlightItem {
+  oneof highlight_item {
     // Whether any menu item needs to be highlighted or not.
     bool highlight_none = 1;
 
