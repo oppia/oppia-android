@@ -48,7 +48,7 @@ class ExitProfileDialogFragment : DialogFragment() {
     )
 
     val restoreLastCheckedItem = when (exitProfileDialogArguments.highlightItemCase) {
-      ExitProfileDialogArguments.HighlightItemCase.HIGHLIGHTITEM_NOT_SET -> false
+      ExitProfileDialogArguments.HighlightItemCase.HIGHLIGHT_NONE -> false
       else -> true
     }
 
