@@ -254,10 +254,10 @@ message UserAnswer {
 }
 
 message HintState {
-  int32 wrongAnswerCount = 1;
-  HelpIndex helpIndex = 2;
-  int32 hintSequenceNumber = 3;
-  bool isHintVisibleInLatestState = 4;
+  int32 wrong_answer_count = 1;
+  HelpIndex help_index = 2;
+  int32 hint_sequence_number = 3;
+  bool is_hint_visible_in_latest_state = 4;
 }
 
 message AnswerAndResponse {
