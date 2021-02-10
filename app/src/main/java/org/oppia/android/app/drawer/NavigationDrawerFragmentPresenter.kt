@@ -279,16 +279,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   fun highlightLastCheckedMenuItem() {
-    if (previousMenuItemId != null) {
-      val lastCheckedMenuItemValue: Int = previousMenuItemId!!
-      if (lastCheckedMenuItemValue != 0) {
-        binding.fragmentDrawerNavView.menu.getItem(
-          NavigationDrawerItem.SWITCH_PROFILE.ordinal
-        ).isChecked =
-          false
+    previousMenuItemId?.let { itemId ->
+      if (itemId != 0) {
         binding.fragmentDrawerNavView.menu.getItem(
           NavigationDrawerItem.valueFromNavId(
-            lastCheckedMenuItemValue
+            itemId
           ).ordinal
         ).isChecked =
           true
