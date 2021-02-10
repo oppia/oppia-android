@@ -82,6 +82,7 @@ If you have failure related to checkstyle/java, then use this script to get a de
 ```
 scripts/checkstyle_lint_check.sh
 ```
+Refer [comment](https://github.com/oppia/oppia-android/pull/2101#issuecomment-759331732) here for error related to `google_checks.xml` config file.
 
 ## Pull changes from Develop
 
