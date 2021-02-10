@@ -123,8 +123,8 @@ class HomeActivityTest {
     @Inject
     lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
-  @Inject
-  lateinit var context: Context
+    @Inject
+    lateinit var context: Context
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
