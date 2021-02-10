@@ -39,6 +39,7 @@ If you are on Windows, please set up the environment path correctly for `Java`.
 
     - If you find any error related to `cURL`, please set up `cURL` at your machine. For Linux, you can use `sudo apt install curl`. No need to set up `cURL` for Windows as you are using git bash command line.<br>
     - If you find any error which says `java: command not found`, please check you have Java installed correctly in your machine and environment path variable is also set up. 
+    - If you find any error while pushing the code, related to kotlin or Java/Checkstyle, please check [here](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow#how-to-fix-push-failures)
 
 ## Instructions for making a code change
 
