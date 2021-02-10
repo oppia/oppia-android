@@ -20,6 +20,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.CompletedStoryList
+import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
@@ -197,7 +198,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   private fun openActivityByMenuItemId(menuItemId: Int) {
-    getFooterViewModel().isAdministratorControlsSelected.set(false)
     if (previousMenuItemId != menuItemId) {
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
@@ -242,13 +242,25 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           if (previousFragment != null) {
             fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
           }
+          val exitProfileDialogArguments =
+            if (getFooterViewModel().isAdministratorControlsSelected.get() == true) {
+              ExitProfileDialogArguments
+                .newBuilder()
+                .setHighlightAdministratorControlsItem(true)
+                .build()
+            } else {
+              ExitProfileDialogArguments
+                .newBuilder()
+                .setHighlightLastCheckedMenuItem(true)
+                .build()
+            }
           getFooterViewModel().isAdministratorControlsSelected.set(false)
           binding.fragmentDrawerNavView.menu.getItem(
             NavigationDrawerItem.SWITCH_PROFILE.ordinal
           ).isChecked =
             true
           val dialogFragment = ExitProfileDialogFragment
-            .newInstance(restoreLastCheckedMenuItem = true)
+            .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
           dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
         }
       }
@@ -266,17 +278,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     )
   }
 
-  fun restoreLastCheckedMenuItem() {
+  fun highlightLastCheckedMenuItem() {
     if (previousMenuItemId != null) {
       val lastCheckedMenuItemValue: Int = previousMenuItemId!!
-      if (lastCheckedMenuItemValue == 0) {
-        getFooterViewModel().isAdministratorControlsSelected.set(true)
-        uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
+      if (lastCheckedMenuItemValue != 0) {
         binding.fragmentDrawerNavView.menu.getItem(
           NavigationDrawerItem.SWITCH_PROFILE.ordinal
         ).isChecked =
           false
-      } else {
         binding.fragmentDrawerNavView.menu.getItem(
           NavigationDrawerItem.valueFromNavId(
             lastCheckedMenuItemValue
@@ -284,7 +293,15 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         ).isChecked =
           true
       }
+      drawerLayout.closeDrawers()
     }
+  }
+
+  fun highlightAdministratorControlsItem() {
+    binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.SWITCH_PROFILE.ordinal).isChecked =
+      false
+    getFooterViewModel().isAdministratorControlsSelected.set(true)
+    uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
     drawerLayout.closeDrawers()
   }
 

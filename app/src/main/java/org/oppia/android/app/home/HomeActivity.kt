@@ -9,6 +9,7 @@ import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
@@ -48,8 +49,10 @@ class HomeActivity :
     if (previousFragment != null) {
       supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
+    val exitProfileDialogArguments =
+      ExitProfileDialogArguments.newBuilder().setHighlightNone(true).build()
     val dialogFragment = ExitProfileDialogFragment
-      .newInstance(restoreLastCheckedMenuItem = false)
+      .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
     dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 

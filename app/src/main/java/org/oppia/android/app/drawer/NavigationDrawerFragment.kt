@@ -40,7 +40,11 @@ class NavigationDrawerFragment :
     navigationDrawerFragmentPresenter.openProfileProgress(profileId)
   }
 
-  override fun restoreLastCheckedMenuItem() {
-    navigationDrawerFragmentPresenter.restoreLastCheckedMenuItem()
+  override fun highlightLastCheckedMenuItem() {
+    navigationDrawerFragmentPresenter.highlightLastCheckedMenuItem()
+  }
+
+  override fun highlightAdministratorControlsItem() {
+    navigationDrawerFragmentPresenter.highlightAdministratorControlsItem()
   }
 }
