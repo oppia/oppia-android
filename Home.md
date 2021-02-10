@@ -40,8 +40,6 @@ If you are on Windows, please set up the environment path correctly for `Java`.
     - If you find any error related to `cURL`, please set up `cURL` at your machine. For Linux, you can use `sudo apt install curl`. No need to set up `cURL` for Windows as you are using git bash command line.<br>
     - If you find any error which says `java: command not found`, please check you have Java installed correctly in your machine and environment path variable is also set up. 
 
-This will create a folder `opensource/oppia-android-tools`. This will set up `ktlint` executable file which is used to validate Kotlin's file formatting when sending a pull request. 
-
 ## Instructions for making a code change
 
 **Working on your first Pull Request?** You can learn how from this free series: [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
