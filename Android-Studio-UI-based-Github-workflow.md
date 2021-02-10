@@ -69,6 +69,8 @@ If you are using Android Studio VCS>Git to push the code, you will get the failu
 
 While using Android Studio VCS>Git you will not be able to see much detail on what the failure is, but you can try running below commands to checks the failure details:
 
+If you are using Windows, please use [Git Bash Command Line](https://gitforwindows.org/) to run these scripts. 
+
 If you have failure related to kotlin, then use this script to get a detailed failure result:
 ```
 scripts/ktlint_lint_check.sh
