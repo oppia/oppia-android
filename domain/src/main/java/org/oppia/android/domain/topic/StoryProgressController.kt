@@ -13,7 +13,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.logging.ConsoleLogger
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -112,8 +111,7 @@ class StoryProgressController @Inject constructor(
         storyProgressBuilder.putChapterProgress(explorationId, chapterProgress)
         val storyProgress = storyProgressBuilder.build()
 
-        val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId).setLastPlayedTimestamp(
-          Date().time)
+        val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId)
         if (topicProgressDatabase.topicProgressMap[topicId] != null) {
           topicProgressBuilder
             .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)
@@ -194,7 +192,7 @@ class StoryProgressController @Inject constructor(
         storyProgressBuilder.putChapterProgress(explorationId, chapterProgressBuilder.build())
         val storyProgress = storyProgressBuilder.build()
 
-        val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId).setLastPlayedTimestamp(lastPlayedTimestamp)
+        val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId)
         if (topicProgressDatabase.topicProgressMap[topicId] != null) {
           topicProgressBuilder
             .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)
