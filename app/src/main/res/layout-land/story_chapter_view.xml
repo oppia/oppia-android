@@ -80,7 +80,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
             android:fontFamily="sans-serif"
-            android:text="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? htmlContent : @string/empty_string}"
+            android:text="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? htmlContent : null}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -105,16 +105,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
       </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
-
-<!--    <FrameLayout-->
-<!--      android:layout_width="match_parent"-->
-<!--      android:layout_height="match_parent"-->
-<!--      android:layout_marginStart="76dp"-->
-<!--      android:layout_marginTop="16dp"-->
-<!--      android:layout_marginEnd="72dp"-->
-<!--      android:layout_marginBottom="8dp"-->
-<!--      android:background="@color/chapterCardShadow"-->
-<!--      android:padding="8dp"-->
-<!--      android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}" />-->
   </FrameLayout>
 </layout>
