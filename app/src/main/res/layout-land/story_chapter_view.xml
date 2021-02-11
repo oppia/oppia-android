@@ -8,12 +8,10 @@
 
     <import type="org.oppia.android.app.model.ChapterPlayState" />
 
+    <import type="android.text.Html"/>
+
     <variable
       name="htmlContent"
-      type="CharSequence" />
-    
-    <variable
-      name="titleContent"
       type="CharSequence" />
 
     <variable
@@ -33,7 +31,7 @@
       android:layout_marginTop="16dp"
       android:layout_marginEnd="72dp"
       android:layout_marginBottom="8dp"
-      app:strokeColor="@color/colorPrimary"
+      app:strokeColor="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaSecondaryText : @color/colorPrimary}"
       app:strokeWidth="2dp"
       android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
       android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
@@ -66,7 +64,7 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:maxLines="2"
-            android:text="@{titleContent}"
+            android:text="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? Html.fromHtml(@string/unlock_chapter(viewModel.index,viewModel.missingPrerequisiteChapter.name)): Html.fromHtml(@string/chapter_land_name((viewModel.index + 1), viewModel.name))}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
