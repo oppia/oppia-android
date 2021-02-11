@@ -176,6 +176,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/home/UserAppHistoryViewModel.kt",
     "src/main/java/org/oppia/android/app/home/WelcomeViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingSlideFinalViewModel.kt",
+    "src/main/java/org/oppia/android/app/onboarding/OnboardingViewPagerViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/ViewPagerSlide.kt",
     "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicItemViewModel.kt",
     "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicListViewModel.kt",
