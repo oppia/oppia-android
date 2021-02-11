@@ -187,3 +187,15 @@ jobs:
           name: oppia-bazel-apk
           path: /home/runner/work/oppia-android/oppia-android/oppia.apk
       - uses: actions/checkout@v2
+
+  espresso_app_tests:
+    name: Espresso Tests - App Module
+    runs-on: macos-latest
+    steps:
+        uses: actions/checkout@v2
+
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: sudo ./gradlew --full-stacktrace connectedCheck
