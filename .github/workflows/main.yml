@@ -150,6 +150,19 @@ jobs:
          name: app reports
          path: app/build/reports
 
+  espresso_app_tests:
+    name: Espresso Tests - App Module
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          run: |
+            sudo ./gradlew --full-stacktrace connectedCheck
+
   bazel_build_app:
     name: Build Binary with Bazel
     runs-on: ${{ matrix.os }}
@@ -188,15 +201,3 @@ jobs:
           path: /home/runner/work/oppia-android/oppia-android/oppia.apk
       - uses: actions/checkout@v2
 
-  espresso_app_tests:
-    name: Espresso Tests - App Module
-    runs-on: macos-latest
-    steps:
-        uses: actions/checkout@v2
-
-      - name: run tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          run: |
-            sudo ./gradlew --full-stacktrace connectedCheck
