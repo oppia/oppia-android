@@ -44,6 +44,7 @@ import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -266,13 +267,13 @@ class PromotedStoryListViewModelTest {
     activity: AppCompatActivity,
     promotedStoryList: List<PromotedStory>
   ): List<PromotedStoryViewModel> {
-    return promotedStoryList.map {
+    return promotedStoryList.map { promotedStory ->
       PromotedStoryViewModel(
         activity = activity,
         internalProfileId = 1,
         totalStoryCount = promotedStoryList.size,
         entityType = "entity",
-        promotedStory = it
+        promotedStory = promotedStory
       )
     }
   }
@@ -304,7 +305,7 @@ class PromotedStoryListViewModelTest {
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

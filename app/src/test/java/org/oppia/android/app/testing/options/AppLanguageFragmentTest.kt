@@ -59,6 +59,7 @@ import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -224,7 +225,7 @@ class AppLanguageFragmentTest {
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
       RatioInputModule::class, HintsAndSolutionConfigModule::class,
       WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
-      LogUploadWorkerModule::class
+      LogUploadWorkerModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

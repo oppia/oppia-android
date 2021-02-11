@@ -71,12 +71,14 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
-import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -104,6 +106,9 @@ class TopicLessonsFragmentTest {
   @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
   private val internalProfileId = 0
 
   private lateinit var profileId: ProfileId
@@ -114,6 +119,7 @@ class TopicLessonsFragmentTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   @After
@@ -144,9 +150,9 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_completeStoryProgress_isDisplayed() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
@@ -156,9 +162,13 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_partialStoryProgress_isDisplayed() {
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+      profileId,
+      timestampOlderThanOneWeek = false
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
@@ -208,7 +218,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          1,
+          position = 1,
           R.id.chapter_list_drop_down_icon
         )
       ).check(
@@ -227,7 +237,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          1,
+          position = 1,
           R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
@@ -243,7 +253,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          1,
+          position = 1,
           R.id.chapter_recycler_view
         )
       ).check(matches(hasDescendant(withId(R.id.chapter_container)))).perform(click())
@@ -289,7 +299,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          1,
+          position = 1,
           R.id.chapter_recycler_view
         )
       ).check(matches(not(isDisplayed())))
@@ -308,7 +318,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          2,
+          position = 2,
           R.id.chapter_recycler_view
         )
       ).check(matches(not(isDisplayed())))
@@ -325,7 +335,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          1,
+          position = 1,
           R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
@@ -342,7 +352,7 @@ class TopicLessonsFragmentTest {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          1,
+          position = 1,
           R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
@@ -361,7 +371,7 @@ class TopicLessonsFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(1).name),
+        withText(TopicTab.getTabForPosition(position = 1).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
@@ -415,7 +425,7 @@ class TopicLessonsFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -55,7 +55,6 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridC
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.HomeInjectionActivity
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
@@ -75,7 +74,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.RobolectricModule
@@ -86,6 +84,9 @@ import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -93,7 +94,6 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
-import org.oppia.android.util.system.OppiaClock
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -129,10 +129,12 @@ class HomeActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
   private val internalProfileId: Int = 0
   private val internalProfileId1: Int = 1
   private val longNameInternalProfileId: Int = 3
-  private lateinit var oppiaClock: OppiaClock
 
   @Before
   fun setUp() {
@@ -146,14 +148,6 @@ class HomeActivityTest {
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
-  }
-
-  private fun getApplicationDependencies() {
-    launch(HomeInjectionActivity::class.java).use {
-      it.onActivity { activity ->
-        oppiaClock = activity.oppiaClock
-      }
-    }
   }
 
   private fun setUpTestApplicationComponent() {
@@ -189,8 +183,8 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_morningTimestamp_goodMorningMessageIsDisplayed() {
-    getApplicationDependencies()
-    oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -204,8 +198,8 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_afternoonTimestamp_goodAfternoonMessageIsDisplayed() {
-    getApplicationDependencies()
-    oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -219,8 +213,8 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_eveningTimestamp_goodEveningMessageIsDisplayed() {
-    getApplicationDependencies()
-    oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -567,11 +561,11 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_allTopicsCompleted_hidesPromotedStories() {
-    storyProgressTestHelper.markFullProgressForAllTopics(
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -588,15 +582,19 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_partialProgressForFractionsAndRatios_showsRecentlyPlayedStories() {
     val profileId = createProfileId(internalProfileId)
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -610,11 +608,11 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicsHeader() {
-    storyProgressTestHelper.markFullProgressForAllTopics(
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -628,18 +626,15 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_allTopicsCompleted_displaysAllTopicCards() {
-    storyProgressTestHelper.markFullProgressForAllTopics(
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
-      onView(withId(R.id.home_recycler_view)).check(
-        // The "All Topics" section currently should display the four test topics in two rows.
-        hasGridColumnCount(2)
-      )
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
     }
   }
 
@@ -675,7 +670,7 @@ class HomeActivityTest {
 
   @Config(qualifiers = "land")
   @Test
-  fun testHomeActivity_noTopicsStarted_mobileLandspaceDisplaysTopicsIn3Columns() {
+  fun testHomeActivity_noTopicsStarted_mobileLandscapeDisplaysTopicsIn3Columns() {
     // Only new users will have no progress for any topics.
     profileTestHelper.logIntoNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -723,13 +718,26 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_mobileShows3PromotedStories() {
     val profileId = createProfileId(internalProfileId)
-    storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
-      profileId = createProfileId(internalProfileId),
-      timestampOlderThanAWeek = false
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    val profileId1 = createProfileId(internalProfileId)
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId = profileId1, timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -748,13 +756,26 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletPortraitShows3PromotedStories() {
     val profileId = createProfileId(internalProfileId)
-    storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
-      profileId = createProfileId(internalProfileId),
-      timestampOlderThanAWeek = false
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    val profileId1 = createProfileId(internalProfileId)
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId = profileId1, timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -773,13 +794,26 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletLandscapeShows4PromotedStories() {
     val profileId = createProfileId(internalProfileId)
-    storyProgressTestHelper.markRecentlyPlayedForOneExplorationInTestTopics1And2(
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
       profileId = profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
-      profileId = createProfileId(internalProfileId),
-      timestampOlderThanAWeek = false
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    val profileId1 = createProfileId(internalProfileId)
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId = profileId1, timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -799,9 +833,18 @@ class HomeActivityTest {
   fun testHomeActivity_onScrollDown_promotedStoryListViewStillShows() {
     // This test is to catch a bug introduced and then fixed in #2246
     // (see https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462)
-    storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
-      profileId = createProfileId(internalProfileId),
-      timestampOlderThanAWeek = false
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    val profileId = createProfileId(internalProfileId)
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId = profileId, timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -892,7 +935,7 @@ class HomeActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

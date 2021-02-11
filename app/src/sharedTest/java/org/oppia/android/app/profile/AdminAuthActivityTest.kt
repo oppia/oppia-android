@@ -66,6 +66,7 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -140,7 +141,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddProfileActivity() {
+  fun testAdminAuthActivity_inputCorrectPassword_imeAction_opensAddProfileActivity() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -164,7 +165,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputCorrectPassword_opensAddAdministratorControlsActivity() {
+  fun testAdminAuthActivity_inputCorrectPassword_opensAddAdminControlsActivity() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -189,7 +190,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddAdministratorControlsActivity() { // ktlint-disable max-line-length
+  fun testAdminAuthActivity_inputCorrectPassword_imeAction_opensAdminControlsActivity() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -239,7 +240,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputIncorrectPassword_clickImeActionButton_checkError() {
+  fun testAdminAuthActivity_inputIncorrectPassword_imeAction_errorIsDisplayed() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -264,7 +265,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_checkErrorIsGone() {
+  fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_errorIsGone() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -299,7 +300,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_clickImeActionButton_checkErrorIsGone() { // ktlint-disable max-line-length
+  fun testAdminAuthActivity_inputIncorrectPassword_correct_imeAction_errorIsGone() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -333,7 +334,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_buttonState_configurationChanged_buttonStateIsPreserved() {
+  fun testAdminAuthActivity_buttonState_configChange_buttonStateIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -358,7 +359,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_openedFromAdminControls_configurationChanged_checkHeadingSubHeadingIsPreserved() { // ktlint-disable max-line-length
+  fun testAdminAuthActivity_fromAdminControls_configChange_headingSubHeadingIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -409,7 +410,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_openedFromProfile_configurationChanged_checkHeadingSubHeadingIsPreserved() { // ktlint-disable max-line-length
+  fun testAdminAuthActivity_fromProfile_configChange_headingSubHeadingIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -462,7 +463,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputText_configurationChanged_inputTextIsPreserved() {
+  fun testAdminAuthActivity_inputText_configChange_inputTextIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -524,9 +525,8 @@ class AdminAuthActivityTest {
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
-  fun testAdminAuthActivity_inputIncorrectPasswordLandscape_clickImeActionButton_checkError() {
+  fun testAdminAuthActivity_inputIncorrectPassword_imeAction_configChange_errorIsDisplayed() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -595,7 +595,7 @@ class AdminAuthActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
