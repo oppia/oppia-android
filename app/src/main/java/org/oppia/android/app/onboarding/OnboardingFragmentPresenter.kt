@@ -48,7 +48,7 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager() {
-    val onboardingViewPagerBindableAdapter = createRecyclerViewAdapter()
+    val onboardingViewPagerBindableAdapter = createViewPagerAdapter()
     onboardingViewPagerBindableAdapter.setData(
       listOf(
         OnboardingSlideViewModel(context = activity, viewPagerSlide = ViewPagerSlide.SLIDE_0),
@@ -86,7 +86,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       })
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<OnboardingViewPagerViewModel> {
+  private fun createViewPagerAdapter(): BindableAdapter<OnboardingViewPagerViewModel> {
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<OnboardingViewPagerViewModel, ViewType> { viewModel ->
         when (viewModel) {
