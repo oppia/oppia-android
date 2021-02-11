@@ -113,37 +113,48 @@ class QuestionPlayerActivityTest {
    * Tests for QuestionPlayerActivityTest
    *
    * TOOLBAR
-   * testQuestionPlayer_toolbarIsVisible
-   * testQuestionPlayer_toolbarTitleIsCorrect - match the string @string/question_player_title
+   * []testQuestionPlayer_toolbarIsDisplayed
+   * []testQuestionPlayer_configChange_toolbarIsDisplayed
+   * [X]testQuestionPlayer_toolbarTitleIsDisplayed - match the string @string/question_player_title
+   * [X]testQuestionPlayer_configChange_toolbarTitleIsDisplayed
    *
    * BACK BUTTON
-   * testQuestionPlayer_backPress_stopExplorationDialogIsDisplayed
-   * testQuestionPlayer_backPress_clickCancel_dialogIsDismissed
-   * testQuestionPlayer_backPress_clickLeave_questionPlayerIsClosed
-   * testQuestionPlayer_clickToolbarNav_stopExplorationDialogIsDisplayed
-   * testQuestionPlayer_clickToolbarNav_clickCancel_dialogIsDismissed
-   * testQuestionPlayer_clickToolbarNav_clickLeave_questionPlayerIsClosed
+   * [X]testQuestionPlayer_backPress_stopQuestionPlayerDialogIsDisplayed
+   * []testQuestionPlayer_backPress_clickCancel_dialogIsDismissed
+   * []testQuestionPlayer_backPress_clickLeave_questionPlayerIsClosed
+   *
+   * []testQuestionPlayer_onConfig_backPress_stopQuestionPlayerDialogIsDisplayed
+   * []testQuestionPlayer_onConfig_backPress_clickCancel_dialogIsDismissed
+   * []testQuestionPlayer_onConfig_backPress_clickLeave_questionPlayerIsClosed
+   *
+   * [X]testQuestionPlayer_backPress_configChange_stopQuestionPlayerDialogIsDisplayed
+   * []testQuestionPlayer_backPress_configChange_clickCancel_dialogIsDismissed
+   * []testQuestionPlayer_backPress_configChange_clickLeave_questionPlayerIsClosed
+   *
+   * []testQuestionPlayer_clickToolbarNav_stopQuestionPlayerDialogIsDisplayed
+   * []testQuestionPlayer_clickToolbarNav_clickCancel_dialogIsDismissed
+   * []testQuestionPlayer_clickToolbarNav_clickLeave_questionPlayerIsClosed
    *
    * SUBMIT BUTTON FUNCTIONALITY
-   * testQuestionPlayer_submitButtonIsDisplayed
-   * testQuestionPlayer_configChange_submitButtonIsDisplayed
-   * testQuestionPlayer_enterAnswer_submitButtonIsClickable
-   * testQuestionPlayer_enterAnswer_configChange_submitButtonIsClickable
+   * []testQuestionPlayer_submitButtonIsDisplayed
+   * []testQuestionPlayer_configChange_submitButtonIsDisplayed
+   * []testQuestionPlayer_enterAnswer_submitButtonIsClickable
+   * []testQuestionPlayer_enterAnswer_configChange_submitButtonIsClickable
    *                                              - this needs to solved, not working currently
-   * testQuestionPlayer_submitIncorrectAnswer_submitButtonIsDisabled
-   * testQuestionPlayer_submitIncorrectAnswer_configChange_submitButtonIsDisabled
+   * []testQuestionPlayer_submitIncorrectAnswer_submitButtonIsDisabled
+   * []testQuestionPlayer_submitIncorrectAnswer_configChange_submitButtonIsDisabled
    *
-   *  testQuestionPlayer_submitIncorrectAnswer_textFieldIsEmpty
-   *  testQuestionPlayer_submitIncorrectAnswer_hintIsAvailable - maybe 2 incorrect answers
-   *  testQuestionPlayer_submitIncorrectAnswer_hintIsAvailable_openAndCloseHint_dotOnHintDisabled
+   * []testQuestionPlayer_submitIncorrectAnswer_textFieldIsEmpty
+   * []testQuestionPlayer_submitIncorrectAnswer_hintIsAvailable - maybe 2 incorrect answers
+   * []testQuestionPlayer_submitIncorrectAnswer_hintIsAvailable_openAndCloseHint_dotOnHintDisabled
    *                                                - after some time extra hints will be visible
    *
    * CORRECT ANSWER SUBMISSION
-   *  testQuestionPlayer_submitCorrectAnswer_textFieldIsVanished
+   * []testQuestionPlayer_submitCorrectAnswer_textFieldIsVanished
    *                                     - if multiple options type then options will be vanished
-   *  testQuestionPlayer_submitCorrectAnswer_correctMarkerDisplaysForSomeTime
-   *  testQuestionPlayer_onHintAvailable_selectCorrectAnswer_hintButtonVanished
-   *  testQuestionPlayer_submitCorrectAnswer_continueButtonDisplayed
+   * []testQuestionPlayer_submitCorrectAnswer_correctMarkerDisplaysForSomeTime
+   * []testQuestionPlayer_onHintAvailable_selectCorrectAnswer_hintButtonVanished
+   * []testQuestionPlayer_submitCorrectAnswer_continueButtonDisplayed
    *
    *  TESTING THE COMPLETE MARK FIELD IN THE BOTTOM
    *
@@ -190,7 +201,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun testQuestionPlayer_toolbarTitle_isDisplayed() {
+  fun testQuestionPlayer_toolbarTitleIsDisplayed() {
     launchForSkillList(SKILL_ID_LIST).use {
       onView(withId(R.id.question_player_toolbar))
         .check(
@@ -200,7 +211,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun testQuestionPlayer_configChange_toolbarTitle_isDisplayed() {
+  fun testQuestionPlayer_ConfigChange_toolbarTitleIsDisplayed() {
     launchForSkillList(SKILL_ID_LIST).use {
       rotateToLandscape()
       onView(withId(R.id.question_player_toolbar))
@@ -211,7 +222,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun testQuestionPlayer_onBackPressed_showsStopQuestionPlayerDialog() {
+  fun testQuestionPlayer_backPress_stopQuestionPlayerDialogIsDisplayed() {
     launchForSkillList(SKILL_ID_LIST).use {
       pressBack()
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
@@ -220,7 +231,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun testQuestionPlayer_onBackPressed_configChange_stopQuestionPlayerDialogIsDisplayed() {
+  fun testQuestionPlayer_backPress_configChange_stopQuestionPlayerDialogIsDisplayed() {
     launchForSkillList(SKILL_ID_LIST).use {
       pressBack()
       rotateToLandscape()
@@ -230,7 +241,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun testQuestionPlayer_onToolbarClosePressed_stopQuestionPlayerDialogIsDisplayed() {
+  fun testQuestionPlayer_onToolbarClosePress_stopQuestionPlayerDialogIsDisplayed() {
     launchForSkillList(SKILL_ID_LIST).use {
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
