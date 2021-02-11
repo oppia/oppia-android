@@ -11,6 +11,10 @@
     <variable
       name="htmlContent"
       type="CharSequence" />
+    
+    <variable
+      name="titleContent"
+      type="CharSequence" />
 
     <variable
       name="viewModel"
@@ -29,10 +33,12 @@
       android:layout_marginTop="16dp"
       android:layout_marginEnd="72dp"
       android:layout_marginBottom="8dp"
+      app:strokeColor="@color/colorPrimary"
+      app:strokeWidth="2dp"
       android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
       android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
       app:cardCornerRadius="4dp"
-      app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/story_chapter_card_playable_state_elevation : @dimen/story_chapter_card_not_playable_state_elevation}">
+      app:cardElevation="@dimen/story_chapter_card_playable_state_elevation">
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -58,9 +64,9 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="sans-serif"
             android:maxLines="2"
-            android:text="@{String.format(@string/chapter_name, (viewModel.index + 1), viewModel.name)}"
+            android:text="@{titleContent}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -76,7 +82,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
             android:fontFamily="sans-serif"
-            android:text="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? htmlContent : @string/chapter_prerequisite_title_label(viewModel.index, viewModel.missingPrerequisiteChapter.name)}"
+            android:text="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? htmlContent : @string/empty_string}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -102,15 +108,15 @@
       </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <FrameLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_marginStart="76dp"
-      android:layout_marginTop="16dp"
-      android:layout_marginEnd="72dp"
-      android:layout_marginBottom="8dp"
-      android:background="@color/chapterCardShadow"
-      android:padding="8dp"
-      android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}" />
+<!--    <FrameLayout-->
+<!--      android:layout_width="match_parent"-->
+<!--      android:layout_height="match_parent"-->
+<!--      android:layout_marginStart="76dp"-->
+<!--      android:layout_marginTop="16dp"-->
+<!--      android:layout_marginEnd="72dp"-->
+<!--      android:layout_marginBottom="8dp"-->
+<!--      android:background="@color/chapterCardShadow"-->
+<!--      android:padding="8dp"-->
+<!--      android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}" />-->
   </FrameLayout>
 </layout>

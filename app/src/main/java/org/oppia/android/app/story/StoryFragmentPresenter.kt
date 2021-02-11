@@ -1,18 +1,23 @@
 package org.oppia.android.app.story
 
 import android.content.res.Resources
+import android.text.SpannedString
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.R
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
@@ -142,6 +147,50 @@ class StoryFragmentPresenter @Inject constructor(
             ).parseOppiaHtml(
               storyItemViewModel.summary, binding.chapterSummary
             )
+
+          val str = if (storyItemViewModel.chapterSummary.chapterPlayState ==
+            ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+          ) {
+            String.format(
+              HtmlCompat.toHtml(
+                SpannedString
+                  .valueOf(view.context.getText(R.string.unlock_chapter)),
+                HtmlCompat.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE
+              ),
+              storyItemViewModel.index,
+              storyItemViewModel.missingPrerequisiteChapter.name
+            )
+          } else {
+            String.format(
+              HtmlCompat.toHtml(
+                SpannedString.valueOf(
+                  view.context
+                    .getText(R.string.chapter_name)
+                ),
+                HtmlCompat.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE
+              ),
+              storyItemViewModel.index + 1,
+              storyItemViewModel.name
+            )
+          }
+          binding.storyChapterCard.strokeWidth =
+            when (storyItemViewModel.chapterSummary.chapterPlayState) {
+              ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ->
+                view.context.resources.getDimension(R.dimen.space_0dp).toInt()
+              else ->
+                view.context.resources.getDimension(R.dimen.story_chapter_stroke_width).toInt()
+            }
+          binding.titleContent =
+            htmlParserFactory.create(
+              resourceBucketName,
+              entityType,
+              storyItemViewModel.storyId,
+              imageCenterAlign = true
+            ).parseOppiaHtml(
+              str,
+              binding.chapterTitle
+            )
+
         }
       )
       .build()
