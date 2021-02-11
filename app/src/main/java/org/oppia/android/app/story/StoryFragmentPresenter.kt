@@ -3,7 +3,6 @@ package org.oppia.android.app.story
 import android.content.res.Resources
 import android.text.SpannedString
 import android.util.DisplayMetrics
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
