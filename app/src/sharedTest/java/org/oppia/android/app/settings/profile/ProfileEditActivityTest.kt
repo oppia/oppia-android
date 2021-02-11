@@ -57,11 +57,13 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -357,7 +359,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        profileId = 3
+        profileId = 4
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -378,7 +380,7 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        profileId = 3
+        profileId = 4
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -392,6 +394,7 @@ class ProfileEditActivityTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -404,7 +407,7 @@ class ProfileEditActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

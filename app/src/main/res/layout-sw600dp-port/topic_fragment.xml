@@ -41,7 +41,7 @@
           android:ellipsize="marquee"
           android:fadingEdge="horizontal"
           android:fadingEdgeLength="20dp"
-          android:focusable="true"
+          android:focusable="false"
           android:focusableInTouchMode="true"
           android:fontFamily="sans-serif"
           android:marqueeRepeatLimit="1"

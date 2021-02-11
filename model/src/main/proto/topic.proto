@@ -6,7 +6,6 @@ import "subtitled_html.proto";
 import "thumbnail.proto";
 import "translation.proto";
 import "voiceover.proto";
-import "profile.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -33,6 +32,21 @@ message Topic {
 
   // The number of on-disk bytes this topic consumes.
   int64 disk_size_bytes = 7;
+
+  // Specifics about whether this topic is playable.
+  TopicPlayAvailability topic_play_availability = 8;
+}
+
+// Corresponds to details around whether a particular topic is playable.
+message TopicPlayAvailability {
+  // Corresponds to the availability of this topic (e.g. whether it can be played now).
+  oneof availability {
+    // Indicates this topic is available to be played.
+    bool available_to_play_now = 1;
+
+    // Indicates this topic is not yet available to be played but is expected to be in the future.
+    bool available_to_play_in_future = 2;
+  }
 }
 
 // Corresponds to a concept card that can be displayed for a specific skill.
@@ -152,18 +166,11 @@ message CompletedStory {
 
 // Corresponds to the list of stories the player is currently playing across all topics.
 message OngoingStoryList {
-
   // Ongoing stories from within the last 7 days.
   repeated PromotedStory recent_story = 1;
 
-  // Recommended stories based on user's interest.
-  repeated PromotedStory recommended_story = 2;
-
   // Other ongoing stories from longer than 7 days ago.
-  repeated PromotedStory older_story = 3;
-
-  // Indicates type of story promoted
-  PromotedStoriesType promoted_stories_type = 5;
+  repeated PromotedStory older_story = 2;
 }
 
 // The summary of a story that should be promoted, either because it's been started and not yet completed by the player,
@@ -196,6 +203,10 @@ message PromotedStory {
 
   // The thumbnail that should be displayed for this promoted story.
   LessonThumbnail lesson_thumbnail = 9;
+
+  // Indicates whether the topic containing this story is 'learned'
+  // (meaning at least one story was completed).
+  bool is_topic_learned = 10;
 }
 
 // A homescreen summary of a topic.
@@ -214,6 +225,9 @@ message TopicSummary {
 
   // The associated thumbnail that should be displayed with this topic summary.
   LessonThumbnail topic_thumbnail = 5;
+
+  // Specifics about whether this topic is playable.
+  TopicPlayAvailability topic_play_availability = 6;
 }
 
 // Represents the play state of a single chapter.
@@ -246,33 +260,55 @@ message TopicProgress {
   string topic_id = 1;
 
   // Map from story ID to StoryProgress.
-  map<string, StoryProgress> story_progress = 3;
-
-  // Indicates type of story promoted
-   PromotedStoriesType promoted_stories_type = 4;
-
-  // Timestamp to record last time the exploration was played in ms.
-  int64 last_played_timestamp = 5;
+  map<string, StoryProgress> story_progress = 2;
 }
 
-// A structure corresponding to the Promoted Stories. This structure is set up
-// to properly account for recently_played stories, for recommended stories
-// and for coming soon topics.
-message PromotedStoriesType {
-  oneof promoted_stories_type {
-    // Indicates recently played topics from the topic list.
-    bool recently_played = 1;
-
-    // Indicates last played topics more than a week ago from the topic list.
-    bool last_played = 2;
-
-    // Indicates recommended from the topic list.
-    bool recommended = 3;
-
-     // Indicates coming soon topics.
-    bool coming_soon = 4;
+// A structure corresponding to the promoted stories. This structure is set up
+// to properly account for recently played stories, recommended stories
+// and coming soon topics.
+message PromotedActivityList {
+  oneof recommendation_type {
+    PromotedStoryList promoted_story_list = 1;
+    ComingSoonTopicList coming_soon_topic_list = 2;
   }
 }
+
+// Corresponds to the list of stories the player is currently playing across all topics and recommended stories.
+message PromotedStoryList {
+  // Ongoing stories from within the last 7 days.
+  repeated PromotedStory recently_played_story   = 1;
+
+  // Other ongoing stories from longer than 7 days ago.
+  repeated PromotedStory older_played_story = 2;
+
+  // Stories specifically recommended for the learner to complete next.
+  repeated PromotedStory suggested_story = 3;
+}
+
+// Corresponds to the list of coming soon topics that can be shown on the home screen.
+message ComingSoonTopicList {
+  // Upcoming topics for the learner.
+  repeated UpcomingTopic upcoming_topic = 1;
+}
+
+// Represents topics not yet ready to be played by the learner.
+message UpcomingTopic {
+  // The ID of the topic.
+  string topic_id = 1;
+
+  // The name of the topic.
+  string name = 2;
+
+  // The structural version of the topic.
+  int32 version = 3;
+
+  // The associated thumbnail that should be displayed with this topic.
+  LessonThumbnail lesson_thumbnail = 4;
+
+  // Specifics about whether this topic is playable.
+  TopicPlayAvailability topic_play_availability = 5;
+}
+
 // Represents the story progress.
 message StoryProgress {
   // The ID corresponding to the story.

@@ -3,7 +3,7 @@
   <color name="colorPrimary">#00645C</color>
   <color name="colorPrimaryDark">#003933</color>
   <color name="colorAccent">#2D4A9D</color>
-  <color name="progressBackgroundTint">#081661 </color>
+  <color name="progressBackgroundTint">#081661</color>
   <color name="colorConceptCardBackground">#FFFFF0</color>
   <color name="colorConceptToolbarBackground">#BE563C</color>
   <color name="colorConceptToolbarHeading">#A6503A</color>
@@ -35,6 +35,7 @@
   <color name="oppiaDisabledButtonBackground">#33999999</color>
   <color name="oppiaTextShadow">#1F000000</color>
   <color name="oppiaGreyBorder">#DDDDDD</color>
+  <color name="oppiaGreyBorderDark">#666666</color>
   <color name="oppiaDashedDivider">#80707070</color>
   <color name="oppiaSubmittedAnswerTextColor">#777777</color>
   <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
@@ -56,6 +57,13 @@
   <color name="black_54">#8A000000</color>
   <color name="whiteLight">#F9F9F9</color>
   <color name="red">#FF0000</color>
+  <color name="accessible_grey">#333333</color>
+  <color name="accessible_light_grey">#555555</color>
+  <!--  CONFETTI COLORS -->
+  <color name="confetti_red">#FF1414</color>
+  <color name="confetti_yellow">#FFE558</color>
+  <color name="confetti_evergreen">#00645C</color>
+  <color name="confetti_blue">#2D4A9D</color>
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
   <!-- PROFILE COMPONENT -->
@@ -79,6 +87,7 @@
   <color name="submitButtonInactiveText">#61000000</color>
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
+  <color name="mtrl_textinput_default_box_stroke_color">#666666</color>
   <color name="editTextError">#923026</color>
   <color name="editTextHint">#80333333</color>
   <color name="light_grey">#61000000</color>

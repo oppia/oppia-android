@@ -19,7 +19,9 @@ import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.RuleSpec
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.StringList
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
@@ -399,7 +401,13 @@ class StateRetrieverTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, TestDispatcherModule::class])
+  @Component(
+    modules = [
+      TestModule::class,
+      TestDispatcherModule::class,
+      RobolectricModule::class, FakeOppiaClockModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

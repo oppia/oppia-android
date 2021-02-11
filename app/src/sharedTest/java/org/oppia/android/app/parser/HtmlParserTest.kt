@@ -52,9 +52,11 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -162,7 +164,7 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_customSpan_isAdded() {
+  fun testHtmlContent_customSpan_isAddedWithCorrectlySpacedLeadingMargin() {
     val textView =
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(
@@ -186,6 +188,20 @@ class HtmlParserTest {
 
     val bulletSpan0 = bulletSpans[0] as CustomBulletSpan
     assertThat(bulletSpan0).isNotNull()
+
+    val bulletRadius = launchedActivity.resources.getDimensionPixelSize(
+      org.oppia.android.util.R.dimen.bullet_radius
+    )
+    val spacingBeforeBullet = launchedActivity.resources.getDimensionPixelSize(
+      org.oppia.android.util.R.dimen.spacing_before_bullet
+    )
+    val spacingBeforeText = launchedActivity.resources.getDimensionPixelSize(
+      org.oppia.android.util.R.dimen.spacing_before_text
+    )
+    val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
+
+    val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
+    assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
 
     val bulletSpan1 = bulletSpans[1] as CustomBulletSpan
     assertThat(bulletSpan1).isNotNull()
@@ -254,6 +270,7 @@ class HtmlParserTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -266,7 +283,7 @@ class HtmlParserTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
