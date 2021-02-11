@@ -14,6 +14,22 @@
       type="org.oppia.android.app.player.state.itemviewmodel.ContentViewModel" />
   </data>
 
+  <!-- EXPLORATION SPLIT VIEW -->
+  <!-- Overall Outer Space: 24, 40, 40, 0 -->
+  <!-- Overall Inner Space: 12, 16, 12, 16 -->
+
+  <!-- EXPLORATION VIEW -->
+  <!-- Overall Outer Space: 112, 36, 144, 0 -->
+  <!-- Overall Inner Space: 12, 16, 12, 16 -->
+
+  <!-- QUESTION SPLIT VIEW -->
+  <!-- Overall Outer Space: 32, 40, 32, 0 -->
+  <!-- Overall Inner Space: 0, 0, 0, 0 -->
+
+  <!-- QUESTION VIEW -->
+  <!-- Overall Outer Space: 128, 36, 128, 0 -->
+  <!-- Overall Inner Space: 0, 0, 0, 0 -->
+
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

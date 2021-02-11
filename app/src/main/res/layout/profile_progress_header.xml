@@ -49,6 +49,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="12dp"
       android:fontFamily="sans-serif-medium"
+      android:gravity="center"
       android:text="@{viewModel.profile.name}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="20sp"

@@ -84,6 +84,9 @@ import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.EnableConsoleLog
@@ -120,6 +123,9 @@ class ProfileProgressFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
   private val internalProfileId = 0
 
   private lateinit var profileId: ProfileId
@@ -131,6 +137,7 @@ class ProfileProgressFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   @After
@@ -253,11 +260,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_ongoingTopicCountIsTwo() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -274,11 +285,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_twoPartialStoryProgress_ongoingTopicCountIsTwo() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -309,11 +324,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_ongoingTopicDescriptionIsCorrect() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -330,11 +349,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_ongoingTopicDescriptionIsCorrect() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -365,11 +388,11 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesCountIsTwo() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markFullStoryProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -398,11 +421,11 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesDescriptionIsCorrect() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markFullStoryProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -438,7 +461,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivity_recyclerViewItem1_storyNameIsCorrect() {
+  fun testProfileProgressFragment_fractionsStory_storyNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -459,7 +482,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivity_recyclerViewItem1_topicNameIsCorrect() {
+  fun testProfileProgressFragment_fractionsStory_topicNameIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -480,7 +503,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivity_clickRecyclerViewItem1_intentIsCorrect() {
+  fun testProfileProgressFragment_clickFractionsStory_opensTopicActivity() {
     storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -573,11 +596,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickTopicCount_opensOngoingTopicListActivity() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -598,11 +625,11 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickStoryCount_opensCompletedStoryListActivity() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markFullStoryProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -698,7 +725,8 @@ class ProfileProgressFragmentTest {
       ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-      HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class
+      HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
+      FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
