@@ -1,6 +1,3 @@
-# Installation 
-Install `Ktlint` from [here](https://github.com/pinterest/ktlint#installation). Note that we specifically recommend using the command-line interface, not the Gradle integration.
-
 # Commands 
 * `ktlint --version` - Check the version of your installed ktlint. As of now on CircleCI we are using `0.37.1`.
 
@@ -41,16 +38,7 @@ There are two major tasks when we talk about style formatting, One is the `Refor
 
     There are some cases like the name of the tests where the code crosses that line and we cannot rearrange it as it is the name of the function. This does not apply to comments. There you should put a ktlint comment using which ktlint disable the check for 100 char limit.  `// ktlint-disable max-line-length`
 
-    If you want to disable for a block of code/ multiple lines, you can put the blocky comment as well. At starting `/* ktlint-disable max-line-length */` and at the end `/* ktlint-enable max-line-length */`
-
     * Example - <br>
        * `fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_clickNoButton_worksCorrectly() { // ktlint-disable max-line-length`
-       
-       * ```
-         /* ktlint-disable max-line-length */ 
-         fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_clickNoButton_worksCorrectly() {
-         ....
-         .... 
-         }
-         /* ktlint-enable max-line-length */
-         ```
+
+**Note: We don't recommend the use of `// ktlint-disable max-line-length` to disable the ktlint check unless the line of code cannot be broken into multiple lines to prevent disabling ktlint check.**
