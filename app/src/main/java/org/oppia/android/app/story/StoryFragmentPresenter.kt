@@ -189,7 +189,6 @@ class StoryFragmentPresenter @Inject constructor(
               str,
               binding.chapterTitle
             )
-
         }
       )
       .build()
