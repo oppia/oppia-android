@@ -82,6 +82,13 @@ testing_test(
     deps = TEST_DEPS,
 )
 
+testing_test(
+    name = "FakeOppiaClockTest",
+    srcs = ["src/test/java/org/oppia/android/testing/time/FakeOppiaClockTest.kt"],
+    test_class = "org.oppia.android.testing.time.FakeOppiaClockTest",
+    deps = TEST_DEPS,
+)
+
 kt_android_library(
     name = "assertion_helpers",
     srcs = ["src/main/java/org/oppia/android/testing/AssertionHelpers.kt"],
