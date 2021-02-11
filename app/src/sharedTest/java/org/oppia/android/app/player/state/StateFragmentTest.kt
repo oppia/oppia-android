@@ -20,7 +20,6 @@ import androidx.test.espresso.action.GeneralLocation
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
-import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
@@ -104,7 +103,6 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_0
@@ -904,99 +902,6 @@ class StateFragmentTest {
 
       onView(withId(R.id.submitted_answer_text_view))
         .check(matches(withContentDescription("4 to 5")))
-    }
-  }
-
-  @Test
-  fun testStateFragment_forTwoWrongAnswers_revealHint() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_0).use {
-      startPlayingExploration()
-      clickContinueInteractionButton()
-      clickContinueInteractionButton()
-      clickContinueInteractionButton()
-      selectMultipleChoiceOption(optionPosition = 2)
-      clickContinueNavigationButton()
-      selectMultipleChoiceOption(optionPosition = 1)
-      clickContinueNavigationButton()
-      selectMultipleChoiceOption(optionPosition = 1)
-      clickContinueNavigationButton()
-      onView(withId(R.id.hints_and_solution_fragment_container)).check(
-        matches(
-          not(isDisplayed())
-        )
-      )
-      selectMultipleChoiceOption(optionPosition = 1)
-      selectMultipleChoiceOption(optionPosition = 1)
-      onView(withId(R.id.hints_and_solution_fragment_container)).check(
-        matches(
-          isDisplayed()
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testStateFragment_forTwoWrongAnswers_revealHint_dotDisappears() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_0).use {
-      startPlayingExploration()
-      clickContinueInteractionButton()
-      clickContinueInteractionButton()
-      clickContinueInteractionButton()
-      selectMultipleChoiceOption(optionPosition = 2)
-      clickContinueNavigationButton()
-      selectMultipleChoiceOption(optionPosition = 1)
-      clickContinueNavigationButton()
-      selectMultipleChoiceOption(optionPosition = 1)
-      clickContinueNavigationButton()
-
-      selectMultipleChoiceOption(optionPosition = 1)
-      selectMultipleChoiceOption(optionPosition = 1)
-      onView(withId(R.id.dot_hint)).check(
-        matches(
-          isDisplayed()
-        )
-      )
-      onView(withId(R.id.hints_and_solution_fragment_container)).perform(click())
-      onView(withId(R.id.reveal_hint_button)).perform(click())
-      onView(isRoot()).perform(pressBack())
-      onView(withId(R.id.dot_hint)).check(
-        matches(
-          not(isDisplayed())
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testStateFragment_forTwoWrongAnswers_revealHint_configurationChange_newHintNotRevealed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_0).use {
-      startPlayingExploration()
-      clickContinueInteractionButton()
-      clickContinueInteractionButton()
-      clickContinueInteractionButton()
-      selectMultipleChoiceOption(optionPosition = 2)
-      clickContinueNavigationButton()
-      selectMultipleChoiceOption(optionPosition = 1)
-      clickContinueNavigationButton()
-      selectMultipleChoiceOption(optionPosition = 1)
-      clickContinueNavigationButton()
-
-      selectMultipleChoiceOption(optionPosition = 1)
-      selectMultipleChoiceOption(optionPosition = 1)
-      onView(withId(R.id.dot_hint)).check(
-        matches(
-          isDisplayed()
-        )
-      )
-      onView(withId(R.id.hints_and_solution_fragment_container)).perform(click())
-      onView(withId(R.id.reveal_hint_button)).perform(click())
-      onView(isRoot()).perform(pressBack())
-      rotateToLandscape()
-      onView(withId(R.id.dot_hint)).check(
-        matches(
-          not(isDisplayed())
-        )
-      )
     }
   }
 

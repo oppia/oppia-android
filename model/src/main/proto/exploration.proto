@@ -253,13 +253,6 @@ message UserAnswer {
   string content_description = 5;
 }
 
-message HintState {
-  int32 wrong_answer_count = 1;
-  HelpIndex help_index = 2;
-  int32 hint_sequence_number = 3;
-  bool is_hint_visible_in_latest_state = 4;
-}
-
 message AnswerAndResponse {
   // A previous answer the learner submitted.
   UserAnswer user_answer = 1;

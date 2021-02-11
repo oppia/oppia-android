@@ -24,10 +24,10 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
-import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.StatePlayerSavedHintState
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
@@ -100,7 +100,7 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 /** The fragment tag corresponding to the concept card dialog fragment. */
 const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
-const val KEY_HINT_STATE = "HINT_STATE"
+private const val KEY_HINT_STATE = "HINT_STATE"
 
 private const val CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS: Long = 600
 private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
@@ -167,18 +167,26 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   val isCorrectAnswer = ObservableField<Boolean>(false)
 
+  /*
+    Saves the StatePlayerSavedHintState in the onSavedInstance called
+    in the onSaveInstanceState of the StateFragment.
+   */
   fun saveState(bundle: Bundle) {
-    val hintState: HintState = HintState.newBuilder().apply {
+    val statePlayerSavedHintState = StatePlayerSavedHintState.newBuilder().apply {
       wrongAnswerCount = hintHandler.trackedWrongAnswerCount
       helpIndex = hintHandler.previousHelpIndex
       hintSequenceNumber = hintHandler.hintSequenceNumber
       isHintVisibleInLatestState = hintHandler.isHintVisibleInLatestState
     }.build()
-    bundle.putProto(KEY_HINT_STATE, hintState)
+    bundle.putProto(KEY_HINT_STATE, statePlayerSavedHintState)
   }
 
+  /*
+    Restores the StatePlayerSavedHintState in the onCreate called
+    in the onCreateView of the StateFragment.
+   */
   fun restoreState(bundle: Bundle) {
-    val hintState = bundle.getProto(KEY_HINT_STATE, HintState.newBuilder().build())
+    val hintState = bundle.getProto(KEY_HINT_STATE, StatePlayerSavedHintState.getDefaultInstance())
     hintHandler.trackedWrongAnswerCount = hintState.wrongAnswerCount
     hintHandler.previousHelpIndex = hintState.helpIndex
     hintHandler.hintSequenceNumber = hintState.hintSequenceNumber
@@ -306,13 +314,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
     }
 
+    if (isTerminalState && playerFeatureSet.showCelebrationAtEndOfSession) {
+      maybeShowCelebrationForEndOfSession()
+    }
+
     maybeAddNavigationButtons(
       conversationPendingItemList,
       extraInteractionPendingItemList,
       hasPreviousState,
       canContinueToNextState,
       hasGeneralContinueButton,
-      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
+      isTerminalState
     )
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
