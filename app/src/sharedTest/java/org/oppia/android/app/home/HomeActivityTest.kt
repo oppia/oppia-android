@@ -136,7 +136,6 @@ class HomeActivityTest {
   private val internalProfileId: Int = 0
   private val internalProfileId1: Int = 1
   private val longNameInternalProfileId: Int = 3
-  
   private lateinit var profileId: ProfileId
   private lateinit var profileId1: ProfileId
 
