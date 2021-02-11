@@ -31,7 +31,7 @@ kt_android_library(
     srcs = glob(["src/main/java/org/oppia/android/domain/testing/**/*.kt"]),
     deps = [
         ":domain",
-        artifact("androidx.work:work-runtime-ktx:2.4.0"),
+        "//third_party:androidx_work_work-runtime-ktx",
     ],
 )
 
@@ -453,13 +453,6 @@ domain_test(
     name = "StoryProgressControllerTest",
     srcs = ["src/test/java/org/oppia/android/domain/topic/StoryProgressControllerTest.kt"],
     test_class = "org.oppia.android.domain.topic.StoryProgressControllerTest",
-    deps = TEST_DEPS,
-)
-
-domain_test(
-    name = "StoryProgressTestHelperTest",
-    srcs = ["src/test/java/org/oppia/android/domain/topic/StoryProgressTestHelperTest.kt"],
-    test_class = "org.oppia.android.domain.topic.StoryProgressTestHelperTest",
     deps = TEST_DEPS,
 )
 

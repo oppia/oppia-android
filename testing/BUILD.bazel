@@ -11,6 +11,7 @@ load("//testing:testing_test.bzl", "testing_test")
 # Library for general-purpose testing fakes.
 kt_android_library(
     name = "testing",
+    testonly = True,
     srcs = glob(["src/main/java/org/oppia/android/testing/**/*.kt"]),
     custom_package = "org.oppia.android.testing",
     manifest = "src/main/AndroidManifest.xml",
@@ -80,6 +81,13 @@ testing_test(
     name = "ProfileTestHelperTest",
     srcs = ["src/test/java/org/oppia/android/testing/profile/ProfileTestHelperTest.kt"],
     test_class = "org.oppia.android.testing.profile.ProfileTestHelperTest",
+    deps = TEST_DEPS,
+)
+
+testing_test(
+    name = "StoryProgressTestHelperTest",
+    srcs = ["src/test/java/org/oppia/android/testing/story/StoryProgressTestHelperTest.kt"],
+    test_class = "org.oppia.android.testing.story.StoryProgressTestHelperTest",
     deps = TEST_DEPS,
 )
 
