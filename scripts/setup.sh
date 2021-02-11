@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # INSTRUCTIONS:
 # This script will move the pre-push hook from script folder to
@@ -18,8 +18,7 @@ mkdir -p ../oppia-android-tools
 cd ../oppia-android-tools
 
 # Download ktlint
-KTLINT="0.37.1"
-echo Using Ktlint $KTLINT
-curl -sSLOC - https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
-chmod a+x ktlint
-echo Ktlint file downloaded
+bash ../oppia-android/scripts/ktlint_download.sh
+
+# Download checkstyle
+bash ../oppia-android/scripts/checkstyle_download.sh

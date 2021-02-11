@@ -12,7 +12,6 @@ order to build with Bazel.
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//app:app_test.bzl", "app_test")
@@ -103,6 +102,7 @@ LISTENERS = [
 # The files inside this list include all layout files. Please note that layouts MUST NOT depend on
 # presenters or fragments. Instead, they should depend on a listener or interface as an abstraction.
 
+# keep sorted
 DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 
 # View Models
@@ -391,6 +391,7 @@ BINDING_ADAPTERS = [
      """,
 ) for file in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS]
 
+# keep sorted
 SNAP_HELPER = ["src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper.kt"]
 
 # Files to be excluded from the source list for the app library. This list includes all the files
@@ -446,9 +447,8 @@ android_library(
         ["src/main/res/**"],
         exclude = DATABINDING_LAYOUTS,
     ),
-    deps = [
-        artifact("com.google.android.material:material"),
-    ],
+    visibility = ["//visibility:private"],
+    deps = ["//third_party:com_google_android_material_material"],
 )
 
 # Library for layout resource files.
@@ -467,24 +467,24 @@ android_library(
         ":view_models",
         ":views",
         "//model",
-        "@circularimageview//circularimageview:circular_image_view",
-        artifact("androidx.annotation:annotation"),
-        artifact("androidx.constraintlayout:constraintlayout"),
-        artifact("androidx.core:core:1.0.1"),
-        artifact("androidx.databinding:databinding-adapters"),
-        artifact("androidx.databinding:databinding-common"),
-        artifact("androidx.databinding:databinding-runtime"),
-        artifact("androidx.drawerlayout:drawerlayout:1.1.0"),
-        artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
-        artifact("androidx.recyclerview:recyclerview:1.0.0"),
-        artifact("androidx.viewpager:viewpager:1.0.0"),
-        artifact("androidx.viewpager2:viewpager2:1.0.0"),
-        artifact("com.chaos.view:pinview:1.4.4"),
-        artifact("com.google.android:flexbox:2.0.1"),
-        artifact("com.google.android.material:material"),
-        artifact("de.hdodenhof:circleimageview:3.0.1"),
-        artifact("javax.annotation:javax.annotation-api"),
-        artifact("nl.dionsegijn:konfetti:1.2.5"),
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:androidx_constraintlayout_constraintlayout",
+        "//third_party:androidx_core_core",
+        "//third_party:androidx_databinding_databinding-adapters",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_drawerlayout_drawerlayout",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:androidx_viewpager2_viewpager2",
+        "//third_party:androidx_viewpager_viewpager",
+        "//third_party:circularimageview_circular_image_view",
+        "//third_party:com_chaos_view_pinview",
+        "//third_party:com_google_android_flexbox",
+        "//third_party:com_google_android_material_material",
+        "//third_party:de_hdodenhof_circleimageview",
+        "//third_party:javax_annotation_javax_annotation-api_jar",
+        "//third_party:nl_dionsegijn_konfetti",
     ],
 )
 
@@ -496,7 +496,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//model",
-        artifact("androidx.recyclerview:recyclerview:1.0.0"),
+        "//third_party:androidx_recyclerview_recyclerview",
     ],
 )
 
@@ -513,11 +513,11 @@ kt_android_library(
         ":snap_helper",
         ":view_models",
         "//model",
-        "@circularimageview//circularimageview:circular_image_view",
-        artifact("androidx.appcompat:appcompat"),
-        artifact("androidx.core:core-ktx"),
-        artifact("androidx.databinding:databinding-common"),
-        artifact("androidx.databinding:databinding-runtime"),
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_core_core-ktx",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:circularimageview_circular_image_view",
     ],
 )
 
@@ -546,9 +546,9 @@ kt_android_library(
         ":resources",
         "//domain",
         "//model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
         "//utility",
-        artifact("androidx.databinding:databinding-common"),
-        artifact("androidx.databinding:databinding-runtime"),
     ],
 )
 
@@ -557,7 +557,7 @@ kt_android_library(
     name = "snap_helper",
     srcs = SNAP_HELPER,
     custom_package = "org.oppia.android.app.recyclerview",
-    deps = [artifact("androidx.recyclerview:recyclerview:1.0.0")],
+    deps = ["//third_party:androidx_recyclerview_recyclerview"],
 )
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
@@ -573,14 +573,14 @@ android_library(
         ":resources",
         ":view_models",
         "//model",
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:androidx_constraintlayout_constraintlayout",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+        "//third_party:circularimageview_circular_image_view",
+        "//third_party:com_chaos_view_pinview",
+        "//third_party:com_google_android_material_material",
         "//utility",
-        "@circularimageview//circularimageview:circular_image_view",
-        artifact("androidx.annotation:annotation"),
-        artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
-        artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
-        artifact("com.chaos.view.pinview:1.4.4"),
-        artifact("com.google.android.material:material"),
     ],
 )
 
@@ -600,20 +600,20 @@ kt_android_library(
         ":view_models",
         ":views",
         "//model",
+        "//third_party:androidx_databinding_databinding-adapters",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_lifecycle_lifecycle-extensions",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+        "//third_party:androidx_multidex_multidex",
+        "//third_party:androidx_viewpager2_viewpager2",
+        "//third_party:androidx_viewpager_viewpager",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:com_caverock_androidsvg-aar",
+        "//third_party:com_google_android_flexbox",
+        "//third_party:javax_annotation_javax_annotation-api_jar",
         "//utility",
-        artifact("androidx.databinding:databinding-adapters"),
-        artifact("androidx.databinding:databinding-common"),
-        artifact("androidx.databinding:databinding-runtime"),
-        artifact("androidx.lifecycle:lifecycle-extensions:2.2.0"),
-        artifact("androidx.lifecycle:lifecycle-livedata-core:2.2.0"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"),
-        artifact("androidx.multidex:multidex:2.0.1"),
-        artifact("androidx.viewpager:viewpager:1.0.0"),
-        artifact("androidx.viewpager2:viewpager2:1.0.0"),
-        artifact("androidx.work:work-runtime-ktx:2.4.0"),
-        artifact("com.caverock:androidsvg-aar"),
-        artifact("com.google.android:flexbox:2.0.1"),
-        artifact("javax.annotation:javax.annotation-api:jar"),
     ],
 )
 
@@ -646,10 +646,11 @@ kt_android_library(
     deps = [
         ":app",
         "//testing",
-        artifact("org.mockito:mockito-core"),
+        "//third_party:org_mockito_mockito-core",
     ],
 )
 
+# keep sorted
 TEST_DEPS = [
     ":app",
     ":dagger",
@@ -657,27 +658,27 @@ TEST_DEPS = [
     ":test_deps",
     "//domain",
     "//testing",
+    "//third_party:androidx_annotation_annotation",
+    "//third_party:androidx_databinding_databinding-adapters",
+    "//third_party:androidx_databinding_databinding-common",
+    "//third_party:androidx_databinding_databinding-compiler",
+    "//third_party:androidx_databinding_databinding-runtime",
+    "//third_party:androidx_navigation_navigation-fragment",
+    "//third_party:androidx_navigation_navigation-ui",
+    "//third_party:androidx_test_espresso_espresso-contrib",
+    "//third_party:androidx_test_espresso_espresso-core",
+    "//third_party:androidx_test_espresso_espresso-intents",
+    "//third_party:androidx_test_ext_junit",
+    "//third_party:androidx_test_runner",
+    "//third_party:com_github_bumptech_glide_mocks",
+    "//third_party:com_google_truth_truth",
+    "//third_party:org_jetbrains_kotlin_kotlin-reflect",
+    "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-test",
+    "//third_party:org_mockito_mockito-core",
+    "//third_party:org_robolectric_annotations",
+    "//third_party:robolectric_android-all",
     "//utility",
-    "@robolectric//bazel:android-all",
-    artifact("androidx.annotation:annotation"),
-    artifact("androidx.databinding:databinding-adapters"),
-    artifact("androidx.databinding:databinding-common"),
-    artifact("androidx.databinding:databinding-compiler"),
-    artifact("androidx.databinding:databinding-runtime"),
-    artifact("androidx.navigation:navigation-fragment"),
-    artifact("androidx.navigation:navigation-ui"),
-    artifact("androidx.test.espresso:espresso-contrib:3.1.0"),
-    artifact("androidx.test.espresso:espresso-core:3.2.0"),
-    artifact("androidx.test.espresso:espresso-intents:3.1.0"),
-    artifact("androidx.test.ext:junit"),
-    artifact("androidx.test:runner:1.2.0"),
-    artifact("com.github.bumptech.glide:mocks:4.11.0"),
-    artifact("com.google.truth:truth"),
-    artifact("org.jetbrains.kotlin:kotlin-test-junit"),
-    artifact("org.jetbrains.kotlin:kotlin-reflect"),
-    artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2"),
-    artifact("org.mockito:mockito-core"),
-    artifact("org.robolectric:annotations:4.3"),
 ]
 
 # App module tests.
@@ -1159,10 +1160,10 @@ crashlytics_android_library(
 android_library(
     name = "crashlytics_deps",
     exports = [
-        artifact("com.crashlytics.sdk.android:crashlytics"),
-        artifact("io.fabric.sdk.android:fabric"),
-        artifact("com.google.firebase:firebase-analytics"),
-        artifact("com.google.firebase:firebase-crashlytics"),
+        "//third_party:com_crashlytics_sdk_android_crashlytics",
+        "//third_party:com_google_firebase_firebase-analytics",
+        "//third_party:com_google_firebase_firebase-crashlytics",
+        "//third_party:io_fabric_sdk_android_fabric",
     ],
 )
 
