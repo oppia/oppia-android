@@ -459,7 +459,7 @@ class HomeActivityTest {
     }
   }
 
-  /**
+  /*
    * # Dependency graph:
    *
    *      Fractions
