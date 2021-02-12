@@ -11,6 +11,8 @@ message ExitProfileDialogArguments {
   HighlightItem highlight_item = 1;
 }
 
+// Represents the type of item/menuItem that should be highlighted after canceling the
+// ExitProfile dialog.
 enum HighlightItem {
   NONE_UNSPECIFIED = 0;
   LAST_CHECKED_MENU_ITEM = 1;
