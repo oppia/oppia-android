@@ -47,6 +47,7 @@ proto_library(
 java_lite_proto_library(
     name = "event_logger_java_proto_lite",
     deps = [":event_logger_proto"],
+    visibility = ["//visibility:public"],
 )
 
 proto_library(
@@ -192,7 +193,6 @@ android_library(
     name = "model",
     visibility = ["//visibility:public"],
     exports = [
-        ":event_logger_java_proto_lite",
         ":exploration_java_proto_lite",
         ":interaction_object_java_proto_lite",
         ":onboarding_java_proto_lite",
