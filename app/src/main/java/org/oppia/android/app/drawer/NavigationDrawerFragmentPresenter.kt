@@ -21,6 +21,7 @@ import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.ExitProfileDialogArguments
+import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
@@ -246,12 +247,12 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             if (getFooterViewModel().isAdministratorControlsSelected.get() == true) {
               ExitProfileDialogArguments
                 .newBuilder()
-                .setHighlightAdministratorControlsItem(true)
+                .setHighlightItem(HighlightItem.ADMINISTRATOR_CONTROLS_ITEM)
                 .build()
             } else {
               ExitProfileDialogArguments
                 .newBuilder()
-                .setHighlightLastCheckedMenuItem(true)
+                .setHighlightItem(HighlightItem.LAST_CHECKED_MENU_ITEM)
                 .build()
             }
           getFooterViewModel().isAdministratorControlsSelected.set(false)

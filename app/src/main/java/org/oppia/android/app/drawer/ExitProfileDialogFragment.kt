@@ -9,6 +9,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 import org.oppia.android.app.model.ExitProfileDialogArguments
+import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
@@ -47,9 +48,9 @@ class ExitProfileDialogFragment : DialogFragment() {
       ExitProfileDialogArguments.getDefaultInstance()
     )
 
-    val restoreLastCheckedItem = when (exitProfileDialogArguments.highlightItemCase) {
-      ExitProfileDialogArguments.HighlightItemCase.HIGHLIGHT_ADMINISTRATOR_CONTROLS_ITEM,
-      ExitProfileDialogArguments.HighlightItemCase.HIGHLIGHT_LAST_CHECKED_MENU_ITEM -> true
+    val restoreLastCheckedItem = when (exitProfileDialogArguments.highlightItem) {
+      HighlightItem.ADMINISTRATOR_CONTROLS_ITEM,
+      HighlightItem.LAST_CHECKED_MENU_ITEM -> true
       else -> false
     }
 
@@ -64,9 +65,7 @@ class ExitProfileDialogFragment : DialogFragment() {
       .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
         if (restoreLastCheckedItem) {
           exitProfileDialogInterface.unhighlightSwitchProfileMenuItem()
-          if (exitProfileDialogArguments.highlightItemCase ==
-            ExitProfileDialogArguments.HighlightItemCase.HIGHLIGHT_LAST_CHECKED_MENU_ITEM
-          ) {
+          if (exitProfileDialogArguments.highlightItem == HighlightItem.LAST_CHECKED_MENU_ITEM) {
             exitProfileDialogInterface.highlightLastCheckedMenuItem()
           } else {
             exitProfileDialogInterface.highlightAdministratorControlsItem()

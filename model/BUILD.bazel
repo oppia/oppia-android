@@ -38,6 +38,7 @@ load("@rules_java//java:defs.bzl", "java_lite_proto_library")
 #       ],
 #       ...
 #   )
+
 proto_library(
     name = "arguments_proto",
     srcs = ["src/main/proto/arguments.proto"],
