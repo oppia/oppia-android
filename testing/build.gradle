@@ -25,6 +25,7 @@ android {
 
   testOptions {
     unitTests {
+      includeAndroidResources = true
       all {
         // Enable forking to ensure each test is properly run in isolation. For context, see:
         // https://discuss.gradle.org/t/36066/2 & https://github.com/oppia/oppia-android/issues/1942
@@ -53,10 +54,12 @@ dependencies {
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test:runner:1.2.0',
       'com.google.dagger:dagger:2.24',
+      'com.google.truth:truth:0.43',
       'nl.dionsegijn:konfetti:1.2.5',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.robolectric:robolectric:4.3',
       'org.jetbrains.kotlin:kotlin-reflect:$kotlin_version',
+      'org.mockito:mockito-core:2.19.0',
       project(":domain"),
       project(":utility"),
   )

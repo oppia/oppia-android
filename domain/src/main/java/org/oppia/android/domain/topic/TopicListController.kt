@@ -29,7 +29,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.system.OppiaClock
-import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -275,8 +274,9 @@ class TopicListController @Inject constructor(
               recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
             }
           if (recentlyPlayerChapterSummary != null) {
-            val numberOfDaysPassed =
-              (Date().time - recentlyPlayerChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+            val timeSinceLastPlayedMs =
+              oppiaClock.getCurrentTimeMs() - recentlyPlayerChapterProgress.lastPlayedTimestamp
+            val numberOfDaysPassed = timeSinceLastPlayedMs / ONE_DAY_IN_MS
             val promotedStory = createPromotedStory(
               storyId,
               topic,
@@ -301,8 +301,9 @@ class TopicListController @Inject constructor(
           val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
           val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
           if (nextChapterSummary != null) {
-            val numberOfDaysPassed =
-              (Date().time - lastCompletedChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+            val timeSinceLastPlayedMs =
+              oppiaClock.getCurrentTimeMs() - lastCompletedChapterProgress.lastPlayedTimestamp
+            val numberOfDaysPassed = timeSinceLastPlayedMs / ONE_DAY_IN_MS
             val promotedStory = createPromotedStory(
               storyId,
               topic,
@@ -524,9 +525,7 @@ class TopicListController @Inject constructor(
   }
 
   private fun ChapterProgress.getNumberOfDaysPassed(): Long {
-    return TimeUnit.MILLISECONDS.toDays(
-      oppiaClock.getCurrentCalendar().timeInMillis - this.lastPlayedTimestamp
-    )
+    return TimeUnit.MILLISECONDS.toDays(oppiaClock.getCurrentTimeMs() - this.lastPlayedTimestamp)
   }
 
   // TODO(#2550): Remove hardcoded order of topics. Compute list of suggested stories from backend structures
