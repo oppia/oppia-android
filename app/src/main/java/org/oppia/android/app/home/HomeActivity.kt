@@ -3,6 +3,7 @@ package org.oppia.android.app.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
@@ -30,6 +31,11 @@ class HomeActivity :
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
       return intent
     }
+  }
+
+  override fun onStart() {
+    super.onStart()
+    homeActivityPresenter.handleOnStart()
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

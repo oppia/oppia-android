@@ -1,5 +1,6 @@
 package org.oppia.android.app.home
 
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -18,7 +19,6 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.home_activity)
-    setUpNavigationDrawer()
     if (getHomeFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.home_fragment_placeholder,
@@ -26,6 +26,10 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
         TAG_HOME_FRAGMENT
       ).commitNow()
     }
+  }
+
+  fun handleOnStart() {
+    setUpNavigationDrawer()
   }
 
   private fun setUpNavigationDrawer() {
