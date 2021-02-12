@@ -622,7 +622,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_markFullProgressForFraction_playRatios_displaysRecommendedStories() {
+  fun testHomeActivity_markFullProgressForFractions_playRatios_displaysRecommendedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
       profileId = profileId1,
