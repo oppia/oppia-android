@@ -28,7 +28,7 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
     }
   }
 
-  fun handleOnStart() {
+  fun handleOnResume() {
     setUpNavigationDrawer()
   }
 

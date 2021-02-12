@@ -470,7 +470,7 @@ class NavigationDrawerActivityTest {
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_options)).perform(click())
-      pressBack()
+      onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(withId(R.id.fragment_drawer_nav_view))
         .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
@@ -486,7 +486,7 @@ class NavigationDrawerActivityTest {
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_help)).perform(click())
-      pressBack()
+      onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(withId(R.id.fragment_drawer_nav_view))
         .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
@@ -502,7 +502,7 @@ class NavigationDrawerActivityTest {
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
-      pressBack()
+      onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(withId(R.id.fragment_drawer_nav_view))
         .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
@@ -518,7 +518,7 @@ class NavigationDrawerActivityTest {
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.administrator_controls)).perform(click())
-      pressBack()
+      onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(withId(R.id.fragment_drawer_nav_view))
         .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))

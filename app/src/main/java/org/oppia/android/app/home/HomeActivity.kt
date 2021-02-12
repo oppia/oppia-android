@@ -33,9 +33,9 @@ class HomeActivity :
     }
   }
 
-  override fun onStart() {
-    super.onStart()
-    homeActivityPresenter.handleOnStart()
+  override fun onResume() {
+    super.onResume()
+        homeActivityPresenter.handleOnResume()
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
