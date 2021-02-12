@@ -14,7 +14,12 @@ message ExitProfileDialogArguments {
 // Represents the type of item/menuItem that should be highlighted after canceling the
 // ExitProfile dialog.
 enum HighlightItem {
-  NONE_UNSPECIFIED = 0;
+  // Indicates that none of the items needs to be highlighted.
+  ITEM_UNSPECIFIED = 0;
+
+  // Indicates that one of the NavigationDrawerItem needs to be highlighted.
   LAST_CHECKED_MENU_ITEM = 1;
+
+  // Indicates that the Administrator Controls item needs to be highlighted.
   ADMINISTRATOR_CONTROLS_ITEM = 2;
 }
