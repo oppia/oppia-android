@@ -100,7 +100,7 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 /** The fragment tag corresponding to the concept card dialog fragment. */
 const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
-private const val KEY_HINT_STATE = "HINT_STATE"
+private const val KEY_HINT_STATE = "KEY_HINT_STATE"
 
 private const val CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS: Long = 600
 private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
@@ -167,9 +167,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   val isCorrectAnswer = ObservableField<Boolean>(false)
 
-  /*
-    Saves the StatePlayerSavedHintState in the onSavedInstance called
-    in the onSaveInstanceState of the StateFragment.
+  /**
+   * Saves transient state that the assembler depends on.
+   * This should be used to retain state across configuration changes,
+   * and state saved through this method should be restored via [restoreState].
    */
   fun saveState(bundle: Bundle) {
     val statePlayerSavedHintState = StatePlayerSavedHintState.newBuilder().apply {
@@ -181,9 +182,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     bundle.putProto(KEY_HINT_STATE, statePlayerSavedHintState)
   }
 
-  /*
-    Restores the StatePlayerSavedHintState in the onCreate called
-    in the onCreateView of the StateFragment.
+  /**
+   * Restores transient state that the assembler depends on.
+   * This should be used to retain state across configuration changes,
+   * and state saved through this method should be saved via [saveState].
    */
   fun restoreState(bundle: Bundle) {
     val hintState = bundle.getProto(KEY_HINT_STATE, StatePlayerSavedHintState.getDefaultInstance())
@@ -1285,7 +1287,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     fun hasConversationView(hasConversationView: Boolean): Builder {
       this.hasConversationView = hasConversationView
-      featureSets += PlayerFeatureSet(showCelebrationOnCorrectAnswer = true)
       return this
     }
 
