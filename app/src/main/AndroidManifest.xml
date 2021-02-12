@@ -154,7 +154,7 @@
     <activity
       android:name=".app.topic.TopicActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
-      android:label=""
+      android:label="@string/topic_page"
       />
     <activity
       android:name=".app.walkthrough.WalkthroughActivity"
