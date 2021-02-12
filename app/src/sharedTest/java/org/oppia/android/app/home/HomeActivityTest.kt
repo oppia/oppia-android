@@ -466,7 +466,7 @@ class HomeActivityTest {
    *         |
    *        |
    *       v
-   * Test topic 1                     Ratios
+   * Test topic 0                     Ratios
    *    \                              /
    *     \                           /
    *       -----> Test topic 1 <----
