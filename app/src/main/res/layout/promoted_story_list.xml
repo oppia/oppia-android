@@ -12,7 +12,6 @@
   </data>
 
   <LinearLayout
-    android:id="@+id/promoted_story_list_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="24dp"
