@@ -354,6 +354,31 @@ class HomeActivityTest {
   }
 
   @Test
+  fun testHomeActivity_noTopicProgress_initialRecommendationFractionsAndRatiosIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.recommended_stories)
+      )
+      scrollToPositionOfPromotedList(position = 1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Fractions"
+      )
+      scrollToPositionOfPromotedList(position = 1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Ratios and Proportional Reasoning"
+      )
+    }
+  }
+
+  @Test
   fun testHomeActivity_forPromotedActivityList_hideViewAll() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
