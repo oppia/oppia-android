@@ -96,15 +96,6 @@ class PromotedStoryListViewModelTest {
         .addOlderPlayedStory(promotedStory2).build()
     ).build()
 
-  private val promotedActivityList2 = PromotedActivityList.newBuilder()
-    .setPromotedStoryList(
-      PromotedStoryList.newBuilder()
-        .addRecentlyPlayedStory(promotedStory1)
-        .addSuggestedStory(promotedStory2)
-        .addSuggestedStory(promotedStory3)
-        .build()
-    ).build()
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()

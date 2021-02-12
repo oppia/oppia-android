@@ -136,6 +136,7 @@ class ProfileProgressFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   @After
@@ -258,7 +259,6 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_ongoingTopicCountIsTwo() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -284,7 +284,6 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_twoPartialStoryProgress_ongoingTopicCountIsTwo() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -324,7 +323,6 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_ongoingTopicDescriptionIsCorrect() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -350,7 +348,6 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_ongoingTopicDescriptionIsCorrect() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -390,7 +387,6 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesCountIsTwo() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -424,7 +420,6 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesDescriptionIsCorrect() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -433,7 +428,6 @@ class ProfileProgressFragmentTest {
       profileId,
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
@@ -446,8 +440,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_fractionStory_storyNameIsCorrect() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -467,7 +460,6 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_fractionsStory_storyNameIsCorrect() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -489,7 +481,6 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_fractionsStory_topicNameIsCorrect() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -511,7 +502,6 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickFractionsStory_opensTopicActivity() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -534,13 +524,10 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickViewAll_opensRecentlyPlayedActivity() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
@@ -605,7 +592,6 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickTopicCount_opensOngoingTopicListActivity() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
@@ -635,7 +621,6 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickStoryCount_opensCompletedStoryListActivity() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
