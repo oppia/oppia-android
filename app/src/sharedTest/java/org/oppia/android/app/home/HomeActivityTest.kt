@@ -469,7 +469,7 @@ class HomeActivityTest {
    * Test topic 1                     Ratios
    *    \                              /
    *     \                           /
-   *       -----> Test topic 2 <----
+   *       -----> Test topic 1 <----
    *
    * # Logic for recommendation system
    *
