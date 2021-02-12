@@ -808,9 +808,9 @@ class HomeActivityTest {
   fun testHomeActivity_firstTestTopic_topicSummary_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
-        itemPosition = 2,
+        itemPosition = 3,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "First Test Topic"
       )
@@ -821,9 +821,9 @@ class HomeActivityTest {
   fun testHomeActivity_fiveLessons_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
-        itemPosition = 2,
+        itemPosition = 3,
         targetViewId = R.id.lesson_count_text_view,
         stringToMatch = "5 Lessons"
       )
@@ -852,9 +852,9 @@ class HomeActivityTest {
   fun testHomeActivity_oneLesson_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 4)
       verifyTextOnHomeListItemAtPosition(
-        itemPosition = 3,
+        itemPosition = 4,
         targetViewId = R.id.lesson_count_text_view,
         stringToMatch = "1 Lesson"
       )
@@ -940,9 +940,9 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 4)
       verifyTextOnHomeListItemAtPosition(
-        itemPosition = 3,
+        itemPosition = 4,
         targetViewId = R.id.lesson_count_text_view,
         stringToMatch = "1 Lesson"
       )
@@ -953,8 +953,8 @@ class HomeActivityTest {
   fun testHomeActivity_clickTopicSummary_opensTopicActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
-      onView(atPosition(R.id.home_recycler_view, 2)).perform(click())
+      scrollToPosition(position = 3)
+      onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
     }
@@ -1113,9 +1113,9 @@ class HomeActivityTest {
     profileTestHelper.logIntoNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       verifyExactTextOnHomeListItemAtPosition(
-        itemPosition = 1,
+        itemPosition = 2,
         targetViewId = R.id.all_topics_text_view,
         stringToMatch = context.getString((R.string.all_topics))
       )
