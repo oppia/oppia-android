@@ -5,7 +5,6 @@ This library contains fake objects used for testing as well as tests for these o
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("//:oppia_android_test.bzl", "oppia_android_test")
 load("//testing:testing_test.bzl", "testing_test")
 
 # Library for general-purpose testing fakes.
@@ -56,47 +55,17 @@ TEST_DEPS = [
     "//third_party:robolectric_android-all",
 ]
 
-testing_test(
-    name = "CoroutineExecutorServiceTest",
-    srcs = ["src/test/java/org/oppia/android/testing/CoroutineExecutorServiceTest.kt"],
-    test_class = "org.oppia.android.testing.CoroutineExecutorServiceTest",
-    deps = TEST_DEPS,
-)
+# Qualified file paths for test classes that have been migrated over to their own packages &
+# shouldn't be defined as module-level tests.
+# keep sorted
+MIGRATED_TESTS = [
+]
 
-testing_test(
-    name = "FakeEventLoggerTest",
-    srcs = ["src/test/java/org/oppia/android/testing/FakeEventLoggerTest.kt"],
-    test_class = "org.oppia.android.testing.FakeEventLoggerTest",
+[testing_test(
+    name = test_file_path,
+    filtered_tests = MIGRATED_TESTS,
     deps = TEST_DEPS,
-)
-
-testing_test(
-    name = "FakeExceptionLoggerTest",
-    srcs = ["src/test/java/org/oppia/android/testing/FakeExceptionLoggerTest.kt"],
-    test_class = "org.oppia.android.testing.FakeExceptionLoggerTest",
-    deps = TEST_DEPS,
-)
-
-testing_test(
-    name = "ProfileTestHelperTest",
-    srcs = ["src/test/java/org/oppia/android/testing/profile/ProfileTestHelperTest.kt"],
-    test_class = "org.oppia.android.testing.profile.ProfileTestHelperTest",
-    deps = TEST_DEPS,
-)
-
-testing_test(
-    name = "StoryProgressTestHelperTest",
-    srcs = ["src/test/java/org/oppia/android/testing/story/StoryProgressTestHelperTest.kt"],
-    test_class = "org.oppia.android.testing.story.StoryProgressTestHelperTest",
-    deps = TEST_DEPS,
-)
-
-testing_test(
-    name = "FakeOppiaClockTest",
-    srcs = ["src/test/java/org/oppia/android/testing/time/FakeOppiaClockTest.kt"],
-    test_class = "org.oppia.android.testing.time.FakeOppiaClockTest",
-    deps = TEST_DEPS,
-)
+) for test_file_path in glob(["src/test/java/org/oppia/android/testing/**/*.kt"])]
 
 kt_android_library(
     name = "assertion_helpers",

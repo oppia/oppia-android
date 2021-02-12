@@ -1,6 +1,36 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
+# TODO(#1620): Remove module-specific test macros once Gradle is removed
+def oppia_android_module_level_test(
+        name,
+        filtered_tests,
+        deps,
+        processed_src = None,
+        test_path_prefix = "src/test/java/",
+        **kwargs):
+    """
+    Creates individual tests for a test file at the module level.
+
+    Args:
+        name: str. The relative path to the Kotlin test file.
+        processed_src: str. The source to a processed version of the test that should be used
+            instead of the original.
+        test_path_prefix: str. The prefix of the test path (which is used to extract the qualified
+            class name of the test suite).
+        filtered_tests: list of str. The test files that should not have tests defined for them.
+        deps: list of str. The list of dependencies needed to build and run this test.
+        kwargs: additional parameters to pass to oppia_android_test.
+    """
+    if name not in filtered_tests:
+        oppia_android_test(
+            name = name[:name.find(".kt")],
+            srcs = [processed_src or name],
+            test_class = _remove_prefix_suffix(name, test_path_prefix, ".kt").replace("/", "."),
+            deps = deps,
+            **kwargs
+        )
+
 def oppia_android_test(
         name,
         srcs,
@@ -50,3 +80,6 @@ def oppia_android_test(
         deps = [":" + name + "_lib"] + deps,
         **kwargs
     )
+
+def _remove_prefix_suffix(str, prefix, suffix):
+    return str[str.find(prefix) + len(prefix):str.find(suffix)]
