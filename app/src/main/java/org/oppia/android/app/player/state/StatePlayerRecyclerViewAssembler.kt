@@ -105,6 +105,10 @@ private const val KEY_HINT_STATE = "KEY_HINT_STATE"
 private const val CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS: Long = 600
 private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
 
+private const val DEFAULT_WRONG_ANSWER_COUNT = 0
+private const val DEFAULT_HINT_SEQUENCE_NUMBER = 0
+private const val DEFAULT_IS_HINT_VISIBLE_IN_LATEST_STATE = false
+
 /**
  * An assembler for generating the list of view models to bind to the state player recycler view.
  * This class also handles some non-recycler view feature management, such as the congratulations
@@ -188,7 +192,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * and state saved through this method should be saved via [saveState].
    */
   fun restoreState(bundle: Bundle) {
-    val hintState = bundle.getProto(KEY_HINT_STATE, StatePlayerSavedHintState.getDefaultInstance())
+    val hintState = bundle.getProto(KEY_HINT_STATE, StatePlayerSavedHintState.newBuilder().apply {
+      wrongAnswerCount = DEFAULT_WRONG_ANSWER_COUNT
+      hintSequenceNumber = DEFAULT_HINT_SEQUENCE_NUMBER
+      isHintVisibleInLatestState = DEFAULT_IS_HINT_VISIBLE_IN_LATEST_STATE
+    }.build())
     hintHandler.trackedWrongAnswerCount = hintState.wrongAnswerCount
     hintHandler.previousHelpIndex = hintState.helpIndex
     hintHandler.hintSequenceNumber = hintState.hintSequenceNumber
@@ -1487,10 +1495,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val delayShowAdditionalHintsMs: Long,
     private val delayShowAdditionalHintsFromWrongAnswerMs: Long
   ) {
-    var trackedWrongAnswerCount = 0
+    var trackedWrongAnswerCount = DEFAULT_WRONG_ANSWER_COUNT
     var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
-    var hintSequenceNumber = 0
-    var isHintVisibleInLatestState = false
+    var hintSequenceNumber = DEFAULT_HINT_SEQUENCE_NUMBER
+    var isHintVisibleInLatestState = DEFAULT_IS_HINT_VISIBLE_IN_LATEST_STATE
 
     /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
     fun reset() {
