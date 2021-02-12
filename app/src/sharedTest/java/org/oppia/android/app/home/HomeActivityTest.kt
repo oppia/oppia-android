@@ -1069,7 +1069,7 @@ class HomeActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       verifyHomeRecyclerViewHasGridColumnCount(columnCount = 4)
 
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 2)
       onView(withId(R.id.home_recycler_view))
         .check(hasGridItemCount(spanCount = 1, position = 3))
     }
@@ -1159,16 +1159,15 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    val profileId1 = createProfileId(internalProfileId)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
-      profileId = profileId1, timestampOlderThanOneWeek = false
+      profileId = profileId, timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
-      profileId = profileId1,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markCompletedRatiosStory1Exp2(
-      profileId = profileId1,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
