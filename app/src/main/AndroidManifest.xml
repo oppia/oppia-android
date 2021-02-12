@@ -127,7 +127,6 @@
       android:name=".app.testing.TestFontScaleConfigurationUtilActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.HomeFragmentTestActivity" />
-    <activity android:name=".app.testing.HomeInjectionActivity" />
     <activity android:name=".app.testing.HtmlParserTestActivity" />
     <activity android:name=".app.testing.HomeTestActivity" />
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
