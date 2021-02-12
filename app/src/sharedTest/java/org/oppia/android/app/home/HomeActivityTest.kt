@@ -266,6 +266,7 @@ class HomeActivityTest {
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
+
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
@@ -276,7 +277,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_displaysLastPlayedStoriesText() {
+  fun testHomeActivity_storiesPlayedOneWeekAgo_displaysLastPlayedStoriesText() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId = profileId1,
@@ -329,7 +330,31 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_forPromotedAtcivityList_hideViewAll() {
+  fun testHomeActivity_markCompletedRatiosStory0_recommendsFractions() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedRatiosStory0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.recommended_stories)
+      )
+      scrollToPositionOfPromotedList(position = 1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Fractions"
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_forPromotedActivityList_hideViewAll() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId = profileId1,
@@ -434,6 +459,24 @@ class HomeActivityTest {
     }
   }
 
+  /**
+   * # Dependency graph:
+   *
+   *      Fractions
+   *         |
+   *        |
+   *       v
+   * Test topic 1                     Ratios
+   *    \                              /
+   *     \                           /
+   *       -----> Test topic 2 <----
+   *
+   * # Logic for recommendation system
+   *
+   * We always recommend the next topic that all dependencies are completed for. If a topic with
+   * prerequisites is completed out-of-order (e.g. test topic 1 above) then we assume fractions is already done.
+   * In the same way, finishing test topic 2 means there's nothing else to recommend.
+   */
   @Test
   fun testHomeActivity_markStory0DonePlayStory1FirstTestTopic_playFractionsTopic_orderIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
@@ -474,6 +517,42 @@ class HomeActivityTest {
         itemPosition = 2,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "First Test Topic"
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_markStory0OfRatiosAndTestTopics0And1Done_playTestTopicStory0_noPromotions() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedRatiosStory0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedTestTopic1(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.coming_soon_topic_text_view,
+        stringToMatch = context.getString(R.string.coming_soon)
+      )
+      scrollToPositionOfComingSoonList(position = 1)
+      verifyTextOnComingSoonItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Third Test Topic"
       )
     }
   }
@@ -994,7 +1073,11 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
-      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
+      if(context.resources.getBoolean(R.bool.isTablet)){
+        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
+      } else {
+        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
+      }
     }
   }
 
@@ -1020,7 +1103,11 @@ class HomeActivityTest {
     profileTestHelper.logIntoNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
+      if(context.resources.getBoolean(R.bool.isTablet)){
+        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
+      } else {
+        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
+      }
 
       scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view))
@@ -1036,7 +1123,11 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
+      if (context.resources.getBoolean(R.bool.isTablet)){
+        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 4)
+      } else {
+        verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
+      }
 
       scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view))
@@ -1069,7 +1160,7 @@ class HomeActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       verifyHomeRecyclerViewHasGridColumnCount(columnCount = 4)
 
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view))
         .check(hasGridItemCount(spanCount = 1, position = 3))
     }
