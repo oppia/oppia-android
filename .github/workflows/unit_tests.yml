@@ -21,9 +21,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
+        uses: jwlawson/actions-setup-bazel@v1
         with:
-          version: 4.0.0
+          bazel-version: 4.0.0
       - name: Compute test matrix based on affected targets
         id: compute-test-matrix-from-affected
         if: "!contains(github.event.pull_request.title, '[RunAllTests]')"
@@ -55,9 +55,9 @@ jobs:
         with:
           java-version: 9
       - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
+        uses: jwlawson/actions-setup-bazel@v1
         with:
-          version: 4.0.0
+          bazel-version: 4.0.0
       - name: Set up Oppia Bazel Android Tools
         run: |
           mkdir $HOME/opensource
