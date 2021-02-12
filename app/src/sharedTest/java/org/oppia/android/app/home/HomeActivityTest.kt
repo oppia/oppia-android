@@ -728,7 +728,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_secondTestTopic_topicSummary_alltopics_topicNameIsCorrect() {
+  fun testHomeActivity_secondTestTopic_topicSummary_allTopics_topicNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId = profileId1,
