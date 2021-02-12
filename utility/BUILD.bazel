@@ -58,6 +58,6 @@ MIGRATED_TESTS = [
     name = test_file_path,
     filtered_tests = MIGRATED_TESTS,
     deps = TEST_DEPS,
-) for test_file_path in glob(["src/test/java/org/oppia/android/util/**/*.kt"])]
+) for test_file_path in glob(["src/test/java/org/oppia/android/util/**/*Test.kt"])]
 
 dagger_rules()

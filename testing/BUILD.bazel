@@ -65,7 +65,7 @@ MIGRATED_TESTS = [
     name = test_file_path,
     filtered_tests = MIGRATED_TESTS,
     deps = TEST_DEPS,
-) for test_file_path in glob(["src/test/java/org/oppia/android/testing/**/*.kt"])]
+) for test_file_path in glob(["src/test/java/org/oppia/android/testing/**/*Test.kt"])]
 
 kt_android_library(
     name = "assertion_helpers",

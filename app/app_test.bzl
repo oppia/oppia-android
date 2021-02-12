@@ -18,9 +18,11 @@ def app_test(name, processed_src, test_path_prefix, filtered_tests, deps, **kwar
         name = name,
         processed_src = processed_src,
         filtered_tests = filtered_tests,
+        test_path_prefix = test_path_prefix,
         deps = deps,
         custom_package = "org.oppia.android.app.test",
         test_manifest = "src/test/AndroidManifest.xml",
+        additional_srcs = ["src/test/java/DataBinderMapperImpl.java"],
         enable_data_binding = True,
         **kwargs
     )
