@@ -591,7 +591,7 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -719,11 +719,11 @@ class HomeActivityTest {
   fun testHomeActivity_multipleRecentlyPlayedStories_mobileShows3PromotedStories() {
     val profileId = createProfileId(internalProfileId)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -735,7 +735,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -757,11 +757,11 @@ class HomeActivityTest {
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletPortraitShows3PromotedStories() {
     val profileId = createProfileId(internalProfileId)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -773,7 +773,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -795,11 +795,11 @@ class HomeActivityTest {
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletLandscapeShows4PromotedStories() {
     val profileId = createProfileId(internalProfileId)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -811,7 +811,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -842,7 +842,7 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
