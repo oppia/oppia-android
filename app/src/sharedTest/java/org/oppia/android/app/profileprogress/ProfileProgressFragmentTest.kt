@@ -440,7 +440,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_fractionStory_storyNameIsCorrect() {
-     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
