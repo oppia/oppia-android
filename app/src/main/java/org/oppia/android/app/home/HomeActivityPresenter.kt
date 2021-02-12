@@ -1,6 +1,5 @@
 package org.oppia.android.app.home
 
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
