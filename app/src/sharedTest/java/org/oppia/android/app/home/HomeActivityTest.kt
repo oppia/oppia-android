@@ -949,6 +949,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_onBackPressed_configChange_exitToProfileChooserDialogIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(isRoot()).perform(orientationLandscape())
@@ -1030,7 +1031,7 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -1169,11 +1170,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_mobileShows3PromotedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -1184,7 +1185,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -1205,11 +1206,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletPortraitShows3PromotedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -1221,7 +1222,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -1242,11 +1243,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletLandscapeShows4PromotedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -1257,8 +1258,8 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
-      profileId = profileId,
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
+      profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1287,7 +1288,7 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
