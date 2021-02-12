@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
@@ -75,19 +74,8 @@ class ExitProfileDialogFragment : DialogFragment() {
     return alertDialog
   }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    Log.d("Home", "onDestroy: called1")
-  }
-
-  override fun onDestroyView() {
-    super.onDestroyView()
-    Log.d("Home", "onDestroyView: called1")
-  }
-
   override fun onDismiss(dialog: DialogInterface) {
     super.onDismiss(dialog)
-    Log.d("Home", "onDismiss: called1")
     val args =
       checkNotNull(arguments) { "Expected arguments to be pass to ExitProfileDialogFragment" }
 
