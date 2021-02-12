@@ -21,10 +21,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivityTest
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -98,12 +96,12 @@ class TopicActivityTest {
 
   @Test
   fun testTopicActivity_activityLabel_isDefinedSuccessfully() {
-    activityTestRule.launchActivity(createTopicActivityIntent(
-
-      internalProfileId,
-      FRACTIONS_TOPIC_ID
-
-    ))
+    activityTestRule.launchActivity(
+      createTopicActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID
+      )
+    )
     val title = activityTestRule.activity.title
     assertThat(title).isEqualTo("Topic page")
   }
