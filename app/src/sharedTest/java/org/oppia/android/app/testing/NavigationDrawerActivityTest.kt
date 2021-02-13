@@ -287,7 +287,7 @@ class NavigationDrawerActivityTest {
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_openNavDrawer_switchProfile_cancel_homeItemIsSelected() {
+  fun testNavDrawer_openNavDrawer_switchProfile_cancel_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
