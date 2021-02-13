@@ -14,4 +14,3 @@ public final class DataBinderMapperImpl extends MergedDataBinderMapper {
     addMapper(new org.oppia.android.app.test.DataBinderMapperImpl());
   }
 }
-
