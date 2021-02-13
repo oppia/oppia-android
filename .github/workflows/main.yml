@@ -11,7 +11,7 @@ on:
       - develop
 
 # This workflow has the following jobs:
-# linters: Java, Kotlin, Protobuf
+# linters: Java, Kotlin, Protobuf, Bazel
 # robolectric_tests: Robolectric tests for all modules except the app module
 # app_tests: Non-flaky Robolectric tests for the app module
 jobs:
@@ -52,6 +52,11 @@ jobs:
         curl -sSL https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m) > buf
         chmod a+x buf
 
+    - name: Download Buildifier
+      run: |
+        cd $HOME/oppia-android-tools
+        bash /home/runner/work/oppia-android/oppia-android/scripts/buildifier_download.sh
+
     - name: Java lint check
       run: |
         bash /home/runner/work/oppia-android/oppia-android/scripts/checkstyle_lint_check.sh $HOME
@@ -62,6 +67,10 @@ jobs:
 
     - name: Protobuf lint check
       run: $HOME/oppia-android-tools/buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
+
+    - name: Bazel lint check
+      run: |
+        bash /home/runner/work/oppia-android/oppia-android/scripts/buildifier_lint_check.sh $HOME
 
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
