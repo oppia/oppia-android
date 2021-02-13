@@ -38,7 +38,7 @@ jobs:
           TEST_TARGET_LIST=$(bash ./scripts/compute_affected_tests.sh $HOME/oppia-bazel/bazel | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
           echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
-          if [[ ! -z "$TEST_TARGET_LIST" ]];
+          if [[ ! -z "$TEST_TARGET_LIST" ]]; then
             echo "::set-output name=have_tests_to_run::true"
           else
             echo "::set-output name=have_tests_to_run::false"
