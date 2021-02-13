@@ -1,5 +1,11 @@
 apply plugin: 'java-library'
 apply plugin: 'com.google.protobuf'
+apply plugin: 'jacoco'
+
+jacoco {
+  toolVersion = "0.8.2"
+  version "0.7.1.201405082137"
+}
 
 protobuf {
   protoc {
