@@ -2,6 +2,13 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'jacoco'
+
+jacoco {
+  toolVersion = "0.8.2"
+  version "0.7.1.201405082137"
+}
+
 
 android {
   compileSdkVersion 29
@@ -12,6 +19,8 @@ android {
     targetSdkVersion 29
     versionCode 1
     versionName "1.0"
+    multiDexEnabled true
+    testInstrumentationRunner "org.oppia.android.testing.OppiaTestRunner"
   }
 
   compileOptions {
@@ -24,6 +33,9 @@ android {
   }
 
   testOptions {
+    execution 'ANDROID_TEST_ORCHESTRATOR'
+    animationsDisabled true
+
     unitTests {
       includeAndroidResources = true
       all {
@@ -42,6 +54,15 @@ android {
           showStandardStreams = false
         }
       }
+    }
+  }
+
+  buildTypes {
+    release{
+      testCoverageEnabled true
+    }
+    debug {
+      testCoverageEnabled true
     }
   }
 }
@@ -72,6 +93,9 @@ dependencies {
       'org.mockito:mockito-core:2.19.0',
       project(":domain"),
   )
+  androidTestUtil(
+      'androidx.test:orchestrator:1.2.0',
+  )
   kapt(
       'com.google.dagger:dagger-compiler:2.24',
   )
@@ -92,3 +116,31 @@ dependencies {
 configurations {
   all*.exclude module: 'protobuf-java'
 }
+
+
+tasks.withType(Test) {
+  jacoco.includeNoLocationClasses = true
+}
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+
+  reports {
+    xml.enabled = true
+    html.enabled = true
+    csv.enabled false
+  }
+  def fileFilter = [
+      '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*', '**/*$[0-9].*'
+  ]
+
+
+  def mainSrc = "$project.projectDir/src/main/kotlin"
+  def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+  def kotlinDebugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
+
+  classDirectories.from = files([debugTree], [kotlinDebugTree])
+  sourceDirectories.setFrom(files([mainSrc]))
+  executionData.setFrom(fileTree(dir: project.buildDir, includes: [
+      'jacoco/testDebugUnitTest.exec', 'outputs/code_coverage/debugAndroidTest/connected/**/*.ec'
+  ]))
+}
+

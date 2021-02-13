@@ -3,6 +3,7 @@
 buildscript {
   ext.kotlin_version = '1.4.20'
   ext.fragment_version = '1.2.0-rc01'
+  ext.jacocoVersion = '0.8.5'
   repositories {
     google()
     jcenter()
@@ -14,6 +15,7 @@ buildscript {
     classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.12'
     classpath 'com.google.gms:google-services:4.3.3'
     classpath 'com.google.firebase:firebase-crashlytics-gradle:2.1.1'
+    classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
     // NOTE: Do not place your application dependencies here; they belong
     // in the individual module build.gradle files
   }
@@ -23,6 +25,16 @@ allprojects {
   repositories {
     google()
     jcenter()
+  }
+}
+
+configurations.all {
+  resolutionStrategy {
+    eachDependency { details ->
+      if (details.requested.group == 'org.jacoco') {
+        details.useVersion jacocoVersion
+      }
+    }
   }
 }
 
