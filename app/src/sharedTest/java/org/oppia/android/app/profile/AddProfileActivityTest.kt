@@ -395,7 +395,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.add_profile_error_name_not_unique)))
     }
   }
 
@@ -417,7 +417,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.add_profile_error_name_not_unique)))
     }
   }
 
@@ -447,7 +447,7 @@ class AddProfileActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -486,7 +486,7 @@ class AddProfileActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -506,7 +506,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_only_letters)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.add_profile_error_name_only_letters)))
     }
   }
 
@@ -529,7 +529,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_only_letters)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.add_profile_error_name_only_letters)))
     }
   }
 
@@ -559,7 +559,7 @@ class AddProfileActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -596,7 +596,7 @@ class AddProfileActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -628,7 +628,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       onView(withId(R.id.add_profile_activity_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_length)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.add_profile_error_pin_length)))
     }
   }
 
@@ -667,7 +667,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       onView(withId(R.id.add_profile_activity_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_length)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.add_profile_error_pin_length)))
     }
   }
 
@@ -698,7 +698,7 @@ class AddProfileActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -734,7 +734,7 @@ class AddProfileActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -778,7 +778,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       onView(withId(R.id.add_profile_activity_confirm_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
     }
   }
 
@@ -839,7 +839,7 @@ class AddProfileActivityTest {
         )
       ).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_confirm_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
     }
   }
 
@@ -896,7 +896,7 @@ class AddProfileActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -942,7 +942,7 @@ class AddProfileActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -1345,7 +1345,7 @@ class AddProfileActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.add_profile_error_name_not_unique)))
     }
   }
 
@@ -1459,7 +1459,7 @@ class AddProfileActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_confirm_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
     }
   }
 
@@ -1526,31 +1526,6 @@ class AddProfileActivityTest {
             isDisplayed()
           )
         )
-    }
-  }
-
-  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        val expectedErrorText = context.resources.getString(expectedErrorTextId)
-        return (view as TextInputLayout).error == expectedErrorText
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("TextInputLayout's error")
-      }
-    }
-  }
-
-  private fun hasNoErrorText(): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        return (view as TextInputLayout).error.isNullOrEmpty()
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("")
-      }
     }
   }
 

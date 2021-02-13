@@ -256,7 +256,7 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasErrorText(R.string.admin_settings_incorrect)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.admin_settings_incorrect)))
       onView(
         allOf(
           withId(R.id.admin_settings_input_pin_edit_text),
@@ -267,7 +267,7 @@ class PinPasswordActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -308,7 +308,7 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.reset_pin_input_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_length)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.add_profile_error_pin_length)))
       onView(
         allOf(
           withId(R.id.reset_pin_input_pin_edit_text),
@@ -319,7 +319,7 @@ class PinPasswordActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.reset_pin_input_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -559,7 +559,7 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasErrorText(R.string.admin_settings_incorrect)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.admin_settings_incorrect)))
       onView(
         allOf(
           withId(R.id.admin_settings_input_pin_edit_text),
@@ -569,7 +569,7 @@ class PinPasswordActivityTest {
         .perform(editTextInputAction.appendText("5"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -596,10 +596,10 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasErrorText(R.string.admin_settings_incorrect)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.admin_settings_incorrect)))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasErrorText(R.string.admin_settings_incorrect)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.admin_settings_incorrect)))
     }
   }
 
@@ -638,7 +638,7 @@ class PinPasswordActivityTest {
         .perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.reset_pin_input_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_length)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.add_profile_error_pin_length)))
     }
   }
 
@@ -785,31 +785,6 @@ class PinPasswordActivityTest {
       onView(withId(R.id.show_pin)).perform(click())
       onView(withId(R.id.input_pin))
         .check(matches(withInputType(inputType)))
-    }
-  }
-
-  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        val expectedErrorText = context.resources.getString(expectedErrorTextId)
-        return (view as TextInputLayout).error == expectedErrorText
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("TextInputLayout's error")
-      }
-    }
-  }
-
-  private fun hasNoErrorText(): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        return (view as TextInputLayout).error.isNullOrEmpty()
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("")
-      }
     }
   }
 

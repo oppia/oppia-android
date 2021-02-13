@@ -27,6 +27,7 @@ kt_android_library(
         artifact("com.google.truth:truth"),
         artifact("androidx.test.ext:junit"),
         artifact("org.mockito:mockito-core"),
+        artifact('com.google.android.material:material:1.2.0-alpha02'),
         artifact("junit:junit:4.12"),
         artifact("androidx.test.espresso:espresso-contrib:3.1.0"),
         artifact("androidx.test.espresso:espresso-core:3.2.0"),

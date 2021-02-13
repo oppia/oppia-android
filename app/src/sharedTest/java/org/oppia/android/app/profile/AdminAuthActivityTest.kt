@@ -234,7 +234,7 @@ class AdminAuthActivityTest {
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
@@ -259,7 +259,7 @@ class AdminAuthActivityTest {
         pressImeActionButton()
       )
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
@@ -294,7 +294,7 @@ class AdminAuthActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -328,7 +328,7 @@ class AdminAuthActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -517,10 +517,10 @@ class AdminAuthActivityTest {
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
@@ -546,35 +546,10 @@ class AdminAuthActivityTest {
         pressImeActionButton()
       )
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
+        .check(matches(editTextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
-    }
-  }
-
-  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        val expectedErrorText = context.resources.getString(expectedErrorTextId)
-        return (view as TextInputLayout).error == expectedErrorText
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("TextInputLayout's error")
-      }
-    }
-  }
-
-  private fun hasNoErrorText(): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        return (view as TextInputLayout).error.isNullOrEmpty()
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("")
-      }
+        .check(matches(editTextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
