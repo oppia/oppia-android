@@ -1,12 +1,17 @@
 package org.oppia.android.testing
 
+import android.content.Context
 import android.os.Build
 import android.view.View
 import android.widget.EditText
+import androidx.annotation.StringRes
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.typeText
+import com.google.android.material.textfield.TextInputLayout
+import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import javax.inject.Inject
 
 /**
@@ -17,7 +22,7 @@ import javax.inject.Inject
  * for specifics.
  */
 class EditTextInputAction @Inject constructor(
-  val testCoroutineDispatchers: TestCoroutineDispatchers
+  val testCoroutineDispatchers: TestCoroutineDispatchers , val context: Context
 ) {
   // TODO(#1720): Move this to a companion object & use a test-only singleton injector to retrieve
   // the TestCoroutineDispatchers so that the outer class doesn't need to be injected.
@@ -40,6 +45,29 @@ class EditTextInputAction @Inject constructor(
         } else {
           typeTextViewAction.perform(uiController, view)
         }
+      }
+    }
+  }
+  fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun matchesSafely(view: View): Boolean {
+        val expectedErrorText = context.resources.getString(expectedErrorTextId)
+        return (view as TextInputLayout).error == expectedErrorText
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("TextInputLayout's error")
+      }
+    }
+  }
+  fun hasNoErrorText(): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun matchesSafely(view: View): Boolean {
+        return (view as TextInputLayout).error.isNullOrEmpty()
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("")
       }
     }
   }

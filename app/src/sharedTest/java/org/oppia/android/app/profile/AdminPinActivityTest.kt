@@ -320,7 +320,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -359,7 +359,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(
           matches(
-            hasErrorText(
+            editTextInputAction.hasErrorText(
               R.string.admin_pin_error_pin_confirm_wrong
             )
           )
@@ -399,7 +399,7 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(
+          editTextInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -446,7 +446,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -488,7 +488,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -698,7 +698,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -737,7 +737,7 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(
+          editTextInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -780,7 +780,7 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.advanceUntilIdle()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(
+          editTextInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -831,7 +831,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -877,7 +877,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(editTextInputAction.hasNoErrorText()))
     }
   }
 
@@ -916,7 +916,7 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(
+          editTextInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -957,7 +957,7 @@ class AdminPinActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(
+          editTextInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -994,30 +994,7 @@ class AdminPinActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        val expectedErrorText = context.resources.getString(expectedErrorTextId)
-        return (view as TextInputLayout).error == expectedErrorText
-      }
 
-      override fun describeTo(description: Description) {
-        description.appendText("TextInputLayout's error")
-      }
-    }
-  }
-
-  private fun hasNoErrorText(): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        return (view as TextInputLayout).error.isNullOrEmpty()
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("")
-      }
-    }
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
