@@ -345,6 +345,29 @@ class NavigationDrawerActivityTest {
     }
   }
 
+  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  @Ignore("My Downloads is removed until we have full download support.")
+  fun testNavDrawer_openNavDrawer_download_switchProfile_cancel_downloadIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_my_downloads)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.DOWNLOADS)))
+    }
+  }
+
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
@@ -434,6 +457,29 @@ class NavigationDrawerActivityTest {
     }
   }
 
+  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  @Ignore("My Downloads is removed until we have full download support.")
+  fun testNavDrawer_openNavDrawer_download_switchProfile_cancel_configChange_downloadIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_my_downloads)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.DOWNLOADS)))
+    }
+  }
+
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
@@ -493,6 +539,24 @@ class NavigationDrawerActivityTest {
     }
   }
 
+  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  @Ignore("My Downloads is removed until we have full download support.")
+  fun testNavDrawer_openNavDrawer_download_pressBack_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_my_downloads)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
@@ -520,6 +584,93 @@ class NavigationDrawerActivityTest {
       onView(withText(R.string.administrator_controls)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavDrawer_openNavDrawer_options_pressBack_configChange_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_options)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavDrawer_openNavDrawer_help_pressBack_configChange_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_help)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+
+  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  @Ignore("My Downloads is removed until we have full download support.")
+  fun testNavDrawer_openNavDrawer_download_pressBack_configChange_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_my_downloads)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavDrawer_openNavDrawer_switchProfile_pressBack_configChange_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavDrawer_openNavDrawer_admin_pressBack_configChange_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.administrator_controls)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.fragment_drawer_nav_view))
         .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
     }
