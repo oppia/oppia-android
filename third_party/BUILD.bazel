@@ -46,6 +46,7 @@ android_library(
 
 android_library(
     name = "robolectric_android-all",
+    visibility = ["//visibility:public"],
     exports = [
         "@robolectric//bazel:android-all",
     ],

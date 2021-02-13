@@ -81,3 +81,17 @@ message AnsweredQuestionOutcome {
   // Whether the answer the learner submitted is the correct answer.
   bool is_correct_answer = 2;
 }
+
+// The final score and mastery calculations of the user after completing a training session. This is an ephemeral data
+// structure that is only relevant to a particular training session.
+message UserAssessmentPerformance {
+  // Stores the user's total session score as a percentage.
+  double total_percentage_score = 1;
+
+  // Stores the user's score per skill for the training session via a map of skill IDs to percentage scores.
+  map<string, double> percentage_score_per_skill_mapping = 2;
+
+  // Stores the user's mastery degree per skill for the training session via a map of skill IDs to mastery degrees.
+  // A mastery degree is a numerical score representing the user's strength in a particular skill.
+  map<string, double> mastery_per_skill_mapping = 3;
+}

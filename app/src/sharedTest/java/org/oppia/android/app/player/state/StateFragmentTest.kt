@@ -50,7 +50,6 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -552,6 +551,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickRegion6_submitButtonClickable() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -565,6 +565,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickRegion6_clickSubmit_receivesCorrectFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -583,6 +584,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_submitButtonDisabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -596,7 +598,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
-  fun loadImageRegion_defaultRegionClick_defaultRegionClicked_submitButtonDisabled() {
+  fun testStateFragment_loadImageRegion_defaultRegionClick_defRegionClicked_submitButtonDisabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -609,6 +611,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_submitButtonEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -622,6 +625,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -640,6 +644,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -658,6 +663,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_continueButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -672,7 +678,8 @@ class StateFragmentTest {
   }
 
   @Test
-  fun loadImageRegion_clickRegion6_clickedRegion5_region5Clicked_correctFeedback() {
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  fun testStateFragment_loadImageRegion_clickRegion6_clickedRegion5_clickRegion5_correctFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -810,7 +817,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @Ignore("Currently failing due to a regression") // TODO(#1769): Re-enable.
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadExp_changeConfiguration_continueToEnd_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -841,7 +848,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @Ignore("Currently failing due to a regression") // TODO(#1769): Re-enable.
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadExp_changeConfig_continueToEnd_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()

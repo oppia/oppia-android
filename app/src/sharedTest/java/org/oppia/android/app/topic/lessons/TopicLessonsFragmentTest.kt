@@ -166,7 +166,7 @@ class TopicLessonsFragmentTest {
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
