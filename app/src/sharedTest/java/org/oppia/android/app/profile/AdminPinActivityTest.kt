@@ -5,7 +5,6 @@ import android.content.Context
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.test.core.app.ActivityScenario.launch
@@ -28,14 +27,10 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.android.material.textfield.TextInputLayout
 import dagger.Component
-import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -75,6 +70,7 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TextInputAction
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -108,6 +104,9 @@ class AdminPinActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
+  @Inject
+  lateinit var textInputAction: TextInputAction
+  
   @Before
   fun setUp() {
     Intents.init()
@@ -320,7 +319,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(editTextInputAction.hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -359,7 +358,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(
           matches(
-            editTextInputAction.hasErrorText(
+            textInputAction.hasErrorText(
               R.string.admin_pin_error_pin_confirm_wrong
             )
           )
@@ -399,7 +398,7 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          editTextInputAction.hasErrorText(
+          textInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -446,7 +445,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(editTextInputAction.hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -488,7 +487,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(editTextInputAction.hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -698,7 +697,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(editTextInputAction.hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -737,7 +736,7 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          editTextInputAction.hasErrorText(
+          textInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -780,7 +779,7 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.advanceUntilIdle()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          editTextInputAction.hasErrorText(
+          textInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -831,7 +830,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(editTextInputAction.hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -877,7 +876,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(editTextInputAction.hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -916,7 +915,7 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          editTextInputAction.hasErrorText(
+          textInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -957,7 +956,7 @@ class AdminPinActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          editTextInputAction.hasErrorText(
+          textInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )

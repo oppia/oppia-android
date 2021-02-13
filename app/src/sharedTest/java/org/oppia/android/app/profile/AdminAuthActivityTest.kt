@@ -2,8 +2,6 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
-import android.view.View
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -21,12 +19,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.android.material.textfield.TextInputLayout
 import dagger.Component
-import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -66,6 +60,7 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TextInputAction
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -95,6 +90,9 @@ class AdminAuthActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
+  @Inject
+  lateinit var textInputAction: TextInputAction
+  
   private val internalProfileId: Int = 0
 
   @Before
@@ -234,7 +232,7 @@ class AdminAuthActivityTest {
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(editTextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
+        .check(matches(textInputAction.hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
@@ -259,7 +257,7 @@ class AdminAuthActivityTest {
         pressImeActionButton()
       )
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(editTextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
+        .check(matches(textInputAction.hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
@@ -294,7 +292,7 @@ class AdminAuthActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(editTextInputAction.hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -328,7 +326,7 @@ class AdminAuthActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(editTextInputAction.hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -517,10 +515,10 @@ class AdminAuthActivityTest {
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(editTextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
+        .check(matches(textInputAction.hasErrorText(R.string.admin_auth_incorrect)))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(editTextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
+        .check(matches(textInputAction.hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
@@ -546,10 +544,10 @@ class AdminAuthActivityTest {
         pressImeActionButton()
       )
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(editTextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
+        .check(matches(textInputAction.hasErrorText(R.string.admin_auth_incorrect)))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(editTextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
+        .check(matches(textInputAction.hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 
