@@ -173,6 +173,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   /**
    * Saves transient state that the assembler depends on.
+   *
    * This should be used to retain state across configuration changes,
    * and state saved through this method should be restored via [restoreState].
    */
@@ -188,15 +189,19 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   /**
    * Restores transient state that the assembler depends on.
+   *
    * This should be used to retain state across configuration changes,
    * and state saved through this method should be saved via [saveState].
    */
   fun restoreState(bundle: Bundle) {
-    val hintState = bundle.getProto(KEY_HINT_STATE, StatePlayerSavedHintState.newBuilder().apply {
-      wrongAnswerCount = DEFAULT_WRONG_ANSWER_COUNT
-      hintSequenceNumber = DEFAULT_HINT_SEQUENCE_NUMBER
-      isHintVisibleInLatestState = DEFAULT_IS_HINT_VISIBLE_IN_LATEST_STATE
-    }.build())
+    val hintState = bundle.getProto(
+      KEY_HINT_STATE,
+      StatePlayerSavedHintState.newBuilder().apply {
+        wrongAnswerCount = DEFAULT_WRONG_ANSWER_COUNT
+        hintSequenceNumber = DEFAULT_HINT_SEQUENCE_NUMBER
+        isHintVisibleInLatestState = DEFAULT_IS_HINT_VISIBLE_IN_LATEST_STATE
+      }.build()
+    )
     hintHandler.trackedWrongAnswerCount = hintState.wrongAnswerCount
     hintHandler.previousHelpIndex = hintState.helpIndex
     hintHandler.hintSequenceNumber = hintState.hintSequenceNumber
