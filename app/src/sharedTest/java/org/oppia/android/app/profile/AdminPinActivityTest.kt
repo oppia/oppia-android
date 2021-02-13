@@ -72,6 +72,7 @@ import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TextInputAction
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -122,7 +123,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfileActivity() {
+  fun testAdminPinActivity_inputPin_submit_opensAddProfileActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -158,7 +159,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_inputPin_imeAction_opensAddProfileActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -192,7 +193,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputPin_inputConfirmPin_clickSubmit_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
+  fun testAdminAuthActivity_inputPin_submit_opensAdminControlsActivity() {
     launch<AdminAuthActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -231,7 +232,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
+  fun testAdminAuthActivity_inputPin_imeAction_opensAdminControlsActivity() {
     launch<AdminAuthActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -290,7 +291,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() {
+  fun testAdminPinActivity_inputShortPin_submit_inputPin_errorIsCleared() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -324,7 +325,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() {
+  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_submit_confirmWrongError() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -367,7 +368,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_inputPinAndWrongConfirmPin_imeAction_confirmWrongError() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -407,7 +408,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_inputPinAndWrongConfirmPin_submit_inputConfirmPin_errorIsCleared() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -450,7 +451,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_inputPinAndWrongConfirmPin_inputConfirmPin_errorIsCleared() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -492,7 +493,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfileActivity() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_configChange_inputPin_submit_opensAddProfileActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -531,7 +532,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_configChange_inputPin_imeAction_opensAddProfileActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -567,7 +568,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_configChange_inputPin_submit_opensAdminControlsActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -606,7 +607,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_configChange_inputPin_imeAction_opensAdminControlsActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -642,7 +643,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputShortPin_clickSubmit_clickIsDisabled() {
+  fun testAdminPinActivity_configChange_inputShortPin_submit_clickIsDisabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -667,7 +668,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_configChange_inputShortPin_submit_inputPin_errorIsCleared() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -702,7 +703,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_configChange_inputPinAndWrongConfirmPin_submit_confirmWrongError() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -745,7 +746,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_configChange_inputPinAndWrongConfirmPin_confirmWrongError() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -788,7 +789,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_configChange_inputPinAndWrongConfirmPin_inputConfirmPinErrorIsCleared() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -835,7 +836,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_configChange_inputWrongConfirmPin_imeAction_correct_errorIsCleared() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -881,7 +882,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_configurationChange_checkConfirmWrongError() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_inputPinAndWrongConfirmPin_submit_configChange_confirmWrongError() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -924,7 +925,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_configurationChange_checkConfirmWrongError() { // ktlint-disable max-line-length
+  fun testAdminPinActivity_inputPinAndWrongConfirmPin_imeAction_configChange_confirmWrongError() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -965,7 +966,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputShortPin_configurationChange_clicIsDisabled() {
+  fun testAdminPinActivity_inputShortPin_configChange_clickIsDisabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
         context = context,
@@ -1011,7 +1012,7 @@ class AdminPinActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

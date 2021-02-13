@@ -35,6 +35,7 @@ const val RATIOS_EXPLORATION_ID_0 = "2mzzFVDLuAj8"
 const val RATIOS_EXPLORATION_ID_1 = "5NWuolNcwH6e"
 const val RATIOS_EXPLORATION_ID_2 = "k2bQ7z5XHNbK"
 const val RATIOS_EXPLORATION_ID_3 = "tIoSb3HZFN6e"
+const val UPCOMING_TOPIC_ID_1 = "test_topic_id_2"
 
 private const val CACHE_NAME = "topic_progress_database"
 private const val RETRIEVE_TOPIC_PROGRESS_LIST_DATA_PROVIDER_ID =
