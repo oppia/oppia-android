@@ -58,7 +58,7 @@ class HomeActivity :
     val exitProfileDialogArguments =
       ExitProfileDialogArguments
         .newBuilder()
-        .setHighlightItem(HighlightItem.ITEM_UNSPECIFIED)
+        .setHighlightItem(HighlightItem.NONE)
         .build()
     val dialogFragment = ExitProfileDialogFragment
       .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
