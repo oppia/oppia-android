@@ -385,7 +385,6 @@ class TopicFragmentTest {
         stringToMatch = "Master These Skills"
       )
     }
-
   }
 
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
