@@ -129,7 +129,7 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun logInfoFragmentEvent(topicId: String) {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentCalendar().timeInMillis,
+      oppiaClock.getCurrentTimeMs(),
       EventLog.EventAction.OPEN_INFO_TAB,
       oppiaLogger.createTopicContext(topicId)
     )
@@ -137,7 +137,7 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun logLessonsFragmentEvent(topicId: String) {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentCalendar().timeInMillis,
+      oppiaClock.getCurrentTimeMs(),
       EventLog.EventAction.OPEN_LESSONS_TAB,
       oppiaLogger.createTopicContext(topicId)
     )
@@ -145,7 +145,7 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun logPracticeFragmentEvent(topicId: String) {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentCalendar().timeInMillis,
+      oppiaClock.getCurrentTimeMs(),
       EventLog.EventAction.OPEN_PRACTICE_TAB,
       oppiaLogger.createTopicContext(topicId)
     )
@@ -153,7 +153,7 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun logRevisionFragmentEvent(topicId: String) {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentCalendar().timeInMillis,
+      oppiaClock.getCurrentTimeMs(),
       EventLog.EventAction.OPEN_REVISION_TAB,
       oppiaLogger.createTopicContext(topicId)
     )

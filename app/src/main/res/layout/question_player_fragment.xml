@@ -83,7 +83,7 @@
       <ProgressBar
         android:id="@+id/question_progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="12dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
@@ -93,7 +93,39 @@
         android:progressDrawable="@drawable/progress_bar"
         app:layout_constraintBottom_toTopOf="@id/question_progress_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/hints_and_solution_fragment_container" />
+
+      <FrameLayout
+        android:id="@+id/hints_and_solution_fragment_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+      <FrameLayout
+        android:id="@+id/hints_and_solution_fragment_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:background="@drawable/hints_background"
+        android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+          android:id="@+id/dot_hint"
+          android:layout_width="8dp"
+          android:layout_height="6dp"
+          android:layout_gravity="top|end"
+          android:layout_margin="8dp"
+          android:src="@drawable/ic_dot_yellow_24dp"
+          android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}" />
+
+        <ImageView
+          android:id="@+id/hint_bulb"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="12dp"
+          android:src="@drawable/ic_hint_bulb_white_24dp" />
+      </FrameLayout>
 
       <TextView
         android:id="@+id/question_progress_text"
@@ -117,36 +149,6 @@
         app:layout_constraintGuide_percent="@{viewModel.centerGuidelinePercentage.floatValue()}"
         tools:layout_constraintGuide_percent="0.5f" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <FrameLayout
-      android:id="@+id/hints_and_solution_fragment_placeholder"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent" />
-
-    <FrameLayout
-      android:id="@+id/hints_and_solution_fragment_container"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom|start"
-      android:background="@drawable/hints_background"
-      android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}">
-
-      <ImageView
-        android:id="@+id/dot_hint"
-        android:layout_width="8dp"
-        android:layout_height="6dp"
-        android:layout_gravity="top|end"
-        android:layout_margin="8dp"
-        android:src="@drawable/ic_dot_yellow_24dp"
-        android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}" />
-
-      <ImageView
-        android:id="@+id/hint_bulb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:src="@drawable/ic_hint_bulb_white_24dp" />
-    </FrameLayout>
 
     <FrameLayout
       android:layout_width="match_parent"

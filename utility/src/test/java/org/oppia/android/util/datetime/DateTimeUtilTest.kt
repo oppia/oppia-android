@@ -13,11 +13,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.RobolectricModule
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.system.OppiaClock
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -38,11 +39,12 @@ class DateTimeUtilTest {
 
   @Inject lateinit var dateTimeUtil: DateTimeUtil
   @Inject lateinit var context: Context
-  @Inject lateinit var oppiaClock: OppiaClock
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -54,19 +56,19 @@ class DateTimeUtilTest {
 
   @Test
   fun testGreetingMessageBasedOnTime_goodEveningMessageSucceeded() {
-    oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
     assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
   }
 
   @Test
   fun testGreetingMessageBasedOnTime_goodMorningMessageSucceeded() {
-    oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
   }
 
   @Test
   fun testGreetingMessageBasedOnTime_goodAfternoonMessageSucceeded() {
-    oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
     assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
   }
 
@@ -99,7 +101,7 @@ class DateTimeUtilTest {
   @Component(
     modules = [
       TestModule::class,
-      RobolectricModule::class
+      RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {
