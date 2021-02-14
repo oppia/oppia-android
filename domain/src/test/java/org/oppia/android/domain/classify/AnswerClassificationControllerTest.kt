@@ -37,6 +37,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.test.assertTrue
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -118,6 +119,8 @@ class AnswerClassificationControllerTest {
       .setDestStateName("Second state")
       .setFeedback(SubtitledHtml.newBuilder().setContentId("content_id_1").setHtml("Feedback 2"))
       .build()
+
+    private val TEST_MISCONCEPTION_ID_0 = "test-misconception-id-0"
   }
 
   @Inject
@@ -182,6 +185,75 @@ class AnswerClassificationControllerTest {
 
     // The test string does not match the rule spec.
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
+  }
+
+  @Test
+  fun testClassify_interactionWithDefaultOutcome_returnOutcomeOnlyWithNoMisconceptionId() {
+    val interaction = Interaction.newBuilder()
+      .setId("Continue")
+      .setDefaultOutcome(DEFAULT_OUTCOME)
+      .build()
+
+    val classificationResult = answerClassificationController.classify(interaction, CONTINUE_ANSWER)
+
+    // The continue interaction always returns the default outcome because it has no rule classifiers.
+    assertThat(classificationResult.outcome).isEqualTo(DEFAULT_OUTCOME)
+    // Classification result should return no tagged skill misconception ID
+    assertTrue(classificationResult is ClassificationResult.OutcomeOnly)
+  }
+
+  @Test
+  fun testClassify_answerGroupWithNonDefaultOutcome_returnOutcomeOnlyWithNoMisconceptionId() {
+    val interaction = Interaction.newBuilder()
+      .setId("ItemSelectionInput")
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_ITEM_SELECTION_SET_0)
+          )
+          .setOutcome(OUTCOME_0)
+      )
+      .setDefaultOutcome(DEFAULT_OUTCOME)
+      .build()
+
+    val classificationResult = answerClassificationController.classify(
+      interaction,
+      TEST_ITEM_SELECTION_SET_0
+    )
+
+    // The first group should match.
+    assertThat(classificationResult.outcome).isEqualTo(OUTCOME_0)
+    // Classification result should return no tagged skill misconception ID
+    assertTrue(classificationResult is ClassificationResult.OutcomeOnly)
+  }
+
+  @Test
+  fun testClassify_answerGroupNonDefaultOutcomeAndMisconception_returnOutcomeWithMisconception() {
+    val interaction = Interaction.newBuilder()
+      .setId("ItemSelectionInput")
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_ITEM_SELECTION_SET_0)
+          )
+          .setOutcome(OUTCOME_0)
+          .setTaggedSkillMisconceptionId(TEST_MISCONCEPTION_ID_0)
+      )
+      .setDefaultOutcome(DEFAULT_OUTCOME)
+      .build()
+
+    val classificationResult = answerClassificationController.classify(
+      interaction,
+      TEST_ITEM_SELECTION_SET_0
+    )
+
+    // The first group should match.
+    assertThat(classificationResult.outcome).isEqualTo(OUTCOME_0)
+    // Classification result should return a tagged skill misconception ID
+    assertTrue(classificationResult is ClassificationResult.OutcomeWithMisconception)
+    // Verify that the correct misconception ID is returned
+    // Classification result should return a tagged skill misconception ID
+    assertThat(classificationResult.taggedSkillMisconceptionId).isEqualTo(TEST_MISCONCEPTION_ID_0)
   }
 
   @Test
