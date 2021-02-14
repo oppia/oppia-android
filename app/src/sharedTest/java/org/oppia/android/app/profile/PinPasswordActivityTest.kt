@@ -2,8 +2,6 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
-import android.view.View
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -24,12 +22,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.chaos.view.PinView
-import com.google.android.material.textfield.TextInputLayout
 import dagger.Component
-import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -70,6 +64,7 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TextInputAction
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -103,6 +98,9 @@ class PinPasswordActivityTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
+  
+  @Inject
+  lateinit var textInputAction: TextInputAction
 
   private val adminPin = "12345"
   private val adminId = 0
@@ -257,7 +255,7 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasErrorText(R.string.admin_settings_incorrect)))
+        .check(matches(textInputAction.hasErrorText(R.string.admin_settings_incorrect)))
       onView(
         allOf(
           withId(R.id.admin_settings_input_pin_edit_text),
@@ -268,7 +266,7 @@ class PinPasswordActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -309,7 +307,7 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.reset_pin_input_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_length)))
+        .check(matches(textInputAction.hasErrorText(R.string.add_profile_error_pin_length)))
       onView(
         allOf(
           withId(R.id.reset_pin_input_pin_edit_text),
@@ -320,7 +318,7 @@ class PinPasswordActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.reset_pin_input_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -560,7 +558,7 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasErrorText(R.string.admin_settings_incorrect)))
+        .check(matches(textInputAction.hasErrorText(R.string.admin_settings_incorrect)))
       onView(
         allOf(
           withId(R.id.admin_settings_input_pin_edit_text),
@@ -570,7 +568,7 @@ class PinPasswordActivityTest {
         .perform(editTextInputAction.appendText("5"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -597,10 +595,10 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasErrorText(R.string.admin_settings_incorrect)))
+        .check(matches(textInputAction.hasErrorText(R.string.admin_settings_incorrect)))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasErrorText(R.string.admin_settings_incorrect)))
+        .check(matches(textInputAction.hasErrorText(R.string.admin_settings_incorrect)))
     }
   }
 
@@ -639,7 +637,7 @@ class PinPasswordActivityTest {
         .perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.reset_pin_input_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_length)))
+        .check(matches(textInputAction.hasErrorText(R.string.add_profile_error_pin_length)))
     }
   }
 
@@ -788,32 +786,7 @@ class PinPasswordActivityTest {
         .check(matches(withInputType(inputType)))
     }
   }
-
-  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        val expectedErrorText = context.resources.getString(expectedErrorTextId)
-        return (view as TextInputLayout).error == expectedErrorText
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("TextInputLayout's error")
-      }
-    }
-  }
-
-  private fun hasNoErrorText(): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        return (view as TextInputLayout).error.isNullOrEmpty()
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("")
-      }
-    }
-  }
-
+  
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton

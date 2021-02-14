@@ -75,6 +75,7 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TextInputAction
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -108,6 +109,9 @@ class AdminPinActivityTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
+  
+  @Inject
+  lateinit var textInputAction: TextInputAction
 
   @Before
   fun setUp() {
@@ -321,7 +325,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -360,7 +364,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(
           matches(
-            hasErrorText(
+            textInputAction.hasErrorText(
               R.string.admin_pin_error_pin_confirm_wrong
             )
           )
@@ -400,7 +404,7 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(
+          textInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -447,7 +451,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -489,7 +493,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -699,7 +703,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -738,7 +742,7 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(
+          textInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -781,7 +785,7 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.advanceUntilIdle()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(
+          textInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -832,7 +836,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -878,7 +882,7 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -917,7 +921,7 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(
+          textInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -958,7 +962,7 @@ class AdminPinActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(
+          textInputAction.hasErrorText(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )
@@ -993,31 +997,6 @@ class AdminPinActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        val expectedErrorText = context.resources.getString(expectedErrorTextId)
-        return (view as TextInputLayout).error == expectedErrorText
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("TextInputLayout's error")
-      }
-    }
-  }
-
-  private fun hasNoErrorText(): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        return (view as TextInputLayout).error.isNullOrEmpty()
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("")
-      }
-    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
