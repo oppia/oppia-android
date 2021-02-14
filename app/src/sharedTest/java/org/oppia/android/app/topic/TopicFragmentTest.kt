@@ -102,6 +102,8 @@ class TopicFragmentTest {
 
   private val TOPIC_NAME = "Fractions"
 
+  private val FRACTION_STORY_ID = "wANbh4oOClga"
+
   @Before
   fun setUp() {
     Intents.init()
@@ -284,7 +286,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnLessonsTab_configurationChange_showsSameTabAndItsContent() {
+  fun testTopicFragment_clickOnLessonsTab_configChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = LESSON_TAB_POSITION)
@@ -301,7 +303,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnPracticeTab_configurationChange_showsSameTabAndItsContent() {
+  fun testTopicFragment_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
@@ -325,7 +327,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnReviewTab_configurationChange_showsSameTabAndItsContent() {
+  fun testTopicFragment_clickOnReviewTab_configChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = REVISION_TAB_POSITION)
@@ -342,7 +344,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_configurationChange_showsDefaultTabAndItsContent() {
+  fun testTopicFragment_configChange_showsDefaultTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -357,9 +359,48 @@ class TopicFragmentTest {
     }
   }
 
+  @Test
+  fun testTopicFragment_withStoryId_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
+    launchTopicPlayStoryActivityIntent(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTION_STORY_ID
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
+      testCoroutineDispatchers.runCurrent()
+      matchStringOnListItem(
+        recyclerView = R.id.topic_practice_skill_list,
+        itemPosition = 0,
+        targetViewId = R.id.master_skills_text_view,
+        stringToMatch = "Master These Skills"
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
+      matchStringOnListItem(
+        recyclerView = R.id.topic_practice_skill_list,
+        itemPosition = 0,
+        targetViewId = R.id.master_skills_text_view,
+        stringToMatch = "Master These Skills"
+      )
+    }
+
+  }
+
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(), internalProfileId, topicId
+    )
+  }
+
+  private fun createTopicPlayStoryActivityIntent(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String
+  ): Intent {
+    return TopicActivity.createTopicPlayStoryActivityIntent(
+      ApplicationProvider.getApplicationContext(), internalProfileId, topicId, storyId
     )
   }
 
@@ -368,6 +409,14 @@ class TopicFragmentTest {
     topicId: String
   ): ActivityScenario<TopicActivity> {
     return launch(createTopicActivityIntent(internalProfileId, topicId))
+  }
+
+  private fun launchTopicPlayStoryActivityIntent(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String
+  ): ActivityScenario<TopicActivity> {
+    return launch(createTopicPlayStoryActivityIntent(internalProfileId, topicId, storyId))
   }
 
   private fun clickTabAtPosition(position: Int) {

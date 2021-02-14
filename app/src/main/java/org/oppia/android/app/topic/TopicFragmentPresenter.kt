@@ -106,7 +106,7 @@ class TopicFragmentPresenter @Inject constructor(
         }
       }
     }.attach()
-    if (isConfigChanged) {
+    if (!isConfigChanged) {
       if (topicId.isNotEmpty() && storyId.isNotEmpty())
         setCurrentTab(TopicTab.LESSONS)
       else if (topicId.isNotEmpty() && storyId.isEmpty())
