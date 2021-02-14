@@ -201,6 +201,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           // in an 'always showing hint' situation. This can specifically happen if hint throws an
           // exception.
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
+          progress.hintViewed()
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
         return MutableLiveData(AsyncResult.success(hint))
@@ -234,6 +235,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           // in an 'always showing solution' situation. This can specifically happen if solution
           // throws an exception.
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
+          progress.solutionViewed()
         }
 
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
