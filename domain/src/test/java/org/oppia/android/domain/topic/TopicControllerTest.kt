@@ -1171,7 +1171,7 @@ class TopicControllerTest {
   }
 
   private fun markSecondStory1Chapter1AsCompleted() {
-    storyProgressTestHelper.markCompletedTestTopic0Story1Exp1(
+    storyProgressTestHelper.markCompletedTestTopic0Story1Exp0(
       profileId1,
       timestampOlderThanOneWeek = false
     )
