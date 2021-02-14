@@ -103,7 +103,7 @@ class TopicFragmentTest {
 
   private val TOPIC_NAME = "Fractions"
 
-  private val FRACTION_STORY_ID = "wANbh4oOClga"
+  private val FRACTIONS_STORY_ID = "wANbh4oOClga"
 
   @Before
   fun setUp() {
@@ -365,7 +365,7 @@ class TopicFragmentTest {
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
       FRACTIONS_TOPIC_ID,
-      FRACTION_STORY_ID
+      FRACTIONS_STORY_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
