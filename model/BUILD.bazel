@@ -185,8 +185,8 @@ format_import_proto_library(
 
 java_lite_proto_library(
     name = "exploration_java_proto_lite",
-    deps = [":exploration_proto"],
     visibility = ["//visibility:public"],
+    deps = [":exploration_proto"],
 )
 
 android_library(
