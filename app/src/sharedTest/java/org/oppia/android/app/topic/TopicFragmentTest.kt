@@ -57,6 +57,7 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.RobolectricModule
@@ -102,8 +103,6 @@ class TopicFragmentTest {
   private val internalProfileId = 0
 
   private val TOPIC_NAME = "Fractions"
-
-  private val FRACTIONS_STORY_ID = "wANbh4oOClga"
 
   @Before
   fun setUp() {
@@ -365,7 +364,7 @@ class TopicFragmentTest {
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
       FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID
+      FRACTIONS_STORY_ID_0
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
@@ -388,12 +387,18 @@ class TopicFragmentTest {
     }
   }
 
+  /**
+   * Creates TopicActivity Intent without a storyId
+   */
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(), internalProfileId, topicId
     )
   }
 
+  /**
+   * Creates TopicActivity Intent with a storyId
+   */
   private fun createTopicPlayStoryActivityIntent(
     internalProfileId: Int,
     topicId: String,
@@ -404,6 +409,10 @@ class TopicFragmentTest {
     )
   }
 
+  /**
+   * Launches TopicActivity without a storyId.
+   * This simulates opening a topic from All topics list.
+   */
   private fun launchTopicActivityIntent(
     internalProfileId: Int,
     topicId: String
@@ -411,6 +420,10 @@ class TopicFragmentTest {
     return launch(createTopicActivityIntent(internalProfileId, topicId))
   }
 
+  /**
+   * Launches TopicActivity with a valid storyId.
+   * This simulates opening a topic from Promoted stories.
+   */
   private fun launchTopicPlayStoryActivityIntent(
     internalProfileId: Int,
     topicId: String,
