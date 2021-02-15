@@ -14,6 +14,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -103,7 +104,9 @@ class TopicActivityTest {
       )
     )
     val title = activityTestRule.activity.title
-    assertThat(title).isEqualTo("Topic page")
+    assertThat(title).isEqualTo(
+      ApplicationProvider.getApplicationContext<TestApplication>().getString(R.string.topic_page)
+    )
   }
 
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
