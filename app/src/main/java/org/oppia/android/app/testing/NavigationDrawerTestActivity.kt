@@ -34,7 +34,7 @@ class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopic
 
   override fun onRestart() {
     super.onRestart()
-    homeActivityPresenter.handleOnReStart()
+    homeActivityPresenter.handleOnRestart()
   }
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
