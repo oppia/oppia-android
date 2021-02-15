@@ -18,6 +18,7 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.home_activity)
+    setUpNavigationDrawer()
     if (getHomeFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.home_fragment_placeholder,
@@ -27,7 +28,7 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
     }
   }
 
-  fun handleOnResume() {
+  fun handleOnReStart() {
     setUpNavigationDrawer()
   }
 

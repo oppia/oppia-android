@@ -32,17 +32,17 @@ class HomeActivity :
     }
   }
 
-  override fun onResume() {
-    super.onResume()
-    homeActivityPresenter.handleOnResume()
-  }
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     internalProfileId = intent?.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)!!
     homeActivityPresenter.handleOnCreate()
     title = getString(R.string.menu_home)
+  }
+
+  override fun onRestart() {
+    super.onRestart()
+    homeActivityPresenter.handleOnReStart()
   }
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
