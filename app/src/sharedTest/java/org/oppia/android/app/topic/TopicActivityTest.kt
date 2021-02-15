@@ -1,6 +1,7 @@
 package org.oppia.android.app.topic
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
@@ -76,6 +77,9 @@ class TopicActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var context: Context
+
   private val internalProfileId = 0
 
   @Before
@@ -105,7 +109,7 @@ class TopicActivityTest {
     )
     val title = activityTestRule.activity.title
     assertThat(title).isEqualTo(
-      ApplicationProvider.getApplicationContext<TestApplication>().getString(R.string.topic_page)
+      context.getString(R.string.topic_page)
     )
   }
 
