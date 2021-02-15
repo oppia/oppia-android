@@ -14,7 +14,14 @@ else
     jar_file_path="$github_actions_path/oppia-android-tools/ktlint"
 fi
 
-java -jar $jar_file_path --android app/src/**/*.kt data/src/**/*.kt domain/src/**/*.kt testing/src/**/*.kt utility/src/**/*.kt
+committed_files=`git diff --name-only HEAD^ HEAD -- '***.kt'`
+
+if [ -z "$committed_files" ]; then
+    echo No kotlin files have been committed, skipping ktlinter.
+else
+    echo "Checking only committed files."
+    java -jar $jar_file_path --android $committed_files
+fi
 
 status=$?
 
