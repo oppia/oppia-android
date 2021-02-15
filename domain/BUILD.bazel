@@ -3,13 +3,16 @@
 This library contains the frontend controller and business service logic for the application.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//domain:domain_test.bzl", "domain_test")
 
 kt_android_library(
     name = "domain",
-    srcs = glob(["src/main/java/org/oppia/android/domain/**/*.kt"]),
+    srcs = glob(
+        ["src/main/java/org/oppia/android/domain/**/*.kt"],
+        exclude = ["src/main/java/org/oppia/android/domain/testing/**/*.kt"],
+    ),
     assets = glob(["src/main/assets/**"]),
     assets_dir = "src/main/assets/",
     custom_package = "org.oppia.android.domain",
@@ -22,10 +25,34 @@ kt_android_library(
     ],
 )
 
+kt_android_library(
+    name = "testing",
+    testonly = True,
+    srcs = glob(["src/main/java/org/oppia/android/domain/testing/**/*.kt"]),
+    deps = [
+        ":domain",
+        "//third_party:androidx_work_work-runtime-ktx",
+    ],
+)
+
+# TODO(#2143): Move InteractionObjectTestBuilder to a testing package outside the test folder.
+kt_android_library(
+    name = "interaction_object_test_builder",
+    testonly = True,
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/InteractionObjectTestBuilder.kt",
+    ],
+    deps = [
+        "//model",
+    ],
+)
+
 # keep sorted
 TEST_DEPS = [
     ":dagger",
     ":domain",
+    ":interaction_object_test_builder",
+    ":testing",
     "//data:persistent_cache_store",
     "//model",
     "//testing",
@@ -272,6 +299,15 @@ domain_test(
 )
 
 domain_test(
+    name = "ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/itemselectioninput/ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
     name = "MultipleChoiceInputEqualsRuleClassifierProviderTest",
     srcs = [
         "src/test/java/org/oppia/android/domain/classify/rules/multiplechoiceinput/MultipleChoiceInputEqualsRuleClassifierProviderTest.kt",
@@ -313,15 +349,6 @@ domain_test(
         "src/test/java/org/oppia/android/domain/classify/rules/textinput/TextInputContainsRuleClassifierProviderTest.kt",
     ],
     test_class = "org.oppia.android.domain.classify.rules.textinput.TextInputContainsRuleClassifierProviderTest",
-    deps = TEST_DEPS,
-)
-
-domain_test(
-    name = "ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
-    srcs = [
-        "src/test/java/org/oppia/android/domain/classify/rules/textinput/ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest.kt",
-    ],
-    test_class = "org.oppia.android.domain.classify.rules.textinput.ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
     deps = TEST_DEPS,
 )
 
@@ -426,13 +453,6 @@ domain_test(
     name = "StoryProgressControllerTest",
     srcs = ["src/test/java/org/oppia/android/domain/topic/StoryProgressControllerTest.kt"],
     test_class = "org.oppia.android.domain.topic.StoryProgressControllerTest",
-    deps = TEST_DEPS,
-)
-
-domain_test(
-    name = "StoryProgressTestHelperTest",
-    srcs = ["src/test/java/org/oppia/android/domain/topic/StoryProgressTestHelperTest.kt"],
-    test_class = "org.oppia.android.domain.topic.StoryProgressTestHelperTest",
     deps = TEST_DEPS,
 )
 

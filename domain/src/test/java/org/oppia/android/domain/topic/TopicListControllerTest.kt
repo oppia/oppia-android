@@ -320,7 +320,7 @@ class TopicListControllerTest {
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp2(
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -373,7 +373,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markRecentlyPlayedFirstTestTopic_defaultSuggestedStoryListIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -410,7 +410,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markAllChapDoneInSecondTestTopic_doesNotPromoteAnyStories() {
-    storyProgressTestHelper.markCompletedTestTopic1Story2(
+    storyProgressTestHelper.markCompletedTestTopic1Story0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -426,7 +426,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markAllChapDoneInSecondTestTopic_comingSoonTopicListIsCorrect() {
-    storyProgressTestHelper.markCompletedTestTopic1Story2(
+    storyProgressTestHelper.markCompletedTestTopic1Story0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -453,7 +453,7 @@ class TopicListControllerTest {
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -482,7 +482,7 @@ class TopicListControllerTest {
       profileId0,
       timestampOlderThanOneWeek = true
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId0,
       timestampOlderThanOneWeek = true
     )
@@ -503,7 +503,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markRecentlyPlayedForFirstTestTopic_ongoingStoryListIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -538,7 +538,7 @@ class TopicListControllerTest {
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp1(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -559,7 +559,7 @@ class TopicListControllerTest {
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp1(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -593,7 +593,7 @@ class TopicListControllerTest {
       profileId0,
       timestampOlderThanOneWeek = true
     )
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )

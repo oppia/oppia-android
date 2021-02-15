@@ -78,7 +78,7 @@ class StoryProgressTestHelper @Inject constructor(
    * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
    *     ago
    */
-  fun markCompletedTestTopic0Story0Exp2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic0Story0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     recordCompletedChapter(
       profileId,
       TEST_TOPIC_ID_0,
@@ -90,12 +90,12 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the second chapter of test topic 0 story 0 as completed, and any needed prerequisites.
-   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
-  fun markCompletedTestTopic0Story0Exp5(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic0Story0Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Must complete prerequisite chapter first.
-    markCompletedTestTopic0Story0Exp2(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story0Exp0(profileId, timestampOlderThanOneWeek)
     recordCompletedChapter(
       profileId,
       TEST_TOPIC_ID_0,
@@ -107,10 +107,10 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the first chapter of test topic 0 story 1 as completed, and any needed prerequisites.
-   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
-  fun markCompletedTestTopic0Story1Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic0Story1Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     recordCompletedChapter(
       profileId,
       TEST_TOPIC_ID_0,
@@ -122,12 +122,12 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the second chapter of test topic 0 story 1 as completed, and any needed prerequisites.
-   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
-  fun markCompletedTestTopic0Story1Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic0Story1Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Must complete prerequisite chapter first.
-    markCompletedTestTopic0Story1Exp1(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story1Exp0(profileId, timestampOlderThanOneWeek)
     recordCompletedChapter(
       profileId,
       TEST_TOPIC_ID_0,
@@ -139,12 +139,12 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the third chapter of test topic 0 story 1 as completed, and any needed prerequisites.
-   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
-  fun markCompletedTestTopic0Story1Exp3(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic0Story1Exp2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Must complete prerequisite chapter first.
-    markCompletedTestTopic0Story1Exp0(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story1Exp1(profileId, timestampOlderThanOneWeek)
     recordCompletedChapter(
       profileId,
       TEST_TOPIC_ID_0,
@@ -156,10 +156,10 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the only chapter of test topic 1 story 2 as completed, and any needed prerequisites.
-   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
-  fun markCompletedTestTopic1Story2Exp4(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedTestTopic1Story0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     recordCompletedChapter(
       profileId,
       TEST_TOPIC_ID_1,
@@ -170,33 +170,33 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks test topic 0's story 0 as completed. See [markCompletedTestTopic0Story0Exp2] for
+   * Marks test topic 0's story 0 as completed. See [markCompletedTestTopic0Story0Exp0] for
    * specifics on the parameters passed to this method, and any other nuances.
    */
   fun markCompletedTestTopic0Story0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Complete last chapter (+ previous automatically).
-    markCompletedTestTopic0Story0Exp5(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story0Exp1(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks test topic 0's story 1 as completed. See [markCompletedTestTopic0Story0Exp2] for
+   * Marks test topic 0's story 1 as completed. See [markCompletedTestTopic0Story0Exp0] for
    * specifics on the parameters passed to this method, and any other nuances.
    */
   fun markCompletedTestTopic0Story1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Complete last chapter (+ previous automatically).
-    markCompletedTestTopic0Story1Exp3(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story1Exp2(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks test topic 1's story 2 as completed. See [markCompletedTestTopic0Story0Exp2] for
+   * Marks test topic 1's story 2 as completed. See [markCompletedTestTopic0Story0Exp0] for
    * specifics on the parameters passed to this method, and any other nuances.
    */
-  fun markCompletedTestTopic1Story2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markCompletedTestTopic1Story2Exp4(profileId, timestampOlderThanOneWeek)
+  fun markCompletedTestTopic1Story0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markCompletedTestTopic1Story0Exp0(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks all stories in topic 0 as completed. See [markCompletedTestTopic0Story0Exp2] for
+   * Marks all stories in topic 0 as completed. See [markCompletedTestTopic0Story0Exp0] for
    * specifics on the parameters passed to this method, and any other nuances.
    */
   fun markCompletedTestTopic0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -205,15 +205,15 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks all stories in topic 1 as completed. See [markCompletedTestTopic0Story0Exp2] for
+   * Marks all stories in topic 1 as completed. See [markCompletedTestTopic0Story0Exp0] for
    * specifics on the parameters passed to this method, and any other nuances.
    */
   fun markCompletedTestTopic1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markCompletedTestTopic1Story2(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic1Story0(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks all test topics as completed. See [markCompletedTestTopic0Story0Exp2] for specifics on
+   * Marks all test topics as completed. See [markCompletedTestTopic0Story0Exp0] for specifics on
    * the parameters passed to this method, and any other nuances.
    */
   fun markCompletedTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -228,7 +228,7 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the first chapter of ratios topic story 0 as completed, and any needed prerequisites. See
-   * [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method, and
+   * [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method, and
    * any other nuances.
    */
   fun markCompletedRatiosStory0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -243,7 +243,7 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the second chapter of ratios topic story 0 as completed, and any needed prerequisites.
-   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
   fun markCompletedRatiosStory0Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -260,10 +260,10 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the first chapter of ratios topic story 1 as completed, and any needed prerequisites. See
-   * [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method, and
+   * [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method, and
    * any other nuances.
    */
-  fun markCompletedRatiosStory1Exp2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory1Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     recordCompletedChapter(
       profileId,
       RATIOS_TOPIC_ID,
@@ -275,12 +275,12 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the second chapter of ratios topic story 1 as completed, and any needed prerequisites.
-   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
-  fun markCompletedRatiosStory1Exp3(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markCompletedRatiosStory1Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Must complete prerequisite chapter first.
-    markCompletedRatiosStory1Exp2(profileId, timestampOlderThanOneWeek)
+    markCompletedRatiosStory1Exp0(profileId, timestampOlderThanOneWeek)
     recordCompletedChapter(
       profileId,
       RATIOS_TOPIC_ID,
@@ -291,7 +291,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks ratios topic story 0 as completed. See [markCompletedTestTopic0Story0Exp2] for specifics
+   * Marks ratios topic story 0 as completed. See [markCompletedTestTopic0Story0Exp0] for specifics
    * on the parameters passed to this method, and any other nuances.
    */
   fun markCompletedRatiosStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -300,16 +300,16 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks ratios topic story 1 as completed. See [markCompletedTestTopic0Story0Exp2] for specifics
+   * Marks ratios topic story 1 as completed. See [markCompletedTestTopic0Story0Exp0] for specifics
    * on the parameters passed to this method, and any other nuances.
    */
   fun markCompletedRatiosStory1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Complete last chapter (+ previous automatically).
-    markCompletedRatiosStory1Exp3(profileId, timestampOlderThanOneWeek)
+    markCompletedRatiosStory1Exp1(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks all ratios stories as completed. See [markCompletedTestTopic0Story0Exp2] for specifics on
+   * Marks all ratios stories as completed. See [markCompletedTestTopic0Story0Exp0] for specifics on
    * the parameters passed to this method, and any other nuances.
    */
   fun markCompletedRatiosTopic(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -321,7 +321,7 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the first chapter of fractions topic story 0 as completed, and any needed prerequisites.
-   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
   fun markCompletedFractionsStory0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -336,7 +336,7 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the second chapter of fractions topic story 0 as completed, and any needed prerequisites.
-   * See [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method,
+   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
    */
   fun markCompletedFractionsStory0Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -352,7 +352,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks fractions topic story 0 as completed. See [markCompletedTestTopic0Story0Exp2] for
+   * Marks fractions topic story 0 as completed. See [markCompletedTestTopic0Story0Exp0] for
    * specifics on the parameters passed to this method, and any other nuances.
    */
   fun markCompletedFractionsStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -361,7 +361,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks all fractions stories as completed. See [markCompletedTestTopic0Story0Exp2] for specifics
+   * Marks all fractions stories as completed. See [markCompletedTestTopic0Story0Exp0] for specifics
    * on the parameters passed to this method, and any other nuances.
    */
   fun markCompletedFractionsTopic(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -373,10 +373,10 @@ class StoryProgressTestHelper @Inject constructor(
   /**
    * Marks the first chapter of test topic 0 story 0 as recently played. Note that this may require
    * completing prerequisite chapters before the chapter can be marked as a prerequisite. See
-   * [markCompletedTestTopic0Story0Exp2] for specifics on the parameters passed to this method, and
+   * [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method, and
    * any other nuances.
    */
-  fun markRecentlyPlayedTestTopic0Story0Exp2(
+  fun markRecentlyPlayedTestTopic0Story0Exp0(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
@@ -391,14 +391,14 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the second chapter of test topic 0 story 0 as recently played. For specifics on
-   * parameters and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   * parameters and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedTestTopic0Story0Exp5(
+  fun markRecentlyPlayedTestTopic0Story0Exp1(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapter first.
-    markCompletedTestTopic0Story0Exp2(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story0Exp0(profileId, timestampOlderThanOneWeek)
     recordRecentlyPlayedChapter(
       profileId,
       TEST_TOPIC_ID_0,
@@ -410,9 +410,9 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the first chapter of test topic 0 story 1 as recently played. For specifics on parameters
-   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedTestTopic0Story1Exp1(
+  fun markRecentlyPlayedTestTopic0Story1Exp0(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
@@ -427,14 +427,14 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the second chapter of test topic 0 story 1 as recently played. For specifics on
-   * parameters and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   * parameters and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedTestTopic0Story1Exp0(
+  fun markRecentlyPlayedTestTopic0Story1Exp1(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapter first.
-    markCompletedTestTopic0Story1Exp1(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story1Exp0(profileId, timestampOlderThanOneWeek)
     recordRecentlyPlayedChapter(
       profileId,
       TEST_TOPIC_ID_0,
@@ -446,14 +446,14 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the third chapter of test topic 0 story 1 as recently played. For specifics on parameters
-   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedTestTopic0Story1Exp3(
+  fun markRecentlyPlayedTestTopic0Story1Exp2(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapters first.
-    markCompletedTestTopic0Story1Exp0(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story1Exp1(profileId, timestampOlderThanOneWeek)
     recordRecentlyPlayedChapter(
       profileId,
       TEST_TOPIC_ID_0,
@@ -465,9 +465,9 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the only chapter of test topic 1 story 2 as recently played. For specifics on parameters
-   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedTestTopic1Story2Exp4(
+  fun markRecentlyPlayedTestTopic1Story2Exp0(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
@@ -482,31 +482,31 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks test topic 0's story 0 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   * [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markRecentlyPlayedTestTopic0Story0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedTestTopic0Story0Exp2(profileId, timestampOlderThanOneWeek)
+    markRecentlyPlayedTestTopic0Story0Exp0(profileId, timestampOlderThanOneWeek)
   }
 
   /**
    * Marks test topic 0's story 1 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   * [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markRecentlyPlayedTestTopic0Story1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedTestTopic0Story1Exp1(profileId, timestampOlderThanOneWeek)
+    markRecentlyPlayedTestTopic0Story1Exp0(profileId, timestampOlderThanOneWeek)
   }
 
   /**
    * Marks test topic 1's story 2 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   * [markRecentlyPlayedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedTestTopic1Story2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedTestTopic1Story2Exp4(profileId, timestampOlderThanOneWeek)
+  fun markRecentlyPlayedTestTopic1Story0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markRecentlyPlayedTestTopic1Story2Exp0(profileId, timestampOlderThanOneWeek)
   }
 
   /**
    * Marks test topic 0 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   * [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markRecentlyPlayedTestTopic0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markRecentlyPlayedTestTopic0Story0(profileId, timestampOlderThanOneWeek)
@@ -514,14 +514,14 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks test topic 1 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   * [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markRecentlyPlayedTestTopic1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedTestTopic1Story2(profileId, timestampOlderThanOneWeek)
+    markRecentlyPlayedTestTopic1Story0(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks all test topics as recently played. See [markCompletedTestTopic0Story0Exp2] for specifics
+   * Marks all test topics as recently played. See [markCompletedTestTopic0Story0Exp0] for specifics
    * on the parameters passed to this method, and any other nuances.
    */
   fun markRecentlyPlayedTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -532,7 +532,7 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the first chapter of ratios story 0 as recently played. For specifics on parameters and
-   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markRecentlyPlayedRatiosStory0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     recordRecentlyPlayedChapter(
@@ -546,7 +546,7 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the second chapter of ratios story 0 as recently played. For specifics on parameters and
-   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markRecentlyPlayedRatiosStory0Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Must complete the previous chapters first.
@@ -562,9 +562,9 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the first chapter of ratios story 1 as recently played. For specifics on parameters and
-   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedRatiosStory1Exp2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markRecentlyPlayedRatiosStory1Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     recordRecentlyPlayedChapter(
       profileId,
       RATIOS_TOPIC_ID,
@@ -576,11 +576,11 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the second chapter of ratios story 1 as recently played. For specifics on parameters and
-   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedRatiosStory1Exp3(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markRecentlyPlayedRatiosStory1Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Must complete the previous chapters first.
-    markCompletedRatiosStory1Exp2(profileId, timestampOlderThanOneWeek)
+    markCompletedRatiosStory1Exp0(profileId, timestampOlderThanOneWeek)
     recordRecentlyPlayedChapter(
       profileId,
       RATIOS_TOPIC_ID,
@@ -592,7 +592,7 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks ratios story 0 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   * [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markRecentlyPlayedRatiosStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markRecentlyPlayedRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
@@ -600,15 +600,15 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks ratios story 1 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   * [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markRecentlyPlayedRatiosStory1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedRatiosStory1Exp2(profileId, timestampOlderThanOneWeek)
+    markRecentlyPlayedRatiosStory1Exp0(profileId, timestampOlderThanOneWeek)
   }
 
   /**
    * Marks the ratios topic as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   * [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markRecentlyPlayedRatios(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markRecentlyPlayedRatiosStory0(profileId, timestampOlderThanOneWeek)
@@ -618,7 +618,7 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the first chapter of fractions story 0 as recently played. For specifics on parameters
-   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markRecentlyPlayedFractionsStory0Exp0(
     profileId: ProfileId,
@@ -635,7 +635,7 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the second chapter of fractions story 0 as recently played. For specifics on parameters
-   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp2].
+   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markRecentlyPlayedFractionsStory0Exp1(
     profileId: ProfileId,
@@ -654,7 +654,7 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks fractions story 0 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   * [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markRecentlyPlayedFractionsStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markRecentlyPlayedFractionsStory0Exp0(profileId, timestampOlderThanOneWeek)
@@ -662,7 +662,7 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks the fractions topic as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   * [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markRecentlyPlayedFractions(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markRecentlyPlayedFractionsStory0(profileId, timestampOlderThanOneWeek)
@@ -671,7 +671,7 @@ class StoryProgressTestHelper @Inject constructor(
   /* Cross-topics functions. */
 
   /**
-   * Marks all lessons as completed. See [markCompletedTestTopic0Story0Exp2] for specifics on the
+   * Marks all lessons as completed. See [markCompletedTestTopic0Story0Exp0] for specifics on the
    * parameters passed to this method, and any other nuances.
    */
   fun markAllTopicsAsCompleted(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -682,7 +682,7 @@ class StoryProgressTestHelper @Inject constructor(
 
   /**
    * Marks all lessons as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp2].
+   * [markRecentlyPlayedTestTopic0Story0Exp0].
    */
   fun markAllTopicsAsRecentlyPlayed(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markRecentlyPlayedTestTopic0(profileId, timestampOlderThanOneWeek)

@@ -12,8 +12,8 @@ own Bazel macros to automatically set up code generation (which includes pulling
 dependencies).
 """
 
-load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
 
 # Create an android library wrapper for all production dependencies. Note that artifact is used so
 # that the correct Maven repository (default) is selected. This allows future customization
@@ -46,6 +46,7 @@ android_library(
 
 android_library(
     name = "robolectric_android-all",
+    visibility = ["//visibility:public"],
     exports = [
         "@robolectric//bazel:android-all",
     ],
