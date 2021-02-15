@@ -151,7 +151,6 @@ class BindableAdapterTest {
         liveDataNew.value = listOf(STR_VALUE_0, STR_VALUE_1, STR_VALUE_2)
         verify(fakeObserver, never()).onChanged()
         adapter.unregisterAdapterDataObserver(fakeObserver)
-
       }
     }
   }
@@ -576,36 +575,36 @@ class BindableAdapterTest {
 
   private fun createSingleViewTypeNoDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-    return SingleTypeBuilder
-      .newBuilder<BindableAdapterTestDataModel>()
-      .registerViewBinder(
-        inflateView = this::inflateTextViewForStringWithoutDataBinding,
-        bindView = this::bindTextViewForStringWithoutDataBinding
-      )
-      .build()
-  }
+      return SingleTypeBuilder
+        .newBuilder<BindableAdapterTestDataModel>()
+        .registerViewBinder(
+          inflateView = this::inflateTextViewForStringWithoutDataBinding,
+          bindView = this::bindTextViewForStringWithoutDataBinding
+        )
+        .build()
+    }
 
   private fun createSingleViewTypeWithDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-    return SingleTypeBuilder
-      .newBuilder<BindableAdapterTestDataModel>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
-        setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
-      )
-      .build()
-  }
+      return SingleTypeBuilder
+        .newBuilder<BindableAdapterTestDataModel>()
+        .registerViewDataBinderWithSameModelType(
+          inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
+          setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
+        )
+        .build()
+    }
 
   private fun createSingleViewTypeWithDataBindingAndLiveDataAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-    return SingleTypeBuilder
-      .newBuilder<BindableAdapterTestDataModel>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
-        setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
-      )
-      .build()
-  }
+      return SingleTypeBuilder
+        .newBuilder<BindableAdapterTestDataModel>()
+        .registerViewDataBinderWithSameModelType(
+          inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
+          setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
+        )
+        .build()
+    }
 
   private fun createSingleViewTypeWithDataBindingAndLiveDataAdapter(
     lifecycleOwner: Fragment
@@ -622,42 +621,42 @@ class BindableAdapterTest {
 
   private fun createMultiViewTypeNoDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-    return MultiTypeBuilder
-      .newBuilder(ViewModelType.Companion::deriveTypeFrom)
-      .registerViewBinder(
-        viewType = ViewModelType.STRING,
-        inflateView = this::inflateTextViewForStringWithoutDataBinding,
-        bindView = this::bindTextViewForStringWithoutDataBinding
-      )
-      .registerViewBinder(
-        viewType = ViewModelType.INT,
-        inflateView = this::inflateTextViewForIntWithoutDataBinding,
-        bindView = this::bindTextViewForIntWithoutDataBinding
-      )
-      .build()
-  }
+      return MultiTypeBuilder
+        .newBuilder(ViewModelType.Companion::deriveTypeFrom)
+        .registerViewBinder(
+          viewType = ViewModelType.STRING,
+          inflateView = this::inflateTextViewForStringWithoutDataBinding,
+          bindView = this::bindTextViewForStringWithoutDataBinding
+        )
+        .registerViewBinder(
+          viewType = ViewModelType.INT,
+          inflateView = this::inflateTextViewForIntWithoutDataBinding,
+          bindView = this::bindTextViewForIntWithoutDataBinding
+        )
+        .build()
+    }
 
   private fun createMultiViewTypeWithDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-    return MultiTypeBuilder
-      .newBuilder(ViewModelType.Companion::deriveTypeFrom)
-      .registerViewDataBinderWithSameModelType(
-        viewType = ViewModelType.STRING,
-        inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
-        setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
-      )
-      .registerViewDataBinderWithSameModelType(
-        viewType = ViewModelType.INT,
-        inflateDataBinding = TestTextViewForIntWithDataBindingBinding::inflate,
-        setViewModel = TestTextViewForIntWithDataBindingBinding::setViewModel
-      )
-      .registerViewDataBinderWithSameModelType(
-        viewType = ViewModelType.LIVE_DATA,
-        inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
-        setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
-      )
-      .build()
-  }
+      return MultiTypeBuilder
+        .newBuilder(ViewModelType.Companion::deriveTypeFrom)
+        .registerViewDataBinderWithSameModelType(
+          viewType = ViewModelType.STRING,
+          inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
+          setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
+        )
+        .registerViewDataBinderWithSameModelType(
+          viewType = ViewModelType.INT,
+          inflateDataBinding = TestTextViewForIntWithDataBindingBinding::inflate,
+          setViewModel = TestTextViewForIntWithDataBindingBinding::setViewModel
+        )
+        .registerViewDataBinderWithSameModelType(
+          viewType = ViewModelType.LIVE_DATA,
+          inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
+          setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
+        )
+        .build()
+    }
 
   private fun createMultiViewTypeWithDataBindingBindableAdapter(
     lifecycleOwner: Fragment
