@@ -21,6 +21,7 @@ import org.oppia.android.app.model.State
 import org.oppia.android.app.model.StringList
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
@@ -77,7 +78,8 @@ class StateRetrieverTest {
         listOf<StringList>(
           createHtmlStringList("<p>yesterday</p>"),
           createHtmlStringList("<p>I bought</p>"),
-          createHtmlStringList("<p>a camera at the store</p>")
+          createHtmlStringList("<p>a camera at the store</p>"),
+          createHtmlStringList("<p>to photograph the parade.</p>")
         )
       )
       .build()
@@ -404,7 +406,7 @@ class StateRetrieverTest {
     modules = [
       TestModule::class,
       TestDispatcherModule::class,
-      RobolectricModule::class
+      RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -7,14 +7,18 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
+import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
-import org.oppia.android.app.model.OngoingStoryList
+import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.PromotedActivityList
+import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -27,8 +31,10 @@ import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 
-private const val PROFILE_AND_ONGOING_STORY_COMBINED_PROVIDER_ID = "profile+ongoingStoryList"
-private const val HOME_FRAGMENT_COMBINED_PROVIDER_ID = "profile+ongoingStoryList+topicListProvider"
+private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
+  "profile+promotedActivityList"
+private const val HOME_FRAGMENT_COMBINED_PROVIDER_ID =
+  "profile+promotedActivityList+topicListProvider"
 
 /** [ViewModel] for layouts in home fragment. */
 @FragmentScope
@@ -45,7 +51,6 @@ class HomeViewModel(
 ) : ObservableViewModel() {
 
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-
   private val promotedStoryListLimit = activity.resources.getInteger(
     R.integer.promoted_story_list_limit
   )
@@ -54,8 +59,8 @@ class HomeViewModel(
     profileManagementController.getProfile(profileId)
   }
 
-  private val ongoingStoryListSummaryDataProvider: DataProvider<OngoingStoryList> by lazy {
-    topicListController.getOngoingStoryList(profileId)
+  private val promotedActivityListSummaryDataProvider: DataProvider<PromotedActivityList> by lazy {
+    topicListController.getPromotedActivityList(profileId)
   }
 
   private val topicListSummaryDataProvider: DataProvider<TopicList> by lazy {
@@ -67,12 +72,12 @@ class HomeViewModel(
     // instances). If any of the data providers are pending or failed, the combined result will also
     // be pending or failed.
     profileDataProvider.combineWith(
-      ongoingStoryListSummaryDataProvider,
-      PROFILE_AND_ONGOING_STORY_COMBINED_PROVIDER_ID
-    ) { profile, ongoingStoryList ->
+      promotedActivityListSummaryDataProvider,
+      PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID
+    ) { profile, promotedActivityList ->
       listOfNotNull(
         computeWelcomeViewModel(profile),
-        computePromotedStoryListViewModel(ongoingStoryList)
+        computePromotedActivityListViewModel(promotedActivityList)
       )
     }.combineWith(
       topicListSummaryDataProvider,
@@ -111,20 +116,39 @@ class HomeViewModel(
   }
 
   /**
-   * Returns a [HomeItemViewModel] corresponding to the promoted stories to be displayed for this learner
-   * (see [PromotedStoryListViewModel]), or null if this profile does not have any promoted stories.
-   * Promoted stories are determined by any recent stories started by this profile.
+   * Returns a [HomeItemViewModel] corresponding to the promoted stories(Recommended, Recently-played and
+   * Last-played stories)[PromotedStoryListViewModel] and Upcoming topics [ComingSoonTopicListViewModel]
+   * to be displayed for this learner or null if this profile does not have any promoted stories.
+   * Promoted stories are determined by any recent stories last-played stories or suggested stories started by this profile.
    */
-  private fun computePromotedStoryListViewModel(
-    ongoingStoryList: OngoingStoryList
+  private fun computePromotedActivityListViewModel(
+    promotedActivityList: PromotedActivityList
   ): HomeItemViewModel? {
-    val storyViewModelList = computePromotedStoryViewModelList(ongoingStoryList)
-    return if (storyViewModelList.isNotEmpty()) {
-      return PromotedStoryListViewModel(
-        activity,
-        storyViewModelList
-      )
-    } else null
+    when (promotedActivityList.recommendationTypeCase) {
+      PromotedActivityList.RecommendationTypeCase.PROMOTED_STORY_LIST -> {
+        val storyViewModelList = computePromotedStoryViewModelList(
+          promotedActivityList.promotedStoryList
+        )
+        return if (storyViewModelList.isNotEmpty()) {
+          return PromotedStoryListViewModel(
+            activity,
+            storyViewModelList,
+            promotedActivityList
+          )
+        } else null
+      }
+      PromotedActivityList.RecommendationTypeCase.COMING_SOON_TOPIC_LIST -> {
+        val comingSoonTopicsList = computeComingSoonTopicViewModelList(
+          promotedActivityList.comingSoonTopicList
+        )
+        return if (comingSoonTopicsList.isNotEmpty()) {
+          return ComingSoonTopicListViewModel(
+            comingSoonTopicsList
+          )
+        } else null
+      }
+      else -> return null
+    }
   }
 
   /**
@@ -133,24 +157,59 @@ class HomeViewModel(
    * ongoing stories at all.
    */
   private fun computePromotedStoryViewModelList(
-    ongoingStoryList: OngoingStoryList
+    promotedStoryList: PromotedStoryList
   ): List<PromotedStoryViewModel> {
-    val storyList = if (ongoingStoryList.recentStoryCount != 0) {
-      ongoingStoryList.recentStoryList
-    } else {
-      // TODO(#936): Optimise this as part of recommended stories.
-      ongoingStoryList.olderStoryList
-    }
-    return storyList.take(promotedStoryListLimit)
-      .map { promotedStory ->
-        PromotedStoryViewModel(
-          activity,
-          internalProfileId,
-          storyList.size,
-          storyEntityType,
-          promotedStory
-        )
+    with(promotedStoryList) {
+      val storyList = when {
+        suggestedStoryList.isNotEmpty() -> {
+          if (recentlyPlayedStoryList.isNotEmpty() || olderPlayedStoryList.isNotEmpty()) {
+            recentlyPlayedStoryList +
+              olderPlayedStoryList +
+              suggestedStoryList
+          } else {
+            suggestedStoryList
+          }
+        }
+        recentlyPlayedStoryList.isNotEmpty() -> {
+          recentlyPlayedStoryList
+        }
+        else -> {
+          olderPlayedStoryList
+        }
       }
+
+      // Check if at least one story in topic is completed. Prioritize recommended story over
+      // completed story topic.
+      val sortedStoryList = storyList.sortedByDescending { !it.isTopicLearned }
+      return sortedStoryList.take(promotedStoryListLimit)
+        .map { promotedStory ->
+          PromotedStoryViewModel(
+            activity,
+            internalProfileId,
+            sortedStoryList.size,
+            storyEntityType,
+            promotedStory
+          )
+        }
+    }
+  }
+
+  /**
+   * Returns a list of [HomeItemViewModel]s corresponding to [ComingSoonTopicListViewModel]  all the upcoming topics available in future and to be
+   * displayed for this profile (see [ComingSoonTopicsViewModel]), or an empty list if the profile does not have any
+   * ongoing stories at all.
+   */
+  private fun computeComingSoonTopicViewModelList(
+    comingSoonTopicList: ComingSoonTopicList
+  ): List<ComingSoonTopicsViewModel> {
+    return comingSoonTopicList.upcomingTopicList.map { topicSummary ->
+      ComingSoonTopicsViewModel(
+        activity,
+        topicSummary,
+        topicEntityType,
+        comingSoonTopicList
+      )
+    }
   }
 
   /**
