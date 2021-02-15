@@ -246,9 +246,10 @@ class TopicListController @Inject constructor(
     if (topicProgressList.isNotEmpty()) {
       val playedPromotedStoryList = mutableListOf<PromotedStory>()
       val sortedTopicProgressList =
-        topicProgressList.sortedByDescending {
-          val topicProgressStories = it.storyProgressMap.values
-          val topicProgressChapters = topicProgressStories.flatMap { it.chapterProgressMap.values }
+        topicProgressList.sortedByDescending { topicProgress ->
+          val topicProgressStories = topicProgress.storyProgressMap.values
+          val topicProgressChapters = topicProgressStories.flatMap { storyProgress ->
+            storyProgress.chapterProgressMap.values }
           val topicProgressLastPlayedTimes =
             topicProgressChapters.map(ChapterProgress::getLastPlayedTimestamp)
           topicProgressLastPlayedTimes.maxOrNull()
