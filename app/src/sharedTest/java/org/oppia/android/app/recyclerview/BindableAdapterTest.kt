@@ -26,6 +26,10 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.never
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityScope
@@ -125,6 +129,129 @@ class BindableAdapterTest {
 
     // Ensure that the test module's test state is properly reset each time.
     TestModule.testAdapterFactory = null
+  }
+
+  @Test
+  fun testBindableAdapter_incomingSameData_noRebindingShouldHappen() {
+
+    val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
+    TestModule.testAdapterFactory = { createMultiViewTypeNoDataBindingBindableAdapter() }
+
+    val fakeObserver = mock(RecyclerView.AdapterDataObserver::class.java)
+    launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        adapter.registerAdapterDataObserver(fakeObserver)
+        adapter.hasObservers()
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = listOf(STR_VALUE_0, STR_VALUE_1, STR_VALUE_2)
+        verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
+          .onItemRangeInserted(/* positionStart= */ 0, /* itemCount= */ 3)
+
+        val liveDataNew = getRecyclerViewListLiveData(activity)
+        liveDataNew.value = listOf(STR_VALUE_0, STR_VALUE_1, STR_VALUE_2)
+        verify(fakeObserver, never()).onChanged()
+        adapter.unregisterAdapterDataObserver(fakeObserver)
+
+      }
+    }
+  }
+
+  @Test
+  fun testBindableAdapter_removeOneItem_verifyChangeOnlyOneItem() {
+    val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
+    TestModule.testAdapterFactory = { createMultiViewTypeNoDataBindingBindableAdapter() }
+
+    val oldList = listOf(STR_VALUE_1, STR_VALUE_1, INT_VALUE_1).toMutableList()
+    val newList = listOf(STR_VALUE_1, INT_VALUE_1).toMutableList()
+
+    val fakeObserver = mock(RecyclerView.AdapterDataObserver::class.java)
+
+    launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        adapter.registerAdapterDataObserver(fakeObserver)
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = oldList
+        val liveDataNew = getRecyclerViewListLiveData(activity)
+        liveDataNew.value = newList
+        verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
+          .onItemRangeRemoved(/* positionStart= */0, /* itemCount= */ 1)
+        adapter.unregisterAdapterDataObserver(fakeObserver)
+      }
+    }
+  }
+
+  @Test
+  fun testBindableAdapter_insertOneItem_verifyChangeOnlyOneItem() {
+    val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
+    TestModule.testAdapterFactory = { createMultiViewTypeNoDataBindingBindableAdapter() }
+
+    val oldList = listOf(STR_VALUE_1, INT_VALUE_1).toMutableList()
+    val newList = listOf(STR_VALUE_1, STR_VALUE_1, INT_VALUE_1).toMutableList()
+
+    val fakeObserver = mock(RecyclerView.AdapterDataObserver::class.java)
+
+    launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        adapter.registerAdapterDataObserver(fakeObserver)
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = oldList
+        val liveDataNew = getRecyclerViewListLiveData(activity)
+        liveDataNew.value = newList
+        verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
+          .onItemRangeInserted(/* positionStart= */0, /* itemCount= */ 1)
+        adapter.unregisterAdapterDataObserver(fakeObserver)
+      }
+    }
+  }
+
+  @Test
+  fun testBindableAdapter_moveOneItem_verifyNoRecreatingWholeList() {
+    val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
+    TestModule.testAdapterFactory = { createMultiViewTypeNoDataBindingBindableAdapter() }
+
+    val oldList = listOf(STR_VALUE_1, STR_VALUE_0, INT_VALUE_1).toMutableList()
+    val newList = listOf(INT_VALUE_1, STR_VALUE_0, STR_VALUE_1).toMutableList()
+
+    val fakeObserver = mock(RecyclerView.AdapterDataObserver::class.java)
+
+    launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        adapter.registerAdapterDataObserver(fakeObserver)
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = oldList
+        val liveDataNew = getRecyclerViewListLiveData(activity)
+        liveDataNew.value = newList
+        verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
+          .onItemRangeChanged(/* positionStart= */2, /* itemCount= */ 1, /* payload= */ null)
+        verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
+          .onItemRangeChanged(/* positionStart= */0, /* itemCount= */ 1, /* payload= */ null)
+        adapter.unregisterAdapterDataObserver(fakeObserver)
+      }
+    }
+  }
+
+  @Test
+  fun testBindableAdapter_updateOneItemContent_verifyOneItemUpdated() {
+    val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
+    TestModule.testAdapterFactory = { createMultiViewTypeNoDataBindingBindableAdapter() }
+
+    val oldList = listOf(STR_VALUE_1, STR_VALUE_0, INT_VALUE_1).toMutableList()
+    val newList = listOf(STR_VALUE_1, STR_VALUE_1, INT_VALUE_1).toMutableList()
+
+    val fakeObserver = mock(RecyclerView.AdapterDataObserver::class.java)
+
+    launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        adapter.registerAdapterDataObserver(fakeObserver)
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = oldList
+        val liveDataNew = getRecyclerViewListLiveData(activity)
+        liveDataNew.value = newList
+        verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
+          .onItemRangeChanged(/* positionStart= */1, /* itemCount= */ 1, /* payload= */ null)
+        adapter.unregisterAdapterDataObserver(fakeObserver)
+      }
+    }
   }
 
   @Test
@@ -449,36 +576,36 @@ class BindableAdapterTest {
 
   private fun createSingleViewTypeNoDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
-        .registerViewBinder(
-          inflateView = this::inflateTextViewForStringWithoutDataBinding,
-          bindView = this::bindTextViewForStringWithoutDataBinding
-        )
-        .build()
-    }
+    return SingleTypeBuilder
+      .newBuilder<BindableAdapterTestDataModel>()
+      .registerViewBinder(
+        inflateView = this::inflateTextViewForStringWithoutDataBinding,
+        bindView = this::bindTextViewForStringWithoutDataBinding
+      )
+      .build()
+  }
 
   private fun createSingleViewTypeWithDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
-        .registerViewDataBinderWithSameModelType(
-          inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
-        )
-        .build()
-    }
+    return SingleTypeBuilder
+      .newBuilder<BindableAdapterTestDataModel>()
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
+        setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
+      )
+      .build()
+  }
 
   private fun createSingleViewTypeWithDataBindingAndLiveDataAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
-        .registerViewDataBinderWithSameModelType(
-          inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
-        )
-        .build()
-    }
+    return SingleTypeBuilder
+      .newBuilder<BindableAdapterTestDataModel>()
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
+        setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
+      )
+      .build()
+  }
 
   private fun createSingleViewTypeWithDataBindingAndLiveDataAdapter(
     lifecycleOwner: Fragment
@@ -495,42 +622,42 @@ class BindableAdapterTest {
 
   private fun createMultiViewTypeNoDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return MultiTypeBuilder
-        .newBuilder(ViewModelType.Companion::deriveTypeFrom)
-        .registerViewBinder(
-          viewType = ViewModelType.STRING,
-          inflateView = this::inflateTextViewForStringWithoutDataBinding,
-          bindView = this::bindTextViewForStringWithoutDataBinding
-        )
-        .registerViewBinder(
-          viewType = ViewModelType.INT,
-          inflateView = this::inflateTextViewForIntWithoutDataBinding,
-          bindView = this::bindTextViewForIntWithoutDataBinding
-        )
-        .build()
-    }
+    return MultiTypeBuilder
+      .newBuilder(ViewModelType.Companion::deriveTypeFrom)
+      .registerViewBinder(
+        viewType = ViewModelType.STRING,
+        inflateView = this::inflateTextViewForStringWithoutDataBinding,
+        bindView = this::bindTextViewForStringWithoutDataBinding
+      )
+      .registerViewBinder(
+        viewType = ViewModelType.INT,
+        inflateView = this::inflateTextViewForIntWithoutDataBinding,
+        bindView = this::bindTextViewForIntWithoutDataBinding
+      )
+      .build()
+  }
 
   private fun createMultiViewTypeWithDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return MultiTypeBuilder
-        .newBuilder(ViewModelType.Companion::deriveTypeFrom)
-        .registerViewDataBinderWithSameModelType(
-          viewType = ViewModelType.STRING,
-          inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
-        )
-        .registerViewDataBinderWithSameModelType(
-          viewType = ViewModelType.INT,
-          inflateDataBinding = TestTextViewForIntWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForIntWithDataBindingBinding::setViewModel
-        )
-        .registerViewDataBinderWithSameModelType(
-          viewType = ViewModelType.LIVE_DATA,
-          inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
-        )
-        .build()
-    }
+    return MultiTypeBuilder
+      .newBuilder(ViewModelType.Companion::deriveTypeFrom)
+      .registerViewDataBinderWithSameModelType(
+        viewType = ViewModelType.STRING,
+        inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
+        setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
+      )
+      .registerViewDataBinderWithSameModelType(
+        viewType = ViewModelType.INT,
+        inflateDataBinding = TestTextViewForIntWithDataBindingBinding::inflate,
+        setViewModel = TestTextViewForIntWithDataBindingBinding::setViewModel
+      )
+      .registerViewDataBinderWithSameModelType(
+        viewType = ViewModelType.LIVE_DATA,
+        inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
+        setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
+      )
+      .build()
+  }
 
   private fun createMultiViewTypeWithDataBindingBindableAdapter(
     lifecycleOwner: Fragment
