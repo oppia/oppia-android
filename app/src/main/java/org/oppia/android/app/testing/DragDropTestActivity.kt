@@ -8,7 +8,10 @@ import org.oppia.android.app.recyclerview.OnItemDragListener
 import javax.inject.Inject
 
 /** Test Activity used for testing [DragAndDropItemFacilitator] functionality */
-class DragDropTestActivity : InjectableAppCompatActivity(), OnItemDragListener, OnDragEndedListener { // ktlint-disable max-line-length
+class DragDropTestActivity :
+  InjectableAppCompatActivity(),
+  OnItemDragListener,
+  OnDragEndedListener {
 
   @Inject
   lateinit var dragDropTestActivityPresenter: DragDropTestActivityPresenter
