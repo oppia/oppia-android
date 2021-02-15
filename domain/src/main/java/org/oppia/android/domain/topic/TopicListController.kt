@@ -249,7 +249,8 @@ class TopicListController @Inject constructor(
         topicProgressList.sortedByDescending { topicProgress ->
           val topicProgressStories = topicProgress.storyProgressMap.values
           val topicProgressChapters = topicProgressStories.flatMap { storyProgress ->
-            storyProgress.chapterProgressMap.values }
+            storyProgress.chapterProgressMap.values
+          }
           val topicProgressLastPlayedTimes =
             topicProgressChapters.map(ChapterProgress::getLastPlayedTimestamp)
           topicProgressLastPlayedTimes.maxOrNull()
