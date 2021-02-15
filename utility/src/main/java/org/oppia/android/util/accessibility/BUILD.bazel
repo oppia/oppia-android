@@ -2,23 +2,22 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 
 kt_android_library(
+    name = "accessibility",
+    srcs = ["CustomAccessibilityManager.kt"],
+    visibility = ["//visibility:public"],
+)
+
+kt_android_library(
     name = "impl",
     srcs = [
         "AccessibilityModule.kt",
         "AndroidAccessibilityManager.kt",
     ],
-    visibility = ["//visibility:public"],
     deps = [
-        ":acc",
+        ":accessibility",
         artifact("com.google.dagger:dagger:2.27"),
         artifact("javax.inject:javax.inject:1"),
     ],
-)
-
-kt_android_library(
-    name = "acc",
-    srcs = ["CustomAccessibilityManager.kt"],
-    visibility = ["//visibility:public"],
 )
 
 kt_android_library(
@@ -27,7 +26,7 @@ kt_android_library(
     srcs = ["FakeAccessibilityManager.kt"],
     visibility = ["//visibility:public"],
     deps = [
-        ":acc",
+        ":accessibility",
         artifact("javax.inject:javax.inject:1"),
     ],
 )

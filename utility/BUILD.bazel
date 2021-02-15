@@ -40,15 +40,6 @@ TEST_DEPS = [
     ":utility",
     "//app:crashlytics",
     "//app:crashlytics_deps",
-    "//utility/src/main/java/org/oppia/android/util/accessibility:acc",
-    "//utility/src/main/java/org/oppia/android/util/accessibility:testing",
-    "//utility/src/main/java/org/oppia/android/util/accessibility:impl",
-    "@robolectric//bazel:android-all",
-    artifact("org.jetbrains.kotlin:kotlin-reflect"),
-    artifact("com.google.truth:truth"),
-    artifact("androidx.test.ext:junit"),
-    artifact("org.jetbrains.kotlin:kotlin-test-junit"),
-    artifact("org.mockito:mockito-core"),
     "//model",
     "//testing",
     "//third_party:androidx_test_ext_junit",
@@ -57,6 +48,9 @@ TEST_DEPS = [
     "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",
+    "//utility/src/main/java/org/oppia/android/util/accessibility:accessibility",
+    "//utility/src/main/java/org/oppia/android/util/accessibility:impl",
+    "//utility/src/main/java/org/oppia/android/util/accessibility:testing",
 ]
 
 utility_test(
