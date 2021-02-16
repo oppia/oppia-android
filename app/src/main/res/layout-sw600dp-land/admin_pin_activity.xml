@@ -115,6 +115,7 @@
           android:layout_marginTop="24dp"
           android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
           android:clickable="@{viewModel.isButtonActive()}"
+          android:enabled="@{viewModel.isButtonActive()}"
           android:minHeight="48dp"
           android:text="@string/save"
           android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submitButtonInactiveText }"

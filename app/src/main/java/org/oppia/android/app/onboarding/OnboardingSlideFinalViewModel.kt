@@ -2,7 +2,6 @@ package org.oppia.android.app.onboarding
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
-import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import javax.inject.Inject
 
@@ -10,7 +9,7 @@ import javax.inject.Inject
 class OnboardingSlideFinalViewModel @Inject constructor(
   private val activity: AppCompatActivity,
   private val appStartupStateController: AppStartupStateController
-) : ObservableViewModel() {
+) : OnboardingViewPagerViewModel() {
 
   fun clickOnGetStarted() {
     appStartupStateController.markOnboardingFlowCompleted()
