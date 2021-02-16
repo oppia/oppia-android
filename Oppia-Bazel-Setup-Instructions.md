@@ -6,6 +6,8 @@ Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. 
 **We recommend contributor having Windows OS, not to follow this installation guide as Oppia-Bazel doesn't support on Windows OS as for now.**<br>
 For Linux or macOS, install Bazel from [here](https://docs.bazel.build/versions/master/install.html). 
 
+**Prerequisite** - Android SDK Platform 28 must present in the `~/Android/sdk` directory where Android Studio keeps all the downloaded SDK.
+
 After installing the original Bazel version, you need to setup Oppia's Bazel version.<br>
 1. Ensure that your `ANDROID_HOME` environment variable is set to the location of your Android SDK. To do this, find the path to the installed SDK using Android Studio’s SDK Manager (install SDK 28). Assuming the SDK is installed to default locations, you can use the following commands to set the `ANDROID_HOME` variable:<br>
     - Linux: `export ANDROID_HOME=$HOME/Android/Sdk/`<br>
