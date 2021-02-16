@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-18.04
     outputs:
       matrix: ${{ steps.compute-test-matrix-from-affected.outputs.matrix || steps.compute-test-matrix-from-all.outputs.matrix }}
+      have_tests_to_run: ${{ steps.compute-test-matrix-from-affected.outputs.have_tests_to_run || steps.compute-test-matrix-from-all.outputs.have_tests_to_run }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -37,6 +38,11 @@ jobs:
           TEST_TARGET_LIST=$(bash ./scripts/compute_affected_tests.sh $HOME/oppia-bazel/bazel | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
           echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
+          if [[ ! -z "$TEST_TARGET_LIST" ]]; then
+            echo "::set-output name=have_tests_to_run::true"
+          else
+            echo "::set-output name=have_tests_to_run::false"
+          fi
       - name: Compute test matrix based on all tests
         id: compute-test-matrix-from-all
         if: "contains(github.event.pull_request.title, '[RunAllTests]')"
@@ -44,13 +50,16 @@ jobs:
           TEST_TARGET_LIST=$($HOME/oppia-bazel/bazel query "kind(test, //...)" | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
           echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
+          echo "::set-output name=have_tests_to_run::true"
 
   bazel_run_test:
     name: Run Bazel Test
     needs: bazel_compute_affected_targets
+    if: ${{ needs.bazel_compute_affected_targets.outputs.have_tests_to_run == 'true' }}
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
+      max-parallel: 5
       matrix: ${{fromJson(needs.bazel_compute_affected_targets.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v2
@@ -109,10 +118,11 @@ jobs:
   # Reference: https://github.community/t/127354/7.
   check_test_results:
       name: Check Bazel Test Results
-      needs: bazel_run_test
+      needs: [bazel_compute_affected_targets, bazel_run_test]
       if: ${{ always() }}
       runs-on: ubuntu-18.04
       steps:
-        - name: Check tests passed
-          if: ${{ needs.bazel_run_test.result != 'success' }}
+        # This step will be skipped if there are no tests to run, so the overall job should pass.
+        - name: Check tests passed (for tests that ran)
+          if: ${{ needs.bazel_compute_affected_targets.outputs.have_tests_to_run == 'true' && needs.bazel_run_test.result != 'success' }}
           run: exit 1

@@ -70,7 +70,7 @@ if [[ "$current_branch" != "develop" ]]; then
   )
 
   # Print all of the affected targets without duplicates.
-  printf "%s\n" "${all_affected_targets_with_potential_duplicated[@]}" | sort -u
+  printf "%s" "${all_affected_targets_with_potential_duplicated[@]}" | sort -u
 else
   # Print all test targets.
   $BAZEL_BINARY query --noshow_progress "kind(test, //...)" 2>/dev/null
