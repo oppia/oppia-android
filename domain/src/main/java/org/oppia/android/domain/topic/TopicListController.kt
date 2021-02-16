@@ -435,9 +435,9 @@ class TopicListController @Inject constructor(
   * # Dependency graph:
   *
   *      Fractions
-  *         |
-  *        |
-  *       v
+  *       |
+  *       |
+  *       V
   * Test topic 0                     Ratios
   *    \                              /
   *     \                           /
