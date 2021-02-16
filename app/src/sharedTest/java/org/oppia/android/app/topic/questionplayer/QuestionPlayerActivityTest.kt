@@ -26,9 +26,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -113,27 +115,27 @@ class QuestionPlayerActivityTest {
    * Tests for QuestionPlayerActivityTest
    *
    * TOOLBAR
-   * []testQuestionPlayer_toolbarIsDisplayed
-   * []testQuestionPlayer_configChange_toolbarIsDisplayed
+   * [X]testQuestionPlayer_toolbarIsDisplayed
+   * [X]testQuestionPlayer_configChange_toolbarIsDisplayed
    * [X]testQuestionPlayer_toolbarTitleIsDisplayed - match the string @string/question_player_title
    * [X]testQuestionPlayer_configChange_toolbarTitleIsDisplayed
    *
    * BACK BUTTON
    * [X]testQuestionPlayer_backPress_stopQuestionPlayerDialogIsDisplayed
-   * []testQuestionPlayer_backPress_clickCancel_dialogIsDismissed
-   * []testQuestionPlayer_backPress_clickLeave_questionPlayerIsClosed
+   * [X]testQuestionPlayer_backPress_clickCancel_dialogIsDismissed
+   * [X]testQuestionPlayer_backPress_clickLeave_questionPlayerIsClosed
    *
-   * []testQuestionPlayer_onConfig_backPress_stopQuestionPlayerDialogIsDisplayed
-   * []testQuestionPlayer_onConfig_backPress_clickCancel_dialogIsDismissed
-   * []testQuestionPlayer_onConfig_backPress_clickLeave_questionPlayerIsClosed
+   * [X]testQuestionPlayer_onConfig_backPress_stopQuestionPlayerDialogIsDisplayed
+   * [X]testQuestionPlayer_onConfig_backPress_clickCancel_dialogIsDismissed
+   * [X]testQuestionPlayer_onConfig_backPress_clickLeave_questionPlayerIsClosed
    *
    * [X]testQuestionPlayer_backPress_configChange_stopQuestionPlayerDialogIsDisplayed
-   * []testQuestionPlayer_backPress_configChange_clickCancel_dialogIsDismissed
-   * []testQuestionPlayer_backPress_configChange_clickLeave_questionPlayerIsClosed
+   * [X]testQuestionPlayer_backPress_configChange_clickCancel_dialogIsDismissed
+   * [X]testQuestionPlayer_backPress_configChange_clickLeave_questionPlayerIsClosed
    *
-   * []testQuestionPlayer_clickToolbarNav_stopQuestionPlayerDialogIsDisplayed
-   * []testQuestionPlayer_clickToolbarNav_clickCancel_dialogIsDismissed
-   * []testQuestionPlayer_clickToolbarNav_clickLeave_questionPlayerIsClosed
+   * [X]testQuestionPlayer_onToolbarClosePress_stopQuestionPlayerDialogIsDisplayed
+   * [X]testQuestionPlayer_onToolbarClosePress_clickCancel_dialogIsDismissed
+   * [X]testQuestionPlayer_onToolbarClosePress_clickLeave_questionPlayerIsClosed
    *
    * SUBMIT BUTTON FUNCTIONALITY
    * []testQuestionPlayer_submitButtonIsDisplayed
@@ -201,6 +203,23 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
+  fun testQuestionPlayer_toolbarIsDisplayed() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      onView(withId(R.id.question_player_toolbar))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_configChange_toolbarIsDisplayed() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      rotateToLandscape()
+      onView(withId(R.id.question_player_toolbar))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testQuestionPlayer_toolbarTitleIsDisplayed() {
     launchForSkillList(SKILL_ID_LIST).use {
       onView(withId(R.id.question_player_toolbar))
@@ -222,12 +241,83 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
+  fun testQuestionPlayer_backPress_clickCancel_dialogIsDismissed() {
+    questionPlayerActivityTestRule.launchActivity(
+      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+        context, ArrayList(SKILL_ID_LIST)
+      )
+    )
+    pressBack()
+    onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
+      .perform(click());
+    onView(withId(R.id.question_player_toolbar))
+      .check(
+        matches(hasDescendant(withText(R.string.question_player_title)))
+      )
+  }
+
+  @Test
+  fun testQuestionPlayer_backPress_clickLeave_questionPlayerIsClosed() {
+    questionPlayerActivityTestRule.launchActivity(
+      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+        context, ArrayList(SKILL_ID_LIST)
+      )
+    )
+    pressBack()
+    onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+      .perform(click());
+    assertThat(questionPlayerActivityTestRule.activity.isFinishing).isTrue()
+  }
+
+  @Test
   fun testQuestionPlayer_backPress_stopQuestionPlayerDialogIsDisplayed() {
     launchForSkillList(SKILL_ID_LIST).use {
       pressBack()
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
+  }
+
+  @Test
+  fun testQuestionPlayer_onConfig_backPress_stopQuestionPlayerDialogIsDisplayed() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      rotateToLandscape()
+      pressBack()
+      onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_onConfig_backPress_clickCancel_dialogIsDismissed() {
+    questionPlayerActivityTestRule.launchActivity(
+      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+        context, ArrayList(SKILL_ID_LIST)
+      )
+    )
+    orientationLandscape()
+    pressBack()
+    onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
+      .perform(click());
+    onView(withId(R.id.question_player_toolbar))
+      .check(
+        matches(hasDescendant(withText(R.string.question_player_title)))
+      )
+  }
+
+  @Test
+  fun testQuestionPlayer_onConfig_backPress_clickLeave_questionPlayerIsClosed() {
+    questionPlayerActivityTestRule.launchActivity(
+      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+        context, ArrayList(SKILL_ID_LIST)
+      )
+    )
+    orientationLandscape()
+    pressBack()
+    onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+      .perform(click());
+    assertThat(questionPlayerActivityTestRule.activity.isFinishing).isTrue()
+
   }
 
   @Test
@@ -241,12 +331,77 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
+  fun testQuestionPlayer_backPress_configChange_clickCancel_dialogIsDismissed() {
+    questionPlayerActivityTestRule.launchActivity(
+      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+        context, ArrayList(SKILL_ID_LIST)
+      )
+    )
+    pressBack()
+    orientationLandscape()
+    onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
+      .perform(click());
+    onView(withId(R.id.question_player_toolbar))
+      .check(
+        matches(hasDescendant(withText(R.string.question_player_title)))
+      )
+  }
+
+  @Test
+  fun testQuestionPlayer_backPress_configChange_clickLeave_questionPlayerIsClosed() {
+    questionPlayerActivityTestRule.launchActivity(
+      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+        context, ArrayList(SKILL_ID_LIST)
+      )
+    )
+    pressBack()
+    orientationLandscape()
+    onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+      .perform(click());
+    assertThat(questionPlayerActivityTestRule.activity.isFinishing).isTrue()
+  }
+
+  @get:Rule
+  var questionPlayerActivityTestRule: ActivityTestRule<QuestionPlayerActivity> = ActivityTestRule(
+    QuestionPlayerActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
+  @Test
   fun testQuestionPlayer_onToolbarClosePress_stopQuestionPlayerDialogIsDisplayed() {
     launchForSkillList(SKILL_ID_LIST).use {
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
+  }
+
+  @Test
+  fun testQuestionPlayer_onToolbarClosePress_clickCancel_dialogIsDismissed() {
+    questionPlayerActivityTestRule.launchActivity(
+      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+        context, ArrayList(SKILL_ID_LIST)
+      )
+    )
+    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+    onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
+      .perform(click());
+    onView(withId(R.id.question_player_toolbar))
+      .check(
+        matches(hasDescendant(withText(R.string.question_player_title)))
+      )
+  }
+
+  @Test
+  fun testQuestionPlayer_onToolbarClosePress_clickLeave_questionPlayerIsClosed() {
+    questionPlayerActivityTestRule.launchActivity(
+      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+        context, ArrayList(SKILL_ID_LIST)
+      )
+    )
+    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+    onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+      .perform(click());
+    assertThat(questionPlayerActivityTestRule.activity.isFinishing).isTrue()
   }
 
   @Test
@@ -317,7 +472,7 @@ class QuestionPlayerActivityTest {
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Test
-  fun testChooseCorrectAnswer_chooseCorrectAnswer_tickIsCompletelyVisible() {
+  fun testQuestionPlayer_chooseCorrectAnswer_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       // Option 2 is the right answer and tick icon should be visible completely
       selectMultipleChoiceOption(optionPosition = 2)
