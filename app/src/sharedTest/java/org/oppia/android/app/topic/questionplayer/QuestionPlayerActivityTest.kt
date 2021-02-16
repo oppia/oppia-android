@@ -258,7 +258,7 @@ class QuestionPlayerActivityTest {
     )
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
-      .perform(click());
+      .perform(click())
     onView(withId(R.id.question_player_toolbar))
       .check(
         matches(hasDescendant(withText(R.string.question_player_title)))
@@ -274,7 +274,7 @@ class QuestionPlayerActivityTest {
     )
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
-      .perform(click());
+      .perform(click())
     assertThat(questionPlayerActivityTestRule.activity.isFinishing).isTrue()
   }
 
@@ -307,7 +307,7 @@ class QuestionPlayerActivityTest {
     orientationLandscape()
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
-      .perform(click());
+      .perform(click())
     onView(withId(R.id.question_player_toolbar))
       .check(
         matches(hasDescendant(withText(R.string.question_player_title)))
@@ -324,9 +324,8 @@ class QuestionPlayerActivityTest {
     orientationLandscape()
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
-      .perform(click());
+      .perform(click())
     assertThat(questionPlayerActivityTestRule.activity.isFinishing).isTrue()
-
   }
 
   @Test
@@ -349,7 +348,7 @@ class QuestionPlayerActivityTest {
     pressBack()
     orientationLandscape()
     onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
-      .perform(click());
+      .perform(click())
     onView(withId(R.id.question_player_toolbar))
       .check(
         matches(hasDescendant(withText(R.string.question_player_title)))
@@ -366,7 +365,7 @@ class QuestionPlayerActivityTest {
     pressBack()
     orientationLandscape()
     onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
-      .perform(click());
+      .perform(click())
     assertThat(questionPlayerActivityTestRule.activity.isFinishing).isTrue()
   }
 
@@ -388,7 +387,7 @@ class QuestionPlayerActivityTest {
     )
     onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
     onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
-      .perform(click());
+      .perform(click())
     onView(withId(R.id.question_player_toolbar))
       .check(
         matches(hasDescendant(withText(R.string.question_player_title)))
@@ -404,7 +403,7 @@ class QuestionPlayerActivityTest {
     )
     onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
     onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
-      .perform(click());
+      .perform(click())
     assertThat(questionPlayerActivityTestRule.activity.isFinishing).isTrue()
   }
 
