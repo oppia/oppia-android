@@ -166,6 +166,13 @@ class QuestionPlayerActivityTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
+  @get:Rule
+  var questionPlayerActivityTestRule: ActivityTestRule<QuestionPlayerActivity> = ActivityTestRule(
+    QuestionPlayerActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -361,11 +368,6 @@ class QuestionPlayerActivityTest {
       .perform(click());
     assertThat(questionPlayerActivityTestRule.activity.isFinishing).isTrue()
   }
-
-  @get:Rule
-  var questionPlayerActivityTestRule: ActivityTestRule<QuestionPlayerActivity> = ActivityTestRule(
-    QuestionPlayerActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
 
   @Test
   fun testQuestionPlayer_onToolbarClosePress_stopQuestionPlayerDialogIsDisplayed() {
