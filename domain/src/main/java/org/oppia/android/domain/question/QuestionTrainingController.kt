@@ -9,7 +9,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProviders.Companion.transform
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
@@ -25,7 +24,6 @@ class QuestionTrainingController @Inject constructor(
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val topicController: TopicController,
   private val exceptionsController: ExceptionsController,
-  private val oppiaClock: OppiaClock,
   @QuestionCountPerTrainingSession private val questionCountPerSession: Int,
   @QuestionTrainingSeed private val questionTrainingSeed: Long
 ) {
@@ -56,7 +54,7 @@ class QuestionTrainingController @Inject constructor(
         .transform(START_QUESTION_TRAINING_SESSION_PROVIDER_ID) { it }
       erasedDataProvider.toLiveData()
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -115,7 +113,7 @@ class QuestionTrainingController @Inject constructor(
       questionAssessmentProgressController.finishQuestionTrainingSession()
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
