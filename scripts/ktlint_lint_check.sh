@@ -17,7 +17,8 @@ fi
 committed_files=`git diff --name-only HEAD^ HEAD -- '***.kt'`
 
 if [ -z "$committed_files" ]; then
-    echo "No kotlin files have been committed, skipping ktlinter."
+    echo "No kotlin files have been committed, skipping file formatting checks on kotlin files."
+    echo "Please commit the modified kotlin files and run this script again."
 else
     echo "Checking only committed files."
     java -jar $jar_file_path --android $committed_files
