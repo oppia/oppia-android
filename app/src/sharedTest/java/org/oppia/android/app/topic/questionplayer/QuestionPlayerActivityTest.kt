@@ -117,7 +117,8 @@ class QuestionPlayerActivityTest {
    * TOOLBAR
    * [X]testQuestionPlayer_toolbarIsDisplayed
    * [X]testQuestionPlayer_configChange_toolbarIsDisplayed
-   * [X]testQuestionPlayer_toolbarTitleIsDisplayed - match the string @string/question_player_title
+   * [X]testQuestionPlayer_toolbarTitleIsDisplayed -
+   *                              match the string @string/question_player_title
    * [X]testQuestionPlayer_configChange_toolbarTitleIsDisplayed
    *
    * BACK BUTTON
