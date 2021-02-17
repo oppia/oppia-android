@@ -45,6 +45,7 @@
         android:id="@+id/profile_avatar_img"
         android:layout_width="108dp"
         android:layout_height="108dp"
+        android:importantForAccessibility="no"
         app:civ_border_color="@color/avatarBorder"
         app:civ_border_width="1dp"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_circular_image_margin_top_profile_already_added : @dimen/space_0dp}"
@@ -56,6 +57,7 @@
         android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:orientation="vertical"
         app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}">
+
         <TextView
           android:id="@+id/profile_name_text"
           style="@style/Heading2"

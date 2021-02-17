@@ -21,6 +21,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.not
@@ -88,6 +89,10 @@ import javax.inject.Singleton
 )
 class ProfileChooserFragmentTest {
 
+  private val activityTestRule: ActivityTestRule<ProfileChooserActivity> = ActivityTestRule(
+    ProfileChooserActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
@@ -115,6 +120,13 @@ class ProfileChooserFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testProfileChooserActivity_activityLabel_isDefinedSuccessfully() {
+    activityTestRule.launchActivity(/* startIntent= */ null)
+    val title = activityTestRule.activity.title
+    assertThat(title).isEqualTo(context.getString(R.string.profile_chooser_select))
   }
 
   @Test
