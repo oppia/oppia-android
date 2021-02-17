@@ -429,7 +429,12 @@ class TopicListController @Inject constructor(
   }
 
   /*
-  * # Dependency graph:
+  * Explanation for logic:
+  * We always recommend the next topic that all dependencies are completed for. If a topic with
+  * prerequisites is completed out-of-order (e.g. test topic 1 below) then we assume fractions is already done.
+  * In the same way, finishing test topic 2 means there's nothing else to recommend.
+  *
+  * Here's an example topic graph to illustrate:
   *
   *      Fractions
   *       |
@@ -440,11 +445,7 @@ class TopicListController @Inject constructor(
   *     \                           /
   *       -----> Test topic 1 <----
   *
-  * # Logic for recommendation system
-  *
-  * We always recommend the next topic that all dependencies are completed for. If a topic with
-  * prerequisites is completed out-of-order (e.g. test topic 1 above) then we assume fractions is already done.
-  * In the same way, finishing test topic 2 means there's nothing else to recommend.
+  * In this example, when topic X is finished, topic Y will be recommended.
   */
   private fun computeSuggestedStories(
     topicProgressList: List<TopicProgress>
