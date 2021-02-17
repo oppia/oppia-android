@@ -69,7 +69,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
 
   private fun logRevisionCardEvent(topicId: String, subTopicId: Int) {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentCalendar().timeInMillis,
+      oppiaClock.getCurrentTimeMs(),
       EventLog.EventAction.OPEN_REVISION_CARD,
       oppiaLogger.createRevisionCardContext(topicId, subTopicId)
     )

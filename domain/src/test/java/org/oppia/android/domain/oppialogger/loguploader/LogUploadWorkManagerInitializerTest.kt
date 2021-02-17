@@ -9,8 +9,6 @@ import androidx.work.Configuration
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
@@ -25,14 +23,15 @@ import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
@@ -42,10 +41,8 @@ import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.collections.last
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -57,9 +54,6 @@ class LogUploadWorkManagerInitializerTest {
 
   @Inject
   lateinit var logUploadWorkManagerInitializer: LogUploadWorkManagerInitializer
-
-  @Inject
-  lateinit var analyticsController: AnalyticsController
 
   @Inject
   lateinit var exceptionsController: ExceptionsController
@@ -211,7 +205,8 @@ class LogUploadWorkManagerInitializerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestLogStorageModule::class, TestDispatcherModule::class,
-      LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class
+      LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
+      FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {
@@ -224,33 +219,4 @@ class LogUploadWorkManagerInitializerTest {
 
     fun inject(logUploadWorkRequestTest: LogUploadWorkManagerInitializerTest)
   }
-}
-
-/**  A test specific fake for the log uploader. */
-@Singleton
-class FakeLogUploader @Inject constructor() :
-  LogUploader {
-
-  private val eventRequestIdList = mutableListOf<UUID>()
-  private val exceptionRequestIdList = mutableListOf<UUID>()
-
-  override fun enqueueWorkRequestForEvents(
-    workManager: WorkManager,
-    workRequest: PeriodicWorkRequest
-  ) {
-    eventRequestIdList.add(workRequest.id)
-  }
-
-  override fun enqueueWorkRequestForExceptions(
-    workManager: WorkManager,
-    workRequest: PeriodicWorkRequest
-  ) {
-    exceptionRequestIdList.add(workRequest.id)
-  }
-
-  /** Returns the most recent work request id that's stored in the [eventRequestIdList]. */
-  fun getMostRecentEventRequestId() = eventRequestIdList.last()
-
-  /** Returns the most recent work request id that's stored in the [exceptionRequestIdList]. */
-  fun getMostRecentExceptionRequestId() = exceptionRequestIdList.last()
 }
