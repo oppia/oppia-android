@@ -243,73 +243,73 @@ class TopicListController @Inject constructor(
     topicProgressList: List<TopicProgress>,
     completionTimeFilter: (Long) -> Boolean
   ): List<PromotedStory> {
-      val playedPromotedStoryList = mutableListOf<PromotedStory>()
-      val sortedTopicProgressList =
-        topicProgressList.sortedByDescending { topicProgress ->
-          val topicProgressStories = topicProgress.storyProgressMap.values
-          val topicProgressChapters = topicProgressStories.flatMap { storyProgress ->
-            storyProgress.chapterProgressMap.values
-          }
-          val topicProgressLastPlayedTimes =
-            topicProgressChapters.map(ChapterProgress::getLastPlayedTimestamp)
-          topicProgressLastPlayedTimes.maxOrNull()
+    val playedPromotedStoryList = mutableListOf<PromotedStory>()
+    val sortedTopicProgressList =
+      topicProgressList.sortedByDescending { topicProgress ->
+        val topicProgressStories = topicProgress.storyProgressMap.values
+        val topicProgressChapters = topicProgressStories.flatMap { storyProgress ->
+          storyProgress.chapterProgressMap.values
         }
+        val topicProgressLastPlayedTimes =
+          topicProgressChapters.map(ChapterProgress::getLastPlayedTimestamp)
+        topicProgressLastPlayedTimes.maxOrNull()
+      }
 
-      sortedTopicProgressList.forEach { topicProgress ->
-        val topic = topicController.retrieveTopic(topicProgress.topicId)
+    sortedTopicProgressList.forEach { topicProgress ->
+      val topic = topicController.retrieveTopic(topicProgress.topicId)
 
-        val isTopicConsideredCompleted = topicHasAtLeastOneStoryCompleted(topicProgress)
+      val isTopicConsideredCompleted = topicHasAtLeastOneStoryCompleted(topicProgress)
 
-        topicProgress.storyProgressMap.values.forEach { storyProgress ->
-          val storyId = storyProgress.storyId
-          val story = topicController.retrieveStory(topic.topicId, storyId)
+      topicProgress.storyProgressMap.values.forEach { storyProgress ->
+        val storyId = storyProgress.storyId
+        val story = topicController.retrieveStory(topic.topicId, storyId)
 
-          val completedChapterProgressList = getCompletedChapterProgressList(storyProgress)
-          val latestCompletedChapterProgress: ChapterProgress? =
-            completedChapterProgressList.firstOrNull()
+        val completedChapterProgressList = getCompletedChapterProgressList(storyProgress)
+        val latestCompletedChapterProgress: ChapterProgress? =
+          completedChapterProgressList.firstOrNull()
 
-          val startedChapterProgressList = getStartedChapterProgressList(storyProgress)
-          val latestStartedChapterProgress: ChapterProgress? =
-            startedChapterProgressList.firstOrNull()
+        val startedChapterProgressList = getStartedChapterProgressList(storyProgress)
+        val latestStartedChapterProgress: ChapterProgress? =
+          startedChapterProgressList.firstOrNull()
 
-          when {
-            latestStartedChapterProgress != null -> {
-              val numberOfDaysPassed = latestStartedChapterProgress.getNumberOfDaysPassed()
-              if (completionTimeFilter(numberOfDaysPassed)) {
-                createOngoingStoryListBasedOnRecentlyPlayed(
-                  storyId,
-                  story,
-                  latestStartedChapterProgress,
-                  completedChapterProgressList,
-                  topic,
-                  isTopicConsideredCompleted
-                )?.let { promotedStory ->
-                  playedPromotedStoryList.add(promotedStory)
-                }
+        when {
+          latestStartedChapterProgress != null -> {
+            val numberOfDaysPassed = latestStartedChapterProgress.getNumberOfDaysPassed()
+            if (completionTimeFilter(numberOfDaysPassed)) {
+              createOngoingStoryListBasedOnRecentlyPlayed(
+                storyId,
+                story,
+                latestStartedChapterProgress,
+                completedChapterProgressList,
+                topic,
+                isTopicConsideredCompleted
+              )?.let { promotedStory ->
+                playedPromotedStoryList.add(promotedStory)
               }
             }
-            // Compute the ongoing story list for stories that are not fully completed yet.
-            latestCompletedChapterProgress != null &&
-              latestCompletedChapterProgress.explorationId !=
-              story.chapterList.last().explorationId -> {
-              val numberOfDaysPassed = latestCompletedChapterProgress.getNumberOfDaysPassed()
-              if (completionTimeFilter(numberOfDaysPassed)) {
-                createOngoingStoryListBasedOnMostRecentlyCompleted(
-                  storyId,
-                  story,
-                  latestCompletedChapterProgress,
-                  completedChapterProgressList,
-                  topic,
-                  isTopicConsideredCompleted
-                )?.let { promotedStory ->
-                  playedPromotedStoryList.add(promotedStory)
-                }
+          }
+          // Compute the ongoing story list for stories that are not fully completed yet.
+          latestCompletedChapterProgress != null &&
+            latestCompletedChapterProgress.explorationId !=
+            story.chapterList.last().explorationId -> {
+            val numberOfDaysPassed = latestCompletedChapterProgress.getNumberOfDaysPassed()
+            if (completionTimeFilter(numberOfDaysPassed)) {
+              createOngoingStoryListBasedOnMostRecentlyCompleted(
+                storyId,
+                story,
+                latestCompletedChapterProgress,
+                completedChapterProgressList,
+                topic,
+                isTopicConsideredCompleted
+              )?.let { promotedStory ->
+                playedPromotedStoryList.add(promotedStory)
               }
             }
           }
         }
       }
-      return playedPromotedStoryList
+    }
+    return playedPromotedStoryList
   }
 
   private fun checkIfStoryIsCompleted(
