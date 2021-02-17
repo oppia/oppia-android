@@ -37,7 +37,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.test.assertTrue
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -199,11 +198,11 @@ class AnswerClassificationControllerTest {
     // The continue interaction always returns the default outcome because it has no rule classifiers.
     assertThat(classificationResult.outcome).isEqualTo(DEFAULT_OUTCOME)
     // Classification result should return no tagged skill misconception ID
-    assertTrue(classificationResult is ClassificationResult.OutcomeOnly)
+    assertThat(classificationResult).isInstanceOf(ClassificationResult.OutcomeOnly::class.java)
   }
 
   @Test
-  fun testClassify_answerGroupWithNonDefaultOutcome_returnOutcomeOnlyWithNoMisconceptionId() {
+  fun testClassify_nonDefaultOutcome_noMisconception_returnOutcomeOnlyWithNoMisconceptionId() {
     val interaction = Interaction.newBuilder()
       .setId("ItemSelectionInput")
       .addAnswerGroups(
@@ -224,11 +223,11 @@ class AnswerClassificationControllerTest {
     // The first group should match.
     assertThat(classificationResult.outcome).isEqualTo(OUTCOME_0)
     // Classification result should return no tagged skill misconception ID
-    assertTrue(classificationResult is ClassificationResult.OutcomeOnly)
+    assertThat(classificationResult).isInstanceOf(ClassificationResult.OutcomeOnly::class.java)
   }
 
   @Test
-  fun testClassify_answerGroupNonDefaultOutcomeAndMisconception_returnOutcomeWithMisconception() {
+  fun testClassify_nonDefaultOutcome_withMisconception_returnOutcomeWithMisconceptionId() {
     val interaction = Interaction.newBuilder()
       .setId("ItemSelectionInput")
       .addAnswerGroups(
@@ -250,10 +249,13 @@ class AnswerClassificationControllerTest {
     // The first group should match.
     assertThat(classificationResult.outcome).isEqualTo(OUTCOME_0)
     // Classification result should return a tagged skill misconception ID
-    assertTrue(classificationResult is ClassificationResult.OutcomeWithMisconception)
+    assertThat(classificationResult)
+      .isInstanceOf(ClassificationResult.OutcomeWithMisconception::class.java)
     // Verify that the correct misconception ID is returned
-    // Classification result should return a tagged skill misconception ID
-    assertThat(classificationResult.taggedSkillMisconceptionId).isEqualTo(TEST_MISCONCEPTION_ID_0)
+    assertThat(
+      (classificationResult as ClassificationResult.OutcomeWithMisconception)
+        .taggedSkillMisconceptionId
+    ).isEqualTo(TEST_MISCONCEPTION_ID_0)
   }
 
   @Test
