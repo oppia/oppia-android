@@ -43,7 +43,7 @@ class RecentlyPlayedViewModel @Inject constructor(
 
   private fun processOngoingStoryList(
     promotedActivityList: AsyncResult<PromotedActivityList>
-  ) : List<RecentlyPlayedItemViewModel> {
+  ): List<RecentlyPlayedItemViewModel> {
     if (promotedActivityList.isSuccess()) {
       if (
         promotedActivityList.getOrThrow().promotedStoryList.recentlyPlayedStoryList.isNotEmpty()
