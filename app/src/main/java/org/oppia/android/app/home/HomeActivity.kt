@@ -9,6 +9,8 @@ import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.model.ExitProfileDialogArguments
+import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
@@ -38,6 +40,11 @@ class HomeActivity :
     title = getString(R.string.menu_home)
   }
 
+  override fun onRestart() {
+    super.onRestart()
+    homeActivityPresenter.handleOnRestart()
+  }
+
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
     startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
   }
@@ -48,8 +55,13 @@ class HomeActivity :
     if (previousFragment != null) {
       supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
+    val exitProfileDialogArguments =
+      ExitProfileDialogArguments
+        .newBuilder()
+        .setHighlightItem(HighlightItem.NONE)
+        .build()
     val dialogFragment = ExitProfileDialogFragment
-      .newInstance(isFromNavigationDrawer = false)
+      .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
     dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 

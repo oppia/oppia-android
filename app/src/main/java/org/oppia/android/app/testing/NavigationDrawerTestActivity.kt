@@ -32,6 +32,11 @@ class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopic
     title = getString(R.string.menu_home)
   }
 
+  override fun onRestart() {
+    super.onRestart()
+    homeActivityPresenter.handleOnRestart()
+  }
+
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
     startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
   }
