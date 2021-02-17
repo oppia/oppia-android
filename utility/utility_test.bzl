@@ -1,6 +1,7 @@
 """
 Macros for utility module tests.
 """
+
 load("//:oppia_android_test.bzl", "oppia_android_module_level_test")
 
 # TODO(#1620): Remove module-specific test macros once Gradle is removed

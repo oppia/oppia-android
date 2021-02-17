@@ -25,7 +25,7 @@ def oppia_android_module_level_test(
         test_path_prefix: str. The prefix of the test path (which is used to extract the qualified
             class name of the test suite).
         additional_srcs: list of str. Additional source files to build into the test binary.
-        kwargs: additional parameters to pass to oppia_android_test.
+        **kwargs: additional parameters to pass to oppia_android_test.
     """
     if name not in filtered_tests:
         oppia_android_test(
@@ -47,21 +47,24 @@ def oppia_android_test(
         assets = None,
         assets_dir = None,
         **kwargs):
-    # Creates an Oppia test target for running the specified test as an Android local test with Kotlin
-    #     support. Note that this creates an additional, internal library.
-    #
-    # Args:
-    #   name: str. The name of the Kotlin test file without the '.kt' suffix.
-    #   srcs: list of str. The name of the Kotlin test files to be run.
-    #   test_manifest: str. The path to the test manifest file.
-    #   custom_package: str. The module's package. Example: 'org.oppia.utility'.
-    #   test_class: The package of the src file. For example, if the src is 'FakeEventLoggerTest.kt',
-    #       then the test_class would be "org.oppia.testing.FakeEventLoggerTest".
-    #   enable_data_binding: boolean. Indicates whether the test enables data-binding.
-    #   deps: list of str. The list of dependencies needed to run the tests.
-    #   assets: list of str. A list of assets needed to run the tests.
-    #   assets_dir: str. The path to the assets directory.
-    #   kwargs: additional parameters to pass to android_local_test.
+    """
+    Creates a local  Oppia test target with Kotlin support.
+
+    Note that this creates an additional, internal library.
+
+    Args:
+      name: str. The name of the Kotlin test file without the '.kt' suffix.
+      srcs: list of str. The name of the Kotlin test files to be run.
+      test_manifest: str. The path to the test manifest file.
+      custom_package: str. The module's package. Example: 'org.oppia.utility'.
+      test_class: The package of the src file. For example, if the src is 'FakeEventLoggerTest.kt',
+          then the test_class would be "org.oppia.testing.FakeEventLoggerTest".
+      enable_data_binding: boolean. Indicates whether the test enables data-binding.
+      deps: list of str. The list of dependencies needed to run the tests.
+      assets: list of str. A list of assets needed to run the tests.
+      assets_dir: str. The path to the assets directory.
+      **kwargs: additional parameters to pass to android_local_test.
+    """
 
     kt_android_library(
         name = name + "_lib",

@@ -717,10 +717,10 @@ MIGRATED_TESTS = [
     filtered_tests = MIGRATED_TESTS,
     manifest_values = {
         "applicationId": "org.oppia.android",
-        "versionCode": "0",
-        "versionName": "0.1-alpha",
         "minSdkVersion": "19",
         "targetSdkVersion": "28",
+        "versionCode": "0",
+        "versionName": "0.1-alpha",
     },
     processed_src = test_with_resources(test_file_path),
     test_path_prefix = "src/sharedTest/java/",
