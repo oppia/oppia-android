@@ -23,6 +23,7 @@ allprojects {
   repositories {
     google()
     mavenCentral()
+    // TODO(#2735): Remove once available in Maven Central.
     jcenter() {
       content {
         includeModule("com.chaos.view", "pinview")
