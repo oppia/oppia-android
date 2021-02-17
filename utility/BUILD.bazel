@@ -49,7 +49,6 @@ TEST_DEPS = [
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",
     "//utility/src/main/java/org/oppia/android/util/accessibility:accessibility",
-    "//utility/src/main/java/org/oppia/android/util/accessibility:impl",
     "//utility/src/main/java/org/oppia/android/util/accessibility:testing",
 ]
 

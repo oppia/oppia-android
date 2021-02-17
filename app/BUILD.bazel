@@ -685,7 +685,7 @@ TEST_DEPS = [
     "//third_party:org_robolectric_annotations",
     "//third_party:robolectric_android-all",
     "//utility",
-    "//utility/src/main/java/org/oppia/android/util/accessibility:accessibility",
+    "//utility/src/main/java/org/oppia/android/util/accessibility",
     "//utility/src/main/java/org/oppia/android/util/accessibility:testing",
 ]
 

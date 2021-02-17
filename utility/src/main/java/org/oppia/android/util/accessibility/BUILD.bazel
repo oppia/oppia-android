@@ -1,5 +1,9 @@
+"""
+General purposes utilities pertaining to the Android accessibility manager.
+"""
+
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
-load("@rules_jvm_external//:defs.bzl", "artifact")
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
 
 kt_android_library(
     name = "accessibility",
@@ -15,8 +19,8 @@ kt_android_library(
     ],
     deps = [
         ":accessibility",
-        artifact("com.google.dagger:dagger:2.27"),
-        artifact("javax.inject:javax.inject:1"),
+        ":dagger",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
@@ -27,6 +31,8 @@ kt_android_library(
     visibility = ["//visibility:public"],
     deps = [
         ":accessibility",
-        artifact("javax.inject:javax.inject:1"),
+        "//third_party:javax_inject_javax_inject",
     ],
 )
+
+dagger_rules()
