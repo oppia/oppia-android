@@ -3,8 +3,8 @@
 This library contains fake objects used for testing as well as tests for these objects.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//testing:testing_test.bzl", "testing_test")
 
 # Library for general-purpose testing fakes.
