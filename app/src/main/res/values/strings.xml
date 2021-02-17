@@ -71,6 +71,7 @@
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
+  <string name="last_played_stories">Last-Played Stories</string>
   <string name="view_all">View All</string>
   <string name="ongoing_story_last_week">Played within the Last Week</string>
   <string name="ongoing_story_last_month">Played within the Last Month</string>
@@ -422,4 +423,7 @@
   </string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
+  <string name="coming_soon">Coming Soon</string>
+  <string name="recommended_stories">Recommended Stories</string>
+  <string name="stories_for_you">Stories For You</string>
 </resources>

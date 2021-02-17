@@ -132,7 +132,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_testTopic0_story0_exp2_chapterIsDone() {
-    storyProgressTestHelper.markCompletedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markCompletedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -145,7 +145,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_testTopic0_story0_exp2_story0IsNotDone() {
-    storyProgressTestHelper.markCompletedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markCompletedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -157,7 +157,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_testTopic0_story0_exp5_chapterIsDone() {
-    storyProgressTestHelper.markCompletedTestTopic0Story0Exp5(
+    storyProgressTestHelper.markCompletedTestTopic0Story0Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -170,7 +170,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_testTopic0_story0_exp5_story0IsDone() {
-    storyProgressTestHelper.markCompletedTestTopic0Story0Exp5(
+    storyProgressTestHelper.markCompletedTestTopic0Story0Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -183,7 +183,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_testTopic0_story1_exp1_chapterIsDone() {
-    storyProgressTestHelper.markCompletedTestTopic0Story1Exp1(
+    storyProgressTestHelper.markCompletedTestTopic0Story1Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -196,7 +196,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_testTopic0_story1_exp1_story1IsNotDone() {
-    storyProgressTestHelper.markCompletedTestTopic0Story1Exp1(
+    storyProgressTestHelper.markCompletedTestTopic0Story1Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -208,7 +208,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_testTopic0_story1_exp0_chapterIsDone() {
-    storyProgressTestHelper.markCompletedTestTopic0Story1Exp0(
+    storyProgressTestHelper.markCompletedTestTopic0Story1Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -221,7 +221,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_testTopic0_story1_exp0_story1IsNotDone() {
-    storyProgressTestHelper.markCompletedTestTopic0Story1Exp0(
+    storyProgressTestHelper.markCompletedTestTopic0Story1Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -233,7 +233,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_testTopic0_story1_exp3_chapterIsDone() {
-    storyProgressTestHelper.markCompletedTestTopic0Story1Exp3(
+    storyProgressTestHelper.markCompletedTestTopic0Story1Exp2(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -246,7 +246,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_testTopic0_story1_exp3_story1IsDone() {
-    storyProgressTestHelper.markCompletedTestTopic0Story1Exp3(
+    storyProgressTestHelper.markCompletedTestTopic0Story1Exp2(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -259,7 +259,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_testTopic1_story2_exp4_chapterIsDone() {
-    storyProgressTestHelper.markCompletedTestTopic1Story2Exp4(
+    storyProgressTestHelper.markCompletedTestTopic1Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -272,7 +272,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_testTopic1_story2_exp4_story2IsDone() {
-    storyProgressTestHelper.markCompletedTestTopic1Story2Exp4(
+    storyProgressTestHelper.markCompletedTestTopic1Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -332,7 +332,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkStoryDone_testTopic1_story2_storyIsDone() {
-    storyProgressTestHelper.markCompletedTestTopic1Story2(
+    storyProgressTestHelper.markCompletedTestTopic1Story0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -344,7 +344,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkStoryDone_testTopic1_story2_topicIsDone() {
-    storyProgressTestHelper.markCompletedTestTopic1Story2(
+    storyProgressTestHelper.markCompletedTestTopic1Story0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -471,7 +471,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_ratiosTopic_story1_exp2_chapterIsDone() {
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -484,7 +484,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_ratiosTopic_story1_exp2_story1IsNotDone() {
-    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -496,7 +496,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_ratiosTopic_story1_exp3_chapterIsDone() {
-    storyProgressTestHelper.markCompletedRatiosStory1Exp3(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -509,7 +509,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_ratiosTopic_story1_exp3_story1IsDone() {
-    storyProgressTestHelper.markCompletedRatiosStory1Exp3(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -663,7 +663,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_testTopic0_story0_exp2_chapterIsStarted() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -676,7 +676,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_testTopic0_story0_exp2_story0IsNotDone() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -688,7 +688,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_testTopic0_story0_exp5_chapterIsStarted() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp5(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -701,7 +701,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun markRecentlyPlayedForTestTopic0Story0Exp5() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -713,7 +713,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_testTopic0_story1_exp1_chapterIsStarted() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp1(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -726,7 +726,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_testTopic0_story1_exp1_story1IsNotDone() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp1(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -738,7 +738,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_testTopic0_story1_exp0_chapterIsStarted() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp0(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -751,7 +751,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_testTopic0_story1_exp0_story1IsNotDone() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp0(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -763,7 +763,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_testTopic0_story1_exp3_chapterIsStarted() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp3(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp2(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -776,7 +776,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_testTopic0_story1_exp3_story1IsNotDone() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp3(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp2(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -788,7 +788,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_testTopic1_story2_exp4_chapterIsStarted() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -801,7 +801,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_testTopic1_story2_exp4_story2IsNotDone() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -861,7 +861,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkStoryRecentlyPlayed_testTopic1_story2_storyIsStarted() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -873,7 +873,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkStoryRecentlyPlayed_testTopic1_story2_topicIsNotDone() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -978,7 +978,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_ratiosTopic_story1_exp2_chapterIsStarted() {
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp2(
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -991,7 +991,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_ratiosTopic_story1_exp2_story1IsNotDone() {
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp2(
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -1003,7 +1003,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_ratiosTopic_story1_exp3_chapterIsStarted() {
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp3(
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -1016,7 +1016,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_ratiosTopic_story1_exp3_story1IsNotDone() {
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp3(
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -1228,11 +1228,11 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testRecentlyPlayedChapter_thenMarkedDone_chapterIsCompleted() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markCompletedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markCompletedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -1245,11 +1245,11 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_thenRecentlyPlayed_chapterIsCompleted() {
-    storyProgressTestHelper.markCompletedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markCompletedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -1262,7 +1262,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_newerThanWeek_timestampNewerThanWeek() {
-    storyProgressTestHelper.markCompletedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markCompletedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -1279,7 +1279,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterDone_olderThanWeek_timestampOlderThanWeek() {
-    storyProgressTestHelper.markCompletedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markCompletedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = true
     )
@@ -1296,7 +1296,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_newerThanWeek_timestampNewerThanWeek() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -1313,7 +1313,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_olderThanWeek_timestampOlderThanWeek() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = true
     )
@@ -1330,7 +1330,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterComplete_oneOneProfile_notCompletedOnOtherProfile() {
-    storyProgressTestHelper.markCompletedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markCompletedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -1343,7 +1343,7 @@ class StoryProgressTestHelperTest {
 
   @Test
   fun testMarkChapterRecentlyPlayed_oneOneProfile_notStartedOnOtherProfile() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
