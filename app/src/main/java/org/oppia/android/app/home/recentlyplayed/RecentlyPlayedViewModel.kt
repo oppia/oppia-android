@@ -41,8 +41,9 @@ class RecentlyPlayedViewModel @Inject constructor(
     Transformations.map(ongoingStoryListSummaryResultLiveData, ::processOngoingStoryList)
   }
 
-  private fun processOngoingStoryList(promotedActivityList: AsyncResult<PromotedActivityList>)
-    : List<RecentlyPlayedItemViewModel> {
+  private fun processOngoingStoryList(
+    promotedActivityList: AsyncResult<PromotedActivityList>
+  ) : List<RecentlyPlayedItemViewModel> {
     if (promotedActivityList.isSuccess()) {
       if (
         promotedActivityList.getOrThrow().promotedStoryList.recentlyPlayedStoryList.isNotEmpty()
@@ -54,8 +55,8 @@ class RecentlyPlayedViewModel @Inject constructor(
           )
         itemList.add(recentSectionTitleViewModel)
         for (
-        promotedStory in
-        promotedActivityList.getOrThrow().promotedStoryList.recentlyPlayedStoryList
+          promotedStory in
+          promotedActivityList.getOrThrow().promotedStoryList.recentlyPlayedStoryList
         ) {
           val ongoingStoryViewModel =
             OngoingStoryViewModel(
@@ -76,7 +77,10 @@ class RecentlyPlayedViewModel @Inject constructor(
           showDivider
         )
       itemList.add(olderSectionTitleViewModel)
-      for (promotedStory in promotedActivityList.getOrThrow().promotedStoryList.olderPlayedStoryList) {
+      for (
+        promotedStory in
+        promotedActivityList.getOrThrow().promotedStoryList.olderPlayedStoryList
+      ) {
         val ongoingStoryViewModel =
           OngoingStoryViewModel(
             promotedStory,
@@ -96,8 +100,8 @@ class RecentlyPlayedViewModel @Inject constructor(
         )
       itemList.add(recommendedSectionTitleViewModel)
       for (
-      suggestedStory in
-      promotedActivityList.getOrThrow().promotedStoryList.suggestedStoryList
+        suggestedStory in
+        promotedActivityList.getOrThrow().promotedStoryList.suggestedStoryList
       ) {
         val ongoingStoryViewModel =
           OngoingStoryViewModel(
