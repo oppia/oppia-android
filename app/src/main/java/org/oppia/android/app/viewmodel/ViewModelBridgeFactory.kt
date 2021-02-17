@@ -18,7 +18,8 @@ class ViewModelBridgeFactory<V : ViewModel> @Inject constructor(
     // Check whether the user accidentally switched the types during provider retrieval. ViewModelProvider is meant to
     // guard against this from happening by ensuring the two types remain the same.
     check(modelClass.isAssignableFrom(viewModel.javaClass)) {
-      "Cannot convert between injected generic type and runtime assumed generic type for bridge factory." // ktlint-disable max-line-length
+      "Cannot convert between injected generic type and " +
+        "runtime assumed generic type for bridge factory."
     }
     // Ensure the compiler that the type casting is correct and intentional here. A cast failure should result in a
     // runtime crash.
