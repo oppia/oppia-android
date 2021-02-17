@@ -397,7 +397,9 @@ class TopicFragmentTest {
   }
 
   /**
-   * Creates TopicActivity Intent with a storyId
+   * Creates TopicActivity Intent with a storyId.
+   * The intent returned from here can be used to
+   * launch TopicActivity from Promoted stories.
    */
   private fun createTopicPlayStoryActivityIntent(
     internalProfileId: Int,
