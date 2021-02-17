@@ -23,11 +23,11 @@ class RecentlyPlayedViewModel @Inject constructor(
   private val topicListController: TopicListController,
   private val internalProfileId: Int,
   @StoryHtmlParserEntityType private val entityType: String
-  ) : ObservableViewModel() {
+) : ObservableViewModel() {
 
   private val itemList: MutableList<RecentlyPlayedItemViewModel> = ArrayList()
-  var recentStoryCount = 1
-  var oldStoryCount = 1
+  var recentStoryCount = 0
+  var oldStoryCount = 0
   var suggestedStoryCount = 2
   private val ongoingStoryListSummaryResultLiveData:
     LiveData<AsyncResult<PromotedActivityList>>
@@ -37,9 +37,9 @@ class RecentlyPlayedViewModel @Inject constructor(
       ).toLiveData()
     }
 
-   val ongoingStoryLiveData: LiveData<List<RecentlyPlayedItemViewModel>> by lazy {
-     Transformations.map(ongoingStoryListSummaryResultLiveData, ::processOngoingStoryList)
-   }
+  val ongoingStoryLiveData: LiveData<List<RecentlyPlayedItemViewModel>> by lazy {
+    Transformations.map(ongoingStoryListSummaryResultLiveData, ::processOngoingStoryList)
+  }
 
   private fun processOngoingStoryList(promotedActivityList: AsyncResult<PromotedActivityList>): List<RecentlyPlayedItemViewModel> {
     if (promotedActivityList.isSuccess()) {
@@ -95,7 +95,8 @@ class RecentlyPlayedViewModel @Inject constructor(
           )
         itemList.add(ongoingStoryViewModel)
       }
-      recentStoryCount = promotedActivityList.getOrThrow().promotedStoryList.recentlyPlayedStoryCount
+      recentStoryCount =
+        promotedActivityList.getOrThrow().promotedStoryList.recentlyPlayedStoryCount
       oldStoryCount = promotedActivityList.getOrThrow().promotedStoryList.olderPlayedStoryCount
       suggestedStoryCount = promotedActivityList.getOrThrow().promotedStoryList.suggestedStoryCount
     }

@@ -51,11 +51,11 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        app:data="@{viewModel.ongoingStoryLiveData}"
-        app:layoutManager="@{viewModel.createLayoutManager(viewModel.recentStoryCount, viewModel.oldStoryCount, viewModel.suggestedStoryCount)}"
         android:paddingTop="8dp"
         android:paddingBottom="108dp"
-        android:scrollbars="none" />
+        android:scrollbars="none"
+        app:data="@{viewModel.ongoingStoryLiveData}"
+        app:layoutManager="@{viewModel.createLayoutManager(viewModel.recentStoryCount, viewModel.oldStoryCount, viewModel.suggestedStoryCount)}" />
 
       <View
         android:id="@+id/recently_played__shadow_view"

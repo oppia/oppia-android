@@ -52,10 +52,10 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingTop="8dp"
-        app:data="@{viewModel.ongoingStoryLiveData}"
-        app:layoutManager="@{viewModel.createLayoutManager(viewModel.recentStoryCount, viewModel.oldStoryCount, viewModel.suggestedStoryCount)}"
         android:paddingBottom="168dp"
-        android:scrollbars="none" />
+        android:scrollbars="none"
+        app:data="@{viewModel.ongoingStoryLiveData}"
+        app:layoutManager="@{viewModel.createLayoutManager(viewModel.recentStoryCount, viewModel.oldStoryCount, viewModel.suggestedStoryCount)}" />
 
       <View
         android:id="@+id/recently_played__shadow_view"
