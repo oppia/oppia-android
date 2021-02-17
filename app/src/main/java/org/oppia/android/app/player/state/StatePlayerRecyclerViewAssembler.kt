@@ -107,6 +107,7 @@ private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
 
 private const val DEFAULT_WRONG_ANSWER_COUNT = 0
 private const val DEFAULT_HINT_SEQUENCE_NUMBER = 0
+private val DEFAULT_PREVIOUS_HINT_INDEX = HelpIndex.getDefaultInstance()
 private const val DEFAULT_IS_HINT_VISIBLE_IN_LATEST_STATE = false
 
 /**
@@ -198,6 +199,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       KEY_HINT_STATE,
       StatePlayerSavedHintState.newBuilder().apply {
         wrongAnswerCount = DEFAULT_WRONG_ANSWER_COUNT
+        helpIndex = DEFAULT_PREVIOUS_HINT_INDEX
         hintSequenceNumber = DEFAULT_HINT_SEQUENCE_NUMBER
         isHintVisibleInLatestState = DEFAULT_IS_HINT_VISIBLE_IN_LATEST_STATE
       }.build()
@@ -1501,19 +1503,19 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val delayShowAdditionalHintsFromWrongAnswerMs: Long
   ) {
     var trackedWrongAnswerCount = DEFAULT_WRONG_ANSWER_COUNT
-    var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
+    var previousHelpIndex: HelpIndex = DEFAULT_PREVIOUS_HINT_INDEX
     var hintSequenceNumber = DEFAULT_HINT_SEQUENCE_NUMBER
     var isHintVisibleInLatestState = DEFAULT_IS_HINT_VISIBLE_IN_LATEST_STATE
 
     /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
     fun reset() {
-      trackedWrongAnswerCount = 0
-      previousHelpIndex = HelpIndex.getDefaultInstance()
+      trackedWrongAnswerCount = DEFAULT_WRONG_ANSWER_COUNT
+      previousHelpIndex = DEFAULT_PREVIOUS_HINT_INDEX
       // Cancel any potential pending hints by advancing the sequence number. Note that this isn't
       // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
       // scheduled without overlapping with past sequence numbers.
       hintSequenceNumber++
-      isHintVisibleInLatestState = false
+      isHintVisibleInLatestState = DEFAULT_IS_HINT_VISIBLE_IN_LATEST_STATE
     }
 
     /** Hide hint when moving to any previous state. */
