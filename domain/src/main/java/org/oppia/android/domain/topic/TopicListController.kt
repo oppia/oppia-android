@@ -243,7 +243,6 @@ class TopicListController @Inject constructor(
     topicProgressList: List<TopicProgress>,
     completionTimeFilter: (Long) -> Boolean
   ): List<PromotedStory> {
-    if (topicProgressList.isNotEmpty()) {
       val playedPromotedStoryList = mutableListOf<PromotedStory>()
       val sortedTopicProgressList =
         topicProgressList.sortedByDescending { topicProgress ->
@@ -311,8 +310,6 @@ class TopicListController @Inject constructor(
         }
       }
       return playedPromotedStoryList
-    }
-    return emptyList()
   }
 
   private fun checkIfStoryIsCompleted(
