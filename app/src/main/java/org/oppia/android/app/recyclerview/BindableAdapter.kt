@@ -39,7 +39,7 @@ class BindableAdapter<T : Any> internal constructor(
   // TODO(#170): Introduce support for stable IDs.
 
   /** Sets the data of this adapter. This is expected to be called by Android via data-binding. */
-  private fun setData(newDataList: List<T>) {
+  fun setData(newDataList: List<T>) {
     dataList.clear()
     dataList += newDataList
     // TODO(#171): Introduce diffing to notify subsets of the view to properly support animations
