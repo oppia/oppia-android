@@ -78,7 +78,8 @@ class StateRetrieverTest {
         listOf<StringList>(
           createHtmlStringList("<p>yesterday</p>"),
           createHtmlStringList("<p>I bought</p>"),
-          createHtmlStringList("<p>a camera at the store</p>")
+          createHtmlStringList("<p>a camera at the store</p>"),
+          createHtmlStringList("<p>to photograph the parade.</p>")
         )
       )
       .build()
