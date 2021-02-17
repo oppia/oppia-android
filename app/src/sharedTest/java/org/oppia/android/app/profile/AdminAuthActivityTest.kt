@@ -15,6 +15,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -26,6 +27,7 @@ import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -330,6 +332,22 @@ class AdminAuthActivityTest {
       )
       onView(withId(R.id.admin_auth_input_pin))
         .check(matches(hasNoErrorText()))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_buttonState_isDisabled() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(withId(R.id.admin_auth_submit_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.admin_auth_submit_button)).check(matches(not(isClickable())))
     }
   }
 
