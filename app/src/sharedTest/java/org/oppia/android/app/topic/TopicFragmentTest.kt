@@ -375,6 +375,7 @@ class TopicFragmentTest {
         targetViewId = R.id.master_skills_text_view,
         stringToMatch = "Master These Skills"
       )
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
