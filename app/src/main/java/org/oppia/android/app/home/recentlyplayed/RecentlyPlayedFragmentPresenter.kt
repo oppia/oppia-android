@@ -1,6 +1,5 @@
 package org.oppia.android.app.home.recentlyplayed
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
-import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.databinding.RecentlyPlayedFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
@@ -42,7 +41,6 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private lateinit var binding: RecentlyPlayedFragmentBinding
   private lateinit var ongoingListAdapter: OngoingListAdapter
   private val itemList: MutableList<RecentlyPlayedItemViewModel> = ArrayList()
-  private val orientation = Resources.getSystem().configuration.orientation
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -67,22 +65,22 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   private val ongoingStoryListSummaryResultLiveData:
-    LiveData<AsyncResult<OngoingStoryList>>
+    LiveData<AsyncResult<PromotedActivityList>>
     by lazy {
-      topicListController.getOngoingStoryList(
+      topicListController.getPromotedActivityList(
         ProfileId.newBuilder().setInternalId(internalProfileId).build()
       ).toLiveData()
     }
 
   private fun subscribeToOngoingStoryList() {
-    getAssumedSuccessfulOngoingStoryList().observe(
+    getAssumedSuccessfulPromotedActivityList().observe(
       fragment,
-      Observer<OngoingStoryList> { it ->
-        if (it.recentStoryCount > 0) {
+      Observer<PromotedActivityList> { it ->
+        if (it.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
           val recentSectionTitleViewModel =
             SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
           itemList.add(recentSectionTitleViewModel)
-          for (promotedStory in it.recentStoryList) {
+          for (promotedStory in it.promotedStoryList.recentlyPlayedStoryList) {
             val ongoingStoryViewModel =
               OngoingStoryViewModel(
                 promotedStory,
@@ -93,7 +91,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           }
         }
 
-        if (it.olderStoryCount > 0) {
+        if (it.promotedStoryList.olderPlayedStoryList.isNotEmpty()) {
           val showDivider = itemList.isNotEmpty()
           val olderSectionTitleViewModel =
             SectionTitleViewModel(
@@ -101,7 +99,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
               showDivider
             )
           itemList.add(olderSectionTitleViewModel)
-          for (promotedStory in it.olderStoryList) {
+          for (promotedStory in it.promotedStoryList.olderPlayedStoryList) {
             val ongoingStoryViewModel =
               OngoingStoryViewModel(
                 promotedStory,
@@ -111,25 +109,50 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
             itemList.add(ongoingStoryViewModel)
           }
         }
+
+        if (it.promotedStoryList.suggestedStoryList.isNotEmpty()) {
+          val showDivider = itemList.isNotEmpty()
+          val recommendedSectionTitleViewModel =
+            SectionTitleViewModel(
+              activity.getString(R.string.recommended_stories),
+              showDivider
+            )
+          itemList.add(recommendedSectionTitleViewModel)
+          for (suggestedStory in it.promotedStoryList.suggestedStoryList) {
+            val ongoingStoryViewModel =
+              OngoingStoryViewModel(
+                suggestedStory,
+                entityType,
+                fragment as OngoingStoryClickListener
+              )
+            itemList.add(ongoingStoryViewModel)
+          }
+        }
+
         binding.ongoingStoryRecyclerView.layoutManager =
-          createLayoutManager(it.recentStoryCount, it.olderStoryCount)
+          createLayoutManager(
+            it.promotedStoryList.recentlyPlayedStoryCount,
+            it.promotedStoryList.olderPlayedStoryCount,
+            it.promotedStoryList.suggestedStoryCount
+          )
         ongoingListAdapter.notifyDataSetChanged()
       }
     )
   }
 
-  private fun getAssumedSuccessfulOngoingStoryList(): LiveData<OngoingStoryList> {
+  private fun getAssumedSuccessfulPromotedActivityList(): LiveData<PromotedActivityList> {
     // If there's an error loading the data, assume the default.
     return Transformations.map(ongoingStoryListSummaryResultLiveData) {
       it.getOrDefault(
-        OngoingStoryList.getDefaultInstance()
+        PromotedActivityList.getDefaultInstance()
       )
     }
   }
 
   private fun createLayoutManager(
     recentStoryCount: Int,
-    oldStoryCount: Int
+    oldStoryCount: Int,
+    suggestedStoryCount: Int
   ): RecyclerView.LayoutManager {
     val sectionTitle0Position = if (recentStoryCount == 0) {
       // If recent story count is 0, that means that section title 0 will not be visible.
@@ -145,6 +168,20 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     } else {
       recentStoryCount + 1
     }
+    val sectionTitle2Position = when {
+      suggestedStoryCount == 0 -> {
+        -1 // If suggested story count is 0, that means that section title 1 will not be visible.
+      }
+      oldStoryCount == 0 && recentStoryCount == 0 -> {
+        0
+      }
+      oldStoryCount > 0 && recentStoryCount > 0 -> {
+        recentStoryCount + oldStoryCount + 2
+      }
+      else -> {
+        recentStoryCount + oldStoryCount + 1
+      }
+    }
 
     val spanCount = activity.resources.getInteger(R.integer.recently_played_span_count)
     ongoingListAdapter.setSpanCount(spanCount)
@@ -152,10 +189,13 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     val layoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
-        return if (position == sectionTitle0Position || position == sectionTitle1Position) {
-          /* number of spaces this item should occupy = */ spanCount
-        } else {
-          /* number of spaces this item should occupy = */ 1
+        return when (position) {
+          sectionTitle0Position, sectionTitle1Position, sectionTitle2Position -> {
+            /* number of spaces this item should occupy = */ spanCount
+          }
+          else -> {
+            /* number of spaces this item should occupy = */ 1
+          }
         }
       }
     }

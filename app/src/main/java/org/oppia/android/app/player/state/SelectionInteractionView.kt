@@ -118,10 +118,6 @@ class SelectionInteractionView @JvmOverloads constructor(
   }
 }
 
-fun setAllOptionsItemInputType(selectionItemInputType: SelectionItemInputType) {
-  setAllOptionsItemInputType(selectionItemInputType)
-}
-
 /** Sets the exploration ID for a specific [SelectionInteractionView] via data-binding. */
 @BindingAdapter("entityId")
 fun setEntityId(

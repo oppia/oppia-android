@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnswerOutcome
@@ -26,6 +27,9 @@ import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.audio.AudioFragment
 import org.oppia.android.app.player.audio.AudioUiManager
+import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
+import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
+import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.utility.SplitScreenManager
@@ -38,7 +42,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
-import java.util.Date
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -53,13 +57,15 @@ class StateFragmentPresenter @Inject constructor(
   @ExplorationHtmlParserEntityType private val entityType: String,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val context: Context,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
   private val logger: ConsoleLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private val splitScreenManager: SplitScreenManager
+  private val splitScreenManager: SplitScreenManager,
+  private val oppiaClock: OppiaClock
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -102,7 +108,9 @@ class StateFragmentPresenter @Inject constructor(
     )
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, entityType),
-      binding.congratulationsTextView
+      binding.congratulationsTextView,
+      binding.congratulationsTextConfettiView,
+      binding.fullScreenConfettiView
     )
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
@@ -219,8 +227,11 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
-    congratulationsTextView: TextView
+    congratulationsTextView: TextView,
+    congratulationsTextConfettiView: KonfettiView,
+    fullScreenConfettiView: KonfettiView
   ): StatePlayerRecyclerViewAssembler {
+    val isTablet = context.resources.getBoolean(R.bool.isTablet)
     return builder
       .hasConversationView(hasConversationView)
       .addContentSupport()
@@ -231,7 +242,15 @@ class StateFragmentPresenter @Inject constructor(
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
       .addReturnToTopicSupport()
-      .addCongratulationsForCorrectAnswers(congratulationsTextView)
+      .addCelebrationForCorrectAnswers(
+        congratulationsTextView,
+        congratulationsTextConfettiView,
+        MINI_CONFETTI_BURST
+      )
+      .addCelebrationForEndOfSession(
+        fullScreenConfettiView,
+        if (isTablet) LARGE_CONFETTI_BURST else MEDIUM_CONFETTI_BURST
+      )
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(
         explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
@@ -390,7 +409,7 @@ class StateFragmentPresenter @Inject constructor(
           if (result.labelledAsCorrectAnswer) {
             recyclerViewAssembler.stopHintsFromShowing()
             viewModel.setHintBulbVisibility(false)
-            recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+            recyclerViewAssembler.showCelebrationOnCorrectAnswer()
           } else {
             viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
           }
@@ -508,7 +527,7 @@ class StateFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      Date().time
+      oppiaClock.getCurrentTimeMs()
     )
   }
 
@@ -518,7 +537,7 @@ class StateFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      Date().time
+      oppiaClock.getCurrentTimeMs()
     )
   }
 }

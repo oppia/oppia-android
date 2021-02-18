@@ -11,14 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.CoordinatesProvider
-import androidx.test.espresso.action.GeneralClickAction
-import androidx.test.espresso.action.Press
-import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -27,10 +25,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -41,6 +41,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.AudioFragmentTestActivity
@@ -61,15 +63,22 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.IsOnRobolectric
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RobolectricModule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -81,10 +90,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_HINDI = 0
-private const val PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH = 1
-private const val PROFILE_ID_INVALID_AUDIO_LANGUAGE = 2
 
 /**
  * TODO(#59): Make this test work with Espresso.
@@ -100,11 +105,20 @@ private const val PROFILE_ID_INVALID_AUDIO_LANGUAGE = 2
 )
 class AudioFragmentTest {
 
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Inject
   lateinit var context: Context
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
 
   @Inject
   lateinit var audioPlayerController: AudioPlayerController
@@ -116,6 +130,9 @@ class AudioFragmentTest {
   private val TEST_URL2 =
     "https://storage.googleapis.com/oppiaserver-resources/exploration/" +
       "2mzzFVDLuAj8/assets/audio/content-es-i0nhu49z0q.mp3"
+
+  private var internalProfileId = 0
+  private var profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Before
   fun setUp() {
@@ -135,42 +152,37 @@ class AudioFragmentTest {
     )
   }
 
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
   @Test
-  @Ignore
-  fun testAudioFragment_openFragment_profileWithEnglishAudioLanguage_showsEnglishAudioLanguage() {
+  fun testAudioFragment_withDefaultProfile_showsAudioLanguageAsEnglish() {
+    addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
+      onView(withId(R.id.audio_language_icon)).check(matches(withContentDescription("en")))
     }
   }
 
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
+  // TODO(#2417): Re-enable once this test passes on robolectric
+  @RunOn(TestPlatform.ESPRESSO)
   @Test
-  @Ignore
-  fun testAudioFragment_openFragment_showsDefaultAudioLanguageAsHindi() {
+  fun testAudioFragment_withHindiAudioLanguageProfile_showsHindiAudioLanguage() {
+    addMediaInfo()
+    profileTestHelper.addOnlyAdminProfile()
+    val data = profileManagementController.updateAudioLanguage(
+      profileId,
+      AudioLanguage.HINDI_AUDIO_LANGUAGE
+    ).toLiveData()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_HINDI
+        internalProfileId
       )
     ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("HI")))
-    }
-  }
-
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to remove this test
-  @Test
-  @Ignore
-  fun testAudioFragment_openFragment_showsEnglishAudioLanguageWhenDefaultAudioLanguageNotAvailable() { // ktlint-disable max-line-length
-    launch<AudioFragmentTestActivity>(
-      createAudioFragmentTestIntent(
-        PROFILE_ID_INVALID_AUDIO_LANGUAGE
-      )
-    ).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(data)
+      }
+      onView(withId(R.id.audio_language_icon)).check(matches(withContentDescription("hi")))
     }
   }
 
@@ -179,31 +191,33 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(isDisplayed()))
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
     }
   }
 
+  // TODO(#2417): Need a fake audio library to run this test on espresso
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
   }
@@ -213,35 +227,37 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
+      onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
     }
   }
 
+  // TODO(#2417): Need a fake audio library to run this test on espresso
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testAudioFragment_invokePrepared_clickPlay_touchSeekBar_checkStillPlaying() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
+      onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
   }
@@ -251,35 +267,34 @@ class AudioFragmentTest {
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
       invokePreparedListener(shadowMediaPlayer)
-      onView(withId(R.id.ivPlayPauseAudio)).perform(click())
-      onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
   }
 
-  // TODO(#1845): As updating tvAudioLanguage to image, we need to update this test
   @Test
   fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+        internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+      onView(withId(R.id.play_pause_audio_icon)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
+      onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.tvAudioLanguage)).perform(click())
+      onView(withId(R.id.audio_language_icon)).perform(click())
 
       val locale = Locale("es")
 
@@ -290,9 +305,9 @@ class AudioFragmentTest {
       onView(withText("OK")).inRoot(isDialog()).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
-      onView(withId(R.id.sbAudioProgress)).check(matches(withSeekBarPosition(0)))
+      onView(withId(R.id.audio_progress_seek_bar)).check(matches(withSeekBarPosition(0)))
     }
   }
 
@@ -306,27 +321,20 @@ class AudioFragmentTest {
     }
   }
 
-  private fun clickSeekBar(position: Int): ViewAction {
-    return GeneralClickAction(
-      Tap.SINGLE,
-      object : CoordinatesProvider {
-        override fun calculateCoordinates(view: View?): FloatArray {
-          val seekBar = view as SeekBar
-          val screenPos = IntArray(2)
-          seekBar.getLocationInWindow(screenPos)
-          val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
+  private fun setProgress(progress: Int): ViewAction {
+    return object : ViewAction {
+      override fun perform(uiController: UiController, view: View) {
+        (view as SeekBar).progress = progress
+      }
 
-          val percentagePos = (position.toFloat() / seekBar.max)
-          val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
-          val screenY = seekBar.height / 2f + screenPos[1]
-          val coordinates = FloatArray(2)
-          coordinates[0] = screenX
-          coordinates[1] = screenY
-          return coordinates
-        }
-      },
-      Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0
-    )
+      override fun getDescription(): String {
+        return "Set a progress on a SeekBar"
+      }
+
+      override fun getConstraints(): Matcher<View> {
+        return ViewMatchers.isAssignableFrom(SeekBar::class.java)
+      }
+    }
   }
 
   private fun setUpTestApplicationComponent() {
@@ -432,7 +440,7 @@ class AudioFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

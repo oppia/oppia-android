@@ -9,7 +9,10 @@ private const val ALPHA_FULL = 1.0f
 class DragAndDropItemFacilitator(
   private val onItemDragListener: OnItemDragListener,
   private val onDragEndedListenr: OnDragEndedListener
-) : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, /* swipeDirs= */ 0) { // ktlint-disable max-line-length
+) : ItemTouchHelper.SimpleCallback(
+  ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+  /* swipeDirs= */ 0
+) {
 
   override fun onMove(
     recyclerView: RecyclerView,
