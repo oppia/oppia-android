@@ -123,7 +123,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserActivity_activityLabel_isDefinedSuccessfully() {
+  fun testProfileChooserActivity_hasCorrectLabel() {
     activityTestRule.launchActivity(/* startIntent= */ null)
     val title = activityTestRule.activity.title
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
