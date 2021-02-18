@@ -84,6 +84,7 @@
       android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".app.profile.ProfileChooserActivity"
+      android:label="@string/profile_chooser_label"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.profileprogress.ProfilePictureActivity"
@@ -136,7 +137,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.testing.ProfileChooserFragmentTestActivity"
-      android:label="@string/profile_chooser_label"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.testing.TopicTestActivity"
