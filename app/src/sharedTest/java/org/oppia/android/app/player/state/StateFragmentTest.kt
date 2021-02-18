@@ -254,6 +254,7 @@ class StateFragmentTest {
       startPlayingExploration()
 
       scrollToViewType(CONTINUE_INTERACTION)
+
       onView(withId(R.id.continue_button)).check(matches(isDisplayed()))
     }
   }
