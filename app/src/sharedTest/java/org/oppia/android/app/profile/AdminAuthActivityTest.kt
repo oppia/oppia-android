@@ -369,7 +369,7 @@ class AdminAuthActivityTest {
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.admin_auth_submit_button)).check(matches(not(isEnabled())))
+      onView(withId(R.id.admin_auth_submit_button)).check(matches(isEnabled()))
     }
   }
 
