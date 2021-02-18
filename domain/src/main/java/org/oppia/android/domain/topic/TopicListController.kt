@@ -445,7 +445,7 @@ class TopicListController @Inject constructor(
   *     \                           /
   *       -----> Test topic 1 <----
   *
-  * In this example, when topic X is finished, topic Y will be recommended.
+  * In this example, when topic Fractions is finished, Test topic 0 will be recommended and so on.
   */
   private fun computeSuggestedStories(
     topicProgressList: List<TopicProgress>
