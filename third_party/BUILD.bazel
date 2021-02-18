@@ -1,0 +1,53 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+This package contains all third-party dependencies that the project depends on. Each maven artifact
+should correspond to a single wrapper android_library, and versions should go in versions.bzl.
+
+Note to developers: most new dependencies should go in versions.bzl, not here. In some circumstances
+(such as when non-Maven dependencies need to be used) it's appropriate to add additional
+dependencies here.
+
+Further, note that not all dependencies can be encapsulated here. For example, Dagger introduces its
+own Bazel macros to automatically set up code generation (which includes pulling in external Dagger
+dependencies).
+"""
+
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
+
+# Create an android library wrapper for all production dependencies. Note that artifact is used so
+# that the correct Maven repository (default) is selected. This allows future customization
+# potential in managing multiple Maven repositories.
+[android_library(
+    name = name.replace(":", "_").replace(".", "_"),
+    visibility = ["//visibility:public"],
+    exports = [
+        artifact("%s:%s" % (name, version)),
+    ],
+) for name, version in MAVEN_PRODUCTION_DEPENDENCY_VERSIONS.items()]
+
+# Create an android library wrapper for all test dependencies.
+[android_library(
+    name = name.replace(":", "_").replace(".", "_"),
+    testonly = True,
+    visibility = ["//visibility:public"],
+    exports = [
+        artifact("%s:%s" % (name, version)),
+    ],
+) for name, version in MAVEN_TEST_DEPENDENCY_VERSIONS.items()]
+
+android_library(
+    name = "circularimageview_circular_image_view",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@circularimageview//circularimageview:circular_image_view",
+    ],
+)
+
+android_library(
+    name = "robolectric_android-all",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@robolectric//bazel:android-all",
+    ],
+)

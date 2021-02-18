@@ -3,21 +3,24 @@ package org.oppia.android.app.player.state
 import android.app.Application
 import android.content.Context
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.PerformException
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -35,6 +38,8 @@ import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -94,6 +99,7 @@ import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -339,6 +345,8 @@ class StateFragmentLocalTest {
 
       submitTwoWrongAnswers()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
     }
   }
@@ -351,8 +359,15 @@ class StateFragmentLocalTest {
 
       submitTwoWrongAnswers()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
+
+      // The previous response header and only the last failed answer should be showing (since the
+      // failed answer list is collapsed).
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
-      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
+      onView(withId(R.id.state_recycler_view))
+        .check(
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 1)
+        )
     }
   }
 
@@ -365,8 +380,15 @@ class StateFragmentLocalTest {
       submitTwoWrongAnswers()
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.previous_response_header)).perform(click())
-      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
+      testCoroutineDispatchers.runCurrent()
+
+      // Both failed answers should be showing.
+      onView(withId(R.id.state_recycler_view))
+        .check(
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 2)
+        )
     }
   }
 
@@ -379,14 +401,31 @@ class StateFragmentLocalTest {
       submitTwoWrongAnswers()
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
-      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
+      // Only the latest failed answer should be showing.
+      onView(withId(R.id.state_recycler_view))
+        .check(
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 1)
+        )
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
       onView(withSubstring("Previous Responses")).perform(click())
-      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
+      testCoroutineDispatchers.runCurrent()
+      // All failed answers should be showing.
+      onView(withId(R.id.state_recycler_view))
+        .check(
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 2)
+        )
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
       onView(withSubstring("Previous Responses")).perform(click())
-      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
+      testCoroutineDispatchers.runCurrent()
+      // Only the latest failed answer should now be showing.
+      onView(withId(R.id.state_recycler_view))
+        .check(
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 1)
+        )
     }
   }
 
@@ -451,6 +490,9 @@ class StateFragmentLocalTest {
       playThroughState1()
       submitTwoWrongAnswers()
       onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
+      // The previous navigation button is next to a submit answer button in this state.
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.previous_state_navigation_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.hint_bulb)).check(matches(not(isDisplayed())))
@@ -464,7 +506,7 @@ class StateFragmentLocalTest {
       playThroughState1()
       submitTwoWrongAnswers()
       onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
-      moveToPreviousAndBackToCurrentState()
+      moveToPreviousAndBackToCurrentStateWithSubmitButton()
       onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
     }
   }
@@ -481,7 +523,7 @@ class StateFragmentLocalTest {
       onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
       closeHintsAndSolutionsDialog()
 
-      moveToPreviousAndBackToCurrentState()
+      moveToPreviousAndBackToCurrentStateWithSubmitButton()
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -496,23 +538,19 @@ class StateFragmentLocalTest {
       playThroughState1()
 
       produceAndViewFirstHint()
-
-      onView(withId(R.id.previous_state_navigation_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
-      onView(withId(R.id.next_state_navigation_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
+      moveToPreviousAndBackToCurrentStateWithSubmitButton()
       openHintsAndSolutionsDialog()
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(0))
+      testCoroutineDispatchers.runCurrent()
       onView(
         RecyclerViewMatcher.atPositionOnView(
           R.id.hints_and_solution_recycler_view, 0, R.id.hint_summary_container
         )
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
+
       onView(isRoot()).check(
         matches(
           not(
@@ -762,6 +800,7 @@ class StateFragmentLocalTest {
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -814,6 +853,7 @@ class StateFragmentLocalTest {
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -837,9 +877,11 @@ class StateFragmentLocalTest {
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .perform(click())
+      testCoroutineDispatchers.runCurrent()
 
       onView(withText("This will reveal the solution. Are you sure?"))
         .inRoot(isDialog())
@@ -1486,12 +1528,53 @@ class StateFragmentLocalTest {
   }
 
   // Go to previous state and then come back to current state
-  private fun moveToPreviousAndBackToCurrentState() {
+  private fun moveToPreviousAndBackToCurrentStateWithSubmitButton() {
+    // The previous navigation button is bundled with the submit button sometimes, and specifically
+    // for tests that are currently on a state with a submit button after the first state.
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
+    testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.previous_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
+
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
+    testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.next_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
+  }
+
+  /**
+   * Returns a [ViewAssertion] that can be used to check the specified matcher applies the specified
+   * number of times for children against the view under test. If the count does not exactly match,
+   * the assertion will fail.
+   */
+  private fun matchesChildren(matcher: Matcher<View>, times: Int): ViewAssertion {
+    return matches(
+      object : TypeSafeMatcher<View>() {
+        override fun describeTo(description: Description?) {
+          description
+            ?.appendDescriptionOf(matcher)
+            ?.appendText(" occurs times: $times in child views")
+        }
+
+        override fun matchesSafely(view: View?): Boolean {
+          if (view !is ViewGroup) {
+            throw PerformException.Builder()
+              .withCause(IllegalStateException("Expected to match against view group, not: $view"))
+              .build()
+          }
+          val matchingCount = view.children.filter(matcher::matches).count()
+          if (matchingCount != times) {
+            throw PerformException.Builder()
+              .withActionDescription("Expected to match $matcher against $times children")
+              .withViewDescription("$view")
+              .withCause(
+                IllegalStateException("Matched $matchingCount times in $view (expected $times)")
+              )
+              .build()
+          }
+          return true
+        }
+      })
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -1511,7 +1594,7 @@ class StateFragmentLocalTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
