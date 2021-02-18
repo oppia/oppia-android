@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply from: "$project.rootDir/jacoco.gradle"
 
 android {
   compileSdkVersion 29
@@ -42,6 +43,12 @@ android {
           showStandardStreams = false
         }
       }
+    }
+  }
+
+  buildTypes {
+    debug {
+      testCoverageEnabled true
     }
   }
 }

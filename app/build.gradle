@@ -4,6 +4,7 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply from: "$project.rootDir/jacoco.gradle"
 
 android {
   compileSdkVersion 29
@@ -39,6 +40,7 @@ android {
     }
     debug {
       pseudoLocalesEnabled true
+      testCoverageEnabled true
     }
   }
   splits {

@@ -1,0 +1,78 @@
+apply plugin: 'jacoco'
+
+
+jacoco {
+  toolVersion = "0.8.2"
+}
+
+tasks.withType(Test) {
+  jacoco.includeNoLocationClasses = true
+  jacoco.excludes = ['jdk.internal.*']
+}
+project.afterEvaluate {
+
+  (android.hasProperty('applicationVariants')
+      ? android.'applicationVariants'
+      : android.'libraryVariants').all { variant ->
+    def variantName = variant.name
+    def unitTestTask = "test${variantName.capitalize()}UnitTest"
+    def uiTestCoverageTask = "create${variantName.capitalize()}CoverageReport"
+
+    tasks.create(name: "${unitTestTask}Coverage", type: JacocoReport, dependsOn: [
+        "$unitTestTask",
+        "$uiTestCoverageTask",
+        ":data:testDebugUnitTest",
+        ":domain:testDebugUnitTest",
+        ":testing:testDebugUnitTest",
+        ":utility:testDebugUnitTest"
+    ]) {
+      group = "Reporting"
+      description = "Generate Jacoco coverage reports for the ${variantName.capitalize()} build"
+
+      reports {
+        html.enabled = true
+        xml.enabled = false
+        csv.enabled = false
+      }
+
+      def fileFilter = [
+          '**/R.class',
+          '**/R$*.class',
+          '**/BuildConfig.*',
+          '**/Manifest*.*',
+          '**/*Test*.*',
+          'android/**/*.*',
+          '**/*$[0-9].*'
+      ]
+
+      classDirectories.setFrom(files([
+          fileTree(dir: "${buildDir}/tmp/kotlin-classes/${variantName}", excludes: fileFilter),
+          fileTree(dir: "$project.rootDir/data/build/tmp/kotlin-classes/debug", excludes: fileFilter),
+          fileTree(dir: "$project.rootDir/domain/build/tmp/kotlin-classes/debug", excludes: fileFilter),
+          fileTree(dir: "$project.rootDir/testing/build/tmp/kotlin-classes/debug", excludes: fileFilter),
+          fileTree(dir: "$project.rootDir/utility/build/tmp/kotlin-classes/debug", excludes: fileFilter)
+      ]))
+
+      def coverageSourceDirs = [
+          "$project.rootDir/app/src/main/java",
+          "$project.rootDir/data/src/main/java",
+          "$project.rootDir/domain/src/main/java",
+          "$project.rootDir/testing/src/main/java",
+          "$project.rootDir/utility/src/main/java"
+      ]
+      additionalSourceDirs.setFrom(files(coverageSourceDirs))
+      sourceDirectories.setFrom(files(coverageSourceDirs))
+
+      def uiTestsData = fileTree(dir: "${buildDir}/outputs/code_coverage/${variantName}AndroidTest/connected/", includes: ["**/*.ec"])
+
+      executionData(files([
+          "$project.buildDir/jacoco/${unitTestTask}.exec",
+          uiTestsData,
+          "$project.rootDir/data/build/jacoco/testDebugUnitTest.exec",
+          "$project.rootDir/domain/build/jacoco/testDebugUnitTest.exec",
+          "$project.rootDir/testing/build/jacoco/testDebugUnitTest.exec",
+          "$project.rootDir/utility/build/jacoco/testDebugUnitTest.exec"
+      ]))
+    }
+  }
+}
