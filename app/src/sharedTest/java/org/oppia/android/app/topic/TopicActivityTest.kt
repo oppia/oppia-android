@@ -87,7 +87,7 @@ class TopicActivityTest {
   }
 
   @Test
-  fun testTopicActivity_activityLabel_isDefinedSuccessfully() {
+  fun testTopicActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
@@ -95,9 +95,10 @@ class TopicActivityTest {
       )
     )
     val title = activityTestRule.activity.title
-    assertThat(title).isEqualTo(
-      context.getString(R.string.topic_page)
-    )
+
+    /* Verify that the activity label is correct as a proxy to verify
+       TalkBack will announce the correct string when it's read out. */
+    assertThat(title).isEqualTo(context.getString(R.string.topic_page))
   }
 
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
