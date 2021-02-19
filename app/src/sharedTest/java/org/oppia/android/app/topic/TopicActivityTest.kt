@@ -96,8 +96,8 @@ class TopicActivityTest {
     )
     val title = activityTestRule.activity.title
 
-    /* Verify that the activity label is correct as a proxy to verify
-       TalkBack will announce the correct string when it's read out. */
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
     assertThat(title).isEqualTo(context.getString(R.string.topic_page))
   }
 
