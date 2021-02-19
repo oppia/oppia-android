@@ -2,8 +2,6 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
-import android.view.View
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -21,13 +19,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.android.material.textfield.TextInputLayout
 import dagger.Component
-import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -97,7 +91,7 @@ class AdminAuthActivityTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
-  
+
   @Inject
   lateinit var textInputAction: TextInputAction
 

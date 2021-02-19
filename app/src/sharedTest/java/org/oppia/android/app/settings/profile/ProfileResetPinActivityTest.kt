@@ -2,8 +2,6 @@ package org.oppia.android.app.settings.profile
 
 import android.app.Application
 import android.content.Context
-import android.view.View
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -23,13 +21,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.android.material.textfield.TextInputLayout
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -102,7 +96,7 @@ class ProfileResetPinActivityTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
-  
+
   @Inject
   lateinit var textInputAction: TextInputAction
 
@@ -934,7 +928,7 @@ class ProfileResetPinActivityTest {
         .check(matches(not(isClickable())))
     }
   }
-  
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
