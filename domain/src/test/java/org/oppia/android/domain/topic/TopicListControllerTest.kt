@@ -372,7 +372,25 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markRecentlyPlayedFirstTestTopic_defaultSuggestedStoryListIsCorrect() {
+  fun testGetStoryList_noTopicProgress_defaultSuggestedStoryListIsCorrect() {
+    val promotedActivityList = retrievePromotedActivityList()
+
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
+      .isEqualTo(2)
+    verifyPromotedStoryAsFractionStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[0]
+    )
+    verifyPromotedStoryAsRatioStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[1]
+    )
+  }
+
+  @Test
+  fun testGetStoryList_markRecentlyPlayedFirstTestTopic_suggestedStoryListIsCorrect() {
     storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
