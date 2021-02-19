@@ -20,6 +20,8 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.CompletedStoryList
+import org.oppia.android.app.model.ExitProfileDialogArguments
+import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
@@ -105,9 +107,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             return@setOnClickListener
           }
 
-          binding.fragmentDrawerNavView.menu.forEach { menuItem ->
-            menuItem.isCheckable = false
-          }
+          uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
 
           drawerLayout.closeDrawers()
           getFooterViewModel().isAdministratorControlsSelected.set(true)
@@ -199,7 +199,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   private fun openActivityByMenuItemId(menuItemId: Int) {
-    getFooterViewModel().isAdministratorControlsSelected.set(false)
     if (previousMenuItemId != menuItemId) {
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
@@ -244,8 +243,25 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           if (previousFragment != null) {
             fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
           }
+          val exitProfileDialogArguments =
+            if (getFooterViewModel().isAdministratorControlsSelected.get() == true) {
+              ExitProfileDialogArguments
+                .newBuilder()
+                .setHighlightItem(HighlightItem.ADMINISTRATOR_CONTROLS_ITEM)
+                .build()
+            } else {
+              ExitProfileDialogArguments
+                .newBuilder()
+                .setHighlightItem(HighlightItem.LAST_CHECKED_MENU_ITEM)
+                .build()
+            }
+          getFooterViewModel().isAdministratorControlsSelected.set(false)
+          binding.fragmentDrawerNavView.menu.getItem(
+            NavigationDrawerItem.SWITCH_PROFILE.ordinal
+          ).isChecked =
+            true
           val dialogFragment = ExitProfileDialogFragment
-            .newInstance(isFromNavigationDrawer = true)
+            .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
           dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
         }
       }
@@ -263,12 +279,37 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     )
   }
 
-  fun markHomeMenuCloseDrawer() {
-    binding.fragmentDrawerNavView.menu.getItem(
-      NavigationDrawerItem.HOME.ordinal
-    ).isChecked =
-      true
+  fun highlightLastCheckedMenuItem() {
+    previousMenuItemId?.let { itemId ->
+      if (itemId != 0) {
+        binding.fragmentDrawerNavView.menu.getItem(
+          NavigationDrawerItem.valueFromNavId(
+            itemId
+          ).ordinal
+        ).isChecked =
+          true
+      }
+      drawerLayout.closeDrawers()
+    }
+  }
+
+  fun highlightAdministratorControlsItem() {
+    getFooterViewModel().isAdministratorControlsSelected.set(true)
+    uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
     drawerLayout.closeDrawers()
+  }
+
+  fun unhighlightSwitchProfileMenuItem() {
+    binding.fragmentDrawerNavView.menu.getItem(
+      NavigationDrawerItem.SWITCH_PROFILE.ordinal
+    ).isChecked =
+      false
+  }
+
+  private fun uncheckAllMenuItemsWhenAdministratorControlsIsSelected() {
+    binding.fragmentDrawerNavView.menu.forEach {
+      it.isCheckable = false
+    }
   }
 
   /**
@@ -345,6 +386,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     } else {
       // For showing navigation drawer in AdministratorControlsActivity
       getFooterViewModel().isAdministratorControlsSelected.set(true)
+      uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
       this.drawerLayout = drawerLayout
       drawerToggle = object : ActionBarDrawerToggle(
         fragment.activity,

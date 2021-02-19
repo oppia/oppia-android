@@ -21,21 +21,17 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Clone Oppia Bazel
-        run: git clone https://github.com/oppia/bazel.git $HOME/oppia-bazel
-      - name: Unzip Bazel binary
-        run: |
-          cd $HOME/oppia-bazel
-          unzip bazel-build.zip
-          cd $GITHUB_WORKSPACE
-          chmod a+x $HOME/oppia-bazel/bazel
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
       - name: Compute test matrix based on affected targets
         id: compute-test-matrix-from-affected
         if: "!contains(github.event.pull_request.title, '[RunAllTests]')"
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
         # comma-separated list of test targets for the matrix.
         run: |
-          TEST_TARGET_LIST=$(bash ./scripts/compute_affected_tests.sh $HOME/oppia-bazel/bazel | sed 's/^\|$/"/g' | paste -sd, -)
+          TEST_TARGET_LIST=$(bash ./scripts/compute_affected_tests.sh bazel | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
           echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
           if [[ ! -z "$TEST_TARGET_LIST" ]]; then
@@ -47,7 +43,7 @@ jobs:
         id: compute-test-matrix-from-all
         if: "contains(github.event.pull_request.title, '[RunAllTests]')"
         run: |
-          TEST_TARGET_LIST=$($HOME/oppia-bazel/bazel query "kind(test, //...)" | sed 's/^\|$/"/g' | paste -sd, -)
+          TEST_TARGET_LIST=$(bazel query "kind(test, //...)" | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
           echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
           echo "::set-output name=have_tests_to_run::true"
@@ -63,18 +59,21 @@ jobs:
       matrix: ${{fromJson(needs.bazel_compute_affected_targets.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v2
-      - name: Clone Oppia Bazel
-        run: git clone https://github.com/oppia/bazel.git $HOME/oppia-bazel
       - name: Set up JDK 9
         uses: actions/setup-java@v1
         with:
           java-version: 9
-      - name: Extract Android tools
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+      - name: Set up Oppia Bazel Android Tools
         run: |
-          mkdir -p $GITHUB_WORKSPACE/tmp/android_tools
-          cd $HOME/oppia-bazel
-          unzip bazel-tools.zip
-          tar -xf $HOME/oppia-bazel/android_tools.tar.gz -C $GITHUB_WORKSPACE/tmp/android_tools
+          mkdir $HOME/opensource
+          cd $HOME/opensource
+          git clone https://github.com/oppia/oppia-bazel-tools
+          echo build --override_repository=android_tools="$(cd "$(dirname "$HOME/opensource/oppia-bazel-tools")"; pwd)/$(basename "$HOME/opensource/oppia-bazel-tools")" >> $HOME/.bazelrc
+          echo build --android_databinding_use_androidx >> $HOME/.bazelrc
       # See explanation in bazel_build_app for how this is installed.
       - name: Install git-secret (non-fork only)
         if: ${{ github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
@@ -98,22 +97,16 @@ jobs:
           gpg --import ./git_secret_private_key.gpg
           cd $GITHUB_WORKSPACE
           git secret reveal
-      - name: Unzip Bazel binary
-        run: |
-          cd $HOME/oppia-bazel
-          unzip bazel-build.zip
-          cd $GITHUB_WORKSPACE
-          chmod a+x $HOME/oppia-bazel/bazel
       - name: Run Oppia Test (with caching, non-fork only)
         if: ${{ github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
-        run: $HOME/oppia-bazel/bazel test --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- ${{ matrix.test-target }}
+        run: bazel test --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- ${{ matrix.test-target }}
       - name: Run Oppia Test (without caching, fork only)
         if: ${{ github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
-        run: $HOME/oppia-bazel/bazel test --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools -- ${{ matrix.test-target }}
+        run: bazel test -- ${{ matrix.test-target }}
 
   # Reference: https://github.community/t/127354/7.
   check_test_results:
