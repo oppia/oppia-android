@@ -22,13 +22,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.android.material.textfield.TextInputLayout
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -101,6 +97,9 @@ class ProfileRenameActivityTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
+
+  @Inject
+  lateinit var textInputAction: TextInputAction
 
   @Before
   fun setUp() {
@@ -229,7 +228,7 @@ class ProfileRenameActivityTest {
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_input))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
+        .check(matches(textInputAction.hasErrorText(R.string.add_profile_error_name_not_unique)))
     }
   }
 
@@ -256,7 +255,7 @@ class ProfileRenameActivityTest {
         )
       ).perform(editTextInputAction.appendText(" "))
       onView(withId(R.id.profile_rename_input))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -278,7 +277,7 @@ class ProfileRenameActivityTest {
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_input))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_only_letters)))
+        .check(matches(textInputAction.hasErrorText(R.string.add_profile_error_name_only_letters)))
     }
   }
 
@@ -307,7 +306,7 @@ class ProfileRenameActivityTest {
       ).perform(editTextInputAction.appendText(" "))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_input))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -367,7 +366,7 @@ class ProfileRenameActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_input))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
+        .check(matches(textInputAction.hasErrorText(R.string.add_profile_error_name_not_unique)))
     }
   }
 
@@ -383,31 +382,6 @@ class ProfileRenameActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
-    }
-  }
-
-  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        val expectedErrorText = context.resources.getString(expectedErrorTextId)
-        return (view as TextInputLayout).error == expectedErrorText
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("TextInputLayout's error")
-      }
-    }
-  }
-
-  private fun hasNoErrorText(): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        return (view as TextInputLayout).error.isNullOrEmpty()
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("")
-      }
     }
   }
 

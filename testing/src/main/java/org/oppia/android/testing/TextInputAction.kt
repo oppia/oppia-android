@@ -9,10 +9,17 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import javax.inject.Inject
 
+/**
+ * Action for accessing HasErrorTest and HasNoErrorTest Functions.
+ *
+ * This is needed because Robolectric doesn't seem to properly input digits for text views using
+ * 'android:digits' or other filters. See https://github.com/robolectric/robolectric/issues/5110
+ * for specifics.
+ */
 class TextInputAction @Inject constructor(
   val context: Context
 ) {
-
+  // TODO(#1720): Move this to a companion object & use a test-only singleton injector to retrieve
   fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
     return object : TypeSafeMatcher<View>() {
       override fun matchesSafely(view: View): Boolean {
@@ -33,7 +40,7 @@ class TextInputAction @Inject constructor(
       }
 
       override fun describeTo(description: Description) {
-        description.appendText("")
+        description.appendText("TextInputLayout's error")
       }
     }
   }

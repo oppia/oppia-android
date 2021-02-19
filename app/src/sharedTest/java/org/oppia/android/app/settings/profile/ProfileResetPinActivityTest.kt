@@ -68,6 +68,7 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TextInputAction
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -101,6 +102,9 @@ class ProfileResetPinActivityTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
+  
+  @Inject
+  lateinit var textInputAction: TextInputAction
 
   @Before
   fun setUp() {
@@ -289,7 +293,7 @@ class ProfileResetPinActivityTest {
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
       onView(withId(R.id.profile_reset_input_pin))
-        .check(matches(hasErrorText(R.string.profile_reset_pin_error_admin_pin_length)))
+        .check(matches(textInputAction.hasErrorText(R.string.profile_reset_pin_error_admin_pin_length)))
     }
   }
 
@@ -324,7 +328,7 @@ class ProfileResetPinActivityTest {
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_input_pin))
-        .check(matches(hasErrorText(R.string.profile_reset_pin_error_admin_pin_length)))
+        .check(matches(textInputAction.hasErrorText(R.string.profile_reset_pin_error_admin_pin_length)))
     }
   }
 
@@ -357,7 +361,7 @@ class ProfileResetPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_input_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -391,7 +395,7 @@ class ProfileResetPinActivityTest {
       )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_input_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -425,7 +429,7 @@ class ProfileResetPinActivityTest {
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
       onView(withId(R.id.profile_reset_input_confirm_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(matches(textInputAction.hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
     }
   }
 
@@ -461,7 +465,7 @@ class ProfileResetPinActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_input_confirm_pin))
         .perform(scrollTo())
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(matches(textInputAction.hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
     }
   }
 
@@ -550,7 +554,7 @@ class ProfileResetPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -584,7 +588,7 @@ class ProfileResetPinActivityTest {
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
       onView(withId(R.id.profile_reset_input_pin))
-        .check(matches(hasErrorText(R.string.profile_reset_pin_error_user_pin_length)))
+        .check(matches(textInputAction.hasErrorText(R.string.profile_reset_pin_error_user_pin_length)))
     }
   }
 
@@ -617,7 +621,7 @@ class ProfileResetPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_input_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -651,7 +655,7 @@ class ProfileResetPinActivityTest {
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
       onView(withId(R.id.profile_reset_input_confirm_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(matches(textInputAction.hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
     }
   }
 
@@ -693,7 +697,7 @@ class ProfileResetPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_input_confirm_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(textInputAction.hasNoErrorText()))
     }
   }
 
@@ -930,32 +934,7 @@ class ProfileResetPinActivityTest {
         .check(matches(not(isClickable())))
     }
   }
-
-  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        val expectedErrorText = context.resources.getString(expectedErrorTextId)
-        return (view as TextInputLayout).error == expectedErrorText
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("TextInputLayout's error")
-      }
-    }
-  }
-
-  private fun hasNoErrorText(): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        return (view as TextInputLayout).error.isNullOrEmpty()
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("")
-      }
-    }
-  }
-
+  
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton

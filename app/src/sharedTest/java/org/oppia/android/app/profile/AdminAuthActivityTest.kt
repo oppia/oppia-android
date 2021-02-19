@@ -2,6 +2,8 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.view.View
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -19,8 +21,13 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.textfield.TextInputLayout
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -90,7 +97,7 @@ class AdminAuthActivityTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
-
+  
   @Inject
   lateinit var textInputAction: TextInputAction
 
@@ -328,6 +335,45 @@ class AdminAuthActivityTest {
       )
       onView(withId(R.id.admin_auth_input_pin))
         .check(matches(textInputAction.hasNoErrorText()))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_defaultButtonState_isDisabled() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(withId(R.id.admin_auth_submit_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputPin_buttonStateIsEnabled() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.admin_auth_submit_button)).check(matches(isEnabled()))
     }
   }
 
