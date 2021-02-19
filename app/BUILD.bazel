@@ -21,6 +21,19 @@ package(default_visibility = ["//utility:__subpackages__"])
 
 exports_files(["src/main/AndroidManifest.xml"])
 
+# Source files for the migrated source files library. The files inside the migrated source files
+# library are dependencies in app module that have their own libraries
+# Place your files here if:
+#  - A file of any type has their own BAZEL library
+# NOTE: if the file is added here make sure to remove this from the other sub items
+#  of EXCLUDED_APP_LIB_FILES
+
+# keep sorted
+MIGRATED_SOURCE_FILES = [
+    "src/main/java/org/oppia/android/app/viewmodel/ObservableArrayList.kt",
+    "src/main/java/org/oppia/android/app/viewmodel/ObservableViewModel.kt",
+]
+
 # Source files for the annotations library. The files inside the annotations library are dependencies
 # for all other libraries in app module, except the listeners library.
 # Place your file here if:
@@ -404,7 +417,7 @@ SNAP_HELPER = ["src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper
 # - annotations
 # - binding_adapters
 
-EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS + SNAP_HELPER
+EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS + SNAP_HELPER + MIGRATED_SOURCE_FILES
 
 # Files to be built by the app library. All of these files are assumed to have resource imports and
 # will be processed by the app library genrule regardless in order to avoid any import issues.
