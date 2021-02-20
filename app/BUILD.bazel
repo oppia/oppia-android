@@ -22,11 +22,11 @@ package(default_visibility = ["//utility:__subpackages__"])
 exports_files(["src/main/AndroidManifest.xml"])
 
 # Source files for the migrated source files library. The files inside the migrated source files
-# library are dependencies in app module that have their own libraries
+# library are dependencies in app module that have their own libraries.
 # Place your files here if:
 #  - A file of any type has their own BAZEL library
-# NOTE: if the file is added here make sure to remove this from the other sub items
-#  of EXCLUDED_APP_LIB_FILES
+# NOTE: if the file is added here make sure to remove this from the other sub lists
+# of EXCLUDED_APP_LIB_FILES.
 
 # keep sorted
 MIGRATED_SOURCE_FILES = [
