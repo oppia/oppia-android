@@ -287,7 +287,8 @@ class ProfileResetPinActivityTest {
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
       onView(withId(R.id.profile_reset_input_pin))
-        .check(matches(textInputAction.hasErrorText(R.string.profile_reset_pin_error_admin_pin_length)))
+        .check(matches(
+          textInputAction.hasErrorText(R.string.profile_reset_pin_error_admin_pin_length)))
     }
   }
 
@@ -322,7 +323,8 @@ class ProfileResetPinActivityTest {
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_input_pin))
-        .check(matches(textInputAction.hasErrorText(R.string.profile_reset_pin_error_admin_pin_length)))
+        .check(matches(
+          textInputAction.hasErrorText(R.string.profile_reset_pin_error_admin_pin_length)))
     }
   }
 
@@ -423,7 +425,8 @@ class ProfileResetPinActivityTest {
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
       onView(withId(R.id.profile_reset_input_confirm_pin))
-        .check(matches(textInputAction.hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(matches(
+          textInputAction.hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
     }
   }
 
@@ -459,7 +462,8 @@ class ProfileResetPinActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_input_confirm_pin))
         .perform(scrollTo())
-        .check(matches(textInputAction.hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(matches(
+          textInputAction.hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
     }
   }
 
@@ -582,7 +586,8 @@ class ProfileResetPinActivityTest {
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
       onView(withId(R.id.profile_reset_input_pin))
-        .check(matches(textInputAction.hasErrorText(R.string.profile_reset_pin_error_user_pin_length)))
+        .check(matches(
+          textInputAction.hasErrorText(R.string.profile_reset_pin_error_user_pin_length)))
     }
   }
 
