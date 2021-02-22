@@ -34,6 +34,8 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/white"
+      android:focusable="true"
+      android:onClick="@{(v) -> viewModel.onTopicWifiUpdatePermissionChanged()}"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
       android:paddingEnd="16dp"
@@ -64,16 +66,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topic_update_on_wifi_title_text_view" />
 
-      <androidx.appcompat.widget.SwitchCompat
+      <Switch
         android:id="@+id/topic_update_on_wifi_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="4dp"
+        android:checked="@{viewModel.isTopicWifiUpdatePermission}"
         android:minWidth="48dp"
         android:minHeight="48dp"
-        android:checked="@{viewModel.isTopicWifiUpdatePermission}"
-        android:onCheckedChanged="@{(switch, checked) -> viewModel.onTopicWifiUpdatePermissionChanged(checked)}"
+        android:textOff="@string/off"
+        android:textOn="@string/on"
         android:theme="@style/SwitchCompatTheme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,6 +99,8 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/white"
+      android:focusable="true"
+      android:onClick="@{(v) -> viewModel.onTopicWifiUpdatePermissionChanged()}"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
       android:paddingEnd="16dp"
@@ -127,16 +132,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/auto_update_topic_title_text_view" />
 
-      <androidx.appcompat.widget.SwitchCompat
+      <Switch
         android:id="@+id/auto_update_topic_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="4dp"
+        android:checked="@{viewModel.isTopicAutoUpdatePermission}"
         android:minWidth="48dp"
         android:minHeight="48dp"
-        android:checked="@{viewModel.isTopicAutoUpdatePermission}"
-        android:onCheckedChanged="@{(switch, checked) -> viewModel.onTopicAutoUpdatePermissionChanged(checked)}"
+        android:textOff="@string/off"
+        android:textOn="@string/on"
         android:theme="@style/SwitchCompatTheme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
