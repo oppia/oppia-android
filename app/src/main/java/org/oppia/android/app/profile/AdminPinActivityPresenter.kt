@@ -40,7 +40,6 @@ class AdminPinActivityPresenter @Inject constructor(
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
     activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_close)
 
-
     val binding =
       DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
 
