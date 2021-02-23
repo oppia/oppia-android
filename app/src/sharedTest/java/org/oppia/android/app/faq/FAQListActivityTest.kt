@@ -65,7 +65,7 @@ import javax.inject.Singleton
 class FAQListActivityTest {
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<FAQListActivity> = ActivityTestRule(
+  val activityTestRule: ActivityTestRule<FAQListActivity> = ActivityTestRule(
     FAQListActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
@@ -79,9 +79,7 @@ class FAQListActivityTest {
 
   @Test
   fun testFAQListActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(
-      createFAQListActivityIntent()
-    )
+    activityTestRule.launchActivity(createFAQListActivityIntent())
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
