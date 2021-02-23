@@ -6,6 +6,7 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
+import android.widget.Switch
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
@@ -35,11 +36,15 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import kotlinx.android.synthetic.main.administrator_controls_download_permissions_view.*
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -103,6 +108,13 @@ import javax.inject.Singleton
 )
 class AdministratorControlsActivityTest {
 
+  @get:Rule
+  val activityTestRule: ActivityTestRule<AdministratorControlsActivity> = ActivityTestRule(
+    AdministratorControlsActivity::class.java,
+    /* initialTouchMode= */true,
+    /* launchActivity= */false
+  )
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
@@ -128,6 +140,26 @@ class AdministratorControlsActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  // This test case specifically checks if the code is using Switch or not. This is important
+  // because if we replace this Switch with SwitchCompat the experience on screen readers changes.
+  @Test
+  fun testAdministratorControlsFragment_topicUpdateOnWifiIsASwitch() {
+    activityTestRule.launchActivity(createAdministratorControlsActivityIntent(profileId = 0))
+
+    val downloadUpdateSwitch = activityTestRule.activity.topic_update_on_wifi_switch
+    assertThat(downloadUpdateSwitch).isInstanceOf(Switch::class.java)
+  }
+
+  // This test case specifically checks if the code is using Switch or not. This is important
+  // because if we replace this Switch with SwitchCompat the experience on screen readers changes.
+  @Test
+  fun testAdministratorControlsFragment_autoUpdateTopicIsASwitch() {
+    activityTestRule.launchActivity(createAdministratorControlsActivityIntent(profileId = 0))
+
+    val autoUpdateTopicSwitch = activityTestRule.activity.auto_update_topic_switch
+    assertThat(autoUpdateTopicSwitch).isInstanceOf(Switch::class.java)
   }
 
   @Test
