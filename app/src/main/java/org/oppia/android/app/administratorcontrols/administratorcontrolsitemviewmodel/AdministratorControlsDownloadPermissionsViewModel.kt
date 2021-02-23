@@ -41,8 +41,8 @@ class AdministratorControlsDownloadPermissionsViewModel(
     isTopicAutoUpdatePermission.addOnPropertyChangedCallback(topicAutoUpdatePermissionCallback)
   }
 
-  fun onTopicWifiUpdatePermissionChanged() {
-    val checked = !isTopicWifiUpdatePermission.get()!!
+  private fun onTopicWifiUpdatePermissionChanged() {
+    val checked = isTopicWifiUpdatePermission.get()!!
     profileManagementController.updateWifiPermissionDeviceSettings(userProfileId, checked)
       .toLiveData()
       .observe(
@@ -59,7 +59,7 @@ class AdministratorControlsDownloadPermissionsViewModel(
       )
   }
 
-  fun onTopicAutoUpdatePermissionChanged() {
+  private fun onTopicAutoUpdatePermissionChanged() {
     val checked = isTopicAutoUpdatePermission.get()!!
     profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
       userProfileId,

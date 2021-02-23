@@ -147,7 +147,7 @@ class AdministratorControlsActivityTest {
   @Test
   fun testAdministratorControlsFragment_topicUpdateOnWifiIsASwitch() {
     activityTestRule.launchActivity(createAdministratorControlsActivityIntent(profileId = 0))
-
+    scrollToPosition(position = 3)
     val downloadUpdateSwitch = activityTestRule.activity.topic_update_on_wifi_switch
     assertThat(downloadUpdateSwitch).isInstanceOf(Switch::class.java)
   }
@@ -157,7 +157,7 @@ class AdministratorControlsActivityTest {
   @Test
   fun testAdministratorControlsFragment_autoUpdateTopicIsASwitch() {
     activityTestRule.launchActivity(createAdministratorControlsActivityIntent(profileId = 0))
-
+    scrollToPosition(position = 3)
     val autoUpdateTopicSwitch = activityTestRule.activity.auto_update_topic_switch
     assertThat(autoUpdateTopicSwitch).isInstanceOf(Switch::class.java)
   }
