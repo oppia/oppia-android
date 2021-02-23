@@ -127,7 +127,7 @@
                 android:textSize="14sp" />
             </LinearLayout>
 
-            <androidx.appcompat.widget.SwitchCompat
+            <Switch
               android:id="@+id/profile_edit_allow_download_switch"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
