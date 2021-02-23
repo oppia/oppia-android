@@ -59,12 +59,12 @@ import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule

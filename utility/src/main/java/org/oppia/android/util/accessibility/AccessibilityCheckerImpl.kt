@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 /** Implementation of [AccessibilityChecker]. */
 class AccessibilityCheckerImpl @Inject constructor(
-    private val context: Context
+  private val context: Context
 ) : AccessibilityChecker {
   private val accessibilityManager by lazy {
     context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
