@@ -143,7 +143,7 @@ class AdministratorControlsActivityTest {
   }
 
   // This test case specifically checks if the code is using Switch or not. This is important
-  // because if we replace this Switch with SwitchCompat the experience on screen readers changes.
+  // because if we replace this Switch with SwitchCompat the experience on screen reader changes.
   @Test
   fun testAdministratorControlsFragment_topicUpdateOnWifiIsASwitch() {
     activityTestRule.launchActivity(createAdministratorControlsActivityIntent(profileId = 0))
@@ -153,7 +153,7 @@ class AdministratorControlsActivityTest {
   }
 
   // This test case specifically checks if the code is using Switch or not. This is important
-  // because if we replace this Switch with SwitchCompat the experience on screen readers changes.
+  // because if we replace this Switch with SwitchCompat the experience on screen reader changes.
   @Test
   fun testAdministratorControlsFragment_autoUpdateTopicIsASwitch() {
     activityTestRule.launchActivity(createAdministratorControlsActivityIntent(profileId = 0))
