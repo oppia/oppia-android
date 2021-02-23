@@ -2,12 +2,11 @@ apply plugin: 'jacoco'
 
 
 jacoco {
-  toolVersion = "0.8.2"
+  toolVersion = "0.8.6"
 }
 
 tasks.withType(Test) {
   jacoco.includeNoLocationClasses = true
-  jacoco.excludes = ['jdk.internal.*']
 }
 project.afterEvaluate {
 
@@ -20,7 +19,6 @@ project.afterEvaluate {
 
     tasks.create(name: "${unitTestTask}Coverage", type: JacocoReport, dependsOn: [
         "$unitTestTask",
-        "$uiTestCoverageTask",
         ":data:testDebugUnitTest",
         ":domain:testDebugUnitTest",
         ":testing:testDebugUnitTest",
@@ -36,42 +34,51 @@ project.afterEvaluate {
       }
 
       def fileFilter = [
+          // data binding
+          'android/databinding/**/*.class',
+          '**/android/databinding/*Binding.class',
+          '**/android/databinding/*',
+          '**/androidx/databinding/*',
+          '**/BR.*',
+          // android
           '**/R.class',
           '**/R$*.class',
           '**/BuildConfig.*',
           '**/Manifest*.*',
           '**/*Test*.*',
           'android/**/*.*',
-          '**/*$[0-9].*'
+          // kotlin
+          '**/*MapperImpl*.*',
+          '**/*$ViewInjector*.*',
+          '**/*$ViewBinder*.*',
+          '**/BuildConfig.*',
+          '**/*Component*.*',
+          '**/*BR*.*',
+          '**/Manifest*.*',
+          '**/*$Lambda$*.*',
+          '**/*Companion*.*',
+          '**/*Module*.*',
+          '**/*Dagger*.*',
+          '**/*MembersInjector*.*',
+          '**/*_MembersInjector.class',
+          '**/*_Factory*.*',
+          '**/*_Provide*Factory*.*',
+          '**/*Extensions*.*',
+          // sealed and data classes
+          '**/*$Result.*',
+          '**/*$Result$*.*'
       ]
 
       classDirectories.setFrom(files([
-          fileTree(dir: "${buildDir}/tmp/kotlin-classes/${variantName}", excludes: fileFilter),
-          fileTree(dir: "$project.rootDir/data/build/tmp/kotlin-classes/debug", excludes: fileFilter),
-          fileTree(dir: "$project.rootDir/domain/build/tmp/kotlin-classes/debug", excludes: fileFilter),
-          fileTree(dir: "$project.rootDir/testing/build/tmp/kotlin-classes/debug", excludes: fileFilter),
-          fileTree(dir: "$project.rootDir/utility/build/tmp/kotlin-classes/debug", excludes: fileFilter)
+          fileTree(dir: "${buildDir}/tmp/kotlin-classes/${variantName}", excludes: fileFilter)
       ]))
 
-      def coverageSourceDirs = [
-          "$project.rootDir/app/src/main/java",
-          "$project.rootDir/data/src/main/java",
-          "$project.rootDir/domain/src/main/java",
-          "$project.rootDir/testing/src/main/java",
-          "$project.rootDir/utility/src/main/java"
-      ]
-      additionalSourceDirs.setFrom(files(coverageSourceDirs))
-      sourceDirectories.setFrom(files(coverageSourceDirs))
+      def variantSourceSets = variant.sourceSets.java.srcDirs.collect { it.path }.flatten()
+      sourceDirectories.setFrom(project.files(variantSourceSets))
 
-      def uiTestsData = fileTree(dir: "${buildDir}/outputs/code_coverage/${variantName}AndroidTest/connected/", includes: ["**/*.ec"])
 
       executionData(files([
           "$project.buildDir/jacoco/${unitTestTask}.exec",
-          uiTestsData,
-          "$project.rootDir/data/build/jacoco/testDebugUnitTest.exec",
-          "$project.rootDir/domain/build/jacoco/testDebugUnitTest.exec",
-          "$project.rootDir/testing/build/jacoco/testDebugUnitTest.exec",
-          "$project.rootDir/utility/build/jacoco/testDebugUnitTest.exec"
       ]))
     }
   }

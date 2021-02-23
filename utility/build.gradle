@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply from: "$project.rootDir/jacoco.gradle"
+//apply from: "$project.rootDir/jacoco.gradle"
 
 android {
   compileSdkVersion 29
@@ -13,6 +13,7 @@ android {
     targetSdkVersion 29
     versionCode 1
     versionName "1.0"
+    multiDexEnabled true
     javaCompileOptions {
       annotationProcessorOptions {
         includeCompileClasspath true
