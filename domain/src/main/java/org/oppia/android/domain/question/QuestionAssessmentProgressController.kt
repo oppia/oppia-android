@@ -196,12 +196,12 @@ class QuestionAssessmentProgressController @Inject constructor(
             hintIndex
           )
           progress.stateDeck.pushStateForHint(state, hintIndex)
+          progress.hintViewed()
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing hint' situation. This can specifically happen if hint throws an
           // exception.
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
-          progress.hintViewed()
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
         return MutableLiveData(AsyncResult.success(hint))
@@ -230,12 +230,12 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.stateDeck.submitSolutionRevealed(state)
           solution = progress.stateList.computeSolutionForResult(state)
           progress.stateDeck.pushStateForSolution(state)
+          progress.solutionViewed()
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing solution' situation. This can specifically happen if solution
           // throws an exception.
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
-          progress.solutionViewed()
         }
 
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
