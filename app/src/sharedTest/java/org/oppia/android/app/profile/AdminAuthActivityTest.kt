@@ -16,8 +16,10 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -114,6 +116,21 @@ class AdminAuthActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testAdminAuthActivity_closeButton_checkContentDescription() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
+      )
+    ).use {
+      onView(withContentDescription(R.string.admin_auth_close)).check(matches(isDisplayed()))
+    }
   }
 
   @Test
