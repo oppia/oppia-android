@@ -1,5 +1,6 @@
 package org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel
 
+import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -23,6 +24,23 @@ class AdministratorControlsDownloadPermissionsViewModel(
   val isTopicAutoUpdatePermission =
     ObservableField<Boolean>(deviceSettings.automaticallyUpdateTopics)
 
+  init {
+    val topicWifiUpdatePermissionCallback: Observable.OnPropertyChangedCallback =
+      object : Observable.OnPropertyChangedCallback() {
+        override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+          onTopicWifiUpdatePermissionChanged()
+        }
+      }
+    val topicAutoUpdatePermissionCallback: Observable.OnPropertyChangedCallback =
+      object : Observable.OnPropertyChangedCallback() {
+        override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+          onTopicAutoUpdatePermissionChanged()
+        }
+      }
+    isTopicWifiUpdatePermission.addOnPropertyChangedCallback(topicWifiUpdatePermissionCallback)
+    isTopicAutoUpdatePermission.addOnPropertyChangedCallback(topicAutoUpdatePermissionCallback)
+  }
+
   fun onTopicWifiUpdatePermissionChanged() {
     val checked = !isTopicWifiUpdatePermission.get()!!
     profileManagementController.updateWifiPermissionDeviceSettings(userProfileId, checked)
@@ -42,7 +60,7 @@ class AdministratorControlsDownloadPermissionsViewModel(
   }
 
   fun onTopicAutoUpdatePermissionChanged() {
-    val checked = !isTopicWifiUpdatePermission.get()!!
+    val checked = isTopicAutoUpdatePermission.get()!!
     profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
       userProfileId,
       checked
