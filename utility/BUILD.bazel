@@ -38,6 +38,7 @@ TEST_DEPS = [
     "//app:crashlytics",
     "//app:crashlytics_deps",
     "//model",
+    "//model:test_models",
     "//testing",
     "//third_party:androidx_test_ext_junit",
     "//third_party:com_google_truth_truth",
@@ -47,69 +48,16 @@ TEST_DEPS = [
     "//third_party:robolectric_android-all",
 ]
 
-utility_test(
-    name = "AsyncResultTest",
-    srcs = ["src/test/java/org/oppia/android/util/data/AsyncResultTest.kt"],
-    test_class = "org.oppia.android.util.data.AsyncResultTest",
-    deps = TEST_DEPS,
-)
+# Qualified file paths for test classes that have been migrated over to their own packages &
+# shouldn't be defined as module-level tests.
+# keep sorted
+MIGRATED_TESTS = [
+]
 
-utility_test(
-    name = "DataProvidersTest",
-    srcs = ["src/test/java/org/oppia/android/util/data/DataProvidersTest.kt"],
-    test_class = "org.oppia.android.util.data.DataProvidersTest",
+[utility_test(
+    name = test_file_path,
+    filtered_tests = MIGRATED_TESTS,
     deps = TEST_DEPS,
-)
-
-utility_test(
-    name = "InMemoryBlockingCacheTest",
-    srcs = ["src/test/java/org/oppia/android/util/data/InMemoryBlockingCacheTest.kt"],
-    test_class = "org.oppia.android.util.data.InMemoryBlockingCacheTest",
-    deps = TEST_DEPS,
-)
-
-utility_test(
-    name = "DateTimeUtilTest",
-    srcs = ["src/test/java/org/oppia/android/util/datetime/DateTimeUtilTest.kt"],
-    test_class = "org.oppia.android.util.datetime.DateTimeUtilTest",
-    deps = TEST_DEPS,
-)
-
-utility_test(
-    name = "BundleExtensionsTest",
-    srcs = ["src/test/java/org/oppia/android/util/extensions/BundleExtensionsTest.kt"],
-    test_class = "org.oppia.android.util.extensions.BundleExtensionsTest",
-    deps = TEST_DEPS + [
-        "//model:test_models",
-    ],
-)
-
-utility_test(
-    name = "EventBundleCreatorTest",
-    srcs = ["src/test/java/org/oppia/android/util/logging/EventBundleCreatorTest.kt"],
-    test_class = "org.oppia.android.util.logging.EventBundleCreatorTest",
-    deps = TEST_DEPS,
-)
-
-utility_test(
-    name = "NetworkConnectionUtilTest",
-    srcs = ["src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilTest.kt"],
-    test_class = "org.oppia.android.util.networking.NetworkConnectionUtilTest",
-    deps = TEST_DEPS,
-)
-
-utility_test(
-    name = "DirectoryManagementUtilTest",
-    srcs = ["src/test/java/org/oppia/android/util/profile/DirectoryManagementUtilTest.kt"],
-    test_class = "org.oppia.android.util.profile.DirectoryManagementUtilTest",
-    deps = TEST_DEPS,
-)
-
-utility_test(
-    name = "OppiaDateTimeFormatterTest",
-    srcs = ["src/test/java/org/oppia/android/util/system/OppiaDateTimeFormatterTest.kt"],
-    test_class = "org.oppia.android.util.system.OppiaDateTimeFormatterTest",
-    deps = TEST_DEPS,
-)
+) for test_file_path in glob(["src/test/java/org/oppia/android/util/**/*Test.kt"])]
 
 dagger_rules()
