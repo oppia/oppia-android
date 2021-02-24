@@ -3,15 +3,14 @@
 This library contains fake objects used for testing as well as tests for these objects.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("//:oppia_android_test.bzl", "oppia_android_test")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//testing:testing_test.bzl", "testing_test")
 
 # Library for general-purpose testing fakes.
 kt_android_library(
     name = "testing",
+    testonly = True,
     srcs = glob(["src/main/java/org/oppia/android/testing/**/*.kt"]),
     custom_package = "org.oppia.android.testing",
     manifest = "src/main/AndroidManifest.xml",
@@ -19,77 +18,63 @@ kt_android_library(
     deps = [
         ":dagger",
         "//domain",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+        "//third_party:androidx_test_espresso_espresso-contrib",
+        "//third_party:androidx_test_espresso_espresso-core",
+        "//third_party:androidx_test_espresso_espresso-intents",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_runner",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:nl_dionsegijn_konfetti",
+        "//third_party:org_jetbrains_kotlin_kotlin-reflect",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-test",
+        "//third_party:org_mockito_mockito-core",
+        "//third_party:org_robolectric_robolectric",
         "//utility",
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
-        artifact("org.robolectric:robolectric"),
-        artifact("org.jetbrains.kotlin:kotlin-reflect"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
-        artifact("com.google.truth:truth"),
-        artifact("androidx.test.ext:junit"),
-        artifact("org.mockito:mockito-core"),
-        artifact("junit:junit:4.12"),
-        artifact("androidx.test.espresso:espresso-contrib:3.1.0"),
-        artifact("androidx.test.espresso:espresso-core:3.2.0"),
-        artifact("androidx.test.espresso:espresso-intents:3.1.0"),
-        artifact("androidx.test:runner:1.2.0"),
     ],
 )
 
+# keep sorted
 TEST_DEPS = [
-    ":testing",
-    ":dagger",
-    "//domain",
-    "@robolectric//bazel:android-all",
     ":assertion_helpers",
-    artifact("org.jetbrains.kotlin:kotlin-reflect"),
-    artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
-    artifact("com.google.truth:truth"),
-    artifact("androidx.test.ext:junit"),
-    artifact("org.mockito:mockito-core"),
-    artifact("junit:junit:4.12"),
-    artifact("androidx.test.espresso:espresso-contrib:3.1.0"),
-    artifact("androidx.test.espresso:espresso-core:3.2.0"),
-    artifact("androidx.test.espresso:espresso-intents:3.1.0"),
-    artifact("androidx.test:runner:1.2.0"),
-    artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2"),
+    ":dagger",
+    ":testing",
+    "//domain",
+    "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+    "//third_party:androidx_test_espresso_espresso-contrib",
+    "//third_party:androidx_test_espresso_espresso-core",
+    "//third_party:androidx_test_espresso_espresso-intents",
+    "//third_party:androidx_test_ext_junit",
+    "//third_party:androidx_test_runner",
+    "//third_party:com_google_truth_truth",
+    "//third_party:junit_junit",
+    "//third_party:org_jetbrains_kotlin_kotlin-reflect",
+    "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-test",
+    "//third_party:org_mockito_mockito-core",
+    "//third_party:robolectric_android-all",
 ]
 
-testing_test(
-    name = "CoroutineExecutorServiceTest",
-    srcs = ["src/test/java/org/oppia/android/testing/CoroutineExecutorServiceTest.kt"],
-    test_class = "org.oppia.android.testing.CoroutineExecutorServiceTest",
-    deps = TEST_DEPS,
-)
+# Qualified file paths for test classes that have been migrated over to their own packages &
+# shouldn't be defined as module-level tests.
+# keep sorted
+MIGRATED_TESTS = [
+]
 
-testing_test(
-    name = "FakeEventLoggerTest",
-    srcs = ["src/test/java/org/oppia/android/testing/FakeEventLoggerTest.kt"],
-    test_class = "org.oppia.android.testing.FakeEventLoggerTest",
+[testing_test(
+    name = test_file_path,
+    filtered_tests = MIGRATED_TESTS,
     deps = TEST_DEPS,
-)
-
-testing_test(
-    name = "FakeExceptionLoggerTest",
-    srcs = ["src/test/java/org/oppia/android/testing/FakeExceptionLoggerTest.kt"],
-    test_class = "org.oppia.android.testing.FakeExceptionLoggerTest",
-    deps = TEST_DEPS,
-)
-
-testing_test(
-    name = "ProfileTestHelperTest",
-    srcs = ["src/test/java/org/oppia/android/testing/profile/ProfileTestHelperTest.kt"],
-    test_class = "org.oppia.android.testing.profile.ProfileTestHelperTest",
-    deps = TEST_DEPS,
-)
+) for test_file_path in glob(["src/test/java/org/oppia/android/testing/**/*Test.kt"])]
 
 kt_android_library(
     name = "assertion_helpers",
+    testonly = True,
     srcs = ["src/main/java/org/oppia/android/testing/AssertionHelpers.kt"],
     visibility = ["//visibility:public"],
-    testonly = True,
     deps = [
-        artifact("org.jetbrains.kotlin:kotlin-reflect"),
-        artifact("junit:junit:4.12"),
+        "//third_party:junit_junit",
+        "//third_party:org_jetbrains_kotlin_kotlin-reflect",
     ],
 )
 
