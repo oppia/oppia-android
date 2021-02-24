@@ -15,7 +15,8 @@ import javax.inject.Inject
  *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/NumberWithUnits/directives/number-with-units-rules.service.ts#L34
  */
-internal class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructor(
+// TODO(#1580): Re-restrict access using Bazel visibilities
+class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<NumberWithUnits> {
 
@@ -28,7 +29,6 @@ internal class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructo
   }
 
   // TODO(#209): Determine whether additional sanitation of the input is necessary here.
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: NumberWithUnits, input: NumberWithUnits): Boolean {
     // The number types must match.
     if (answer.numberTypeCase != input.numberTypeCase) {

@@ -45,9 +45,11 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -95,7 +97,7 @@ class TestFontScaleConfigurationUtilActivityTest {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(
-            context.resources.getDimension(R.dimen.space_16dp)
+            context.resources.getDimension(R.dimen.font_scale_content_small_text_view_size)
           )
         )
       )
@@ -125,7 +127,7 @@ class TestFontScaleConfigurationUtilActivityTest {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(
-            context.resources.getDimension(R.dimen.space_24dp)
+            context.resources.getDimension(R.dimen.font_scale_content_large_text_view_size)
           )
         )
       )
@@ -140,7 +142,7 @@ class TestFontScaleConfigurationUtilActivityTest {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(
-            context.resources.getDimension(R.dimen.space_28dp)
+            context.resources.getDimension(R.dimen.font_scale_content_extra_large_text_view_size)
           )
         )
       )
@@ -152,6 +154,7 @@ class TestFontScaleConfigurationUtilActivityTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -164,7 +167,7 @@ class TestFontScaleConfigurationUtilActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

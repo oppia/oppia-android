@@ -1,17 +1,14 @@
 package org.oppia.android.app.testing
 
 import android.app.Application
-import android.content.Context
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -45,10 +42,12 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -69,27 +68,21 @@ private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW = "profile_recycler
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = ProfileChooserSpanTest.TestApplication::class, manifest = Config.NONE)
+@Config(application = ProfileChooserSpanTest.TestApplication::class)
 class ProfileChooserSpanTest {
-
-  @Inject
-  lateinit var context: Context
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
-    Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.runCurrent()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
-    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -251,6 +244,78 @@ class ProfileChooserSpanTest {
     }
   }
 
+  @Test
+  @Config(qualifiers = "sw600dp-port")
+  fun testProfileChooserFragmentRecyclerView_tablet_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(3)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp-land-mdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_tablet_mdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(4)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp-land-hdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_tablet_hdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp-land-xhdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_tablet_xhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp-land-xxhdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_tablet_xxhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp-land-xxxhdpi")
+  fun testProfileChooserFragmentRecyclerView_landscape_tablet_xxxhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
+      }
+    }
+  }
+
   private fun getProfileRecyclerViewGridLayoutManager(
     activity: ProfileChooserFragmentTestActivity
   ): GridLayoutManager {
@@ -278,7 +343,7 @@ class ProfileChooserSpanTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class,
+      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -290,7 +355,7 @@ class ProfileChooserSpanTest {
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

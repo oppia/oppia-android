@@ -6,6 +6,8 @@ import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -20,7 +22,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -57,11 +58,13 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.EnableConsoleLog
@@ -102,7 +105,6 @@ class OptionsFragmentTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -152,9 +154,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isCompletelyDisplayed())
-      ).perform(click())
+      it.openNavigationDrawer()
       onView(withId(R.id.options_fragment_placeholder))
         .check(matches(isCompletelyDisplayed()))
       onView(withId(R.id.options_activity_drawer_layout)).check(matches(isCompletelyDisplayed()))
@@ -165,7 +165,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_readingTextSize_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
-      resultDataIntent.putExtra(KEY_MESSAGE_READING_TEXT_SIZE, "Large")
+      resultDataIntent.putExtra(MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY, "Large")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
 
       val activityMonitor = getInstrumentation().addMonitor(
@@ -199,7 +199,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_audioLanguage_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
-      resultDataIntent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, "French")
+      resultDataIntent.putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
 
       val activityMonitor = getInstrumentation().addMonitor(
@@ -233,7 +233,7 @@ class OptionsFragmentTest {
   fun testOptionsFragment_appLanguage_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
-      resultDataIntent.putExtra(KEY_MESSAGE_APP_LANGUAGE, "French")
+      resultDataIntent.putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
 
       val activityMonitor = getInstrumentation().addMonitor(
@@ -286,6 +286,33 @@ class OptionsFragmentTest {
     )
   }
 
+  private fun ActivityScenario<OptionsActivity>.openNavigationDrawer() {
+    onView(withContentDescription(R.string.drawer_open_content_description))
+      .check(matches(isCompletelyDisplayed()))
+      .perform(click())
+
+    // Force the drawer animation to start. See https://github.com/oppia/oppia-android/pull/2204 for
+    // background context.
+    onActivity { activity ->
+      val drawerLayout =
+        activity.findViewById<DrawerLayout>(R.id.options_activity_drawer_layout)
+      // Note that this only initiates a single computeScroll() in Robolectric. Normally, Android
+      // will compute several of these across multiple draw calls, but one seems sufficient for
+      // Robolectric. Note that Robolectric is also *supposed* to handle the animation loop one call
+      // to this method initiates in the view choreographer class, but it seems to not actually
+      // flush the choreographer per observation. In Espresso, this method is automatically called
+      // during draw (and a few other situations), but it's fine to call it directly once to kick it
+      // off (to avoid disparity between Espresso/Robolectric runs of the tests).
+      // NOTE TO DEVELOPERS: if this ever flakes, we can probably put this in a loop with fake time
+      // adjustments to simulate the render loop.
+      drawerLayout.computeScroll()
+    }
+
+    // Wait for the drawer to fully open (mostly for Espresso since Robolectric should synchronously
+    // stabilize the drawer layout after the previous logic completes).
+    testCoroutineDispatchers.runCurrent()
+  }
+
   @Module
   class TestModule {
     @Provides
@@ -314,6 +341,7 @@ class OptionsFragmentTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -326,7 +354,7 @@ class OptionsFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

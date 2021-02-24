@@ -1,6 +1,7 @@
 package org.oppia.android.testing.profile
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -13,7 +14,15 @@ class ProfileTestHelper @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val testCoroutineDispatchers: TestCoroutineDispatchers
 ) {
-  /** Creates one admin profile and one user profile. Logs in to admin profile. */
+
+  private val observer = Observer<AsyncResult<Any?>> { }
+
+  /**
+   * Creates one admin profile and one user profile. Logs in to admin profile.
+   *
+   * @returns a [LiveData] that indicates when the login is complete.
+   * Note that this if is not observed, the login will not be performed.
+   */
   fun initializeProfiles(): LiveData<AsyncResult<Any?>> {
     profileManagementController.addProfile(
       name = "Admin",
@@ -39,6 +48,14 @@ class ProfileTestHelper @Inject constructor(
       colorRgb = -10710042,
       isAdmin = false
     )
+    profileManagementController.addProfile(
+      name = "Natrajan Subramanniyam Balaguruswamy",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = -10710042,
+      isAdmin = false
+    )
     val result = profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(0)
         .build()
@@ -47,7 +64,12 @@ class ProfileTestHelper @Inject constructor(
     return result
   }
 
-  /** Creates one admin profile and logs in to admin profile. */
+  /**
+   * Creates one admin profile and logs in to admin profile.
+   *
+   * @returns a [LiveData] that indicates when the login is complete.
+   * Note that this if is not observed, the login will not be performed.
+   */
   fun addOnlyAdminProfile(): LiveData<AsyncResult<Any?>> {
     profileManagementController.addProfile(
       name = "Admin",
@@ -79,11 +101,17 @@ class ProfileTestHelper @Inject constructor(
     testCoroutineDispatchers.runCurrent()
   }
 
-  /** Login to admin profile. */
-  fun loginToAdmin() = logIntoProfile(internalProfileId = 0)
+  /** Log in to admin profile. */
+  fun logIntoAdmin() = logIntoProfile(internalProfileId = 0)
 
-  /** Login to user profile. */
-  fun loginToUser() = logIntoProfile(internalProfileId = 1)
+  /** Log in to user profile. */
+  fun logIntoUser() = logIntoProfile(internalProfileId = 1)
+
+  /**
+   * Log in to a new user profile that has no progress for any topics or stories. This relies on other
+   * tests utilizing profile 1 as the default user profile so that profile 2 never has any progress.
+   */
+  fun logIntoNewUser() = logIntoProfile(internalProfileId = 2)
 
   private fun logIntoProfile(internalProfileId: Int): LiveData<AsyncResult<Any?>> {
     val result = profileManagementController.loginToProfile(
@@ -91,5 +119,16 @@ class ProfileTestHelper @Inject constructor(
     ).toLiveData()
     testCoroutineDispatchers.runCurrent()
     return result
+  }
+
+  /**
+   * While performing any action based on the LiveData (see other methods above),
+   * this helper function should be used to ensure the operation corresponding to the LiveData
+   * properly completes.
+   *
+   * @param data is the LiveData which needs to accessed while performing action.
+   */
+  fun waitForOperationToComplete(data: LiveData<AsyncResult<Any?>>) {
+    data.observeForever(observer)
   }
 }

@@ -4,7 +4,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical"
-  tools:context=".profileprogress.ProfileProgressActivity">
+  tools:context=".app.profileprogress.ProfileProgressActivity">
 
   <include
     android:id="@+id/profile_progress_activity_toolbar"

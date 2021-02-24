@@ -21,6 +21,7 @@ import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionRetriever
@@ -30,7 +31,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -84,8 +84,7 @@ class TopicController @Inject constructor(
   private val conceptCardRetriever: ConceptCardRetriever,
   private val revisionCardRetriever: RevisionCardRetriever,
   private val storyProgressController: StoryProgressController,
-  private val exceptionsController: ExceptionsController,
-  private val oppiaClock: OppiaClock
+  private val exceptionsController: ExceptionsController
 ) {
 
   /**
@@ -146,7 +145,7 @@ class TopicController @Inject constructor(
       try {
         AsyncResult.success(conceptCardRetriever.loadConceptCard(skillId))
       } catch (e: Exception) {
-        exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+        exceptionsController.logNonFatalException(e)
         AsyncResult.failed<ConceptCard>(e)
       }
     )
@@ -161,7 +160,7 @@ class TopicController @Inject constructor(
       try {
         AsyncResult.success(retrieveReviewCard(topicId, subtopicId))
       } catch (e: Exception) {
-        exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+        exceptionsController.logNonFatalException(e)
         AsyncResult.failed<RevisionCard>(e)
       }
     )
@@ -247,11 +246,6 @@ class TopicController @Inject constructor(
       )
     }
 
-    // If there is no completed chapter, it cannot be an ongoing-topic.
-    if (completedChapterProgressList.isEmpty()) {
-      return false
-    }
-
     // If there is at least 1 completed chapter and 1 not-completed chapter, it is definitely an
     // ongoing-topic.
     if (startedChapterProgressList.isNotEmpty()) {
@@ -333,24 +327,20 @@ class TopicController @Inject constructor(
     if (storyProgress.chapterProgressMap.isNotEmpty()) {
       val storyBuilder = storySummary.toBuilder()
       storySummary.chapterList.forEachIndexed { chapterIndex, chapterSummary ->
+        val chapterBuilder = chapterSummary.toBuilder()
         if (storyProgress.chapterProgressMap.containsKey(chapterSummary.explorationId)) {
-          val chapterBuilder = chapterSummary.toBuilder()
           chapterBuilder.chapterPlayState =
             storyProgress.chapterProgressMap[chapterSummary.explorationId]!!.chapterPlayState
-          storyBuilder.setChapter(chapterIndex, chapterBuilder)
         } else {
-          if (storyBuilder.getChapter(chapterIndex - 1).chapterPlayState ==
-            ChapterPlayState.COMPLETED
-          ) {
-            val chapterBuilder = chapterSummary.toBuilder()
+          val prerequisiteChapter = storyBuilder.getChapter(chapterIndex - 1)
+          if (prerequisiteChapter.chapterPlayState == ChapterPlayState.COMPLETED) {
             chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
-            storyBuilder.setChapter(chapterIndex, chapterBuilder)
           } else {
-            val chapterBuilder = chapterSummary.toBuilder()
             chapterBuilder.chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
-            storyBuilder.setChapter(chapterIndex, chapterBuilder)
+            chapterBuilder.missingPrerequisiteChapter = prerequisiteChapter
           }
         }
+        storyBuilder.setChapter(chapterIndex, chapterBuilder)
       }
       return storyBuilder.build()
     } else {
@@ -386,10 +376,11 @@ class TopicController @Inject constructor(
       val storyBuilder = storySummary.toBuilder()
       storySummary.chapterList.forEachIndexed { index, chapterSummary ->
         val chapterBuilder = chapterSummary.toBuilder()
-        chapterBuilder.chapterPlayState = if (index != 0) {
-          ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+        if (index != 0) {
+          chapterBuilder.chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+          chapterBuilder.missingPrerequisiteChapter = storySummary.chapterList[index - 1]
         } else {
-          ChapterPlayState.NOT_STARTED
+          chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
         }
         storyBuilder.setChapter(index, chapterBuilder)
       }
@@ -409,6 +400,11 @@ class TopicController @Inject constructor(
       createSubtopicListFromJsonArray(topicData.optJSONArray("subtopics"))
     val storySummaryList: List<StorySummary> =
       createStorySummaryListFromJsonArray(topicId, topicData.optJSONArray("canonical_story_dicts"))
+    val topicPlayAvailability = if (topicData.getBoolean("published")) {
+      TopicPlayAvailability.newBuilder().setAvailableToPlayNow(true).build()
+    } else {
+      TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
+    }
     return Topic.newBuilder()
       .setTopicId(topicId)
       .setName(topicData.getString("topic_name"))
@@ -417,6 +413,7 @@ class TopicController @Inject constructor(
       .setTopicThumbnail(createTopicThumbnail(topicData))
       .setDiskSizeBytes(computeTopicSizeBytes(getAssetFileNameList(topicId)))
       .addAllSubtopic(subtopicList)
+      .setTopicPlayAvailability(topicPlayAvailability)
       .build()
   }
 

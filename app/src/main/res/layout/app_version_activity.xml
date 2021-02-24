@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".administratorcontrols.appversion.AppVersionActivity">
+  tools:context=".app.administratorcontrols.appversion.AppVersionActivity">
 
   <com.google.android.material.appbar.AppBarLayout
     android:id="@+id/app_version_app_bar_layout"
@@ -25,6 +25,7 @@
       app:navigationIcon="?attr/homeAsUpIndicator"
       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
       app:title="@string/administrator_controls_app_version"
+      app:titleTextAppearance="@style/ToolbarTextAppearance"
       app:titleTextColor="@color/white" />
   </com.google.android.material.appbar.AppBarLayout>
 

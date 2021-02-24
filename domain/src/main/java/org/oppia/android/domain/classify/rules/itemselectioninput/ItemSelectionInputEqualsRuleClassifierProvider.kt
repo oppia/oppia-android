@@ -13,7 +13,8 @@ import javax.inject.Inject
  *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/ItemSelectionInput/directives/item-selection-input-rules.service.ts#L24
  */
-internal class ItemSelectionInputEqualsRuleClassifierProvider @Inject constructor(
+// TODO(#1580): Re-restrict access using Bazel visibilities
+class ItemSelectionInputEqualsRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<StringList> {
 
@@ -25,7 +26,6 @@ internal class ItemSelectionInputEqualsRuleClassifierProvider @Inject constructo
     )
   }
 
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: StringList, input: StringList): Boolean {
     return answer.htmlList.toSet() == input.htmlList.toSet()
   }

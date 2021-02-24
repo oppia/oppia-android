@@ -40,9 +40,11 @@ import org.oppia.android.domain.topic.TEST_SKILL_ID_0
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.topic.TEST_SKILL_ID_2
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
@@ -291,7 +293,8 @@ class QuestionTrainingControllerTest {
       DragDropSortInputModule::class, NumberWithUnitsRuleModule::class,
       NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class,
       TestQuestionModule::class, TestLogReportingModule::class, ImageClickInputModule::class,
-      LogStorageModule::class, TestDispatcherModule::class, RatioInputModule::class
+      LogStorageModule::class, TestDispatcherModule::class, RatioInputModule::class,
+      RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -19,15 +19,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal">
+      android:layout_height="wrap_content">
 
       <ImageView
         android:id="@+id/slide_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:adjustViewBounds="true"
-        android:contentDescription="@{viewModel.contentDescription}"
+        android:importantForAccessibility="no"
         android:scaleType="fitXY"
         android:src="@{viewModel.slideImage}"
         app:layout_constraintBottom_toBottomOf="parent"
