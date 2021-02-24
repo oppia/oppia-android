@@ -123,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/profile_edit_allow_download_sub"
-                android:textColor="@color/light_grey"
+                android:textColor="@color/accessible_light_grey"
                 android:textSize="14sp" />
             </LinearLayout>
 
@@ -131,8 +131,11 @@
               android:id="@+id/profile_edit_allow_download_switch"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_marginTop="4dp"
-              android:layout_marginEnd="24dp"
+              android:minWidth="48dp"
+              android:minHeight="48dp"
+              android:paddingStart="24dp"
+              android:paddingTop="4dp"
+              android:paddingEnd="24dp"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintTop_toTopOf="parent" />
           </androidx.constraintlayout.widget.ConstraintLayout>
@@ -176,7 +179,7 @@
           android:paddingEnd="36dp"
           android:text="@string/profile_edit_delete"
           android:textAllCaps="false"
-          android:textColor="@color/red"
+          android:textColor="@color/oppiaRed"
           android:textSize="16sp" />
 
         <View
@@ -212,6 +215,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
+            android:importantForAccessibility="no"
             android:text="@{viewModel.profile.name}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="20sp"
