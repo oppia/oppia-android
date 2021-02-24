@@ -43,6 +43,7 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:clickable="true"
+            android:contentDescription="@string/current_profile_picture_content_description"
             android:focusable="true"
             android:src="@drawable/ic_default_avatar"
             app:add_shadow="true"
@@ -55,6 +56,7 @@
             android:id="@+id/add_profile_activity_edit_user_image_view"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:contentDescription="@string/edit_profile_picture_content_description"
             android:paddingStart="12dp"
             android:paddingTop="12dp"
             android:src="@drawable/rounded_white_background_with_shadow"
@@ -67,6 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:contentDescription="@string/required_fields_content_description"
             android:text="@string/add_profile_required"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="12sp"
@@ -92,8 +95,7 @@
               android:imeOptions="actionDone"
               android:maxLength="36"
               android:singleLine="true"
-              android:text="@{viewModel.inputName}"
-              android:textDirection="locale" />
+              android:text="@{viewModel.inputName}" />
           </com.google.android.material.textfield.TextInputLayout>
 
           <CheckBox
@@ -110,6 +112,7 @@
             android:id="@+id/add_profile_activity_info_image_view"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:contentDescription="@string/add_profile_info_content_description"
             android:padding="12dp"
             android:src="@drawable/ic_info_icon"
             app:layout_constraintEnd_toEndOf="parent"
@@ -146,8 +149,7 @@
                 android:imeOptions="actionNext"
                 android:inputType="numberPassword"
                 android:maxLength="3"
-                android:text="@{viewModel.inputPin}"
-                android:textDirection="locale" />
+                android:text="@{viewModel.inputPin}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -171,8 +173,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="numberPassword"
                 android:maxLength="3"
-                android:text="@{viewModel.inputConfirmPin}"
-                android:textDirection="locale" />
+                android:text="@{viewModel.inputConfirmPin}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -189,7 +190,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/add_profile_allow_download_heading"
-                android:textColor="@{viewModel.validPin ? @color/oppiaPrimaryTextDark : @color/grey}"
+                android:textColor="@{viewModel.validPin ? @color/oppiaPrimaryTextDark : @color/accessible_grey}"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -200,13 +201,13 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/add_profile_allow_download_sub"
-                android:textColor="@color/light_grey"
+                android:textColor="@color/accessible_light_grey"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_allow_download_heading_text_view"
                 app:layout_constraintWidth_percent=".8" />
 
-              <Switch
+              <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/add_profile_activity_allow_download_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -226,6 +227,7 @@
             android:layout_marginTop="60dp"
             android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
             android:clickable="@{viewModel.isButtonActive()}"
+            android:enabled="@{viewModel.isButtonActive()}"
             android:gravity="center"
             android:text="@string/add_profile_create_btn"
             android:textAllCaps="true"

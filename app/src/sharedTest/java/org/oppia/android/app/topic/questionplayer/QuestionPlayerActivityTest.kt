@@ -84,6 +84,7 @@ import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -215,7 +216,7 @@ class QuestionPlayerActivityTest {
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Test
-  fun testChooseCorrectAnswer_answerLongerThanScreen_phonePort_tickIsCompletelyVisible() {
+  fun testChooseCorrectAnswer_chooseCorrectAnswer_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       // Option 2 is the right answer and tick icon should be visible completely
       selectMultipleChoiceOption(optionPosition = 2)
@@ -230,7 +231,23 @@ class QuestionPlayerActivityTest {
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Test
-  fun testChooseCorrectAnswer_answerLongerThanScreen_phoneLand_tickIsCompletelyVisible() {
+  fun testQuestionPlayer_chooseCorrectAnswer_configChange_tickIsCompletelyVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Option 2 is the right answer and tick icon should be visible completely
+      selectMultipleChoiceOption(optionPosition = 2)
+      rotateToLandscape()
+      onView(withId(R.id.answer_tick)).check(
+        matches(
+          isCompletelyDisplayed()
+        )
+      )
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Test
+  fun testQuestionPlayer_configChange_chooseCorrectAnswer_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       rotateToLandscape()
       // Option 2 is the right answer and tick icon should be visible completely
@@ -247,7 +264,7 @@ class QuestionPlayerActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "sw600dp")
   @Test
-  fun testChooseCorrectAnswer_answerLongerThanScreen_tabletPort_tickIsCompletelyVisible() {
+  fun testQuestionPlayer_onTablet_chooseCorrectAnswer_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       // Option 2 is the right answer and tick icon should be visible completely
       selectMultipleChoiceOption(optionPosition = 2)
@@ -263,7 +280,7 @@ class QuestionPlayerActivityTest {
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
   @Config(qualifiers = "sw600dp")
   @Test
-  fun testChooseCorrectAnswer_answerLongerThanScreen_tabletLand_tickIsCompletelyVisible() {
+  fun testQuestionPlayer_onTablet_configChange_chooseCorrectAnswer_tickIsCompletelyVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       rotateToLandscape()
       // Option 2 is the right answer and tick icon should be visible completely
@@ -422,7 +439,7 @@ class QuestionPlayerActivityTest {
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
       RatioInputModule::class, HintsAndSolutionConfigFastShowTestModule::class,
       WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
-      LogUploadWorkerModule::class
+      LogUploadWorkerModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -38,6 +38,7 @@ class AdminPinActivityPresenter @Inject constructor(
     activity.title = activity.getString(R.string.add_profile_title)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
+    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_close)
 
     val binding =
       DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
@@ -50,20 +51,34 @@ class AdminPinActivityPresenter @Inject constructor(
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminPinInputPinEditText.onTextChanged { pin ->
       pin?.let {
-        adminViewModel.pinErrorMsg.set("")
-        adminViewModel.savedPin.set(it)
-        inputtedPin = pin.isNotEmpty()
-        setValidPin()
+        if (adminViewModel.pinErrorMsg.get()?.isNotEmpty()!! &&
+          adminViewModel.savedPin.get() == it
+        ) {
+          adminViewModel.savedPin.set(it)
+          inputtedPin = pin.isNotEmpty()
+        } else {
+          adminViewModel.pinErrorMsg.set("")
+          adminViewModel.savedPin.set(it)
+          inputtedPin = pin.isNotEmpty()
+          setValidPin()
+        }
       }
     }
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.adminPinInputConfirmPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
-        adminViewModel.confirmPinErrorMsg.set("")
-        adminViewModel.savedConfirmPin.set(it)
-        inputtedConfirmPin = confirmPin.isNotEmpty()
-        setValidPin()
+        if (adminViewModel.confirmPinErrorMsg.get()?.isNotEmpty()!! &&
+          adminViewModel.savedConfirmPin.get() == it
+        ) {
+          adminViewModel.savedConfirmPin.set(it)
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+        } else {
+          adminViewModel.confirmPinErrorMsg.set("")
+          adminViewModel.savedConfirmPin.set(it)
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+          setValidPin()
+        }
       }
     }
 

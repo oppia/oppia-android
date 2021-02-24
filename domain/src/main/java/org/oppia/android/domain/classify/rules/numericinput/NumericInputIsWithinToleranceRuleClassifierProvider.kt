@@ -12,7 +12,8 @@ import javax.inject.Inject
  *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/NumericInput/directives/numeric-input-rules.service.ts#L41
  */
-internal class NumericInputIsWithinToleranceRuleClassifierProvider @Inject constructor(
+// TODO(#1580): Re-restrict access using Bazel visibilities
+class NumericInputIsWithinToleranceRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider, GenericRuleClassifier.DoubleInputMatcher<Double> {
 

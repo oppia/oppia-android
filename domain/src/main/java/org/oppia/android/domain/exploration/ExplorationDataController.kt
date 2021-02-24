@@ -7,7 +7,6 @@ import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 private const val GET_EXPLORATION_BY_ID_PROVIDER_ID =
@@ -23,8 +22,7 @@ class ExplorationDataController @Inject constructor(
   private val explorationProgressController: ExplorationProgressController,
   private val explorationRetriever: ExplorationRetriever,
   private val dataProviders: DataProviders,
-  private val exceptionsController: ExceptionsController,
-  private val oppiaClock: OppiaClock
+  private val exceptionsController: ExceptionsController
 ) {
   /** Returns an [Exploration] given an ID. */
   fun getExplorationById(id: String): DataProvider<Exploration> {
@@ -51,7 +49,7 @@ class ExplorationDataController @Inject constructor(
       explorationProgressController.beginExplorationAsync(explorationId)
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -65,7 +63,7 @@ class ExplorationDataController @Inject constructor(
       explorationProgressController.finishExplorationAsync()
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -76,7 +74,7 @@ class ExplorationDataController @Inject constructor(
     return try {
       AsyncResult.success(explorationRetriever.loadExploration(explorationId))
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       AsyncResult.failed(e)
     }
   }
