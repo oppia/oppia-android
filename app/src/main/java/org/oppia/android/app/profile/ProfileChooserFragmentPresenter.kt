@@ -1,7 +1,6 @@
 package org.oppia.android.app.profile
 
 import android.content.Context
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,8 +71,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
-  private val orientation = Resources.getSystem().configuration.orientation
-
   val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
 
   private val chooserViewModel: ProfileChooserViewModel by lazy {
@@ -255,9 +252,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun logProfileChooserEvent() {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentCalendar().timeInMillis,
-      EventLog.EventAction.OPEN_PROFILE_CHOOSER,
-      /* Event Context */ null
+      oppiaClock.getCurrentTimeMs(), EventLog.EventAction.OPEN_PROFILE_CHOOSER, eventContext = null
     )
   }
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><!-- TODO(#59): Make this layout only accessible to tests. -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.testing.BindableAdapterTestDataModel" />
+  </data>
+
+  <TextView
+    android:id="@+id/text_view_for_live_data_no_data_binding"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@{viewModel.boundLiveDataValue}"
+    android:textColor="@color/colorPrimary" />
+</layout>

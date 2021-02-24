@@ -13,16 +13,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.domain.oppialogger.analytics.TEST_EXPLORATION_ID
-import org.oppia.android.domain.oppialogger.analytics.TEST_QUESTION_ID
-import org.oppia.android.domain.oppialogger.analytics.TEST_SKILL_ID
-import org.oppia.android.domain.oppialogger.analytics.TEST_SKILL_LIST_ID
-import org.oppia.android.domain.oppialogger.analytics.TEST_STORY_ID
-import org.oppia.android.domain.oppialogger.analytics.TEST_SUB_TOPIC_ID
-import org.oppia.android.domain.oppialogger.analytics.TEST_TOPIC_ID
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -31,6 +25,14 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val TEST_TOPIC_ID = "test_topicId"
+private const val TEST_STORY_ID = "test_storyId"
+private const val TEST_EXPLORATION_ID = "test_explorationId"
+private const val TEST_QUESTION_ID = "test_questionId"
+private const val TEST_SKILL_ID = "test_skillId"
+private const val TEST_SKILL_LIST_ID = "test_skillListId"
+private const val TEST_SUB_TOPIC_ID = 1
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -168,7 +170,7 @@ class OppiaLoggerTest {
       TestLogReportingModule::class,
       TestLogStorageModule::class,
       TestDispatcherModule::class,
-      RobolectricModule::class
+      RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {

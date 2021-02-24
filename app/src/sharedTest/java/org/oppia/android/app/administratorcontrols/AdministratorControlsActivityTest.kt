@@ -6,6 +6,7 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.drawerlayout.widget.DrawerLayout
@@ -34,13 +35,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import dagger.Component
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -82,6 +81,7 @@ import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -102,13 +102,6 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class AdministratorControlsActivityTest {
-
-  @get:Rule
-  var activityTestRule: ActivityTestRule<AdministratorControlsActivity> = ActivityTestRule(
-    AdministratorControlsActivity::class.java, /* initialTouchMode= */
-    true, /* launchActivity= */
-    false
-  )
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -145,51 +138,24 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          0, R.id.general_text_view
-        )
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 0,
+        targetView = R.id.general_text_view
       )
-        .check(matches(isDisplayed()))
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          0, R.id.edit_account_text_view
-        )
+      verifyTextOnAdministratorListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.edit_account_text_view,
+        stringIdToMatch = R.string.administrator_controls_edit_account
       )
-        .check(
-          matches(
-            withText(
-              context.resources.getString(
-                R.string.administrator_controls_edit_account
-              )
-            )
-          )
-        )
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          1,
-          R.id.profile_management_text_view
-        )
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 1,
+        targetView = R.id.profile_management_text_view
       )
-        .check(matches(isDisplayed()))
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          1, R.id.edit_profiles_text_view
-        )
+      verifyTextOnAdministratorListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.edit_profiles_text_view,
+        stringIdToMatch = R.string.administrator_controls_edit_profiles
       )
-        .check(
-          matches(
-            withText(
-              context.resources.getString(
-                R.string.administrator_controls_edit_profiles
-              )
-            )
-          )
-        )
     }
   }
 
@@ -201,43 +167,20 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.download_permissions_text_view
-        )
+      verifyTextOnAdministratorListItemAtPosition(
+        itemPosition = 2,
+        targetViewId = R.id.download_permissions_text_view,
+        stringIdToMatch = R.string.administrator_controls_download_permissions_label
       )
-        .check(
-          matches(
-            withText(
-              context.resources.getString(
-                R.string.administrator_controls_download_permissions_label
-              )
-            )
-          )
-        )
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_constraint_layout
-        )
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 2,
+        targetView = R.id.topic_update_on_wifi_constraint_layout
       )
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
+      scrollToPosition(position = 2)
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 2,
+        targetView = R.id.auto_update_topic_constraint_layout
       )
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_constraint_layout
-        )
-      )
-        .check(matches(isDisplayed()))
     }
   }
 
@@ -249,55 +192,25 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          3
-        )
+      scrollToPosition(position = 3)
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 3,
+        targetView = R.id.app_information_text_view
       )
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          3, R.id.app_information_text_view
-        )
+      verifyTextOnAdministratorListItemAtPosition(
+        itemPosition = 3,
+        targetViewId = R.id.app_version_text_view,
+        stringIdToMatch = R.string.administrator_controls_app_version
       )
-        .check(matches(isDisplayed()))
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          3, R.id.app_version_text_view
-        )
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 4,
+        targetView = R.id.account_actions_text_view
       )
-        .check(
-          matches(
-            withText(
-              context.resources.getString(
-                R.string.administrator_controls_app_version
-              )
-            )
-          )
-        )
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          4, R.id.account_actions_text_view
-        )
+      verifyTextOnAdministratorListItemAtPosition(
+        itemPosition = 4,
+        targetViewId = R.id.log_out_text_view,
+        stringIdToMatch = R.string.administrator_controls_log_out
       )
-        .check(matches(isDisplayed()))
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          4, R.id.log_out_text_view
-        )
-      )
-        .check(
-          matches(
-            withText(
-              context.resources.getString(
-                R.string.administrator_controls_log_out
-              )
-            )
-          )
-        )
     }
   }
 
@@ -315,20 +228,15 @@ class AdministratorControlsActivityTest {
           2,
           R.id.topic_update_on_wifi_switch
         )
-      )
-        .check(matches(not(isChecked())))
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
-      )
+      ).check(matches(not(isChecked())))
+      scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2, R.id.auto_update_topic_switch
+          2,
+          R.id.auto_update_topic_switch
         )
-      )
-        .check(matches(not(isChecked())))
+      ).check(matches(not(isChecked())))
     }
   }
 
@@ -340,72 +248,60 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
-      )
+      scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2, R.id.topic_update_on_wifi_switch
+          2,
+          R.id.topic_update_on_wifi_switch
         )
-      )
-        .check(matches(not(isChecked())))
+      ).check(matches(not(isChecked())))
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2, R.id.auto_update_topic_switch
+          2,
+          R.id.auto_update_topic_switch
         )
-      )
-        .check(matches(not(isChecked())))
+      ).check(matches(not(isChecked())))
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2, R.id.topic_update_on_wifi_switch
+          2,
+          R.id.topic_update_on_wifi_switch
         )
-      )
-        .perform(click())
+      ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
-      )
+      scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2, R.id.topic_update_on_wifi_switch
+          2,
+          R.id.topic_update_on_wifi_switch
         )
-      )
-        .check(matches(isChecked()))
+      ).check(matches(isChecked()))
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2, R.id.auto_update_topic_switch
+          2,
+          R.id.auto_update_topic_switch
         )
-      )
-        .check(matches(not(isChecked())))
+      ).check(matches(not(isChecked())))
       onView(isRoot()).perform(orientationPortrait())
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
-      )
+      scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2, R.id.topic_update_on_wifi_switch
+          2,
+          R.id.topic_update_on_wifi_switch
         )
-      )
-        .check(matches(isChecked()))
+      ).check(matches(isChecked()))
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
-          2, R.id.auto_update_topic_switch
+          2,
+          R.id.auto_update_topic_switch
         )
-      )
-        .check(matches(not(isChecked())))
+      ).check(matches(not(isChecked())))
     }
   }
 
@@ -413,7 +309,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickEditProfile_opensProfileListActivity() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -423,54 +319,36 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_clickLogoutButton_displaysLogoutDialog() {
+  fun testAdministratorControlsFragment_clickLogoutButton_logoutDialogIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          4
-        )
-      )
+      scrollToPosition(position = 4)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      onView(withText(R.string.log_out_dialog_message)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      onView(withText(R.string.log_out_dialog_okay_button)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      onView(withText(R.string.log_out_dialog_cancel_button)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button)
     }
   }
 
   @Test
-  fun testAdministratorControlsFragment_changeConfiguration_clickLogout_displaysLogoutDialog() {
+  fun testAdministratorControlsFragment_configChange_clickLogout_logoutDialogIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          4
-        )
-      )
+      scrollToPosition(position = 4)
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          4
-        )
-      )
+      scrollToPosition(position = 4)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      onView(withText(R.string.log_out_dialog_message)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      onView(withText(R.string.log_out_dialog_okay_button)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      onView(withText(R.string.log_out_dialog_cancel_button)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button)
     }
   }
 
@@ -483,35 +361,25 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          4
-        )
-      )
+      scrollToPosition(position = 4)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      onView(withText(R.string.log_out_dialog_message)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       onView(withText(R.string.log_out_dialog_okay_button)).perform(click())
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
   @Test
-  fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogDismissed() {
+  fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogIsDismissed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          4
-        )
-      )
+      scrollToPosition(position = 4)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      onView(withText(R.string.log_out_dialog_message)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       onView(withText(R.string.log_out_dialog_cancel_button)).perform(click())
       onView(withId(R.id.log_out_text_view)).check(matches(isDisplayed()))
     }
@@ -521,22 +389,18 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickAppVersion_opensAppVersionActivity() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          3
-        )
-      )
+      scrollToPosition(position = 3)
       onView(withId(R.id.app_version_text_view)).perform(click())
       intended(hasComponent(AppVersionActivity::class.java.name))
     }
   }
 
   @Test
-  fun testAdministratorControls_selectAdminNavItem_displaysAdminControls() {
+  fun testAdministratorControls_selectAdminNavItem_adminControlsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
@@ -638,6 +502,47 @@ class AdministratorControlsActivityTest {
     return view.getParent()
   }
 
+  private fun verifyItemDisplayedOnAdministratorControlListItem(
+    itemPosition: Int,
+    targetView: Int
+  ) {
+    onView(
+      atPositionOnView(
+        R.id.administrator_controls_list,
+        itemPosition,
+        targetView
+      )
+    ).check(matches(isDisplayed()))
+  }
+
+  private fun verifyTextOnAdministratorListItemAtPosition(
+    itemPosition: Int,
+    targetViewId: Int,
+    @StringRes stringIdToMatch: Int
+  ) {
+    onView(
+      atPositionOnView(
+        R.id.administrator_controls_list,
+        itemPosition,
+        targetViewId
+      )
+    ).check(matches(withText(context.getString(stringIdToMatch))))
+  }
+
+  private fun scrollToPosition(position: Int) {
+    onView(withId(R.id.administrator_controls_list)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        position
+      )
+    )
+  }
+
+  private fun verifyTextInDialog(@StringRes textInDialogId: Int) {
+    onView(withText(context.getString(textInDialogId)))
+      .inRoot(isDialog())
+      .check(matches(isDisplayed()))
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
@@ -656,7 +561,7 @@ class AdministratorControlsActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

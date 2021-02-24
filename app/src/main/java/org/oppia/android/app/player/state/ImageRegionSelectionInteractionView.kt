@@ -159,7 +159,16 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
       bindingInterface
     )
 
-    this.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom -> // ktlint-disable max-line-length
+    this.addOnLayoutChangeListener {
+      _,
+      left,
+      top,
+      right,
+      bottom,
+      oldLeft,
+      oldTop,
+      oldRight,
+      oldBottom ->
       // Update the regions, as the bounds have changed
       if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
         area.addRegionViews()

@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.home.topiclist.AllTopicsViewModel" />
+  </data>
+
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -9,8 +16,8 @@
       android:id="@+id/all_topics_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="68dp"
       android:layout_marginStart="@dimen/home_tablet_land_outer_margin"
+      android:layout_marginTop="68dp"
       android:layout_marginEnd="76dp"
       android:layout_marginBottom="24dp"
       android:fontFamily="sans-serif-medium"
