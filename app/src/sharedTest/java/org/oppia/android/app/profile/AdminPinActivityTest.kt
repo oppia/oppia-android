@@ -24,7 +24,9 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -76,6 +78,7 @@ import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -489,6 +492,20 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(hasNoErrorText()))
+    }
+  }
+
+  @Test
+  fun testAdminPinActivity_closeButton_checkContentDescription() {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 1
+      )
+    ).use {
+      onView(withContentDescription(R.string.admin_auth_close)).check(matches(isDisplayed()))
     }
   }
 
@@ -1037,7 +1054,7 @@ class AdminPinActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
