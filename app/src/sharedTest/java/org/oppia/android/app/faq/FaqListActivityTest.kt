@@ -61,8 +61,8 @@ import javax.inject.Singleton
 /** Tests for [FAQListActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = FAQListActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
-class FAQListActivityTest {
+@Config(application = FaqListActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
+class FaqListActivityTest {
 
   @get:Rule
   val activityTestRule: ActivityTestRule<FAQListActivity> = ActivityTestRule(
@@ -84,7 +84,7 @@ class FAQListActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.FAQs))
+    assertThat(title).isEqualTo(context.getString(R.string.faq_activity_label))
   }
 
   private fun setUpTestApplicationComponent() {
@@ -122,17 +122,17 @@ class FAQListActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(faqListActivityTest: FAQListActivityTest)
+    fun inject(faqListActivityTest: FaqListActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFAQListActivityTest_TestApplicationComponent.builder()
+      DaggerFaqListActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(faqListActivityTest: FAQListActivityTest) {
+    fun inject(faqListActivityTest: FaqListActivityTest) {
       component.inject(faqListActivityTest)
     }
 
