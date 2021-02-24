@@ -90,7 +90,9 @@ class OptionsFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(isMultipane: Boolean): BindableAdapter<OptionsItemViewModel> { // ktlint-disable max-line-length
+  private fun createRecyclerViewAdapter(
+    isMultipane: Boolean
+  ): BindableAdapter<OptionsItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->
         viewModel.isMultipane.set(isMultipane)

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// The fragment arguments passed to instances of ExitProfileDialogFragment.
+message ExitProfileDialogArguments {
+  // Decides the correct menu item to be highlighted after canceling the ExitProfileDialogFragment.
+  HighlightItem highlight_item = 1;
+}
+
+// Represents the type of item/menuItem that should be highlighted after canceling the
+// ExitProfileDialogFragment.
+enum HighlightItem {
+  // Indicates that the highlight item was not set
+  ITEM_UNSPECIFIED = 0;
+
+  // Indicates that none of the items needs to be highlighted.
+  NONE = 1;
+
+  // Indicates that one of the NavigationDrawerItem needs to be highlighted.
+  LAST_CHECKED_MENU_ITEM = 2;
+
+  // Indicates that the Administrator Controls item needs to be highlighted.
+  ADMINISTRATOR_CONTROLS_ITEM = 3;
+}

@@ -45,6 +45,8 @@ import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -52,7 +54,6 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
-import org.oppia.android.util.system.OppiaClock
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -78,16 +79,14 @@ class WelcomeViewModelTest {
   lateinit var context: Context
 
   @Inject
-  lateinit var morningClock: OppiaClock
-
-  @Inject
-  lateinit var eveningClock: OppiaClock
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   private val testFragment by lazy { Fragment() }
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
   }
 
   @Test
@@ -187,14 +186,15 @@ class WelcomeViewModelTest {
     ).use {
       it.onActivity {
         setUpTestFragment(it)
+        setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
-          morningClock,
+          fakeOppiaClock,
           "Profile 1"
         )
         val welcomeViewModelProfile2Morning = WelcomeViewModel(
           testFragment,
-          morningClock,
+          fakeOppiaClock,
           "Profile 2"
         )
 
@@ -209,16 +209,17 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        setUpDifferentClockTimes()
         setUpTestFragment(it)
+        setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
-          morningClock,
+          fakeOppiaClock,
           "Profile 1"
         )
+        setTimeToEvening()
         val welcomeViewModelProfile1Evening = WelcomeViewModel(
           testFragment,
-          eveningClock,
+          fakeOppiaClock,
           "Profile 1"
         )
 
@@ -234,14 +235,15 @@ class WelcomeViewModelTest {
     ).use {
       it.onActivity {
         setUpTestFragment(it)
+        setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
-          morningClock,
+          fakeOppiaClock,
           "Profile 1"
         )
         val welcomeViewModelProfile1MorningCopy = WelcomeViewModel(
           testFragment,
-          morningClock,
+          fakeOppiaClock,
           "Profile 1"
         )
         assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1MorningCopy)
@@ -260,9 +262,10 @@ class WelcomeViewModelTest {
     ).use {
       it.onActivity {
         setUpTestFragment(it)
+        setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
-          morningClock,
+          fakeOppiaClock,
           "Profile 1"
         )
 
@@ -283,17 +286,19 @@ class WelcomeViewModelTest {
       .commitNow()
   }
 
-  private fun setUpDifferentClockTimes() {
-    morningClock = OppiaClock()
-    morningClock.setCurrentTimeMs(MORNING_TIMESTAMP)
-    eveningClock = OppiaClock()
-    eveningClock.setCurrentTimeMs(EVENING_TIMESTAMP)
+  private fun setTimeToMorning() {
+    fakeOppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
+  }
+
+  private fun setTimeToEvening() {
+    fakeOppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
   }
 
   private fun createBasicWelcomeViewModel(fragment: Fragment): WelcomeViewModel {
+    setTimeToMorning()
     return WelcomeViewModel(
       fragment,
-      morningClock,
+      fakeOppiaClock,
       "Profile 1"
     )
   }
@@ -315,7 +320,7 @@ class WelcomeViewModelTest {
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
