@@ -43,7 +43,7 @@ create_jar_file_path() {
 
   if [ $github_actions_path ]; then
     jar_file_path="$github_actions_path/oppia-android-tools/$buf_file_name"
-    config_file_path="$github_actions_path/oppia-android/oppia-android/buf.yaml"
+    config_file_path="/home/runner/work/oppia-android/oppia-android/buf.yaml"
   else
     jar_file_path="../oppia-android-tools/$buf_file_name"
     config_file_path="buf.yaml"
