@@ -12,6 +12,22 @@
       type="org.oppia.android.app.player.state.itemviewmodel.FeedbackViewModel" />
   </data>
 
+  <!-- EXPLORATION SPLIT VIEW -->
+  <!-- Overall Outer Space: 24, 24, 40, 0 -->
+  <!-- Overall Inner Space: 12, 16, 12, 16 -->
+
+  <!-- EXPLORATION VIEW -->
+  <!-- Overall Outer Space: 176, 24, 208, 0 -->
+  <!-- Overall Inner Space: 12, 16, 12, 16 -->
+
+  <!-- QUESTION SPLIT VIEW -->
+  <!-- Overall Outer Space: 32, 32, 40, 0 -->
+  <!-- Overall Inner Space: 0, 0, 0, 0 -->
+
+  <!-- QUESTION VIEW -->
+  <!-- Overall Outer Space: 192, 24, 192, 0 -->
+  <!-- Overall Inner Space: 0, 0, 0, 0 -->
+
   <FrameLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

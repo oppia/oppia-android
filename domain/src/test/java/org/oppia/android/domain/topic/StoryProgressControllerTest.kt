@@ -28,6 +28,8 @@ import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -39,7 +41,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -65,6 +66,9 @@ class StoryProgressControllerTest {
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Mock
   lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
 
@@ -72,8 +76,6 @@ class StoryProgressControllerTest {
   lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
   private lateinit var profileId: ProfileId
-
-  private val timestamp = Date().time
 
   @Before
   fun setUp() {
@@ -92,7 +94,7 @@ class StoryProgressControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      timestamp
+      fakeOppiaClock.getCurrentTimeMs()
     ).toLiveData().observeForever(mockRecordProgressObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -106,7 +108,7 @@ class StoryProgressControllerTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      timestamp
+      fakeOppiaClock.getCurrentTimeMs()
     ).toLiveData().observeForever(mockRecordProgressObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -154,7 +156,7 @@ class StoryProgressControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

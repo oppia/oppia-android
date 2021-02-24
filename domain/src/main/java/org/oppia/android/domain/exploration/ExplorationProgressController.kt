@@ -15,7 +15,6 @@ import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -37,8 +36,7 @@ class ExplorationProgressController @Inject constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val explorationRetriever: ExplorationRetriever,
   private val answerClassificationController: AnswerClassificationController,
-  private val exceptionsController: ExceptionsController,
-  private val oppiaClock: OppiaClock
+  private val exceptionsController: ExceptionsController
 ) {
   // TODO(#179): Add support for parameters.
   // TODO(#182): Add support for refresher explorations.
@@ -141,7 +139,10 @@ class ExplorationProgressController @Inject constructor(
         try {
           val topPendingState = explorationProgress.stateDeck.getPendingTopState()
           val outcome =
-            answerClassificationController.classify(topPendingState.interaction, userAnswer.answer)
+            answerClassificationController.classify(
+              topPendingState.interaction,
+              userAnswer.answer
+            ).outcome
           answerOutcome =
             explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
           explorationProgress.stateDeck.submitAnswer(userAnswer, answerOutcome.feedback)
@@ -164,7 +165,7 @@ class ExplorationProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(answerOutcome))
       }
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -213,7 +214,7 @@ class ExplorationProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(hint))
       }
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -258,7 +259,7 @@ class ExplorationProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(solution))
       }
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -300,7 +301,7 @@ class ExplorationProgressController @Inject constructor(
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -346,7 +347,7 @@ class ExplorationProgressController @Inject constructor(
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -378,7 +379,7 @@ class ExplorationProgressController @Inject constructor(
     return try {
       retrieveCurrentStateWithinCacheAsync()
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       AsyncResult.failed(e)
     }
   }
@@ -413,9 +414,7 @@ class ExplorationProgressController @Inject constructor(
             finishLoadExploration(exploration!!, explorationProgress)
             AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
           } catch (e: Exception) {
-            exceptionsController.logNonFatalException(
-              e, oppiaClock.getCurrentCalendar().timeInMillis
-            )
+            exceptionsController.logNonFatalException(e)
             AsyncResult.failed<EphemeralState>(e)
           }
         }
