@@ -4,12 +4,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 28
-  buildToolsVersion "29.0.1"
+  compileSdkVersion 29
+  buildToolsVersion "29.0.2"
 
   defaultConfig {
     minSdkVersion 19
-    targetSdkVersion 28
+    targetSdkVersion 29
     versionCode 1
     versionName "1.0"
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -33,12 +33,28 @@ android {
   testOptions {
     unitTests {
       includeAndroidResources = true
+      all {
+        // Enable forking to ensure each test is properly run in isolation. For context, see:
+        // https://discuss.gradle.org/t/36066/2 & https://github.com/oppia/oppia-android/issues/1942
+        forkEvery = 1
+        maxParallelForks = Runtime.getRuntime().availableProcessors()
+
+        // https://discuss.gradle.org/t/29495/2 & https://stackoverflow.com/a/34299238.
+        testLogging {
+          events "passed", "skipped", "failed"
+          showExceptions = true
+          exceptionFormat = "full"
+          showCauses = true
+          showStackTraces = true
+          showStandardStreams = false
+        }
+      }
     }
   }
 
   buildTypes {
     release {
-      minifyEnabled false
+      minifyEnabled true
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
   }
@@ -51,7 +67,7 @@ dependencies {
       'com.android.support:multidex:1.0.3',
       'com.google.dagger:dagger:2.24',
       'com.google.protobuf:protobuf-lite:3.0.0',
-      'com.squareup.moshi:moshi-kotlin:1.8.0',
+      'com.squareup.moshi:moshi-kotlin:1.11.0',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2',
   )
   testImplementation(
@@ -76,7 +92,7 @@ dependencies {
   )
   androidTestImplementation('androidx.test:runner:1.2.0',
       'androidx.test.espresso:espresso-core:3.2.0')
-  kapt("com.squareup.moshi:moshi-kotlin-codegen:1.8.0")
+  kapt("com.squareup.moshi:moshi-kotlin-codegen:1.11.0")
   kaptTest(
       'com.google.dagger:dagger-compiler:2.24'
   )

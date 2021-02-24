@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.help.faq.faqItemViewModel.FAQHeaderViewModel" />
+      type="org.oppia.android.app.help.faq.faqItemViewModel.FAQHeaderViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,6 +31,7 @@
         android:paddingEnd="24dp"
         android:paddingBottom="8dp"
         android:text="@string/featured_questions"
+        android:textAlignment="viewStart"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="18sp" />
     </LinearLayout>

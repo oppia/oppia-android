@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- TODO(#1632): Remove manifest post-Gradle -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="org.oppia.app.view.models">
+  package="org.oppia.android.app.view.models">
   <uses-sdk android:minSdkVersion="19"
     android:targetSdkVersion="28" />
 </manifest>

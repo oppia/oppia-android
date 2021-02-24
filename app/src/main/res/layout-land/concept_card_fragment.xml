@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.conceptcard.ConceptCardViewModel" />
+      type="org.oppia.android.app.topic.conceptcard.ConceptCardViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -57,6 +57,7 @@
             android:fontFamily="sans-serif-medium"
             android:text="@{viewModel.conceptCardLiveData.skillDescription}"
             android:textColor="@color/oppiaPrimaryText"
+            android:textDirection="locale"
             android:textSize="20sp" />
 
           <TextView
@@ -67,8 +68,8 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="64dp"
             android:fontFamily="sans-serif"
-            android:text="@{viewModel.explanationLiveData}"
             android:textColor="@color/oppiaPrimaryText"
+            android:textDirection="locale"
             android:textSize="16sp" />
         </LinearLayout>
         <!--TODO(#352): Show worked examples in Concept Card.-->

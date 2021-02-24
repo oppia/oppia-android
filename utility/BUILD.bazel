@@ -1,102 +1,114 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
-'''
+"""
 This library contains utilities that all other modules, minus model, depend on.
-'''
+"""
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("//:oppia_android_test.bzl", "oppia_android_test")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//utility:utility_test.bzl", "utility_test")
 
 # Library for general-purpose utilities.
 kt_android_library(
     name = "utility",
-    custom_package = "org.oppia.util",
-    srcs = glob(["src/main/java/org/oppia/util/**/*.kt"]),
-    resource_files = glob(["src/main/res/**/*.xml"]),
+    srcs = glob(["src/main/java/org/oppia/android/util/**/*.kt"]),
+    custom_package = "org.oppia.android.util",
     manifest = "src/main/AndroidManifest.xml",
+    resource_files = glob(["src/main/res/**/*.xml"]),
+    visibility = ["//visibility:public"],
     deps = [
         ":dagger",
-        "//model",
         "//app:crashlytics",
         "//app:crashlytics_deps",
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
-        artifact("androidx.appcompat:appcompat"),
-        artifact("com.github.bumptech.glide:glide"),
-        artifact("com.caverock:androidsvg-aar"),
+        "//model",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_room_room-runtime",
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:com_caverock_androidsvg-aar",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//third_party:com_google_guava_guava",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
-    visibility = ["//visibility:public"],
 )
 
+# keep sorted
 TEST_DEPS = [
-    ":utility",
     ":dagger",
-    "//testing",
-    "//model",
+    ":utility",
     "//app:crashlytics",
     "//app:crashlytics_deps",
-    "@robolectric//bazel:android-all",
-    artifact("org.jetbrains.kotlin:kotlin-reflect"),
-    artifact("com.google.truth:truth"),
-    artifact("androidx.test.ext:junit"),
-    artifact("org.jetbrains.kotlin:kotlin-test-junit"),
-    artifact("org.mockito:mockito-core"),
+    "//model",
+    "//testing",
+    "//third_party:androidx_test_ext_junit",
+    "//third_party:com_google_truth_truth",
+    "//third_party:org_jetbrains_kotlin_kotlin-reflect",
+    "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    "//third_party:org_mockito_mockito-core",
+    "//third_party:robolectric_android-all",
 ]
 
 utility_test(
     name = "AsyncResultTest",
-    srcs = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
-    test_class = "org.oppia.util.data.AsyncResultTest",
+    srcs = ["src/test/java/org/oppia/android/util/data/AsyncResultTest.kt"],
+    test_class = "org.oppia.android.util.data.AsyncResultTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "DataProvidersTest",
-    srcs = ["src/test/java/org/oppia/util/data/DataProvidersTest.kt"],
-    test_class = "org.oppia.util.data.DataProvidersTest",
+    srcs = ["src/test/java/org/oppia/android/util/data/DataProvidersTest.kt"],
+    test_class = "org.oppia.android.util.data.DataProvidersTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "InMemoryBlockingCacheTest",
-    srcs = ["src/test/java/org/oppia/util/data/InMemoryBlockingCacheTest.kt"],
-    test_class = "org.oppia.util.data.InMemoryBlockingCacheTest",
+    srcs = ["src/test/java/org/oppia/android/util/data/InMemoryBlockingCacheTest.kt"],
+    test_class = "org.oppia.android.util.data.InMemoryBlockingCacheTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "DateTimeUtilTest",
-    srcs = ["src/test/java/org/oppia/util/datetime/DateTimeUtilTest.kt"],
-    test_class = "org.oppia.util.datetime.DateTimeUtilTest",
+    srcs = ["src/test/java/org/oppia/android/util/datetime/DateTimeUtilTest.kt"],
+    test_class = "org.oppia.android.util.datetime.DateTimeUtilTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
+    name = "BundleExtensionsTest",
+    srcs = ["src/test/java/org/oppia/android/util/extensions/BundleExtensionsTest.kt"],
+    test_class = "org.oppia.android.util.extensions.BundleExtensionsTest",
+    deps = TEST_DEPS + [
+        "//model:test_models",
+    ],
+)
+
+utility_test(
     name = "EventBundleCreatorTest",
-    srcs = ["src/test/java/org/oppia/util/logging/EventBundleCreatorTest.kt"],
-    test_class = "org.oppia.util.logging.EventBundleCreatorTest",
+    srcs = ["src/test/java/org/oppia/android/util/logging/EventBundleCreatorTest.kt"],
+    test_class = "org.oppia.android.util.logging.EventBundleCreatorTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "NetworkConnectionUtilTest",
-    srcs = ["src/test/java/org/oppia/util/networking/NetworkConnectionUtilTest.kt"],
-    test_class = "org.oppia.util.networking.NetworkConnectionUtilTest",
+    srcs = ["src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilTest.kt"],
+    test_class = "org.oppia.android.util.networking.NetworkConnectionUtilTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "DirectoryManagementUtilTest",
-    srcs = ["src/test/java/org/oppia/util/profile/DirectoryManagementUtilTest.kt"],
-    test_class = "org.oppia.util.profile.DirectoryManagementUtilTest",
+    srcs = ["src/test/java/org/oppia/android/util/profile/DirectoryManagementUtilTest.kt"],
+    test_class = "org.oppia.android.util.profile.DirectoryManagementUtilTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "OppiaDateTimeFormatterTest",
-    srcs = ["src/test/java/org/oppia/util/system/OppiaDateTimeFormatterTest.kt"],
-    test_class = "org.oppia.util.system.OppiaDateTimeFormatterTest",
+    srcs = ["src/test/java/org/oppia/android/util/system/OppiaDateTimeFormatterTest.kt"],
+    test_class = "org.oppia.android.util.system.OppiaDateTimeFormatterTest",
     deps = TEST_DEPS,
 )
 

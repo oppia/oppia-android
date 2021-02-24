@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.administratorcontrols.AdministratorControlsViewModel" />
+      type="org.oppia.android.app.administratorcontrols.AdministratorControlsViewModel" />
   </data>
 
   <androidx.recyclerview.widget.RecyclerView

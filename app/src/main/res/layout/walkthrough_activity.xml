@@ -8,11 +8,11 @@
 
     <variable
       name="presenter"
-      type="org.oppia.app.walkthrough.WalkthroughActivityListener" />
+      type="org.oppia.android.app.walkthrough.WalkthroughActivityListener" />
 
     <variable
       name="viewModel"
-      type="org.oppia.app.walkthrough.WalkthroughViewModel" />
+      type="org.oppia.android.app.walkthrough.WalkthroughViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

@@ -4,7 +4,7 @@
   android:id="@+id/home_activity_drawer_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".home.HomeActivity">
+  tools:context=".app.home.HomeActivity">
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -24,7 +24,7 @@
 
   <fragment
     android:id="@+id/home_activity_fragment_navigation_drawer"
-    android:name="org.oppia.app.drawer.NavigationDrawerFragment"
+    android:name="org.oppia.android.app.drawer.NavigationDrawerFragment"
     android:layout_width="304dp"
     android:layout_height="match_parent"
     android:layout_gravity="start"

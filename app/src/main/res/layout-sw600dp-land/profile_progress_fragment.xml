@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.profileprogress.ProfileProgressViewModel" />
+      type="org.oppia.android.app.profileprogress.ProfileProgressViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,7 +31,7 @@
         android:overScrollMode="never"
         android:paddingBottom="112dp"
         android:scrollbars="none"
-        app:data="@{viewModel.refreshedOngoingStoryListViewModelLiveData}" />
+        app:data="@{viewModel.refreshedPromotedActivityListViewModelLiveData}" />
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

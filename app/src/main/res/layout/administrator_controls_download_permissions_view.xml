@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel" />
+      type="org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,17 +15,15 @@
 
     <TextView
       android:id="@+id/download_permissions_text_view"
+      style="@style/Caption"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       android:background="@color/mid_grey_30"
-      android:fontFamily="sans-serif-medium"
       android:paddingStart="16dp"
       android:paddingTop="28dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/administrator_controls_download_permissions_label"
       android:textColor="@color/colorPrimary"
-      android:textSize="14sp"
       app:layout_constraintBottom_toTopOf="@id/topic_update_on_wifi_constraint_layout"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -47,26 +45,21 @@
 
       <TextView
         android:id="@+id/topic_update_on_wifi_title_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Body"
         android:background="@color/white"
-        android:fontFamily="sans-serif"
         android:paddingBottom="4dp"
         android:text="@string/administrator_controls_update_on_wifi_title"
         android:textColor="@color/oppiaPrimaryTextDark"
-        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
         android:id="@+id/topic_update_on_wifi_description_text_view"
+        style="@style/Subtitle2"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:background="@color/white"
-        android:fontFamily="sans-serif"
         android:text="@string/administrator_controls_update_on_wifi_message"
-        android:textColor="@color/divider"
-        android:textSize="14sp"
+        android:textColor="@color/accessible_light_grey"
         app:layout_constraintEnd_toStartOf="@id/topic_update_on_wifi_switch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topic_update_on_wifi_title_text_view" />
@@ -77,13 +70,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="4dp"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
         android:checked="@{viewModel.isTopicWifiUpdatePermission}"
         android:onCheckedChanged="@{(switch, checked) -> viewModel.onTopicWifiUpdatePermissionChanged(checked)}"
         android:theme="@style/SwitchCompatTheme"
-        app:layout_constraintBottom_toBottomOf="@id/topic_update_on_wifi_description_text_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/topic_update_on_wifi_description_text_view"
-        app:layout_constraintTop_toTopOf="@id/topic_update_on_wifi_title_text_view" />
+        app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
@@ -112,26 +107,21 @@
 
       <TextView
         android:id="@+id/auto_update_topic_title_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Body"
         android:background="@color/white"
-        android:fontFamily="sans-serif"
         android:paddingBottom="4dp"
         android:text="@string/administrator_controls_auto_update_title"
         android:textColor="@color/oppiaPrimaryTextDark"
-        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
         android:id="@+id/auto_update_topic_description_text_view"
+        style="@style/Subtitle2"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:background="@color/white"
-        android:fontFamily="sans-serif"
         android:text="@string/administrator_controls_auto_update_message"
-        android:textColor="@color/divider"
-        android:textSize="14sp"
+        android:textColor="@color/accessible_light_grey"
         app:layout_constraintEnd_toStartOf="@id/auto_update_topic_switch"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
@@ -143,13 +133,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="4dp"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
         android:checked="@{viewModel.isTopicAutoUpdatePermission}"
         android:onCheckedChanged="@{(switch, checked) -> viewModel.onTopicAutoUpdatePermissionChanged(checked)}"
         android:theme="@style/SwitchCompatTheme"
-        app:layout_constraintBottom_toBottomOf="@id/auto_update_topic_description_text_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/auto_update_topic_description_text_view"
-        app:layout_constraintTop_toTopOf="@id/auto_update_topic_title_text_view" />
+        app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

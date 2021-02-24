@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="org.oppia.app.recyclerview.adapters">
+  package="org.oppia.android.app.recyclerview.adapters">
   <uses-sdk android:minSdkVersion="19"
     android:targetSdkVersion="28" />
 </manifest>

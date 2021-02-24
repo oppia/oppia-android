@@ -2,16 +2,18 @@
 # TODO(#1640): Move binary manifest to top-level package post-Gradle.
 android_binary(
     name = "oppia",
-    custom_package = "org.oppia.app",
+    custom_package = "org.oppia.android",
     enable_data_binding = True,
     manifest = "//app:src/main/AndroidManifest.xml",
-    multidex = "legacy",
     manifest_values = {
-        "applicationId": "org.oppia.app",
+        "applicationId": "org.oppia.android",
+        "minSdkVersion": "19",
+        "targetSdkVersion": "29",
         "versionCode": "0",
-        "versionName": "0.1-alpha"
+        "versionName": "0.1-alpha",
     },
+    multidex = "native",  # TODO(#1875): Re-enable legacy for optimized release builds.
     deps = [
-      "//app",
+        "//app",
     ],
 )

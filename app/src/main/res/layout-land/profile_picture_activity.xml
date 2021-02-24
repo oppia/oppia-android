@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.profileprogress.ProfilePictureActivityViewModel" />
+      type="org.oppia.android.app.profileprogress.ProfilePictureActivityViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

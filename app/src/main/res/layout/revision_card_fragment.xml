@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.revisioncard.RevisionCardViewModel" />
+      type="org.oppia.android.app.topic.revisioncard.RevisionCardViewModel" />
   </data>
 
   <ScrollView
@@ -30,7 +30,7 @@
         android:layout_marginTop="36dp"
         android:layout_marginEnd="28dp"
         android:fontFamily="sans-serif"
-        android:text="@{viewModel.explanationLiveData}"
+        android:textAlignment="viewStart"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp" />
 

@@ -10,7 +10,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel" />
+      type="org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,6 +26,7 @@
       android:layout_marginBottom="108dp"
       android:background="@{isSubmitButtonActive ? @drawable/state_button_primary_background :@drawable/state_button_inactive_background}"
       android:clickable="@{isSubmitButtonActive}"
+      android:enabled="@{isSubmitButtonActive}"
       android:fontFamily="sans-serif-medium"
       android:minHeight="36dp"
       android:text="@string/topic_practice_start"

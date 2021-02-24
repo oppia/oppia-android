@@ -91,7 +91,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer as X:Y"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer as X:Y"
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -313,7 +316,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer as X:Y"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer as X:Y"
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -599,7 +605,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter the correct ratio."
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter the correct ratio."
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -840,7 +849,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer as X:Y:Z"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer as X:Y:Z"
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -1193,7 +1205,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer in the form \"X:Y\""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer in the form X:Y"
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -1968,7 +1983,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer as \"X to Y\""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer as X to Y"
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -2312,7 +2330,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer in the form \"X:Y\""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer in the form \"X:Y\""
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -2591,7 +2612,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer in the form \"X to Y\""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer in the form \"X to Y\""
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -2855,7 +2879,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer as X:Y"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer as X:Y"
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -3054,7 +3081,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer as X:Y"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer as X:Y"
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -4516,7 +4546,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer as X:Y"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer as X:Y"
+              }
             }
           },
           "confirmed_unclassified_answers": [],

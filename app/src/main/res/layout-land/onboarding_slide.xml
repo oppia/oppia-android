@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.onboarding.OnboardingSlideViewModel" />
+      type="org.oppia.android.app.onboarding.OnboardingSlideViewModel" />
   </data>
 
   <ScrollView
@@ -19,15 +19,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal">
+      android:layout_height="wrap_content">
 
       <ImageView
         android:id="@+id/slide_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:adjustViewBounds="true"
-        android:contentDescription="@{viewModel.contentDescription}"
+        android:importantForAccessibility="no"
         android:scaleType="fitXY"
         android:src="@{viewModel.slideImage}"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -37,16 +36,14 @@
 
       <TextView
         android:id="@+id/slide_title_text_view"
+        style="@style/Heading1"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="80dp"
         android:layout_marginEnd="28dp"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
         android:text="@{viewModel.title}"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/slide_image_view"
@@ -54,16 +51,13 @@
 
       <TextView
         android:id="@+id/slide_description_text_view"
+        style="@style/Subtitle1"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="40dp"
-        android:fontFamily="sans-serif"
         android:gravity="center_horizontal"
         android:text="@{viewModel.description}"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/slide_image_view"

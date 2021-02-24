@@ -4,12 +4,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 28
-  buildToolsVersion "29.0.1"
+  compileSdkVersion 29
+  buildToolsVersion "29.0.2"
 
   defaultConfig {
     minSdkVersion 19
-    targetSdkVersion 28
+    targetSdkVersion 29
     versionCode 1
     versionName "1.0"
     javaCompileOptions {
@@ -31,12 +31,28 @@ android {
   testOptions {
     unitTests {
       includeAndroidResources = true
+      all {
+        // Enable forking to ensure each test is properly run in isolation. For context, see:
+        // https://discuss.gradle.org/t/36066/2 & https://github.com/oppia/oppia-android/issues/1942
+        forkEvery = 1
+        maxParallelForks = Runtime.getRuntime().availableProcessors()
+
+        // https://discuss.gradle.org/t/29495/2 & https://stackoverflow.com/a/34299238.
+        testLogging {
+          events "passed", "skipped", "failed"
+          showExceptions = true
+          exceptionFormat = "full"
+          showCauses = true
+          showStackTraces = true
+          showStandardStreams = false
+        }
+      }
     }
   }
 
   buildTypes {
     release {
-      minifyEnabled false
+      minifyEnabled true
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
   }
@@ -48,8 +64,9 @@ dependencies {
       'androidx.appcompat:appcompat:1.0.2',
       'androidx.exifinterface:exifinterface:1.0.0-rc01',
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
+      'androidx.work:work-runtime-ktx:2.4.0',
       'com.google.dagger:dagger:2.24',
-      'com.google.firebase:firebase-analytics-ktx:17.4.2',
+      'com.google.firebase:firebase-analytics-ktx:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
   )
@@ -57,10 +74,10 @@ dependencies {
       'android.arch.core:core-testing:1.1.1',
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test.ext:junit:1.1.1',
+      'androidx.work:work-testing:2.4.0',
       'com.google.dagger:dagger:2.24',
       'com.google.truth:truth:0.43',
       'junit:junit:4.12',
-      "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',

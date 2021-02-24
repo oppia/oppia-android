@@ -1,12 +1,16 @@
 *.iml
 .gradle
 /local.properties
+/.idea/assetWizardSettings.xml
 /.idea/caches
+/.idea/compiler.xml
+/.idea/gradle.xml
+/.idea/jarRepositories.xml
 /.idea/libraries
 /.idea/modules.xml
-/.idea/workspace.xml
 /.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
 app/build
 data/build
 domain/build
@@ -20,3 +24,8 @@ utility/build
 gradle
 gradlew
 gradlew.bat
+.gitsecret/keys/random_seed
+!*.secret
+config/oppia-dev-workflow-remote-cache-credentials.json
+bazel-*
+.bazelproject

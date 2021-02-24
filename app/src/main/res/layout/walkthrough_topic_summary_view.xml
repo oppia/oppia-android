@@ -6,31 +6,34 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel" />
+      type="org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/walkthrough_topic_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/walkthrough_topic_summary_container_margin"
     android:clickable="true"
     android:elevation="4dp"
-    android:layout_margin="@dimen/padding_20"
     android:focusable="true"
     android:onClick="@{(v) -> viewModel.clickOnSummaryTile()}"
     app:roundedRectDrawableWithColor="@{viewModel.backgroundColor}">
 
-    <ImageView
+    <org.oppia.android.app.customview.LessonThumbnailImageView
       android:id="@+id/walkthrough_topic_thumbnail_image_view"
       android:layout_width="match_parent"
       android:layout_height="92dp"
       android:importantForAccessibility="no"
       android:scaleType="centerInside"
-      android:src="@{viewModel.topicSummary.topicThumbnail.thumbnailGraphic}"
+      app:entityId="@{viewModel.topicSummary.topicId}"
+      app:entityType="@{viewModel.topicEntityType}"
       app:layout_constraintBottom_toTopOf="@+id/bottom_container"
+      app:layout_constraintDimensionRatio="4:3"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"
+      app:lessonThumbnail="@{viewModel.topicSummary.topicThumbnail}" />
 
     <FrameLayout
       android:id="@+id/bottom_container"
@@ -57,11 +60,11 @@
           android:id="@+id/walkthrough_topic_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginBottom="6dp"
           android:ellipsize="end"
           android:fontFamily="sans-serif-medium"
           android:gravity="top"
           android:maxLines="2"
-          android:layout_marginBottom="6dp"
           android:minLines="2"
           android:text="@{viewModel.name}"
           android:textColor="@color/white"

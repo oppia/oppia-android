@@ -8,37 +8,52 @@
 
     <variable
       name="buttonViewModel"
-      type="org.oppia.app.player.state.itemviewmodel.ContinueNavigationButtonViewModel" />
+      type="org.oppia.android.app.player.state.itemviewmodel.ContinueNavigationButtonViewModel" />
   </data>
-  <!-- Margins -->
-  <!-- Exploration Split View: 24, 72, 32, 0 -->
-  <!-- Exploration View: 112, 24, 112, 0 -->
-  <!-- Question Split View: 24, 72, 32, 0 -->
-  <!-- Question View: 128, 24, 128, 0 -->
-  <!-- Note: Start/End margins are 4dp less which is getting adjusted in child views. -->
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:explorationSplitViewMarginApplicable="@{buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
-    app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
-    app:explorationSplitViewMarginEnd="@{@dimen/margin_28}"
-    app:explorationSplitViewMarginStart="@{@dimen/margin_20}"
-    app:explorationSplitViewMarginTop="@{@dimen/margin_72}"
+    app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
+    app:explorationSplitViewMarginEnd="@{@dimen/continue_navigation_item_exploration_split_view_margin_end}"
+    app:explorationSplitViewMarginStart="@{@dimen/space_0dp}"
+    app:explorationSplitViewMarginTop="@{@dimen/continue_navigation_item_exploration_split_view_margin_top}"
+    app:explorationSplitViewPaddingApplicable="@{buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
+    app:explorationSplitViewPaddingBottom="@{@dimen/space_0dp}"
+    app:explorationSplitViewPaddingEnd="@{@dimen/space_0dp}"
+    app:explorationSplitViewPaddingStart="@{@dimen/space_0dp}"
+    app:explorationSplitViewPaddingTop="@{@dimen/space_0dp}"
     app:explorationViewMarginApplicable="@{buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
-    app:explorationViewMarginBottom="@{@dimen/margin_0}"
-    app:explorationViewMarginEnd="@{@dimen/margin_108}"
-    app:explorationViewMarginStart="@{@dimen/margin_108}"
-    app:explorationViewMarginTop="@{@dimen/margin_24}"
+    app:explorationViewMarginBottom="@{@dimen/space_0dp}"
+    app:explorationViewMarginEnd="@{@dimen/continue_navigation_item_exploration_view_margin_end}"
+    app:explorationViewMarginStart="@{@dimen/continue_navigation_item_exploration_view_margin_start}"
+    app:explorationViewMarginTop="@{@dimen/continue_navigation_item_exploration_view_margin_top}"
+    app:explorationViewPaddingApplicable="@{buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
+    app:explorationViewPaddingBottom="@{@dimen/space_0dp}"
+    app:explorationViewPaddingEnd="@{@dimen/space_0dp}"
+    app:explorationViewPaddingStart="@{@dimen/space_0dp}"
+    app:explorationViewPaddingTop="@{@dimen/space_0dp}"
     app:questionSplitViewMarginApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
-    app:questionSplitViewMarginBottom="@{@dimen/margin_0}"
-    app:questionSplitViewMarginEnd="@{@dimen/margin_28}"
-    app:questionSplitViewMarginStart="@{@dimen/margin_20}"
-    app:questionSplitViewMarginTop="@{@dimen/margin_72}"
+    app:questionSplitViewMarginBottom="@{@dimen/space_0dp}"
+    app:questionSplitViewMarginEnd="@{@dimen/continue_navigation_item_question_split_view_margin_end}"
+    app:questionSplitViewMarginStart="@{@dimen/space_0dp}"
+    app:questionSplitViewMarginTop="@{@dimen/continue_navigation_item_question_split_view_margin_top}"
+    app:questionSplitViewPaddingApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
+    app:questionSplitViewPaddingBottom="@{@dimen/space_0dp}"
+    app:questionSplitViewPaddingEnd="@{@dimen/space_0dp}"
+    app:questionSplitViewPaddingStart="@{@dimen/space_0dp}"
+    app:questionSplitViewPaddingTop="@{@dimen/space_0dp}"
     app:questionViewMarginApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
-    app:questionViewMarginBottom="@{@dimen/margin_0}"
-    app:questionViewMarginEnd="@{@dimen/margin_124}"
-    app:questionViewMarginStart="@{@dimen/margin_124}"
-    app:questionViewMarginTop="@{@dimen/margin_24}">
+    app:questionViewMarginBottom="@{@dimen/space_0dp}"
+    app:questionViewMarginEnd="@{@dimen/continue_navigation_item_question_view_margin_end}"
+    app:questionViewMarginStart="@{@dimen/continue_navigation_item_question_view_margin_start}"
+    app:questionViewMarginTop="@{@dimen/continue_navigation_item_question_view_margin_top}"
+    app:questionViewPaddingApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
+    app:questionViewPaddingBottom="@{@dimen/space_0dp}"
+    app:questionViewPaddingEnd="@{@dimen/space_0dp}"
+    app:questionViewPaddingStart="@{@dimen/space_0dp}"
+    app:questionViewPaddingTop="@{@dimen/space_0dp}">
 
     <ImageButton
       android:id="@+id/previous_state_navigation_button"
@@ -49,7 +64,7 @@
       android:contentDescription="@string/previous_state_description"
       android:elevation="2dp"
       android:onClick="@{(v) -> buttonViewModel.previousNavigationButtonListener.onPreviousButtonClicked()}"
-      android:padding="8dp"
+      android:padding="16dp"
       android:src="@drawable/ic_arrow_back_oppia_dark_blue_24dp"
       android:visibility="@{buttonViewModel.hasPreviousButton ? View.VISIBLE: View.GONE, default=gone}"
       app:layout_constraintBottom_toBottomOf="parent"
@@ -59,15 +74,13 @@
     <Button
       android:id="@+id/continue_navigation_button"
       style="@style/StateButtonActive"
-      android:layout_height="0dp"
-      android:layout_margin="4dp"
+      android:layout_height="48dp"
       android:button="@drawable/state_button_primary_background"
       android:onClick="@{(v) -> buttonViewModel.continueNavigationButtonListener.onContinueButtonClicked()}"
       android:text="@string/state_continue_button"
       android:textColor="@color/white"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHeight_min="48dp"
       app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

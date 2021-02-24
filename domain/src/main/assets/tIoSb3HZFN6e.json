@@ -324,7 +324,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer as X:Y:Z"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer as X:Y:Z"
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -452,7 +455,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter ratio as X:Y:Z"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter ratio as X:Y:Z"
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -1001,7 +1007,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter the correct ratio in the form X:Y"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter the correct ratio in the form X:Y"
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -1794,7 +1803,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Write your answer as X:Y:Z, where X, Y and Z are counting numbers"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Write your answer as X:Y:Z, where X, Y and Z are counting numbers"
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -2169,7 +2181,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer as X:20"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer as X:20"
+              }
             }
           },
           "confirmed_unclassified_answers": [],

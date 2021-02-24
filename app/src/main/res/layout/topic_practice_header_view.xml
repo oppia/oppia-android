@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel" />
+      type="org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

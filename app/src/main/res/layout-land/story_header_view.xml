@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel" />
+      type="org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel" />
   </data>
 
   <TextView

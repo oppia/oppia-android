@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.hintsandsolution.HintsViewModel" />
+      type="org.oppia.android.app.hintsandsolution.HintsViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,7 +31,6 @@
         android:background="@color/oppiaDarkBlue"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        android:textSize="20sp"
         app:title="@string/hints_toolbar_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
@@ -40,10 +39,10 @@
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
+      android:background="@color/hintsAndSolutionBackground"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      android:background="@color/hintsAndSolutionBackground"
       app:layout_constraintTop_toBottomOf="@+id/hints_and_solution_app_bar_layout">
 
       <androidx.recyclerview.widget.RecyclerView

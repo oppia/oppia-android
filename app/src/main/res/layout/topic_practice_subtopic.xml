@@ -10,7 +10,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel" />
+      type="org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +18,6 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="40dp"
     android:layout_marginEnd="48dp"
-    android:layout_marginBottom="26dp"
     app:barrierDirection="right"
     app:constraint_referenced_ids="button_example,text_view_status">
 
@@ -33,14 +32,15 @@
       android:id="@+id/subtopic_check_box"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:paddingBottom="26dp"
       android:button="@drawable/selector_checkbox"
       android:checked="@{isChecked}"
       android:drawableStart="@android:color/transparent"
       android:drawablePadding="20dp"
       android:fontFamily="sans-serif"
-      android:gravity="center_vertical"
-      android:minHeight="22dp"
+      android:gravity="start|top"
       android:text="@{viewModel.subtopic.title}"
+      android:textAlignment="viewStart"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       app:layout_constraintBottom_toBottomOf="parent"

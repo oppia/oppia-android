@@ -21,9 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/oppiaPrimaryDark"
-        android:textSize="20sp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/my_downloads"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
 
       <com.google.android.material.tabs.TabLayout
@@ -51,7 +51,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/my_downloads_app_bar_layout">
 
-      <androidx.viewpager.widget.ViewPager
+      <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/my_downloads_tabs_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

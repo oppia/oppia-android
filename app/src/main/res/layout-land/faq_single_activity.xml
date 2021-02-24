@@ -23,7 +23,6 @@
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        android:textSize="20sp"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
@@ -62,6 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
+            android:textAlignment="viewStart"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="18sp" />
 
@@ -71,6 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:fontFamily="sans-serif"
+            android:textAlignment="viewStart"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp" />
         </LinearLayout>

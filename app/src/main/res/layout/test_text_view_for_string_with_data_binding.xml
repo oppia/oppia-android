@@ -5,13 +5,13 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.model.TestModel" />
+      type="org.oppia.android.app.testing.BindableAdapterTestDataModel" />
   </data>
 
   <TextView
     android:id="@+id/text_view_for_string_no_data_binding"
-    android:textColor="@color/colorPrimary"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@{viewModel.strValue}" />
+    android:text="@{viewModel.boundStringValue}"
+    android:textColor="@color/colorPrimary" />
 </layout>

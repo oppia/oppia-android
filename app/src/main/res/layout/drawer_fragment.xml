@@ -8,7 +8,7 @@
 
     <variable
       name="footerViewModel"
-      type="org.oppia.app.drawer.NavigationDrawerFooterViewModel" />
+      type="org.oppia.android.app.drawer.NavigationDrawerFooterViewModel" />
   </data>
 
   <com.google.android.material.navigation.NavigationView
