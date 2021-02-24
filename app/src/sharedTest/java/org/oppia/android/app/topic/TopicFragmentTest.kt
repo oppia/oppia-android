@@ -290,8 +290,8 @@ class TopicFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = LESSON_TAB_POSITION)
-      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
       matchStringOnListItem(
         recyclerView = R.id.story_summary_recycler_view,
@@ -346,8 +346,8 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_configChange_showsDefaultTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
@@ -375,7 +375,6 @@ class TopicFragmentTest {
         targetViewId = R.id.master_skills_text_view,
         stringToMatch = "Master These Skills"
       )
-      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
