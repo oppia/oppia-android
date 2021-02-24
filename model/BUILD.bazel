@@ -40,6 +40,16 @@ load("//model:src/main/proto/format_import_proto_library.bzl", "format_import_pr
 #   )
 
 proto_library(
+    name = "arguments_proto",
+    srcs = ["src/main/proto/arguments.proto"],
+)
+
+java_lite_proto_library(
+    name = "arguments_java_proto_lite",
+    deps = [":arguments_proto"],
+)
+
+proto_library(
     name = "event_logger_proto",
     srcs = ["src/main/proto/oppia_logger.proto"],
 )
@@ -193,6 +203,7 @@ android_library(
     name = "model",
     visibility = ["//visibility:public"],
     exports = [
+        ":arguments_java_proto_lite",
         ":event_logger_java_proto_lite",
         ":exploration_java_proto_lite",
         ":interaction_object_java_proto_lite",

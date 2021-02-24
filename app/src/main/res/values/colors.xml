@@ -42,6 +42,7 @@
   <color name="oppiaFAQDivider">#707070</color>
   <color name="oppiaProfileChooserDivider">#707070</color>
   <color name="oppiaNavDrawerItemSelected">#D8D8D8</color>
+  <color name="oppiaRed">#B92D00</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
   <color name="white_80">#CCFFFFFF</color>
