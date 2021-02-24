@@ -23,7 +23,9 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -489,6 +491,20 @@ class AdminPinActivityTest {
       )
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(matches(textInputAction.hasNoErrorText()))
+    }
+  }
+
+  @Test
+  fun testAdminPinActivity_closeButton_checkContentDescription() {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 1
+      )
+    ).use {
+      onView(withContentDescription(R.string.admin_auth_close)).check(matches(isDisplayed()))
     }
   }
 
