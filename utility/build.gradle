@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-//apply from: "$project.rootDir/jacoco.gradle"
+apply from: "$project.rootDir/jacoco.gradle"
 
 android {
   compileSdkVersion 29
