@@ -1,7 +1,6 @@
 package org.oppia.android.app.profile
 
 import android.content.Context
-import android.os.Bundle
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
@@ -13,9 +12,6 @@ import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextCha
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminAuthActivityBinding
 import javax.inject.Inject
-
-const val KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE = "ADMIN_AUTH_INPUT_ERROR_MESSAGE"
-const val KEY_ADMIN_AUTH_INPUT_PASSWORD = "ADMIN_AUTH_INPUT_PASSWORD"
 
 /** The presenter for [AdminAuthActivity]. */
 @ActivityScope
@@ -47,9 +43,17 @@ class AdminAuthActivityPresenter @Inject constructor(
     setTitleAndSubTitle(binding)
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
-    binding.adminAuthInputPinEditText.onTextChanged { confirmPin ->
-      confirmPin?.let {
-        authViewModel.errorMessage.set("")
+    binding.adminAuthInputPinEditText.onTextChanged { pin ->
+      pin?.let {
+        if (
+          authViewModel.errorMessage.get()?.isNotEmpty()!! &&
+          authViewModel.inputPin.get() == it
+        ) {
+          authViewModel.inputPin.set(it)
+        } else {
+          authViewModel.inputPin.set(it)
+          authViewModel.errorMessage.set("")
+        }
       }
     }
 
@@ -108,26 +112,6 @@ class AdminAuthActivityPresenter @Inject constructor(
           context.resources.getString(R.string.admin_auth_heading)
         binding?.adminAuthSubText?.text = context.resources.getString(R.string.admin_auth_sub)
       }
-    }
-  }
-
-  fun handleOnSavedInstanceState(bundle: Bundle) {
-    bundle.putString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE, authViewModel.errorMessage.get())
-    bundle.putString(
-      KEY_ADMIN_AUTH_INPUT_PASSWORD,
-      binding.adminAuthInputPinEditText.text.toString()
-    )
-  }
-
-  fun handleOnRestoreInstanceState(bundle: Bundle) {
-    val errorMessage = bundle.getString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE)
-    val password = bundle.getString(KEY_ADMIN_AUTH_INPUT_PASSWORD)
-    if (!password.isNullOrEmpty()) {
-      binding.adminAuthInputPinEditText.setText(password)
-      binding.adminAuthInputPinEditText.setSelection(password.length)
-    }
-    if (errorMessage != null && errorMessage.isNotEmpty()) {
-      authViewModel.errorMessage.set(errorMessage)
     }
   }
 

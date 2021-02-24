@@ -60,20 +60,36 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.profileResetInputPinEditText.onTextChanged { pin ->
       pin?.let {
-        resetViewModel.inputPin.set(it)
-        resetViewModel.pinErrorMsg.set("")
-        inputtedPin = pin.isNotEmpty()
-        setValidPin()
+        if (
+          resetViewModel.pinErrorMsg.get()?.isNotEmpty()!! &&
+          resetViewModel.inputPin.get() == it
+        ) {
+          resetViewModel.inputPin.set(it)
+          inputtedPin = pin.isNotEmpty()
+        } else {
+          resetViewModel.inputPin.set(it)
+          resetViewModel.pinErrorMsg.set("")
+          inputtedPin = pin.isNotEmpty()
+          setValidPin()
+        }
       }
     }
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.profileResetInputConfirmPinEditText.onTextChanged { confirmPin ->
       confirmPin?.let {
-        resetViewModel.inputConfirmPin.set(it)
-        resetViewModel.confirmErrorMsg.set("")
-        inputtedConfirmPin = confirmPin.isNotEmpty()
-        setValidPin()
+        if (
+          resetViewModel.confirmErrorMsg.get()?.isNotEmpty()!! &&
+          resetViewModel.inputConfirmPin.get() == it
+        ) {
+          resetViewModel.inputConfirmPin.set(it)
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+        } else {
+          resetViewModel.inputConfirmPin.set(it)
+          resetViewModel.confirmErrorMsg.set("")
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+          setValidPin()
+        }
       }
     }
 
@@ -85,11 +101,6 @@ class ProfileResetPinActivityPresenter @Inject constructor(
       }
       false
     }
-
-    binding.profileResetInputPinEditText.setText(resetViewModel.inputPin.get().toString())
-    binding.profileResetInputConfirmPinEditText.setText(
-      resetViewModel.inputConfirmPin.get().toString()
-    )
 
     binding.profileResetSaveButton.setOnClickListener {
       val pin = binding.profileResetInputPinEditText.text.toString()
