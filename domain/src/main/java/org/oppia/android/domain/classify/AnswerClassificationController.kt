@@ -18,11 +18,11 @@ class AnswerClassificationController @Inject constructor(
   private val interactionClassifiers: Map<String, @JvmSuppressWildcards InteractionClassifier>
 ) {
   /**
-   * Classifies the specified answer in the context of the specified [Interaction] and returns the [Outcome] that best
+   * Classifies the specified answer in the context of the specified [Interaction] and returns the [ClassificationResult] that best
    * matches the learner's answer.
    */
   // TODO(#1580): Re-restrict access using Bazel visibilities
-  fun classify(interaction: Interaction, answer: InteractionObject): Outcome {
+  fun classify(interaction: Interaction, answer: InteractionObject): ClassificationResult {
     val interactionClassifier = checkNotNull(
       interactionClassifiers[interaction.id]
     ) {
@@ -47,7 +47,7 @@ class AnswerClassificationController @Inject constructor(
     defaultOutcome: Outcome,
     interactionClassifier: InteractionClassifier,
     interactionId: String
-  ): Outcome {
+  ): ClassificationResult {
     for (answerGroup in answerGroups) {
       for (ruleSpec in answerGroup.ruleSpecsList) {
         val ruleClassifier =
@@ -59,7 +59,14 @@ class AnswerClassificationController @Inject constructor(
         try {
           if (ruleClassifier.matches(answer, ruleSpec.inputMap)) {
             // Explicit classification matched.
-            return answerGroup.outcome
+            return if (answerGroup.taggedSkillMisconceptionId.isEmpty()) {
+              ClassificationResult.OutcomeOnly(answerGroup.outcome)
+            } else {
+              ClassificationResult.OutcomeWithMisconception(
+                answerGroup.outcome,
+                answerGroup.taggedSkillMisconceptionId
+              )
+            }
           }
         } catch (e: Exception) {
           throw IllegalStateException(
@@ -69,8 +76,7 @@ class AnswerClassificationController @Inject constructor(
         }
       }
     }
-
-    // Default outcome classification.
-    return defaultOutcome
+    // Answer group with default outcome classification.
+    return ClassificationResult.OutcomeOnly(defaultOutcome)
   }
 }

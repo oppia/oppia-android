@@ -1,0 +1,84 @@
+# Contains jobs corresponding to build tests (such as verifying that certain targets build, including the app itself).
+
+name: Build Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      # Push events on develop branch
+      - develop
+
+jobs:
+  bazel_build_app:
+    name: Build Binary with Bazel
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Clone Oppia Bazel
+        run: git clone https://github.com/oppia/bazel.git $HOME/oppia-bazel
+      - name: Set up JDK 9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 9
+      - name: Extract Android tools
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/tmp/android_tools
+          cd $HOME/oppia-bazel
+          unzip bazel-tools.zip
+          tar -xf $HOME/oppia-bazel/android_tools.tar.gz -C $GITHUB_WORKSPACE/tmp/android_tools
+      # See https://git-secret.io/installation for details on installing git-secret. Note that the
+      # apt-get method isn't used since it's much slower to update & upgrade apt before installation
+      # versus just directly cloning & installing the project. Further, the specific version
+      # shouldn't matter since git-secret relies on a future-proof storage mechanism for secrets.
+      # This also uses a different directory to install git-secret to avoid requiring root access
+      # when running the git secret command.
+      - name: Install git-secret (non-fork only)
+        if: ${{ github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        shell: bash
+        run: |
+          cd $HOME
+          mkdir -p $HOME/gitsecret
+          git clone https://github.com/sobolevn/git-secret.git git-secret
+          cd git-secret && make build
+          PREFIX="$HOME/gitsecret" make install
+          echo "$HOME/gitsecret" >> $GITHUB_PATH
+          echo "$HOME/gitsecret/bin" >> $GITHUB_PATH
+      - name: Decrypt secrets (non-fork only)
+        if: ${{ github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        env:
+          GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
+        run: |
+          cd $HOME
+          # NOTE TO DEVELOPERS: Make sure to never print this key directly to stdout!
+          echo $GIT_SECRET_GPG_PRIVATE_KEY | base64 --decode > ./git_secret_private_key.gpg
+          gpg --import ./git_secret_private_key.gpg
+          cd $GITHUB_WORKSPACE
+          git secret reveal
+      - name: Unzip Bazel binary
+        run: |
+          cd $HOME/oppia-bazel
+          unzip bazel-build.zip
+          cd $GITHUB_WORKSPACE
+          chmod a+x $HOME/oppia-bazel/bazel
+      # Note that caching only works on non-forks.
+      - name: Build Oppia binary (with caching, non-fork only)
+        if: ${{ github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        env:
+          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
+        run: |
+          $HOME/oppia-bazel/bazel build --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia
+      - name: Build Oppia binary (without caching, fork only)
+        if: ${{ github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
+        run: |
+          $HOME/oppia-bazel/bazel build --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools -- //:oppia
+      - name: Copy Oppia APK for uploading
+        run: cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
+      - uses: actions/upload-artifact@v2
+        with:
+          name: oppia-bazel-apk
+          path: /home/runner/work/oppia-android/oppia-android/oppia.apk
