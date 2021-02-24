@@ -92,10 +92,12 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.IsOnRobolectric
 import org.oppia.android.testing.RobolectricModule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -524,8 +526,8 @@ class ExplorationActivityTest {
 
   // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
+  @RunOn(TestPlatform.ESPRESSO)
   @Test
-  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWithWifi_openRatioExploration_clickAudioIcon_checkAudioFragmentHasDefaultLanguageAndAutoPlays() { // ktlint-disable max-line-length
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
@@ -537,6 +539,9 @@ class ExplorationActivityTest {
         RATIOS_EXPLORATION_ID_0
       )
     ).use {
+      // Work around for #2430 espresso tests, resource registered again at the end of test
+      testCoroutineDispatchers.unregisterIdlingResource()
+
       waitForTheView(withText("What is a Ratio?"))
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
@@ -554,6 +559,7 @@ class ExplorationActivityTest {
           )
         )
       )
+      testCoroutineDispatchers.registerIdlingResource()
     }
     explorationDataController.stopPlayingExploration()
   }
