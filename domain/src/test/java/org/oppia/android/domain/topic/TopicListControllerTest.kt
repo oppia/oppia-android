@@ -33,6 +33,9 @@ import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -47,11 +50,8 @@ import org.oppia.android.util.parser.DefaultGcsPrefix
 import org.oppia.android.util.parser.ImageDownloadUrlTemplate
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val NINE_DAYS_IN_MS = 9 * 24 * 60 * 60 * 1000
 
 /** Tests for [TopicListController]. */
 @RunWith(AndroidJUnit4::class)
@@ -70,10 +70,13 @@ class TopicListControllerTest {
   lateinit var topicListController: TopicListController
 
   @Inject
-  lateinit var storyProgressController: StoryProgressController
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Mock
   lateinit var mockTopicListObserver: Observer<AsyncResult<TopicList>>
@@ -94,6 +97,10 @@ class TopicListControllerTest {
   fun setUp() {
     profileId0 = ProfileId.newBuilder().setInternalId(0).build()
     setUpTestApplicationComponent()
+
+    // Use uptime millis for time tracking since that allows proper time management for recorded
+    // activities that need to be measurably apart from one another (such as completed chapters).
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -240,14 +247,10 @@ class TopicListControllerTest {
 
   @Test
   fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_ongoingStoryListIsCorrect() {
-    storyProgressController.recordRecentlyPlayedChapter(
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
@@ -259,14 +262,10 @@ class TopicListControllerTest {
 
   @Test
   fun testGetPromotedStoryList_markChapDoneFracStory0Exp0_ongoingStoryListIsCorrect() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
@@ -278,23 +277,14 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_ongoingStoryListCorrect() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordRecentlyPlayedChapter(
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp1(
       profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_1,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
@@ -306,23 +296,10 @@ class TopicListControllerTest {
 
   @Test
   fun testGetPromotedStoryList_markAllChapsDoneInFractions_suggestedStoryListIsCorrect() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedFractionsStory0(
       profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_1,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
@@ -339,23 +316,14 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markRecentPlayedFirstChapInAllStoriesInRatios_ongoingStoryListIsCorrect() {
-    storyProgressController.recordRecentlyPlayedChapter(
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
       profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordRecentlyPlayedChapter(
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp0(
       profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_1,
-      RATIOS_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
@@ -370,23 +338,10 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markExp0DoneAndExp2InRatios_promotedStoryListIsCorrect() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_1,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
@@ -398,41 +353,14 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markStoryDoneOfRatiosAndFirstTestTopic_suggestedStoryListIsCorrect() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_1,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
 
@@ -444,15 +372,29 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markRecentlyPlayedFirstTestTopic_defaultSuggestedStoryListIsCorrect() {
-    storyProgressController.recordRecentlyPlayedChapter(
-      profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+  fun testGetStoryList_noTopicProgress_defaultSuggestedStoryListIsCorrect() {
+    val promotedActivityList = retrievePromotedActivityList()
+
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
+      .isEqualTo(0)
+    assertThat(promotedActivityList.promotedStoryList.suggestedStoryCount)
+      .isEqualTo(2)
+    verifyPromotedStoryAsFractionStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[0]
     )
-    testCoroutineDispatchers.runCurrent()
+    verifyPromotedStoryAsRatioStory0Exploration0(
+      promotedActivityList.promotedStoryList.suggestedStoryList[1]
+    )
+  }
+
+  @Test
+  fun testGetStoryList_markRecentlyPlayedFirstTestTopic_suggestedStoryListIsCorrect() {
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
 
     val promotedActivityList = retrievePromotedActivityList()
 
@@ -473,63 +415,10 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrievePromotedActivityList_markAllChapDoneInAllTopics_comingSoonTopicListIsCorrect() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_1,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_2,
-      TEST_EXPLORATION_ID_4,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_1,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
 
@@ -539,14 +428,10 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markAllChapDoneInSecondTestTopic_doesNotPromoteAnyStories() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedTestTopic1Story0(
       profileId0,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_2,
-      TEST_EXPLORATION_ID_4,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
@@ -559,14 +444,10 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markAllChapDoneInSecondTestTopic_comingSoonTopicListIsCorrect() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedTestTopic1Story0(
       profileId0,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_2,
-      TEST_EXPLORATION_ID_4,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
@@ -582,32 +463,18 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_ongoingListIsCorrect() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_1,
-      RATIOS_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
@@ -625,32 +492,18 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markFirstExpOfEveryStoryDoneWithinLastMonth_ongoingOlderListIsCorrect() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      getOldTimestamp()
+      timestampOlderThanOneWeek = true
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      getOldTimestamp()
+      timestampOlderThanOneWeek = true
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_1,
-      RATIOS_EXPLORATION_ID_2,
-      getOldTimestamp()
+      timestampOlderThanOneWeek = true
     )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.olderPlayedStoryCount)
@@ -668,14 +521,10 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markRecentlyPlayedForFirstTestTopic_ongoingStoryListIsCorrect() {
-    storyProgressController.recordRecentlyPlayedChapter(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
       profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
@@ -687,23 +536,10 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markOneStoryDoneForFirstTestTopic_suggestedStoryListIsCorrect() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
-      profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
 
@@ -716,32 +552,14 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markOneStoryDoneAndPlayNextStoryOfFirstTestTopic_ongoingListIsCorrect() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp0(
       profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordRecentlyPlayedChapter(
-      profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_1,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
@@ -755,41 +573,18 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_story0DonePlayStory1FirstTestTopic_playRatios_firstTestTopicisLearned() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp0(
       profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordRecentlyPlayedChapter(
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
       profileId0,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_1,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordRecentlyPlayedChapter(
-      profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      getCurrentTimestamp()
-    )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
@@ -808,32 +603,18 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveStoryList_markFirstExpOfEveryStoryDoneWithinLastMonth_ongoingListIsCorrect() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      getOldTimestamp()
+      timestampOlderThanOneWeek = true
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      getOldTimestamp()
+      timestampOlderThanOneWeek = true
     )
-    testCoroutineDispatchers.runCurrent()
-
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId0,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_1,
-      RATIOS_EXPLORATION_ID_2,
-      getCurrentTimestamp()
+      timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
@@ -1021,15 +802,6 @@ class TopicListControllerTest {
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
-  private fun getCurrentTimestamp(): Long {
-    return Date().time
-  }
-
-  // Returns a timestamp which is atleast a week older than current timestamp.
-  private fun getOldTimestamp(): Long {
-    return Date().time - NINE_DAYS_IN_MS
-  }
-
   private fun retrieveTopicList(): TopicList {
     val topicListLiveData = topicListController.getTopicList().toLiveData()
     topicListLiveData.observeForever(mockTopicListObserver)
@@ -1099,7 +871,7 @@ class TopicListControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
