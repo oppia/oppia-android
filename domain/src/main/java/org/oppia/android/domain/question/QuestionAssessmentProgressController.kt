@@ -136,9 +136,10 @@ class QuestionAssessmentProgressController @Inject constructor(
         lateinit var answeredQuestionOutcome: AnsweredQuestionOutcome
         try {
           val topPendingState = progress.stateDeck.getPendingTopState()
-          val outcome =
+          val classificationResult =
             answerClassificationController.classify(topPendingState.interaction, answer.answer)
-          answeredQuestionOutcome = progress.stateList.computeAnswerOutcomeForResult(outcome)
+          answeredQuestionOutcome =
+            progress.stateList.computeAnswerOutcomeForResult(classificationResult.outcome)
           progress.stateDeck.submitAnswer(answer, answeredQuestionOutcome.feedback)
           // Do not proceed unless the user submitted the correct answer.
           if (answeredQuestionOutcome.isCorrectAnswer) {
