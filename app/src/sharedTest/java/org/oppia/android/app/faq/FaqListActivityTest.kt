@@ -78,8 +78,8 @@ class FaqListActivityTest {
   }
 
   @Test
-  fun testFAQListActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createFAQListActivityIntent())
+  fun testFaqListActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createFaqListActivityIntent())
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
@@ -91,7 +91,7 @@ class FaqListActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createFAQListActivityIntent(): Intent {
+  private fun createFaqListActivityIntent(): Intent {
     return FAQListActivity.createFAQListActivityIntent(
       ApplicationProvider.getApplicationContext()
     )
