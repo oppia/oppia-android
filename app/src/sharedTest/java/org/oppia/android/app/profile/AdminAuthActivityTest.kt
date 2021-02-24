@@ -16,8 +16,10 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -26,6 +28,7 @@ import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -66,6 +69,7 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -112,6 +116,21 @@ class AdminAuthActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testAdminAuthActivity_closeButton_checkContentDescription() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
+      )
+    ).use {
+      onView(withContentDescription(R.string.admin_auth_close)).check(matches(isDisplayed()))
+    }
   }
 
   @Test
@@ -329,6 +348,45 @@ class AdminAuthActivityTest {
       )
       onView(withId(R.id.admin_auth_input_pin))
         .check(matches(hasNoErrorText()))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_defaultButtonState_isDisabled() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(withId(R.id.admin_auth_submit_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputPin_buttonStateIsEnabled() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.admin_auth_submit_button)).check(matches(isEnabled()))
     }
   }
 
@@ -594,7 +652,7 @@ class AdminAuthActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

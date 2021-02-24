@@ -3,21 +3,24 @@ package org.oppia.android.app.player.state
 import android.app.Application
 import android.content.Context
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.PerformException
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -35,6 +38,8 @@ import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -52,6 +57,7 @@ import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
@@ -61,6 +67,8 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -84,12 +92,14 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasActiveConfetti
+import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasExpectedNumberOfActiveSystems
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -268,7 +278,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Config(qualifiers = "port")
+  @Config(qualifiers = "+port")
   fun testStateFragment_portrait_submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -280,7 +290,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Config(qualifiers = "land")
+  @Config(qualifiers = "+land")
   fun testStateFragment_landscape_submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -292,7 +302,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Config(qualifiers = "port")
+  @Config(qualifiers = "+port")
   fun testStateFragment_portrait_submitCorrectAnswer_confettiIsActive() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -303,7 +313,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @Config(qualifiers = "land")
+  @Config(qualifiers = "+land")
   fun testStateFragment_landscape_submitCorrectAnswer_confettiIsActive() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -335,6 +345,8 @@ class StateFragmentLocalTest {
 
       submitTwoWrongAnswers()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
     }
   }
@@ -347,8 +359,15 @@ class StateFragmentLocalTest {
 
       submitTwoWrongAnswers()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
+
+      // The previous response header and only the last failed answer should be showing (since the
+      // failed answer list is collapsed).
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
-      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
+      onView(withId(R.id.state_recycler_view))
+        .check(
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 1)
+        )
     }
   }
 
@@ -361,8 +380,15 @@ class StateFragmentLocalTest {
       submitTwoWrongAnswers()
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.previous_response_header)).perform(click())
-      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
+      testCoroutineDispatchers.runCurrent()
+
+      // Both failed answers should be showing.
+      onView(withId(R.id.state_recycler_view))
+        .check(
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 2)
+        )
     }
   }
 
@@ -375,14 +401,31 @@ class StateFragmentLocalTest {
       submitTwoWrongAnswers()
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
-      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
+      // Only the latest failed answer should be showing.
+      onView(withId(R.id.state_recycler_view))
+        .check(
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 1)
+        )
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
       onView(withSubstring("Previous Responses")).perform(click())
-      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
+      testCoroutineDispatchers.runCurrent()
+      // All failed answers should be showing.
+      onView(withId(R.id.state_recycler_view))
+        .check(
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 2)
+        )
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
       onView(withSubstring("Previous Responses")).perform(click())
-      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
+      testCoroutineDispatchers.runCurrent()
+      // Only the latest failed answer should now be showing.
+      onView(withId(R.id.state_recycler_view))
+        .check(
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 1)
+        )
     }
   }
 
@@ -447,6 +490,9 @@ class StateFragmentLocalTest {
       playThroughState1()
       submitTwoWrongAnswers()
       onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
+      // The previous navigation button is next to a submit answer button in this state.
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.previous_state_navigation_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.hint_bulb)).check(matches(not(isDisplayed())))
@@ -460,7 +506,7 @@ class StateFragmentLocalTest {
       playThroughState1()
       submitTwoWrongAnswers()
       onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
-      moveToPreviousAndBackToCurrentState()
+      moveToPreviousAndBackToCurrentStateWithSubmitButton()
       onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
     }
   }
@@ -477,7 +523,7 @@ class StateFragmentLocalTest {
       onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
       closeHintsAndSolutionsDialog()
 
-      moveToPreviousAndBackToCurrentState()
+      moveToPreviousAndBackToCurrentStateWithSubmitButton()
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -492,23 +538,19 @@ class StateFragmentLocalTest {
       playThroughState1()
 
       produceAndViewFirstHint()
-
-      onView(withId(R.id.previous_state_navigation_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
-      onView(withId(R.id.next_state_navigation_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
+      moveToPreviousAndBackToCurrentStateWithSubmitButton()
       openHintsAndSolutionsDialog()
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(0))
+      testCoroutineDispatchers.runCurrent()
       onView(
         RecyclerViewMatcher.atPositionOnView(
           R.id.hints_and_solution_recycler_view, 0, R.id.hint_summary_container
         )
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
+
       onView(isRoot()).check(
         matches(
           not(
@@ -758,6 +800,7 @@ class StateFragmentLocalTest {
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -810,6 +853,7 @@ class StateFragmentLocalTest {
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -833,9 +877,11 @@ class StateFragmentLocalTest {
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .perform(click())
+      testCoroutineDispatchers.runCurrent()
 
       onView(withText("This will reveal the solution. Are you sure?"))
         .inRoot(isDialog())
@@ -995,6 +1041,155 @@ class StateFragmentLocalTest {
     }
   }
 
+  @Test
+  @Config(qualifiers = "+port")
+  fun testStateFragment_mobilePortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+land")
+  fun testStateFragment_mobileLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  // Specify dimensions and mdpi qualifier so Robolectric runs the test on a Pixel C equivalent screen size
+  // for the sw600dp layouts.
+  @Config(qualifiers = "sw600dp-w1600dp-h1200dp-port-mdpi")
+  fun testStateFragment_tabletPortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  // Specify dimensions and mdpi qualifier so Robolectric runs the test on a Pixel C equivalent screen size
+  // for the sw600dp layouts.
+  @Config(qualifiers = "sw600dp-w1600dp-h1200dp-land-mdpi")
+  fun testStateFragment_tabletLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+port")
+  fun testStateFragment_finishExploration_changePortToLand_endOfSessionConfettiIsDisplayedAgain() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+
+      onView(isRoot()).perform(orientationLandscape())
+
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+land")
+  fun testStateFragment_finishExploration_changeLandToPort_endOfSessionConfettiIsDisplayedAgain() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+
+      onView(isRoot()).perform(orientationPortrait())
+
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitCorrectAnswer_endOfSessionConfettiDoesNotStart() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(not(hasActiveConfetti())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_notAtEndOfExploration_endOfSessionConfettiDoesNotStart() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      // Play through all questions but do not reach the last screen of the exploration.
+      playThroughAllStates()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(not(hasActiveConfetti())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_reachEndOfExplorationTwice_endOfSessionConfettiIsDisplayedOnce() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+
+      clickPreviousStateNavigationButton()
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+      clickNextStateNavigationButton()
+
+      // End of exploration confetti should only render one instance at a time.
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+    }
+  }
+
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
@@ -1023,73 +1218,79 @@ class StateFragmentLocalTest {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
     onView(withSubstring("the pieces must be the same size.")).perform(click())
     testCoroutineDispatchers.runCurrent()
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState2() {
     // Correct answer to 'Matthew gets conned'
     submitFractionAnswer(answerText = "3/4")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState3() {
     // Correct answer to 'Question 1'
     submitFractionAnswer(answerText = "4/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState4() {
     // Correct answer to 'Question 2'
     submitFractionAnswer(answerText = "1/4")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState5() {
     // Correct answer to 'Question 3'
     submitFractionAnswer(answerText = "1/8")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState6() {
     // Correct answer to 'Question 4'
     submitFractionAnswer(answerText = "1/2")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState7() {
     // Correct answer to 'Question 5' which redirects the learner to 'Thinking in fractions Q1'
     submitFractionAnswer(answerText = "2/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState8() {
     // Correct answer to 'Thinking in fractions Q1'
     submitFractionAnswer(answerText = "7/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState9() {
     // Correct answer to 'Thinking in fractions Q2'
     submitFractionAnswer(answerText = "4/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState10() {
     // Correct answer to 'Thinking in fractions Q3'
     submitFractionAnswer(answerText = "5/8")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState11() {
     // Correct answer to 'Thinking in fractions Q4' which redirects the learner to 'Final Test A'
     submitFractionAnswer(answerText = "3/4")
-    clickContinueButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughState12() {
+    // Correct answer to 'Final Test A' redirects learner to 'Happy ending'
+    submitFractionAnswer(answerText = "2/4")
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState12WithWrongAnswer() {
     // Incorrect answer to 'Final Test A' redirects the learner to 'Final Test A second try'
     submitFractionAnswer(answerText = "1/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playUpToFinalTestSecondTry() {
@@ -1107,11 +1308,43 @@ class StateFragmentLocalTest {
     playThroughState12WithWrongAnswer()
   }
 
-  private fun clickContinueButton() {
+  private fun playThroughAllStates() {
+    playThroughState1()
+    playThroughState2()
+    playThroughState3()
+    playThroughState4()
+    playThroughState5()
+    playThroughState6()
+    playThroughState7()
+    playThroughState8()
+    playThroughState9()
+    playThroughState10()
+    playThroughState11()
+    playThroughState12()
+  }
+
+  private fun clickContinueNavigationButton() {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.continue_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickContinueButton() {
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.continue_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickNextStateNavigationButton() {
+    onView(withId(R.id.next_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickPreviousStateNavigationButton() {
+    onView(withId(R.id.previous_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.advanceUntilIdle()
   }
 
   private fun openHintsAndSolutionsDialog() {
@@ -1295,12 +1528,53 @@ class StateFragmentLocalTest {
   }
 
   // Go to previous state and then come back to current state
-  private fun moveToPreviousAndBackToCurrentState() {
+  private fun moveToPreviousAndBackToCurrentStateWithSubmitButton() {
+    // The previous navigation button is bundled with the submit button sometimes, and specifically
+    // for tests that are currently on a state with a submit button after the first state.
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
+    testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.previous_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
+
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
+    testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.next_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
+  }
+
+  /**
+   * Returns a [ViewAssertion] that can be used to check the specified matcher applies the specified
+   * number of times for children against the view under test. If the count does not exactly match,
+   * the assertion will fail.
+   */
+  private fun matchesChildren(matcher: Matcher<View>, times: Int): ViewAssertion {
+    return matches(
+      object : TypeSafeMatcher<View>() {
+        override fun describeTo(description: Description?) {
+          description
+            ?.appendDescriptionOf(matcher)
+            ?.appendText(" occurs times: $times in child views")
+        }
+
+        override fun matchesSafely(view: View?): Boolean {
+          if (view !is ViewGroup) {
+            throw PerformException.Builder()
+              .withCause(IllegalStateException("Expected to match against view group, not: $view"))
+              .build()
+          }
+          val matchingCount = view.children.filter(matcher::matches).count()
+          if (matchingCount != times) {
+            throw PerformException.Builder()
+              .withActionDescription("Expected to match $matcher against $times children")
+              .withViewDescription("$view")
+              .withCause(
+                IllegalStateException("Matched $matchingCount times in $view (expected $times)")
+              )
+              .build()
+          }
+          return true
+        }
+      })
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -1320,7 +1594,7 @@ class StateFragmentLocalTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
