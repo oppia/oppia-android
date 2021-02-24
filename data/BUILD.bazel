@@ -3,9 +3,8 @@
 This library provides data to the rest of the application.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
     name = "persistent_cache_store",
@@ -16,11 +15,11 @@ kt_android_library(
     deps = [
         ":dagger",
         "//model",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+        "//third_party:com_caverock_androidsvg-aar",
+        "//third_party:com_github_bumptech_glide_glide",
         "//utility",
-        artifact("androidx.appcompat:appcompat"),
-        artifact("com.github.bumptech.glide:glide"),
-        artifact("com.caverock:androidsvg-aar"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
     ],
 )
 
