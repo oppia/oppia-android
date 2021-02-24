@@ -1,14 +1,15 @@
 package org.oppia.android.app.profile
 
 import android.app.Dialog
-import android.text.Editable
-import android.text.TextWatcher
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminSettingsDialogBinding
 import javax.inject.Inject
@@ -40,18 +41,19 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
       viewModel = adminViewModel
     }
 
-    binding.inputPin.setInput(adminViewModel.inputPin.get().toString())
-    binding.inputPin.addTextChangedListener(object : TextWatcher {
-      override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
-        confirmPin?.let {
-          adminViewModel.inputPin.set(confirmPin.toString())
+    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
+    binding.adminSettingsInputPinEditText.onTextChanged { confirmPin ->
+      confirmPin?.let {
+        if (
+          adminViewModel.errorMessage.get()?.isNotEmpty()!! && adminViewModel.inputPin.get() == it
+        ) {
+          adminViewModel.inputPin.set(it)
+        } else {
+          adminViewModel.inputPin.set(it)
           adminViewModel.errorMessage.set("")
         }
       }
-
-      override fun afterTextChanged(confirmPin: Editable?) {}
-      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
-    })
+    }
 
     val dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.admin_settings_heading)
@@ -63,13 +65,22 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
       }
       .create()
 
+    binding.adminSettingsInputPinEditText.setOnEditorActionListener { _, actionId, event ->
+      if (actionId == EditorInfo.IME_ACTION_DONE ||
+        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
+      ) {
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).callOnClick()
+      }
+      false
+    }
+
     // This logic prevents the dialog from being dismissed. https://stackoverflow.com/a/7636468.
     dialog.setOnShowListener {
       dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-        if (binding.inputPin.getInput().isEmpty()) {
+        if (binding.adminSettingsInputPinEditText.text?.isEmpty()!!) {
           return@setOnClickListener
         }
-        if (binding.inputPin.getInput() == adminPin) {
+        if (binding.adminSettingsInputPinEditText.text.toString() == adminPin) {
           routeDialogInterface.routeToResetPinDialog()
         } else {
           adminViewModel.errorMessage.set(

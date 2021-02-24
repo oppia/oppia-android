@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="32dp"
+    android:paddingStart="120dp"
+    android:paddingEnd="120dp">
+
+    <TextView
+      android:id="@+id/coming_soon_topic_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif-medium"
+      android:gravity="center|start"
+      android:minHeight="48dp"
+      android:text="@string/coming_soon"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="18sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <org.oppia.android.app.home.promotedlist.ComingSoonTopicsListView
+      android:id="@+id/coming_soon_topic_list_recycler_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="12dp"
+      android:clipToPadding="false"
+      android:orientation="horizontal"
+      android:overScrollMode="never"
+      android:scrollbars="none"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:layout_constraintStart_toStartOf="@+id/coming_soon_topic_text_view"
+      app:layout_constraintTop_toBottomOf="@+id/coming_soon_topic_text_view"
+      app:comingSoonTopicList="@{viewModel.comingSoonTopicList}" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

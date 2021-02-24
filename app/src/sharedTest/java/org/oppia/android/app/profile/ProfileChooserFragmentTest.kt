@@ -21,6 +21,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.not
@@ -65,6 +66,7 @@ import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -86,6 +88,10 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileChooserFragmentTest {
+
+  private val activityTestRule: ActivityTestRule<ProfileChooserActivity> = ActivityTestRule(
+    ProfileChooserActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -114,6 +120,15 @@ class ProfileChooserFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testProfileChooserActivity_hasCorrectLabel() {
+    activityTestRule.launchActivity(/* startIntent= */ null)
+    val title = activityTestRule.activity.title
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.profile_chooser_activity_label))
   }
 
   @Test
@@ -147,7 +162,7 @@ class ProfileChooserFragmentTest {
       ).check(matches(not(isDisplayed())))
       scrollToPosition(position = 3)
       verifyTextOnProfileListItemAtPosition(
-        itemPosition = 3,
+        itemPosition = 4,
         targetView = R.id.add_profile_text,
         stringToMatch = context.getString(R.string.profile_chooser_add)
       )
@@ -376,7 +391,7 @@ class ProfileChooserFragmentTest {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       verifyTextOnProfileListItemAtPosition(
-        itemPosition = 3,
+        itemPosition = 4,
         targetView = R.id.add_profile_text,
         stringToMatch = context.getString(R.string.profile_chooser_add)
       )
@@ -391,7 +406,7 @@ class ProfileChooserFragmentTest {
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          3,
+          4,
           R.id.add_profile_description_text
         )
       ).check(matches(not(isDisplayed())))
@@ -414,7 +429,7 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPosition(R.id.profile_recycler_view, 3)).perform(click())
+      onView(atPosition(R.id.profile_recycler_view, 4)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
       intended(hasExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADD_PROFILE.value))
     }
@@ -465,7 +480,7 @@ class ProfileChooserFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

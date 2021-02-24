@@ -14,7 +14,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
@@ -57,6 +56,7 @@ import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -96,7 +96,6 @@ class WalkthroughWelcomeFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -117,7 +116,7 @@ class WalkthroughWelcomeFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_checkDescription_isCorrect() {
+  fun testWalkthroughWelcomeFragment_descriptionIsCorrect() {
     launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
       onView(
         allOf(
@@ -129,7 +128,7 @@ class WalkthroughWelcomeFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_checkProfileName_isCorrect() {
+  fun testWalkthroughWelcomeFragment_profileNameIsCorrect() {
     launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -142,7 +141,7 @@ class WalkthroughWelcomeFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_checkProfileName_configurationChanged_isCorrect() {
+  fun testWalkthroughWelcomeFragment_checkProfileName_configChange_profileNameIsCorrect() {
     launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -180,7 +179,7 @@ class WalkthroughWelcomeFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

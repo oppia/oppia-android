@@ -37,7 +37,6 @@ import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
@@ -97,6 +96,7 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -144,7 +144,6 @@ class ExplorationActivityTest {
     setUpTestApplicationComponent()
     context = ApplicationProvider.getApplicationContext()
     testCoroutineDispatchers.registerIdlingResource()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -401,7 +400,7 @@ class ExplorationActivityTest {
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       ).inRoot(isDialog()).perform(click())
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.play_pause_audio_icon)).check(matches(not(isDisplayed())))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -440,7 +439,7 @@ class ExplorationActivityTest {
 
       onView(
         allOf(
-          withId(R.id.ivPlayPauseAudio),
+          withId(R.id.play_pause_audio_icon),
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       )
@@ -478,7 +477,7 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.play_pause_audio_icon)).check(matches(not(isDisplayed())))
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
         .check(doesNotExist())
     }
@@ -516,7 +515,7 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
+      onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
         .check(doesNotExist())
     }
@@ -542,13 +541,13 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
         allOf(
-          withId(R.id.ivPlayPauseAudio),
+          withId(R.id.play_pause_audio_icon),
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       )
-      onView(allOf(withText("EN"), withEffectiveVisibility(Visibility.VISIBLE)))
+      onView(allOf(withId(R.id.audio_language_icon), withEffectiveVisibility(Visibility.VISIBLE)))
       waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
-      onView(withId(R.id.ivPlayPauseAudio)).check(
+      onView(withId(R.id.play_pause_audio_icon)).check(
         matches(
           withDrawable(
             R.drawable.ic_pause_circle_filled_white_24dp
@@ -583,7 +582,7 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
         allOf(
-          withText("EN"),
+          withId(R.id.audio_language_icon),
           withEffectiveVisibility(Visibility.VISIBLE)
         )
       ).perform(click())
@@ -601,7 +600,7 @@ class ExplorationActivityTest {
         )
       )
       onView(withId(R.id.continue_button)).perform(click())
-      onView(withText("HI-EN")).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_language_icon)).check(matches(withContentDescription("hi-en")))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -635,7 +634,7 @@ class ExplorationActivityTest {
       onView(withId(R.id.submit_answer_button)).perform(click())
       Thread.sleep(1000)
 
-      onView(withId(R.id.ivPlayPauseAudio))
+      onView(withId(R.id.play_pause_audio_icon))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
     explorationDataController.stopPlayingExploration()
@@ -862,7 +861,7 @@ class ExplorationActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
