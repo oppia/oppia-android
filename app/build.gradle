@@ -6,11 +6,6 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'jacoco'
 
-jacoco {
-  toolVersion = "0.8.2"
-  version "0.7.1.201405082137"
-}
-
 android {
   compileSdkVersion 29
   buildToolsVersion "29.0.2"
@@ -197,9 +192,6 @@ dependencies {
   implementation project(":domain")
   implementation project(":utility")
 }
-repositories {
-  mavenCentral()
-}
 
 // The GeneratedMessageLite implementations of protobufs are depending on protobuf-java
 // instead of protobuf-lite after Android Studio 3.5,
@@ -217,21 +209,12 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
   reports {
     xml.enabled = true
     html.enabled = true
-    csv.enabled false
   }
-  def fileFilter = [
-      '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*', '**/*$[0-9].*'
-  ]
-
 
   def mainSrc = "$project.projectDir/src/main/kotlin"
-  def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
-  def kotlinDebugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
 
-  classDirectories.from = files([debugTree], [kotlinDebugTree])
   sourceDirectories.setFrom(files([mainSrc]))
   executionData.setFrom(fileTree(dir: project.buildDir, includes: [
       'jacoco/testDebugUnitTest.exec', 'outputs/code_coverage/debugAndroidTest/connected/**/*.ec'
   ]))
 }
-
