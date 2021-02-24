@@ -197,6 +197,7 @@ format_import_proto_library(
 
 java_lite_proto_library(
     name = "exploration_java_proto_lite",
+    visibility = ["//visibility:public"],
     deps = [":exploration_proto"],
 )
 
@@ -205,7 +206,6 @@ android_library(
     visibility = ["//visibility:public"],
     exports = [
         ":arguments_java_proto_lite",
-        ":exploration_java_proto_lite",
         ":interaction_object_java_proto_lite",
         ":profile_java_proto_lite",
         ":question_java_proto_lite",
