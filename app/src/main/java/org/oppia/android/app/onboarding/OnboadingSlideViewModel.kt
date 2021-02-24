@@ -6,16 +6,13 @@ import android.content.res.Resources
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
-import org.oppia.android.app.viewmodel.ObservableViewModel
 
 const val TOTAL_NUMBER_OF_SLIDES = 4
 
 /** [ViewModel] for slide in onboarding flow. */
 class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSlide) :
-  ObservableViewModel() {
+  OnboardingViewPagerViewModel() {
   val slideImage = ObservableField<Int>(R.drawable.ic_portrait_onboarding_0)
-  val contentDescription =
-    ObservableField<String>(context.resources.getString(R.string.onboarding_slide_0_title))
   val title =
     ObservableField<String>(context.resources.getString(R.string.onboarding_slide_0_title))
   val description =
@@ -38,7 +35,6 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           slideImage.set(R.drawable.ic_portrait_onboarding_0)
         }
-        contentDescription.set(context.resources.getString(R.string.onboarding_slide_0_title))
         title.set(context.resources.getString(R.string.onboarding_slide_0_title))
         description.set(context.resources.getString(R.string.onboarding_slide_0_description))
       }
@@ -52,7 +48,6 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           slideImage.set(R.drawable.ic_portrait_onboarding_1)
         }
-        contentDescription.set(context.resources.getString(R.string.onboarding_slide_1_title))
         title.set(context.resources.getString(R.string.onboarding_slide_1_title))
         description.set(context.resources.getString(R.string.onboarding_slide_1_description))
       }
@@ -66,7 +61,6 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           slideImage.set(R.drawable.ic_portrait_onboarding_2)
         }
-        contentDescription.set(context.resources.getString(R.string.onboarding_slide_2_title))
         title.set(context.resources.getString(R.string.onboarding_slide_2_title))
         description.set(context.resources.getString(R.string.onboarding_slide_2_description))
       }

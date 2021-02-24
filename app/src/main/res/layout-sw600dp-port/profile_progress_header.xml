@@ -161,6 +161,7 @@
       android:text="@string/recently_played_stories"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="18sp"
+      android:visibility="@{viewModel.headerTextVisibility}"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/profile_edit_image" />
 
@@ -177,6 +178,7 @@
       android:textAllCaps="true"
       android:textColor="@color/oppiaPrimaryDark"
       android:textSize="14sp"
+      android:visibility="@{viewModel.viewAllButtonVisibility}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/completed_stories_container"
       app:layout_constraintTop_toTopOf="@+id/recently_played_stories_text_view" />

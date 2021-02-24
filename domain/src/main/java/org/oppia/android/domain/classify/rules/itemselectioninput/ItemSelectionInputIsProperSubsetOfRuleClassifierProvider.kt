@@ -13,7 +13,8 @@ import javax.inject.Inject
  *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/ItemSelectionInput/directives/item-selection-input-rules.service.ts#L50
  */
-internal class ItemSelectionInputIsProperSubsetOfRuleClassifierProvider @Inject constructor(
+// TODO(#1580): Re-restrict access using Bazel visibilities
+class ItemSelectionInputIsProperSubsetOfRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<StringList> {
 
