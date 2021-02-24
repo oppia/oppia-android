@@ -58,6 +58,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "de.hdodenhof:circleimageview": "3.0.1",
     "io.fabric.sdk.android:fabric": "1.4.7",
     "javax.annotation:javax.annotation-api:jar": "1.3.2",
+    "javax.inject:javax.inject": "1",
     "nl.dionsegijn:konfetti": "1.2.5",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.3.2",
