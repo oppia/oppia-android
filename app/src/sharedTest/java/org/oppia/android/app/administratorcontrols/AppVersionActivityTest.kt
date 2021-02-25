@@ -13,8 +13,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
@@ -83,9 +83,8 @@ import javax.inject.Singleton
 class AppVersionActivityTest {
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<AppVersionActivity> = ActivityTestRule(
-    AppVersionActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  val activityScenarioRule: ActivityScenarioRule<AppVersionActivity> =
+    ActivityScenarioRule(createAppVersionActivityIntent())
 
   @Inject
   lateinit var context: Context
@@ -118,71 +117,64 @@ class AppVersionActivityTest {
 
   @Test
   fun testAppVersionActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createAppVersionActivityIntent())
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_title))
+    activityScenarioRule.scenario.onActivity {
+      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+      // correct string when it's read out.
+      assertThat(it.title).isEqualTo(context.getString(R.string.app_version_activity_title))
+    }
   }
 
   @Test
   fun testAppVersionActivity_loadFragment_displaysAppVersion() {
-    launchAppVersionActivityIntent().use {
-      onView(
+    onView(
+      withText(
+        String.format(
+          context.resources.getString(R.string.app_version_name),
+          context.getVersionName()
+        )
+      )
+    ).check(matches(isDisplayed()))
+    onView(
+      withText(
+        String.format(
+          context.resources.getString(R.string.app_last_update_date),
+          lastUpdateDate
+        )
+      )
+    ).check(matches(isDisplayed()))
+  }
+
+  @Test
+  fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly() {
+    onView(isRoot()).perform(orientationLandscape())
+    onView(
+      withId(
+        R.id.app_version_text_view
+      )
+    ).check(
+      matches(
         withText(
           String.format(
             context.resources.getString(R.string.app_version_name),
             context.getVersionName()
           )
         )
-      ).check(matches(isDisplayed()))
-      onView(
+      )
+    )
+    onView(
+      withId(
+        R.id.app_last_update_date_text_view
+      )
+    ).check(
+      matches(
         withText(
           String.format(
             context.resources.getString(R.string.app_last_update_date),
             lastUpdateDate
           )
         )
-      ).check(
-        matches(isDisplayed())
       )
-    }
-  }
-
-  @Test
-  fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly() {
-    launchAppVersionActivityIntent().use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(
-        withId(
-          R.id.app_version_text_view
-        )
-      ).check(
-        matches(
-          withText(
-            String.format(
-              context.resources.getString(R.string.app_version_name),
-              context.getVersionName()
-            )
-          )
-        )
-      )
-      onView(
-        withId(
-          R.id.app_last_update_date_text_view
-        )
-      ).check(
-        matches(
-          withText(
-            String.format(
-              context.resources.getString(R.string.app_last_update_date),
-              lastUpdateDate
-            )
-          )
-        )
-      )
-    }
+    )
   }
 
   private fun getDateTime(dateTimeTimestamp: Long): String? {
