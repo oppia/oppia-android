@@ -147,7 +147,7 @@ class AdministratorControlsActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.administrator_controls_activity_label))
+    assertThat(title).isEqualTo(context.getString(R.string.administrator_controls_activity_title))
   }
 
   @Test
@@ -485,7 +485,7 @@ class AdministratorControlsActivityTest {
         try {
           val nestedScrollView =
             findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView
-          nestedScrollView.scrollTo(0, view.getTop())
+          nestedScrollView.scrollTo(0, view.top)
         } catch (e: Exception) {
           throw PerformException.Builder()
             .withActionDescription(this.description)
@@ -499,14 +499,14 @@ class AdministratorControlsActivityTest {
   }
 
   private fun findFirstParentLayoutOfClass(view: View, parentClass: Class<out View>): View {
-    var parent: ViewParent = FrameLayout(view.getContext())
+    var parent: ViewParent = FrameLayout(view.context)
     lateinit var incrementView: ViewParent
     var i = 0
     while (!(parent.javaClass === parentClass)) {
-      if (i == 0) {
-        parent = findParent(view)
+      parent = if (i == 0) {
+        findParent(view)
       } else {
-        parent = findParent(incrementView)
+        findParent(incrementView)
       }
       incrementView = parent
       i++
@@ -515,11 +515,11 @@ class AdministratorControlsActivityTest {
   }
 
   private fun findParent(view: View): ViewParent {
-    return view.getParent()
+    return view.parent
   }
 
   private fun findParent(view: ViewParent): ViewParent {
-    return view.getParent()
+    return view.parent
   }
 
   private fun verifyItemDisplayedOnAdministratorControlListItem(

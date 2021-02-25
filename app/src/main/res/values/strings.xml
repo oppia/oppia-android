@@ -8,7 +8,7 @@
   <string name="menu_help">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="administrator_controls">Administrator Controls</string>
-  <string name="administrator_controls_activity_label">Administrator Controls</string>
+  <string name="administrator_controls_activity_title">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
   <string name="drawer_close_content_description">Navigation Menu Close</string>
   <string name="welcome_text">Welcome to Oppia!</string>
@@ -188,7 +188,7 @@
   </plurals>
   <string name="bar_separator">\u0020|\u0020</string>
   <!-- ProfileChooserFragment -->
-  <string name="profile_chooser_activity_label">Profile selection page</string>
+  <string name="profile_chooser_activity_title">Profile selection page</string>
   <string name="profile_chooser_admin">Administrator</string>
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
@@ -330,7 +330,7 @@
   <string name="log_out_dialog_okay_button">Ok</string>
   <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
   <!-- AppVersionFragment -->
-  <string name="app_version_activity_label">App Version</string>
+  <string name="app_version_activity_title">App Version</string>
   <string name="app_version_name">App Version %s</string>
   <string name="app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
   <!-- OptionsActivity -->

@@ -123,7 +123,7 @@ class AppVersionActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_label))
+    assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_title))
   }
 
   @Test
@@ -198,9 +198,7 @@ class AppVersionActivityTest {
   }
 
   private fun createAppVersionActivityIntent(): Intent {
-    return AppVersionActivity.createAppVersionActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
+    return AppVersionActivity.createAppVersionActivityIntent(context)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
