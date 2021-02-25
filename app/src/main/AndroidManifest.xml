@@ -41,6 +41,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.home.recentlyplayed.RecentlyPlayedActivity"
+      android:label="@string/recently_played_activity_label"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.mydownloads.MyDownloadsActivity"
