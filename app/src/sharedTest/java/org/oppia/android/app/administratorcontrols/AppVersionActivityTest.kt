@@ -190,7 +190,9 @@ class AppVersionActivityTest {
   }
 
   private fun createAppVersionActivityIntent(): Intent {
-    return AppVersionActivity.createAppVersionActivityIntent(context)
+    return AppVersionActivity.createAppVersionActivityIntent(
+      ApplicationProvider.getApplicationContext()
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
