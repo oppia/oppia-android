@@ -109,8 +109,8 @@ class AdministratorControlsActivityTest {
   @get:Rule
   val activityTestRule: ActivityTestRule<AdministratorControlsActivity> = ActivityTestRule(
     AdministratorControlsActivity::class.java,
-    /* initialTouchMode= */true,
-    /* launchActivity= */false
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
   )
 
   @Inject
