@@ -24,7 +24,7 @@
       app:navigationContentDescription="@string/navigate_up"
       app:navigationIcon="?attr/homeAsUpIndicator"
       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-      app:title="@string/administrator_controls_app_version"
+      app:title="@string/app_version_activity_label"
       app:titleTextAppearance="@style/ToolbarTextAppearance"
       app:titleTextColor="@color/white" />
   </com.google.android.material.appbar.AppBarLayout>

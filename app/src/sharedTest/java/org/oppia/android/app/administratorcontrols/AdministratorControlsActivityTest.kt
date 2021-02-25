@@ -35,11 +35,14 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -103,6 +106,13 @@ import javax.inject.Singleton
 )
 class AdministratorControlsActivityTest {
 
+  @get:Rule
+  val activityTestRule: ActivityTestRule<AdministratorControlsActivity> = ActivityTestRule(
+    AdministratorControlsActivity::class.java,
+    /* initialTouchMode= */true,
+    /* launchActivity= */false
+  )
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
@@ -128,6 +138,16 @@ class AdministratorControlsActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testAdministratorControlsActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createAdministratorControlsActivityIntent(profileId = 0))
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.administrator_controls_activity_label))
   }
 
   @Test

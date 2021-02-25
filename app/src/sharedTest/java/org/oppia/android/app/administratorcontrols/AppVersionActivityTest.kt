@@ -4,25 +4,22 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -85,6 +82,11 @@ import javax.inject.Singleton
 )
 class AppVersionActivityTest {
 
+  @get:Rule
+  val activityTestRule: ActivityTestRule<AppVersionActivity> = ActivityTestRule(
+    AppVersionActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var context: Context
 
@@ -112,6 +114,16 @@ class AppVersionActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testAppVersionActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createAppVersionActivityIntent())
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_label))
   }
 
   @Test
@@ -173,26 +185,6 @@ class AppVersionActivityTest {
     }
   }
 
-  @Test
-  fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
-    ActivityScenario.launch<AdministratorControlsActivity>(
-      launchAdministratorControlsActivityIntent(
-        0
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          3
-        )
-      )
-      onView(withText(R.string.administrator_controls_app_version)).perform(click())
-      intended(hasComponent(AppVersionActivity::class.java.name))
-      onView(isRoot()).perform(pressBack())
-      onView(withId(R.id.administrator_controls_list)).check(matches(isDisplayed()))
-    }
-  }
-
   private fun getDateTime(dateTimeTimestamp: Long): String? {
     return oppiaDateTimeFormatter.formatDateFromDateString(
       OppiaDateTimeFormatter.DD_MMM_YYYY,
@@ -202,16 +194,12 @@ class AppVersionActivityTest {
   }
 
   private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
-    val intent = AppVersionActivity.createAppVersionActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
-    return ActivityScenario.launch(intent)
+    return ActivityScenario.launch(createAppVersionActivityIntent())
   }
 
-  private fun launchAdministratorControlsActivityIntent(profileId: Int): Intent {
-    return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      profileId
+  private fun createAppVersionActivityIntent(): Intent {
+    return AppVersionActivity.createAppVersionActivityIntent(
+      ApplicationProvider.getApplicationContext()
     )
   }
 

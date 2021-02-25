@@ -39,7 +39,6 @@ class AdministratorControlsActivity :
       PROFILE_LIST_FRAGMENT
     }
     administratorControlsActivityPresenter.handleOnCreate(extraControlsTitle, lastLoadedFragment)
-    title = getString(R.string.administrator_controls)
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
