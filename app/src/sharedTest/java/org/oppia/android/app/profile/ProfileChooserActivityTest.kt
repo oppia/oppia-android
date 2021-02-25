@@ -77,21 +77,21 @@ class ProfileChooserActivityTest {
   }
 
   @Test
-  fun testFaqListActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createFaqListActivityIntent())
+  fun testProfileChooserActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createProfileChooserActivityIntent())
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.faq_list_activity_label))
+    assertThat(title).isEqualTo(context.getString(R.string.profile_chooser_activity_label))
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createFaqListActivityIntent(): Intent {
-    return ProfileChooserActivity.createProfileChooserActivityIntent(
+  private fun createProfileChooserActivityIntent(): Intent {
+    return ProfileChooserActivity.createProfileChooserActivity(
       ApplicationProvider.getApplicationContext()
     )
   }
@@ -126,7 +126,7 @@ class ProfileChooserActivityTest {
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFaqListActivityTest_TestApplicationComponent.builder()
+      DaggerProfileChooserActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
