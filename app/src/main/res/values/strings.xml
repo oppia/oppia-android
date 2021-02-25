@@ -57,6 +57,7 @@
   <string name="lessons">Lessons</string>
   <string name="practice">Practice</string>
   <string name="revision">Revision</string>
+  <string name="topic_page">Topic page</string>
   <string name="topic_name">Topic: %s</string>
   <string name="topic">Topic</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
@@ -71,13 +72,14 @@
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
+  <string name="last_played_stories">Last-Played Stories</string>
   <string name="view_all">View All</string>
   <string name="ongoing_story_last_week">Played within the Last Week</string>
   <string name="ongoing_story_last_month">Played within the Last Month</string>
   <string name="lesson_thumbnail_content_description">Image for %s</string>
   <string name="all_topics">All Topics</string>
   <string name="stories_you_can_play">Stories You Can Play</string>
-  <string name="go_to_previous_page">Go to previous page.</string>
+  <string name="navigate_up">Navigate up</string>
   <string name="recently_played_activity">Recently-Played Stories</string>
   <string name="topic_downloaded">Topic Downloaded</string>
   <string name="downloaded">Downloaded</string>
@@ -185,6 +187,7 @@
   </plurals>
   <string name="bar_separator">\u0020|\u0020</string>
   <!-- ProfileChooserFragment -->
+  <string name="profile_chooser_activity_label">Profile selection page</string>
   <string name="profile_chooser_admin">Administrator</string>
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
@@ -422,4 +425,7 @@
   </string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
+  <string name="coming_soon">Coming Soon</string>
+  <string name="recommended_stories">Recommended Stories</string>
+  <string name="stories_for_you">Stories For You</string>
 </resources>
