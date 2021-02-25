@@ -27,7 +27,6 @@ exports_files(["src/main/AndroidManifest.xml"])
 #  - A file of any type has their own BAZEL library
 # NOTE: if the file is added here make sure to remove this from the other sub lists
 # of EXCLUDED_APP_LIB_FILES.
-
 # keep sorted
 MIGRATED_SOURCE_FILES = [
     "src/main/java/org/oppia/android/app/viewmodel/ObservableArrayList.kt",
