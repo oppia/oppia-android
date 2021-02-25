@@ -15,7 +15,7 @@ private const val VIEW_TYPE_SECTION_TITLE_TEXT = 1
 private const val VIEW_TYPE_SECTION_STORY_ITEM = 2
 
 /** Adapter to inflate different items/views inside [RecyclerView] for Ongoing Story List. */
-class OngoingListAdapter(
+class PromotedListAdapter(
   private val activity: AppCompatActivity,
   private val itemList: MutableList<RecentlyPlayedItemViewModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -60,7 +60,7 @@ class OngoingListAdapter(
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         storyGridPosition = position - titleIndex
-        (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
+        (holder as OngoingStoryViewHolder).bind(itemList[position] as PromotedViewModel)
         val marginMin =
           (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_margin_min)
         val marginMax =
@@ -166,7 +166,7 @@ class OngoingListAdapter(
       is SectionTitleViewModel -> {
         VIEW_TYPE_SECTION_TITLE_TEXT
       }
-      is OngoingStoryViewModel -> {
+      is PromotedViewModel -> {
         VIEW_TYPE_SECTION_STORY_ITEM
       }
       else -> throw IllegalArgumentException(
@@ -194,8 +194,8 @@ class OngoingListAdapter(
   private class OngoingStoryViewHolder(
     val binding: OngoingStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(ongoingStoryViewModel: OngoingStoryViewModel) {
-      binding.viewModel = ongoingStoryViewModel
+    internal fun bind(promotedViewModel: PromotedViewModel) {
+      binding.viewModel = promotedViewModel
     }
   }
 }
