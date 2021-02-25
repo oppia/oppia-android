@@ -173,6 +173,23 @@ class ExplorationActivityTest {
   )
 
   @Test
+  fun testFaqListActivity_hasCorrectActivityLabel() {
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+    )
+    val title = explorationActivityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.exploration_player_activity_label))
+  }
+
+  @Test
   fun testExploration_toolbarTitle_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(

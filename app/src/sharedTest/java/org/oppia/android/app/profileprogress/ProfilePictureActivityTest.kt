@@ -12,9 +12,12 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -71,6 +74,11 @@ import javax.inject.Singleton
 )
 class ProfilePictureActivityTest {
 
+  @get:Rule
+  val activityTestRule: ActivityTestRule<ProfilePictureActivity> = ActivityTestRule(
+    ProfilePictureActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
@@ -95,11 +103,14 @@ class ProfilePictureActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createProfilePictureActivityIntent(profileId: Int): Intent {
-    return ProfilePictureActivity.createProfilePictureActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      profileId
-    )
+  @Test
+  fun testProfilePictureActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createProfilePictureActivityIntent(profileId = 0))
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.profile_picture_activity_label))
   }
 
   @Test
@@ -107,6 +118,13 @@ class ProfilePictureActivityTest {
     launch<ProfilePictureActivity>(createProfilePictureActivityIntent(internalProfileId)).use {
       onView(withId(R.id.profile_picture_image_view)).check(matches(isDisplayed()))
     }
+  }
+
+  private fun createProfilePictureActivityIntent(profileId: Int): Intent {
+    return ProfilePictureActivity.createProfilePictureActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      profileId
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

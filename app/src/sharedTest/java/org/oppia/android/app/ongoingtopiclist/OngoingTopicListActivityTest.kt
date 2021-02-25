@@ -19,10 +19,13 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -88,6 +91,11 @@ class OngoingTopicListActivityTest {
 
   private val internalProfileId = 0
 
+  @get:Rule
+  val activityTestRule: ActivityTestRule<OngoingTopicListActivity> = ActivityTestRule(
+    OngoingTopicListActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var context: Context
 
@@ -125,6 +133,16 @@ class OngoingTopicListActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testOngoingTopicList_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createOngoingTopicListActivityIntent(internalProfileId))
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.ongoing_topic__list_activity_label))
   }
 
   @Test

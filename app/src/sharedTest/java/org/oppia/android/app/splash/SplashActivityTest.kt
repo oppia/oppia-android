@@ -88,9 +88,14 @@ import javax.inject.Singleton
 @Config(application = SplashActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class SplashActivityTest {
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
 
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
@@ -113,6 +118,16 @@ class SplashActivityTest {
     /* initialTouchMode= */ true,
     /* launchActivity= */ false
   )
+
+  @Test
+  fun testSplashActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(/* startIntent= */ null)
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.splash_activity_label))
+  }
 
   @Test
   fun testSplashActivity_initialOpen_routesToOnboardingActivity() {

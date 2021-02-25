@@ -34,7 +34,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.android.material.textfield.TextInputLayout
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -43,6 +45,7 @@ import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -101,6 +104,11 @@ import javax.inject.Singleton
 )
 class AddProfileActivityTest {
 
+  @get:Rule
+  val activityTestRule: ActivityTestRule<AddProfileActivity> = ActivityTestRule(
+    AddProfileActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var context: Context
 
@@ -128,6 +136,16 @@ class AddProfileActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testAddProfileActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(null)
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.add_profile_activity_label))
   }
 
   @Test

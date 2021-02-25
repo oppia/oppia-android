@@ -23,7 +23,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.android.material.textfield.TextInputLayout
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -32,6 +34,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -90,6 +93,11 @@ import javax.inject.Singleton
 )
 class ProfileResetPinActivityTest {
 
+  @get:Rule
+  val activityTestRule: ActivityTestRule<ProfileResetPinActivity> = ActivityTestRule(
+    ProfileResetPinActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var context: Context
 
@@ -118,6 +126,22 @@ class ProfileResetPinActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testProfileResetPin_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(
+      ProfileResetPinActivity.createProfileResetPinActivity(
+        context = context,
+        profileId = 0,
+        isAdmin = true
+      )
+    )
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.profile_reset_pin_activity_label))
   }
 
   @Test

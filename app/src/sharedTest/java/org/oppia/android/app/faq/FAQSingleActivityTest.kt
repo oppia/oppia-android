@@ -87,9 +87,12 @@ class FAQSingleActivityTest {
   lateinit var resourceBucketName: String
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<FAQSingleActivity> = ActivityTestRule(
+  val activityTestRule: ActivityTestRule<FAQSingleActivity> = ActivityTestRule(
     FAQSingleActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
+
+  @Inject
+  lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -102,6 +105,16 @@ class FAQSingleActivityTest {
   @After
   fun tearDown() {
     Intents.release()
+  }
+
+  @Test
+  fun testFAQSingleActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createFAQSingleActivity())
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.faq_single_activity_label))
   }
 
   @Test
