@@ -26,6 +26,7 @@ import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -330,6 +331,45 @@ class AdminAuthActivityTest {
       )
       onView(withId(R.id.admin_auth_input_pin))
         .check(matches(hasNoErrorText()))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_defaultButtonState_isDisabled() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(withId(R.id.admin_auth_submit_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputPin_buttonStateIsEnabled() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.admin_auth_submit_button)).check(matches(isEnabled()))
     }
   }
 
