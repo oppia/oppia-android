@@ -98,7 +98,7 @@ class TopicActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.topic_page))
+    assertThat(title).isEqualTo(context.getString(R.string.topic_activity_label))
   }
 
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
