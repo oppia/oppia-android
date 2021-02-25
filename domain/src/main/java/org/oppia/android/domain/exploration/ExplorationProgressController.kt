@@ -139,10 +139,7 @@ class ExplorationProgressController @Inject constructor(
         try {
           val topPendingState = explorationProgress.stateDeck.getPendingTopState()
           val outcome =
-            answerClassificationController.classify(
-              topPendingState.interaction,
-              userAnswer.answer
-            ).outcome
+            answerClassificationController.classify(topPendingState.interaction, userAnswer.answer)
           answerOutcome =
             explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
           explorationProgress.stateDeck.submitAnswer(userAnswer, answerOutcome.feedback)

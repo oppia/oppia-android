@@ -354,31 +354,6 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_noTopicProgress_initialRecommendationFractionsAndRatiosIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
-      verifyExactTextOnHomeListItemAtPosition(
-        itemPosition = 1,
-        targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recommended_stories)
-      )
-      scrollToPositionOfPromotedList(position = 1)
-      verifyTextOnPromotedListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Fractions"
-      )
-      scrollToPositionOfPromotedList(position = 1)
-      verifyTextOnPromotedListItemAtPosition(
-        itemPosition = 1,
-        targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Ratios and Proportional Reasoning"
-      )
-    }
-  }
-
-  @Test
   fun testHomeActivity_forPromotedActivityList_hideViewAll() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
@@ -808,9 +783,9 @@ class HomeActivityTest {
   fun testHomeActivity_firstTestTopic_topicSummary_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 2)
       verifyTextOnHomeListItemAtPosition(
-        itemPosition = 3,
+        itemPosition = 2,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "First Test Topic"
       )
@@ -821,9 +796,9 @@ class HomeActivityTest {
   fun testHomeActivity_fiveLessons_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 2)
       verifyTextOnHomeListItemAtPosition(
-        itemPosition = 3,
+        itemPosition = 2,
         targetViewId = R.id.lesson_count_text_view,
         stringToMatch = "5 Lessons"
       )
@@ -852,9 +827,9 @@ class HomeActivityTest {
   fun testHomeActivity_oneLesson_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
-        itemPosition = 4,
+        itemPosition = 3,
         targetViewId = R.id.lesson_count_text_view,
         stringToMatch = "1 Lesson"
       )
@@ -940,9 +915,9 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
-        itemPosition = 4,
+        itemPosition = 3,
         targetViewId = R.id.lesson_count_text_view,
         stringToMatch = "1 Lesson"
       )
@@ -953,8 +928,8 @@ class HomeActivityTest {
   fun testHomeActivity_clickTopicSummary_opensTopicActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
-      onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
+      scrollToPosition(position = 2)
+      onView(atPosition(R.id.home_recycler_view, 2)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
     }
@@ -1113,9 +1088,9 @@ class HomeActivityTest {
     profileTestHelper.logIntoNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
-        itemPosition = 2,
+        itemPosition = 1,
         targetViewId = R.id.all_topics_text_view,
         stringToMatch = context.getString((R.string.all_topics))
       )

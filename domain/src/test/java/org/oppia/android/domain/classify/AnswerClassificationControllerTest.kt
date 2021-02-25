@@ -118,8 +118,6 @@ class AnswerClassificationControllerTest {
       .setDestStateName("Second state")
       .setFeedback(SubtitledHtml.newBuilder().setContentId("content_id_1").setHtml("Feedback 2"))
       .build()
-
-    private val TEST_MISCONCEPTION_ID_0 = "test-misconception-id-0"
   }
 
   @Inject
@@ -135,7 +133,7 @@ class AnswerClassificationControllerTest {
     val interaction = Interaction.getDefaultInstance()
 
     val exception = assertThrows(IllegalStateException::class) {
-      answerClassificationController.classify(interaction, TEST_STRING_0).outcome
+      answerClassificationController.classify(interaction, TEST_STRING_0)
     }
 
     assertThat(exception).hasMessageThat().contains("Encountered unknown interaction type")
@@ -149,7 +147,7 @@ class AnswerClassificationControllerTest {
       .build()
 
     val exception = assertThrows(IllegalStateException::class) {
-      answerClassificationController.classify(interaction, TEST_STRING_0).outcome
+      answerClassificationController.classify(interaction, TEST_STRING_0)
     }
 
     assertThat(exception).hasMessageThat()
@@ -163,7 +161,7 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_STRING_0).outcome
+    val outcome = answerClassificationController.classify(interaction, TEST_STRING_0)
 
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
   }
@@ -180,82 +178,10 @@ class AnswerClassificationControllerTest {
       )
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_STRING_0).outcome
+    val outcome = answerClassificationController.classify(interaction, TEST_STRING_0)
 
     // The test string does not match the rule spec.
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
-  }
-
-  @Test
-  fun testClassify_interactionWithDefaultOutcome_returnOutcomeOnlyWithNoMisconceptionId() {
-    val interaction = Interaction.newBuilder()
-      .setId("Continue")
-      .setDefaultOutcome(DEFAULT_OUTCOME)
-      .build()
-
-    val classificationResult = answerClassificationController.classify(interaction, CONTINUE_ANSWER)
-
-    // The continue interaction always returns the default outcome because it has no rule classifiers.
-    assertThat(classificationResult.outcome).isEqualTo(DEFAULT_OUTCOME)
-    // Classification result should return no tagged skill misconception ID
-    assertThat(classificationResult).isInstanceOf(ClassificationResult.OutcomeOnly::class.java)
-  }
-
-  @Test
-  fun testClassify_nonDefaultOutcome_noMisconception_returnOutcomeOnlyWithNoMisconceptionId() {
-    val interaction = Interaction.newBuilder()
-      .setId("ItemSelectionInput")
-      .addAnswerGroups(
-        AnswerGroup.newBuilder()
-          .addRuleSpecs(
-            RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_ITEM_SELECTION_SET_0)
-          )
-          .setOutcome(OUTCOME_0)
-      )
-      .setDefaultOutcome(DEFAULT_OUTCOME)
-      .build()
-
-    val classificationResult = answerClassificationController.classify(
-      interaction,
-      TEST_ITEM_SELECTION_SET_0
-    )
-
-    // The first group should match.
-    assertThat(classificationResult.outcome).isEqualTo(OUTCOME_0)
-    // Classification result should return no tagged skill misconception ID
-    assertThat(classificationResult).isInstanceOf(ClassificationResult.OutcomeOnly::class.java)
-  }
-
-  @Test
-  fun testClassify_nonDefaultOutcome_withMisconception_returnOutcomeWithMisconceptionId() {
-    val interaction = Interaction.newBuilder()
-      .setId("ItemSelectionInput")
-      .addAnswerGroups(
-        AnswerGroup.newBuilder()
-          .addRuleSpecs(
-            RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_ITEM_SELECTION_SET_0)
-          )
-          .setOutcome(OUTCOME_0)
-          .setTaggedSkillMisconceptionId(TEST_MISCONCEPTION_ID_0)
-      )
-      .setDefaultOutcome(DEFAULT_OUTCOME)
-      .build()
-
-    val classificationResult = answerClassificationController.classify(
-      interaction,
-      TEST_ITEM_SELECTION_SET_0
-    )
-
-    // The first group should match.
-    assertThat(classificationResult.outcome).isEqualTo(OUTCOME_0)
-    // Classification result should return a tagged skill misconception ID
-    assertThat(classificationResult)
-      .isInstanceOf(ClassificationResult.OutcomeWithMisconception::class.java)
-    // Verify that the correct misconception ID is returned
-    assertThat(
-      (classificationResult as ClassificationResult.OutcomeWithMisconception)
-        .taggedSkillMisconceptionId
-    ).isEqualTo(TEST_MISCONCEPTION_ID_0)
   }
 
   @Test
@@ -265,7 +191,7 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, CONTINUE_ANSWER).outcome
+    val outcome = answerClassificationController.classify(interaction, CONTINUE_ANSWER)
 
     // The continue interaction always returns the default outcome because it has no rule classifiers.
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
@@ -285,7 +211,7 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_FRACTION_0).outcome
+    val outcome = answerClassificationController.classify(interaction, TEST_FRACTION_0)
 
     // The first group should match.
     assertThat(outcome).isEqualTo(OUTCOME_0)
@@ -305,7 +231,7 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_FRACTION_1).outcome
+    val outcome = answerClassificationController.classify(interaction, TEST_FRACTION_1)
 
     // The default outcome should be returned since the answer didn't match.
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
@@ -328,7 +254,7 @@ class AnswerClassificationControllerTest {
     val outcome = answerClassificationController.classify(
       interaction,
       TEST_ITEM_SELECTION_SET_0
-    ).outcome
+    )
 
     // The first group should match.
     assertThat(outcome).isEqualTo(OUTCOME_0)
@@ -351,7 +277,7 @@ class AnswerClassificationControllerTest {
     val outcome = answerClassificationController.classify(
       interaction,
       TEST_ITEM_SELECTION_SET_1
-    ).outcome
+    )
 
     // The default outcome should be returned since the answer didn't match.
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
@@ -372,7 +298,7 @@ class AnswerClassificationControllerTest {
       .build()
 
     val outcome =
-      answerClassificationController.classify(interaction, TEST_MULTIPLE_CHOICE_OPTION_0).outcome
+      answerClassificationController.classify(interaction, TEST_MULTIPLE_CHOICE_OPTION_0)
 
     // The first group should match.
     assertThat(outcome).isEqualTo(OUTCOME_0)
@@ -393,7 +319,7 @@ class AnswerClassificationControllerTest {
       .build()
 
     val outcome =
-      answerClassificationController.classify(interaction, TEST_MULTIPLE_CHOICE_OPTION_1).outcome
+      answerClassificationController.classify(interaction, TEST_MULTIPLE_CHOICE_OPTION_1)
 
     // The default outcome should be returned since the answer didn't match.
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
@@ -416,7 +342,7 @@ class AnswerClassificationControllerTest {
     val outcome = answerClassificationController.classify(
       interaction,
       TEST_NUMBER_WITH_UNITS_0
-    ).outcome
+    )
 
     // The first group should match.
     assertThat(outcome).isEqualTo(OUTCOME_0)
@@ -439,7 +365,7 @@ class AnswerClassificationControllerTest {
     val outcome = answerClassificationController.classify(
       interaction,
       TEST_NUMBER_WITH_UNITS_1
-    ).outcome
+    )
 
     // The default outcome should be returned since the answer didn't match.
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
@@ -457,7 +383,7 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_NUMBER_0).outcome
+    val outcome = answerClassificationController.classify(interaction, TEST_NUMBER_0)
 
     // The first group should match.
     assertThat(outcome).isEqualTo(OUTCOME_0)
@@ -475,7 +401,7 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_NUMBER_1).outcome
+    val outcome = answerClassificationController.classify(interaction, TEST_NUMBER_1)
 
     // The default outcome should be returned since the answer didn't match.
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
@@ -493,7 +419,7 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_STRING_0).outcome
+    val outcome = answerClassificationController.classify(interaction, TEST_STRING_0)
 
     // The first group should match.
     assertThat(outcome).isEqualTo(OUTCOME_0)
@@ -511,7 +437,7 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_STRING_1).outcome
+    val outcome = answerClassificationController.classify(interaction, TEST_STRING_1)
 
     // The default outcome should be returned since the answer didn't match.
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
@@ -534,7 +460,7 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_STRING_1).outcome
+    val outcome = answerClassificationController.classify(interaction, TEST_STRING_1)
 
     // The outcome of the singly matched answer group should be returned.
     assertThat(outcome).isEqualTo(OUTCOME_1)
@@ -560,7 +486,7 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_STRING_0).outcome
+    val outcome = answerClassificationController.classify(interaction, TEST_STRING_0)
 
     // The outcome of the singly matched answer group should be returned. Matching multiple rule specs doesn't matter.
     assertThat(outcome).isEqualTo(OUTCOME_0)
@@ -585,7 +511,7 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_STRING_0).outcome
+    val outcome = answerClassificationController.classify(interaction, TEST_STRING_0)
 
     // The first matched group should be returned even though multiple groups are matching.
     assertThat(outcome).isEqualTo(OUTCOME_0)
@@ -610,7 +536,7 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_STRING_1).outcome
+    val outcome = answerClassificationController.classify(interaction, TEST_STRING_1)
 
     // No matching groups should always yield the default outcome.
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
