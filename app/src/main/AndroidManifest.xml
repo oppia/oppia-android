@@ -84,6 +84,7 @@
       android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".app.profile.ProfileChooserActivity"
+      android:label="@string/profile_chooser_activity_label"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.profileprogress.ProfilePictureActivity"
@@ -152,7 +153,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.topic.TopicActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/topic_page" />
     <activity
       android:name=".app.walkthrough.WalkthroughActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
