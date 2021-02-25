@@ -40,6 +40,7 @@ jobs:
             echo "::set-output name=have_tests_to_run::true"
           else
             echo "::set-output name=have_tests_to_run::false"
+            echo "No tests are detected as affected by this change. If this is wrong, you can add '[RunAllTests]' to the PR title to force a run."
           fi
       - name: Compute test matrix based on all tests
         id: compute-test-matrix-from-all
