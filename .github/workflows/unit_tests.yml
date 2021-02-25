@@ -1,0 +1,124 @@
+# Contains jobs corresponding to unit tests. Integration (e.g. emulator or screenshot testing) or End-to-End tests should not be triggered here.
+
+name: Unit Tests (Robolectric - Bazel)
+
+# Controls when the action will run. Triggers the workflow on pull request
+# events or push events in the develop branch.
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      # Push events on develop branch
+      - develop
+
+jobs:
+  bazel_compute_affected_targets:
+    name: Compute affected tests
+    runs-on: ubuntu-18.04
+    outputs:
+      matrix: ${{ steps.compute-test-matrix-from-affected.outputs.matrix || steps.compute-test-matrix-from-all.outputs.matrix }}
+      have_tests_to_run: ${{ steps.compute-test-matrix-from-affected.outputs.have_tests_to_run || steps.compute-test-matrix-from-all.outputs.have_tests_to_run }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+      - name: Compute test matrix based on affected targets
+        id: compute-test-matrix-from-affected
+        if: "!contains(github.event.pull_request.title, '[RunAllTests]')"
+        # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
+        # comma-separated list of test targets for the matrix.
+        run: |
+          TEST_TARGET_LIST=$(bash ./scripts/compute_affected_tests.sh bazel | sed 's/^\|$/"/g' | paste -sd, -)
+          echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
+          echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
+          if [[ ! -z "$TEST_TARGET_LIST" ]]; then
+            echo "::set-output name=have_tests_to_run::true"
+          else
+            echo "::set-output name=have_tests_to_run::false"
+            echo "No tests are detected as affected by this change. If this is wrong, you can add '[RunAllTests]' to the PR title to force a run."
+          fi
+      - name: Compute test matrix based on all tests
+        id: compute-test-matrix-from-all
+        if: "contains(github.event.pull_request.title, '[RunAllTests]')"
+        run: |
+          TEST_TARGET_LIST=$(bazel query "kind(test, //...)" | sed 's/^\|$/"/g' | paste -sd, -)
+          echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
+          echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
+          echo "::set-output name=have_tests_to_run::true"
+
+  bazel_run_test:
+    name: Run Bazel Test
+    needs: bazel_compute_affected_targets
+    if: ${{ needs.bazel_compute_affected_targets.outputs.have_tests_to_run == 'true' }}
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix: ${{fromJson(needs.bazel_compute_affected_targets.outputs.matrix)}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 9
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+      - name: Set up Oppia Bazel Android Tools
+        run: |
+          mkdir $HOME/opensource
+          cd $HOME/opensource
+          git clone https://github.com/oppia/oppia-bazel-tools
+          echo build --override_repository=android_tools="$(cd "$(dirname "$HOME/opensource/oppia-bazel-tools")"; pwd)/$(basename "$HOME/opensource/oppia-bazel-tools")" >> $HOME/.bazelrc
+          echo build --android_databinding_use_androidx >> $HOME/.bazelrc
+      # See explanation in bazel_build_app for how this is installed.
+      - name: Install git-secret (non-fork only)
+        if: ${{ github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        shell: bash
+        run: |
+          cd $HOME
+          mkdir -p $HOME/gitsecret
+          git clone https://github.com/sobolevn/git-secret.git git-secret
+          cd git-secret && make build
+          PREFIX="$HOME/gitsecret" make install
+          echo "$HOME/gitsecret" >> $GITHUB_PATH
+          echo "$HOME/gitsecret/bin" >> $GITHUB_PATH
+      - name: Decrypt secrets (non-fork only)
+        if: ${{ github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        env:
+          GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
+        run: |
+          cd $HOME
+          # NOTE TO DEVELOPERS: Make sure to never print this key directly to stdout!
+          echo $GIT_SECRET_GPG_PRIVATE_KEY | base64 --decode > ./git_secret_private_key.gpg
+          gpg --import ./git_secret_private_key.gpg
+          cd $GITHUB_WORKSPACE
+          git secret reveal
+      - name: Run Oppia Test (with caching, non-fork only)
+        if: ${{ github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        env:
+          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
+        run: bazel test --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- ${{ matrix.test-target }}
+      - name: Run Oppia Test (without caching, fork only)
+        if: ${{ github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
+        env:
+          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
+        run: bazel test -- ${{ matrix.test-target }}
+
+  # Reference: https://github.community/t/127354/7.
+  check_test_results:
+      name: Check Bazel Test Results
+      needs: [bazel_compute_affected_targets, bazel_run_test]
+      if: ${{ always() }}
+      runs-on: ubuntu-18.04
+      steps:
+        # This step will be skipped if there are no tests to run, so the overall job should pass.
+        - name: Check tests passed (for tests that ran)
+          if: ${{ needs.bazel_compute_affected_targets.outputs.have_tests_to_run == 'true' && needs.bazel_run_test.result != 'success' }}
+          run: exit 1

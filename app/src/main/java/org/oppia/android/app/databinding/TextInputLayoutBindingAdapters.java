@@ -9,7 +9,10 @@ public final class TextInputLayoutBindingAdapters {
 
   /** Binding adapter for setting an error message. */
   @BindingAdapter("app:errorMessage")
-  public static void setErrorMessage(@NonNull TextInputLayout textInputLayout, String errorMessage) {
+  public static void setErrorMessage(
+      @NonNull TextInputLayout textInputLayout,
+      String errorMessage
+  ) {
     textInputLayout.setError(errorMessage);
   }
 }

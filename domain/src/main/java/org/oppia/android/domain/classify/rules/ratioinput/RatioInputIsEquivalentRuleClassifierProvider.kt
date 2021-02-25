@@ -12,7 +12,8 @@ import javax.inject.Inject
  * Provider for a classifier that determines whether two object are equal by converting them into
  * their lowest form as per the ratio input interaction.
  */
-internal class RatioInputIsEquivalentRuleClassifierProvider @Inject constructor(
+// TODO(#1580): Re-restrict access using Bazel visibilities
+class RatioInputIsEquivalentRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<RatioExpression> {
 

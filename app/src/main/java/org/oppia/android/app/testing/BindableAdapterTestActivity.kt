@@ -9,7 +9,7 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 class BindableAdapterTestActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as TestInjector).inject(this)
     setContentView(R.layout.test_activity)
     supportFragmentManager.beginTransaction()
       .add(
@@ -18,5 +18,10 @@ class BindableAdapterTestActivity : InjectableAppCompatActivity() {
         BINDABLE_TEST_FRAGMENT_TAG
       )
       .commitNow()
+  }
+
+  /** Test-only injector for the activity that needs to be set up in the test. */
+  interface TestInjector {
+    fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   }
 }
