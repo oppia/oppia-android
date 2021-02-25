@@ -31,12 +31,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -324,7 +326,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserFragment_clickAdminControlsWithNoPin_checkOpensAdminPinActivity() {
+  fun testProfileChooserFragment_clickAdminControlsWithNoPin_checkOpensAdminControlsActivity() {
     profileManagementController.addProfile(
       "Admin",
       "",
@@ -336,8 +338,8 @@ class ProfileChooserFragmentTest {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
-      intended(hasComponent(AdminPinActivity::class.java.name))
-      intended(hasExtra(ADMIN_PIN_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value))
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      intended(hasExtra(KEY_NAVIGATION_PROFILE_ID, /* internalProfileId= */ 0))
     }
   }
 
