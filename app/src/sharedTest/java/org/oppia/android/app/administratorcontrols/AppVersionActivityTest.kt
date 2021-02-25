@@ -4,13 +4,13 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -125,6 +125,11 @@ class AppVersionActivityTest {
   }
 
   @Test
+  fun testAppVersionActivity_loadFragment_backButtonContentDescriptionIsCorrect() {
+    onView(withContentDescription(R.string.navigate_up)).check(matches(isDisplayed()))
+  }
+
+  @Test
   fun testAppVersionActivity_loadFragment_displaysAppVersion() {
     onView(
       withText(
@@ -147,33 +152,9 @@ class AppVersionActivityTest {
   @Test
   fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly() {
     onView(isRoot()).perform(orientationLandscape())
-    onView(
-      withId(
-        R.id.app_version_text_view
-      )
-    ).check(
-      matches(
-        withText(
-          String.format(
-            context.resources.getString(R.string.app_version_name),
-            context.getVersionName()
-          )
-        )
-      )
-    )
-    onView(
-      withId(
-        R.id.app_last_update_date_text_view
-      )
-    ).check(
-      matches(
-        withText(
-          String.format(
-            context.resources.getString(R.string.app_last_update_date),
-            lastUpdateDate
-          )
-        )
-      )
+    onView(withId(R.id.app_version_text_view)).check(matches(withText(appVersionString())))
+    onView(withId(R.id.app_last_update_date_text_view)).check(
+      matches(withText(lastDateUsedString()))
     )
   }
 
@@ -185,8 +166,15 @@ class AppVersionActivityTest {
     )
   }
 
-  private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
-    return ActivityScenario.launch(createAppVersionActivityIntent())
+  private fun appVersionString(): String {
+    return String.format(
+      context.resources.getString(R.string.app_version_name),
+      context.getVersionName()
+    )
+  }
+
+  private fun lastDateUsedString(): String {
+    return String.format(context.resources.getString(R.string.app_last_update_date), lastUpdateDate)
   }
 
   private fun createAppVersionActivityIntent(): Intent {
