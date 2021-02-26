@@ -21,6 +21,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.hamcrest.Matchers.allOf
@@ -29,6 +30,7 @@ import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -117,6 +119,10 @@ class RecentlyPlayedFragmentTest {
 
   private lateinit var profileId: ProfileId
 
+  @get:Rule
+  val activityScenarioRule: ActivityScenarioRule<RecentlyPlayedActivity> =
+    ActivityScenarioRule(createRecentlyPlayedActivityIntent(internalProfileId))
+
   @Before
   fun setUp() {
     Intents.init()
@@ -139,7 +145,7 @@ class RecentlyPlayedFragmentTest {
 
   private fun createRecentlyPlayedActivityIntent(profileId: Int): Intent {
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-      context,
+      ApplicationProvider.getApplicationContext(),
       profileId
     )
   }
@@ -185,23 +191,17 @@ class RecentlyPlayedFragmentTest {
       profileId,
       timestampOlderThanOneWeek = true
     )
-    ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.ongoing_story_recycler_view)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        0
       )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
-      )
-      onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.divider_view)
-      ).check(
-        matches(not(isDisplayed()))
-      )
-    }
+    )
+    onView(
+      atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.divider_view)
+    ).check(
+      matches(not(isDisplayed()))
+    )
   }
 
   @Test
