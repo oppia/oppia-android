@@ -1,0 +1,120 @@
+syntax = "proto3";
+
+package model;
+
+import "profile.proto";
+import "topic.proto";
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// Top-level proto to store feedback reports locally when there is no network connection to upload
+// them to the remote service
+message FeedbackReportingDatabase {
+  repeated FeedbackReport reports_list = 1;
+}
+
+// Corresponds to an entire feedback report with user reported information and collected app,
+// device, and build information.
+message FeedbackReport {
+  // The date the report was created.
+  int64 report_date_ms = 1;
+  FeedbackReportingForm feedback_form = 2;
+  FeedbackReportingDeviceInfo device_info = 3;
+  FeedbackReportingBuildInfo build_info = 4;
+  FeedbackReportingAppInfo app_info = 5;
+}
+
+// Information supplied by the user in the feedback report.
+message FeedbackReportingForm {
+  oneof report_type {
+    Suggestion suggestion= 1;
+    Issue issue = 2;
+    Crash crash = 3;
+  }
+}
+
+// A suggestion feedback report.
+message Suggestion {
+  enum SuggestionCategory {
+    FEATURE_SUGGESTION = 0;
+    LANGUAGE_SUGGESTION = 1;
+    OTHER_SUGGESTION = 2;
+  }
+  SuggestionCategory suggestion_category = 1;
+  // The text input provided by the user.
+  string user_submitted_suggestion = 2;
+}
+
+// An issue feedback report.
+message Issue {
+  enum IssueCategory {
+    LESSONS_QUESTIONS_ISSUE = 0;
+    LANGUAGE_ISSUE = 1;
+    LANGUAGE_AUDIO_ISSUE = 2;
+    LANGUAGE_TEXT_ISSUE = 3;
+    TOPICS_ISSUE = 4;
+    PROFILE_ISSUE = 5;
+    OTHER_ISSUE = 6;
+  }
+  IssueCategory issue_category = 1;
+  // List of checkbox items selected by user in the feedback report.
+  repeated string issues_list = 2;
+  // The user's text input if they select "other" for any option
+  string other_user_input = 3;
+}
+
+// A crash report.
+message Crash {
+  enum CrashLocation {
+    LESSON_PLAYER = 0;
+    PRACTICE_QUESTIONS = 1;
+    TOPICS_LIST = 2;
+    OPTIONS_ACTIVITY = 3;
+    PROFILE_ACTIVITY = 4;
+    OTHER = 5;
+  }
+  CrashLocation crash_location = 1;
+  // The user's text input for explaining what happened.
+  string crash_explanation = 2;
+}
+
+// Information collected about the user's device.
+message FeedbackReportingDeviceInfo {
+  string package_name = 1;
+  string package_code = 2;
+  string country_locale = 3;
+  string language_locale = 4;
+}
+
+// Information collected about the device's build.
+message FeedbackReportingBuildInfo {
+  enum NetworkType {
+    WIFI = 0;
+    CELLULAR = 1;
+  }
+  string device_model = 1;
+  string sdk_version = 2;
+  string device_brand = 3;
+  string build_fingerprint = 4;
+  string phone_type = 5;
+  NetworkType network_type = 6;
+  string device_language = 7;
+}
+
+// Information collected about the app's build.
+message FeedbackReportingAppInfo {
+  enum EntryPoint {
+    MAIN_MENU = 0;
+    EXPLORATION = 1;
+    CRASH = 2;
+  }
+  EntryPoint entry_point = 1;
+  TopicProgressDatabase topic_progress = 2;
+  ReadingTextSize text_size = 3;
+  AppLanguage text_language = 4;
+  AudioLanguage audio_language = 5;
+  DeviceSettings device_settings = 6;
+  bool is_admin = 7;
+}
+
