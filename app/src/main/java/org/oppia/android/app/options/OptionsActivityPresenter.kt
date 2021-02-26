@@ -25,7 +25,11 @@ class OptionsActivityPresenter @Inject constructor(
     isFirstOpen: Boolean,
     selectedFragment: String
   ) {
-    activity.setContentView(R.layout.option_activity)
+    if (isFromNavigationDrawer) {
+      activity.setContentView(R.layout.option_activity)
+    } else {
+      activity.setContentView(R.layout.options_without_drawer_activity)
+    }
     val titleTextView =
       activity.findViewById<TextView>(R.id.options_activity_selected_options_title)
     if (titleTextView != null) {
