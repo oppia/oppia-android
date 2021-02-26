@@ -106,12 +106,8 @@ class TopicFragmentPresenter @Inject constructor(
         }
       }
     }.attach()
-    if (!isConfigChanged) {
-      if (topicId.isNotEmpty() && storyId.isNotEmpty()) {
-        setCurrentTab(TopicTab.LESSONS)
-      } else if (topicId.isNotEmpty() && storyId.isEmpty()) {
-        setCurrentTab(TopicTab.INFO)
-      }
+    if (!isConfigChanged && topicId.isNotEmpty()) {
+      setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
     }
   }
 

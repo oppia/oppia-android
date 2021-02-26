@@ -27,7 +27,6 @@ class TopicFragment : InjectableFragment() {
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
     val topicId = arguments?.getString(TOPIC_ID_ARGUMENT_KEY) ?: TEST_TOPIC_ID_0
     val storyId = arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
-    val isConfigChanged = savedInstanceState != null
 
     return topicFragmentPresenter.handleCreateView(
       inflater,
@@ -35,7 +34,7 @@ class TopicFragment : InjectableFragment() {
       internalProfileId,
       topicId,
       storyId,
-      isConfigChanged
+      isConfigChanged = savedInstanceState != null
     )
   }
 }
