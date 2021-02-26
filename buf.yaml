@@ -8,10 +8,7 @@ build:
     # Roots is the directories that all .proto files are contained within, and
     # all imports must derive from.
     # Only *.proto files within these directory will be compiled.
-    - .
-  # Excludes is the list of directories within root to exclude.
-  excludes:
-    - model/build
+    - model/src/main/proto
 
 # Lint contains the options for lint checks.
 lint:

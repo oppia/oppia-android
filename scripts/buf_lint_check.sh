@@ -10,7 +10,7 @@ check_protobuf() {
   echo "Checking Protobuf file formatting"
   echo "********************************"
 
-  $jar_file_path lint model/src/main/proto --config $config_file_path
+  $jar_file_path lint --config $config_file_path
 
   status=$?
 
