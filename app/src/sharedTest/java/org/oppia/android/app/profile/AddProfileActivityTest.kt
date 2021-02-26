@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -33,6 +34,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.textfield.TextInputLayout
 import dagger.Component
@@ -43,6 +45,7 @@ import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -100,6 +103,10 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class AddProfileActivityTest {
+
+  @get:Rule
+  val activityScenarioRule: ActivityScenarioRule<AddProfileActivity> =
+    ActivityScenarioRule(createAddProfileActivityIntent())
 
   @Inject
   lateinit var context: Context
@@ -1137,25 +1144,23 @@ class AddProfileActivityTest {
 
   @Test
   fun testAddProfileActivity_inputName_configChange_nameIsDisplayed() {
-    launch(AddProfileActivity::class.java).use {
-      onView(
-        allOf(
-          withId(R.id.add_profile_activity_user_name_edit_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
-        )
-      ).perform(
-        editTextInputAction.appendText("test"),
-        closeSoftKeyboard()
+    onView(
+      allOf(
+        withId(R.id.add_profile_activity_user_name_edit_text),
+        isDescendantOfA(withId(R.id.add_profile_activity_user_name))
       )
-      onView(isRoot()).perform(orientationLandscape())
-      onView(
-        allOf(
-          withId(R.id.add_profile_activity_user_name_edit_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
-        )
-      ).perform(scrollTo())
-        .check(matches(withText("test")))
-    }
+    ).perform(
+      editTextInputAction.appendText("test"),
+      closeSoftKeyboard()
+    )
+    onView(isRoot()).perform(orientationLandscape())
+    onView(
+      allOf(
+        withId(R.id.add_profile_activity_user_name_edit_text),
+        isDescendantOfA(withId(R.id.add_profile_activity_user_name))
+      )
+    ).perform(scrollTo())
+      .check(matches(withText("test")))
   }
 
   @Test
@@ -1528,6 +1533,16 @@ class AddProfileActivityTest {
           )
         )
     }
+  }
+
+  private fun createAddProfileActivityIntent(): Intent {
+    return AddProfileActivity.createAddProfileActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      ContextCompat.getColor(
+        ApplicationProvider.getApplicationContext(),
+        R.color.avatar_background_1
+      )
+    )
   }
 
   private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
