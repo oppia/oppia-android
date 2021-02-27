@@ -126,7 +126,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StateFragmentLocalTest.TestApplication::class, qualifiers = "port-xxhdpi")
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class StateFragmentLocalTest {
   private val AUDIO_URL_1 =

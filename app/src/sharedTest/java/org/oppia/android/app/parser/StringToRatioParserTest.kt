@@ -61,7 +61,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StringToRatioParserTest.TestApplication::class, qualifiers = "port-xxhdpi")
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class StringToRatioParserTest {
 

@@ -64,7 +64,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ProfileProgressSpanCount.TestApplication::class)
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class ProfileProgressSpanCount {
   @Before

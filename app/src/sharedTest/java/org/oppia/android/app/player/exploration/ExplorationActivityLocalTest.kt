@@ -74,7 +74,6 @@ import javax.inject.Singleton
   application = ExplorationActivityLocalTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class ExplorationActivityLocalTest {
 

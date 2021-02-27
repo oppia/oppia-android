@@ -60,7 +60,6 @@ import javax.inject.Singleton
 // Devices reference: https://material.io/resources/devices/
 @RunWith(AndroidJUnit4::class)
 @Config(application = PlayerSplitScreenTesting.TestApplication::class)
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class PlayerSplitScreenTesting {
 

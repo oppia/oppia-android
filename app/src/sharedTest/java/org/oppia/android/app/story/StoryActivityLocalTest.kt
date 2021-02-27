@@ -70,7 +70,6 @@ private const val TEST_STORY_ID = "GJ2rLXRKD5hw"
   application = StoryActivityLocalTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class StoryActivityLocalTest {
 

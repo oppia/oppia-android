@@ -71,7 +71,6 @@ private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW = "profile_recycler
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ProfileChooserSpanTest.TestApplication::class)
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class ProfileChooserSpanTest {
 

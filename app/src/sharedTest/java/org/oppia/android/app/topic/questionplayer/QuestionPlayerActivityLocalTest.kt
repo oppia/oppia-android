@@ -89,7 +89,6 @@ import javax.inject.Singleton
   application = QuestionPlayerActivityLocalTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class QuestionPlayerActivityLocalTest {
 

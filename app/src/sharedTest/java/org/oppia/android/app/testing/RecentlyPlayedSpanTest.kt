@@ -70,7 +70,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = RecentlyPlayedSpanTest.TestApplication::class)
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class RecentlyPlayedSpanTest {
 

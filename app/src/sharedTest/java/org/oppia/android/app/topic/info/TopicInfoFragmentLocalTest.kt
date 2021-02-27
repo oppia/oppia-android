@@ -67,7 +67,6 @@ private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
   application = TopicInfoFragmentLocalTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class TopicInfoFragmentLocalTest {
 

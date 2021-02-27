@@ -64,7 +64,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = CompletedStoryListSpanTest.TestApplication::class)
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class CompletedStoryListSpanTest {
 

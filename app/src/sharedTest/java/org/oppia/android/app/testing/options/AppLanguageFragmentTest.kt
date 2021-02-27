@@ -83,7 +83,6 @@ private const val CHINESE = 3
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AppLanguageFragmentTest.TestApplication::class)
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class AppLanguageFragmentTest {
 

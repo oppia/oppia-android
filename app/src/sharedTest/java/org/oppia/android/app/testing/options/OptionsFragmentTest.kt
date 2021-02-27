@@ -83,7 +83,6 @@ private const val KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE = "AUDIO_LANGUAGE_PREFEREN
 
 @RunWith(AndroidJUnit4::class)
 @Config(application = OptionsFragmentTest.TestApplication::class)
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class OptionsFragmentTest {
 

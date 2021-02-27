@@ -84,7 +84,6 @@ private const val CHINESE = 4
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AudioLanguageFragmentTest.TestApplication::class)
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class AudioLanguageFragmentTest {
 

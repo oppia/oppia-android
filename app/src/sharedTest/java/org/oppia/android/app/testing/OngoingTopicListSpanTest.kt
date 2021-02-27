@@ -65,7 +65,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = OngoingTopicListSpanTest.TestApplication::class)
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class OngoingTopicListSpanTest {
 

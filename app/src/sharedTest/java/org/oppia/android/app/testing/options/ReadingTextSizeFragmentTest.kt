@@ -90,7 +90,6 @@ private const val LARGE_TEXT_SIZE = 10
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ReadingTextSizeFragmentTest.TestApplication::class)
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class ReadingTextSizeFragmentTest {
 

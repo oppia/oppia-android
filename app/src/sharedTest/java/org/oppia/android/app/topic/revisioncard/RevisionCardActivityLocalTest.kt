@@ -66,7 +66,6 @@ import javax.inject.Singleton
   application = RevisionCardActivityLocalTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-
 @RunOn(TestPlatform.ROBOLECTRIC)
 class RevisionCardActivityLocalTest {
 
