@@ -31,7 +31,7 @@
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:navigationContentDescription="@string/go_to_previous_page"
+        app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/stories_completed"
         app:titleTextColor="@color/white" />

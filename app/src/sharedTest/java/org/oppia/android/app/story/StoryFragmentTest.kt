@@ -156,7 +156,7 @@ class StoryFragmentTest {
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
-    onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+    onView(withContentDescription(R.string.navigate_up)).perform(click())
     assertThat(activityTestRule.activity.isFinishing).isTrue()
   }
 

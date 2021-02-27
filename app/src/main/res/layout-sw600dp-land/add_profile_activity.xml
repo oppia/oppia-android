@@ -182,6 +182,7 @@
               android:layout_height="wrap_content"
               android:layout_marginStart="28dp"
               android:layout_marginTop="32dp"
+              android:focusable="true"
               app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_confirm_pin">
 
               <TextView
@@ -211,7 +212,7 @@
                 android:id="@+id/add_profile_activity_allow_download_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="@{viewModel.validPin ? true : false}"
+                android:enabled="@{viewModel.validPin ? true : false}"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -226,7 +227,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
             android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
-            android:clickable="@{viewModel.isButtonActive()}"
             android:enabled="@{viewModel.isButtonActive()}"
             android:gravity="center"
             android:text="@string/add_profile_create_btn"
