@@ -17,11 +17,7 @@ project.afterEvaluate {
     def unitTestTask = "test${variantName.capitalize()}UnitTest"
 
     tasks.create(name: "${unitTestTask}Coverage", type: JacocoReport, dependsOn: [
-        "$unitTestTask",
-        ":data:testDebugUnitTest",
-        ":domain:testDebugUnitTest",
-        ":testing:testDebugUnitTest",
-        ":utility:testDebugUnitTest"
+        "$unitTestTask"
     ]) {
       group = "Reporting"
       description = "Generate Jacoco coverage reports for the ${variantName.capitalize()} build"
