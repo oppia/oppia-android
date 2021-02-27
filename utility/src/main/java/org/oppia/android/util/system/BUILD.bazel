@@ -1,0 +1,51 @@
+"""
+Utilities corresponding to simplify using Oppia Clock.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+
+kt_android_library(
+    name = "oppia_clock",
+    srcs = [
+        "OppiaClock.kt",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+kt_android_library(
+    name = "oppia_date_time_formatter",
+    srcs = [
+        "OppiaDateTimeFormatter.kt",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "oppia_clock_module",
+    srcs = [
+        "OppiaClockModule.kt",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":dagger",
+        ":oppia_clock_impl",
+    ],
+)
+
+kt_android_library(
+    name = "oppia_clock_impl",
+    srcs = [
+        "OppiaClockImpl.kt",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":oppia_clock",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+dagger_rules()
