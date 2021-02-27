@@ -41,7 +41,6 @@ kt_android_library(
         "//third_party:com_google_guava_guava",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
-        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock_impl",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock_module",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
     ],

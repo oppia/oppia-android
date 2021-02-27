@@ -14,12 +14,12 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "oppia_date_time_formatter",
+    name = "oppia_clock_impl",
     srcs = [
-        "OppiaDateTimeFormatter.kt",
+        "OppiaClockImpl.kt",
     ],
-    visibility = ["//visibility:public"],
     deps = [
+        ":oppia_clock",
         "//third_party:javax_inject_javax_inject",
     ],
 )
@@ -37,13 +37,12 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "oppia_clock_impl",
+    name = "oppia_date_time_formatter",
     srcs = [
-        "OppiaClockImpl.kt",
+        "OppiaDateTimeFormatter.kt",
     ],
     visibility = ["//visibility:public"],
     deps = [
-        ":oppia_clock",
         "//third_party:javax_inject_javax_inject",
     ],
 )
