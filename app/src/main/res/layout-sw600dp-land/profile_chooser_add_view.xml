@@ -24,18 +24,11 @@
     app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_parent_margin_end_profile_not_added}"
     android:orientation="vertical">
 
-    <View
-      android:id="@+id/add_profile_divider_view"
-      android:layout_width="match_parent"
-      android:layout_height="0.5dp"
-      android:layout_marginBottom="40dp"
-      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
-
     <LinearLayout
       android:id="@+id/add_profile_item"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/space_0dp"
+      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_top_profile_not_added}"
       android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER}"
       android:orientation="@{hasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
       app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_end_profile_not_added}"
