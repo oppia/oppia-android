@@ -12,7 +12,8 @@ import javax.inject.Inject
  *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/TextInput/directives/text-input-rules.service.ts#L29.
  */
-internal class TextInputFuzzyEqualsRuleClassifierProvider @Inject constructor(
+// TODO(#1580): Re-restrict access using Bazel visibilities
+class TextInputFuzzyEqualsRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<String> {
 
