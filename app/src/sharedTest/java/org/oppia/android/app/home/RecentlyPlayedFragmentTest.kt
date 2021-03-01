@@ -18,17 +18,23 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -86,8 +92,6 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [RecentlyPlayedActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -97,6 +101,11 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class RecentlyPlayedFragmentTest {
+
+  @get:Rule
+  var activityTestRule: ActivityTestRule<RecentlyPlayedActivity> = ActivityTestRule(
+    RecentlyPlayedActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -146,14 +155,13 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testRecentlyPlayedTestActivity_clickOnToolbarNavigationButton_closeActivity() {
-    ActivityScenario.launch<RecentlyPlayedActivity>(
+    activityTestRule.launchActivity(
       createRecentlyPlayedActivityIntent(
         internalProfileId
       )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.recently_played_toolbar)).perform(click())
-    }
+    )
+    onView(withContentDescription(R.string.navigate_up)).perform(click())
+    assertThat(activityTestRule.activity.isFinishing).isTrue()
   }
 
   @Test
