@@ -50,6 +50,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -206,17 +207,184 @@ class StateFragmentTest {
   //     answers for each of the interactions.
   //  2. Verifying the button visibility state based on whether text is missing, then
   //     present/missing for text input or numeric input.
+
   //  3. Testing providing the wrong answer and showing feedback and the same question again.
+  @Test
+  fun testStateFragment_loadExp_secondState_submitWrongAnswer_clickSubmit_feedbackAndQuestionVisible() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      // Attempt to submit an wrong answer.
+      typeFractionText("1/3")
+
+      clickSubmitAnswerButton()
+
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.fraction_input_interaction_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_secondState_submitWrongAnswerTwice_clickSubmit_feedbackAndQuestionVisible() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      // Attempt to submit an wrong answer.
+      typeFractionText("1/3")
+      clickSubmitAnswerButton()
+
+      // Attempt to submit an wrong answer twice.
+      typeFractionText("1/9")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.fraction_input_interaction_view)).check(matches(isDisplayed()))
+    }
+  }
+
   //  4. Configuration change with typed text (e.g. for numeric or text input) retains that
   //     temporary
   //     text and you can continue with the exploration after rotating.
+
+  @Test
+  @Ignore("Work on issue regarding this test is in progress")
+  fun testStateFragment_loadExp_secondState_submitAnswer_changeConfiguration_clickSubmit_explorationContinues() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      // Attempt to submit an wrong answer.
+      typeFractionText("1/2")
+
+      rotateToLandscape()
+      clickSubmitAnswerButton()
+
+      clickContinueInteractionButton()
+    }
+  }
+
   //  5. Configuration change after submitting the wrong answer to show that the old answer & re-ask
   //     of the question stay the same.
+  @Test
+  fun testStateFragment_loadExp_secondState_submitWrongAnswer_clickSubmit_changeConfiguration_feedbackAndQuestionVisible() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      // Attempt to submit an wrong answer.
+      typeFractionText("1/3")
+      clickSubmitAnswerButton()
+
+      rotateToLandscape()
+
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.fraction_input_interaction_view)).check(matches(isDisplayed()))
+    }
+  }
+
   //  6. Backward/forward navigation along with configuration changes to verify that you stay on the
   //     navigated state.
+  @Test
+  fun testStateFragment_loadExp_secondState_moveForward_changeConfiguration_stayOnTheNavigatedState() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      rotateToLandscape()
+      scrollToViewType(CONTENT)
+      val htmlResult =
+        "Which bird can sustain flight for long periods of time?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_secondState_moveForward_moveBackward_changeConfiguration_stayOnTheNavigatedState() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      clickPreviousNavigationButton()
+
+      rotateToLandscape()
+      scrollToViewType(CONTENT)
+      val htmlResult =
+        "What fraction represents half of something?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
+    }
+  }
+
   //  7. Verifying that old answers were present when navigation backward/forward.
+  @Test
+  fun testStateFragment_loadExp_secondState_submitAnswer_moveForward_moveBackward_answerVisible() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      clickPreviousNavigationButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(
+          withText("1/2")
+        )
+      )
+    }
+  }
+
   //  8. Testing providing the wrong answer and showing hints.
+  @Test
+  @Ignore("Failing")
+  fun testStateFragment_loadExp_fractionState_submitWrongAnswerTwice_hintsVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(optionPosition = 2)
+      selectMultipleChoiceOption(optionPosition = 2)
+
+      onView(withId(R.id.hints_and_solution_fragment_container)).check(matches(isDisplayed()))
+    }
+  }
+
   //  9. Testing all possible invalid/error input cases for each interaction.
+  @Test
+  fun testStateFragment_loadExp_sixthState_submitInvalidAnswer_disablesSubmitAndShowsError() {
+    launchForExploration(TEST_EXPLORATION_ID_6).use {
+      startPlayingExploration()
+      typeRatioExpression("45")
+
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.ratio_input_error)).check(matches(isDisplayed()))
+    }
+  }
+
   //  10. Testing interactions with custom Oppia tags (including images) render correctly (when
   //      manually inspected) and are correctly functional.
   //  11. Add tests for hints & solutions.
