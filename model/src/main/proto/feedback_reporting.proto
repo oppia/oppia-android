@@ -28,7 +28,7 @@ message FeedbackReport {
 // Information supplied by the user in the feedback report.
 message FeedbackReportingForm {
   oneof report_type {
-    Suggestion suggestion= 1;
+    Suggestion suggestion = 1;
     Issue issue = 2;
     Crash crash = 3;
   }
