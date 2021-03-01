@@ -210,7 +210,7 @@ class StateFragmentTest {
 
   //  3. Testing providing the wrong answer and showing feedback and the same question again.
   @Test
-  fun testStateFragment_loadExp_secondState_submitWrongAnswer_clickSubmit_feedbackAndQuestionVisible() {
+  fun testStateFragment_loadExp_secondState_submitWrongAnswer_feedbackAndQuestionVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -227,7 +227,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_secondState_submitWrongAnswerTwice_clickSubmit_feedbackAndQuestionVisible() {
+  fun testStateFragment_loadExp_secondState_submitWrongAnswerTwice_feedbackAndQuestionVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -252,7 +252,7 @@ class StateFragmentTest {
 
   @Test
   @Ignore("Work on issue regarding this test is in progress")
-  fun testStateFragment_loadExp_secondState_submitAnswer_changeConfiguration_clickSubmit_explorationContinues() {
+  fun testStateFragment_loadExp_submitAnswer_changeConfiguration_explorationContinues() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -270,7 +270,7 @@ class StateFragmentTest {
   //  5. Configuration change after submitting the wrong answer to show that the old answer & re-ask
   //     of the question stay the same.
   @Test
-  fun testStateFragment_loadExp_secondState_submitWrongAnswer_clickSubmit_changeConfiguration_feedbackAndQuestionVisible() {
+  fun testStateFragment_loadExp_submitWrongAnswer_changeConfiguration_feedbackAndQuestionVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -290,7 +290,7 @@ class StateFragmentTest {
   //  6. Backward/forward navigation along with configuration changes to verify that you stay on the
   //     navigated state.
   @Test
-  fun testStateFragment_loadExp_secondState_moveForward_changeConfiguration_stayOnTheNavigatedState() {
+  fun testStateFragment_loadExp_moveForward_changeConfiguration_stayOnTheNavigatedState() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -312,7 +312,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_secondState_moveForward_moveBackward_changeConfiguration_stayOnTheNavigatedState() {
+  fun testStateFragment_loadExp_moveForward_moveBackward_changeConfiguration_stayOnSameState() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
