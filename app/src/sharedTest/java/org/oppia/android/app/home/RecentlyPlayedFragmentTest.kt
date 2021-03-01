@@ -26,8 +26,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.instanceOf
@@ -92,6 +90,8 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [RecentlyPlayedActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -103,7 +103,7 @@ import org.robolectric.annotation.LooperMode
 class RecentlyPlayedFragmentTest {
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<RecentlyPlayedActivity> = ActivityTestRule(
+  val activityTestRule: ActivityTestRule<RecentlyPlayedActivity> = ActivityTestRule(
     RecentlyPlayedActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
