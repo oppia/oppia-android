@@ -203,6 +203,7 @@ configurations {
 
 tasks.withType(Test) {
   jacoco.includeNoLocationClasses = true
+  jacoco.excludes = ['jdk.internal.*']
 }
 task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
 
@@ -210,11 +211,10 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
     xml.enabled = true
     html.enabled = true
   }
-
   def mainSrc = "$project.projectDir/src/main/kotlin"
 
   sourceDirectories.setFrom(files([mainSrc]))
   executionData.setFrom(fileTree(dir: project.buildDir, includes: [
-      'jacoco/testDebugUnitTest.exec', 'outputs/code_coverage/debugAndroidTest/connected/**/*.ec'
+      'jacoco/testDebugUnitTest.exec'
   ]))
 }
