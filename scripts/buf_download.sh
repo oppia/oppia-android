@@ -6,15 +6,12 @@ download_buf() {
   echo Using Bufbuild version $BUFVERSION
   curl -sSLOC - https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m)
   chmod a+x buf-$(uname -s)-$(uname -m)
-  echo Buf file downloaded
+  echo Buf downloaded
 }
 
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  download_buf
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-  download_buf
-elif [[ "$OSTYPE" == "freebsd"* ]]; then
+if [[ "$OSTYPE" == "linux-gnu"* ||  "$OSTYPE" == "darwin"* ]]; then
   download_buf
 else
-  echo "Protobuf lint check not available on Windows"
+  echo "Protobuf lint check not available on $OSTYPE"
+  exit 1
 fi
