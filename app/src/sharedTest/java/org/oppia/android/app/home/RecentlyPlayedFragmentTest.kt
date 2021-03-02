@@ -230,6 +230,30 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
+  fun testRecentlyPlayedTestActivity_fractionsPlayed_storiesForYouToolbarTitleIsDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    ActivityScenario.launch<RecentlyPlayedActivity>(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.recently_played_toolbar))
+        )
+      ).check(
+        matches(withText(R.string.stories_for_you))
+      )
+    }
+  }
+
+  @Test
   fun testRecentlyPlayedTestActivity_configChange_showsRecommendedSectionTitle() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
