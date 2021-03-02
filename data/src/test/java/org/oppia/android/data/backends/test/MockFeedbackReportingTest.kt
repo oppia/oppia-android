@@ -56,7 +56,6 @@ class MockFeedbackReportingTest {
       .setTextSize(ReadingTextSize.LARGE_TEXT_SIZE)
       .setDeviceSettings()
       .setIsAdmin(false)
-    }
     val report = FeedbackReport.newBuilder().apply {
       reportCreationTimestampMs = 1610519337000;
       userSuppliedInfo = ,
