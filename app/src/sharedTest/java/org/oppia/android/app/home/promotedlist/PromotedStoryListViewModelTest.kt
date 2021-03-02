@@ -18,7 +18,9 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -44,6 +46,7 @@ import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -86,6 +89,13 @@ class PromotedStoryListViewModelTest {
     .setTotalChapterCount(1)
     .build()
 
+  private val promotedActivityList1 = PromotedActivityList.newBuilder()
+    .setPromotedStoryList(
+      PromotedStoryList.newBuilder()
+        .addRecentlyPlayedStory(promotedStory1)
+        .addOlderPlayedStory(promotedStory2).build()
+    ).build()
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -98,7 +108,7 @@ class PromotedStoryListViewModelTest {
     ).use {
       it.onActivity {
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
-          it, listOf(promotedStory1, promotedStory2)
+          it, listOf(promotedStory1, promotedStory2), promotedActivityList1
         )
 
         // Verify the reflexive property of equals(): a == a.
@@ -115,11 +125,13 @@ class PromotedStoryListViewModelTest {
       it.onActivity {
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
           it,
-          listOf(promotedStory1, promotedStory2)
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         val promotedStoryListViewModelCopy = createPromotedStoryListViewModel(
           it,
-          listOf(promotedStory1, promotedStory2)
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
 
         // Verify the symmetric property of equals(): a == b iff b == a.
@@ -137,15 +149,18 @@ class PromotedStoryListViewModelTest {
       it.onActivity {
         val promotedStoryListViewModelCopy1 = createPromotedStoryListViewModel(
           it,
-          listOf(promotedStory1, promotedStory2)
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         val promotedStoryListViewModelCopy2 = createPromotedStoryListViewModel(
           it,
-          listOf(promotedStory1, promotedStory2)
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         val promotedStoryListViewModelCopy3 = createPromotedStoryListViewModel(
           it,
-          listOf(promotedStory1, promotedStory2)
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         assertThat(promotedStoryListViewModelCopy1).isEqualTo(promotedStoryListViewModelCopy2)
         assertThat(promotedStoryListViewModelCopy2).isEqualTo(promotedStoryListViewModelCopy3)
@@ -164,11 +179,13 @@ class PromotedStoryListViewModelTest {
       it.onActivity {
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
           it,
-          listOf(promotedStory1, promotedStory2)
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         val promotedStoryListViewModelCopy = createPromotedStoryListViewModel(
           it,
-          listOf(promotedStory1, promotedStory2)
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         assertThat(promotedStoryListViewModel).isEqualTo(promotedStoryListViewModelCopy)
 
@@ -187,7 +204,8 @@ class PromotedStoryListViewModelTest {
       it.onActivity {
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
           it,
-          listOf(promotedStory1, promotedStory2)
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
 
         // Verify the non-null property of equals(): for any non-null reference a, a != null
@@ -204,11 +222,13 @@ class PromotedStoryListViewModelTest {
       it.onActivity {
         val promotedStoryListViewModelOf2 = createPromotedStoryListViewModel(
           it,
-          listOf(promotedStory1, promotedStory2)
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         val promotedStoryListViewModelOf3 = createPromotedStoryListViewModel(
           it,
-          listOf(promotedStory1, promotedStory2, promotedStory3)
+          listOf(promotedStory1, promotedStory2, promotedStory3),
+          promotedActivityList1
         )
 
         assertThat(promotedStoryListViewModelOf2).isNotEqualTo(promotedStoryListViewModelOf3)
@@ -224,11 +244,13 @@ class PromotedStoryListViewModelTest {
       it.onActivity {
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
           it,
-          listOf(promotedStory1, promotedStory2)
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         val promotedStoryListCopy = createPromotedStoryListViewModel(
           it,
-          listOf(promotedStory1, promotedStory2)
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         assertThat(promotedStoryListViewModel).isEqualTo(promotedStoryListCopy)
 
@@ -247,7 +269,8 @@ class PromotedStoryListViewModelTest {
       it.onActivity {
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
           it,
-          listOf(promotedStory1, promotedStory2)
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
 
         // Verify that hashCode consistently returns the same value.
@@ -279,11 +302,13 @@ class PromotedStoryListViewModelTest {
 
   private fun createPromotedStoryListViewModel(
     activity: AppCompatActivity,
-    promotedStoryList: List<PromotedStory>
+    promotedStoryList: List<PromotedStory>,
+    promotedActivityList: PromotedActivityList
   ): PromotedStoryListViewModel {
     return PromotedStoryListViewModel(
       activity,
-      createPromotedStoryViewModelList(activity, promotedStoryList)
+      createPromotedStoryViewModelList(activity, promotedStoryList),
+      promotedActivityList
     )
   }
 
@@ -304,7 +329,7 @@ class PromotedStoryListViewModelTest {
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

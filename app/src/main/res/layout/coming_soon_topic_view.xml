@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel" />
+  </data>
+
+  <com.google.android.material.card.MaterialCardView
+    android:id="@+id/topic_container"
+    android:layout_width="144dp"
+    android:layout_height="wrap_content"
+    app:layoutMarginEnd="@{viewModel.endMargin}"
+    app:cardCornerRadius="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+     android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clickable="true"
+      android:focusable="true">
+
+      <org.oppia.android.app.customview.LessonThumbnailImageView
+        android:id="@+id/topic_thumbnail_image_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:importantForAccessibility="no"
+        android:scaleType="centerInside"
+        app:entityId="@{viewModel.topicSummary.topicId}"
+        app:entityType="@{viewModel.entityType}"
+        app:layout_constraintDimensionRatio="4:3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.topicSummary.lessonThumbnail}" />
+
+      <TextView
+        android:id="@+id/coming_soon_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_left_rounded_rect_coming_soon_background"
+        android:fontFamily="sans-serif"
+        android:gravity="top|end"
+        android:paddingStart="12dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="6dp"
+        android:text="@string/coming_soon"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/topicTitleBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topic_thumbnail_image_view">
+
+        <TextView
+          android:id="@+id/topic_name_text_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="8dp"
+          android:ellipsize="end"
+          android:fontFamily="sans-serif"
+          android:gravity="top"
+          android:maxLines="2"
+          android:minLines="2"
+          android:text="@{viewModel.name}"
+          android:textColor="@color/white"
+          android:textSize="14sp"
+          android:textStyle="bold"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/lesson_count_text_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="4dp"
+          android:layout_marginEnd="8dp"
+          android:fontFamily="sans-serif-light"
+          android:paddingBottom="8dp"
+          android:textColor="@color/white_80"
+          android:textSize="14sp"
+          android:textStyle="italic"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </com.google.android.material.card.MaterialCardView>
+</layout>

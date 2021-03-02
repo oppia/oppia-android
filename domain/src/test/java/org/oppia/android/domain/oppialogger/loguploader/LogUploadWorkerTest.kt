@@ -27,15 +27,15 @@ import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
-import org.oppia.android.domain.oppialogger.analytics.TEST_TIMESTAMP
-import org.oppia.android.domain.oppialogger.analytics.TEST_TOPIC_ID
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
@@ -47,6 +47,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val TEST_TIMESTAMP = 1556094120000
+private const val TEST_TOPIC_ID = "test_topicId"
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -156,13 +159,32 @@ class LogUploadWorkerTest {
       .build()
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
-    val workInfo = workManager.getWorkInfoById(request.id)
-    val exceptionGot = fakeExceptionLogger.getMostRecentException()
 
+    val workInfo = workManager.getWorkInfoById(request.id)
+    val loggedException = fakeExceptionLogger.getMostRecentException()
+    val loggedExceptionStackTraceElems = loggedException.stackTrace.extractRelevantDetails()
+    val expectedExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(exceptionGot.message).isEqualTo("TEST")
-    assertThat(exceptionGot.stackTrace).isEqualTo(exception.stackTrace)
-    assertThat(exceptionGot.cause).isEqualTo(null)
+    assertThat(loggedException.message).isEqualTo("TEST")
+    assertThat(loggedException.cause).isEqualTo(null)
+    // The following can't be an exact match for the stack trace since new properties are added to
+    // stack trace elements in newer versions of Java (such as module name).
+    assertThat(loggedExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
+  }
+
+  /**
+   * Returns a list of lists of each relevant element of a [StackTraceElement] to be used for
+   * comparison in a way that's consistent across JDK versions.
+   */
+  private fun Array<StackTraceElement>.extractRelevantDetails(): List<List<Any>> {
+    return this.map { element ->
+      return@map listOf(
+        element.fileName,
+        element.methodName,
+        element.lineNumber,
+        element.className
+      )
+    }
   }
 
   private fun setUpTestApplicationComponent() {
@@ -221,7 +243,8 @@ class LogUploadWorkerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestLogStorageModule::class, TestDispatcherModule::class,
-      LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class
+      LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
+      FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {

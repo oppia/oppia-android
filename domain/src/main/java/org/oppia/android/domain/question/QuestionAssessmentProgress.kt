@@ -21,6 +21,7 @@ internal class QuestionAssessmentProgress {
     )
   }
   private var isTopQuestionCompleted: Boolean = false
+  internal var questionSessionMetrics: MutableList<QuestionSessionMetrics> = mutableListOf()
 
   /** Initialize the assessment with the specified list of questions. */
   internal fun initialize(questionsList: List<Question>) {
@@ -29,6 +30,21 @@ internal class QuestionAssessmentProgress {
     stateList.reset(questionsList)
     stateDeck.resetDeck(stateList.getFirstState())
     isTopQuestionCompleted = false
+    for (question in questionsList) {
+      questionSessionMetrics.add(QuestionSessionMetrics(question))
+    }
+  }
+
+  /** Called every time the user views a hint to track how many hints the user viewed per question this session.  */
+  internal fun hintViewed() {
+    val currentQuestionIndex = getCurrentQuestionIndex()
+    questionSessionMetrics[currentQuestionIndex].numberOfHintsUsed++
+  }
+
+  /** Called every time the user views a solution to track which question solutions the user viewed this session.  */
+  internal fun solutionViewed() {
+    val currentQuestionIndex = getCurrentQuestionIndex()
+    questionSessionMetrics[currentQuestionIndex].didViewSolution = true
   }
 
   /** Processes when the current question card has just been completed. */

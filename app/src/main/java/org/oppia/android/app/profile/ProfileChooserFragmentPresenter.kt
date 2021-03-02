@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.EventLog
@@ -230,11 +231,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   fun routeToAdminPin() {
     if (chooserViewModel.adminPin.isEmpty()) {
       activity.startActivity(
-        AdminPinActivity.createAdminPinActivityIntent(
+        AdministratorControlsActivity.createAdministratorControlsActivityIntent(
           activity,
-          chooserViewModel.adminProfileId.internalId,
-          selectUniqueRandomColor(),
-          AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+          chooserViewModel.adminProfileId.internalId
         )
       )
     } else {
@@ -252,9 +251,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun logProfileChooserEvent() {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentCalendar().timeInMillis,
-      EventLog.EventAction.OPEN_PROFILE_CHOOSER,
-      /* Event Context */ null
+      oppiaClock.getCurrentTimeMs(), EventLog.EventAction.OPEN_PROFILE_CHOOSER, eventContext = null
     )
   }
 }

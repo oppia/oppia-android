@@ -30,7 +30,7 @@
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        app:navigationContentDescription="@string/go_to_previous_page"
+        app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/topics_in_progress"
         app:titleTextAppearance="@style/ToolbarTextAppearance"

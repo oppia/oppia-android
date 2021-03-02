@@ -10,23 +10,37 @@ order to build with Bazel.
 - All binding adapters must be written in Java.
 """
 
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//app:app_test.bzl", "app_test")
 load("//app:test_with_resources.bzl", "test_with_resources")
 
-"""
-Source files for the annotations library. The files inside the annotations library are dependencies
-for all other libraries in app module, except the listeners library.
-Place your file here if:
- - A view, view model, or layout file depends on it
- - It is an annotation or helper file of some kind
- - It is not considered a listener
- - It does not depend on any other file not included in this list
-"""
+package(default_visibility = ["//utility:__subpackages__"])
+
+exports_files(["src/main/AndroidManifest.xml"])
+
+# Source files for the migrated source files library. The files inside the migrated source files
+# library are dependencies in app module that have their own libraries.
+# Place your files here if:
+#  - A file of any type has their own BAZEL library
+# NOTE: if the file is added here make sure to remove this from the other sub lists
+# of EXCLUDED_APP_LIB_FILES.
+
+# keep sorted
+MIGRATED_SOURCE_FILES = [
+    "src/main/java/org/oppia/android/app/viewmodel/ObservableArrayList.kt",
+    "src/main/java/org/oppia/android/app/viewmodel/ObservableViewModel.kt",
+]
+
+# Source files for the annotations library. The files inside the annotations library are dependencies
+# for all other libraries in app module, except the listeners library.
+# Place your file here if:
+#  - A view, view model, or layout file depends on it
+#  - It is an annotation or helper file of some kind
+#  - It is not considered a listener
+#  - It does not depend on any other file not included in this list
 
 # keep sorted
 ANNOTATIONS = [
@@ -36,13 +50,11 @@ ANNOTATIONS = [
     "src/main/java/org/oppia/android/app/utility/KeyboardHelper.kt",
 ]
 
-"""
-Source files for the listeners library. The files inside the listeners library are dependencies for
-all other libraries in app module, except the annotations library.
-Place your file here if:
- - A view, view model, or layout file depends on it
- - It is either a listener, an interface, or a direct dependency of one in this list
-"""
+# Source files for the listeners library. The files inside the listeners library are dependencies for
+# all other libraries in app module, except the annotations library.
+# Place your file here if:
+#  - A view, view model, or layout file depends on it
+#  - It is either a listener, an interface, or a direct dependency of one in this list
 
 # keep sorted
 LISTENERS = [
@@ -60,10 +72,10 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryClickListener.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingNavigationListener.kt",
     "src/main/java/org/oppia/android/app/onboarding/RouteToProfileListListener.kt",
+    "src/main/java/org/oppia/android/app/options/LanguageRadioButtonListener.kt",
     "src/main/java/org/oppia/android/app/options/LoadAppLanguageListListener.kt",
     "src/main/java/org/oppia/android/app/options/LoadAudioLanguageListListener.kt",
     "src/main/java/org/oppia/android/app/options/LoadReadingTextSizeListener.kt",
-    "src/main/java/org/oppia/android/app/options/LanguageRadioButtonListener.kt",
     "src/main/java/org/oppia/android/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/android/app/options/RouteToAudioLanguageListListener.kt",
     "src/main/java/org/oppia/android/app/options/RouteToReadingTextSizeListener.kt",
@@ -87,8 +99,8 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/recyclerview/OnItemDragListener.kt",
     "src/main/java/org/oppia/android/app/story/ExplorationSelectionListener.kt",
     "src/main/java/org/oppia/android/app/topic/RouteToRevisionCardListener.kt",
-    "src/main/java/org/oppia/android/app/topic/lessons/StorySummarySelector.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/ChapterSummarySelector.kt",
+    "src/main/java/org/oppia/android/app/topic/lessons/StorySummarySelector.kt",
     "src/main/java/org/oppia/android/app/topic/revision/RevisionSubtopicSelector.kt",
     "src/main/java/org/oppia/android/app/topic/revisioncard/ReturnToTopicClickListener.kt",
     "src/main/java/org/oppia/android/app/utility/OnClickableAreaClickedListener.kt",
@@ -99,23 +111,20 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/walkthrough/end/WalkthroughEndPageChanger.kt",
 ]
 
-"""
-Source files for the databinding_resources library.
-The files inside this list include all layout files. Please note that layouts MUST NOT depend on
-presenters or fragments. Instead, they should depend on a listener or interface as an abstraction.
-"""
+# Source files for the databinding_resources library.
+# The files inside this list include all layout files. Please note that layouts MUST NOT depend on
+# presenters or fragments. Instead, they should depend on a listener or interface as an abstraction.
 
+# keep sorted
 DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 
 # View Models
 
 # TODO(#1617): Remove genrules post-gradle
-"""
-Source files for the view_models library that import resources.
-Place your file here if:
- - It is a view model
- - It imports resources (ex: `import org.oppia.android.R`)
-"""
+# Source files for the view_models library that import resources.
+# Place your file here if:
+#  - It is a view model
+#  - It imports resources (ex: `import org.oppia.android.R`)
 
 # keep sorted
 VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
@@ -124,6 +133,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/help/HelpListViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/FAQListViewModel.kt",
     "src/main/java/org/oppia/android/app/home/HomeViewModel.kt",
+    "src/main/java/org/oppia/android/app/home/promotedlist/ComingSoonTopicsViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryViewModel.kt",
     "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryViewModel.kt",
@@ -140,12 +150,10 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/utility/RatioExtensions.kt",
 ]
 
-"""
-Source files for the view_models library that DO NOT import resources.
-Place your file here if:
- - It is a view model
- - It does not import resources
-"""
+# Source files for the view_models library that DO NOT import resources.
+# Place your file here if:
+#  - It is a view model
+#  - It does not import resources
 
 # keep sorted
 VIEW_MODELS = [
@@ -169,6 +177,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/hintsandsolution/HintsViewModel.kt",
     "src/main/java/org/oppia/android/app/hintsandsolution/SolutionViewModel.kt",
     "src/main/java/org/oppia/android/app/home/HomeItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/home/promotedlist/ComingSoonTopicListViewModel.kt",
     "src/main/java/org/oppia/android/app/home/recentlyplayed/OngoingStoryViewModel.kt",
     "src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedItemViewModel.kt",
     "src/main/java/org/oppia/android/app/home/recentlyplayed/SectionTitleViewModel.kt",
@@ -176,6 +185,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/home/UserAppHistoryViewModel.kt",
     "src/main/java/org/oppia/android/app/home/WelcomeViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingSlideFinalViewModel.kt",
+    "src/main/java/org/oppia/android/app/onboarding/OnboardingViewPagerViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/ViewPagerSlide.kt",
     "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicItemViewModel.kt",
     "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicListViewModel.kt",
@@ -249,8 +259,6 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/topic/revision/TopicRevisionViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/revisioncard/RevisionCardViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/TopicViewModel.kt",
-    "src/main/java/org/oppia/android/app/viewmodel/ObservableArrayList.kt",
-    "src/main/java/org/oppia/android/app/viewmodel/ObservableViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/end/WalkthroughFinalViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/topiclistviewmodel/WalkthroughTopicHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/topiclistviewmodel/WalkthroughTopicSummaryViewModel.kt",
@@ -264,12 +272,10 @@ VIEW_MODELS = [
 ]
 
 # TODO(#1617): Remove genrules post-gradle
-"""
-Genrule for source files in the view_models library.
-Because each databinding library must have a unique package name and manifest, resources must be
-imported using the proper package name when building with Bazel. This genrule alters those imports
-in order to keep Gradle building.
-"""
+# Genrule for source files in the view_models library.
+# Because each databinding library must have a unique package name and manifest, resources must be
+# imported using the proper package name when building with Bazel. This genrule alters those imports
+# in order to keep Gradle building.
 
 [
     genrule(
@@ -287,12 +293,10 @@ in order to keep Gradle building.
 # Views
 
 # TODO(#1617): Remove genrules post-gradle
-"""
-Source files for the views library that import resources.
-Place your file here if:
- - It is a view file
- - It imports resources (ex: `import org.oppia.android.R`)
-"""
+# Source files for the views library that import resources.
+# Place your file here if:
+#  - It is a view file
+#  - It imports resources (ex: `import org.oppia.android.R`)
 
 # keep sorted
 VIEWS_WITH_RESOURCE_IMPORTS = [
@@ -301,13 +305,11 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt",
 ]
 
-"""
-Source files for the views library that DO NOT import resources.
-Place your file here if:
- - It is a view file
- - It does not import resources
- - It holds a circular dependency with a view (including views in VIEWS_WITH_RESOURCE_IMPORTS)
-"""
+# Source files for the views library that DO NOT import resources.
+# Place your file here if:
+#  - It is a view file
+#  - It does not import resources
+#  - It holds a circular dependency with a view (including views in VIEWS_WITH_RESOURCE_IMPORTS)
 
 # keep sorted
 VIEWS = [
@@ -317,6 +319,7 @@ VIEWS = [
     "src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/TextInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/RatioInputInteractionView.kt",
+    "src/main/java/org/oppia/android/app/home/promotedlist/ComingSoonTopicsListView.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListView.kt",
     "src/main/java/org/oppia/android/app/player/state/DragDropSortInteractionView.kt",
     "src/main/java/org/oppia/android/app/player/state/ImageRegionSelectionInteractionView.kt",
@@ -331,12 +334,10 @@ VIEWS = [
 ]
 
 # TODO(#1617): Remove genrules post-gradle
-"""
-Genrule for source files in the views library.
-Because each databinding library must have a unique package name and manifest, resources must be
-imported using the proper package name when building with Bazel. This genrule alters those imports
-in order to keep Gradle building.
-"""
+# Genrule for source files in the views library.
+# Because each databinding library must have a unique package name and manifest, resources must be
+# imported using the proper package name when building with Bazel. This genrule alters those imports
+# in order to keep Gradle building.
 
 [
     genrule(
@@ -354,12 +355,10 @@ in order to keep Gradle building.
 # Binding Adapters
 
 # TODO(#1617): Remove genrules post-gradle
-"""
-Binding adapter files that import resources.
-Place your file here if:
- - It is a binding adapter
- - It imports resources (ex: `import org.oppia.android.R`)
-"""
+# Binding adapter files that import resources.
+# Place your file here if:
+#  - It is a binding adapter
+#  - It imports resources (ex: `import org.oppia.android.R`)
 
 # keep sorted
 BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS = [
@@ -368,12 +367,10 @@ BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/databinding/TextViewBindingAdapters.java",
 ]
 
-"""
-Binding adapter files that DO NOT import resources.
-Place your file here if:
- - It is a binding adapter
- - It does not import resources
-"""
+# Binding adapter files that DO NOT import resources.
+# Place your file here if:
+#  - It is a binding adapter
+#  - It does not import resources
 
 # keep sorted
 BINDING_ADAPTERS = [
@@ -393,12 +390,10 @@ BINDING_ADAPTERS = [
 ]
 
 # TODO(#1617): Remove genrules post-gradle
-"""
-Genrule for source files in the binding_adapters library.
-Because each databinding library must have a unique package name and manifest, resources must be
-imported using the proper package name when building with Bazel. This genrule alters those imports
-in order to keep Gradle building.
-"""
+# Genrule for source files in the binding_adapters library.
+# Because each databinding library must have a unique package name and manifest, resources must be
+# imported using the proper package name when building with Bazel. This genrule alters those imports
+# in order to keep Gradle building.
 
 [genrule(
     name = "update_" + file[0:-5],
@@ -411,36 +406,31 @@ in order to keep Gradle building.
      """,
 ) for file in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS]
 
+# keep sorted
 SNAP_HELPER = ["src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper.kt"]
 
-"""
-Files to be excluded from the source list for the app library. This list includes all the files
-built by the following libraries:
-- view_models
-- views
-- listeners
-- annotations
-- binding_adapters
-"""
+# Files to be excluded from the source list for the app library. This list includes all the files
+# built by the following libraries:
+# - view_models
+# - views
+# - listeners
+# - annotations
+# - binding_adapters
 
-EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS + SNAP_HELPER
+EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS + SNAP_HELPER + MIGRATED_SOURCE_FILES
 
-"""
-Files to be built by the app library. All of these files are assumed to have resource imports and
-will be processed by the app library genrule regardless in order to avoid any import issues.
-"""
+# Files to be built by the app library. All of these files are assumed to have resource imports and
+# will be processed by the app library genrule regardless in order to avoid any import issues.
 
 APP_FILES_WITH_RESOURCE_IMPORTS = glob(
     ["src/main/java/org/oppia/android/app/**/*.kt"],
     exclude = EXCLUDED_APP_LIB_FILES,
 )
 
-"""
-Genrule for source files in the app library.
-Because each databinding library must have a unique package name and manifest, resources must be
-imported using the proper package name when building with Bazel. This genrule alters those imports
-in order to keep Gradle building.
-"""
+# Genrule for source files in the app library.
+# Because each databinding library must have a unique package name and manifest, resources must be
+# imported using the proper package name when building with Bazel. This genrule alters those imports
+# in order to keep Gradle building.
 
 [
     genrule(
@@ -473,9 +463,7 @@ android_library(
         exclude = DATABINDING_LAYOUTS,
     ),
     visibility = ["//visibility:private"],
-    deps = [
-        artifact("com.google.android.material:material"),
-    ],
+    deps = ["//third_party:com_google_android_material_material"],
 )
 
 # Library for layout resource files.
@@ -494,24 +482,24 @@ android_library(
         ":view_models",
         ":views",
         "//model",
-        "@circularimageview//circularimageview:circular_image_view",
-        artifact("androidx.annotation:annotation"),
-        artifact("androidx.constraintlayout:constraintlayout"),
-        artifact("androidx.core:core:1.0.1"),
-        artifact("androidx.databinding:databinding-adapters"),
-        artifact("androidx.databinding:databinding-common"),
-        artifact("androidx.databinding:databinding-runtime"),
-        artifact("androidx.drawerlayout:drawerlayout:1.1.0"),
-        artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
-        artifact("androidx.recyclerview:recyclerview:1.0.0"),
-        artifact("androidx.viewpager:viewpager:1.0.0"),
-        artifact("androidx.viewpager2:viewpager2:1.0.0"),
-        artifact("com.chaos.view:pinview:1.4.4"),
-        artifact("com.google.android:flexbox:2.0.1"),
-        artifact("com.google.android.material:material"),
-        artifact("de.hdodenhof:circleimageview:3.0.1"),
-        artifact("javax.annotation:javax.annotation-api"),
-        artifact("nl.dionsegijn:konfetti:1.2.5"),
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:androidx_constraintlayout_constraintlayout",
+        "//third_party:androidx_core_core",
+        "//third_party:androidx_databinding_databinding-adapters",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_drawerlayout_drawerlayout",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:androidx_recyclerview_recyclerview",
+        "//third_party:androidx_viewpager2_viewpager2",
+        "//third_party:androidx_viewpager_viewpager",
+        "//third_party:circularimageview_circular_image_view",
+        "//third_party:com_chaos_view_pinview",
+        "//third_party:com_google_android_flexbox",
+        "//third_party:com_google_android_material_material",
+        "//third_party:de_hdodenhof_circleimageview",
+        "//third_party:javax_annotation_javax_annotation-api_jar",
+        "//third_party:nl_dionsegijn_konfetti",
     ],
 )
 
@@ -520,11 +508,10 @@ kt_android_library(
     name = "listeners",
     srcs = LISTENERS,
     custom_package = "org.oppia.android.app",
-    visibility = ["//visibility:private"],
     deps = [
         ":dagger",
         "//model",
-        artifact("androidx.recyclerview:recyclerview:1.0.0"),
+        "//third_party:androidx_recyclerview_recyclerview",
     ],
 )
 
@@ -534,19 +521,18 @@ kt_android_library(
     srcs = VIEWS,
     custom_package = "org.oppia.android.app.views",
     manifest = "src/main/ViewsManifest.xml",
-    visibility = ["//visibility:private"],
     deps = [
         ":annotations",
         ":listeners",
         ":resources",
-        ":view_models",
         ":snap_helper",
+        ":view_models",
         "//model",
-        "@circularimageview//circularimageview:circular_image_view",
-        artifact("androidx.appcompat:appcompat"),
-        artifact("androidx.core:core-ktx"),
-        artifact("androidx.databinding:databinding-common"),
-        artifact("androidx.databinding:databinding-runtime"),
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_core_core-ktx",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:circularimageview_circular_image_view",
     ],
 )
 
@@ -555,7 +541,6 @@ kt_android_library(
     name = "annotations",
     srcs = ANNOTATIONS,
     custom_package = "org.oppia.android.app",
-    visibility = ["//visibility:private"],
     deps = [
         ":dagger",
         "//model",
@@ -569,17 +554,19 @@ kt_android_library(
     custom_package = "org.oppia.android.app.view.models",
     enable_data_binding = True,
     manifest = "src/main/ViewModelsManifest.xml",
-    visibility = ["//visibility:private"],
     deps = [
         ":annotations",
         ":dagger",
         ":listeners",
         ":resources",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
+        "//app/src/main/java/org/oppia/android/app/viewmodel:view_model_provider",
         "//domain",
         "//model",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
         "//utility",
-        artifact("androidx.databinding:databinding-common"),
-        artifact("androidx.databinding:databinding-runtime"),
     ],
 )
 
@@ -588,7 +575,7 @@ kt_android_library(
     name = "snap_helper",
     srcs = SNAP_HELPER,
     custom_package = "org.oppia.android.app.recyclerview",
-    deps = [artifact("androidx.recyclerview:recyclerview:1.0.0"),],
+    deps = ["//third_party:androidx_recyclerview_recyclerview"],
 )
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
@@ -599,20 +586,19 @@ android_library(
     custom_package = "org.oppia.android.app.databinding.adapters",
     enable_data_binding = True,
     manifest = "src/main/DatabindingAdaptersManifest.xml",
-    visibility = ["//visibility:private"],
     deps = [
         ":dagger",
         ":resources",
         ":view_models",
         "//model",
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:androidx_constraintlayout_constraintlayout",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+        "//third_party:circularimageview_circular_image_view",
+        "//third_party:com_chaos_view_pinview",
+        "//third_party:com_google_android_material_material",
         "//utility",
-        "@circularimageview//circularimageview:circular_image_view",
-        artifact("androidx.annotation:annotation"),
-        artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
-        artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
-        artifact("com.chaos.view.pinview:1.4.4"),
-        artifact("com.google.android.material:material"),
     ],
 )
 
@@ -632,34 +618,32 @@ kt_android_library(
         ":view_models",
         ":views",
         "//model",
+        "//third_party:androidx_databinding_databinding-adapters",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_lifecycle_lifecycle-extensions",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+        "//third_party:androidx_multidex_multidex",
+        "//third_party:androidx_viewpager2_viewpager2",
+        "//third_party:androidx_viewpager_viewpager",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:com_caverock_androidsvg-aar",
+        "//third_party:com_google_android_flexbox",
+        "//third_party:javax_annotation_javax_annotation-api_jar",
         "//utility",
-        artifact("androidx.databinding:databinding-adapters"),
-        artifact("androidx.databinding:databinding-common"),
-        artifact("androidx.databinding:databinding-runtime"),
-        artifact("androidx.lifecycle:lifecycle-extensions:2.2.0"),
-        artifact("androidx.lifecycle:lifecycle-livedata-core:2.2.0"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"),
-        artifact("androidx.multidex:multidex:2.0.1"),
-        artifact("androidx.viewpager:viewpager:1.0.0"),
-        artifact("androidx.viewpager2:viewpager2:1.0.0"),
-        artifact("androidx.work:work-runtime-ktx:2.4.0"),
-        artifact("com.caverock:androidsvg-aar"),
-        artifact("com.google.android:flexbox:2.0.1"),
-        artifact("javax.annotation:javax.annotation-api:jar"),
     ],
 )
 
-"""
-Library that builds test-only source files.
+# Library that builds test-only source files.
 
-All app-specific files that are only used for testing
-purposes but are not tests should be included in this list. These files should not be included in
-the app library or the final binary but should be dependencies for tests.
+# All app-specific files that are only used for testing
+# purposes but are not tests should be included in this list. These files should not be included in
+# the app library or the final binary but should be dependencies for tests.
 
-Place your file here if:
- - It is not a test file
- - Only test files depend on it
-"""
+# Place your file here if:
+#  - It is not a test file
+#  - Only test files depend on it
 
 kt_android_library(
     name = "test_deps",
@@ -680,10 +664,11 @@ kt_android_library(
     deps = [
         ":app",
         "//testing",
-        artifact("org.mockito:mockito-core"),
+        "//third_party:org_mockito_mockito-core",
     ],
 )
 
+# keep sorted
 TEST_DEPS = [
     ":app",
     ":dagger",
@@ -691,498 +676,75 @@ TEST_DEPS = [
     ":test_deps",
     "//domain",
     "//testing",
+    "//third_party:androidx_annotation_annotation",
+    "//third_party:androidx_databinding_databinding-adapters",
+    "//third_party:androidx_databinding_databinding-common",
+    "//third_party:androidx_databinding_databinding-compiler",
+    "//third_party:androidx_databinding_databinding-runtime",
+    "//third_party:androidx_navigation_navigation-fragment",
+    "//third_party:androidx_navigation_navigation-ui",
+    "//third_party:androidx_test_espresso_espresso-contrib",
+    "//third_party:androidx_test_espresso_espresso-core",
+    "//third_party:androidx_test_espresso_espresso-intents",
+    "//third_party:androidx_test_ext_junit",
+    "//third_party:androidx_test_runner",
+    "//third_party:com_github_bumptech_glide_mocks",
+    "//third_party:com_google_truth_truth",
+    "//third_party:org_jetbrains_kotlin_kotlin-reflect",
+    "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-test",
+    "//third_party:org_mockito_mockito-core",
+    "//third_party:org_robolectric_annotations",
+    "//third_party:robolectric_android-all",
     "//utility",
-    "@robolectric//bazel:android-all",
-    artifact("androidx.annotation:annotation"),
-    artifact("androidx.databinding:databinding-adapters"),
-    artifact("androidx.databinding:databinding-common"),
-    artifact("androidx.databinding:databinding-compiler"),
-    artifact("androidx.databinding:databinding-runtime"),
-    artifact("androidx.navigation:navigation-fragment"),
-    artifact("androidx.navigation:navigation-ui"),
-    artifact("androidx.test.espresso:espresso-contrib:3.1.0"),
-    artifact("androidx.test.espresso:espresso-core:3.2.0"),
-    artifact("androidx.test.espresso:espresso-intents:3.1.0"),
-    artifact("androidx.test.ext:junit"),
-    artifact("androidx.test:runner:1.2.0"),
-    artifact("com.github.bumptech.glide:mocks:4.11.0"),
-    artifact("com.google.truth:truth"),
-    artifact("org.jetbrains.kotlin:kotlin-test-junit"),
-    artifact("org.jetbrains.kotlin:kotlin-reflect"),
-    artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2"),
-    artifact("org.mockito:mockito-core"),
-    artifact("org.robolectric:annotations:4.3"),
 ]
 
-"""
-App module tests.
+# App module tests. Note that all tests are assumed to be tests with resources (even though not all
+# are). Note that if a test file imports resources or binding files, it must be wrapped by
+# test_with_resources().
 
-Note that if a test file imports resources or binding files, it must be wrapped by
-test_with_resources().
-"""
+# Qualified file paths for test classes that have been migrated over to their own packages &
+# shouldn't be defined as module-level tests.
+# keep sorted
+MIGRATED_TESTS = [
+]
 
-app_test(
-    name = "HomeActivityLocalTest",
-    srcs = ["src/test/java/org/oppia/android/app/home/HomeActivityLocalTest.kt"],
-    test_class = "org.oppia.android.app.home.HomeActivityLocalTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "ExplorationActivityLocalTest",
-    srcs = ["src/test/java/org/oppia/android/app/player/exploration/ExplorationActivityLocalTest.kt"],
-    test_class = "org.oppia.android.app.player.exploration.ExplorationActivityLocalTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "StateFragmentLocalTest",
-    srcs = [test_with_resources("src/test/java/org/oppia/android/app/player/state/StateFragmentLocalTest.kt")],
-    test_class = "org.oppia.android.app.player.state.StateFragmentLocalTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "ProfileChooserFragmentLocalTest",
-    srcs = ["src/test/java/org/oppia/android/app/profile/ProfileChooserFragmentLocalTest.kt"],
-    test_class = "org.oppia.android.app.profile.ProfileChooserFragmentLocalTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "StoryActivityLocalTest",
-    srcs = ["src/test/java/org/oppia/android/app/story/StoryActivityLocalTest.kt"],
-    test_class = "org.oppia.android.app.story.StoryActivityLocalTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "CompletedStoryListSpanTest",
-    srcs = [test_with_resources("src/test/java/org/oppia/android/app/testing/CompletedStoryListSpanTest.kt")],
-    test_class = "org.oppia.android.app.testing.CompletedStoryListSpanTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "OngoingTopicListSpanTest",
-    srcs = [test_with_resources("src/test/java/org/oppia/android/app/testing/OngoingTopicListSpanTest.kt")],
-    test_class = "org.oppia.android.app.testing.OngoingTopicListSpanTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "ProfileChooserSpanTest",
-    srcs = ["src/test/java/org/oppia/android/app/testing/ProfileChooserSpanTest.kt"],
-    test_class = "org.oppia.android.app.testing.ProfileChooserSpanTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "TopicRevisionSpanTest",
-    srcs = [test_with_resources("src/test/java/org/oppia/android/app/testing/TopicRevisionSpanTest.kt")],
-    test_class = "org.oppia.android.app.testing.TopicRevisionSpanTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "PlayerSplitScreenTesting",
-    srcs = ["src/test/java/org/oppia/android/app/testing/player/split/PlayerSplitScreenTesting.kt"],
-    test_class = "org.oppia.android.app.testing.player.split.PlayerSplitScreenTesting",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "StateFragmentAccessibilityTest",
-    srcs = [test_with_resources("src/test/java/org/oppia/android/app/testing/player/state/StateFragmentAccessibilityTest.kt")],
-    test_class = "org.oppia.android.app.testing.player.state.StateFragmentAccessibilityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "TopicInfoFragmentLocalTest",
-    srcs = ["src/test/java/org/oppia/android/app/topic/info/TopicInfoFragmentLocalTest.kt"],
-    test_class = "org.oppia.android.app.topic.info.TopicInfoFragmentLocalTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "TopicLessonsFragmentLocalTest",
-    srcs = ["src/test/java/org/oppia/android/app/topic/lessons/TopicLessonsFragmentLocalTest.kt"],
-    test_class = "org.oppia.android.app.topic.lessons.TopicLessonsFragmentLocalTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "RevisionCardActivityLocalTest",
-    srcs = ["src/test/java/org/oppia/android/app/topic/revisioncard/RevisionCardActivityLocalTest.kt"],
-    test_class = "org.oppia.android.app.topic.revisioncard.RevisionCardActivityLocalTest",
-    deps = TEST_DEPS,
-)
-
-""" App Module Shared Tests """
-
-app_test(
-    name = "AdministratorControlsActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/administratorcontrols/AdministratorControlsActivityTest.kt")],
-    test_class = "org.oppia.android.app.administratorcontrols.AdministratorControlsActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "AppVersionActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/administratorcontrols/AppVersionActivityTest.kt")],
+# Unit tests.
+[app_test(
+    name = test_file_path,
+    filtered_tests = MIGRATED_TESTS,
     manifest_values = {
         "applicationId": "org.oppia.android",
-        "versionCode": "0",
-        "versionName": "0.1-alpha",
         "minSdkVersion": "19",
         "targetSdkVersion": "28",
+        "versionCode": "0",
+        "versionName": "0.1-alpha",
     },
-    test_class = "org.oppia.android.app.administratorcontrols.AppVersionActivityTest",
+    processed_src = test_with_resources(test_file_path),
+    test_path_prefix = "src/test/java/",
     deps = TEST_DEPS,
-)
+) for test_file_path in glob(["src/test/java/org/oppia/android/app/**/*Test.kt"])]
 
-app_test(
-    name = "CompletedStoryListActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/completedstorylist/CompletedStoryListActivityTest.kt")],
-    test_class = "org.oppia.android.app.completedstorylist.CompletedStoryListActivityTest",
+# Shared tests.
+[app_test(
+    name = test_file_path,
+    filtered_tests = MIGRATED_TESTS,
+    manifest_values = {
+        "applicationId": "org.oppia.android",
+        "minSdkVersion": "19",
+        "targetSdkVersion": "28",
+        "versionCode": "0",
+        "versionName": "0.1-alpha",
+    },
+    processed_src = test_with_resources(test_file_path),
+    test_path_prefix = "src/sharedTest/java/",
     deps = TEST_DEPS,
-)
-
-app_test(
-    name = "FAQListFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/faq/FAQListFragmentTest.kt")],
-    test_class = "org.oppia.android.app.faq.FAQListFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "FAQSingleActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/faq/FAQSingleActivityTest.kt")],
-    test_class = "org.oppia.android.app.faq.FAQSingleActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "HelpFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/help/HelpFragmentTest.kt")],
-    test_class = "org.oppia.android.app.help.HelpFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "HomeActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/home/HomeActivityTest.kt")],
-    test_class = "org.oppia.android.app.home.HomeActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "RecentlyPlayedFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/home/RecentlyPlayedFragmentTest.kt")],
-    test_class = "org.oppia.android.app.home.RecentlyPlayedFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "MyDownloadsFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/mydownloads/MyDownloadsFragmentTest.kt")],
-    test_class = "org.oppia.android.app.mydownloads.MyDownloadsFragmentTest",
-    deps = TEST_DEPS,
-)
-
-# TODO(#973): Fix app module tests for Robolectric.
-app_test(
-    name = "OnboardingFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/onboarding/OnboardingFragmentTest.kt")],
-    test_class = "org.oppia.android.app.onboarding.OnboardingFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "OngoingTopicListActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicListActivityTest.kt")],
-    test_class = "org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "OptionsFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/options/OptionsFragmentTest.kt")],
-    test_class = "org.oppia.android.app.options.OptionsFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "HtmlParserTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/parser/HtmlParserTest.kt")],
-    test_class = "org.oppia.android.app.parser.HtmlParserTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "AudioFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/player/audio/AudioFragmentTest.kt")],
-    test_class = "org.oppia.android.app.player.audio.AudioFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "ExplorationActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/player/exploration/ExplorationActivityTest.kt")],
-    test_class = "org.oppia.android.app.player.exploration.ExplorationActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "StateFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/player/state/StateFragmentTest.kt")],
-    test_class = "org.oppia.android.app.player.state.StateFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "AddProfileActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/profile/AddProfileActivityTest.kt")],
-    test_class = "org.oppia.android.app.profile.AddProfileActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "AdminAuthActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/profile/AdminAuthActivityTest.kt")],
-    test_class = "org.oppia.android.app.profile.AdminAuthActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "AdminPinActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/profile/AdminPinActivityTest.kt")],
-    test_class = "org.oppia.android.app.profile.AdminPinActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "PinPasswordActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/profile/PinPasswordActivityTest.kt")],
-    test_class = "org.oppia.android.app.profile.PinPasswordActivityTest",
-    deps = TEST_DEPS,
-)
-
-# TODO(#973): Fix app module tests for Robolectric.
-app_test(
-    name = "ProfileChooserFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/profile/ProfileChooserFragmentTest.kt")],
-    test_class = "org.oppia.android.app.profile.ProfileChooserFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "ProfilePictureActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/profileprogress/ProfilePictureActivityTest.kt")],
-    test_class = "org.oppia.android.app.profileprogress.ProfilePictureActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "ProfileProgressFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/profileprogress/ProfileProgressFragmentTest.kt")],
-    test_class = "org.oppia.android.app.profileprogress.ProfileProgressFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "BindableAdapterTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/recyclerview/BindableAdapterTest.kt")],
-    test_class = "org.oppia.android.app.recyclerview.BindableAdapterTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "ProfileEditActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/settings/profile/ProfileEditActivityTest.kt")],
-    test_class = "org.oppia.android.app.settings.profile.ProfileEditActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "ProfileListFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/settings/profile/ProfileListFragmentTest.kt")],
-    test_class = "org.oppia.android.app.settings.profile.ProfileListFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "ProfileRenameActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/settings/profile/ProfileRenameActivityTest.kt")],
-    test_class = "org.oppia.android.app.settings.profile.ProfileRenameActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "ProfileResetPinActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/settings/profile/ProfileResetPinActivityTest.kt")],
-    test_class = "org.oppia.android.app.settings.profile.ProfileResetPinActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "SplashActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/splash/SplashActivityTest.kt")],
-    test_class = "org.oppia.android.app.splash.SplashActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "StoryActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/story/StoryActivityTest.kt")],
-    test_class = "org.oppia.android.app.story.StoryActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "StoryFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/story/StoryFragmentTest.kt")],
-    test_class = "org.oppia.android.app.story.StoryFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "DragDropTestActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/testing/DragDropTestActivityTest.kt")],
-    test_class = "org.oppia.android.app.testing.DragDropTestActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "ImageRegionSelectionInteractionViewTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/testing/ImageRegionSelectionInteractionViewTest.kt")],
-    test_class = "org.oppia.android.app.testing.ImageRegionSelectionInteractionViewTest",
-    deps = TEST_DEPS,
-)
-
-# TODO(#973): Fix app module tests for Robolectric.
-app_test(
-    name = "InputInteractionViewTestActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/testing/InputInteractionViewTestActivityTest.kt")],
-    test_class = "org.oppia.android.app.testing.InputInteractionViewTestActivityTest",
-    deps = TEST_DEPS,
-)
-
-# TODO(#973): Fix app module tests for Robolectric.
-app_test(
-    name = "NavigationDrawerActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/testing/NavigationDrawerActivityTest.kt")],
-    test_class = "org.oppia.android.app.testing.NavigationDrawerActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "TestFontScaleConfigurationUtilActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/testing/TestFontScaleConfigurationUtilActivityTest.kt")],
-    test_class = "org.oppia.android.app.testing.TestFontScaleConfigurationUtilActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "TopicTestActivityForStoryTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/testing/TopicTestActivityForStoryTest.kt")],
-    test_class = "org.oppia.android.app.testing.TopicTestActivityForStoryTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "TopicFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/TopicFragmentTest.kt")],
-    test_class = "org.oppia.android.app.topic.TopicFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "ConceptCardFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/conceptcard/ConceptCardFragmentTest.kt")],
-    test_class = "org.oppia.android.app.topic.conceptcard.ConceptCardFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "TopicInfoFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/info/TopicInfoFragmentTest.kt")],
-    test_class = "org.oppia.android.app.topic.info.TopicInfoFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "TopicLessonsFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/lessons/TopicLessonsFragmentTest.kt")],
-    test_class = "org.oppia.android.app.topic.lessons.TopicLessonsFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "TopicPracticeFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/practice/TopicPracticeFragmentTest.kt")],
-    test_class = "org.oppia.android.app.topic.practice.TopicPracticeFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "QuestionPlayerActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerActivityTest.kt")],
-    test_class = "org.oppia.android.app.topic.questionplayer.QuestionPlayerActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "TopicRevisionFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/revision/TopicRevisionFragmentTest.kt")],
-    test_class = "org.oppia.android.app.topic.revision.TopicRevisionFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "RevisionCardFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/topic/revisioncard/RevisionCardFragmentTest.kt")],
-    test_class = "org.oppia.android.app.topic.revisioncard.RevisionCardFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "WalkthroughActivityTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/walkthrough/WalkthroughActivityTest.kt")],
-    test_class = "org.oppia.android.app.walkthrough.WalkthroughActivityTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "WalkthroughFinalFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/walkthrough/WalkthroughFinalFragmentTest.kt")],
-    test_class = "org.oppia.android.app.walkthrough.WalkthroughFinalFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "WalkthroughTopicListFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/walkthrough/WalkthroughTopicListFragmentTest.kt")],
-    test_class = "org.oppia.android.app.walkthrough.WalkthroughTopicListFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "WalkthroughWelcomeFragmentTest",
-    srcs = [test_with_resources("src/sharedTest/java/org/oppia/android/app/walkthrough/WalkthroughWelcomeFragmentTest.kt")],
-    test_class = "org.oppia.android.app.walkthrough.WalkthroughWelcomeFragmentTest",
-    deps = TEST_DEPS,
-)
+) for test_file_path in glob(["src/sharedTest/java/org/oppia/android/app/**/*Test.kt"])]
 
 # TODO(#1566): Move Firebase rules to their own package & remove default visibility
-"""
-Package for all Firebase dependencies.
-To reference these dependencies, add '//app:crashlytics' and '//app:crashlytics_deps'
-to your build rule's dependency list.
-"""
-
-package(default_visibility = ["//visibility:public"])
+# Package for all Firebase dependencies.
+# To reference these dependencies, add '//app:crashlytics' and '//app:crashlytics_deps'
+# to your build rule's dependency list.
 
 GOOGLE_SERVICES_RESOURCES = google_services_xml(
     package_name = "org.oppia.android",
@@ -1199,10 +761,10 @@ crashlytics_android_library(
 android_library(
     name = "crashlytics_deps",
     exports = [
-        artifact("com.crashlytics.sdk.android:crashlytics"),
-        artifact("io.fabric.sdk.android:fabric"),
-        artifact("com.google.firebase:firebase-analytics"),
-        artifact("com.google.firebase:firebase-crashlytics"),
+        "//third_party:com_crashlytics_sdk_android_crashlytics",
+        "//third_party:com_google_firebase_firebase-analytics",
+        "//third_party:com_google_firebase_firebase-crashlytics",
+        "//third_party:io_fabric_sdk_android_fabric",
     ],
 )
 

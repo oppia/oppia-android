@@ -35,12 +35,14 @@
   <color name="oppiaDisabledButtonBackground">#33999999</color>
   <color name="oppiaTextShadow">#1F000000</color>
   <color name="oppiaGreyBorder">#DDDDDD</color>
+  <color name="oppiaGreyBorderDark">#666666</color>
   <color name="oppiaDashedDivider">#80707070</color>
   <color name="oppiaSubmittedAnswerTextColor">#777777</color>
   <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
   <color name="oppiaFAQDivider">#707070</color>
   <color name="oppiaProfileChooserDivider">#707070</color>
   <color name="oppiaNavDrawerItemSelected">#D8D8D8</color>
+  <color name="oppiaRed">#B92D00</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
   <color name="white_80">#CCFFFFFF</color>

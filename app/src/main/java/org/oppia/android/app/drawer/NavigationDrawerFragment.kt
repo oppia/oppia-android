@@ -40,7 +40,15 @@ class NavigationDrawerFragment :
     navigationDrawerFragmentPresenter.openProfileProgress(profileId)
   }
 
-  override fun markHomeMenuCloseDrawer() {
-    navigationDrawerFragmentPresenter.markHomeMenuCloseDrawer()
+  override fun highlightLastCheckedMenuItem() {
+    navigationDrawerFragmentPresenter.highlightLastCheckedMenuItem()
+  }
+
+  override fun highlightAdministratorControlsItem() {
+    navigationDrawerFragmentPresenter.highlightAdministratorControlsItem()
+  }
+
+  override fun unhighlightSwitchProfileMenuItem() {
+    navigationDrawerFragmentPresenter.unhighlightSwitchProfileMenuItem()
   }
 }

@@ -61,6 +61,7 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -72,6 +73,11 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val KEY_READING_TEXT_SIZE_PREFERENCE_TITLE = "READING_TEXT_SIZE_PREFERENCE"
+private const val APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY =
+  "AppLanguageActivity.app_language_preference_title"
+private const val KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE = "AUDIO_LANGUAGE_PREFERENCE"
 
 @RunWith(AndroidJUnit4::class)
 @Config(application = OptionsFragmentTest.TestApplication::class)
@@ -111,12 +117,7 @@ class OptionsFragmentTest {
         click()
       )
       intended(hasComponent(ReadingTextSizeActivity::class.java.name))
-      intended(
-        hasExtra(
-          ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_TITLE,
-          READING_TEXT_SIZE
-        )
-      )
+      intended(hasExtra(KEY_READING_TEXT_SIZE_PREFERENCE_TITLE, READING_TEXT_SIZE))
     }
   }
 
@@ -134,12 +135,7 @@ class OptionsFragmentTest {
         click()
       )
       intended(hasComponent(AppLanguageActivity::class.java.name))
-      intended(
-        hasExtra(
-          AppLanguageActivity.APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY,
-          APP_LANGUAGE
-        )
-      )
+      intended(hasExtra(APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY, APP_LANGUAGE))
     }
   }
 
@@ -157,12 +153,7 @@ class OptionsFragmentTest {
         click()
       )
       intended(hasComponent(AudioLanguageActivity::class.java.name))
-      intended(
-        hasExtra(
-          AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE,
-          AUDIO_LANGUAGE
-        )
-      )
+      intended(hasExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE, AUDIO_LANGUAGE))
     }
   }
 
@@ -276,7 +267,7 @@ class OptionsFragmentTest {
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
       RatioInputModule::class, HintsAndSolutionConfigModule::class,
       WorkManagerConfigurationModule::class, LogUploadWorkerModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
