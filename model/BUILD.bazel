@@ -156,7 +156,6 @@ format_import_proto_library(
     src = "src/main/proto/feedback_reporting.proto",
     deps = [
         ":profile_proto",
-        ":topic_proto",
     ],
 )
 
