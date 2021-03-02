@@ -125,7 +125,7 @@ message FeedbackReportingAppInfo {
   }
 
   EntryPoint entry_point = 1;
-  // Map topic ID to the completion state of topic, based on state of stories in topics
+  // Maps topic ID to the completion state of topic, based on state of stories in topics
   map<string, TopicProgressStatus> topic_progress = 2;
   ReadingTextSize text_size = 3;
   AppLanguage text_language = 4;
