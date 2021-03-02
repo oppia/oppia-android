@@ -152,6 +152,20 @@ java_lite_proto_library(
 )
 
 format_import_proto_library(
+    name = "feedback_reporting",
+    src = "src/main/proto/feedback_reporting.proto",
+    deps = [
+        ":profile_proto",
+        ":topic_proto",
+    ],
+)
+
+java_lite_proto_library(
+    name = "feedback_reporting_java_proto_lite",
+    deps = [":feedback_reporting_proto"],
+)
+
+format_import_proto_library(
     name = "question",
     src = "src/main/proto/question.proto",
     deps = [
@@ -206,6 +220,7 @@ android_library(
     visibility = ["//visibility:public"],
     exports = [
         ":arguments_java_proto_lite",
+        ":feedback_reporting_java_proto_lite",
         ":interaction_object_java_proto_lite",
         ":profile_java_proto_lite",
         ":question_java_proto_lite",
