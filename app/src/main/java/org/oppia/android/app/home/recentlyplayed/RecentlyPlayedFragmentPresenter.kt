@@ -138,7 +138,6 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
               it.promotedStoryList.suggestedStoryCount
             )
           ongoingListAdapter.notifyDataSetChanged()
-
         }
       }
     )
