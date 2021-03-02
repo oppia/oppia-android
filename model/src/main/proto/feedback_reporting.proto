@@ -65,7 +65,7 @@ message Suggestion {
 // A feedback report from the user that brings up an issue found about the app or with a feature in
 // the app that needs to be fixed / improved.
 message Issue {
-  // The category that this issue addresses.
+  // The category that this issue addresses, as selected by the user.
   enum IssueCategory {
     // Unspecified category for an issue report; no reports should have an unspecified category
     // as users are required to select a category.
@@ -131,15 +131,6 @@ message FeedbackReportingSystemContext {
 
 // Information collected about the user's device build.
 message FeedbackReportingDeviceContext {
-  // The type of network connection the device is on.
-  enum NetworkType {
-    // Indicates an unspecified or unknown network type.
-    NETWORK_TYPE_UNSPECIFIED = 0;
-    // Indicates the device is connected to a wifi network.
-    WIFI = 1;
-    // Indicates that device is connected to a cellular network.
-    CELLULAR = 2;
-  }
   // The model code of the user's device.
   string device_model = 1;
   // The version code for the SDK on the device.
@@ -150,7 +141,15 @@ message FeedbackReportingDeviceContext {
   string build_fingerprint = 4;
   // The device's telephony network type.
   string phone_type = 5;
-  // The internet network the device is on.
+  // The type of internet network connection the device is on.
+  enum NetworkType {
+    // Indicates an unspecified or unknown network type.
+    NETWORK_TYPE_UNSPECIFIED = 0;
+    // Indicates the device is connected to a wifi network.
+    WIFI = 1;
+    // Indicates that device is connected to a cellular network.
+    CELLULAR = 2;
+  }
   NetworkType network_type = 6;
   // The ISO-3166 code for the language the device is set to.
   string device_language = 7;
@@ -158,6 +157,7 @@ message FeedbackReportingDeviceContext {
 
 // Information collected about the specific Oppia Android app.
 message FeedbackReportingAppContext {
+  // The entry point that feedback reporting was launched from.
   enum EntryPoint {
     // Indicates that the user started the feedback reporting feature from an unknown location.
     ENTRY_POINT_UNSPECIFIED = 0;
@@ -170,6 +170,8 @@ message FeedbackReportingAppContext {
     // Indicates that the user started feedback reporting from a crash / the crash reporting dialog.
     CRASH = 5;
   }
+  EntryPoint entry_point = 1;
+  // Indicates the progress of a status based on the chapter progress for the topic.
   enum TopicProgressStatus {
     // The completion status is unknown.
     STATUS_UNSPECIFIED = 0;
@@ -180,8 +182,6 @@ message FeedbackReportingAppContext {
     // The topic has been completed by the player.
     COMPLETED = 3;
   }
-  // The entry point that feedback reporting was launched from.
-  EntryPoint entry_point = 1;
   // Maps topic ID to the completion state of topic, based on state of stories in topics. Helps
   // contextualize the user's app state and understand the scenario the report is filed during.
   map<string, TopicProgressStatus> topic_progress = 2;
