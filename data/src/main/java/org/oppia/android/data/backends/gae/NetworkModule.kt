@@ -10,6 +10,10 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+/** API key to validate messages sent over the network. */
+@Qualifier
+annotation class NetworkApiKey
+
 /**
  * Module which provides all required dependencies about network
  *
@@ -60,4 +64,12 @@ class NetworkModule {
   fun provideClassroomService(@OppiaRetrofit retrofit: Retrofit): ClassroomService {
     return retrofit.create(ClassroomService::class.java)
   }
+
+  /**
+   * Provides the API key to validate messages received and messages being sent. A stronger, secret
+   * key will be used when putting app out in production.
+   */
+  @Provides
+  @NetworkApiKey
+  fun provideNetworkApiKey(): String = ""
 }
