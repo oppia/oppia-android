@@ -10,6 +10,7 @@ import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
+import org.oppia.android.domain.classify.ClassificationResult
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionAssessmentProgress.TrainStage
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
@@ -141,6 +142,16 @@ class QuestionAssessmentProgressController @Inject constructor(
           answeredQuestionOutcome =
             progress.stateList.computeAnswerOutcomeForResult(classificationResult.outcome)
           progress.stateDeck.submitAnswer(answer, answeredQuestionOutcome.feedback)
+
+          // Track the number of answers the user submitted, including any misconceptions
+          val misconception =
+            if (classificationResult is ClassificationResult.OutcomeWithMisconception) {
+              classificationResult.taggedSkillMisconceptionId
+            } else {
+              null
+            }
+          progress.answerSubmitted(misconception)
+
           // Do not proceed unless the user submitted the correct answer.
           if (answeredQuestionOutcome.isCorrectAnswer) {
             progress.completeCurrentQuestion()

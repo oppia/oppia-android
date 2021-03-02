@@ -47,6 +47,22 @@ internal class QuestionAssessmentProgress {
     questionSessionMetrics[currentQuestionIndex].didViewSolution = true
   }
 
+  /**
+   * Called every time the user submits an answer to track how many answers the user submitted per question, along with
+   * any misconceptions.
+   */
+  internal fun answerSubmitted(taggedSkillMisconceptionId: String?) {
+    val currentQuestionIndex = getCurrentQuestionIndex()
+    questionSessionMetrics[currentQuestionIndex].numberOfAnswersSubmitted++
+    if (taggedSkillMisconceptionId != null) {
+      // Misconceptions are formatted as <skill ID>-<misconception ID> from the AnswerClassificationController,
+      // but we only need the related skill ID for our purposes
+      questionSessionMetrics[currentQuestionIndex].taggedSkillMisconceptionIds.add(
+        taggedSkillMisconceptionId.split("-")[0]
+      )
+    }
+  }
+
   /** Processes when the current question card has just been completed. */
   internal fun completeCurrentQuestion() {
     isTopQuestionCompleted = true
