@@ -3,7 +3,6 @@ syntax = "proto3";
 package model;
 
 import "profile.proto";
-import "topic.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -114,8 +113,20 @@ message FeedbackReportingAppInfo {
     EXPLORATION = 3;
     CRASH = 4;
   }
+  enum TopicProgressStatus {
+    // The completion status is unknown.
+    STATUS_UNSPECIFIED = 0;
+    // No stories have been started in this topic.
+    NOT_STARTED = 1;
+    // The topic has been started but not completed by the player.
+    STARTED_NOT_COMPLETED = 2;
+    // The topic has been completed by the player.
+    COMPLETED = 3;
+  }
+
   EntryPoint entry_point = 1;
-  TopicProgressDatabase topic_progress = 2;
+  // Map topic ID to the completion state of topic, based on state of stories in topics
+  map<string, TopicProgressStatus> topic_progress = 2;
   ReadingTextSize text_size = 3;
   AppLanguage text_language = 4;
   AudioLanguage audio_language = 5;
