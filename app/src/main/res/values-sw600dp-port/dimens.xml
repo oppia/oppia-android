@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <dimen name="home_padding_end">120dp</dimen>
+  <dimen name="home_padding_end">96dp</dimen>
   <dimen name="home_padding_start">120dp</dimen>
   <dimen name="home_outer_margin">120dp</dimen>
   <dimen name="home_inner_margin">60dp</dimen>
