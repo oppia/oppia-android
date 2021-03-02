@@ -8,37 +8,53 @@ option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
 // Top-level proto to store feedback reports locally when there is no network connection to upload
-// them to the remote service
+// them to the remote service.
 message FeedbackReportingDatabase {
+  // The reports that are cached locally on the device.
   repeated FeedbackReport reports_list = 1;
 }
 
 // Corresponds to an entire feedback report with user reported information and collected app,
 // device, and build information.
 message FeedbackReport {
-  // The date the report was created.
-  int64 report_date_ms = 1;
-  FeedbackReportingForm feedback_form = 2;
-  FeedbackReportingDeviceInfo device_info = 3;
-  FeedbackReportingBuildInfo build_info = 4;
-  FeedbackReportingAppInfo app_info = 5;
+  // The date as a Unix timestamp for when the report was created.
+  int64 report_creation_timestamp_ms = 1;
+  // The information supplied by the user in a feedback report.
+  UserSuppliedFeedback user_supplied_info = 2;
+  // Information collected about the user's physical device.
+  FeedbackReportingSystemContext system_context = 3;
+  // Information collected about the physical device's build.
+  FeedbackReportingDeviceContext device_context = 4;
+  // Information collected about the specific app build on the device.
+  FeedbackReportingAppContext app_context = 5;
 }
 
 // Information supplied by the user in the feedback report.
-message FeedbackReportingForm {
+message UserSuppliedFeedback {
+  // The high-level type of feedback that this report represents.
   oneof report_type {
+    // A suggestion that can be applied to the app.
     Suggestion suggestion = 1;
+    // An issue that should be addressed.
     Issue issue = 2;
+    // A crash report that may give additional context on what happened.
     Crash crash = 3;
   }
 }
 
-// A suggestion feedback report.
+// A feedback report from the user that provides a suggestion for something that could or should
+// change in the app.
 message Suggestion {
+  // The category that the user is making a suggestion for.
   enum SuggestionCategory {
+    // Unspecified category for a suggestion report; no reports should have an unspecified category
+    // as users are required to select a category.
     CATEGORY_UNSPECIFIED = 0;
+    // A new feature suggestion.
     FEATURE_SUGGESTION = 1;
+    // A new language suggestion.
     LANGUAGE_SUGGESTION = 2;
+    // A suggestion for something else about the app.
     OTHER_SUGGESTION = 3;
   }
   SuggestionCategory suggestion_category = 1;
@@ -46,16 +62,27 @@ message Suggestion {
   string user_submitted_suggestion = 2;
 }
 
-// An issue feedback report.
+// A feedback report from the user that brings up an issue found about the app or with a feature in
+// the app that needs to be fixed / improved.
 message Issue {
+  // The category that this issue addresses, as selected by the user.
   enum IssueCategory {
+    // Unspecified category for an issue report; no reports should have an unspecified category
+    // as users are required to select a category.
     CATEGORY_UNSPECIFIED = 0;
+    // An issue with lessons or questions.
     LESSONS_QUESTIONS_ISSUE = 1;
+    // A general issue with the language.
     LANGUAGE_ISSUE = 2;
+    // An issue with the audio language.
     LANGUAGE_AUDIO_ISSUE = 3;
+    // An issue with the text language.
     LANGUAGE_TEXT_ISSUE = 4;
+    // An issue with a topic or the topics list / home screen.
     TOPICS_ISSUE = 5;
+    // An issue with the user's profile or profile screen.
     PROFILE_ISSUE = 6;
+    // An issue with something else in the app not listed above.
     OTHER_ISSUE = 7;
   }
   IssueCategory issue_category = 1;
@@ -65,15 +92,24 @@ message Issue {
   string other_user_input = 3;
 }
 
-// A crash report.
+// A feedback report from the user after a crash has occurred somewhere in the app.
 message Crash {
+  // The location where the crash occurred.
   enum CrashLocation {
+    // Unspecified location for a crash report; no reports should have an unspecified location
+    // as users are required to select a response for this.
     LOCATION_UNSPECIFIED = 0;
+    // Indicates that the crash occurred in the lesson / exploration player.
     LESSON_PLAYER = 1;
+    // Indicates that the crash occurred in the question player / during a practice session.
     PRACTICE_QUESTIONS = 2;
+    // Indicates that the crash occurred in the topics list / home screen.
     TOPICS_LIST = 3;
+    // Indicates that the crash occurred in the options screen.
     OPTIONS_ACTIVITY = 4;
+    // Indicates that the crash occurred on the user's profile page.
     PROFILE_ACTIVITY = 5;
+    // Indicates that the crash occurred in a different location not listed above.
     OTHER = 6;
   }
   CrashLocation crash_location = 1;
@@ -81,38 +117,61 @@ message Crash {
   string crash_explanation = 2;
 }
 
-// Information collected about the user's device.
-message FeedbackReportingDeviceInfo {
+// Information collected about the user device's systems.
+message FeedbackReportingSystemContext {
+  // The package name for the specific app version on the device.
   string package_name = 1;
-  string package_code = 2;
+  // The package code for the specific app version non the device.
+  string package_version_code = 2;
+  // The ISO-3166 code for the country locale that the feedback report is sent from.
   string country_locale = 3;
+  // The ISO-3166 code for the language locale of where the report is sent fromm.
   string language_locale = 4;
 }
 
-// Information collected about the device's build.
-message FeedbackReportingBuildInfo {
+// Information collected about the user's device build.
+message FeedbackReportingDeviceContext {
+  // The model code of the user's device.
+  string device_model = 1;
+  // The version code for the SDK on the device.
+  int32 sdk_version = 2;
+  // The consumer brand of the device.
+  string device_brand = 3;
+  // The unique fingerprint ID for this specific build.
+  string build_fingerprint = 4;
+  // The device's telephony network type.
+  string phone_type = 5;
+  // The type of internet network connection the device is on.
   enum NetworkType {
+    // Indicates an unspecified or unknown network type.
     NETWORK_TYPE_UNSPECIFIED = 0;
+    // Indicates the device is connected to a wifi network.
     WIFI = 1;
+    // Indicates that device is connected to a cellular network.
     CELLULAR = 2;
   }
-  string device_model = 1;
-  string sdk_version = 2;
-  string device_brand = 3;
-  string build_fingerprint = 4;
-  string phone_type = 5;
   NetworkType network_type = 6;
+  // The ISO-3166 code for the language the device is set to.
   string device_language = 7;
 }
 
-// Information collected about the app's build.
-message FeedbackReportingAppInfo {
+// Information collected about the specific Oppia Android app.
+message FeedbackReportingAppContext {
+  // The entry point that feedback reporting was launched from.
   enum EntryPoint {
+    // Indicates that the user started the feedback reporting feature from an unknown location.
     ENTRY_POINT_UNSPECIFIED = 0;
-    MAIN_MENU = 2;
-    EXPLORATION = 3;
-    CRASH = 4;
+    // Indicates that the user started feedback reporting from the main hamburger menu.
+    NAVIGATION_DRAWER = 2;
+    // Indicates that the user started feedback reporting from the exploration player.
+    EXPLORATION_PLAYER = 3;
+    // Indicates that the user started feedback reporting from a revision card / session.
+    REVISION_CARD = 4;
+    // Indicates that the user started feedback reporting from a crash / the crash reporting dialog.
+    CRASH = 5;
   }
+  EntryPoint entry_point = 1;
+  // Indicates the progress of a status based on the chapter progress for the topic.
   enum TopicProgressStatus {
     // The completion status is unknown.
     STATUS_UNSPECIFIED = 0;
@@ -123,14 +182,18 @@ message FeedbackReportingAppInfo {
     // The topic has been completed by the player.
     COMPLETED = 3;
   }
-
-  EntryPoint entry_point = 1;
-  // Map topic ID to the completion state of topic, based on state of stories in topics
+  // Maps topic ID to the completion state of topic, based on state of stories in topics. Helps
+  // contextualize the user's app state and understand the scenario the report is filed during.
   map<string, TopicProgressStatus> topic_progress = 2;
+  // The text size the app is set to.
   ReadingTextSize text_size = 3;
+  // The text language the app is set to.
   AppLanguage text_language = 4;
+  // The audio language the app is set to.
   AudioLanguage audio_language = 5;
+  // The app's specific device settings.
   DeviceSettings device_settings = 6;
+  // If the account sending the report is an admin account.
   bool is_admin = 7;
 }
 
