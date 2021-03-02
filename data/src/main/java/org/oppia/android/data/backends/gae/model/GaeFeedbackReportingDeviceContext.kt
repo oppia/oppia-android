@@ -11,7 +11,7 @@ import com.squareup.moshi.JsonClass
 data class GaeFeedbackReportingDeviceContext(
 
   @Json(name = "device_model") val device_model: String?,
-  @Json(name = "sdk_version") val sdk_version: String?,
+  @Json(name = "sdk_version") val sdk_version: Int?,
   @Json(name = "device_brand") val device_brand: String?,
   @Json(name = "build_fingerprint") val build_fingerprint: String?,
   @Json(name = "phone_type") val phone_type: String?,
