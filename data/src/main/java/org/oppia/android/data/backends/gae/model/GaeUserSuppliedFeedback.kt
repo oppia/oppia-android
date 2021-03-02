@@ -8,7 +8,7 @@ import com.squareup.moshi.JsonClass
  * TODO(#2801): Link backend domain model
  */
 @JsonClass(generateAdapter = true)
-data class GaeFeedbackReportingForm (
+data class GaeUserSuppliedFeedback (
 
   @Json(name = "report_type") val report_type: String?,
   @Json(name = "category") val category: String?,

@@ -8,7 +8,7 @@ import com.squareup.moshi.JsonClass
  * TODO(#2801): Link backend domain model
  */
 @JsonClass(generateAdapter = true)
-data class GaeFeedbackReportingAppInfo(
+data class GaeFeedbackReportingAppContext(
 
   @Json(name = "entry_point") val entry_point: String?,
   // Maps the topic ID to a string representing the progress status of that topic.

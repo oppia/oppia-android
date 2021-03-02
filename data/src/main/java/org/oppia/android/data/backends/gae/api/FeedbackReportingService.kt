@@ -7,7 +7,7 @@ import retrofit2.http.Body
 
 /* Service that pushes data to access to feedback-reporting remote storage. */
 interface FeedbackReportingService {
-  @POST("feedback_reporting_handler/")
+  @POST("feedbackreporting/incomingreport")
   fun postFeedbackReport(@Body report: GaeFeedbackReport)
   : Call<GaeFeedbackReport>
 }
