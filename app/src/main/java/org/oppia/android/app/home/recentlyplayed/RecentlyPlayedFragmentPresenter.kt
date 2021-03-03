@@ -110,7 +110,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       itemList.add(ongoingStoryViewModel)
     }
   }
-  
+
   private fun getOngoingStoryViewModel(promotedStory: PromotedStory): RecentlyPlayedItemViewModel {
     return OngoingStoryViewModel(
       promotedStory,
@@ -134,6 +134,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
   private fun addRecommendedStoryListSection(suggestedStoryList: List<PromotedStory>) {
     binding.recentlyPlayedToolbar.title = activity.getString(R.string.stories_for_you)
+
     val showDivider = itemList.isNotEmpty()
     val recommendedSectionTitleViewModel =
       SectionTitleViewModel(
