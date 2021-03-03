@@ -15,7 +15,7 @@ import retrofit2.mock.BehaviorDelegate
 class MockFeedbackReportingService(
   private val delegate: BehaviorDelegate<FeedbackReportingService>
 ) : FeedbackReportingService {
-  override fun postFeedbackReport(report: FeedbackReport): Call<GaeFeedbackReport> {
+  override fun postFeedbackReport(report: FeedbackReport): Call<Unit> {
     val mockReport = createMockGaeFeedbackReport()
     return delegate.returningResponse(mockReport).postFeedbackReport(report)
   }

@@ -11,5 +11,5 @@ import retrofit2.http.POST
  * representing the report on success. */
 interface FeedbackReportingService {
   @POST("feedbackreporting/incomingreport")
-  fun postFeedbackReport(@Body report: FeedbackReport): Call<GaeFeedbackReport>
+  fun postFeedbackReport(@Body report: FeedbackReport): Call<Unit>
 }
