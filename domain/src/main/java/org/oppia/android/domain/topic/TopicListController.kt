@@ -220,11 +220,9 @@ class TopicListController @Inject constructor(
     topicProgressList: List<TopicProgress>
   ): PromotedActivityList {
     val promotedActivityListBuilder = PromotedActivityList.newBuilder()
-    if (topicProgressList.isNotEmpty()) {
-      promotedActivityListBuilder.promotedStoryList = computePromotedStoryList(topicProgressList)
-      if (promotedActivityListBuilder.promotedStoryList.getTotalPromotedStoryCount() == 0) {
-        promotedActivityListBuilder.comingSoonTopicList = computeComingSoonTopicList()
-      }
+    promotedActivityListBuilder.promotedStoryList = computePromotedStoryList(topicProgressList)
+    if (promotedActivityListBuilder.promotedStoryList.getTotalPromotedStoryCount() == 0) {
+      promotedActivityListBuilder.comingSoonTopicList = computeComingSoonTopicList()
     }
     return promotedActivityListBuilder.build()
   }
@@ -245,12 +243,13 @@ class TopicListController @Inject constructor(
     topicProgressList: List<TopicProgress>,
     completionTimeFilter: (Long) -> Boolean
   ): List<PromotedStory> {
-
     val playedPromotedStoryList = mutableListOf<PromotedStory>()
     val sortedTopicProgressList =
-      topicProgressList.sortedByDescending {
-        val topicProgressStories = it.storyProgressMap.values
-        val topicProgressChapters = topicProgressStories.flatMap { it.chapterProgressMap.values }
+      topicProgressList.sortedByDescending { topicProgress ->
+        val topicProgressStories = topicProgress.storyProgressMap.values
+        val topicProgressChapters = topicProgressStories.flatMap { storyProgress ->
+          storyProgress.chapterProgressMap.values
+        }
         val topicProgressLastPlayedTimes =
           topicProgressChapters.map(ChapterProgress::getLastPlayedTimestamp)
         topicProgressLastPlayedTimes.maxOrNull()
@@ -429,6 +428,25 @@ class TopicListController @Inject constructor(
     }
   }
 
+  /*
+  * Explanation for logic:
+  * We always recommend the next topic that all dependencies are completed for. If a topic with
+  * prerequisites is completed out-of-order (e.g. test topic 1 below) then we assume fractions is already done.
+  * In the same way, finishing test topic 2 means there's nothing else to recommend.
+  *
+  * Here's an example topic graph to illustrate:
+  *
+  *      Fractions
+  *       |
+  *       |
+  *       V
+  * Test topic 0                     Ratios
+  *    \                              /
+  *     \                           /
+  *       -----> Test topic 1 <----
+  *
+  * In this example, when topic Fractions is finished, Test topic 0 will be recommended and so on.
+  */
   private fun computeSuggestedStories(
     topicProgressList: List<TopicProgress>
   ): List<PromotedStory> {
