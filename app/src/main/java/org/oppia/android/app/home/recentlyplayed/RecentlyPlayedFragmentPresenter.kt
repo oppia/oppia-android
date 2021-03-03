@@ -106,16 +106,18 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
     itemList.add(recentSectionTitleViewModel)
     for (promotedStory in recentlyPlayedStoryList) {
-      val ongoingStoryViewModel =
-        OngoingStoryViewModel(
-          promotedStory,
-          entityType,
-          fragment as OngoingStoryClickListener
-        )
+      val ongoingStoryViewModel = getOngoingStoryViewModel(promotedStory)
       itemList.add(ongoingStoryViewModel)
     }
   }
-
+  
+  private fun getOngoingStoryViewModel(promotedStory: PromotedStory): RecentlyPlayedItemViewModel {
+    return OngoingStoryViewModel(
+      promotedStory,
+      entityType,
+      fragment as OngoingStoryClickListener
+    )
+  }
   private fun addOlderStoryListSection(olderPlayedStoryList: List<PromotedStory>) {
     val showDivider = itemList.isNotEmpty()
     val olderSectionTitleViewModel =
@@ -125,12 +127,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       )
     itemList.add(olderSectionTitleViewModel)
     for (promotedStory in olderPlayedStoryList) {
-      val ongoingStoryViewModel =
-        OngoingStoryViewModel(
-          promotedStory,
-          entityType,
-          fragment as OngoingStoryClickListener
-        )
+      val ongoingStoryViewModel = getOngoingStoryViewModel(promotedStory)
       itemList.add(ongoingStoryViewModel)
     }
   }
@@ -144,13 +141,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         showDivider
       )
     itemList.add(recommendedSectionTitleViewModel)
-    for (promotedStory in suggestedStoryList) {
-      val ongoingStoryViewModel =
-        OngoingStoryViewModel(
-          promotedStory,
-          entityType,
-          fragment as OngoingStoryClickListener
-        )
+    for (suggestedStory in suggestedStoryList) {
+      val ongoingStoryViewModel = getOngoingStoryViewModel(suggestedStory)
       itemList.add(ongoingStoryViewModel)
     }
   }
