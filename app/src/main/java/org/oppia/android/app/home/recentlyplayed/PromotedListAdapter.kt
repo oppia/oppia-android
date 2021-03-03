@@ -60,7 +60,7 @@ class PromotedListAdapter(
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         storyGridPosition = position - titleIndex
-        (holder as PromotedStoryViewHolder).bind(itemList[position] as PromotedViewModel)
+        (holder as PromotedStoryViewHolder).bind(itemList[position] as PromotedStoryViewModel)
         val marginMin =
           (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_margin_min)
         val marginMax =
@@ -166,7 +166,7 @@ class PromotedListAdapter(
       is SectionTitleViewModel -> {
         VIEW_TYPE_SECTION_TITLE_TEXT
       }
-      is PromotedViewModel -> {
+      is PromotedStoryViewModel -> {
         VIEW_TYPE_SECTION_STORY_ITEM
       }
       else -> throw IllegalArgumentException(
@@ -194,7 +194,7 @@ class PromotedListAdapter(
   private class PromotedStoryViewHolder(
     val binding: OngoingStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(promotedViewModel: PromotedViewModel) {
+    internal fun bind(promotedViewModel: PromotedStoryViewModel) {
       binding.viewModel = promotedViewModel
     }
   }
