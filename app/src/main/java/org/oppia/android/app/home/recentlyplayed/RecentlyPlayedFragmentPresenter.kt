@@ -73,30 +73,35 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     }
 
   private fun subscribeToOngoingStoryList() {
-    getAssumedSuccessfulPromotedActivityList().observe(fragment, {
-      if (it.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
-        addRecentlyPlayedStoryListSection(it.promotedStoryList.recentlyPlayedStoryList)
-      }
+    getAssumedSuccessfulPromotedActivityList().observe(
+      fragment,
+      {
+        if (it.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
+          addRecentlyPlayedStoryListSection(it.promotedStoryList.recentlyPlayedStoryList)
+        }
 
-      if (it.promotedStoryList.olderPlayedStoryList.isNotEmpty()) {
-        addOlderStoryListSection(it.promotedStoryList.olderPlayedStoryList)
-      }
+        if (it.promotedStoryList.olderPlayedStoryList.isNotEmpty()) {
+          addOlderStoryListSection(it.promotedStoryList.olderPlayedStoryList)
+        }
 
-      if (it.promotedStoryList.suggestedStoryList.isNotEmpty()) {
-        addRecommendedStoryListSection(it.promotedStoryList.suggestedStoryList)
-      }
+        if (it.promotedStoryList.suggestedStoryList.isNotEmpty()) {
+          addRecommendedStoryListSection(it.promotedStoryList.suggestedStoryList)
+        }
 
-      binding.ongoingStoryRecyclerView.layoutManager =
-        createLayoutManager(
-          it.promotedStoryList.recentlyPlayedStoryCount,
-          it.promotedStoryList.olderPlayedStoryCount,
-          it.promotedStoryList.suggestedStoryCount
-        )
-      ongoingListAdapter.notifyDataSetChanged()
-    })
+        binding.ongoingStoryRecyclerView.layoutManager =
+          createLayoutManager(
+            it.promotedStoryList.recentlyPlayedStoryCount,
+            it.promotedStoryList.olderPlayedStoryCount,
+            it.promotedStoryList.suggestedStoryCount
+          )
+        ongoingListAdapter.notifyDataSetChanged()
+      }
+    )
   }
 
-  private fun addRecentlyPlayedStoryListSection(recentlyPlayedStoryList: MutableList<PromotedStory>) {
+  private fun addRecentlyPlayedStoryListSection(
+    recentlyPlayedStoryList: MutableList<PromotedStory>
+  ) {
     val recentSectionTitleViewModel =
       SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
     itemList.add(recentSectionTitleViewModel)
