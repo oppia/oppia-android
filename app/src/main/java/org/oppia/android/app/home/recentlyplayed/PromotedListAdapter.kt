@@ -14,7 +14,7 @@ import org.oppia.android.databinding.SectionTitleBinding
 private const val VIEW_TYPE_SECTION_TITLE_TEXT = 1
 private const val VIEW_TYPE_SECTION_STORY_ITEM = 2
 
-/** Adapter to inflate different items/views inside [RecyclerView] for Ongoing Story List. */
+/** Adapter to inflate different items/views inside [RecyclerView] for Promoted Story List. */
 class PromotedListAdapter(
   private val activity: AppCompatActivity,
   private val itemList: MutableList<RecentlyPlayedItemViewModel>
@@ -46,7 +46,7 @@ class PromotedListAdapter(
             parent,
             /* attachToParent= */ false
           )
-        OngoingStoryViewHolder(binding)
+        PromotedStoryViewHolder(binding)
       }
       else -> throw IllegalArgumentException("Invalid view type: $viewType")
     }
@@ -60,7 +60,7 @@ class PromotedListAdapter(
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         storyGridPosition = position - titleIndex
-        (holder as OngoingStoryViewHolder).bind(itemList[position] as PromotedViewModel)
+        (holder as PromotedStoryViewHolder).bind(itemList[position] as PromotedViewModel)
         val marginMin =
           (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_margin_min)
         val marginMax =
@@ -191,7 +191,7 @@ class PromotedListAdapter(
     }
   }
 
-  private class OngoingStoryViewHolder(
+  private class PromotedStoryViewHolder(
     val binding: OngoingStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(promotedViewModel: PromotedViewModel) {

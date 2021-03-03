@@ -46,7 +46,7 @@ class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener 
     return recentlyPlayedFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 
-  override fun onOngoingStoryClicked(promotedStory: PromotedStory) {
+  override fun onPromotedStoryClicked(promotedStory: PromotedStory) {
     recentlyPlayedFragmentPresenter.onPromotedStoryClicked(promotedStory)
   }
 }
