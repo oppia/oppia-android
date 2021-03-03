@@ -55,8 +55,8 @@ private const val CACHE_NAME_2 = "test_cache_2"
 @Config(application = PersistentCacheStoreTest.TestApplication::class)
 class PersistentCacheStoreTest {
   private companion object {
-    private val TEST_MESSAGE_VERSION_1 = TestMessage.newBuilder().setVersion(1).build()
-    private val TEST_MESSAGE_VERSION_2 = TestMessage.newBuilder().setVersion(2).build()
+    private val TEST_MESSAGE_VERSION_1 = TestMessage.newBuilder().build()
+    private val TEST_MESSAGE_VERSION_2 = TestMessage.newBuilder().build()
   }
 
   @Rule

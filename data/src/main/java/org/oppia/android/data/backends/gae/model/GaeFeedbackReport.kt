@@ -1,5 +1,6 @@
 package org.oppia.android.data.backends.gae.model
 
+import android.system.Int64Ref
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import org.oppia.android.data.backends.gae.NetworkApiKey
@@ -12,7 +13,7 @@ import org.oppia.android.data.backends.gae.NetworkApiKey
 data class GaeFeedbackReport (
 
   @NetworkApiKey @Json(name = "api_key") val api_key: String,
-  @Json(name = "report_creation_timestamp") val report_creation_timestamp_ms: Int?,
+  @Json(name = "report_creation_timestamp") val report_creation_timestamp_ms: Double?,
   @Json(name = "user_feedback") val user_feedback: GaeUserSuppliedFeedback?,
   @Json(name = "system_context") val system_context: GaeFeedbackReportingSystemContext?,
   @Json(name = "device_context") val device_context: GaeFeedbackReportingDeviceContext?,
