@@ -16,6 +16,6 @@ data class GaeFeedbackReport(
   @Json(name = "user_feedback") val user_feedback: GaeUserSuppliedFeedback?,
   @Json(name = "system_context") val system_context: GaeFeedbackReportingSystemContext?,
   @Json(name = "device_context") val device_context: GaeFeedbackReportingDeviceContext?,
-  @Json(name = "app_context") val app_context: GaeFeedbackReportingAppContext?,
+  @Json(name = "app_context") val app_context: GaeFeedbackReportingAppContext?
 
 )

@@ -18,6 +18,6 @@ data class GaeFeedbackReportingAppContext(
   @Json(name = "audio_lang") val audio_lang: String?,
   @Json(name = "download_and_update_only_on_wifi") val download_and_update_only_on_wifi: Boolean?,
   @Json(name = "automatically_update_topics") val automatically_update_topics: Boolean?,
-  @Json(name = "is_admin") val is_admin: Boolean?,
+  @Json(name = "is_admin") val is_admin: Boolean?
 
 )
