@@ -101,6 +101,7 @@
               android:layout_width="0dp"
               android:layout_height="wrap_content"
               android:layout_marginEnd="24dp"
+              android:focusable="true"
               android:orientation="vertical"
               app:layout_constraintBottom_toBottomOf="parent"
               app:layout_constraintEnd_toStartOf="@id/profile_edit_allow_download_switch"
@@ -126,7 +127,7 @@
                 android:textSize="14sp" />
             </LinearLayout>
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
               android:id="@+id/profile_edit_allow_download_switch"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
