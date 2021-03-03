@@ -42,6 +42,7 @@ class MockFeedbackReportingTest {
     .build()
   private val userSuppliedInfo = UserSuppliedFeedback.newBuilder()
     .setSuggestion(suggestion)
+    .build()
   private val feedbackReport = FeedbackReport.newBuilder()
     .setReportCreationTimestampMs(unixTimestamp)
     .setSystemContext(systemContext)
