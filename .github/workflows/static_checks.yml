@@ -20,6 +20,19 @@ jobs:
         with:
           checks: "duppatterns,files,syntax"
           experimental_checks: "notowned"
+          
+  check_base_branch:
+    name: Check base branch is develop
+    runs-on: ubuntu-18.04
+    steps:
+      - name: "[PLEASE READ] Notification for the developer"
+        run: |
+          echo "Note: this check is expected to fail for chained PRs so that they can't accidentally be merged. PRs should only ever be merged directly into develop."
+
+      - name: Check branch
+      - uses: a-b-r-o-w-n/check-base-branch-action@v1.1
+        with:
+          protected-branches: "develop"
 
   linters:
     name: Lint Tests
