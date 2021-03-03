@@ -113,15 +113,16 @@ configurations {
 }
 tasks.withType(Test) {
   jacoco.includeNoLocationClasses = true
+  jacoco.excludes = ['jdk.internal.*']
 }
-task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
 
   reports {
     xml.enabled = true
     html.enabled = true
   }
 
-  def mainSrc = "$project.projectDir/src/main/kotlin"
+  def mainSrc = "$project.projectDir/src/main/java"
 
   sourceDirectories.setFrom(files([mainSrc]))
   executionData.setFrom(fileTree(dir: project.buildDir, includes: [

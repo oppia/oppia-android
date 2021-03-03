@@ -1,5 +1,6 @@
 apply plugin: 'java-library'
 apply plugin: 'com.google.protobuf'
+apply plugin: 'jacoco'
 
 protobuf {
   protoc {
@@ -32,7 +33,6 @@ sourceSets {
   main.java.srcDirs += "${protobuf.generatedFilesBaseDir}/main/javalite"
   main.java.srcDirs += "$projectDir/src/main/proto"
 }
-
 processResources {
   exclude('**/*.proto')
 }
