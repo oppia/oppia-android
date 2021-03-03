@@ -1,6 +1,5 @@
 package org.oppia.android.data.backends.gae.model
 
-import android.system.Int64Ref
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import org.oppia.android.data.backends.gae.NetworkApiKey
@@ -10,7 +9,7 @@ import org.oppia.android.data.backends.gae.NetworkApiKey
  * TODO(#2801): Link backend domain model
  */
 @JsonClass(generateAdapter = true)
-data class GaeFeedbackReport (
+data class GaeFeedbackReport(
 
   @NetworkApiKey @Json(name = "api_key") val api_key: String,
   @Json(name = "report_creation_timestamp") val report_creation_timestamp_ms: Double?,
