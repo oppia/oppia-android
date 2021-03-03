@@ -1,15 +1,16 @@
 package org.oppia.android.data.backends.test
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.FeedbackReport
-import org.oppia.android.app.model.FeedbackReportingAppContext.EntryPoint.NAVIGATION_DRAWER
-import org.oppia.android.app.model.FeedbackReportingAppContext
-import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.FeedbackReportingSystemContext
+import org.oppia.android.app.model.Suggestion
+import org.oppia.android.app.model.Suggestion.SuggestionCategory.LANGUAGE_SUGGESTION
+import org.oppia.android.app.model.UserSuppliedFeedback
 import org.oppia.android.data.backends.api.MockFeedbackReportingService
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
@@ -26,6 +27,26 @@ import retrofit2.mock.NetworkBehavior
 class MockFeedbackReportingTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit
+
+  // Timestamp for March 3, 2021 04:55 GMT
+  private val unixTimestamp = 1610519337000
+  private val systemContext = FeedbackReportingSystemContext.newBuilder()
+    .setPackageName("example.package.name")
+    .setPackageVersionCode("example_version_code")
+    .setCountryLocale("IN")
+    .setLanguageLocale("EN")
+    .build()
+  private val suggestion = Suggestion.newBuilder()
+    .setSuggestionCategory(LANGUAGE_SUGGESTION)
+    .setUserSubmittedSuggestion("french")
+    .build()
+  private val userSuppliedInfo = UserSuppliedFeedback.newBuilder()
+    .setSuggestion(suggestion)
+  private val feedbackReport = FeedbackReport.newBuilder()
+    .setReportCreationTimestampMs(unixTimestamp)
+    .setSystemContext(systemContext)
+    .setUserSuppliedInfo(userSuppliedInfo)
+    .build()
 
   @Before
   fun setUp() {
@@ -45,24 +66,14 @@ class MockFeedbackReportingTest {
   }
 
   @Test
-  fun testFeedbackReportingService_singFakeJson_postSuccesfulResponseReceived() {
+  fun testFeedbackReportingService_postUsingFakeJson_successfulResponseReceived() {
     val delegate = mockRetrofit.create(FeedbackReportingService::class.java)
     val mockService = MockFeedbackReportingService(delegate)
 
-    val appContext = FeedbackReportingAppContext.newBuilder()
-      .setEntryPoint(NAVIGATION_DRAWER)
-      .setAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
-      .setTextLanguage()
-      .setTextSize(ReadingTextSize.LARGE_TEXT_SIZE)
-      .setDeviceSettings()
-      .setIsAdmin(false)
-    val report = FeedbackReport.newBuilder().apply {
-      reportCreationTimestampMs = 1610519337000;
-      userSuppliedInfo = ,
-      systemContext = {},
-      deviceContext = {},
-      appContext = appContext
-    }
-    val reponse = mockService.postFeedbackReport()
+    val response = mockService.postFeedbackReport(feedbackReport).execute()
+
+    assertThat(response.isSuccessful).isTrue()
+    assertThat(response.body()!!.api_key).isEqualTo("")
+    assertThat(response.body()!!.report_creation_timestamp_ms).isEqualTo(unixTimestamp)
   }
 }
