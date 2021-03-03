@@ -28,8 +28,8 @@ class MockFeedbackReportingTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit
 
-  // Timestamp for March 3, 2021 04:55 GMT
-  private val unixTimestamp = 1610519337000
+  // Timestamp for Aug 20, 2019 05:29 GMT
+  private val unixTimestamp = 1566278940160.576
   private val systemContext = FeedbackReportingSystemContext.newBuilder()
     .setPackageName("example.package.name")
     .setPackageVersionCode("example_version_code")
