@@ -867,9 +867,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val delayShowAdditionalHintsMs: Long,
     private val delayShowAdditionalHintsFromWrongAnswerMs: Long
   ) {
-    private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(
-      StateItemViewModel::viewType
-    )
+    private val adapterBuilder = BindableAdapter.MultiTypeBuilder.Factory(fragment)
 
     /**
      * Tracks features individually enabled for the assembler. No features are enabled by default.
@@ -1072,8 +1070,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       gcsEntityId: String,
       supportsConceptCards: Boolean
     ): BindableAdapter<StringList> {
-      return BindableAdapter.SingleTypeBuilder
-        .newBuilder<StringList>()
+      return BindableAdapter.SingleTypeBuilder.Factory(fragment).create<StringList>()
         .registerViewBinder(
           inflateView = { parent ->
             SubmittedAnswerListItemBinding.inflate(
@@ -1094,8 +1091,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       gcsEntityId: String,
       supportsConceptCards: Boolean
     ): BindableAdapter<String> {
-      return BindableAdapter.SingleTypeBuilder
-        .newBuilder<String>()
+      return BindableAdapter.SingleTypeBuilder.Factory(fragment).create<String>()
         .registerViewBinder(
           inflateView = { parent ->
             SubmittedHtmlAnswerItemBinding.inflate(

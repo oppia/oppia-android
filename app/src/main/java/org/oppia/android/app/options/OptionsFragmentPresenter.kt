@@ -93,8 +93,8 @@ class OptionsFragmentPresenter @Inject constructor(
   private fun createRecyclerViewAdapter(
     isMultipane: Boolean
   ): BindableAdapter<OptionsItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->
+    return BindableAdapter.MultiTypeBuilder.Factory(fragment)
+      .create<OptionsItemViewModel, ViewType> { viewModel ->
         viewModel.isMultipane.set(isMultipane)
         when (viewModel) {
           is OptionsReadingTextSizeViewModel -> {

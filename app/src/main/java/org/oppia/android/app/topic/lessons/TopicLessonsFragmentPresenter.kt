@@ -104,6 +104,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           }
           val storySummaryAdapter =
             StorySummaryAdapter(
+              fragment,
               itemList,
               expandedChapterListIndexListener,
               currentExpandedChapterListIndex

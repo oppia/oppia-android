@@ -4,13 +4,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.recyclerview.BindableAdapter
 import javax.inject.Inject
 
 /** The presenter for [DragDropTestActivity] */
-class DragDropTestActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class DragDropTestActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  private val fragment: Fragment
+) {
 
   var dataList = mutableListOf("Item 1", "Item 2", "Item 3", "Item 4")
 
@@ -23,8 +27,8 @@ class DragDropTestActivityPresenter @Inject constructor(private val activity: Ap
   }
 
   private fun createBindableAdapter(): BindableAdapter<String> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<String>()
+    return BindableAdapter.SingleTypeBuilder.Factory(fragment)
+      .create<String>()
       .registerViewBinder(
         inflateView = this::inflateTextViewForStringWithoutDataBinding,
         bindView = this::bindTextViewForStringWithoutDataBinding

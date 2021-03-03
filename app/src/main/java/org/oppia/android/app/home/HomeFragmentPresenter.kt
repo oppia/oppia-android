@@ -94,7 +94,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<HomeItemViewModel, ViewType> { viewModel ->
+      .Factory(fragment).create<HomeItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
           is PromotedStoryListViewModel -> ViewType.PROMOTED_STORY_LIST

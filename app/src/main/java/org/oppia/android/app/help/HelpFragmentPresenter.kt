@@ -44,7 +44,7 @@ class HelpFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HelpItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<HelpItemViewModel>()
+      .Factory(fragment).create<HelpItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = HelpItemBinding::inflate,
         setViewModel = HelpItemBinding::setViewModel

@@ -73,8 +73,8 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicPracticeItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<TopicPracticeItemViewModel, ViewType> { viewModel ->
+    return BindableAdapter.MultiTypeBuilder.Factory(fragment)
+      .create<TopicPracticeItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is TopicPracticeHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
           is TopicPracticeSubtopicViewModel -> ViewType.VIEW_TYPE_SKILL

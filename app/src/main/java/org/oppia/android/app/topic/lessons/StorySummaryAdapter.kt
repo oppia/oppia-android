@@ -3,6 +3,7 @@ package org.oppia.android.app.topic.lessons
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
@@ -18,6 +19,7 @@ private const val VIEW_TYPE_STORY_ITEM = 2
 
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicLessonsFragment]. */
 class StorySummaryAdapter(
+  private val fragment: Fragment,
   private val itemList: MutableList<TopicLessonsItemViewModel>,
   private val expandedChapterListIndexListener: ExpandedChapterListIndexListener,
   private var currentExpandedChapterListIndex: Int?
@@ -145,8 +147,7 @@ class StorySummaryAdapter(
     }
 
     private fun createRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
-      return BindableAdapter.SingleTypeBuilder
-        .newBuilder<ChapterSummaryViewModel>()
+      return BindableAdapter.SingleTypeBuilder.Factory(fragment).create<ChapterSummaryViewModel>()
         .registerViewDataBinderWithSameModelType(
           inflateDataBinding = LessonsChapterViewBinding::inflate,
           setViewModel = LessonsChapterViewBinding::setViewModel

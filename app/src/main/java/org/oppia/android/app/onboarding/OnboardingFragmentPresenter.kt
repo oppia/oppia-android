@@ -87,8 +87,8 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun createViewPagerAdapter(): BindableAdapter<OnboardingViewPagerViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<OnboardingViewPagerViewModel, ViewType> { viewModel ->
+    return BindableAdapter.MultiTypeBuilder.Factory(fragment)
+      .create<OnboardingViewPagerViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is OnboardingSlideViewModel -> ViewType.ONBOARDING_MIDDLE_SLIDE
           is OnboardingSlideFinalViewModel -> ViewType.ONBOARDING_FINAL_SLIDE

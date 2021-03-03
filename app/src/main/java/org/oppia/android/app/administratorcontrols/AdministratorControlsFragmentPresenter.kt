@@ -73,22 +73,22 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(isMultipane: Boolean):
     BindableAdapter<AdministratorControlsItemViewModel> {
-      return BindableAdapter.MultiTypeBuilder
-        .newBuilder<AdministratorControlsItemViewModel, ViewType> { viewModel ->
-          viewModel.isMultipane.set(isMultipane)
-          when (viewModel) {
-            is AdministratorControlsGeneralViewModel -> {
-              viewModel.itemIndex.set(0)
-              ViewType.VIEW_TYPE_GENERAL
-            }
-            is AdministratorControlsProfileViewModel -> {
-              viewModel.itemIndex.set(1)
-              ViewType.VIEW_TYPE_PROFILE
-            }
-            is AdministratorControlsDownloadPermissionsViewModel -> {
-              viewModel.itemIndex.set(2)
-              ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS
-            }
+    return BindableAdapter.MultiTypeBuilder.Factory(fragment)
+      .create<AdministratorControlsItemViewModel, ViewType> { viewModel ->
+        viewModel.isMultipane.set(isMultipane)
+        when (viewModel) {
+          is AdministratorControlsGeneralViewModel -> {
+            viewModel.itemIndex.set(0)
+            ViewType.VIEW_TYPE_GENERAL
+          }
+          is AdministratorControlsProfileViewModel -> {
+            viewModel.itemIndex.set(1)
+            ViewType.VIEW_TYPE_PROFILE
+          }
+          is AdministratorControlsDownloadPermissionsViewModel -> {
+            viewModel.itemIndex.set(2)
+            ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS
+          }
             is AdministratorControlsAppInformationViewModel -> {
               viewModel.itemIndex.set(3)
               ViewType.VIEW_TYPE_APP_INFORMATION

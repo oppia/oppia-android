@@ -50,8 +50,7 @@ class ProfileListFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<Profile> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<Profile>()
+    return BindableAdapter.SingleTypeBuilder.Factory(fragment).create<Profile>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ProfileListProfileViewBinding::inflate,
         setViewModel = ::bindProfileView

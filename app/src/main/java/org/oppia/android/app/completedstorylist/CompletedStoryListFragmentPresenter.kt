@@ -52,8 +52,7 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<CompletedStoryItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<CompletedStoryItemViewModel>()
+    return BindableAdapter.SingleTypeBuilder.Factory(fragment).create<CompletedStoryItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = CompletedStoryItemBinding::inflate,
         setViewModel = CompletedStoryItemBinding::setViewModel
