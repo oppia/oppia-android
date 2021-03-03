@@ -79,7 +79,9 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     this.entityId = entityId
   }
 
-  private fun createAdapter(fragment: Fragment): BindableAdapter<DragDropInteractionContentViewModel> {
+  private fun createAdapter(
+    fragment: Fragment
+  ): BindableAdapter<DragDropInteractionContentViewModel> {
     return BindableAdapter.SingleTypeBuilder.Factory(fragment)
       .create<DragDropInteractionContentViewModel>()
       .registerViewBinder(
