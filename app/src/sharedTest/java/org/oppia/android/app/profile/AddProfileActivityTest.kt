@@ -25,9 +25,9 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
-import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -327,24 +327,24 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_createIsNotClickable() {
+  fun testAddProfileActivity_createButtonIsDisabled() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
-      onView(withId(R.id.add_profile_activity_create_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.add_profile_activity_create_button)).check(matches(not(isEnabled())))
     }
   }
 
   @Test
-  fun testAddProfileActivity_configChange_createIsNotClickable() {
+  fun testAddProfileActivity_configChange_createIsDisbaled() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
-      onView(withId(R.id.add_profile_activity_create_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.add_profile_activity_create_button)).check(matches(not(isEnabled())))
     }
   }
 
   @Test
-  fun testAddProfileActivity_inputName_createIsClickable() {
+  fun testAddProfileActivity_inputName_createIsEnabled() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       onView(
@@ -356,12 +356,12 @@ class AddProfileActivityTest {
         editTextInputAction.appendText("Rajat"), closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
-      onView(withId(R.id.add_profile_activity_create_button)).check(matches(isClickable()))
+      onView(withId(R.id.add_profile_activity_create_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
-  fun testAddProfileActivity_inputName_configChange_createIsClickable() {
+  fun testAddProfileActivity_inputName_configChange_createIsEnabled() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
       onView(
@@ -374,7 +374,7 @@ class AddProfileActivityTest {
       )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
-        .check(matches(isClickable()))
+        .check(matches(isEnabled()))
     }
   }
 
@@ -947,7 +947,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputPin_checkAllowDownloadNotClickable() {
+  fun testAddProfileActivity_inputPin_checkAllowDownloadIsDisabled() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
@@ -965,7 +965,7 @@ class AddProfileActivityTest {
         .check(
           matches(
             not(
-              isClickable()
+              isEnabled()
             )
           )
         )
@@ -973,7 +973,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_configChange_inputPin_allowDownloadIsNotClickable() {
+  fun testAddProfileActivity_configChange_inputPin_allowDownloadIsDisabled() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo()).perform(click())
@@ -990,7 +990,7 @@ class AddProfileActivityTest {
         .check(
           matches(
             not(
-              isClickable()
+              isEnabled()
             )
           )
         )
@@ -998,7 +998,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputPin_inputConfirmPin_allowDownloadIsClickable() {
+  fun testAddProfileActivity_inputPin_inputConfirmPin_allowDownloadIsEnabled() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
@@ -1031,14 +1031,14 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_allow_download_switch))
         .check(
           matches(
-            isClickable()
+            isEnabled()
           )
         )
     }
   }
 
   @Test
-  fun testAddProfileActivity_configChange_inputPin_allowDownloadIsClickable() {
+  fun testAddProfileActivity_configChange_inputPin_allowDownloadIsEnabled() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
@@ -1070,7 +1070,7 @@ class AddProfileActivityTest {
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.add_profile_activity_allow_download_switch)).check(matches(isClickable()))
+      onView(withId(R.id.add_profile_activity_allow_download_switch)).check(matches(isEnabled()))
     }
   }
 
