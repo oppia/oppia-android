@@ -69,17 +69,25 @@ class MockFeedbackReportingTest {
   @Test
   fun testFeedbackReportingService_postUsingFakeJson_successfulResponseReceived() {
     val delegate = mockRetrofit.create(FeedbackReportingService::class.java)
+<<<<<<< HEAD
 
     // Create the moshi object
     // pass it in as body of the serice post
     // execute service and check for success OR enqueue service and check for success
 
+=======
+>>>>>>> 0d75c83329e23b4f04cd78fb8d2095d84390dcc8
     val mockService = MockFeedbackReportingService(delegate)
 
     val response = mockService.postFeedbackReport(feedbackReport).execute()
 
     assertThat(response.isSuccessful).isTrue()
+<<<<<<< HEAD
 //    assertThat(response.body()!!.api_key).isEqualTo("")
 //    assertThat(response.body()!!.report_creation_timestamp_ms).isEqualTo(unixTimestamp)
+=======
+    assertThat(response.body()!!.api_key).isEqualTo("")
+    assertThat(response.body()!!.report_creation_timestamp_ms).isEqualTo(unixTimestamp)
+>>>>>>> 0d75c83329e23b4f04cd78fb8d2095d84390dcc8
   }
 }
