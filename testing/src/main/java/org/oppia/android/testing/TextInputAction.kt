@@ -12,10 +12,9 @@ import javax.inject.Inject
 /**
  * Action for matching error text and performing other actions on TextInputLayout in a test infrastructure-specific way.
  */
-class TextInputAction @Inject constructor(
-  val context: Context
-) {
-  // TODO(#1720): Move this to a companion object & use a test-only singleton injector to retrieve
+class TextInputAction @Inject constructor(val context: Context) {
+  // TODO(#1720): Move this to a companion object & use a test-only singleton injector to retrieve.
+
   /**
    * @param expectedErrorTextId is the string id which needs to match.
    *
