@@ -41,56 +41,56 @@ jobs:
 
      - name: Generate app module JaCoCo Coverage Report
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run:  sudo ./gradlew --full-stacktrace app:testDebugUnitTestCoverage
+       run:  sudo ./gradlew --full-stacktrace app:jacocoCoverageReport
      - name: Upload app module JaCoCo Coverage Report
        uses: codecov/codecov-action@v1
        with:
         token: cea2720a-1021-4af7-a1e1-131895630631
-        files: app/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml  
+        files: app/build/reports/jacoco/jacocoCoverageReport/jacocoCoverageReport.xml  
         name: oppia-android 
 
 
      - name: Generate domain module JaCoCo Coverage Report
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run:  sudo ./gradlew --full-stacktrace domain:testDebugUnitTestCoverage
+       run:  sudo ./gradlew --full-stacktrace domain:jacocoCoverageReport
      - name: Upload domain module JaCoCo Coverage Report
        uses: codecov/codecov-action@v1
        with:
         token: cea2720a-1021-4af7-a1e1-131895630631
-        files: domain/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml   
+        files: domain/build/reports/jacoco/jacocoCoverageReport/jacocoCoverageReport.xml   
         name: oppia-android 
 
 
      - name: Generate data module JaCoCo Coverage Report
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run:  sudo ./gradlew --full-stacktrace data:testDebugUnitTestCoverage
+       run:  sudo ./gradlew --full-stacktrace data:jacocoCoverageReport
      - name: Upload data module JaCoCo Coverage Report
        uses: codecov/codecov-action@v1
        with:
         token: cea2720a-1021-4af7-a1e1-131895630631
-        files: data/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml 
+        files: data/build/reports/jacoco/jacocoCoverageReport/jacocoCoverageReport.xml 
         name: oppia-android 
 
 
      - name: Generate testing module JaCoCo Coverage Report
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run:  sudo ./gradlew --full-stacktrace testing:testDebugUnitTestCoverage
+       run:  sudo ./gradlew --full-stacktrace testing:jacocoCoverageReport
      - name: Upload testing module JaCoCo Coverage Report
        uses: codecov/codecov-action@v1
        with:
         token: cea2720a-1021-4af7-a1e1-131895630631
-        files: testing/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml
+        files: testing/build/reports/jacoco/jacocoCoverageReport/jacocoCoverageReport.xml
         name: oppia-android        
 
 
      - name: Generate utility module JaCoCo Coverage Report
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run:  sudo ./gradlew --full-stacktrace utility:testDebugUnitTestCoverage
+       run:  sudo ./gradlew --full-stacktrace utility:jacocoCoverageReport
      - name: Upload utility module JaCoCo Coverage Report
        uses: codecov/codecov-action@v1
        with:
         token: cea2720a-1021-4af7-a1e1-131895630631
-        files: utility/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml
+        files: utility/build/reports/jacoco/jacocoCoverageReport/jacocoCoverageReport.xml
         name: oppia-android
 
 
