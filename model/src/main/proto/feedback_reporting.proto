@@ -65,6 +65,169 @@ message Suggestion {
 // A feedback report from the user that brings up an issue found about the app or with a feature in
 // the app that needs to be fixed / improved.
 message Issue {
+  oneof issue_category {
+    // An issue with lessons or questions.
+    LessonQuestionIssue lesson_question_issue = 1;
+    // A general issue with the language.
+    LanguageIssue language_issue = 2;
+    // An issue with a topic or the topics list / home screen.
+    TopicsIssue topics_issue = 3;
+    // An issue with the user's profile or profile screen.
+    ProfileIssue profile_issue = 4;
+    // An issue with something else in the app not listed above.
+    OtherIssue other_issue = 5;
+  }
+}
+
+// Represents a user-selected category to indicate there is an issue with a lesson or the questions.
+message LessonQuestionIssue {
+  // The specific issue option that a user can choose to include in their report.
+  enum IssueOption {
+    // An unspecified option that represents an "other" issue option in this category.
+    OTHER_UNSPECIFIED = 0;
+    // Represents the issue option that the lesson is too long.
+    LESSON_TOO_LONG = 1;
+    // Represents the issue option that the lesson is too short.
+    LESSON_TOO_SHORT = 2;
+    // Represents the issue option that the lesson is too hard.
+    LESSON_TOO_HARD = 3;
+    // Represents the issue option that the lesson is too easy.
+    LESSON_TO_EASY = 4;
+    // Represents the issue option that the user cannot see hints for a question or during the lesson.
+    CANNOT_SEE_HINTS = 5;
+    // Represents the issue option that the language the user expects for the lesson is incorrect.
+    DIFFERENT_LANGUAGE = 6;
+    // Represents the issue option that the user cannot find their desired language for the lesson.
+    CANNOT_FIND_LANGUAGE = 7;
+    // Represents the issue option that the user couldn't understand a question.
+    CANNOT_UNDERSTAND_QUESTION = 8;
+    // Represents the issue option that the user couldn't find the answer to a question.
+    CANNOT_FIND_ANSWER = 9;
+  }
+  repeated IssueOption user_selected_options = 1;
+  // The user's text input if they selected "other" as an issue option; this can only be non-empty
+  // if the OTHER_UNSPECIFIED option is selected.
+  string other_user_input = 2;
+}
+
+// Represents the user-selected category for an issue with the app's language.
+message LanguageIssue {
+  oneof language_issue_category {
+    GeneralLanguageIssue general_language_issue = 1;
+    AudioLanguageIssue audio_language_issue = 2;
+    TextLanguageIssue text_language_issue = 3;
+  }
+}
+
+// Represents the user-selected category for an issue with the app's language without specifying a
+// sub-category of text or audio language. This issue does not have any user-selected options as
+// user's must select a sub-category to provide specific issues.
+message GeneralLanguageIssue {}
+
+// Represents the user-selected category for an issue with the app's language and specifying an issue
+// with the audio language.
+message AudioLanguageIssue {
+  // The specific issue option that a user can choose to include in their report.
+  enum IssueOption {
+    // An unspecified option that represents an "other" issue option in this category.
+    OTHER_UNSPECIFIED = 0;
+    // Represents the issue option that the audio language is too fast.
+    TOO_FAST = 1;
+    // Represents the issue option that the audio language is too slow.
+    TOO_SLOW = 2;
+    // Represents the issue option that the audio language is too loud.
+    TOO_LOUD = 3;
+    // Represents the issue option that the audio language is too quiet.
+    TOO_QUIET = 4;
+    // Represents the issue option that the user cannot understand the audio language.
+    CANNOT_UNDERSTAND = 5;
+    // Represents the issue option that the language the user expects for the audio is incorrect.
+    DIFFERENT_LANGUAGE = 6;
+    // Represents the issue option that the user cannot find their desired audio language.
+    CANNOT_FIND_LANGUAGE = 7;
+  }
+  repeated IssueOption user_selected_options = 1;
+  // The user's text input if they selected "other" as an issue option; this can only be non-empty
+  // if the OTHER_UNSPECIFIED option is selected.
+  string other_user_input = 2;
+}
+
+// Represents the user-selected category for an issue with the app's language and specifying an issue
+// with the text language.
+message TextLanguageIssue {
+  // The specific issue option that a user can choose to include in their report.
+  enum IssueOption {
+    // An unspecified option that represents an "other" issue option in this category.
+    OTHER_UNSPECIFIED = 0;
+    // Represents the issue option that the text language is too big.
+    TOO_BIG = 1;
+    // Represents the issue option that the text language is too small.
+    TOO_SMALL = 2;
+    // Represents the issue option that the user cannot understand the text language.
+    CANNOT_UNDERSTAND = 3;
+    // Represents the issue option that the language the user expects for the text is incorrect.
+    DIFFERENT_LANGUAGE = 4;
+    // Represents the issue option that the user cannot find their desired text language.
+    CANNOT_FIND_LANGUAGE = 5;
+  }
+  repeated IssueOption user_selected_options = 1;
+  // The user's text input if they selected "other" as an issue option; this can only be non-empty
+  // if the OTHER_UNSPECIFIED option is selected.
+  string other_user_input = 2;
+}
+
+// Represents the user-selected category for an issue with the topics available to the to the user.
+message TopicsIssue{
+  // The specific issue option that a user can choose to include in their report.
+  enum IssueOption {
+    // An unspecified option that represents an "other" issue option in this category.
+    OTHER_UNSPECIFIED = 0;
+    // Represents the issue option that the user cannot see all the topics they want to see.
+    CANNOT_SEE_ALL = 1;
+    // Represents the issue option that the user cannot find a desired topic.
+    CANNOT_FIND_TOPIC = 2;
+    // Represents the issue option that the user cannot find a story they accessed earlier.
+    CANNOT_FIND_EARLIER_STORY = 3;
+    // Represents the issue option that the user is unsure of what to do next in the app.
+    DO_NOT_KNOW_NEXT = 4;
+  }
+  repeated IssueOption user_selected_options = 1;
+  // The user's text input if they selected "other" as an issue option; this can only be non-empty
+  // if the OTHER_UNSPECIFIED option is selected.
+  string other_user_input = 2;
+}
+
+
+// Represents the user-selected category for an issue with the user's profile.
+message ProfileIssue{
+  // The specific issue option that a user can choose to include in their report.
+  enum IssueOption {
+    // An unspecified option that represents an "other" issue option in this category.
+    OTHER_UNSPECIFIED = 0;
+    // Represents the issue option that the user cannot add a profile.
+    CANNOT_ADD = 1;
+    // Represents the issue option that the user cannot remove a profile.
+    CANNOT_DELETE = 2;
+    // Represents the issue option that the user cannot add a new admin account.
+    CANNOT_ADD_NEW_ADMIN = 3;
+    // Represents the issue option that the user cannot change their profile image.
+    CANNOT_CHANGE_IMAGE = 4;
+    // Represents the issue option that the user forgot their admin IN.
+    FORGOT_ADMIN_PIN = 5;
+  }
+  repeated IssueOption user_selected_options = 1;
+  // The user's text input if they selected "other" as an issue option; this can only be non-empty
+  // if the OTHER_UNSPECIFIED option is selected.
+  string other_user_input = 2;
+}
+
+// Represents the user-selected category for some other issue with the app that is not listed in the
+// specified categories.
+message OtherIssue {
+  // The user's text input for this issue.
+  string open_user_input = 1;
+}
+
   // The category that this issue addresses, as selected by the user.
   enum IssueCategory {
     // Unspecified category for an issue report; no reports should have an unspecified category
@@ -196,4 +359,3 @@ message FeedbackReportingAppContext {
   // If the account sending the report is an admin account.
   bool is_admin = 7;
 }
-
