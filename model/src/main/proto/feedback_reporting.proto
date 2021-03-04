@@ -26,7 +26,7 @@ message FeedbackReport {
   // Information collected about the physical device's build.
   FeedbackReportingDeviceContext device_context = 4;
   // Information collected about the specific app build on the device.
-  FeedbackReportingAppContext app_context = 5;
+  FeedbackReportingOppiaContext app_context = 5;
 }
 
 // Information supplied by the user in the feedback report.
@@ -256,7 +256,7 @@ message Crash {
 // Information collected about the user device's systems.
 message FeedbackReportingSystemContext {
   // The package name for the specific app version on the device.
-  string package_name = 1;
+  string package_version_name = 1;
   // The package code for the specific app version on the device.
   int32 package_version_code = 2;
   // The ISO-639 code for the device country locale.
@@ -288,7 +288,7 @@ message FeedbackReportingDeviceContext {
 }
 
 // Information collected about the current version of the Oppia Android app.
-message FeedbackReportingAppContext {
+message FeedbackReportingOppiaContext {
   // The entry point that feedback reporting was launched from.
   enum EntryPoint {
     // Indicates that the user started the feedback reporting feature from an unknown location.
