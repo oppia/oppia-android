@@ -14,7 +14,7 @@ import java.util.Objects
 /** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
 class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
-  val promotedStoryList: List<PromotedStoryViewModel>,
+  val promotedListItemList: List<PromotedListItemViewModel>,
   private val promotedActivityList: PromotedActivityList
 ) : HomeItemViewModel() {
   private val routeToRecentlyPlayedListener = activity as RouteToRecentlyPlayedListener
@@ -23,7 +23,7 @@ class PromotedStoryListViewModel(
   )
   /** Returns the padding placed at the end of the promoted stories list based on the number of promoted stories. */
   val endPadding =
-    if (promotedStoryList.size > 1)
+    if (promotedListItemList.size > 1)
       activity.resources.getDimensionPixelSize(R.dimen.home_padding_end)
     else activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
 
@@ -52,15 +52,15 @@ class PromotedStoryListViewModel(
     if (activity.resources.getBoolean(R.bool.isTablet)) {
       when (Resources.getSystem().configuration.orientation) {
         Configuration.ORIENTATION_PORTRAIT -> {
-          return if (promotedStoryList.size > 2) View.VISIBLE else View.INVISIBLE
+          return if (promotedListItemList.size > 2) View.VISIBLE else View.INVISIBLE
         }
         Configuration.ORIENTATION_LANDSCAPE -> {
-          return if (promotedStoryList.size > 3) View.VISIBLE else View.INVISIBLE
+          return if (promotedListItemList.size > 3) View.VISIBLE else View.INVISIBLE
         }
         else -> View.VISIBLE
       }
     } else {
-      return if (promotedStoryList.size > promotedStoryListLimit - 1) {
+      return if (promotedListItemList.size > promotedStoryListLimit - 1) {
         View.VISIBLE
       } else {
         View.INVISIBLE
@@ -77,8 +77,8 @@ class PromotedStoryListViewModel(
   // will only rebind when the actual data in the data list changes, rather than when the ViewModel
   // object changes.
   override fun equals(other: Any?): Boolean {
-    return other is PromotedStoryListViewModel && other.promotedStoryList == this.promotedStoryList
+    return other is PromotedStoryListViewModel && other.promotedListItemList == this.promotedListItemList
   }
 
-  override fun hashCode() = Objects.hash(promotedStoryList)
+  override fun hashCode() = Objects.hash(promotedListItemList)
 }

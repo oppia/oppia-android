@@ -10,7 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
-import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
+import org.oppia.android.app.home.promotedlist.PromotedListItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.android.databinding.ComingSoonTopicViewBinding
@@ -45,7 +45,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
 
   override fun providePromotedStoryViewModel(
     view: View,
-    viewModel: PromotedStoryViewModel
+    viewModel: PromotedListItemViewModel
   ) {
     val binding =
       DataBindingUtil.findBinding<PromotedStoryCardBinding>(view)!!

@@ -57,14 +57,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [PromotedStoryViewModel] data. */
+/** Tests for [PromotedListItemViewModel] data. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = PromotedStoryViewModelTest.TestApplication::class,
+  application = PromotedListItemViewModelTest.TestApplication::class,
   manifest = Config.NONE
 )
-class PromotedStoryViewModelTest {
+class PromotedListItemViewModelTest {
 
   @Inject
   lateinit var context: Context
@@ -171,14 +171,14 @@ class PromotedStoryViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val promotedStoryViewModelProfile1 = PromotedStoryViewModel(
+        val promotedStoryViewModelProfile1 = PromotedListItemViewModel(
           activity = it,
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1
         )
-        val promotedStoryViewModelProfile2 = PromotedStoryViewModel(
+        val promotedStoryViewModelProfile2 = PromotedListItemViewModel(
           activity = it,
           internalProfileId = 2,
           totalStoryCount = 3,
@@ -197,14 +197,14 @@ class PromotedStoryViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val promotedStoryViewModelStoryCount2 = PromotedStoryViewModel(
+        val promotedStoryViewModelStoryCount2 = PromotedListItemViewModel(
           activity = it,
           internalProfileId = 1,
           totalStoryCount = 2,
           entityType = "entity",
           promotedStory = promotedStory1
         )
-        val promotedStoryViewModelStoryCount3 = PromotedStoryViewModel(
+        val promotedStoryViewModelStoryCount3 = PromotedListItemViewModel(
           activity = it,
           internalProfileId = 1,
           totalStoryCount = 3,
@@ -224,14 +224,14 @@ class PromotedStoryViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use {
       it.onActivity {
-        val promotedStoryViewModelEntity1 = PromotedStoryViewModel(
+        val promotedStoryViewModelEntity1 = PromotedListItemViewModel(
           activity = it,
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity_1",
           promotedStory = promotedStory1
         )
-        val promotedStoryViewModelEntity2 = PromotedStoryViewModel(
+        val promotedStoryViewModelEntity2 = PromotedListItemViewModel(
           activity = it,
           internalProfileId = 1,
           totalStoryCount = 3,
@@ -252,14 +252,14 @@ class PromotedStoryViewModelTest {
       it.onActivity {
         assertThat(promotedStory1.equals(promotedStory2)).isFalse()
 
-        val promotedStoryViewModelStory1 = PromotedStoryViewModel(
+        val promotedStoryViewModelStory1 = PromotedListItemViewModel(
           activity = it,
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1
         )
-        val promotedStoryViewModelStory2 = PromotedStoryViewModel(
+        val promotedStoryViewModelStory2 = PromotedListItemViewModel(
           activity = it,
           internalProfileId = 1,
           totalStoryCount = 3,
@@ -311,8 +311,8 @@ class PromotedStoryViewModelTest {
 
   private fun createBasicPromotedStoryViewModel(
     activity: AppCompatActivity
-  ): PromotedStoryViewModel {
-    return PromotedStoryViewModel(
+  ): PromotedListItemViewModel {
+    return PromotedListItemViewModel(
       activity = activity,
       internalProfileId = 1,
       totalStoryCount = 3,
@@ -345,17 +345,17 @@ class PromotedStoryViewModelTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(promotedStoryViewModelTest: PromotedStoryViewModelTest)
+    fun inject(promotedStoryViewModelTest: PromotedListItemViewModelTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPromotedStoryViewModelTest_TestApplicationComponent.builder()
+      DaggerPromotedListItemViewModelTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(promotedStoryViewModelTest: PromotedStoryViewModelTest) {
+    fun inject(promotedStoryViewModelTest: PromotedListItemViewModelTest) {
       component.inject(promotedStoryViewModelTest)
     }
 

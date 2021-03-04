@@ -288,9 +288,9 @@ class PromotedStoryListViewModelTest {
   private fun createPromotedStoryViewModelList(
     activity: AppCompatActivity,
     promotedStoryList: List<PromotedStory>
-  ): List<PromotedStoryViewModel> {
+  ): List<PromotedListItemViewModel> {
     return promotedStoryList.map { promotedStory ->
-      PromotedStoryViewModel(
+      PromotedListItemViewModel(
         activity = activity,
         internalProfileId = 1,
         totalStoryCount = promotedStoryList.size,
