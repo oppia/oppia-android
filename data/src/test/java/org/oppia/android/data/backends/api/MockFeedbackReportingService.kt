@@ -1,13 +1,7 @@
 package org.oppia.android.data.backends.api
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
 import org.oppia.android.app.model.FeedbackReport
-import org.oppia.android.data.backends.ApiUtils
-import org.oppia.android.data.backends.gae.NetworkInterceptor
-import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
-import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import retrofit2.Call
 import retrofit2.mock.BehaviorDelegate
 
