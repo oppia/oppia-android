@@ -77,14 +77,17 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       fragment,
       {
         if (it.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
+          binding.recentlyPlayedToolbar.title = activity.getString(R.string.recently_played_stories)
           addRecentlyPlayedStoryListSection(it.promotedStoryList.recentlyPlayedStoryList)
         }
 
         if (it.promotedStoryList.olderPlayedStoryList.isNotEmpty()) {
+          binding.recentlyPlayedToolbar.title = activity.getString(R.string.recently_played_stories)
           addOlderStoryListSection(it.promotedStoryList.olderPlayedStoryList)
         }
 
         if (it.promotedStoryList.suggestedStoryList.isNotEmpty()) {
+          binding.recentlyPlayedToolbar.title = activity.getString(R.string.stories_for_you)
           addRecommendedStoryListSection(it.promotedStoryList.suggestedStoryList)
         }
 
@@ -118,6 +121,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       fragment as OngoingStoryClickListener
     )
   }
+
   private fun addOlderStoryListSection(olderPlayedStoryList: List<PromotedStory>) {
     val showDivider = itemList.isNotEmpty()
     val olderSectionTitleViewModel =
@@ -133,8 +137,6 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   private fun addRecommendedStoryListSection(suggestedStoryList: List<PromotedStory>) {
-    binding.recentlyPlayedToolbar.title = activity.getString(R.string.stories_for_you)
-
     val showDivider = itemList.isNotEmpty()
     val recommendedSectionTitleViewModel =
       SectionTitleViewModel(
