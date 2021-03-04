@@ -228,33 +228,6 @@ message OtherIssue {
   string open_user_input = 1;
 }
 
-  // The category that this issue addresses, as selected by the user.
-  enum IssueCategory {
-    // Unspecified category for an issue report; no reports should have an unspecified category
-    // as users are required to select a category.
-    CATEGORY_UNSPECIFIED = 0;
-    // An issue with lessons or questions.
-    LESSONS_QUESTIONS_ISSUE = 1;
-    // A general issue with the language.
-    LANGUAGE_ISSUE = 2;
-    // An issue with the audio language.
-    LANGUAGE_AUDIO_ISSUE = 3;
-    // An issue with the text language.
-    LANGUAGE_TEXT_ISSUE = 4;
-    // An issue with a topic or the topics list / home screen.
-    TOPICS_ISSUE = 5;
-    // An issue with the user's profile or profile screen.
-    PROFILE_ISSUE = 6;
-    // An issue with something else in the app not listed above.
-    OTHER_ISSUE = 7;
-  }
-  IssueCategory issue_category = 1;
-  // List of checkbox items selected by user in the feedback report.
-  repeated string issues_list = 2;
-  // The user's text input if they select "other" for any option
-  string other_user_input = 3;
-}
-
 // A feedback report from the user after a crash has occurred somewhere in the app.
 message Crash {
   // The location where the crash occurred.
@@ -284,11 +257,11 @@ message Crash {
 message FeedbackReportingSystemContext {
   // The package name for the specific app version on the device.
   string package_name = 1;
-  // The package code for the specific app version non the device.
-  string package_version_code = 2;
-  // The ISO-3166 code for the country locale that the feedback report is sent from.
+  // The package code for the specific app version on the device.
+  int32 package_version_code = 2;
+  // The ISO-639 code for the device country locale.
   string country_locale = 3;
-  // The ISO-3166 code for the language locale of where the report is sent fromm.
+  // The ISO-3166 code for the device language locale.
   string language_locale = 4;
 }
 
@@ -302,8 +275,6 @@ message FeedbackReportingDeviceContext {
   string device_brand = 3;
   // The unique fingerprint ID for this specific build.
   string build_fingerprint = 4;
-  // The device's telephony network type.
-  string phone_type = 5;
   // The type of internet network connection the device is on.
   enum NetworkType {
     // Indicates an unspecified or unknown network type.
@@ -313,12 +284,10 @@ message FeedbackReportingDeviceContext {
     // Indicates that device is connected to a cellular network.
     CELLULAR = 2;
   }
-  NetworkType network_type = 6;
-  // The ISO-3166 code for the language the device is set to.
-  string device_language = 7;
+  NetworkType network_type = 5;
 }
 
-// Information collected about the specific Oppia Android app.
+// Information collected about the current version of the Oppia Android app.
 message FeedbackReportingAppContext {
   // The entry point that feedback reporting was launched from.
   enum EntryPoint {
@@ -356,6 +325,6 @@ message FeedbackReportingAppContext {
   AudioLanguage audio_language = 5;
   // The app's specific device settings.
   DeviceSettings device_settings = 6;
-  // If the account sending the report is an admin account.
+  // Whether the account sending the report is the admin account.
   bool is_admin = 7;
 }
