@@ -11,25 +11,11 @@ import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import retrofit2.Call
 import retrofit2.mock.BehaviorDelegate
 
-/** Mock FeedbackReportingService with dummy data from [feedback_reporting.json]. */
+/** Mock FeedbackReportingService to check that the service is properly requested. */
 class MockFeedbackReportingService(
   private val delegate: BehaviorDelegate<FeedbackReportingService>
 ) : FeedbackReportingService {
   override fun postFeedbackReport(report: FeedbackReport): Call<Unit> {
-    val mockReport = createMockGaeFeedbackReport()
-    return delegate.returningResponse(mockReport).postFeedbackReport(report)
-  }
-
-  // Creates a mock [GaeFeedbackReport] from dummy JSON data as a reponse to the
-  // FeedbackReportinService post request.
-  private fun createMockGaeFeedbackReport(): GaeFeedbackReport {
-    val networkInterceptor = NetworkInterceptor()
-    val reportResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("feedback_reporting.json")
-    val reportResponse = networkInterceptor.removeXSSIPrefix(reportResponseWithXssiPrefix)
-
-    val moshi = Moshi.Builder().build()
-    val adapter: JsonAdapter<GaeFeedbackReport> = moshi.adapter(GaeFeedbackReport::class.java)
-    return adapter.fromJson(reportResponse)!!
+    return delegate.returningResponse(kotlin.Unit).postFeedbackReport(report)
   }
 }

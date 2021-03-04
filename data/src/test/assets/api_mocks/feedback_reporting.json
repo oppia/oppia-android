@@ -1,11 +1,28 @@
 {
   "api_key": "",
-  "app_context": {},
-  "device_context": {},
-  "report_creation_timestamp": 1566278940160.576,
+  "app_context": {
+    "entry_point": "navigation_drawer",
+    "topic_progress": {},
+    "text_size": "large",
+    "text_lang": "EN",
+    "audio_lang": "EN",
+    "download_and_update_only_on_wifi": true,
+    "automatically_update_topics": false,
+    "is_admin": false
+  },
+  "device_context": {
+    "device_model": "example_model",
+    "sdk_version": 23,
+    "device_brand": "example_brand",
+    "build_fingerprint": "example_fingerprint_id",
+    "phone_type": "telephony_network_type",
+    "network_type": "wifi",
+    "device_lang": "EN"
+  },
+  "report_creation_timestamp": 1610519337000,
   "system_context": {
     "package_name": "example.package.name",
-    "package_version_code": "example_version_code",
+    "package_code": "example_version_code",
     "country_locale": "IN",
     "language_locale": "EN"
   },
@@ -15,4 +32,5 @@
     "feedback_list": [],
     "user_input": "french"
   }
+
 }
