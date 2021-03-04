@@ -14,8 +14,6 @@ data class GaeFeedbackReportingDeviceContext(
   @Json(name = "sdk_version") val sdk_version: Int?,
   @Json(name = "device_brand") val device_brand: String?,
   @Json(name = "build_fingerprint") val build_fingerprint: String?,
-  @Json(name = "phone_type") val phone_type: String?,
   @Json(name = "network_type") val network_type: String?,
-  @Json(name = "device_lang") val device_lang: String?
 
 )
