@@ -7,6 +7,8 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.app.recyclerview.BindableAdapter.MultiTypeBuilder.Factory
+import org.oppia.android.app.recyclerview.BindableAdapter.SingleTypeBuilder.Factory
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
@@ -97,7 +99,7 @@ class BindableAdapter<T : Any> internal constructor(
   /**
    * Constructs a new [BindableAdapter] that for a single view type.
    *
-   * Instances of [SingleTypeBuilder] should be instantiated using [newBuilder].
+   * Instances of [SingleTypeBuilder] should be instantiated using [Factory].
    */
   class SingleTypeBuilder<T : Any>(
     private val dataClassType: KClass<T>,
@@ -193,9 +195,15 @@ class BindableAdapter<T : Any> internal constructor(
       )
     }
 
-    class Factory @Inject constructor(
-      val fragment: Fragment
-    ) {
+    /**
+     * An injectable factory to create [SingleTypeBuilder]s.
+     *
+     * Note that singleTypeBuilders can only be used in fragment-bounded classes.
+     */
+    class Factory @Inject constructor(val fragment: Fragment) {
+      /**
+       * Returns a [SingleTypeBuilder].
+       */
       inline fun <reified T : Any> create(): SingleTypeBuilder<T> {
         return SingleTypeBuilder(T::class, fragment)
       }
@@ -206,7 +214,7 @@ class BindableAdapter<T : Any> internal constructor(
    * Constructs a new [BindableAdapter] that supports multiple view types. Each type returned by the
    * computer should have an associated view binder.
    *
-   * Instances of [MultiTypeBuilder] should be instantiated using [newBuilder].
+   * Instances of [MultiTypeBuilder] should be instantiated using [Factory].
    */
   class MultiTypeBuilder<T : Any, E : Enum<E>>(
     private val dataClassType: KClass<T>,
@@ -324,9 +332,15 @@ class BindableAdapter<T : Any> internal constructor(
       )
     }
 
-    class Factory @Inject constructor(
-      val fragment: Fragment
-    ) {
+    /**
+     * An injectable factory to create [MultiTypeBuilder]s.
+     *
+     * Note that multiTypeBuilders can only be used in fragment-bounded classes.
+     */
+    class Factory @Inject constructor(val fragment: Fragment) {
+      /**
+       * Returns a [MultiTypeBuilder].
+       */
       inline fun <reified T : Any, reified E : Enum<E>> create(
         noinline computeViewType: ComputeViewType<T, E>
       ): MultiTypeBuilder<T, E> {
