@@ -167,5 +167,5 @@ fun setEntityId(
 @BindingAdapter("allowMultipleItemsInSamePosition")
 fun setAllowMultipleItemsInSamePosition(
   dragDropSortInteractionView: DragDropSortInteractionView,
-  isAllowed: Boolean,
+  isAllowed: Boolean
 ) = dragDropSortInteractionView.allowMultipleItemsInSamePosition(isAllowed)
