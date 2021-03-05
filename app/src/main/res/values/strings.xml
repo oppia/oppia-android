@@ -52,6 +52,7 @@
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
+  <string name="faq_activity_label">FAQs (Frequently Asked Questions)</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="info">Info</string>
   <string name="lessons">Lessons</string>
@@ -230,8 +231,8 @@
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <string name="add_profile_info_content_description">More information on 3-digit PINs.</string>
   <string name="required_fields_content_description">Fields marked with an * are required.</string>
-  <string name="current_profile_picture_content_description">Current profile picture.</string>
-  <string name="edit_profile_picture_content_description">Edit profile picture.</string>
+  <string name="current_profile_picture_content_description">Current profile picture</string>
+  <string name="edit_profile_picture_content_description">Edit profile picture</string>
   <!-- OnboardingActivity -->
   <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
   <string name="onboarding_slide_0_description">Learn anything you want in an effective and enjoyable way.</string>
