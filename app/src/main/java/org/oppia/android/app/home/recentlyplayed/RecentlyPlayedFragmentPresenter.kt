@@ -5,22 +5,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.databinding.OngoingStoryCardBinding
 import org.oppia.android.databinding.RecentlyPlayedFragmentBinding
+import org.oppia.android.databinding.SectionTitleBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
@@ -39,8 +34,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private var internalProfileId: Int = -1
   private lateinit var binding: RecentlyPlayedFragmentBinding
-  private lateinit var ongoingListAdapter: OngoingListAdapter
-  private val itemList: MutableList<RecentlyPlayedItemViewModel> = ArrayList()
+  private lateinit var ongoingListAdapter: BindableAdapter<RecentlyPlayedItemViewModel>
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -54,152 +48,50 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
     this.internalProfileId = internalProfileId
 
-    ongoingListAdapter = OngoingListAdapter(activity, itemList)
+    ongoingListAdapter = createRecyclerViewAdapter()
     binding.ongoingStoryRecyclerView.apply {
       adapter = ongoingListAdapter
     }
     binding.lifecycleOwner = fragment
+    binding.viewModel = RecentlyPlayedViewModel(
+      activity,
+      fragment,
+      topicListController,
+      internalProfileId,
+      entityType
+    )
 
-    subscribeToOngoingStoryList()
     return binding.root
   }
 
-  private val ongoingStoryListSummaryResultLiveData:
-    LiveData<AsyncResult<PromotedActivityList>>
-    by lazy {
-      topicListController.getPromotedActivityList(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build()
-      ).toLiveData()
-    }
-
-  private fun subscribeToOngoingStoryList() {
-    getAssumedSuccessfulPromotedActivityList().observe(
-      fragment,
-      Observer<PromotedActivityList> { it ->
-        if (it.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
-          val recentSectionTitleViewModel =
-            SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
-          itemList.add(recentSectionTitleViewModel)
-          for (promotedStory in it.promotedStoryList.recentlyPlayedStoryList) {
-            val ongoingStoryViewModel =
-              OngoingStoryViewModel(
-                promotedStory,
-                entityType,
-                fragment as OngoingStoryClickListener
-              )
-            itemList.add(ongoingStoryViewModel)
-          }
+  private fun createRecyclerViewAdapter(): BindableAdapter<RecentlyPlayedItemViewModel> {
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<RecentlyPlayedItemViewModel, ViewType> { viewModel ->
+        when (viewModel) {
+          is SectionTitleViewModel -> ViewType.SECTION_TITLE_TEXT
+          is OngoingStoryViewModel -> ViewType.SECTION_STORY_ITEM
+          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
-
-        if (it.promotedStoryList.olderPlayedStoryList.isNotEmpty()) {
-          val showDivider = itemList.isNotEmpty()
-          val olderSectionTitleViewModel =
-            SectionTitleViewModel(
-              activity.getString(R.string.ongoing_story_last_month),
-              showDivider
-            )
-          itemList.add(olderSectionTitleViewModel)
-          for (promotedStory in it.promotedStoryList.olderPlayedStoryList) {
-            val ongoingStoryViewModel =
-              OngoingStoryViewModel(
-                promotedStory,
-                entityType,
-                fragment as OngoingStoryClickListener
-              )
-            itemList.add(ongoingStoryViewModel)
-          }
-        }
-
-        if (it.promotedStoryList.suggestedStoryList.isNotEmpty()) {
-          val showDivider = itemList.isNotEmpty()
-          val recommendedSectionTitleViewModel =
-            SectionTitleViewModel(
-              activity.getString(R.string.recommended_stories),
-              showDivider
-            )
-          itemList.add(recommendedSectionTitleViewModel)
-          for (suggestedStory in it.promotedStoryList.suggestedStoryList) {
-            val ongoingStoryViewModel =
-              OngoingStoryViewModel(
-                suggestedStory,
-                entityType,
-                fragment as OngoingStoryClickListener
-              )
-            itemList.add(ongoingStoryViewModel)
-          }
-        }
-
-        binding.ongoingStoryRecyclerView.layoutManager =
-          createLayoutManager(
-            it.promotedStoryList.recentlyPlayedStoryCount,
-            it.promotedStoryList.olderPlayedStoryCount,
-            it.promotedStoryList.suggestedStoryCount
-          )
-        ongoingListAdapter.notifyDataSetChanged()
       }
-    )
-  }
-
-  private fun getAssumedSuccessfulPromotedActivityList(): LiveData<PromotedActivityList> {
-    // If there's an error loading the data, assume the default.
-    return Transformations.map(ongoingStoryListSummaryResultLiveData) {
-      it.getOrDefault(
-        PromotedActivityList.getDefaultInstance()
+      .setLifecycleOwner(fragment)
+      .registerViewDataBinder(
+        viewType = ViewType.SECTION_TITLE_TEXT,
+        inflateDataBinding = SectionTitleBinding::inflate,
+        setViewModel = SectionTitleBinding::setViewModel,
+        transformViewModel = { it as SectionTitleViewModel }
       )
-    }
+      .registerViewDataBinder(
+        viewType = ViewType.SECTION_STORY_ITEM,
+        inflateDataBinding = OngoingStoryCardBinding::inflate,
+        setViewModel = OngoingStoryCardBinding::setViewModel,
+        transformViewModel = { it as OngoingStoryViewModel }
+      )
+      .build()
   }
 
-  private fun createLayoutManager(
-    recentStoryCount: Int,
-    oldStoryCount: Int,
-    suggestedStoryCount: Int
-  ): RecyclerView.LayoutManager {
-    val sectionTitle0Position = if (recentStoryCount == 0) {
-      // If recent story count is 0, that means that section title 0 will not be visible.
-      -1
-    } else {
-      0
-    }
-    val sectionTitle1Position = if (oldStoryCount == 0) {
-      // If old story count is 0, that means that section title 1 will not be visible.
-      -1
-    } else if (recentStoryCount == 0) {
-      0
-    } else {
-      recentStoryCount + 1
-    }
-    val sectionTitle2Position = when {
-      suggestedStoryCount == 0 -> {
-        -1 // If suggested story count is 0, that means that section title 1 will not be visible.
-      }
-      oldStoryCount == 0 && recentStoryCount == 0 -> {
-        0
-      }
-      oldStoryCount > 0 && recentStoryCount > 0 -> {
-        recentStoryCount + oldStoryCount + 2
-      }
-      else -> {
-        recentStoryCount + oldStoryCount + 1
-      }
-    }
-
-    val spanCount = activity.resources.getInteger(R.integer.recently_played_span_count)
-    ongoingListAdapter.setSpanCount(spanCount)
-
-    val layoutManager = GridLayoutManager(activity.applicationContext, spanCount)
-    layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-      override fun getSpanSize(position: Int): Int {
-        return when (position) {
-          sectionTitle0Position, sectionTitle1Position, sectionTitle2Position -> {
-            /* number of spaces this item should occupy = */ spanCount
-          }
-          else -> {
-            /* number of spaces this item should occupy = */ 1
-          }
-        }
-      }
-    }
-    return layoutManager
+  private enum class ViewType {
+    SECTION_TITLE_TEXT,
+    SECTION_STORY_ITEM
   }
 
   fun onOngoingStoryClicked(promotedStory: PromotedStory) {
