@@ -227,7 +227,7 @@ class BindableAdapter<T : Any> internal constructor(
      * Registers a [View] inflater and bind function for views of the specified view type (with
      * default value [DEFAULT_VIEW_TYPE] for single-view [RecyclerView]s). Note that the viewType
      * specified here must be properly returned in the [ComputeViewType] function passed into
-     * [newBuilder].
+     * [Factory].
      *
      * The inflateView and bindView functions passed in here must not hold any references to UI
      * objects except those that own the RecyclerView.

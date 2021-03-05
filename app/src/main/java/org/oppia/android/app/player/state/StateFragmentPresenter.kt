@@ -32,6 +32,7 @@ import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding
@@ -54,6 +55,8 @@ private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 /** The presenter for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   @ExplorationHtmlParserEntityType private val entityType: String,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
@@ -107,7 +110,12 @@ class StateFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, entityType),
+      assemblerBuilderFactory.create(
+        resourceBucketName,
+        entityType,
+        singleTypeBuilderFactory,
+        multiTypeBuilderFactory
+      ),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView,
       binding.fullScreenConfettiView

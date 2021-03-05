@@ -869,7 +869,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val delayShowAdditionalHintsMs: Long,
     private val delayShowAdditionalHintsFromWrongAnswerMs: Long
   ) {
-    private val adapterBuilder = multiTypeBuilderFactory.create { }
+    private val adapterBuilder = multiTypeBuilderFactory.create(StateItemViewModel::viewType)
 
     /**
      * Tracks features individually enabled for the assembler. No features are enabled by default.
@@ -1348,8 +1348,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
        * assets.
        */
-      fun create(resourceBucketName: String, entityType: String): Builder {
+      fun create(
+        resourceBucketName: String,
+        entityType: String,
+        singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+        multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
+      ): Builder {
         return Builder(
+          singleTypeBuilderFactory,
+          multiTypeBuilderFactory,
           htmlParserFactory,
           resourceBucketName,
           entityType,

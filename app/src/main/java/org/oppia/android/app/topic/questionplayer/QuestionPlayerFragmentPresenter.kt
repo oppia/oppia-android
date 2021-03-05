@@ -28,6 +28,7 @@ import org.oppia.android.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.QuestionPlayerFragmentBinding
@@ -43,6 +44,8 @@ import javax.inject.Inject
 /** The presenter for [QuestionPlayerFragment]. */
 @FragmentScope
 class QuestionPlayerFragmentPresenter @Inject constructor(
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val context: Context,
@@ -78,7 +81,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     )
 
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, "skill"),
+      assemblerBuilderFactory.create(
+        resourceBucketName,
+        "skill",
+        singleTypeBuilderFactory,
+        multiTypeBuilderFactory
+      ),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView
     )
