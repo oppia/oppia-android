@@ -16,14 +16,13 @@ class TextInputAction @Inject constructor(val context: Context) {
   // TODO(#1720): Move this to a companion object & use a test-only singleton injector to retrieve.
 
   /**
-   * @param expectedErrorTextId is the string id which needs to match.
-   *
-   * @returns a [Matcher] that matches the specified string [expectedErrorTextId] with the view's error text.
+   * Returns a [Matcher] that matches the string corresponding to the specified
+   * [expectedErrorTextResId] with the view's error text.
    */
-  fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
+  fun hasErrorText(@StringRes expectedErrorTextResId: Int): Matcher<View> {
     return object : TypeSafeMatcher<View>() {
       override fun matchesSafely(view: View): Boolean {
-        val expectedErrorText = context.resources.getString(expectedErrorTextId)
+        val expectedErrorText = context.resources.getString(expectedErrorTextResId)
         return (view as TextInputLayout).error == expectedErrorText
       }
 
@@ -34,7 +33,7 @@ class TextInputAction @Inject constructor(val context: Context) {
   }
 
   /**
-   * @returns a [Matcher] that matches the view has no error text available.
+   * returns a [Matcher] that matches the view has no error text available.
    */
   fun hasNoErrorText(): Matcher<View> {
     return object : TypeSafeMatcher<View>() {
