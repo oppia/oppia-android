@@ -28,6 +28,7 @@ import javax.inject.Inject
 /** The presenter for [AdministratorControlsFragment]. */
 @FragmentScope
 class AdministratorControlsFragmentPresenter @Inject constructor(
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val activity: AppCompatActivity,
   private val fragment: Fragment
 ) {
@@ -74,7 +75,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   private fun createRecyclerViewAdapter(
     isMultipane: Boolean
   ): BindableAdapter<AdministratorControlsItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder.Factory(fragment)
+    return multiTypeBuilderFactory
       .create<AdministratorControlsItemViewModel, ViewType> { viewModel ->
         viewModel.isMultipane.set(isMultipane)
         when (viewModel) {

@@ -41,6 +41,7 @@ private const val AUDIO_LANGUAGE_ERROR =
 /** The presenter for [OptionsFragment]. */
 @FragmentScope
 class OptionsFragmentPresenter @Inject constructor(
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
@@ -93,7 +94,7 @@ class OptionsFragmentPresenter @Inject constructor(
   private fun createRecyclerViewAdapter(
     isMultipane: Boolean
   ): BindableAdapter<OptionsItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder.Factory(fragment)
+    return multiTypeBuilderFactory
       .create<OptionsItemViewModel, ViewType> { viewModel ->
         viewModel.isMultipane.set(isMultipane)
         when (viewModel) {

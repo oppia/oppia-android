@@ -62,6 +62,7 @@ private val COLORS_LIST = listOf(
 /** The presenter for [ProfileChooserFragment]. */
 @FragmentScope
 class ProfileChooserFragmentPresenter @Inject constructor(
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val context: Context,
@@ -148,7 +149,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserUiModel> {
-    return BindableAdapter.MultiTypeBuilder.Factory(fragment)
+    return multiTypeBuilderFactory
       .create<ProfileChooserUiModel, ProfileChooserUiModel.ModelTypeCase>(
         ProfileChooserUiModel::getModelTypeCase
       )

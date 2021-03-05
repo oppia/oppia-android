@@ -13,6 +13,7 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToStoryListener
 import org.oppia.android.databinding.TopicLessonsFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
@@ -26,6 +27,7 @@ import javax.inject.Inject
 @FragmentScope
 class TopicLessonsFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
   private val fragment: Fragment,
   private val logger: ConsoleLogger,
   private val explorationDataController: ExplorationDataController,
@@ -104,7 +106,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           }
           val storySummaryAdapter =
             StorySummaryAdapter(
-              fragment,
+              singleTypeBuilderFactory,
               itemList,
               expandedChapterListIndexListener,
               currentExpandedChapterListIndex

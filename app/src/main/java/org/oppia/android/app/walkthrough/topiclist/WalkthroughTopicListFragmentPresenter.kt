@@ -24,6 +24,7 @@ import javax.inject.Inject
 /** The presenter for [WalkthroughTopicListFragment]. */
 @FragmentScope
 class WalkthroughTopicListFragmentPresenter @Inject constructor(
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<WalkthroughTopicViewModel>
@@ -73,7 +74,7 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<WalkthroughTopicItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder.Factory(fragment)
+    return multiTypeBuilderFactory
       .create<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is WalkthroughTopicHeaderViewModel -> ViewType.VIEW_TYPE_HEADER

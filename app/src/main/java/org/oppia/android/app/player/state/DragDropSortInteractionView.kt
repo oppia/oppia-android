@@ -27,10 +27,10 @@ import javax.inject.Inject
  * [DragItemTouchHelperCallback].
  */
 class DragDropSortInteractionView @JvmOverloads constructor(
-  fragment: Fragment,
   context: Context,
   attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
+  defStyleAttr: Int = 0,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) : RecyclerView(context, attrs, defStyleAttr) {
   // For disabling grouping of items by default.
   private var isMultipleItemsInSamePositionAllowed: Boolean = false
@@ -64,13 +64,13 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     isAccessibilityEnabled = accessibilityManager.isScreenReaderEnabled()
   }
 
-  fun allowMultipleItemsInSamePosition(isAllowed: Boolean, fragment: Fragment) {
+  fun allowMultipleItemsInSamePosition(isAllowed: Boolean) {
     // TODO(#299): Find a cleaner way to initialize the item input type. Using data-binding results in a race condition
     //  with setting the adapter data, so this needs to be done in an order-agnostic way. There should be a way to do
     //  this more efficiently and cleanly than always relying on notifying of potential changes in the adapter when the
     //  type is set (plus the type ought to be permanent).
     this.isMultipleItemsInSamePositionAllowed = isAllowed
-    adapter = createAdapter(fragment)
+    adapter = createAdapter()
   }
 
   // TODO(#264): Clean up HTML parser such that it can be handled completely through a binding adapter, allowing
@@ -79,10 +79,8 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     this.entityId = entityId
   }
 
-  private fun createAdapter(
-    fragment: Fragment
-  ): BindableAdapter<DragDropInteractionContentViewModel> {
-    return BindableAdapter.SingleTypeBuilder.Factory(fragment)
+  private fun createAdapter(): BindableAdapter<DragDropInteractionContentViewModel> {
+    return singleTypeBuilderFactory
       .create<DragDropInteractionContentViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
@@ -95,7 +93,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
         bindView = { view, viewModel ->
           viewBindingShim.setDragDropInteractionItemsBinding(view)
           viewBindingShim.getDragDropInteractionItemsBindingRecyclerView().adapter =
-            createNestedAdapter(fragment)
+            createNestedAdapter()
           adapter?.let { viewBindingShim.setDragDropInteractionItemsBindingAdapter(it) }
           viewBindingShim.getDragDropInteractionItemsBindingGroupItem().isVisible =
             isMultipleItemsInSamePositionAllowed
@@ -109,8 +107,8 @@ class DragDropSortInteractionView @JvmOverloads constructor(
       .build()
   }
 
-  private fun createNestedAdapter(fragment: Fragment): BindableAdapter<String> {
-    return BindableAdapter.SingleTypeBuilder.Factory(fragment).create<String>()
+  private fun createNestedAdapter(): BindableAdapter<String> {
+    return singleTypeBuilderFactory.create<String>()
       .registerViewBinder(
         inflateView = { parent ->
           viewBindingShim.provideDragDropSingleItemInflatedView(
@@ -170,5 +168,4 @@ fun setEntityId(
 fun setAllowMultipleItemsInSamePosition(
   dragDropSortInteractionView: DragDropSortInteractionView,
   isAllowed: Boolean,
-  fragment: Fragment
-) = dragDropSortInteractionView.allowMultipleItemsInSamePosition(isAllowed, fragment)
+) = dragDropSortInteractionView.allowMultipleItemsInSamePosition(isAllowed)

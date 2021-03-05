@@ -34,6 +34,7 @@ import javax.inject.Inject
 /** The presenter for [HomeFragment]. */
 @FragmentScope
 class HomeFragmentPresenter @Inject constructor(
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
@@ -93,17 +94,16 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .Factory(fragment).create<HomeItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
-          is PromotedStoryListViewModel -> ViewType.PROMOTED_STORY_LIST
-          is ComingSoonTopicListViewModel -> ViewType.COMING_SOON_TOPIC_LIST
-          is AllTopicsViewModel -> ViewType.ALL_TOPICS
-          is TopicSummaryViewModel -> ViewType.TOPIC_LIST
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<HomeItemViewModel, ViewType> { viewModel ->
+      when (viewModel) {
+        is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
+        is PromotedStoryListViewModel -> ViewType.PROMOTED_STORY_LIST
+        is ComingSoonTopicListViewModel -> ViewType.COMING_SOON_TOPIC_LIST
+        is AllTopicsViewModel -> ViewType.ALL_TOPICS
+        is TopicSummaryViewModel -> ViewType.TOPIC_LIST
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.WELCOME_MESSAGE,
         inflateDataBinding = WelcomeBinding::inflate,

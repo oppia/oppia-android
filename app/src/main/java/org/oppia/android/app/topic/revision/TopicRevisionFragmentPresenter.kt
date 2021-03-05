@@ -20,6 +20,7 @@ import javax.inject.Inject
 /** The presenter for [TopicRevisionFragment]. */
 @FragmentScope
 class TopicRevisionFragmentPresenter @Inject constructor(
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicRevisionViewModel>
@@ -70,7 +71,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicRevisionItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder.Factory(fragment).create<TopicRevisionItemViewModel>()
+    return singleTypeBuilderFactory.create<TopicRevisionItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TopicRevisionSummaryViewBinding::inflate,
         setViewModel = TopicRevisionSummaryViewBinding::setViewModel

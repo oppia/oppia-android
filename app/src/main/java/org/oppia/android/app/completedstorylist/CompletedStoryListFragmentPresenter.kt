@@ -17,7 +17,8 @@ import javax.inject.Inject
 class CompletedStoryListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<CompletedStoryListViewModel>
+  private val viewModelProvider: ViewModelProvider<CompletedStoryListViewModel>,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private lateinit var binding: CompletedStoryListFragmentBinding
@@ -52,7 +53,8 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<CompletedStoryItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder.Factory(fragment).create<CompletedStoryItemViewModel>()
+    return singleTypeBuilderFactory
+      .create<CompletedStoryItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = CompletedStoryItemBinding::inflate,
         setViewModel = CompletedStoryItemBinding::setViewModel

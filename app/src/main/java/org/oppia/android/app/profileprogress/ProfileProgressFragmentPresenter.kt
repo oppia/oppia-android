@@ -19,6 +19,7 @@ private const val TAG_PROFILE_PICTURE_EDIT_DIALOG = "PROFILE_PICTURE_EDIT_DIALOG
 /** The presenter for [ProfileProgressFragment]. */
 @FragmentScope
 class ProfileProgressFragmentPresenter @Inject constructor(
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val activity: AppCompatActivity,
   private val fragment: Fragment
 ) {
@@ -70,7 +71,7 @@ class ProfileProgressFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileProgressItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder.Factory(fragment)
+    return multiTypeBuilderFactory
       .create<ProfileProgressItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is ProfileProgressHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
