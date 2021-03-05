@@ -165,7 +165,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_toolbarTitleIsDisplayed() {
+  fun testRecentlyPlayedTestActivity_defaultRecentlyPlayedToolbarTitleIsDisplayed() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
