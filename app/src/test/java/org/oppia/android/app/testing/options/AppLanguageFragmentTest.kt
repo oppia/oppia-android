@@ -113,7 +113,7 @@ class AppLanguageFragmentTest {
   }
 
   @Test
-  fun testAppLanguageActivity_hasCorrectActivityLabel(){
+  fun testAppLanguageActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       createAppLanguageActivityIntent(
         "English"

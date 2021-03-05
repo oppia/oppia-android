@@ -114,7 +114,7 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  fun testAudioLanguageActivity_hasCorrectActivityLabel(){
+  fun testAudioLanguageActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       createDefaultAudioActivityIntent(
         "French"
