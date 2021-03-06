@@ -94,8 +94,8 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_reflexiveBasicTopicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity { homeFragmentTestActivity ->
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModel = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
 
@@ -109,8 +109,8 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_symmetricBasicTopicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity { homeFragmentTestActivity ->
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModel = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
         val topicSummaryViewModelCopy = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
@@ -126,8 +126,8 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_transitiveBasicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity { homeFragmentTestActivity ->
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModelCopy1 = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
         val topicSummaryViewModelCopy2 = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
@@ -145,8 +145,8 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_consistentBasicTopicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity { homeFragmentTestActivity ->
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModel = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
         val topicSummaryViewModelCopy = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
@@ -163,8 +163,8 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_basicTopicSummaryViewModelAndNull_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity { homeFragmentTestActivity ->
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModel = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
 
@@ -178,8 +178,8 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_topicSummary1AndTopicSummary2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity { homeFragmentTestActivity ->
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModelTopicSummary1 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
@@ -206,8 +206,8 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_entity1AndEntity2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity { homeFragmentTestActivity ->
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModelEntity1 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
@@ -233,8 +233,8 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_position4AndPosition5_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity { homeFragmentTestActivity ->
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModelPosition4 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
@@ -260,8 +260,8 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity { homeFragmentTestActivity ->
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModel = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
         val topicSummaryViewModelCopy = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
@@ -277,8 +277,8 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity { homeFragmentTestActivity ->
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModel = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
 
