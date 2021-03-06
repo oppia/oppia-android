@@ -1,0 +1,100 @@
+apply plugin: 'jacoco'
+
+jacoco {
+  toolVersion = "0.8.5"
+}
+
+  private static boolean isAndroidModule(Project project) {
+    boolean isAndroidLibrary = project.plugins.hasPlugin('com.android.library')
+    boolean isAndroidApp = project.plugins.hasPlugin('com.android.application')
+    return isAndroidLibrary || isAndroidApp
+}
+
+  afterEvaluate { project ->
+   if (isAndroidModule(project)) setupAndroidReporting()
+   else setupKotlinReporting()
+}
+  def setupKotlinReporting() {
+
+  task jacocoCoverageReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
+    group "Reporting"
+    description "Generate Jacoco coverage reports from unit tests."
+
+    reports {
+      xml.enabled = true
+      html.enabled = false
+    }
+    def fileFilter =
+        ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*',
+         'android/**/*.*']
+    def kotlinDebugTree =
+        fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories.from.addAll(files([mainSrc]))
+    classDirectories.from.addAll(files(kotlinDebugTree))
+    executionData.from.addAll(fileTree(dir: "$buildDir", includes: [
+        "jacoco/testDebugUnitTest.exec"
+    ]))
+  }
+  tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+  }
+  def fileFilter =
+      ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*',
+       'android/**/*.*']
+  def kotlinDebugTree =
+      fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
+  def mainSrc = "${project.projectDir}/src/main/java"
+
+  sourceDirectories.from.addAll(files([mainSrc]))
+  classDirectories.from.addAll(files(kotlinDebugTree))
+  executionData.from.addAll(fileTree(dir: "$buildDir", includes: [
+      "jacoco/testDebugUnitTest.exec"
+  ]))
+}
+  tasks.withType(Test) {
+  jacoco.includeNoLocationClasses = true
+}
+
+  def setupAndroidReporting() {
+
+  tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
+  }
+  task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
+
+    reports {
+      xml.enabled = true
+      html.enabled = true
+    }
+
+    def fileFilter = [
+        // data binding
+        'android/databinding/**/*.class', '**/android/databinding/*Binding.class',
+        '**/android/databinding/*', '**/androidx/databinding/*', '**/BR.*',
+        // android
+        '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*',
+        'android/**/*.*',
+        // kotlin
+        '**/*MapperImpl*.*', '**/*$ViewInjector*.*', '**/*$ViewBinder*.*',
+        '**/BuildConfig.*', '**/*Component*.*', '**/*BR*.*', '**/Manifest*.*', '**/*$Lambda$*.*',
+        '**/*Companion*.*', '**/*Module*.*', '**/*Dagger*.*', '**/*MembersInjector*.*',
+        '**/*_MembersInjector.class', '**/*_Factory*.*', '**/*_Provide*Factory*.*',
+        '**/*Extensions*.*',
+        // sealed and data classes
+        '**/*$Result.*', '**/*$Result$*.*'
+    ]
+    classDirectories.setFrom(files([
+        fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
+    ]))
+
+    def mainSrc = "$project.projectDir/src/main/java"
+
+    sourceDirectories.setFrom(files([mainSrc]))
+    executionData.setFrom(fileTree(dir: project.buildDir, includes: [
+        'jacoco/testDebugUnitTest.exec'
+    ]))
+  }
+}
