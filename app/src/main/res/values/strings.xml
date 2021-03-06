@@ -52,11 +52,13 @@
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
+  <string name="faq_activity_label">FAQs (Frequently Asked Questions)</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="info">Info</string>
   <string name="lessons">Lessons</string>
   <string name="practice">Practice</string>
   <string name="revision">Revision</string>
+  <string name="topic_page">Topic page</string>
   <string name="topic_name">Topic: %s</string>
   <string name="topic">Topic</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
@@ -78,7 +80,7 @@
   <string name="lesson_thumbnail_content_description">Image for %s</string>
   <string name="all_topics">All Topics</string>
   <string name="stories_you_can_play">Stories You Can Play</string>
-  <string name="go_to_previous_page">Go to previous page.</string>
+  <string name="navigate_up">Navigate up</string>
   <string name="recently_played_activity">Recently-Played Stories</string>
   <string name="topic_downloaded">Topic Downloaded</string>
   <string name="downloaded">Downloaded</string>
@@ -186,6 +188,7 @@
   </plurals>
   <string name="bar_separator">\u0020|\u0020</string>
   <!-- ProfileChooserFragment -->
+  <string name="profile_chooser_activity_label">Profile selection page</string>
   <string name="profile_chooser_admin">Administrator</string>
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
@@ -228,8 +231,8 @@
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <string name="add_profile_info_content_description">More information on 3-digit PINs.</string>
   <string name="required_fields_content_description">Fields marked with an * are required.</string>
-  <string name="current_profile_picture_content_description">Current profile picture.</string>
-  <string name="edit_profile_picture_content_description">Edit profile picture.</string>
+  <string name="current_profile_picture_content_description">Current profile picture</string>
+  <string name="edit_profile_picture_content_description">Edit profile picture</string>
   <!-- OnboardingActivity -->
   <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
   <string name="onboarding_slide_0_description">Learn anything you want in an effective and enjoyable way.</string>

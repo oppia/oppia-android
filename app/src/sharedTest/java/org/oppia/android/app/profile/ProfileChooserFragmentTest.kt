@@ -21,6 +21,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.not
@@ -30,12 +31,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -88,6 +91,10 @@ import javax.inject.Singleton
 )
 class ProfileChooserFragmentTest {
 
+  private val activityTestRule: ActivityTestRule<ProfileChooserActivity> = ActivityTestRule(
+    ProfileChooserActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
@@ -115,6 +122,15 @@ class ProfileChooserFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testProfileChooserActivity_hasCorrectLabel() {
+    activityTestRule.launchActivity(/* startIntent= */ null)
+    val title = activityTestRule.activity.title
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.profile_chooser_activity_label))
   }
 
   @Test
@@ -310,7 +326,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserFragment_clickAdminControlsWithNoPin_checkOpensAdminPinActivity() {
+  fun testProfileChooserFragment_clickAdminControlsWithNoPin_checkOpensAdminControlsActivity() {
     profileManagementController.addProfile(
       "Admin",
       "",
@@ -322,8 +338,8 @@ class ProfileChooserFragmentTest {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
-      intended(hasComponent(AdminPinActivity::class.java.name))
-      intended(hasExtra(ADMIN_PIN_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value))
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      intended(hasExtra(KEY_NAVIGATION_PROFILE_ID, /* internalProfileId= */ 0))
     }
   }
 

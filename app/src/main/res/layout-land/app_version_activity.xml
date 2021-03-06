@@ -20,7 +20,7 @@
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
       android:background="@color/oppiaPrimaryDark"
-      app:navigationContentDescription="@string/go_to_previous_page"
+      app:navigationContentDescription="@string/navigate_up"
       app:navigationIcon="?attr/homeAsUpIndicator"
       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
       app:title="@string/administrator_controls_app_version"
