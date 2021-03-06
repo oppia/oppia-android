@@ -55,7 +55,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   @Inject
   lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 
-
   private lateinit var entityId: String
   private lateinit var onDragEnd: OnDragEndedListener
   private lateinit var onItemDrag: OnItemDragListener
