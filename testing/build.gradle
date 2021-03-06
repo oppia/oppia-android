@@ -63,6 +63,7 @@ dependencies {
       project(":domain"),
       project(":utility"),
   )
+  compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
   testImplementation(
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
       'androidx.test.ext:junit:1.1.1',
