@@ -88,12 +88,12 @@ jobs:
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
-          bazel build --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia
+          bazel build --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia
 
       - name: Build Oppia binary (without caching, fork only)
         if: ${{ github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
-          bazel build --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools -- //:oppia
+          bazel build -- //:oppia
 
       - name: Copy Oppia APK for uploading
         run: cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
