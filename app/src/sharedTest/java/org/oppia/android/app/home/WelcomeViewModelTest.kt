@@ -110,7 +110,7 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity )
+        setUpTestFragment(homeFragmentTestActivity)
         val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
         val welcomeViewModelProfile1MorningCopy = createBasicWelcomeViewModel(testFragment)
 
@@ -152,19 +152,19 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-      setUpTestFragment(homeFragmentTestActivity)
-      val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
-      val welcomeViewModelProfile1MorningCopy = createBasicWelcomeViewModel(testFragment)
-      assertThat(welcomeViewModelProfile1Morning).isEqualTo(
-        welcomeViewModelProfile1MorningCopy
-      )
+        setUpTestFragment(homeFragmentTestActivity)
+        val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
+        val welcomeViewModelProfile1MorningCopy = createBasicWelcomeViewModel(testFragment)
+        assertThat(welcomeViewModelProfile1Morning).isEqualTo(
+          welcomeViewModelProfile1MorningCopy
+        )
 
-      // Verify the consistent property of equals(): if neither object is modified, then a == b
-      // for multiple invocations
-      assertThat(welcomeViewModelProfile1Morning).isEqualTo(
-        welcomeViewModelProfile1MorningCopy
-      )
-    }
+        // Verify the consistent property of equals(): if neither object is modified, then a == b
+        // for multiple invocations
+        assertThat(welcomeViewModelProfile1Morning).isEqualTo(
+          welcomeViewModelProfile1MorningCopy
+        )
+      }
     }
   }
 
@@ -174,11 +174,13 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity )
+        setUpTestFragment(homeFragmentTestActivity)
         val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
 
         // Verify the non-null property of equals(): for any non-null reference a, a != null
-        assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(null)
+        assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(
+          null
+        )
       }
     }
   }
@@ -189,7 +191,7 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity )
+        setUpTestFragment(homeFragmentTestActivity)
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
@@ -201,7 +203,6 @@ class WelcomeViewModelTest {
           fakeOppiaClock,
           "Profile 2"
         )
-
         assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(
           welcomeViewModelProfile2Morning
         )
@@ -215,7 +216,7 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity )
+        setUpTestFragment(homeFragmentTestActivity)
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
@@ -242,7 +243,7 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity )
+        setUpTestFragment(homeFragmentTestActivity)
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
@@ -271,7 +272,7 @@ class WelcomeViewModelTest {
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity )
+        setUpTestFragment(homeFragmentTestActivity)
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
