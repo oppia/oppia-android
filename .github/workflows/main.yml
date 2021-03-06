@@ -34,6 +34,9 @@ jobs:
        uses: actions/setup-java@v1
        with:
           java-version: 1.9
+      
+     - name: Check Java version
+       run: java -version
 
      - name: Install Dependencies
        if: steps.cache.outputs.cache-hit != 'true'
@@ -91,6 +94,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.9
+      
+      - name: Check Java version
+        run: java -version
 
       - name: Robolectric tests - App Module
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
