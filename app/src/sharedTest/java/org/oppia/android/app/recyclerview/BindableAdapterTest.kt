@@ -40,8 +40,6 @@ import org.oppia.android.app.fragment.FragmentModule
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModule
-import org.oppia.android.app.recyclerview.BindableAdapter.MultiTypeBuilder
-import org.oppia.android.app.recyclerview.BindableAdapter.SingleTypeBuilder
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -79,7 +77,6 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -328,34 +325,6 @@ class BindableAdapterTest {
   }
 
   @Test
-  fun testSingleTypeAdapter_setLifecycleOwnerTwice_throwsException() {
-    val testFragment = Fragment()
-
-    val exception = assertThrows(IllegalStateException::class) {
-      SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
-        .setLifecycleOwner(testFragment)
-        .setLifecycleOwner(testFragment)
-        .build()
-    }
-    assertThat(exception).hasMessageThat().contains("lifecycle owner has already been bound")
-  }
-
-  @Test
-  fun testMultiTypeAdapter_setLifecycleOwnerTwice_throwsException() {
-    val testFragment = Fragment()
-
-    val exception = assertThrows(IllegalStateException::class) {
-      MultiTypeBuilder
-        .newBuilder(ViewModelType.Companion::deriveTypeFrom)
-        .setLifecycleOwner(testFragment)
-        .setLifecycleOwner(testFragment)
-        .build()
-    }
-    assertThat(exception).hasMessageThat().contains("lifecycle owner has already been bound")
-  }
-
-  @Test
   fun testSingleTypeAdapter_withLiveData_noLifecycleOwner_doesNotRebindLiveDataValues() {
     // Set up the adapter to be used for this test.
     TestModule.testAdapterFactory = { createSingleViewTypeWithDataBindingAndLiveDataAdapter() }
@@ -449,8 +418,8 @@ class BindableAdapterTest {
 
   private fun createSingleViewTypeNoDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
+      return BindableAdapter.SingleTypeBuilder.Factory
+        .create<BindableAdapterTestDataModel>()
         .registerViewBinder(
           inflateView = this::inflateTextViewForStringWithoutDataBinding,
           bindView = this::bindTextViewForStringWithoutDataBinding
@@ -460,8 +429,8 @@ class BindableAdapterTest {
 
   private fun createSingleViewTypeWithDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
+      return BindableAdapter.SingleTypeBuilder.Factory
+        .create<BindableAdapterTestDataModel>()
         .registerViewDataBinderWithSameModelType(
           inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
           setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
@@ -471,8 +440,8 @@ class BindableAdapterTest {
 
   private fun createSingleViewTypeWithDataBindingAndLiveDataAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
+      return BindableAdapter.SingleTypeBuilder.Factory
+        .create<BindableAdapterTestDataModel>()
         .registerViewDataBinderWithSameModelType(
           inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
           setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
@@ -483,8 +452,8 @@ class BindableAdapterTest {
   private fun createSingleViewTypeWithDataBindingAndLiveDataAdapter(
     lifecycleOwner: Fragment
   ): BindableAdapter<BindableAdapterTestDataModel> {
-    return SingleTypeBuilder
-      .newBuilder<BindableAdapterTestDataModel>()
+    return BindableAdapter.SingleTypeBuilder.Factory
+      .create<BindableAdapterTestDataModel>()
       .setLifecycleOwner(lifecycleOwner)
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
@@ -495,8 +464,8 @@ class BindableAdapterTest {
 
   private fun createMultiViewTypeNoDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return MultiTypeBuilder
-        .newBuilder(ViewModelType.Companion::deriveTypeFrom)
+      return BindableAdapter.MultiTypeBuilder.Factory
+        .create(ViewModelType.Companion::deriveTypeFrom)
         .registerViewBinder(
           viewType = ViewModelType.STRING,
           inflateView = this::inflateTextViewForStringWithoutDataBinding,
@@ -512,8 +481,8 @@ class BindableAdapterTest {
 
   private fun createMultiViewTypeWithDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return MultiTypeBuilder
-        .newBuilder(ViewModelType.Companion::deriveTypeFrom)
+      return BindableAdapter.MultiTypeBuilder.Factory
+        .create(ViewModelType.Companion::deriveTypeFrom)
         .registerViewDataBinderWithSameModelType(
           viewType = ViewModelType.STRING,
           inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
@@ -535,8 +504,8 @@ class BindableAdapterTest {
   private fun createMultiViewTypeWithDataBindingBindableAdapter(
     lifecycleOwner: Fragment
   ): BindableAdapter<BindableAdapterTestDataModel> {
-    return MultiTypeBuilder
-      .newBuilder(ViewModelType.Companion::deriveTypeFrom)
+    return BindableAdapter.MultiTypeBuilder
+      .create(ViewModelType.Companion::deriveTypeFrom)
       .setLifecycleOwner(lifecycleOwner)
       .registerViewDataBinderWithSameModelType(
         viewType = ViewModelType.STRING,

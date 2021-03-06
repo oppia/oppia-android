@@ -857,7 +857,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
    */
   class Builder private constructor(
     private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
-    private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+    multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
     private val htmlParserFactory: HtmlParser.Factory,
     private val resourceBucketName: String,
     private val entityType: String,

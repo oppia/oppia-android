@@ -198,11 +198,11 @@ class BindableAdapter<T : Any> internal constructor(
     /**
      * An injectable factory to create [SingleTypeBuilder]s.
      *
-     * Note that singleTypeBuilders can only be used in fragment-bounded classes.
+     * Note that this class can only be used in fragment-bounded classes.
      */
     class Factory @Inject constructor(val fragment: Fragment) {
       /**
-       * Returns a [SingleTypeBuilder].
+       * Returns a new [SingleTypeBuilder].
        */
       inline fun <reified T : Any> create(): SingleTypeBuilder<T> {
         return SingleTypeBuilder(T::class, fragment)
@@ -335,11 +335,11 @@ class BindableAdapter<T : Any> internal constructor(
     /**
      * An injectable factory to create [MultiTypeBuilder]s.
      *
-     * Note that multiTypeBuilders can only be used in fragment-bounded classes.
+     * Note that this class can only be used in fragment-bounded classes.
      */
     class Factory @Inject constructor(val fragment: Fragment) {
       /**
-       * Returns a [MultiTypeBuilder].
+       * Returns a new [MultiTypeBuilder].
        */
       inline fun <reified T : Any, reified E : Enum<E>> create(
         noinline computeViewType: ComputeViewType<T, E>

@@ -30,7 +30,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyleAttr: Int = 0,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) : RecyclerView(context, attrs, defStyleAttr) {
   // For disabling grouping of items by default.
   private var isMultipleItemsInSamePositionAllowed: Boolean = false
@@ -52,6 +51,10 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 
   @Inject
   lateinit var viewBindingShim: ViewBindingShim
+
+  @Inject
+  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+
 
   private lateinit var entityId: String
   private lateinit var onDragEnd: OnDragEndedListener
