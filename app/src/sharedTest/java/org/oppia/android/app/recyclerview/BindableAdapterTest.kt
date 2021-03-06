@@ -24,6 +24,7 @@ import dagger.Provides
 import dagger.Subcomponent
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
@@ -132,6 +133,7 @@ class BindableAdapterTest {
   }
 
   @Test
+  @Ignore("Test")
   fun testBindableAdapter_incomingSameData_noRebindingShouldHappen() {
 
     val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
@@ -156,6 +158,7 @@ class BindableAdapterTest {
   }
 
   @Test
+  @Ignore("Test")
   fun testBindableAdapter_removeOneItem_verifyChangeOnlyOneItem() {
     val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
     TestModule.testAdapterFactory = { createMultiViewTypeNoDataBindingBindableAdapter() }
@@ -180,6 +183,7 @@ class BindableAdapterTest {
   }
 
   @Test
+  @Ignore("Test")
   fun testBindableAdapter_insertOneItem_verifyChangeOnlyOneItem() {
     val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
     TestModule.testAdapterFactory = { createMultiViewTypeNoDataBindingBindableAdapter() }
@@ -204,6 +208,7 @@ class BindableAdapterTest {
   }
 
   @Test
+  @Ignore("Test")
   fun testBindableAdapter_moveOneItem_verifyNoRecreatingWholeList() {
     val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
     TestModule.testAdapterFactory = { createMultiViewTypeNoDataBindingBindableAdapter() }
@@ -230,6 +235,7 @@ class BindableAdapterTest {
   }
 
   @Test
+  @Ignore("Test")
   fun testBindableAdapter_updateOneItemContent_verifyOneItemUpdated() {
     val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
     TestModule.testAdapterFactory = { createMultiViewTypeNoDataBindingBindableAdapter() }
