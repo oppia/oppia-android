@@ -144,9 +144,9 @@ class CompletedStoryListActivityTest {
         )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
+          recyclerViewId = R.id.completed_story_list,
           position = 0,
-          R.id.completed_story_lesson_thumbnail
+          targetViewId = R.id.completed_story_lesson_thumbnail
         )
       ).check(
         matches(
@@ -171,9 +171,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
+          recyclerViewId = R.id.completed_story_list,
           position = 0,
-          R.id.completed_story_name_text_view
+          targetViewId = R.id.completed_story_name_text_view
         )
       ).check(
         matches(
@@ -198,9 +198,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
+          recyclerViewId = R.id.completed_story_list,
           position = 0,
-          R.id.completed_story_name_text_view
+          targetViewId = R.id.completed_story_name_text_view
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
@@ -226,9 +226,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
+          recyclerViewId = R.id.completed_story_list,
           position = 0,
-          R.id.completed_story_name_text_view
+          targetViewId = R.id.completed_story_name_text_view
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
@@ -253,9 +253,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
+          recyclerViewId = R.id.completed_story_list,
           position = 0,
-          R.id.completed_story_topic_name_text_view
+          targetViewId = R.id.completed_story_topic_name_text_view
         )
       ).check(
         matches(
@@ -280,9 +280,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
+          recyclerViewId = R.id.completed_story_list,
           position = 1,
-          R.id.completed_story_name_text_view
+          targetViewId = R.id.completed_story_name_text_view
         )
       ).check(
         matches(
@@ -308,9 +308,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
+          recyclerViewId = R.id.completed_story_list,
           position = 1,
-          R.id.completed_story_name_text_view
+          targetViewId = R.id.completed_story_name_text_view
         )
       ).check(
         matches(
@@ -335,9 +335,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
+          recyclerViewId = R.id.completed_story_list,
           position = 1,
-          R.id.completed_story_lesson_thumbnail
+          targetViewId = R.id.completed_story_lesson_thumbnail
         )
       ).check(
         matches(
@@ -363,9 +363,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
+          recyclerViewId = R.id.completed_story_list,
           position = 1,
-          R.id.completed_story_lesson_thumbnail
+          targetViewId = R.id.completed_story_lesson_thumbnail
         )
       ).check(
         matches(
@@ -390,9 +390,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
+          recyclerViewId = R.id.completed_story_list,
           position = 1,
-          R.id.completed_story_topic_name_text_view
+          targetViewId = R.id.completed_story_topic_name_text_view
         )
       ).check(
         matches(
@@ -418,9 +418,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
+          recyclerViewId = R.id.completed_story_list,
           position = 1,
-          R.id.completed_story_topic_name_text_view
+          targetViewId = R.id.completed_story_topic_name_text_view
         )
       ).check(
         matches(
