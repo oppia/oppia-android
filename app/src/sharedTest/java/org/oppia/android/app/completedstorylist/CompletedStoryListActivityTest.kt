@@ -145,7 +145,7 @@ class CompletedStoryListActivityTest {
       onView(
         atPositionOnView(
           R.id.completed_story_list,
-          0,
+          position = 0,
           R.id.completed_story_lesson_thumbnail
         )
       ).check(
@@ -172,7 +172,7 @@ class CompletedStoryListActivityTest {
       onView(
         atPositionOnView(
           R.id.completed_story_list,
-          0,
+          position = 0,
           R.id.completed_story_name_text_view
         )
       ).check(
@@ -199,7 +199,7 @@ class CompletedStoryListActivityTest {
       onView(
         atPositionOnView(
           R.id.completed_story_list,
-          0,
+          position = 0,
           R.id.completed_story_name_text_view
         )
       ).perform(click())
@@ -227,7 +227,7 @@ class CompletedStoryListActivityTest {
       onView(
         atPositionOnView(
           R.id.completed_story_list,
-          0,
+          position = 0,
           R.id.completed_story_name_text_view
         )
       ).perform(click())
@@ -254,7 +254,7 @@ class CompletedStoryListActivityTest {
       onView(
         atPositionOnView(
           R.id.completed_story_list,
-          0,
+          position = 0,
           R.id.completed_story_topic_name_text_view
         )
       ).check(
@@ -281,7 +281,7 @@ class CompletedStoryListActivityTest {
       onView(
         atPositionOnView(
           R.id.completed_story_list,
-          1,
+          position = 1,
           R.id.completed_story_name_text_view
         )
       ).check(
@@ -309,7 +309,7 @@ class CompletedStoryListActivityTest {
       onView(
         atPositionOnView(
           R.id.completed_story_list,
-          1,
+          position = 1,
           R.id.completed_story_name_text_view
         )
       ).check(
@@ -336,7 +336,7 @@ class CompletedStoryListActivityTest {
       onView(
         atPositionOnView(
           R.id.completed_story_list,
-          1,
+          position = 1,
           R.id.completed_story_lesson_thumbnail
         )
       ).check(
@@ -364,7 +364,7 @@ class CompletedStoryListActivityTest {
       onView(
         atPositionOnView(
           R.id.completed_story_list,
-          1,
+          position = 1,
           R.id.completed_story_lesson_thumbnail
         )
       ).check(
@@ -391,7 +391,7 @@ class CompletedStoryListActivityTest {
       onView(
         atPositionOnView(
           R.id.completed_story_list,
-          1,
+          position = 1,
           R.id.completed_story_topic_name_text_view
         )
       ).check(
@@ -419,7 +419,7 @@ class CompletedStoryListActivityTest {
       onView(
         atPositionOnView(
           R.id.completed_story_list,
-          1,
+          position = 1,
           R.id.completed_story_topic_name_text_view
         )
       ).check(
