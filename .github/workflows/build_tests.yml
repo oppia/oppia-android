@@ -40,6 +40,11 @@ jobs:
       - name: Configure Bazel to use JDK 9 for building
         run: |
           echo "build --java_language_version=9" >> $HOME/.bazelrc
+
+      - name: Configure Bazel to use specific sandbox tmpfs
+        run: |
+          echo "build --enable_platform_specific_config" >> $HOME/.bazelrc
+          echo "build:linux --sandbox_tmpfs_path=/tmp" >> $HOME/.bazelrc
           
       - name: Check Bazel environment
         run: bazel info
