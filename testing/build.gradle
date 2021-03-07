@@ -25,6 +25,12 @@ android {
     jvmTarget = JavaVersion.VERSION_1_8
   }
 
+  buildTypes {
+    debug {
+      testCoverageEnabled true
+    }
+  }
+
   testOptions {
     execution 'ANDROID_TEST_ORCHESTRATOR'
     animationsDisabled true

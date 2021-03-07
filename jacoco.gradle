@@ -37,9 +37,6 @@ jacoco {
         "jacoco/testDebugUnitTest.exec"
     ]))
   }
-  tasks.withType(Test) {
-    jacoco.includeNoLocationClasses = true
-  }
   def fileFilter =
       ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*',
        'android/**/*.*']
@@ -53,16 +50,8 @@ jacoco {
       "jacoco/testDebugUnitTest.exec"
   ]))
 }
-  tasks.withType(Test) {
-  jacoco.includeNoLocationClasses = true
-}
-
   def setupAndroidReporting() {
 
-  tasks.withType(Test) {
-    jacoco.includeNoLocationClasses = true
-    jacoco.excludes = ['jdk.internal.*']
-  }
   task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
 
     reports {
