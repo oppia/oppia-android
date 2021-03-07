@@ -127,7 +127,7 @@ class CompletedStoryListActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(completedStoryListActivityTest = this)
   }
 
   @Test
