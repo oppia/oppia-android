@@ -10,7 +10,7 @@ kt_android_library(
     srcs = [
         "OppiaClock.kt",
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//:oppia_api_visibility"],
 )
 
 kt_android_library(
@@ -25,11 +25,11 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "oppia_clock_module",
+    name = "prod_module",
     srcs = [
         "OppiaClockModule.kt",
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
         ":oppia_clock_impl",
@@ -41,7 +41,7 @@ kt_android_library(
     srcs = [
         "OppiaDateTimeFormatter.kt",
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:javax_inject_javax_inject",
     ],
