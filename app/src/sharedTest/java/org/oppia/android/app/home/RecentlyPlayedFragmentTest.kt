@@ -165,7 +165,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_toolbarTitleIsDisplayed() {
+  fun testRecentlyPlayedTestActivity_defaultRecentlyPlayedToolbarTitleIsDisplayed() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -233,6 +233,30 @@ class RecentlyPlayedFragmentTest {
         atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_week))
+      )
+    }
+  }
+
+  @Test
+  fun testRecentlyPlayedTestActivity_fractionsPlayed_storiesForYouToolbarTitleIsDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    ActivityScenario.launch<RecentlyPlayedActivity>(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.recently_played_toolbar))
+        )
+      ).check(
+        matches(withText(R.string.stories_for_you))
       )
     }
   }
