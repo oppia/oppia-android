@@ -111,11 +111,11 @@ class CompletedStoryListActivityTest {
 
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProfileTestHelper.markCompletedFractionsStory0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProfileTestHelper.markCompletedRatiosStory0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
   }
@@ -133,7 +133,9 @@ class CompletedStoryListActivityTest {
   @Test
   fun testCompletedStoryList_checkItem0_storyThumbnailDescriptionIsCorrect() {
     launch<CompletedStoryListActivity>(
-      createCompletedStoryListActivityIntent(internalProfileId)
+      createCompletedStoryListActivityIntent(
+        internalProfileId = internalProfileId
+      )
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.completed_story_list))
@@ -160,7 +162,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem0_storyNameIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -187,7 +189,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_clickOnItem0_intentIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -214,7 +216,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_configurationChange_clickOnItem0_intentIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -242,7 +244,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem0_titleIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -269,7 +271,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem1_storyNameIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -296,7 +298,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_changeOrientation_checkItem1_storyNameIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -324,7 +326,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem1_storyThumbnailDescriptionIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -351,7 +353,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_changeOrientation_checkItem1_storyThumbnailDescriptionIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -379,7 +381,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem1_titleIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -406,7 +408,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_changeOrientation_checkItem1_titleIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
