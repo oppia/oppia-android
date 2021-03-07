@@ -30,7 +30,7 @@ jobs:
           echo "Note: this check is expected to fail for chained PRs so that they can't accidentally be merged. PRs should only ever be merged directly into develop."
 
       - name: Check branch
-        uses: a-b-r-o-w-n/check-base-branch-action@v1.1
+        uses: a-b-r-o-w-n/check-base-branch-action@1e1362d871c53c95e848a0b720d23377297f0931
         with:
           protected-branches: "develop"
 
