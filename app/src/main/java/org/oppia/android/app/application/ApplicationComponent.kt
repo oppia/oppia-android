@@ -28,7 +28,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.util.accessibility.AccessibilityModule
+import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -37,6 +37,7 @@ import org.oppia.android.util.logging.firebase.LogReportingModule
 import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Provider
 import javax.inject.Singleton
@@ -49,7 +50,7 @@ import javax.inject.Singleton
 @Component(
   modules = [
     ApplicationModule::class, DispatcherModule::class,
-    LoggerModule::class,
+    LoggerModule::class, OppiaClockModule::class,
     ContinueModule::class, FractionInputModule::class,
     ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
     NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
@@ -58,7 +59,7 @@ import javax.inject.Singleton
     GlideImageLoaderModule::class, ImageParsingModule::class,
     HtmlParserEntityTypeModule::class, CachingModule::class,
     QuestionModule::class, LogReportingModule::class,
-    AccessibilityModule::class, ImageClickInputModule::class,
+    AccessibilityProdModule::class, ImageClickInputModule::class,
     LogStorageModule::class, IntentFactoryShimModule::class,
     ViewBindingShimModule::class, PrimeTopicAssetsControllerModule::class,
     ExpirationMetaDataRetrieverModule::class, RatioInputModule::class,
@@ -67,7 +68,6 @@ import javax.inject.Singleton
     HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class
   ]
 )
-
 interface ApplicationComponent : ApplicationInjector {
   @Component.Builder
   interface Builder {

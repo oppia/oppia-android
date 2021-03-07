@@ -39,9 +39,11 @@ import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -52,7 +54,6 @@ import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -66,7 +67,7 @@ private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 class TopicControllerTest {
 
   @Inject
-  lateinit var storyProgressController: StoryProgressController
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
   @Inject
   lateinit var topicController: TopicController
@@ -97,12 +98,6 @@ class TopicControllerTest {
   lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
 
   @Mock
-  lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
-
-  @Captor
-  lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
-
-  @Mock
   lateinit var mockStorySummaryObserver: Observer<AsyncResult<StorySummary>>
 
   @Captor
@@ -115,21 +110,20 @@ class TopicControllerTest {
   lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
 
   @Inject
-  lateinit var dataProviders: DataProviders
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   private lateinit var profileId1: ProfileId
   private lateinit var profileId2: ProfileId
-
-  private val currentTimestamp = Date().time
 
   @Before
   fun setUp() {
     profileId1 = ProfileId.newBuilder().setInternalId(1).build()
     profileId2 = ProfileId.newBuilder().setInternalId(2).build()
     setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   @Test
@@ -463,7 +457,6 @@ class TopicControllerTest {
     topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
       .observeForever(mockStorySummaryObserver)
     markSecondStory1Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     verifyGetStorySucceeded()
     val story = storySummaryResultCaptor.value!!.getOrThrow()
@@ -940,7 +933,6 @@ class TopicControllerTest {
   @Test
   fun testGetTopic_recordProgress_getTopic_correctProgressFound() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getTopic(
       profileId1, FRACTIONS_TOPIC_ID
@@ -985,14 +977,12 @@ class TopicControllerTest {
   @Test
   fun testGetStory_recordProgress_getTopic_correctProgressFound() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getTopic(
       profileId1, FRACTIONS_TOPIC_ID
     ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyRecordProgressSucceeded()
     verifyGetTopicSucceeded()
     val topic = topicResultCaptor.value.getOrThrow()
     assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
@@ -1017,7 +1007,6 @@ class TopicControllerTest {
   @Test
   fun testOngoingTopicList_recordOneChapterCompleted_correctOngoingList() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getOngoingTopicList(
       profileId1
@@ -1033,10 +1022,7 @@ class TopicControllerTest {
   @Test
   fun testOngoingTopicList_finishEntireTopic_ongoingTopicListIsEmpty() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markFractionsStory0Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getOngoingTopicList(
       profileId1
@@ -1050,16 +1036,10 @@ class TopicControllerTest {
 
   @Test
   fun testOngoingTopicList_finishOneEntireTopicAndOneChapterInOtherTopic_ongoingListIsCorrect() {
-    // Mark entire FRACTIONS topic as finished.
+    // Mark entire fractions topic & only 1 chapter in ratios as finished.
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markFractionsStory0Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
-    // Mark only one chapter in RATIOS topic as finished.
     markRatiosStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getOngoingTopicList(
       profileId1
@@ -1086,7 +1066,6 @@ class TopicControllerTest {
   @Test
   fun testCompletedStoryList_recordOneChapterProgress_completedStoryListIsEmpty() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
@@ -1100,10 +1079,7 @@ class TopicControllerTest {
   @Test
   fun testCompletedStoryList_finishEntireStory_completedStoryListIsCorrect() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markFractionsStory0Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
@@ -1119,10 +1095,7 @@ class TopicControllerTest {
   @Test
   fun testCompletedStoryList_finishEntireStory_checkChapters_allAreCompleted() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markFractionsStory0Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
@@ -1138,13 +1111,8 @@ class TopicControllerTest {
   @Test
   fun testCompletedStoryList_finishOneStoryAndOneChapterInOtherStory_completedStoryListIsCorrect() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markRatiosStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markRatiosStory0Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
@@ -1160,16 +1128,9 @@ class TopicControllerTest {
   @Test
   fun testCompletedStoryList_finishTwoStories_completedStoryListIsCorrect() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markFractionsStory0Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markRatiosStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markRatiosStory0Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
@@ -1196,61 +1157,38 @@ class TopicControllerTest {
   }
 
   private fun markFractionsStory0Chapter0AsCompleted() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId1,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      currentTimestamp
-    ).toLiveData().observeForever(mockRecordProgressObserver)
+      timestampOlderThanOneWeek = false
+    )
   }
 
   private fun markFractionsStory0Chapter1AsCompleted() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp1(
       profileId1,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_1,
-      currentTimestamp
-    ).toLiveData().observeForever(mockRecordProgressObserver)
+      timestampOlderThanOneWeek = false
+    )
   }
 
   private fun markSecondStory1Chapter1AsCompleted() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedTestTopic0Story1Exp0(
       profileId1,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_1,
-      currentTimestamp
-    ).toLiveData().observeForever(mockRecordProgressObserver)
+      timestampOlderThanOneWeek = false
+    )
   }
 
   private fun markRatiosStory0Chapter0AsCompleted() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId1,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      currentTimestamp
-    ).toLiveData().observeForever(mockRecordProgressObserver)
+      timestampOlderThanOneWeek = false
+    )
   }
 
   private fun markRatiosStory0Chapter1AsCompleted() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp1(
       profileId1,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_1,
-      currentTimestamp
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-  }
-
-  private fun verifyRecordProgressSucceeded() {
-    verify(
-      mockRecordProgressObserver,
-      atLeastOnce()
-    ).onChanged(recordProgressResultCaptor.capture())
-    assertThat(recordProgressResultCaptor.value.isSuccess()).isTrue()
+      timestampOlderThanOneWeek = false
+    )
   }
 
   private fun verifyGetTopicSucceeded() {
@@ -1326,7 +1264,7 @@ class TopicControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

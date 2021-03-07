@@ -13,7 +13,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -58,10 +57,11 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -73,6 +73,11 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val KEY_READING_TEXT_SIZE_PREFERENCE_TITLE = "READING_TEXT_SIZE_PREFERENCE"
+private const val APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY =
+  "AppLanguageActivity.app_language_preference_title"
+private const val KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE = "AUDIO_LANGUAGE_PREFERENCE"
 
 @RunWith(AndroidJUnit4::class)
 @Config(application = OptionsFragmentTest.TestApplication::class)
@@ -86,7 +91,6 @@ class OptionsFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 
   @After
@@ -113,12 +117,7 @@ class OptionsFragmentTest {
         click()
       )
       intended(hasComponent(ReadingTextSizeActivity::class.java.name))
-      intended(
-        hasExtra(
-          ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_TITLE,
-          READING_TEXT_SIZE
-        )
-      )
+      intended(hasExtra(KEY_READING_TEXT_SIZE_PREFERENCE_TITLE, READING_TEXT_SIZE))
     }
   }
 
@@ -136,12 +135,7 @@ class OptionsFragmentTest {
         click()
       )
       intended(hasComponent(AppLanguageActivity::class.java.name))
-      intended(
-        hasExtra(
-          AppLanguageActivity.APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY,
-          APP_LANGUAGE
-        )
-      )
+      intended(hasExtra(APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY, APP_LANGUAGE))
     }
   }
 
@@ -159,12 +153,7 @@ class OptionsFragmentTest {
         click()
       )
       intended(hasComponent(AudioLanguageActivity::class.java.name))
-      intended(
-        hasExtra(
-          AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE,
-          AUDIO_LANGUAGE
-        )
-      )
+      intended(hasExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE, AUDIO_LANGUAGE))
     }
   }
 
@@ -272,13 +261,13 @@ class OptionsFragmentTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
+      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
       RatioInputModule::class, HintsAndSolutionConfigModule::class,
       WorkManagerConfigurationModule::class, LogUploadWorkerModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

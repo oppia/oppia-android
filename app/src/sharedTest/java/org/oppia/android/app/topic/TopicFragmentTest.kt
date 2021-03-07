@@ -57,13 +57,15 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -135,7 +137,7 @@ class TopicFragmentTest {
         FRACTIONS_TOPIC_ID
       )
     )
-    onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+    onView(withContentDescription(R.string.navigate_up)).perform(click())
     assertThat(activityTestRule.activity.isFinishing).isTrue()
   }
 
@@ -284,12 +286,12 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnLessonsTab_configurationChange_showsSameTabAndItsContent() {
+  fun testTopicFragment_clickOnLessonsTab_configChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = LESSON_TAB_POSITION)
-      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
       matchStringOnListItem(
         recyclerView = R.id.story_summary_recycler_view,
@@ -301,7 +303,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnPracticeTab_configurationChange_showsSameTabAndItsContent() {
+  fun testTopicFragment_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
@@ -325,7 +327,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnReviewTab_configurationChange_showsSameTabAndItsContent() {
+  fun testTopicFragment_clickOnReviewTab_configChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = REVISION_TAB_POSITION)
@@ -342,10 +344,10 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_configurationChange_showsDefaultTabAndItsContent() {
+  fun testTopicFragment_configChange_showsDefaultTabAndItsContent() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
@@ -357,17 +359,79 @@ class TopicFragmentTest {
     }
   }
 
+  @Test
+  fun testTopicFragment_withStoryId_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
+    launchTopicPlayStoryActivityIntent(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
+      testCoroutineDispatchers.runCurrent()
+      matchStringOnListItem(
+        recyclerView = R.id.topic_practice_skill_list,
+        itemPosition = 0,
+        targetViewId = R.id.master_skills_text_view,
+        stringToMatch = "Master These Skills"
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
+      matchStringOnListItem(
+        recyclerView = R.id.topic_practice_skill_list,
+        itemPosition = 0,
+        targetViewId = R.id.master_skills_text_view,
+        stringToMatch = "Master These Skills"
+      )
+    }
+  }
+
+  /**
+   * Creates TopicActivity Intent without a storyId
+   */
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(), internalProfileId, topicId
     )
   }
 
+  /**
+   * Creates TopicActivity Intent with a storyId.
+   * The intent returned from here can be used to
+   * launch TopicActivity from Promoted stories.
+   */
+  private fun createTopicPlayStoryActivityIntent(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String
+  ): Intent {
+    return TopicActivity.createTopicPlayStoryActivityIntent(
+      ApplicationProvider.getApplicationContext(), internalProfileId, topicId, storyId
+    )
+  }
+
+  /**
+   * Launches TopicActivity without a storyId.
+   * This simulates opening a topic from All topics list.
+   */
   private fun launchTopicActivityIntent(
     internalProfileId: Int,
     topicId: String
   ): ActivityScenario<TopicActivity> {
     return launch(createTopicActivityIntent(internalProfileId, topicId))
+  }
+
+  /**
+   * Launches TopicActivity with a valid storyId.
+   * This simulates opening a topic from Promoted stories.
+   */
+  private fun launchTopicPlayStoryActivityIntent(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String
+  ): ActivityScenario<TopicActivity> {
+    return launch(createTopicPlayStoryActivityIntent(internalProfileId, topicId, storyId))
   }
 
   private fun clickTabAtPosition(position: Int) {
@@ -426,12 +490,12 @@ class TopicFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -25,7 +25,7 @@
         android:background="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
-        app:navigationContentDescription="@string/go_to_previous_page"
+        app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
         <TextView
@@ -36,7 +36,7 @@
           android:ellipsize="marquee"
           android:fadingEdge="horizontal"
           android:fadingEdgeLength="20dp"
-          android:focusable="true"
+          android:focusable="false"
           android:focusableInTouchMode="true"
           android:fontFamily="sans-serif"
           android:marqueeRepeatLimit="1"

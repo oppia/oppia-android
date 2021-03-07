@@ -22,20 +22,20 @@
       android:background="@color/oppiaDarkBlue"
       android:fontFamily="sans-serif"
       android:minHeight="56dp"
-      app:title="@string/hints_toolbar_title"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
+      app:title="@string/hints_toolbar_title"
       app:titleTextAppearance="@style/ToolbarTextAppearance"
       app:titleTextColor="@color/white" />
 
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
+      android:background="@color/hintsAndSolutionBackground"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      android:background="@color/hintsAndSolutionBackground"
       app:layout_constraintTop_toBottomOf="@+id/hints_and_solution_toolbar">
 
       <androidx.recyclerview.widget.RecyclerView

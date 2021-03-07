@@ -21,14 +21,6 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <View
-      android:id="@+id/add_profile_divider_view"
-      android:layout_width="match_parent"
-      android:layout_height="0.5dp"
-      android:layout_marginBottom="60dp"
-      android:background="@color/oppiaProfileChooserDivider"
-      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
-
     <LinearLayout
       android:id="@+id/add_profile_item"
       android:layout_width="match_parent"
@@ -53,7 +45,7 @@
         android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:orientation="vertical"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}"
-        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_description_parent_margin_start_profile_not_added}">
+        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}">
 
         <TextView
           android:id="@+id/add_profile_text"

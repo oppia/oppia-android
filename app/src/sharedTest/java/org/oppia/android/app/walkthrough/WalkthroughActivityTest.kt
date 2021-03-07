@@ -48,9 +48,10 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -70,24 +71,37 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class WalkthroughActivityTest {
+
   @Test
-  fun testWalkthroughFragment_defaultProgress_worksCorrectly() {
+  fun testWalkthroughActivity_defaultProgressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
     }
   }
 
   @Test
-  fun testWalkthroughFragment_checkFrameLayout_backButton_progressBar_IsVisible() {
+  fun testWalkthroughActivity_frameLayoutIsVisible() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_fragment_placeholder)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testWalkthroughActivity_backBtnIsVisible() {
+    launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.back_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testWalkthroughActivity_progressBarIsVisible() {
+    launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testWalkthroughFragment_increaseProgress_worksCorrectly() {
+  fun testWalkthroughActivity_incProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
@@ -95,7 +109,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testWalkthroughFragment_increaseProgress_configurationChanged_worksCorrectly() {
+  fun testWalkthroughActivity_incProgress_configChange_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
@@ -105,7 +119,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testWalkthroughFragment_nextBtn_configurationChanged_backBtn_worksCorrectly() {
+  fun testWalkthroughActivity_pressNextBtn_configChange_pressBackBtn_backBtnWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(isRoot()).perform(orientationLandscape())
@@ -120,7 +134,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testWalkthroughFragment_increaseProgress_onBackPressed_decreaseProgress_progressWorksCorrectly() { // ktlint-disable max-line-length
+  fun testWalkthroughActivity_incProgress_onBackPress_decProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
@@ -130,7 +144,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testWalkthroughFragment_increaseProgress_decreaseProgress_progressWorksCorrectly() {
+  fun testWalkthroughActivity_incProgress_pressBackBtn_decProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
@@ -152,12 +166,12 @@ class WalkthroughActivityTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

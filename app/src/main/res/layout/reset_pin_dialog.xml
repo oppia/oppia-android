@@ -33,7 +33,7 @@
         android:imeOptions="actionDone"
         android:inputType="numberPassword"
         android:maxLength="3"
-        android:text="@{viewModel.inputPin}"/>
+        android:text="@{viewModel.inputPin}" />
     </com.google.android.material.textfield.TextInputLayout>
   </RelativeLayout>
 </layout>
