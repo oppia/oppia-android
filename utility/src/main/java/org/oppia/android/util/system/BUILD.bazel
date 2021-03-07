@@ -1,5 +1,5 @@
 """
-Utilities corresponding to simplify using Oppia Clock.
+Utilities corresponding to system utilities such as the system clock.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
