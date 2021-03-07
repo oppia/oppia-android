@@ -157,9 +157,9 @@ class ProfileChooserFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.profile_recycler_view,
-          1,
-          R.id.profile_is_admin_text
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 1,
+          targetViewId = R.id.profile_is_admin_text
         )
       ).check(matches(not(isDisplayed())))
       scrollToPosition(position = 3)
@@ -183,9 +183,9 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_recycler_view,
-          0,
-          R.id.profile_last_visited
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_last_visited
         )
       ).check(matches(isDisplayed()))
       verifyTextOnProfileListItemAtPosition(
@@ -209,9 +209,9 @@ class ProfileChooserFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
-          R.id.profile_recycler_view,
-          0,
-          R.id.profile_last_visited
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_last_visited
         )
       ).check(matches(isDisplayed()))
       verifyTextOnProfileListItemAtPosition(
@@ -296,7 +296,7 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
+      onView(atPosition(recyclerViewId = R.id.profile_recycler_view, position = 0)).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
     }
   }
@@ -304,20 +304,20 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickAdminProfileWithNoPin_checkOpensAdminPinActivity() {
     profileManagementController.addProfile(
-      "Admin",
-      "",
-      null,
-      true,
-      -10710042,
-      true
+      name = "Admin",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = true
     ).toLiveData()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_recycler_view,
-          1,
-          R.id.add_profile_item
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 1,
+          targetViewId = R.id.add_profile_item
         )
       ).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
@@ -328,12 +328,12 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickAdminControlsWithNoPin_checkOpensAdminControlsActivity() {
     profileManagementController.addProfile(
-      "Admin",
-      "",
-      null,
-      true,
-      -10710042,
-      true
+      name = "Admin",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = true
     ).toLiveData()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -379,9 +379,9 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_recycler_view,
-          1,
-          R.id.add_profile_description_text
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 1,
+          targetViewId = R.id.add_profile_description_text
         )
       ).check(matches(isDisplayed()))
     }
@@ -407,9 +407,9 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_recycler_view,
-          4,
-          R.id.add_profile_description_text
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 4,
+          targetViewId = R.id.add_profile_description_text
         )
       ).check(matches(not(isDisplayed())))
     }
@@ -457,9 +457,9 @@ class ProfileChooserFragmentTest {
   ) {
     onView(
       atPositionOnView(
-        R.id.profile_recycler_view,
-        itemPosition,
-        targetView
+        recyclerViewId = R.id.profile_recycler_view,
+        position = itemPosition,
+        targetViewId = targetView
       )
     ).check(matches(withText(stringToMatch)))
   }
