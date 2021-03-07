@@ -12,8 +12,9 @@ load("//utility:utility_test.bzl", "utility_test")
 # globs here to ensure new files added to migrated packages don't accidentally get included in the
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
-    "src/main/java/org/oppia/android/util/system/*.kt",
-])
+        "src/main/java/org/oppia/android/util/accessibility/*.kt"
+        "src/main/java/org/oppia/android/util/system/*.kt",
+    ])
 
 # Library for general-purpose utilities.
 kt_android_library(

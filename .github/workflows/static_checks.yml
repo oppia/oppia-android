@@ -49,10 +49,7 @@ jobs:
       - name: Download Buf
         run: |
           cd $HOME/oppia-android-tools
-          BUFVERSION="v0.15.0"
-          echo Using Bufbuild version $BUFVERSION
-          curl -sSL https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m) > buf
-          chmod a+x buf
+          bash /home/runner/work/oppia-android/oppia-android/scripts/buf_download.sh
 
       - name: Download Buildifier
         run: |
@@ -68,7 +65,8 @@ jobs:
           bash /home/runner/work/oppia-android/oppia-android/scripts/ktlint_lint_check.sh $HOME
 
       - name: Protobuf lint check
-        run: $HOME/oppia-android-tools/buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
+        run: |
+          bash /home/runner/work/oppia-android/oppia-android/scripts/buf_lint_check.sh $HOME
 
       - name: Bazel lint check
         run: |
