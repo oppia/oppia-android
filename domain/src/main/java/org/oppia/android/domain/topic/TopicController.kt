@@ -252,12 +252,6 @@ class TopicController @Inject constructor(
       return true
     }
 
-    if (topic.storyCount != topicProgress.storyProgressCount &&
-      topicProgress.storyProgressMap.isNotEmpty()
-    ) {
-      return true
-    }
-
     topic.storyList.forEach { storySummary ->
       if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
         val storyProgress = topicProgress.storyProgressMap[storySummary.storyId]
@@ -267,6 +261,19 @@ class TopicController @Inject constructor(
         }
       }
     }
+
+    topic.storyList.forEach { storySummary ->
+      if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
+        val storyProgress = topicProgress.storyProgressMap[storySummary.storyId]
+        val lastChapterSummary = storySummary.chapterList.last()
+        val lastChapterProgress =
+          storyProgress!!.chapterProgressMap[lastChapterSummary.explorationId]
+        if (lastChapterProgress!!.chapterPlayState != ChapterPlayState.COMPLETED) {
+          return true
+        }
+      }
+    }
+
     return false
   }
 
