@@ -198,7 +198,8 @@ class HelpFragmentTest {
       )
     ).use {
       onView(
-        atPosition(recyclerViewId = R.id.help_fragment_recycler_view,
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
           position = 0
         )
       ).perform(click())
