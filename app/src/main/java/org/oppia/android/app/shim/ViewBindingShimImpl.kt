@@ -18,7 +18,7 @@ import org.oppia.android.databinding.DragDropInteractionItemsBinding
 import org.oppia.android.databinding.DragDropSingleItemBinding
 import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
-import org.oppia.android.databinding.PromotedStoryCardBinding
+import org.oppia.android.databinding.PromotedListItemCardBinding
 import org.oppia.android.util.parser.HtmlParser
 import javax.inject.Inject
 
@@ -38,7 +38,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     parent: ViewGroup,
     attachToParent: Boolean
   ): View {
-    return PromotedStoryCardBinding.inflate(
+    return PromotedListItemCardBinding.inflate(
       LayoutInflater.from(parent.context), parent, attachToParent
     ).root
   }
@@ -48,7 +48,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     viewModel: PromotedListItemViewModel
   ) {
     val binding =
-      DataBindingUtil.findBinding<PromotedStoryCardBinding>(view)!!
+      DataBindingUtil.findBinding<PromotedListItemCardBinding>(view)!!
     binding.viewModel = viewModel
   }
 

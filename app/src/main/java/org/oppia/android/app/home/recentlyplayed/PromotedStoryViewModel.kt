@@ -6,7 +6,7 @@ import org.oppia.android.app.model.PromotedStory
 
 // TODO(#297): Add download status information to promoted-story-card.
 
-/** [ViewModel] for displaying a promoted story. */
+/** [ViewModel] for displaying a promoted story in the [RecentlyPlayedFragment]. */
 class PromotedStoryViewModel(
   val promotedStory: PromotedStory,
   val entityType: String,

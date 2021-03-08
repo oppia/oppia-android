@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
-import org.oppia.android.databinding.OngoingStoryCardBinding
+import org.oppia.android.databinding.PromotedStoryCardBinding
 import org.oppia.android.databinding.SectionTitleBinding
 
 private const val VIEW_TYPE_SECTION_TITLE_TEXT = 1
 private const val VIEW_TYPE_SECTION_STORY_ITEM = 2
 
-/** Adapter to inflate different items/views inside [RecyclerView] for Promoted Story List. */
+/** Adapter to inflate different items/views inside [RecentlyPlayedFragment]'s [RecyclerView]. */
 class PromotedListAdapter(
   private val activity: AppCompatActivity,
   private val itemList: MutableList<RecentlyPlayedItemViewModel>
@@ -41,7 +41,7 @@ class PromotedListAdapter(
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          OngoingStoryCardBinding.inflate(
+          PromotedStoryCardBinding.inflate(
             inflater,
             parent,
             /* attachToParent= */ false
@@ -66,7 +66,7 @@ class PromotedListAdapter(
         val marginMax =
           (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_margin_max)
         val params =
-          holder.binding.ongoingStoryCardView.layoutParams as (ViewGroup.MarginLayoutParams)
+          holder.binding.promotedStoryCardView.layoutParams as (ViewGroup.MarginLayoutParams)
         val marginTop = if (activity.resources.getBoolean(R.bool.isTablet)) {
           (activity as Context).resources
             .getDimensionPixelSize(R.dimen.ongoing_story_card_view_is_tablet_margin_top)
@@ -155,8 +155,8 @@ class PromotedListAdapter(
             }
           }
         }
-        holder.binding.ongoingStoryCardView.layoutParams = params
-        holder.binding.ongoingStoryCardView.requestLayout()
+        holder.binding.promotedStoryCardView.layoutParams = params
+        holder.binding.promotedStoryCardView.requestLayout()
       }
       else -> throw IllegalArgumentException("Invalid item view type: ${holder.itemViewType}")
     }
@@ -192,7 +192,7 @@ class PromotedListAdapter(
   }
 
   private class PromotedStoryViewHolder(
-    val binding: OngoingStoryCardBinding
+    val binding: PromotedStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(promotedViewModel: PromotedStoryViewModel) {
       binding.viewModel = promotedViewModel
