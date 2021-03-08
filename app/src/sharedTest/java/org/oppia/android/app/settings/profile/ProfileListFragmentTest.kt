@@ -119,17 +119,19 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId=R.id.profile_list_recycler_view, 
-          position=0, 
-          targetViewName=R.id.profile_list_name)
+          recylerViewId = R.id.profile_list_recycler_view,
+          position = 0,
+          targetViewName = R.id.profile_list_name
+          )
       ).check(
         matches(withText("Admin"))
       )
       onView(
         atPositionOnView(
-          recylerViewId=R.id.profile_list_recycler_view,
-          position=0, 
-          targetViewId=R.id.profile_list_admin_text)
+          recylerViewId = R.id.profile_list_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_list_admin_text
+          )
       ).check(
         matches(withText(context.getString(R.string.profile_chooser_admin)))
       )
@@ -140,17 +142,19 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId=R.id.profile_list_recycler_view,
-          position= 1,
-          targetViewName= R.id.profile_list_name)
+          recylerViewId = R.id.profile_list_recycler_view,
+          position = 1,
+          targetViewName = R.id.profile_list_name
+          )
       ).check(
         matches(withText("Ben"))
       )
       onView(
         atPositionOnView(
-        recylerViewId=R.id.profile_list_recycler_view,
-        position=1,
-        targetViewId=R.id.profile_list_admin_text)
+        recylerViewId = R.id.profile_list_recycler_view,
+        position = 1,
+        targetViewId = R.id.profile_list_admin_text
+        )
       ).check(
         matches(not(isDisplayed()))
       )
@@ -170,17 +174,19 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-        recylerViewId=R.id.profile_list_recycler_view,
-        position=0,
-        targetViewName=R.id.profile_list_name)
+        recylerViewId = R.id.profile_list_recycler_view,
+        position = 0,
+        targetViewName = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Admin"))
       )
       onView(
         atPositionOnView(
-         recylerViewId= R.id.profile_list_recycler_view,
-         position=0, 
-         targetViewId=R.id.profile_list_admin_text)
+         recylerViewId = R.id.profile_list_recycler_view,
+         position = 0,
+         targetViewId = R.id.profile_list_admin_text
+         )
       ).check(
         matches(withText(context.getString(R.string.profile_chooser_admin)))
       )
@@ -191,17 +197,19 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-         recylerViewId= R.id.profile_list_recycler_view,
-        position=1,
-        targetViewName=R.id.profile_list_name)
+         recylerViewId = R.id.profile_list_recycler_view,
+        position = 1,
+        targetViewName = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Ben"))
       )
       onView(
         atPositionOnView(
-         recylerViewId= R.id.profile_list_recycler_view,
-         position=1, 
-         targetViewId=R.id.profile_list_admin_text)
+         recylerViewId = R.id.profile_list_recycler_view,
+         position = 1,
+         targetViewId = R.id.profile_list_admin_text
+         )
       ).check(
         matches(not(isDisplayed()))
       )
@@ -221,9 +229,10 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId=R.id.profile_list_recycler_view,
-          position=0,
-          targetViewName=R.id.profile_list_name)
+          recylerViewId = R.id.profile_list_recycler_view,
+          position = 0,
+          targetViewName = R.id.profile_list_name
+          )
       ).check(
         matches(withText("Admin"))
       )
@@ -234,9 +243,10 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-        recylerViewId=R.id.profile_list_recycler_view,
-        position=1,
-        targetViewName=R.id.profile_list_name)
+        recylerViewId = R.id.profile_list_recycler_view,
+        position = 1,
+        targetViewName = R.id.profile_list_name
+        )
       ).check(
         matches(withText("A"))
       )
@@ -247,9 +257,10 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-        recylerViewId=R.id.profile_list_recycler_view,
-        position=2,
-        targetViewName=R.id.profile_list_name)
+        recylerViewId = R.id.profile_list_recycler_view,
+        position = 2,
+        targetViewName = R.id.profile_list_name
+        )
       ).check(
         matches(withText("B"))
       )
@@ -260,9 +271,10 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId=R.id.profile_list_recycler_view,
-          position=3,
-          targetViewName=R.id.profile_list_name)
+          recylerViewId = R.id.profile_list_recycler_view,
+          position = 3,
+          targetViewName = R.id.profile_list_name
+          )
       ).check(
         matches(withText("Ben"))
       )
@@ -273,9 +285,10 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId=R.id.profile_list_recycler_view,
-          position=4,
-          targetViewName=R.id.profile_list_name)
+          recylerViewId = R.id.profile_list_recycler_view,
+          position = 4,
+          targetViewName = R.id.profile_list_name
+          )
       ).check(
         matches(withText("C"))
       )
@@ -286,9 +299,10 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-         recylerViewId=R.id.profile_list_recycler_view,
-         position=5,
-        targetViewName=R.id.profile_list_name)
+         recylerViewId = R.id.profile_list_recycler_view,
+         position = 5,
+        targetViewName = R.id.profile_list_name
+        )
       ).check(
         matches(withText("D"))
       )
@@ -299,9 +313,10 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId=R.id.profile_list_recycler_view,
-          position=6,
-          targetViewName=R.id.profile_list_name)
+          recylerViewId = R.id.profile_list_recycler_view,
+          position = 6,
+          targetViewName = R.id.profile_list_name
+          )
       ).check(
         matches(withText("E"))
       )
