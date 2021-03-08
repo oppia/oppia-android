@@ -142,9 +142,10 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          topicListId = R.id.ongoing_topic_list,
+          recyclerViewId = R.id.ongoing_topic_list,
           position = 0, 
-          targetViewId = R.id.topic_name_text_view)
+          targetViewId = R.id.topic_name_text_view
+        )
       ).check(
         matches(
           withText(containsString("Ratios and Proportional Reasoning"))
@@ -168,7 +169,7 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          topicListId = R.id.ongoing_topic_list,
+          recyclerViewId = R.id.ongoing_topic_list,
           position = 0, 
           targetViewId = R.id.topic_name_text_view
         )
@@ -195,7 +196,7 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          topicListId = R.id.ongoing_topic_list,
+          recyclerViewId = R.id.ongoing_topic_list,
           position = 0, 
           targetViewId = R.id.topic_name_text_view
         )
@@ -221,7 +222,7 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          topicListId = R.id.ongoing_topic_list,
+          recyclerViewId = R.id.ongoing_topic_list,
           position = 0, 
           targetViewId = R.id.story_count_text_view
         )
@@ -249,7 +250,7 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          topicListId = R.id.ongoing_topic_list,
+          recyclerViewId = R.id.ongoing_topic_list,
           position = 1, 
           targetViewId = R.id.topic_name_text_view
         )
@@ -274,7 +275,7 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          topicListId = R.id.ongoing_topic_list,
+          recyclerViewId = R.id.ongoing_topic_list,
           position = 1, 
           targetViewId = R.id.topic_name_text_view
         )
@@ -301,7 +302,7 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          topicListId = R.id.ongoing_topic_list,
+          recyclerViewId = R.id.ongoing_topic_list,
           position = 1, 
           targetViewId = R.id.story_count_text_view
         )
@@ -329,7 +330,7 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          topicListId = R.id.ongoing_topic_list,
+          recyclerViewId = R.id.ongoing_topic_list,
           position = 1, 
           targetViewId = R.id.story_count_text_view
         )
@@ -357,7 +358,7 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          topicListId = R.id.ongoing_topic_list,
+          recyclerViewId = R.id.ongoing_topic_list,
           position = 0, 
           targetViewId = R.id.topic_name_text_view
         )
@@ -372,7 +373,7 @@ class OngoingTopicListActivityTest {
   private fun createOngoingTopicListActivityIntent(internalProfileId: Int): Intent {
     return OngoingTopicListActivity.createOngoingTopicListActivityIntent(
       ApplicationProvider.getApplicationContext(),
-        internalProfileId = internalProfileId
+      internalProfileId = internalProfileId
     )
   }
 
