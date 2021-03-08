@@ -155,11 +155,13 @@ class ProfileChooserFragmentTest {
         targetView = R.id.profile_name_text,
         stringToMatch = "Ben"
       )
-      onView(atPositionOnView(
+      onView(
+        atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 1,
           targetViewId = R.id.profile_is_admin_text
-      )).check(matches(not(isDisplayed())))
+        )
+      ).check(matches(not(isDisplayed())))
       scrollToPosition(position = 3)
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 4,
@@ -179,11 +181,13 @@ class ProfileChooserFragmentTest {
         profileTestHelper.waitForOperationToComplete(data)
       }
       testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(
+      onView(
+        atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 0,
           targetViewId = R.id.profile_last_visited
-      )).check(matches(isDisplayed()))
+        )
+      ).check(matches(isDisplayed()))
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_last_visited,
@@ -203,11 +207,13 @@ class ProfileChooserFragmentTest {
       }
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(atPositionOnView(
+      onView(
+        atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 0,
           targetViewId = R.id.profile_last_visited
-      )).check(matches(isDisplayed()))
+        )
+      ).check(matches(isDisplayed()))
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_last_visited,
@@ -290,10 +296,12 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPosition(
-        recyclerViewId = R.id.profile_recycler_view,
-        position = 0
-      )).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0
+        )
+      ).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
     }
   }
@@ -310,11 +318,13 @@ class ProfileChooserFragmentTest {
     ).toLiveData()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(
+      onView(
+        atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 1,
           targetViewId = R.id.add_profile_item
-        )).perform(click())
+        )
+      ).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
       intended(hasExtra(ADMIN_PIN_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADD_PROFILE.value))
     }
@@ -372,11 +382,13 @@ class ProfileChooserFragmentTest {
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(
+      onView(
+        atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 1,
           targetViewId = R.id.add_profile_description_text
-      )).check(matches(isDisplayed()))
+        )
+      ).check(matches(isDisplayed()))
     }
   }
 
@@ -398,11 +410,13 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(
+      onView(
+        atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 4,
           targetViewId = R.id.add_profile_description_text
-      )).check(matches(not(isDisplayed())))
+        )
+      ).check(matches(not(isDisplayed())))
     }
   }
 
@@ -422,10 +436,12 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPosition(
-        recyclerViewId =  R.id.profile_recycler_view,
-        position = 4
-      )).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 4
+        )
+      ).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
       intended(hasExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADD_PROFILE.value))
     }
@@ -449,11 +465,13 @@ class ProfileChooserFragmentTest {
     targetView: Int,
     stringToMatch: String
   ) {
-    onView(atPositionOnView(
+    onView(
+      atPositionOnView(
         recyclerViewId = R.id.profile_recycler_view,
         position = itemPosition,
         targetViewId = targetView
-    )).check(matches(withText(stringToMatch)))
+      )
+    ).check(matches(withText(stringToMatch)))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
