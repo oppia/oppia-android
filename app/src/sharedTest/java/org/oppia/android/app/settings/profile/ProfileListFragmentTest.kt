@@ -119,7 +119,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
           targetViewId = R.id.profile_list_name
         )
@@ -128,7 +128,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
           targetViewId = R.id.profile_list_admin_text
         )
@@ -142,7 +142,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
           targetViewId = R.id.profile_list_name
         )
@@ -151,7 +151,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
           targetViewId = R.id.profile_list_admin_text
         )
@@ -174,7 +174,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
           targetViewId = R.id.profile_list_name
         )
@@ -183,7 +183,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
           targetViewId = R.id.profile_list_admin_text
         )
@@ -197,7 +197,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
           targetViewId = R.id.profile_list_name
         )
@@ -206,7 +206,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
           targetViewId = R.id.profile_list_admin_text
         )
@@ -219,7 +219,7 @@ class ProfileListFragmentTest {
   @Test
   fun testProfileListFragment_addManyProfiles_checkProfilesAreSorted() {
     profileTestHelper.initializeProfiles()
-    profileTestHelper.addMoreProfiles(numberOfProfiles=5)
+    profileTestHelper.addMoreProfiles(numberOfProfiles = 5)
     launch(ProfileListActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_list_recycler_view)).perform(
@@ -229,7 +229,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
           targetViewId = R.id.profile_list_name
         )
@@ -243,7 +243,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
           targetViewId = R.id.profile_list_name
         )
@@ -257,7 +257,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 2,
           targetViewId = R.id.profile_list_name
         )
@@ -271,7 +271,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 3,
           targetViewId = R.id.profile_list_name
         )
@@ -285,7 +285,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 4,
           targetViewId = R.id.profile_list_name
         )
@@ -299,7 +299,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 5,
           targetViewId = R.id.profile_list_name
         )
@@ -313,7 +313,7 @@ class ProfileListFragmentTest {
       )
       onView(
         atPositionOnView(
-          recylerViewId = R.id.profile_list_recycler_view,
+          recyclerViewId = R.id.profile_list_recycler_view,
           position = 6,
           targetViewId = R.id.profile_list_name
         )
