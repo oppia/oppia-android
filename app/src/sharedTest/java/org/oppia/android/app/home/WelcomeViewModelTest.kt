@@ -94,8 +94,8 @@ class WelcomeViewModelTest {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
-      activityScenario.onActivity { HomeFragmentTestActivity ->
-        setUpTestFragment(HomeFragmentTestActivity)
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
         val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
 
         // Verify the reflexive property of equals(): a == a.
