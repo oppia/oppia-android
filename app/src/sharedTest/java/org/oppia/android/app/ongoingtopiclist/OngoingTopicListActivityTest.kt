@@ -143,7 +143,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
-          position = 0, 
+          position = 0,
           targetViewId = R.id.topic_name_text_view
         )
       ).check(
@@ -170,7 +170,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
-          position = 0, 
+          position = 0,
           targetViewId = R.id.topic_name_text_view
         )
       ).perform(click())
@@ -197,7 +197,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
-          position = 0, 
+          position = 0,
           targetViewId = R.id.topic_name_text_view
         )
       ).perform(click())
@@ -223,7 +223,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
-          position = 0, 
+          position = 0,
           targetViewId = R.id.story_count_text_view
         )
       ).check(
@@ -251,7 +251,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
-          position = 1, 
+          position = 1,
           targetViewId = R.id.topic_name_text_view
         )
       ).check(
@@ -276,7 +276,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
-          position = 1, 
+          position = 1,
           targetViewId = R.id.topic_name_text_view
         )
       ).check(
@@ -303,7 +303,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
-          position = 1, 
+          position = 1,
           targetViewId = R.id.story_count_text_view
         )
       ).check(
@@ -331,7 +331,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
-          position = 1, 
+          position = 1,
           targetViewId = R.id.story_count_text_view
         )
       ).check(
@@ -359,7 +359,7 @@ class OngoingTopicListActivityTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
-          position = 0, 
+          position = 0,
           targetViewId = R.id.topic_name_text_view
         )
       ).check(
