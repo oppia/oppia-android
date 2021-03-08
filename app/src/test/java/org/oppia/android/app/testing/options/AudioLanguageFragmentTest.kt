@@ -16,6 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -88,7 +89,7 @@ private const val CHINESE = 4
 class AudioLanguageFragmentTest {
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<AudioLanguageActivity> = ActivityTestRule(
+  val activityTestRule: ActivityTestRule<AudioLanguageActivity> = ActivityTestRule(
     AudioLanguageActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
@@ -123,7 +124,7 @@ class AudioLanguageFragmentTest {
     val title = activityTestRule.activity.title
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    Truth.assertThat(title).isEqualTo(context.getString(R.string.audio_language_activity_title))
+    assertThat(title).isEqualTo(context.getString(R.string.audio_language_activity_title))
   }
 
   @Test
