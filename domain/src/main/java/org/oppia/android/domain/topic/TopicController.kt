@@ -273,7 +273,6 @@ class TopicController @Inject constructor(
         }
       }
     }
-
     return false
   }
 
