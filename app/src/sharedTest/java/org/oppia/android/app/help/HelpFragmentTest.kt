@@ -120,7 +120,12 @@ class HelpFragmentTest {
 
   @Test
   fun testHelpFragment_parentIsExploration_checkBackArrowVisible() {
-    launch<HelpActivity>(createHelpActivityIntent(internalProfileId = 0,isFromNavigationDrawer = false)).use {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = false
+      )
+    ).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(matches(isCompletelyDisplayed()))
     }
@@ -128,7 +133,12 @@ class HelpFragmentTest {
 
   @Test
   fun testHelpFragment_parentIsNotExploration_checkBackArrowNotVisible() {
-    launch<HelpActivity>(createHelpActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(doesNotExist())
     }
@@ -136,12 +146,21 @@ class HelpFragmentTest {
 
   @Test
   fun testHelpFragment_faqListTitleIsDisplayed() {
-    launch<HelpActivity>(createHelpActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        atPositionOnView(recyclerViewId = R.id.help_fragment_recycler_view, position = 0, targetViewId = R.id.help_item_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 0,
+          targetViewId = R.id.help_item_text_view
+        )
       ).check(
         matches(withText(R.string.frequently_asked_questions_FAQ))
       )
@@ -150,28 +169,52 @@ class HelpFragmentTest {
 
   @Test
   fun testHelpFragment_configChanged_faqListTitleIsDisplayed() {
-    launch<HelpActivity>(createHelpActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        atPositionOnView(recyclerViewId = R.id.help_fragment_recycler_view, position = 0, targetViewId = R.id.help_item_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 0,
+          targetViewId = R.id.help_item_text_view
+        )
       ).check(matches(withText(R.string.frequently_asked_questions_FAQ)))
     }
   }
 
   @Test
   fun openHelpActivity_selectFAQ_showFAQActivitySuccessfully() {
-    launch<HelpActivity>(createHelpActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
-      onView(atPosition(recyclerViewId = R.id.help_fragment_recycler_view, position = 0)).perform(click())
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
       intended(hasComponent(FAQListActivity::class.java.name))
     }
   }
 
   @Test
   fun openHelpActivity_openNavigationDrawer_navigationDrawerOpeningIsVerifiedSuccessfully() {
-    launch<HelpActivity>(createHelpActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.help_fragment_placeholder))
         .check(matches(isCompletelyDisplayed()))
@@ -182,7 +225,12 @@ class HelpFragmentTest {
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testHelpFragment_openNavDrawerAndClose_navDrawerIsClosed() {
-    launch<HelpActivity>(createHelpActivityIntent(internalProfileId = 0, isFromNavigationDrawer = true)).use {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
