@@ -121,7 +121,7 @@ class ProfileListFragmentTest {
         atPositionOnView(
           recylerViewId = R.id.profile_list_recycler_view,
           position = 0,
-          targetViewName = R.id.profile_list_name
+          targetViewId = R.id.profile_list_name
         )
       ).check(
         matches(withText("Admin"))
@@ -144,7 +144,7 @@ class ProfileListFragmentTest {
         atPositionOnView(
           recylerViewId = R.id.profile_list_recycler_view,
           position = 1,
-          targetViewName = R.id.profile_list_name
+          targetViewId = R.id.profile_list_name
         )
       ).check(
         matches(withText("Ben"))
@@ -176,7 +176,7 @@ class ProfileListFragmentTest {
         atPositionOnView(
           recylerViewId = R.id.profile_list_recycler_view,
           position = 0,
-          targetViewName = R.id.profile_list_name
+          targetViewId = R.id.profile_list_name
         )
       ).check(
         matches(withText("Admin"))
@@ -199,7 +199,7 @@ class ProfileListFragmentTest {
         atPositionOnView(
           recylerViewId = R.id.profile_list_recycler_view,
           position = 1,
-          targetViewName = R.id.profile_list_name
+          targetViewId = R.id.profile_list_name
         )
       ).check(
         matches(withText("Ben"))
@@ -219,7 +219,7 @@ class ProfileListFragmentTest {
   @Test
   fun testProfileListFragment_addManyProfiles_checkProfilesAreSorted() {
     profileTestHelper.initializeProfiles()
-    profileTestHelper.addMoreProfiles(5)
+    profileTestHelper.addMoreProfiles(numberOfProfiles=5)
     launch(ProfileListActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_list_recycler_view)).perform(
@@ -231,7 +231,7 @@ class ProfileListFragmentTest {
         atPositionOnView(
           recylerViewId = R.id.profile_list_recycler_view,
           position = 0,
-          targetViewName = R.id.profile_list_name
+          targetViewId = R.id.profile_list_name
         )
       ).check(
         matches(withText("Admin"))
@@ -245,7 +245,7 @@ class ProfileListFragmentTest {
         atPositionOnView(
           recylerViewId = R.id.profile_list_recycler_view,
           position = 1,
-          targetViewName = R.id.profile_list_name
+          targetViewId = R.id.profile_list_name
         )
       ).check(
         matches(withText("A"))
@@ -259,7 +259,7 @@ class ProfileListFragmentTest {
         atPositionOnView(
           recylerViewId = R.id.profile_list_recycler_view,
           position = 2,
-          targetViewName = R.id.profile_list_name
+          targetViewId = R.id.profile_list_name
         )
       ).check(
         matches(withText("B"))
@@ -273,7 +273,7 @@ class ProfileListFragmentTest {
         atPositionOnView(
           recylerViewId = R.id.profile_list_recycler_view,
           position = 3,
-          targetViewName = R.id.profile_list_name
+          targetViewId = R.id.profile_list_name
         )
       ).check(
         matches(withText("Ben"))
@@ -287,7 +287,7 @@ class ProfileListFragmentTest {
         atPositionOnView(
           recylerViewId = R.id.profile_list_recycler_view,
           position = 4,
-          targetViewName = R.id.profile_list_name
+          targetViewId = R.id.profile_list_name
         )
       ).check(
         matches(withText("C"))
@@ -301,7 +301,7 @@ class ProfileListFragmentTest {
         atPositionOnView(
           recylerViewId = R.id.profile_list_recycler_view,
           position = 5,
-          targetViewName = R.id.profile_list_name
+          targetViewId = R.id.profile_list_name
         )
       ).check(
         matches(withText("D"))
@@ -315,7 +315,7 @@ class ProfileListFragmentTest {
         atPositionOnView(
           recylerViewId = R.id.profile_list_recycler_view,
           position = 6,
-          targetViewName = R.id.profile_list_name
+          targetViewId = R.id.profile_list_name
         )
       ).check(
         matches(withText("E"))
