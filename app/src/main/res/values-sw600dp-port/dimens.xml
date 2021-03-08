@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <dimen name="home_padding_end">120dp</dimen>
+  <dimen name="home_padding_end">96dp</dimen>
   <dimen name="home_padding_start">120dp</dimen>
   <dimen name="home_outer_margin">120dp</dimen>
   <dimen name="home_inner_margin">60dp</dimen>
@@ -54,6 +54,7 @@
   <dimen name="previous_responses_item_exploration_view_margin_top">24dp</dimen>
   <dimen name="previous_responses_item_question_split_view_margin_top">24dp</dimen>
   <dimen name="previous_responses_item_question_view_margin_top">24dp</dimen>
+  <dimen name="profile_chooser_add_view_margin_top_profile_not_added">72dp</dimen>
   <dimen name="profile_chooser_add_view_margin_end_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_add_view_margin_start_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_fragment_margin_top_profile_already_added">24dp</dimen>

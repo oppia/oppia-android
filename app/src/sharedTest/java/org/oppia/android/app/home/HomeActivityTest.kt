@@ -79,7 +79,6 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -88,6 +87,7 @@ import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -349,6 +349,31 @@ class HomeActivityTest {
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "Fractions"
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_noTopicProgress_initialRecommendationFractionsAndRatiosIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.recommended_stories)
+      )
+      scrollToPositionOfPromotedList(position = 1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Fractions"
+      )
+      scrollToPositionOfPromotedList(position = 1)
+      verifyTextOnPromotedListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Ratios and Proportional Reasoning"
       )
     }
   }
@@ -783,9 +808,9 @@ class HomeActivityTest {
   fun testHomeActivity_firstTestTopic_topicSummary_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
-        itemPosition = 2,
+        itemPosition = 3,
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "First Test Topic"
       )
@@ -796,9 +821,9 @@ class HomeActivityTest {
   fun testHomeActivity_fiveLessons_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
+      scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
-        itemPosition = 2,
+        itemPosition = 3,
         targetViewId = R.id.lesson_count_text_view,
         stringToMatch = "5 Lessons"
       )
@@ -827,9 +852,9 @@ class HomeActivityTest {
   fun testHomeActivity_oneLesson_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 4)
       verifyTextOnHomeListItemAtPosition(
-        itemPosition = 3,
+        itemPosition = 4,
         targetViewId = R.id.lesson_count_text_view,
         stringToMatch = "1 Lesson"
       )
@@ -915,9 +940,9 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 4)
       verifyTextOnHomeListItemAtPosition(
-        itemPosition = 3,
+        itemPosition = 4,
         targetViewId = R.id.lesson_count_text_view,
         stringToMatch = "1 Lesson"
       )
@@ -928,8 +953,8 @@ class HomeActivityTest {
   fun testHomeActivity_clickTopicSummary_opensTopicActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
-      onView(atPosition(R.id.home_recycler_view, 2)).perform(click())
+      scrollToPosition(position = 3)
+      onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
     }
@@ -1088,9 +1113,9 @@ class HomeActivityTest {
     profileTestHelper.logIntoNewUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
+      scrollToPosition(position = 2)
       verifyExactTextOnHomeListItemAtPosition(
-        itemPosition = 1,
+        itemPosition = 2,
         targetViewId = R.id.all_topics_text_view,
         stringToMatch = context.getString((R.string.all_topics))
       )
@@ -1420,7 +1445,7 @@ class HomeActivityTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
