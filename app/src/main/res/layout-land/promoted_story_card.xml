@@ -24,7 +24,7 @@
       android:layout_height="match_parent"
       android:clickable="true"
       android:focusable="true"
-      android:onClick="@{viewModel::clickOnOngoingStoryTile}">
+      android:onClick="@{viewModel::clickOnPromotedStoryTile}">
 
       <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/lesson_thumbnail"
