@@ -120,8 +120,8 @@ class TopicTestActivityForStoryTest {
       )
       onView(
         atPosition(
-          R.id.story_summary_recycler_view,
-          1
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1
         )
       ).check(matches(hasDescendant(withText(containsString("First Story")))))
     }
@@ -133,9 +133,9 @@ class TopicTestActivityForStoryTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
-          2,
-          R.id.chapter_recycler_view
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 2,
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
     }
