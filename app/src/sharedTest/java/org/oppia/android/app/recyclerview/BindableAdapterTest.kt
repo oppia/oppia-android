@@ -378,8 +378,7 @@ class BindableAdapterTest {
 
   private fun createSingleViewTypeNoDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-    return singleTypeBuilderFactory
-      .create<BindableAdapterTestDataModel>()
+    return singleTypeBuilderFactory.create<BindableAdapterTestDataModel>()
       .registerViewBinder(
         inflateView = this::inflateTextViewForStringWithoutDataBinding,
         bindView = this::bindTextViewForStringWithoutDataBinding
@@ -389,8 +388,7 @@ class BindableAdapterTest {
 
   private fun createSingleViewTypeWithDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-    return singleTypeBuilderFactory
-      .create<BindableAdapterTestDataModel>()
+    return singleTypeBuilderFactory.create<BindableAdapterTestDataModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
         setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
@@ -400,8 +398,7 @@ class BindableAdapterTest {
 
   private fun createSingleViewTypeWithDataBindingAndLiveDataAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-    return singleTypeBuilderFactory
-      .create<BindableAdapterTestDataModel>()
+    return singleTypeBuilderFactory.create<BindableAdapterTestDataModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
         setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
@@ -411,8 +408,7 @@ class BindableAdapterTest {
 
   private fun createMultiViewTypeNoDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-    return multiTypeBuilderFactory
-      .create(ViewModelType.Companion::deriveTypeFrom)
+    return multiTypeBuilderFactory.create(ViewModelType.Companion::deriveTypeFrom)
       .registerViewBinder(
         viewType = ViewModelType.STRING,
         inflateView = this::inflateTextViewForStringWithoutDataBinding,
@@ -428,8 +424,7 @@ class BindableAdapterTest {
 
   private fun createMultiViewTypeWithDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-    return multiTypeBuilderFactory
-      .create(ViewModelType.Companion::deriveTypeFrom)
+    return multiTypeBuilderFactory.create(ViewModelType.Companion::deriveTypeFrom)
       .registerViewDataBinderWithSameModelType(
         viewType = ViewModelType.STRING,
         inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
