@@ -77,7 +77,7 @@ class DragDropTestActivityTest {
       scenario.onActivity { activity ->
         attachDragDropToActivity(activity)
       }
-      onView(withId(R.id.drag_drop_recycler_view)).perform(
+      onView(withId(recyclerViewId = R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
             0,
@@ -90,8 +90,8 @@ class DragDropTestActivityTest {
           Press.FINGER
         )
       )
-      onView(atPosition(R.id.drag_drop_recycler_view, 0)).check(matches(withText("Item 2")))
-      onView(atPosition(R.id.drag_drop_recycler_view, 1)).check(matches(withText("Item 1")))
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position =  0)).check(matches(withText("Item 2")))
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 1)).check(matches(withText("Item 1")))
     }
   }
 
@@ -101,7 +101,7 @@ class DragDropTestActivityTest {
       scenario.onActivity { activity ->
         attachDragDropToActivity(activity)
       }
-      onView(withId(R.id.drag_drop_recycler_view)).perform(
+      onView(withId(recyclerViewId = R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
             1,
@@ -114,8 +114,8 @@ class DragDropTestActivityTest {
           Press.FINGER
         )
       )
-      onView(atPosition(R.id.drag_drop_recycler_view, 1)).check(matches(withText("Item 3")))
-      onView(atPosition(R.id.drag_drop_recycler_view, 2)).check(matches(withText("Item 2")))
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 1)).check(matches(withText("Item 3")))
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 2)).check(matches(withText("Item 2")))
     }
   }
 
@@ -125,8 +125,8 @@ class DragDropTestActivityTest {
       scenario.onActivity { activity ->
         attachDragDropToActivity(activity)
       }
-      onView(withId(R.id.drag_drop_recycler_view))
-      onView(withId(R.id.drag_drop_recycler_view)).perform(
+      onView(withId(recyclerViewId = R.id.drag_drop_recycler_view))
+      onView(withId(recyclerViewId = R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
             3,
@@ -139,13 +139,13 @@ class DragDropTestActivityTest {
           Press.FINGER
         )
       )
-      onView(atPosition(R.id.drag_drop_recycler_view, 2)).check(matches(withText("Item 4")))
-      onView(atPosition(R.id.drag_drop_recycler_view, 3)).check(matches(withText("Item 3")))
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 2)).check(matches(withText("Item 4")))
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 3)).check(matches(withText("Item 3")))
     }
   }
 
   private fun attachDragDropToActivity(activity: DragDropTestActivity) {
-    val recyclerView: RecyclerView = activity.findViewById(R.id.drag_drop_recycler_view)
+    val recyclerView: RecyclerView = activity.findViewById(recyclerViewId = R.id.drag_drop_recycler_view)
     val itemTouchHelper = ItemTouchHelper(createDragCallback(activity))
     itemTouchHelper.attachToRecyclerView(recyclerView)
   }
