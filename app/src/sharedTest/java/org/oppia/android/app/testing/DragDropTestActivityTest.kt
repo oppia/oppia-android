@@ -140,6 +140,7 @@ class DragDropTestActivityTest {
         )
       )
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 2)).check(matches(withText("Item 4")))
+      
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 3)).check(matches(withText("Item 3")))
     }
   }
