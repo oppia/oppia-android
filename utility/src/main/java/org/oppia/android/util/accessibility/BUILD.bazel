@@ -1,0 +1,65 @@
+"""
+General purposes utilities for Android accessibility checking.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "accessibility",
+    srcs = [
+        "AccessibilityChecker.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+kt_android_library(
+    name = "impl",
+    srcs = [
+        "AccessibilityCheckerImpl.kt",
+    ],
+    deps = [
+        ":accessibility",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "testing",
+    testonly = True,
+    srcs = [
+        "FakeAccessibilityChecker.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":accessibility",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = [
+        "AccessibilityProdModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":impl",
+    ],
+)
+
+kt_android_library(
+    name = "test_module",
+    testonly = True,
+    srcs = [
+        "AccessibilityTestModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        ":testing",
+    ],
+)
+
+dagger_rules()
