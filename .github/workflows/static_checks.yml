@@ -20,3 +20,54 @@ jobs:
         with:
           checks: "duppatterns,files,syntax"
           experimental_checks: "notowned"
+
+  linters:
+    name: Lint Tests
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create oppia android tools directory
+        run: mkdir -p $HOME/oppia-android-tools
+
+      # Java 11 is specifically needed for Checkstyle.
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+
+      - name: Download Checkstyle
+        run: |
+          cd $HOME/oppia-android-tools
+          bash /home/runner/work/oppia-android/oppia-android/scripts/checkstyle_download.sh
+
+      - name: Download Ktlint
+        run: |
+          cd $HOME/oppia-android-tools
+          bash /home/runner/work/oppia-android/oppia-android/scripts/ktlint_download.sh
+
+      - name: Download Buf
+        run: |
+          cd $HOME/oppia-android-tools
+          bash /home/runner/work/oppia-android/oppia-android/scripts/buf_download.sh
+
+      - name: Download Buildifier
+        run: |
+          cd $HOME/oppia-android-tools
+          bash /home/runner/work/oppia-android/oppia-android/scripts/buildifier_download.sh
+
+      - name: Java lint check
+        run: |
+          bash /home/runner/work/oppia-android/oppia-android/scripts/checkstyle_lint_check.sh $HOME
+
+      - name: Kotlin lint check
+        run: |
+          bash /home/runner/work/oppia-android/oppia-android/scripts/ktlint_lint_check.sh $HOME
+
+      - name: Protobuf lint check
+        run: |
+          bash /home/runner/work/oppia-android/oppia-android/scripts/buf_lint_check.sh $HOME
+
+      - name: Bazel lint check
+        run: |
+          bash /home/runner/work/oppia-android/oppia-android/scripts/buildifier_lint_check.sh $HOME

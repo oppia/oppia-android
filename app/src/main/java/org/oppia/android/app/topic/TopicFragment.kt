@@ -33,7 +33,8 @@ class TopicFragment : InjectableFragment() {
       container,
       internalProfileId,
       topicId,
-      storyId
+      storyId,
+      isConfigChanged = savedInstanceState != null
     )
   }
 }

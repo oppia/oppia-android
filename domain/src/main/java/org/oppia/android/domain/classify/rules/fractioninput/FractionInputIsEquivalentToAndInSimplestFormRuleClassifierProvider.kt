@@ -16,7 +16,8 @@ import javax.inject.Inject
  *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/FractionInput/directives/fraction-input-rules.service.ts#L32
  */
-internal class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider
+// TODO(#1580): Re-restrict access using Bazel visibilities
+class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider
 @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Fraction> {

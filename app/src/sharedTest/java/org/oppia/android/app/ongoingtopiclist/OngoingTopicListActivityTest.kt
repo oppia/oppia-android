@@ -57,12 +57,14 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
-import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -95,18 +97,22 @@ class OngoingTopicListActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
-      profileId,
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProfileTestHelper.markCompletedRatiosStory0(
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProfileTestHelper.markPartialTopicProgressForFractions(
-      profileId,
+    storyProfileTestHelper.markCompletedFractionsStory0Exp0(
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
   }
@@ -125,7 +131,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_checkItem0_titleIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -136,8 +142,9 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.ongoing_topic_list,
-          0, R.id.topic_name_text_view
+          recyclerViewId = R.id.ongoing_topic_list,
+          position = 0,
+          targetViewId = R.id.topic_name_text_view
         )
       ).check(
         matches(
@@ -151,7 +158,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_clickItem0_intentIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -162,8 +169,9 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.ongoing_topic_list,
-          0, R.id.topic_name_text_view
+          recyclerViewId = R.id.ongoing_topic_list,
+          position = 0,
+          targetViewId = R.id.topic_name_text_view
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
@@ -176,7 +184,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_changeConfiguration_clickItem0_intentIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -188,8 +196,9 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.ongoing_topic_list,
-          0, R.id.topic_name_text_view
+          recyclerViewId = R.id.ongoing_topic_list,
+          position = 0,
+          targetViewId = R.id.topic_name_text_view
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
@@ -202,7 +211,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_checkItem0_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -213,8 +222,9 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.ongoing_topic_list,
-          0, R.id.story_count_text_view
+          recyclerViewId = R.id.ongoing_topic_list,
+          position = 0,
+          targetViewId = R.id.story_count_text_view
         )
       ).check(
         matches(
@@ -228,7 +238,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_changeConfiguration_checkItem1_titleIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -240,8 +250,9 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.ongoing_topic_list,
-          1, R.id.topic_name_text_view
+          recyclerViewId = R.id.ongoing_topic_list,
+          position = 1,
+          targetViewId = R.id.topic_name_text_view
         )
       ).check(
         matches(
@@ -264,8 +275,9 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.ongoing_topic_list,
-          1, R.id.topic_name_text_view
+          recyclerViewId = R.id.ongoing_topic_list,
+          position = 1,
+          targetViewId = R.id.topic_name_text_view
         )
       ).check(
         matches(
@@ -279,7 +291,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_checkItem1_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -290,8 +302,9 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.ongoing_topic_list,
-          1, R.id.story_count_text_view
+          recyclerViewId = R.id.ongoing_topic_list,
+          position = 1,
+          targetViewId = R.id.story_count_text_view
         )
       ).check(
         matches(
@@ -305,7 +318,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_changeConfiguration_checkItem1_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -317,8 +330,9 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.ongoing_topic_list,
-          1, R.id.story_count_text_view
+          recyclerViewId = R.id.ongoing_topic_list,
+          position = 1,
+          targetViewId = R.id.story_count_text_view
         )
       ).check(
         matches(
@@ -332,7 +346,7 @@ class OngoingTopicListActivityTest {
   fun testTopicPracticeFragment_loadFragment_changeConfiguration_topicNameIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -344,8 +358,9 @@ class OngoingTopicListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.ongoing_topic_list,
-          0, R.id.topic_name_text_view
+          recyclerViewId = R.id.ongoing_topic_list,
+          position = 0,
+          targetViewId = R.id.topic_name_text_view
         )
       ).check(
         matches(
@@ -358,7 +373,7 @@ class OngoingTopicListActivityTest {
   private fun createOngoingTopicListActivityIntent(internalProfileId: Int): Intent {
     return OngoingTopicListActivity.createOngoingTopicListActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId
+      internalProfileId = internalProfileId
     )
   }
 
@@ -375,12 +390,12 @@ class OngoingTopicListActivityTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

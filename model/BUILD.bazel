@@ -6,9 +6,9 @@ The proto_library() rule creates a proto file library to be used in multiple lan
 The java_lite_proto_library() rule takes in a proto_library target and generates java code.
 """
 
-load("//model:src/main/proto/format_import_proto_library.bzl", "format_import_proto_library")
-load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@rules_java//java:defs.bzl", "java_lite_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("//model:src/main/proto/format_import_proto_library.bzl", "format_import_proto_library")
 
 # NOTE TO DEVELOPERS: When adding new protos, each proto will need to have both a proto_library
 # and java_lite_proto_library. See the examples below for context. Further, once the proto lite
@@ -40,12 +40,23 @@ load("@rules_java//java:defs.bzl", "java_lite_proto_library")
 #   )
 
 proto_library(
+    name = "arguments_proto",
+    srcs = ["src/main/proto/arguments.proto"],
+)
+
+java_lite_proto_library(
+    name = "arguments_java_proto_lite",
+    deps = [":arguments_proto"],
+)
+
+proto_library(
     name = "event_logger_proto",
     srcs = ["src/main/proto/oppia_logger.proto"],
 )
 
 java_lite_proto_library(
     name = "event_logger_java_proto_lite",
+    visibility = ["//visibility:public"],
     deps = [":event_logger_proto"],
 )
 
@@ -66,6 +77,7 @@ proto_library(
 
 java_lite_proto_library(
     name = "onboarding_java_proto_lite",
+    visibility = ["//visibility:public"],
     deps = [":onboarding_proto"],
 )
 
@@ -185,6 +197,7 @@ format_import_proto_library(
 
 java_lite_proto_library(
     name = "exploration_java_proto_lite",
+    visibility = ["//visibility:public"],
     deps = [":exploration_proto"],
 )
 
@@ -192,10 +205,8 @@ android_library(
     name = "model",
     visibility = ["//visibility:public"],
     exports = [
-        ":event_logger_java_proto_lite",
-        ":exploration_java_proto_lite",
+        ":arguments_java_proto_lite",
         ":interaction_object_java_proto_lite",
-        ":onboarding_java_proto_lite",
         ":profile_java_proto_lite",
         ":question_java_proto_lite",
         ":subtitled_html_java_proto_lite",
