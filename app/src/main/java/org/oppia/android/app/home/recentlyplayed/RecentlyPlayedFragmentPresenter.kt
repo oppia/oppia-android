@@ -75,7 +75,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private fun subscribeToOngoingStoryList() {
     getAssumedSuccessfulPromotedActivityList().observe(
       fragment,
-      Observer<PromotedActivityList> { it ->
+         { it ->
         if (it.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
           val recentSectionTitleViewModel =
             SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
@@ -120,7 +120,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           itemList.add(recommendedSectionTitleViewModel)
           for (suggestedStory in it.promotedStoryList.suggestedStoryList) {
             val ongoingStoryViewModel =
-            PromotedStoryViewModel(
+              PromotedStoryViewModel(
                 suggestedStory,
                 entityType,
                 fragment as PromotedStoryClickListener
@@ -211,7 +211,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       explorationId
     ).observe(
       fragment,
-      Observer<AsyncResult<Any?>> { result ->
+       { result ->
         when {
           result.isPending() -> logger.d("RecentlyPlayedFragment", "Loading exploration")
           result.isFailure() -> logger.e(
