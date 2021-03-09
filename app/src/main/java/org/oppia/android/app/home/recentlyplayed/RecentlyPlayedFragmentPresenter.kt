@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -75,7 +74,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private fun subscribeToOngoingStoryList() {
     getAssumedSuccessfulPromotedActivityList().observe(
       fragment,
-         { it ->
+      { it ->
         if (it.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
           val recentSectionTitleViewModel =
             SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
@@ -211,7 +210,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       explorationId
     ).observe(
       fragment,
-       { result ->
+      { result ->
         when {
           result.isPending() -> logger.d("RecentlyPlayedFragment", "Loading exploration")
           result.isFailure() -> logger.e(
