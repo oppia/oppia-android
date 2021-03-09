@@ -293,6 +293,20 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  /*
+  *Tests for hints and solution
+  *
+  * testQuestionPlayer_hintNotVisible_wait60Seconds_hintVisible()
+  * testQuestionPlayer_submitOneWrongAnswer_hintNotVisible()
+  * testQuestionPlayer_submitTwoWrongAnswer_hintVisible()
+  * testQuestionPlayer_hintVisible_submitWrongAnswer_hintVisible()
+  * testQuestionPlayer_hintVisible_hintConsumed_hintNotVisible()
+  * testQuestionPlayer_hintConsumed_wait30Seconds_hintAvailable()
+  * testQuestionPlayer_hintConsumed_submitWrongAnswer_hintNotVisible()
+  * testQuestionPlayer_hintConsumed_submitWrongAnswer_wait10Seconds_hintVisible()
+  *
+  */
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
