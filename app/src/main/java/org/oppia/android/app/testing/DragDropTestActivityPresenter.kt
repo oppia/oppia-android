@@ -1,8 +1,5 @@
 package org.oppia.android.app.testing
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
@@ -11,7 +8,6 @@ import javax.inject.Inject
 
 /** The presenter for [DragDropTestActivity] */
 class DragDropTestActivityPresenter @Inject constructor(
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
   private val activity: AppCompatActivity,
 ) {
 
@@ -19,31 +15,11 @@ class DragDropTestActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.drag_drop_test_activity)
-    activity.findViewById<RecyclerView>(R.id.drag_drop_recycler_view).apply {
-      adapter = createBindableAdapter()
-      (adapter as BindableAdapter<*>).setDataUnchecked(dataList)
-    }
-  }
-
-  private fun createBindableAdapter(): BindableAdapter<String> {
-    return singleTypeBuilderFactory
-      .create<String>()
-      .registerViewBinder(
-        inflateView = this::inflateTextViewForStringWithoutDataBinding,
-        bindView = this::bindTextViewForStringWithoutDataBinding
-      )
-      .build()
-  }
-
-  private fun bindTextViewForStringWithoutDataBinding(textView: TextView, data: String) {
-    textView.text = data
-  }
-
-  private fun inflateTextViewForStringWithoutDataBinding(viewGroup: ViewGroup): TextView {
-    val inflater = LayoutInflater.from(activity)
-    return inflater.inflate(
-      R.layout.test_text_view_for_string_no_data_binding, viewGroup, /* attachToRoot= */ false
-    ) as TextView
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.drag_drop_fragment_placeholder,
+      DragDropTestFragment(),
+      DRAG_DROP_TEST_FRAGMENT_TAG
+    )
   }
 
   fun onItemDragged(
