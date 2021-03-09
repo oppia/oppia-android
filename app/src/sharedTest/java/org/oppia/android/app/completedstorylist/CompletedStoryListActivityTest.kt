@@ -60,13 +60,13 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -111,11 +111,11 @@ class CompletedStoryListActivityTest {
 
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProfileTestHelper.markCompletedFractionsStory0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProfileTestHelper.markCompletedRatiosStory0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
   }
@@ -133,7 +133,9 @@ class CompletedStoryListActivityTest {
   @Test
   fun testCompletedStoryList_checkItem0_storyThumbnailDescriptionIsCorrect() {
     launch<CompletedStoryListActivity>(
-      createCompletedStoryListActivityIntent(internalProfileId)
+      createCompletedStoryListActivityIntent(
+        internalProfileId = internalProfileId
+      )
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.completed_story_list))
@@ -144,9 +146,9 @@ class CompletedStoryListActivityTest {
         )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
-          0,
-          R.id.completed_story_lesson_thumbnail
+          recyclerViewId = R.id.completed_story_list,
+          position = 0,
+          targetViewId = R.id.completed_story_lesson_thumbnail
         )
       ).check(
         matches(
@@ -160,7 +162,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem0_storyNameIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -171,9 +173,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
-          0,
-          R.id.completed_story_name_text_view
+          recyclerViewId = R.id.completed_story_list,
+          position = 0,
+          targetViewId = R.id.completed_story_name_text_view
         )
       ).check(
         matches(
@@ -187,7 +189,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_clickOnItem0_intentIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -198,9 +200,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
-          0,
-          R.id.completed_story_name_text_view
+          recyclerViewId = R.id.completed_story_list,
+          position = 0,
+          targetViewId = R.id.completed_story_name_text_view
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
@@ -214,7 +216,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_configurationChange_clickOnItem0_intentIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -226,9 +228,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
-          0,
-          R.id.completed_story_name_text_view
+          recyclerViewId = R.id.completed_story_list,
+          position = 0,
+          targetViewId = R.id.completed_story_name_text_view
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
@@ -242,7 +244,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem0_titleIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -253,9 +255,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
-          0,
-          R.id.completed_story_topic_name_text_view
+          recyclerViewId = R.id.completed_story_list,
+          position = 0,
+          targetViewId = R.id.completed_story_topic_name_text_view
         )
       ).check(
         matches(
@@ -269,7 +271,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem1_storyNameIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -280,9 +282,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
-          1,
-          R.id.completed_story_name_text_view
+          recyclerViewId = R.id.completed_story_list,
+          position = 1,
+          targetViewId = R.id.completed_story_name_text_view
         )
       ).check(
         matches(
@@ -296,7 +298,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_changeOrientation_checkItem1_storyNameIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -308,9 +310,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
-          1,
-          R.id.completed_story_name_text_view
+          recyclerViewId = R.id.completed_story_list,
+          position = 1,
+          targetViewId = R.id.completed_story_name_text_view
         )
       ).check(
         matches(
@@ -324,7 +326,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem1_storyThumbnailDescriptionIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -335,9 +337,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
-          1,
-          R.id.completed_story_lesson_thumbnail
+          recyclerViewId = R.id.completed_story_list,
+          position = 1,
+          targetViewId = R.id.completed_story_lesson_thumbnail
         )
       ).check(
         matches(
@@ -351,7 +353,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_changeOrientation_checkItem1_storyThumbnailDescriptionIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -363,9 +365,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
-          1,
-          R.id.completed_story_lesson_thumbnail
+          recyclerViewId = R.id.completed_story_list,
+          position = 1,
+          targetViewId = R.id.completed_story_lesson_thumbnail
         )
       ).check(
         matches(
@@ -379,7 +381,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem1_titleIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -390,9 +392,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
-          1,
-          R.id.completed_story_topic_name_text_view
+          recyclerViewId = R.id.completed_story_list,
+          position = 1,
+          targetViewId = R.id.completed_story_topic_name_text_view
         )
       ).check(
         matches(
@@ -406,7 +408,7 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_changeOrientation_checkItem1_titleIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -418,9 +420,9 @@ class CompletedStoryListActivityTest {
       )
       onView(
         atPositionOnView(
-          R.id.completed_story_list,
-          1,
-          R.id.completed_story_topic_name_text_view
+          recyclerViewId = R.id.completed_story_list,
+          position = 1,
+          targetViewId = R.id.completed_story_topic_name_text_view
         )
       ).check(
         matches(
@@ -450,7 +452,7 @@ class CompletedStoryListActivityTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,

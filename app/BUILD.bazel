@@ -27,7 +27,6 @@ exports_files(["src/main/AndroidManifest.xml"])
 #  - A file of any type has their own BAZEL library
 # NOTE: if the file is added here make sure to remove this from the other sub lists
 # of EXCLUDED_APP_LIB_FILES.
-
 # keep sorted
 MIGRATED_SOURCE_FILES = [
     "src/main/java/org/oppia/android/app/viewmodel/ObservableArrayList.kt",
@@ -533,6 +532,7 @@ kt_android_library(
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
         "//third_party:circularimageview_circular_image_view",
+        "//utility/src/main/java/org/oppia/android/util/accessibility",
     ],
 )
 
@@ -632,6 +632,7 @@ kt_android_library(
         "//third_party:com_google_android_flexbox",
         "//third_party:javax_annotation_javax_annotation-api_jar",
         "//utility",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
     ],
 )
 
@@ -697,6 +698,8 @@ TEST_DEPS = [
     "//third_party:org_robolectric_annotations",
     "//third_party:robolectric_android-all",
     "//utility",
+    "//utility/src/main/java/org/oppia/android/util/accessibility",
+    "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
 ]
 
 # App module tests. Note that all tests are assumed to be tests with resources (even though not all
