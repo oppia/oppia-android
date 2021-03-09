@@ -26,7 +26,7 @@ message FeedbackReport {
   // Information collected about the physical device's build.
   FeedbackReportingDeviceContext device_context = 4;
   // Information collected about the specific app build on the device.
-  FeedbackReportingOppiaContext app_context = 5;
+  FeedbackReportingAppContext app_context = 5;
 }
 
 // Information supplied by the user in the feedback report.
