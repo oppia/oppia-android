@@ -385,7 +385,7 @@ class BindableAdapterTest {
           bindView = this::bindTextViewForStringWithoutDataBinding
         )
         .build()
-  }
+    }
 
   private fun createSingleViewTypeWithDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
@@ -396,7 +396,7 @@ class BindableAdapterTest {
           setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
         )
         .build()
-  }
+    }
 
   private fun createSingleViewTypeWithDataBindingAndLiveDataAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
@@ -407,7 +407,7 @@ class BindableAdapterTest {
           setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
         )
         .build()
-  }
+    }
 
   private fun createMultiViewTypeNoDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
@@ -424,7 +424,7 @@ class BindableAdapterTest {
           bindView = this::bindTextViewForIntWithoutDataBinding
         )
         .build()
-  }
+    }
 
   private fun createMultiViewTypeWithDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
@@ -446,7 +446,7 @@ class BindableAdapterTest {
           setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
         )
         .build()
-  }
+    }
 
   private fun inflateTextViewForStringWithoutDataBinding(viewGroup: ViewGroup): TextView {
     val inflater = LayoutInflater.from(ApplicationProvider.getApplicationContext())
