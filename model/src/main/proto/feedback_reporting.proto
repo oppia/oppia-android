@@ -103,8 +103,10 @@ message LessonQuestionIssue {
     CANNOT_UNDERSTAND_QUESTION = 8;
     // Represents the issue option that the user couldn't find the answer to a question.
     CANNOT_FIND_ANSWER = 9;
+    // Represents the issue option that a typo was seen.
+    TYPO = 10;
     // Represents the "other" option that lets users input text.
-    OTHER = 10;
+    OTHER = 11;
   }
   repeated IssueOption user_selected_options = 1;
   // The user's text input if they selected "other" as an issue option; this can only be non-empty
