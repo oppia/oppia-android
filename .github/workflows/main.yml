@@ -63,6 +63,16 @@ jobs:
          name: utility reports
          path: utility/build/reports
 
+     - name: Data tests
+       # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
+       run: sudo ./gradlew --full-stacktrace :data:testDebugUnitTest
+     - name: Upload Data Test Reports
+       uses: actions/upload-artifact@v2
+       if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+       with:
+         name: data reports
+         path: data/build/reports
+
      - name: Domain tests
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
        run:  sudo ./gradlew --full-stacktrace :domain:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
