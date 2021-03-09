@@ -132,7 +132,8 @@ class HelpFragmentTest {
         .check(doesNotExist())
     }
   }
-    @Test
+
+  @Test
   fun testHelpFragment_parentIsNotExploration_checkBackArrowNotVisible() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
