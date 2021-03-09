@@ -18,7 +18,6 @@ class DragDropTestFragment : InjectableFragment() {
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as TestInjector).inject(this)
-
   }
 
   override fun onCreateView(
