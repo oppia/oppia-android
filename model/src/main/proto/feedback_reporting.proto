@@ -84,7 +84,7 @@ message LessonQuestionIssue {
   // The specific issue option that a user can choose to include in their report.
   enum IssueOption {
     // An unspecified option that represents an "other" issue option in this category.
-    OTHER_UNSPECIFIED = 0;
+    ISSUE_OPTION_UNSPECIFIED = 0;
     // Represents the issue option that the lesson is too long.
     LESSON_TOO_LONG = 1;
     // Represents the issue option that the lesson is too short.
@@ -103,10 +103,12 @@ message LessonQuestionIssue {
     CANNOT_UNDERSTAND_QUESTION = 8;
     // Represents the issue option that the user couldn't find the answer to a question.
     CANNOT_FIND_ANSWER = 9;
+    // Represents the "other" option that lets users input text.
+    OTHER = 10;
   }
   repeated IssueOption user_selected_options = 1;
   // The user's text input if they selected "other" as an issue option; this can only be non-empty
-  // if the OTHER_UNSPECIFIED option is selected.
+  // if the OTHER option is selected.
   string other_user_input = 2;
 }
 
@@ -121,7 +123,7 @@ message LanguageIssue {
 
 // Represents the user-selected category for an issue with the app's language without specifying a
 // sub-category of text or audio language. This issue does not have any user-selected options as
-// user's must select a sub-category to provide specific issues.
+// users must select a sub-category to provide specific issues.
 message GeneralLanguageIssue {}
 
 // Represents the user-selected category for an issue with the app's language and specifying an issue
@@ -129,8 +131,8 @@ message GeneralLanguageIssue {}
 message AudioLanguageIssue {
   // The specific issue option that a user can choose to include in their report.
   enum IssueOption {
-    // An unspecified option that represents an "other" issue option in this category.
-    OTHER_UNSPECIFIED = 0;
+    // An unspecified option -- this should never be selected as it is not a valid user option.
+    ISSUE_OPTION_UNSPECIFIED = 0;
     // Represents the issue option that the audio language is too fast.
     TOO_FAST = 1;
     // Represents the issue option that the audio language is too slow.
@@ -141,14 +143,18 @@ message AudioLanguageIssue {
     TOO_QUIET = 4;
     // Represents the issue option that the user cannot understand the audio language.
     CANNOT_UNDERSTAND = 5;
+    // Represents the issue option that the audio translation is incorrect.
+    TRANSLATION_WRONG = 6;
     // Represents the issue option that the language the user expects for the audio is incorrect.
-    DIFFERENT_LANGUAGE = 6;
+    DIFFERENT_LANGUAGE = 7;
     // Represents the issue option that the user cannot find their desired audio language.
-    CANNOT_FIND_LANGUAGE = 7;
+    CANNOT_FIND_LANGUAGE = 8;
+    // Represents the "other" option that lets users input text.
+    OTHER = 9;
   }
   repeated IssueOption user_selected_options = 1;
   // The user's text input if they selected "other" as an issue option; this can only be non-empty
-  // if the OTHER_UNSPECIFIED option is selected.
+  // if the OTHER option is selected.
   string other_user_input = 2;
 }
 
@@ -157,31 +163,35 @@ message AudioLanguageIssue {
 message TextLanguageIssue {
   // The specific issue option that a user can choose to include in their report.
   enum IssueOption {
-    // An unspecified option that represents an "other" issue option in this category.
-    OTHER_UNSPECIFIED = 0;
+    // An unspecified option -- this should never be selected as it is not a valid user option.
+    ISSUE_OPTION_UNSPECIFIED = 0;
     // Represents the issue option that the text language is too big.
     TOO_BIG = 1;
     // Represents the issue option that the text language is too small.
     TOO_SMALL = 2;
     // Represents the issue option that the user cannot understand the text language.
     CANNOT_UNDERSTAND = 3;
+    // Represents the issue option that the text translation is incorrect.
+    TRANSLATION_WRONG = 4;
     // Represents the issue option that the language the user expects for the text is incorrect.
-    DIFFERENT_LANGUAGE = 4;
+    DIFFERENT_LANGUAGE = 5;
     // Represents the issue option that the user cannot find their desired text language.
-    CANNOT_FIND_LANGUAGE = 5;
+    CANNOT_FIND_LANGUAGE = 6;
+    // Represents the "other" option that lets users input text.
+    OTHER = 7;
   }
   repeated IssueOption user_selected_options = 1;
   // The user's text input if they selected "other" as an issue option; this can only be non-empty
-  // if the OTHER_UNSPECIFIED option is selected.
+  // if the OTHER option is selected.
   string other_user_input = 2;
 }
 
 // Represents the user-selected category for an issue with the topics available to the to the user.
-message TopicsIssue{
+message TopicsIssue {
   // The specific issue option that a user can choose to include in their report.
   enum IssueOption {
     // An unspecified option that represents an "other" issue option in this category.
-    OTHER_UNSPECIFIED = 0;
+    ISSUE_OPTION_UNSPECIFIED = 0;
     // Represents the issue option that the user cannot see all the topics they want to see.
     CANNOT_SEE_ALL = 1;
     // Represents the issue option that the user cannot find a desired topic.
@@ -189,35 +199,41 @@ message TopicsIssue{
     // Represents the issue option that the user cannot find a story they accessed earlier.
     CANNOT_FIND_EARLIER_STORY = 3;
     // Represents the issue option that the user is unsure of what to do next in the app.
-    DO_NOT_KNOW_NEXT = 4;
+    DO_NOT_KNOW_NEXT_STEP = 4;
+    // Represents the "other" option that lets users input text.
+    OTHER = 5;
   }
   repeated IssueOption user_selected_options = 1;
   // The user's text input if they selected "other" as an issue option; this can only be non-empty
-  // if the OTHER_UNSPECIFIED option is selected.
+  // if the OTHER option is selected.
   string other_user_input = 2;
 }
 
 
 // Represents the user-selected category for an issue with the user's profile.
-message ProfileIssue{
+message ProfileIssue {
   // The specific issue option that a user can choose to include in their report.
   enum IssueOption {
     // An unspecified option that represents an "other" issue option in this category.
-    OTHER_UNSPECIFIED = 0;
+    ISSUE_OPTION_UNSPECIFIED = 0;
     // Represents the issue option that the user cannot add a profile.
     CANNOT_ADD = 1;
     // Represents the issue option that the user cannot remove a profile.
     CANNOT_DELETE = 2;
     // Represents the issue option that the user cannot add a new admin account.
     CANNOT_ADD_NEW_ADMIN = 3;
+    // Represents the issue option that the user cannot change their profile name.
+    CANNOT_CHANGE_NAME = 4;
     // Represents the issue option that the user cannot change their profile image.
-    CANNOT_CHANGE_IMAGE = 4;
-    // Represents the issue option that the user forgot their admin IN.
-    FORGOT_ADMIN_PIN = 5;
+    CANNOT_CHANGE_IMAGE = 5;
+    // Represents the issue option that the user forgot their admin PIN.
+    FORGOT_ADMIN_PIN = 6;
+    // Represents the "other" option that lets users input text.
+    OTHER = 7;
   }
   repeated IssueOption user_selected_options = 1;
   // The user's text input if they selected "other" as an issue option; this can only be non-empty
-  // if the OTHER_UNSPECIFIED option is selected.
+  // if the OTHER option is selected.
   string other_user_input = 2;
 }
 
@@ -234,7 +250,7 @@ message Crash {
   enum CrashLocation {
     // Unspecified location for a crash report; no reports should have an unspecified location
     // as users are required to select a response for this.
-    LOCATION_UNSPECIFIED = 0;
+    CRASH_LOCATION_UNSPECIFIED = 0;
     // Indicates that the crash occurred in the lesson / exploration player.
     LESSON_PLAYER = 1;
     // Indicates that the crash occurred in the question player / during a practice session.
@@ -246,7 +262,7 @@ message Crash {
     // Indicates that the crash occurred on the user's profile page.
     PROFILE_ACTIVITY = 5;
     // Indicates that the crash occurred in a different location not listed above.
-    OTHER = 6;
+    OTHER_LOCATION = 6;
   }
   CrashLocation crash_location = 1;
   // The user's text input for explaining what happened.
@@ -306,7 +322,7 @@ message FeedbackReportingOppiaContext {
   // Indicates the progress of a status based on the chapter progress for the topic.
   enum TopicProgressStatus {
     // The completion status is unknown.
-    STATUS_UNSPECIFIED = 0;
+    TOPIC_PROGRESS_STATUS_UNSPECIFIED = 0;
     // No stories have been started in this topic.
     NOT_STARTED = 1;
     // The topic has been started but not completed by the player.
