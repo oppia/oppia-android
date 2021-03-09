@@ -16,6 +16,7 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -30,6 +31,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.AdditionalMatchers.not
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -146,6 +148,14 @@ class OptionsFragmentTest {
   fun testOptionsFragment_parentIsNotExploration_checkBackArrowNotVisible() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testOptionFragment_notFromNavigationDrawer_navigationDrawerIsNotPresent(){
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
+      onView(withId(R.id.options_activity_fragment_navigation_drawer))
         .check(doesNotExist())
     }
   }

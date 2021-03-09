@@ -30,8 +30,8 @@ class OptionsActivityPresenter @Inject constructor(
       setUpToolbar()
       setUpNavigationDrawer()
     } else {
-      setUpToolbar()
       activity.setContentView(R.layout.options_without_drawer_activity)
+      setUpToolbar()
       activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
       toolbar.setNavigationOnClickListener {
         activity.finish()
