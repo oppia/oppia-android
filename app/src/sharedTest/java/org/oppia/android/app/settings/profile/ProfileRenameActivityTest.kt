@@ -12,6 +12,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.AccessibilityChecks
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -31,6 +32,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -101,6 +103,14 @@ class ProfileRenameActivityTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
+
+  companion object {
+    @BeforeClass
+    @JvmStatic
+    fun enableA11yChecks() {
+      AccessibilityChecks.enable()
+    }
+  }
 
   @Before
   fun setUp() {
