@@ -13,5 +13,5 @@ if [[ "$OSTYPE" == "linux-gnu"* ||  "$OSTYPE" == "darwin"* ]]; then
   download_buf
 else
   echo "Protobuf lint check not available on $OSTYPE"
-  exit 1
+  exit 0
 fi
