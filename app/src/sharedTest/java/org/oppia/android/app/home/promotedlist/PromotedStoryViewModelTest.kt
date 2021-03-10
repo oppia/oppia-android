@@ -91,8 +91,8 @@ class PromotedStoryViewModelTest {
   fun testPromotedStoryViewModelEquals_reflexiveBasicPromotedStoryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use { homeFragmentTestActivity ->
-      homeFragmentTestActivity.onActivity { homeFragmentTestActivity ->
+    ).use { homeFragmentTestActivityScenario ->
+      homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
 
         // Verify the reflexive property of equals(): a == a.
@@ -105,8 +105,8 @@ class PromotedStoryViewModelTest {
   fun testPromotedStoryViewModelEquals_symmetricBasicPromotedStoryViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use { homeFragmentTestActivity ->
-      homeFragmentTestActivity.onActivity { homeFragmentTestActivity ->
+    ).use { homeFragmentTestActivityScenario ->
+      homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
         val promotedStoryViewModelCopy = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
 
@@ -121,8 +121,8 @@ class PromotedStoryViewModelTest {
   fun testPromotedStoryViewModelEquals_transitiveBasicPromotedStoryViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use { homeFragmentTestActivity ->
-      homeFragmentTestActivity.onActivity { homeFragmentTestActivity ->
+    ).use { homeFragmentTestActivityScenario ->
+      homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModelCopy1 =
           createBasicPromotedStoryViewModel(homeFragmentTestActivity)
         val promotedStoryViewModelCopy2 =
@@ -142,8 +142,8 @@ class PromotedStoryViewModelTest {
   fun testPromotedStoryViewModelEquals_consistentBasicPromotedStoryViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use { homeFragmentTestActivity ->
-      homeFragmentTestActivity.onActivity { homeFragmentTestActivity ->
+    ).use { homeFragmentTestActivityScenario ->
+      homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
         val promotedStoryViewModelCopy = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
         assertThat(promotedStoryViewModel).isEqualTo(promotedStoryViewModelCopy)
@@ -159,8 +159,8 @@ class PromotedStoryViewModelTest {
   fun testPromotedStoryViewModelEquals_basicPromotedStoryViewModelAndNull_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use { homeFragmentTestActivity ->
-      homeFragmentTestActivity.onActivity { homeFragmentTestActivity ->
+    ).use { homeFragmentTestActivityScenario ->
+      homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
 
         assertThat(promotedStoryViewModel).isNotEqualTo(null)
@@ -172,8 +172,8 @@ class PromotedStoryViewModelTest {
   fun testPromotedStoryViewModelEquals_profileId1AndProfileId2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use { homeFragmentTestActivity ->
-      homeFragmentTestActivity.onActivity { homeFragmentTestActivity ->
+    ).use { homeFragmentTestActivityScenario ->
+      homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModelProfile1 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
@@ -198,8 +198,8 @@ class PromotedStoryViewModelTest {
   fun testPromotedStoryViewModelEquals_storyCount2AndStoryCount3_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use { homeFragmentTestActivity ->
-      homeFragmentTestActivity.onActivity { homeFragmentTestActivity ->
+    ).use { homeFragmentTestActivityScenario ->
+      homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModelStoryCount2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
@@ -225,8 +225,8 @@ class PromotedStoryViewModelTest {
   fun testPromotedStoryViewModelEquals_entity1AndEntity2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use { homeFragmentTestActivity ->
-      homeFragmentTestActivity.onActivity { homeFragmentTestActivity ->
+    ).use { homeFragmentTestActivityScenario ->
+      homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModelEntity1 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
@@ -251,8 +251,8 @@ class PromotedStoryViewModelTest {
   fun testPromotedStoryViewModelEquals_story1AndStory2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use { homeFragmentTestActivity ->
-      homeFragmentTestActivity.onActivity { homeFragmentTestActivity ->
+    ).use { homeFragmentTestActivityScenario ->
+      homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         assertThat(promotedStory1.equals(promotedStory2)).isFalse()
 
         val promotedStoryViewModelStory1 = PromotedStoryViewModel(
@@ -279,8 +279,8 @@ class PromotedStoryViewModelTest {
   fun testPromotedStoryViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use { homeFragmentTestActivity ->
-      homeFragmentTestActivity.onActivity { homeFragmentTestActivity ->
+    ).use { homeFragmentTestActivityScenario ->
+      homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
         val promotedStoryViewModelCopy = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
         assertThat(promotedStoryViewModel).isEqualTo(promotedStoryViewModelCopy)
@@ -296,8 +296,8 @@ class PromotedStoryViewModelTest {
   fun testPromotedStoryViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use { homeFragmentTestActivity ->
-      homeFragmentTestActivity.onActivity { homeFragmentTestActivity ->
+    ).use { homeFragmentTestActivityScenario ->
+      homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
         val firstHash = promotedStoryViewModel.hashCode()
         val secondHash = promotedStoryViewModel.hashCode()
