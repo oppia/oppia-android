@@ -1,7 +1,7 @@
 package org.oppia.android.data.backends.api
 
-import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import retrofit2.Call
 import retrofit2.mock.BehaviorDelegate
 
@@ -9,7 +9,7 @@ import retrofit2.mock.BehaviorDelegate
 class MockFeedbackReportingService(
   private val delegate: BehaviorDelegate<FeedbackReportingService>
 ) : FeedbackReportingService {
-  override fun postFeedbackReport(report: FeedbackReport): Call<Unit> {
+  override fun postFeedbackReport(report: GaeFeedbackReport): Call<Unit> {
     return delegate.returningResponse(kotlin.Unit).postFeedbackReport(report)
   }
 }
