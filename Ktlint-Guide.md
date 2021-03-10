@@ -1,17 +1,26 @@
+# Installation
+Once you had completed all the [installation steps](https://github.com/oppia/oppia-android/wiki#prerequisites), you will be having a `ktlint` file in your `opensource/oppia-android-tools` folder. 
+
 # Commands 
-* `ktlint --version` - Check the version of your installed ktlint. As of now on CircleCI we are using `0.37.1`.
 
-* `ktlint --android "path/of/your/kotlin/file"` - Android Kotlin Style Guide using `--android`
+**Note: Keep your terminal or command line to `opensource/oppia-android` path while running below commands.**
+
+* Check the version of your ktlint. As of now on GitHub Actions, we are using `0.37.1`.<br>
+`../oppia-android-tools/ktlint --version`<br>
+
+* Android Kotlin Style Guide using `--android`<br>
+`../oppia-android-tools/ktlint --android "path/of/your/kotlin/file"`
 
    * Examples <br>
-       * Specific File - <br>`ktlint --android "app/src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughWelcomeFragmentTest.kt"`<br>
-       * Specific Directory - `ktlint --android "utility/src/**/*.kt"`
+       * Specific File <br>`../oppia-android-tools/ktlint --android "app/src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughWelcomeFragmentTest.kt"`<br>
+       * Specific Directory <br> `../oppia-android-tools/ktlint --android "utility/src/**/*.kt"`
 
-* `ktlint -F --android "path/of/your/kotlin/file"` - Android Kotlin Style Guide using `--android` with Ktlint Auto Formatter `-F`. This will fix some of the issues automatically. 
+* Android Kotlin Style Guide using `--android` with Ktlint Auto Formatter `-F`. This will fix some of the issues automatically.<br>
+`../oppia-android-tools/ktlint -F --android "path/of/your/kotlin/file"`
 
    * Examples <br>
-       * Specific File - <br>`ktlint -F --android "app/src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughWelcomeFragmentTest.kt"`<br>
-       * Specific Directory - `ktlint -F --android "utility/src/**/*.kt"`
+       * Specific File <br>`../oppia-android-tools/ktlint -F --android "app/src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughWelcomeFragmentTest.kt"`<br>
+       * Specific Directory <br>`../oppia-android-tools/ktlint -F --android "utility/src/**/*.kt"`
 
 # Macros
 In Android Studio we have a feature called Macros which helps you convert multiple tasks in one shortcut.
