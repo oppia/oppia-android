@@ -12,14 +12,14 @@ Once you had completed all the [installation steps](https://github.com/oppia/opp
 `../oppia-android-tools/ktlint --android "path/of/your/kotlin/file"`
 
    * Examples <br>
-       * Specific File <br>`../oppia-android-tools/ktlint --android "app/src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughWelcomeFragmentTest.kt"`<br>
+       * Specific File <br>`../oppia-android-tools/ktlint --android app/src/sharedTest/java/org/oppia/android/app/walkthrough/WalkthroughWelcomeFragmentTest.kt`<br>
        * Specific Directory <br> `../oppia-android-tools/ktlint --android "utility/src/**/*.kt"`
 
 * Android Kotlin Style Guide using `--android` with Ktlint Auto Formatter `-F`. This will fix some of the issues automatically.<br>
 `../oppia-android-tools/ktlint -F --android "path/of/your/kotlin/file"`
 
    * Examples <br>
-       * Specific File <br>`../oppia-android-tools/ktlint -F --android "app/src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughWelcomeFragmentTest.kt"`<br>
+       * Specific File <br>`../oppia-android-tools/ktlint -F --android app/src/sharedTest/java/org/oppia/android/app/walkthrough/WalkthroughWelcomeFragmentTest.kt`<br>
        * Specific Directory <br>`../oppia-android-tools/ktlint -F --android "utility/src/**/*.kt"`
 
 # Macros
