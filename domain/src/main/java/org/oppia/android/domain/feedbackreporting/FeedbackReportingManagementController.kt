@@ -4,6 +4,7 @@ import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingDatabase
 import org.oppia.android.app.model.FeedbackReportingDeviceContext
 import org.oppia.android.app.model.FeedbackReportingSystemContext
+import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
@@ -20,25 +21,35 @@ class FeedbackReportingManagementController @Inject constructor(
     FEEDBACK_REPORTS_DATABASE_NAME, FeedbackReportingDatabase.getDefaultInstance()
   )
 
+  /**
+   * Stores a [FeedbackReport] proto in local storage if there is not internet connection, or sends
+   * them to remote storage to be processed in the admin dashboard.
+   *
+   * @param feedbackReportViewModel for the view model representing the feedback provided by the user
+   */
   fun submitFeedbackReport(/* FeedbackReport */) {
+    val systemContext = getSystemContext()
+    val deviceContext = getDeviceContext()
+    val appContext = getAppContext()
     if (networkConnectionUtil.getCurrentConnectionStatus() == NONE) {
-      // Cache report
+      // Cache report in local storage
     } else {
-
+      // Push report to remote storage
     }
   }
 
   private fun getSystemContext(): FeedbackReportingSystemContext {
-    return FeedbackReportingSystemContext.getDefaultInstance()
+    return FeedbackReportingSystemContext.newBuilder()
+      .build()
   }
 
   private fun getDeviceContext(): FeedbackReportingDeviceContext {
-    val deviceContext = FeedbackReportingDeviceContext.newBuilder()
-
-    return FeedbackReportingDeviceContext.getDefaultInstance()
+    return FeedbackReportingDeviceContext.newBuilder()
+      .build()
   }
 
   private fun getAppContext(): FeedbackReportingAppContext {
-    return FeedbackReportingAppContext.getDefaultInstance()
+    return FeedbackReportingAppContext.newBuilder()
+      .build()
   }
 }
