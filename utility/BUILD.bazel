@@ -11,7 +11,10 @@ load("//utility:utility_test.bzl", "utility_test")
 # list will automatically be excluded from the top-level utility library. It's recommended to use
 # globs here to ensure new files added to migrated packages don't accidentally get included in the
 # top-level module library.
-MIGRATED_PROD_FILES = glob(["src/main/java/org/oppia/android/util/accessibility/*.kt"])
+MIGRATED_PROD_FILES = glob([
+    "src/main/java/org/oppia/android/util/accessibility/*.kt",
+    "src/main/java/org/oppia/android/util/system/*.kt",
+])
 
 # Library for general-purpose utilities.
 kt_android_library(
@@ -38,6 +41,9 @@ kt_android_library(
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:com_google_guava_guava",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
+        "//utility/src/main/java/org/oppia/android/util/system:prod_module",
     ],
 )
 

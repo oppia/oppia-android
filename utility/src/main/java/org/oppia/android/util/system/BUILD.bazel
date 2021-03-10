@@ -1,0 +1,50 @@
+"""
+Utilities corresponding to system utilities such as the system clock.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "oppia_clock",
+    srcs = [
+        "OppiaClock.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+kt_android_library(
+    name = "oppia_clock_impl",
+    srcs = [
+        "OppiaClockImpl.kt",
+    ],
+    deps = [
+        ":oppia_clock",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = [
+        "OppiaClockModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":oppia_clock_impl",
+    ],
+)
+
+kt_android_library(
+    name = "oppia_date_time_formatter",
+    srcs = [
+        "OppiaDateTimeFormatter.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+dagger_rules()
