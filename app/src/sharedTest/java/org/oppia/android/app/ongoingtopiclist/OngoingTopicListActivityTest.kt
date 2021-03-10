@@ -111,6 +111,10 @@ class OngoingTopicListActivityTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
+    storyProfileTestHelper.markCompletedRatiosStory1Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
     storyProfileTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
