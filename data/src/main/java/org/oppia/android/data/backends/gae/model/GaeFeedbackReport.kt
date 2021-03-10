@@ -2,8 +2,6 @@ package org.oppia.android.data.backends.gae.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import org.oppia.android.data.backends.gae.NetworkApiKey
-import javax.inject.Inject
 
 /**
  * Data class for the feedback report sent by the Android app to remote storage.
