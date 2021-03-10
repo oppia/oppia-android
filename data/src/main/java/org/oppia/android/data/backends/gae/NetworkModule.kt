@@ -11,13 +11,6 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /**
- * Corresponds to an API key specific to Oppia Android for the backend to verify the origin of
- * requests sent from the app.
- */
-@Qualifier
-annotation class NetworkApiKey
-
-/**
  * Module which provides all required dependencies about network
  *
  * Sample resource: https://github.com/gahfy/Feed-Me/tree/unitTests
@@ -67,12 +60,4 @@ class NetworkModule {
   fun provideClassroomService(@OppiaRetrofit retrofit: Retrofit): ClassroomService {
     return retrofit.create(ClassroomService::class.java)
   }
-
-  /**
-   * Provides the API key to validate messages received and messages being sent. A stronger, secret
-   * key will be used when putting app out in production.
-   */
-  @Provides
-  @NetworkApiKey
-  fun provideNetworkApiKey(): String = ""
 }
