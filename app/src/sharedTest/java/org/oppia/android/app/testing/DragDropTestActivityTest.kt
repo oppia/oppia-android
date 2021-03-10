@@ -77,7 +77,7 @@ class DragDropTestActivityTest {
       scenario.onActivity { activity ->
         attachDragDropToActivity(activity)
       }
-      onView(withId(recyclerViewId = R.id.drag_drop_recycler_view)).perform(
+      onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
             0,
