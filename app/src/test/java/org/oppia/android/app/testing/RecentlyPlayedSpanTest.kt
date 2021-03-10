@@ -119,7 +119,7 @@ class RecentlyPlayedSpanTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ongoing_story_recycler_view)).check(
+      onView(withId(R.id.promoted_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 2,
           position = 0
@@ -133,7 +133,7 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem0_tablet_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ongoing_story_recycler_view)).check(
+      onView(withId(R.id.promoted_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 3,
           position = 0
@@ -151,7 +151,7 @@ class RecentlyPlayedSpanTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ongoing_story_recycler_view)).check(
+      onView(withId(R.id.promoted_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 3,
           position = 0
@@ -169,7 +169,7 @@ class RecentlyPlayedSpanTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ongoing_story_recycler_view)).check(
+      onView(withId(R.id.promoted_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 4,
           position = 0
@@ -187,7 +187,7 @@ class RecentlyPlayedSpanTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ongoing_story_recycler_view)).check(
+      onView(withId(R.id.promoted_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 2,
           position = 2
@@ -205,7 +205,7 @@ class RecentlyPlayedSpanTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ongoing_story_recycler_view)).check(
+      onView(withId(R.id.promoted_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 3,
           position = 2
@@ -223,7 +223,7 @@ class RecentlyPlayedSpanTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ongoing_story_recycler_view)).check(
+      onView(withId(R.id.promoted_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 3,
           position = 2
@@ -241,7 +241,7 @@ class RecentlyPlayedSpanTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ongoing_story_recycler_view)).check(
+      onView(withId(R.id.promoted_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 4,
           position = 2
