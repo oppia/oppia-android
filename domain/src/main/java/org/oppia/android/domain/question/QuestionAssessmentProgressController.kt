@@ -10,7 +10,7 @@ import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
-import org.oppia.android.domain.classify.ClassificationResult
+import org.oppia.android.domain.classify.ClassificationResult.OutcomeWithMisconception
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionAssessmentProgress.TrainStage
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
@@ -144,13 +144,10 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.stateDeck.submitAnswer(answer, answeredQuestionOutcome.feedback)
 
           // Track the number of answers the user submitted, including any misconceptions
-          val misconception =
-            if (classificationResult is ClassificationResult.OutcomeWithMisconception) {
-              classificationResult.taggedSkillMisconceptionId
-            } else {
-              null
-            }
-          progress.answerSubmitted(misconception)
+          val misconception = if (classificationResult is OutcomeWithMisconception) {
+            classificationResult.taggedSkillMisconceptionId
+          } else null
+          progress.trackAnswerSubmitted(misconception)
 
           // Do not proceed unless the user submitted the correct answer.
           if (answeredQuestionOutcome.isCorrectAnswer) {
@@ -208,7 +205,7 @@ class QuestionAssessmentProgressController @Inject constructor(
             hintIndex
           )
           progress.stateDeck.pushStateForHint(state, hintIndex)
-          progress.hintViewed()
+          progress.trackHintViewed()
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing hint' situation. This can specifically happen if hint throws an
@@ -242,7 +239,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.stateDeck.submitSolutionRevealed(state)
           solution = progress.stateList.computeSolutionForResult(state)
           progress.stateDeck.pushStateForSolution(state)
-          progress.solutionViewed()
+          progress.trackSolutionViewed()
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing solution' situation. This can specifically happen if solution
