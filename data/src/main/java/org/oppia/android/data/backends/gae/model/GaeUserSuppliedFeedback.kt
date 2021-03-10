@@ -10,9 +10,9 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GaeUserSuppliedFeedback(
 
-  @Json(name = "report_type") val reportType: String?,
-  @Json(name = "category") val category: String?,
+  @Json(name = "report_type") val reportType: String,
+  @Json(name = "category") val category: String,
   @Json(name = "feedback_list") val feedbackList: List<String>?,
-  @Json(name = "user_input") val userInput: String?
+  @Json(name = "open_text_user_input") val openTextUserInput: String?
 
 )

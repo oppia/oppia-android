@@ -8,13 +8,13 @@ import com.squareup.moshi.JsonClass
  * TODO(#2801): Link backend domain model
  */
 @JsonClass(generateAdapter = true)
-data class GaeFeedbackReport constructor(
+data class GaeFeedbackReport(
 
   @Json(name = "api_key") val apiKey: String,
-  @Json(name = "report_creation_timestamp_ms") val reportCreationTimestampMs: Double?,
-  @Json(name = "user_supplied_feedback") val userSuppliedFeedback: GaeUserSuppliedFeedback?,
-  @Json(name = "system_context") val systemContext: GaeFeedbackReportingSystemContext?,
-  @Json(name = "device_context") val deviceContext: GaeFeedbackReportingDeviceContext?,
-  @Json(name = "app_context") val appContext: GaeFeedbackReportingAppContext?
+  @Json(name = "report_creation_timestamp_ms") val reportCreationTimestampMs: Long,
+  @Json(name = "user_supplied_feedback") val userSuppliedFeedback: GaeUserSuppliedFeedback,
+  @Json(name = "system_context") val systemContext: GaeFeedbackReportingSystemContext,
+  @Json(name = "device_context") val deviceContext: GaeFeedbackReportingDeviceContext,
+  @Json(name = "app_context") val appContext: GaeFeedbackReportingAppContext
 
 )
