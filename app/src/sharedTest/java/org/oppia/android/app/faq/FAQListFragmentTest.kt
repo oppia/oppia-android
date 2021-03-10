@@ -98,7 +98,8 @@ class FAQListFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.faq_fragment_recycler_view, 0, R.id.faq_question_text_view
+          recyclerViewId = R.id.faq_fragment_recycler_view,
+          position = 0, R.id.faq_question_text_view
         )
       ).check(matches(withText(R.string.featured_questions)))
     }
@@ -107,7 +108,9 @@ class FAQListFragmentTest {
   @Test
   fun openFAQListActivity_selectFAQQuestion_opensFAQSingleActivity() {
     launch(FAQListActivity::class.java).use {
-      onView(atPosition(R.id.faq_fragment_recycler_view, 1)).perform(click())
+      onView(atPosition(
+        recyclerViewId = R.id.faq_fragment_recycler_view,
+        position = 1)).perform(click())
       intended(
         allOf(
           hasExtra(
@@ -128,7 +131,9 @@ class FAQListFragmentTest {
   fun openFAQListActivity_changeConfiguration_selectFAQQuestion_opensFAQSingleActivity() {
     launch(FAQListActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(atPosition(R.id.faq_fragment_recycler_view, 1)).perform(click())
+      onView(atPosition(
+        recyclerViewId = R.id.faq_fragment_recycler_view,
+        position = 1)).perform(click())
       intended(
         allOf(
           hasExtra(
