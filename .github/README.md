@@ -60,19 +60,20 @@ The Oppia Android code is released under the [Apache v2 license](https://github.
 We also have public chat rooms on Gitter: [https://gitter.im/oppia/oppia-android](https://gitter.im/oppia/oppia-android). Drop by and say hello!
 
 ## Social Media
-
-<a href="https://twitter.com/oppiaorg">
-  <img align="left" alt="Oppia's Twitter" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/twitter.svg" />
-</a>
-<a href="https://www.linkedin.com/in/oppia-org/">
-  <img align="left" alt="Akshay's Linkdein" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg" />
-</a>
-<a href="https://medium.com/@oppia.org">
-  <img align="left" alt="Oppia's Medium" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/medium.svg" />
-</a>
-<a href="https://www.facebook.com/oppiaorg/">
-  <img align="left" alt="Oppia's Facebook" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/facebook.svg" />
-</a>
-<a href="https://www.youtube.com/channel/UC5c1G7BNDCfv1rczcBp9FPw">
-  <img align="left" alt="Oppia's YouTube" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/youtube.svg" />
-</a>
+<p>
+    <a href="https://twitter.com/oppiaorg">
+      <img align="left" alt="Oppia's Twitter" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/twitter.svg" />
+    </a>
+    <a href="https://www.linkedin.com/in/oppia-org/">
+      <img align="left" alt="Oppia's Linkdein" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg" />
+    </a>
+    <a href="https://medium.com/@oppia.org">
+      <img align="left" alt="Oppia's Medium" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/medium.svg" />
+    </a>
+    <a href="https://www.facebook.com/oppiaorg/">
+      <img align="left" alt="Oppia's Facebook" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/facebook.svg" />
+    </a>
+    <a href="https://www.youtube.com/channel/UC5c1G7BNDCfv1rczcBp9FPw">
+      <img align="left" alt="Oppia's YouTube" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/youtube.svg" />
+    </a>
+</p>
