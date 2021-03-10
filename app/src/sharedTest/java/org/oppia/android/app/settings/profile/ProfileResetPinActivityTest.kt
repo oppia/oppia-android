@@ -95,7 +95,7 @@ import javax.inject.Singleton
 class ProfileResetPinActivityTest {
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<ProfileResetPinActivity> = ActivityTestRule(
+  val activityTestRule: ActivityTestRule<ProfileResetPinActivity> = ActivityTestRule(
     ProfileResetPinActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
@@ -143,7 +143,7 @@ class ProfileResetPinActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.profile_reset_pin_activity_label))
+    assertThat(title).isEqualTo(context.getString(R.string.profile_reset_pin_activity_title))
   }
 
   private fun createProfileResetPinActivityIntent(

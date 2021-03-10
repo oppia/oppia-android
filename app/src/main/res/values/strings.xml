@@ -300,8 +300,7 @@
   <string name="profile_rename_label">New Name</string>
   <string name="profile_rename_save">save</string>
   <!-- ProfileResetPinActivity -->
-  <string name="profile_reset_pin_activity_label">Reset PIN</string>
-  <string name="profile_reset_pin_title">Reset PIN</string>
+  <string name="profile_reset_pin_activity_title">Reset PIN</string>
   <string name="profile_reset_pin_main">Enter a new PIN for the user to enter when accessing their profile.</string>
   <string name="profile_reset_pin_user_pin_label">3-Digit PIN</string>
   <string name="profile_reset_pin_admin_pin_label">5-Digit PIN</string>
