@@ -152,6 +152,19 @@ java_lite_proto_library(
 )
 
 format_import_proto_library(
+    name = "feedback_reporting",
+    src = "src/main/proto/feedback_reporting.proto",
+    deps = [
+        ":profile_proto",
+    ],
+)
+
+java_lite_proto_library(
+    name = "feedback_reporting_java_proto_lite",
+    deps = [":feedback_reporting_proto"],
+)
+
+format_import_proto_library(
     name = "question",
     src = "src/main/proto/question.proto",
     deps = [
