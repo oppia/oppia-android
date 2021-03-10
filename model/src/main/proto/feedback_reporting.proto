@@ -11,14 +11,14 @@ option java_multiple_files = true;
 // them to the remote service.
 message FeedbackReportingDatabase {
   // The reports that are cached locally on the device.
-  repeated FeedbackReport reports_list = 1;
+  repeated FeedbackReport reports = 1;
 }
 
 // Corresponds to an entire feedback report with user reported information and collected app,
 // device, and build information.
 message FeedbackReport {
   // The date as a Unix timestamp for when the report was created.
-  double report_creation_timestamp_ms = 1;
+  int64 report_creation_timestamp_ms = 1;
   // The information supplied by the user in a feedback report.
   UserSuppliedFeedback user_supplied_info = 2;
   // Information collected about the user's physical device.
