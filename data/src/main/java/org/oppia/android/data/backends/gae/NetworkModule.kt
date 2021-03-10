@@ -10,7 +10,10 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-/** API key to validate messages sent over the network. */
+/**
+ * Corresponds to an API key specific to Oppia Android for the backend to verify the origin of
+ * requests sent from the app.
+ */
 @Qualifier
 annotation class NetworkApiKey
 

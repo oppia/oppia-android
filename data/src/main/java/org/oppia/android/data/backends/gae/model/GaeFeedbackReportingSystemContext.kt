@@ -10,9 +10,9 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GaeFeedbackReportingSystemContext(
 
-  @Json(name = "package_name") val package_name: String?,
-  @Json(name = "package_version_code") val package_version_code: Int?,
-  @Json(name = "country_locale") val country_locale: String?,
-  @Json(name = "language_locale") val language_locale: String?
+  @Json(name = "package_version_name") val packageVersionName: String?,
+  @Json(name = "package_version_code") val packageVersionCode: Int?,
+  @Json(name = "country_locale") val countryLocale: String?,
+  @Json(name = "language_locale") val languageLocale: String?
 
 )
