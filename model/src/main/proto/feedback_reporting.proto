@@ -18,7 +18,7 @@ message FeedbackReportingDatabase {
 // device, and build information.
 message FeedbackReport {
   // The date as a Unix timestamp for when the report was created.
-  double report_creation_timestamp_ms = 1;
+  int64 report_creation_timestamp_ms = 1;
   // The information supplied by the user in a feedback report.
   UserSuppliedFeedback user_supplied_info = 2;
   // Information collected about the user's physical device.
@@ -280,7 +280,11 @@ message FeedbackReportingSystemContext {
   // The ISO-639 country code for the country locale set by the user (otherwise determined by the
   // environment JVM). EX: A locale of Canada is different than a locale of French Canada and
   // differentiates user environments. Similarly, even if two language locales are both French,
+<<<<<<< HEAD
   // a country locale of French Canada indicates a very different user someone with a country locale
+=======
+  // a country locale of French Canada indicates a very different user someon with a country locale
+>>>>>>> origin/develop
   // of France.
   string country_locale = 3;
   // The ISO-3166  code for the device's language locale set by the user (otherwise determined by the
