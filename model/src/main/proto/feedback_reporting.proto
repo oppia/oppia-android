@@ -280,7 +280,7 @@ message FeedbackReportingSystemContext {
   // The ISO-639 country code for the country locale set by the user (otherwise determined by the
   // environment JVM). EX: A locale of Canada is different than a locale of French Canada and
   // differentiates user environments. Similarly, even if two language locales are both French,
-  // a country locale of French Canada indicates a very different user someon with a country locale
+  // a country locale of French Canada indicates a different user than someone with a country locale
   // of France.
   string country_locale = 3;
   // The ISO-3166  code for the device's language locale set by the user (otherwise determined by the
@@ -326,20 +326,8 @@ message FeedbackReportingAppContext {
     CRASH = 5;
   }
   EntryPoint entry_point = 1;
-  // Indicates the progress of a status based on the chapter progress for the topic.
-  enum TopicProgressStatus {
-    // The completion status is unknown.
-    TOPIC_PROGRESS_STATUS_UNSPECIFIED = 0;
-    // No stories have been started in this topic.
-    NOT_STARTED = 1;
-    // The topic has been started but not completed by the player.
-    STARTED_NOT_COMPLETED = 2;
-    // The topic has been completed by the player.
-    COMPLETED = 3;
-  }
-  // Maps topic ID to the completion state of topic, based on state of stories in topics. Helps
-  // contextualize the user's app state and understand the scenario the report is filed during.
-  map<string, TopicProgressStatus> topic_progress = 2;
+  // Lists the topics that have been completed by the user.
+  repeated string topic_progress = 2;
   // The text size the app is set to.
   ReadingTextSize text_size = 3;
   // The text language the app is set to.

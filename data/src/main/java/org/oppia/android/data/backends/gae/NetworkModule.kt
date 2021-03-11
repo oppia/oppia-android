@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import org.oppia.android.data.backends.gae.api.ClassroomService
+import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -59,5 +60,12 @@ class NetworkModule {
   @Singleton
   fun provideClassroomService(@OppiaRetrofit retrofit: Retrofit): ClassroomService {
     return retrofit.create(ClassroomService::class.java)
+  }
+
+  //Provides the Feedback Reporting service implementation using the Singleton [OppiaRetrofit] object
+  @Provides
+  @Singleton
+  fun provideFeedbackReportingService(@OppiaRetrofit retrofit: Retrofit): FeedbackReportingService {
+    return retrofit.create(FeedbackReportingService::class.java)
   }
 }
