@@ -9,11 +9,10 @@ kt_android_library(
     srcs = [
         "DateTimeUtil.kt",
     ],
-    manifest = "//utility:manifest",
-    resource_files = ["//utility:strings"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:javax_inject_javax_inject",
+        "//utility:strings",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )

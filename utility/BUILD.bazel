@@ -25,11 +25,11 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
-filegroup(
+android_library(
     name = "strings",
-    srcs = [
-        "src/main/res/values/strings.xml",
-    ],
+    custom_package = "org.oppia.android.util",
+    manifest = "src/main/AndroidManifest.xml",
+    resource_files = glob(["src/main/res/values/strings.xml"]),
     visibility = ["//visibility:public"],
 )
 
