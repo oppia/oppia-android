@@ -9,8 +9,8 @@ kt_android_library(
     srcs = [
         "DateTimeUtil.kt",
     ],
-    manifest = "//utility/src/main/AndroidManifest.xml",
-    resource_files = ["//utility/src/main/res/values/strings.xml"],
+    manifest = "//utility:manifest",
+    resource_files = ["//utility:strings"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:javax_inject_javax_inject",

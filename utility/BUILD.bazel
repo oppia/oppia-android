@@ -17,6 +17,22 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/system/*.kt",
 ])
 
+filegroup(
+    name = "manifest",
+    srcs = [
+        "src/main/AndroidManifest.xml",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "strings",
+    srcs = [
+        "src/main/res/values/strings.xml",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 # Library for general-purpose utilities.
 kt_android_library(
     name = "utility",
