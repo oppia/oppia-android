@@ -65,7 +65,7 @@ We also have public chat rooms on Gitter: [https://gitter.im/oppia/oppia-android
       <img align="left" alt="Oppia's Twitter" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/twitter.svg" />
     </a>
     <a href="https://www.linkedin.com/in/oppia-org/">
-      <img align="left" alt="Oppia's Linkdein" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg" />
+      <img align="left" alt="Oppia's LinkedIn" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/linkedin.svg" />
     </a>
     <a href="https://medium.com/@oppia.org">
       <img align="left" alt="Oppia's Medium" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/medium.svg" />
