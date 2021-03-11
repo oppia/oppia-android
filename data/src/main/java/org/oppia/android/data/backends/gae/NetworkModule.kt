@@ -62,7 +62,7 @@ class NetworkModule {
     return retrofit.create(ClassroomService::class.java)
   }
 
-  //Provides the Feedback Reporting service implementation using the Singleton [OppiaRetrofit] object
+  // Provides the Feedback Reporting service implementation using the Singleton [OppiaRetrofit] object
   @Provides
   @Singleton
   fun provideFeedbackReportingService(@OppiaRetrofit retrofit: Retrofit): FeedbackReportingService {
