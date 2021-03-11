@@ -1,6 +1,12 @@
 package org.oppia.android.app.story
 
 import android.content.res.Resources
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -12,7 +18,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.R
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
@@ -142,6 +150,30 @@ class StoryFragmentPresenter @Inject constructor(
             ).parseOppiaHtml(
               storyItemViewModel.summary, binding.chapterSummary
             )
+          if (storyItemViewModel.chapterSummary.chapterPlayState
+            == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+          ) {
+            val missingPrerequisiteSummary = fragment.getString(
+              R.string.chapter_prerequisite_title_label,
+              storyItemViewModel.index.toString(),
+              storyItemViewModel.missingPrerequisiteChapter.name
+            )
+            val ss = SpannableString(missingPrerequisiteSummary)
+            val clickableSpan = object : ClickableSpan() {
+              override fun onClick(widget: View) {
+                smoothScrollToPosition(storyItemViewModel.index - 1)
+              }
+
+              override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+                ds.typeface = Typeface.DEFAULT_BOLD
+              }
+            }
+            ss.setSpan(clickableSpan, 9, ss.length - 24, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            binding.htmlContent = ss
+            binding.chapterSummary.movementMethod = LinkMovementMethod.getInstance()
+          }
         }
       )
       .build()
