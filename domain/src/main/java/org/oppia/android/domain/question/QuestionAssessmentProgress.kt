@@ -35,16 +35,38 @@ internal class QuestionAssessmentProgress {
     }
   }
 
-  /** Called every time the user views a hint to track how many hints the user viewed per question this session.  */
-  internal fun hintViewed() {
+  /**
+   * Tracks how many hints the user viewed per question this session. This is expected to be called
+   * for every hint viewed.
+   */
+  internal fun trackHintViewed() {
     val currentQuestionIndex = getCurrentQuestionIndex()
     questionSessionMetrics[currentQuestionIndex].numberOfHintsUsed++
   }
 
-  /** Called every time the user views a solution to track which question solutions the user viewed this session.  */
-  internal fun solutionViewed() {
+  /**
+   * Tracks which question solutions the user viewed this session. This is expected to be called for
+   * every solution viewed.
+   */
+  internal fun trackSolutionViewed() {
     val currentQuestionIndex = getCurrentQuestionIndex()
     questionSessionMetrics[currentQuestionIndex].didViewSolution = true
+  }
+
+  /**
+   * Tracks how many answers the user submits for each question, along with any misconceptions. This
+   * is expected to be called for every answer submitted.
+   */
+  internal fun trackAnswerSubmitted(taggedSkillMisconceptionId: String?) {
+    val currentQuestionIndex = getCurrentQuestionIndex()
+    questionSessionMetrics[currentQuestionIndex].numberOfAnswersSubmitted++
+    if (taggedSkillMisconceptionId != null) {
+      // Misconceptions are formatted as <skill ID>-<misconception ID> from the AnswerClassificationController,
+      // but we only need the related skill ID for our purposes
+      questionSessionMetrics[currentQuestionIndex].taggedSkillMisconceptionIds.add(
+        taggedSkillMisconceptionId.split("-")[0]
+      )
+    }
   }
 
   /** Processes when the current question card has just been completed. */
