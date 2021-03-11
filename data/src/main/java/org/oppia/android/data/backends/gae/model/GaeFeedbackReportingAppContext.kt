@@ -13,7 +13,7 @@ data class GaeFeedbackReportingAppContext(
   /** Corresponds to a location in the app that a user can access feedback reporting. */
   @Json(name = "entry_point") val entryPoint: String,
   /** Corresponds to the list of topics that the user has completed. */
-  @Json(name = "topic_progress") val topicProgress: List<String?>,
+  @Json(name = "topic_progress") val topicProgress: List<String>,
   /** The text size used in the app. */
   @Json(name = "text_size") val textSize: String,
   /** The text language of the app. */
