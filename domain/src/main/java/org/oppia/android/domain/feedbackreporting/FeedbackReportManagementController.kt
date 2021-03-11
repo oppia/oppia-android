@@ -7,6 +7,8 @@ import org.oppia.android.app.model.FeedbackReportingDeviceContext
 import org.oppia.android.app.model.FeedbackReportingSystemContext
 import org.oppia.android.app.model.UserSuppliedFeedback
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
+import org.oppia.android.data.backends.gae.model.GaeUserSuppliedFeedback
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
@@ -21,6 +23,7 @@ private const val FEEDBACK_REPORTS_DATABASE_NAME = "feedback_reports_database"
 /** Controller for uploading feedback reports to remote storage or saving them on disk. */
 class FeedbackReportManagementController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
+  private val feedbackReportingService: FeedbackReportingService,
   private val consoleLogger: ConsoleLogger,
   private val oppiaClock: OppiaClock,
   private val networkConnectionUtil: NetworkConnectionUtil
@@ -35,12 +38,11 @@ class FeedbackReportManagementController @Inject constructor(
    *
    * @param feedbackReportViewModel for the view model representing the feedback provided by the user
    */
-  fun submitFeedbackReport(/* FeedbackReportInfo */) {
-    val feedbackReport = getFeedbackReport(/* FeedbackReportInfo */)
+  fun submitFeedbackReport(feedbackReport: FeedbackReport) {
     if (networkConnectionUtil.getCurrentConnectionStatus() == NONE) {
       storeFeedbackReport(feedbackReport)
     } else {
-      // Push report to remote storage
+      uploadFeedbackReport(feedbackReport)
     }
   }
 
@@ -53,6 +55,22 @@ class FeedbackReportManagementController @Inject constructor(
    */
   suspend fun getCachedReportsList(): MutableList<FeedbackReport> {
     return feedbackReportDataStore.readDataAsync().await().reportsList
+  }
+
+  /**
+   * Sends an individual [FeedbackReport] to remote storage.
+   *
+   * @param report a [FeedbackReport] to upload
+   */
+  fun uploadFeedbackReport(report: FeedbackReport) {
+    val gaeUserSuppliedFeedback = createGaeUserSupppliedFeedback(report.userSuppliedFeedback)
+    val gaeFeedbackReport = GaeFeedbackReport(
+      reportCreationTimestampMs = report.reportCreationTimestampMs,
+      userSuppliedFeedback = getUserSuppliedInfo(),
+
+    )
+    feedbackReportingService.postFeedbackReport(report = gaeFeedbackReport)
+
   }
 
   /** Removes the first cached report from the store. */
@@ -84,21 +102,7 @@ class FeedbackReportManagementController @Inject constructor(
     }
   }
 
-  private fun getFeedbackReport(/* FeedbackReportInfo */): FeedbackReport {
-    val userSuppliedInfo = getUserSuppliedInfo(/* FeedbackReportInfo */)
-    val systemContext = getSystemContext()
-    val deviceContext = getDeviceContext()
-    val appContext = getAppContext()
-    return FeedbackReport.newBuilder()
-      .setReportCreationTimestampMs(oppiaClock.getCurrentTimeMs())
-      .setUserSuppliedInfo(userSuppliedInfo)
-      .setSystemContext(systemContext)
-      .setDeviceContext(deviceContext)
-      .setAppContext(appContext)
-      .build()
-  }
-
-  private fun getUserSuppliedInfo(/* FeedbackReportInfo */): UserSuppliedFeedback {
+  private fun createGaeUserSuppliedInfo(userSuppliedFeedback: UserSuppliedFeedback): GaeUserSuppliedFeedback {
     return UserSuppliedFeedback.newBuilder()
       .build()
   }
