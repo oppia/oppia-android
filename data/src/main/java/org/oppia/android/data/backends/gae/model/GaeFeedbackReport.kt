@@ -10,8 +10,6 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GaeFeedbackReport(
 
-  /** The API key to be used for message authentication when received in remote storage. */
-  @Json(name = "api_key") val apiKey: String,
   /** The date and time in ms that the report was created. */
   @Json(name = "report_creation_timestamp_ms") val reportCreationTimestampMs: Long,
   /** The information that user's provide in the feedback report. */
