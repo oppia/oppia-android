@@ -57,6 +57,6 @@ The Oppia Android code is released under the [Apache v2 license](https://github.
   * [Blog](https://medium.com/oppia-org)
   * [Discussion forum](http://groups.google.com/group/oppia)
   * [Announcements mailing list](http://groups.google.com/group/oppia-announce)
-  * Social media: [Oppia Team YouTube channel](https://www.youtube.com/channel/UC5c1G7BNDCfv1rczcBp9FPw), [Oppia Developer YouTube channel](https://www.youtube.com/channel/UCsrAX-oeqm0-NIQzQrdiUkQ), [FB](https://www.facebook.com/oppiaorg), [Twitter](https://twitter.com/oppiaorg)
+  * Social media: [Oppia.org YouTube channel](https://www.youtube.com/channel/UC5c1G7BNDCfv1rczcBp9FPw), [Oppia Developer YouTube channel](https://www.youtube.com/channel/UCsrAX-oeqm0-NIQzQrdiUkQ), [FB](https://www.facebook.com/oppiaorg), [Twitter](https://twitter.com/oppiaorg)
 
 We also have public chat rooms on Gitter: [https://gitter.im/oppia/oppia-android](https://gitter.im/oppia/oppia-android). Drop by and say hello!
