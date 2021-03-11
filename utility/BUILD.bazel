@@ -29,7 +29,7 @@ android_library(
     name = "strings",
     custom_package = "org.oppia.android.util",
     manifest = "src/main/AndroidManifest.xml",
-    resource_files = glob(["src/main/res/values/strings.xml"]),
+    resource_files = ["src/main/res/values/strings.xml"],
     visibility = ["//visibility:public"],
 )
 
