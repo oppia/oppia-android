@@ -256,7 +256,10 @@ class FeedbackReportManagementController @Inject constructor(
         eventsList.map { it.toString() }
       }
     } catch (e: Exception) {
-      consoleLogger.e(LogUploadWorker.TAG, "Failed to upload events", e)
+      consoleLogger.e(
+        FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG,
+        "Failed to retrieve log events", e
+      )
       listOf()
     }
   }
