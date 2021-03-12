@@ -3,7 +3,7 @@ Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. 
 
 
 ## Installation
-**We don't officially support Windows for now so the Windows instructions may not be complete any may require additional tweaking.**<br>
+**We don't officially support Windows for now so the Windows instructions may not be complete and may require additional tweaking.**<br>
 
 1. Install Bazel from [here](https://docs.bazel.build/versions/master/install.html). 
 
@@ -12,7 +12,6 @@ Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. 
     - macOS: `export ANDROID_HOME=$HOME/Library/Android/sdk`
 
 1. Follow the instructions in [oppia-bazel-tools](https://github.com/oppia/oppia-bazel-tools)
-
 
 #### Possible Error:
 ```
