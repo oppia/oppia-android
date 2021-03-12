@@ -1,6 +1,10 @@
 package org.oppia.android.domain.feedbackreporting
 
 import android.content.Context
+import androidx.work.CoroutineWorker
+import androidx.work.ListenableWorker
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingDatabase
@@ -18,10 +22,15 @@ import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingDeviceConte
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingSystemContext
 import org.oppia.android.data.backends.gae.model.GaeUserSuppliedFeedback
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.oppialogger.exceptions.toException
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
 import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import org.oppia.android.util.system.OppiaClock
+import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
 private const val FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG =
@@ -34,8 +43,11 @@ class FeedbackReportManagementController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val feedbackReportingService: FeedbackReportingService,
   private val consoleLogger: ConsoleLogger,
+  private val eventLogger: EventLogger,
+  private val analyticsController: AnalyticsController,
   private val oppiaClock: OppiaClock,
-  private val networkConnectionUtil: NetworkConnectionUtil
+  private val networkConnectionUtil: NetworkConnectionUtil,
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) {
   private val feedbackReportDataStore = cacheStoreFactory.create(
     FEEDBACK_REPORTS_DATABASE_NAME, FeedbackReportingDatabase.getDefaultInstance()
@@ -51,7 +63,7 @@ class FeedbackReportManagementController @Inject constructor(
     if (networkConnectionUtil.getCurrentConnectionStatus() == NONE) {
       storeFeedbackReport(feedbackReport)
     } else {
-      uploadFeedbackReport(feedbackReport)
+       uploadFeedbackReport(feedbackReport)
     }
   }
 
@@ -80,7 +92,6 @@ class FeedbackReportManagementController @Inject constructor(
       appContext = getAppContext(report.appContext)
     )
     feedbackReportingService.postFeedbackReport(report = gaeFeedbackReport)
-
   }
 
   /** Removes the first cached report from the store. */
@@ -223,6 +234,7 @@ class FeedbackReportManagementController @Inject constructor(
   private fun getAppContext(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingAppContext {
+    val eventLogs = getEventLogs()
     return GaeFeedbackReportingAppContext(
       entryPoint = appContext.entryPoint.name,
       topicProgress = appContext.topicProgressList,
@@ -232,13 +244,21 @@ class FeedbackReportManagementController @Inject constructor(
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
       automaticallyUpdateTopics = appContext.deviceSettings.automaticallyUpdateTopics,
       isAdmin = appContext.isAdmin,
-      eventLogs = getEventlogs(),
+      eventLogs = eventLogs,
       logcatLogs = getLogcatLogs(),
     )
   }
 
-  private fun getEventlogs(): List<String> {
-    return listOf()
+  private suspend fun getEventLogs(): List<String> {
+    return try {
+      val eventLogs = analyticsController.getEventLogStoreList()
+      eventLogs.let { eventsList ->
+        eventsList.map { it.toString() }
+      }
+    } catch (e: Exception) {
+      consoleLogger.e(LogUploadWorker.TAG, "Failed to upload events", e)
+      listOf()
+    }
   }
 
   private fun getLogcatLogs(): List<String> {
