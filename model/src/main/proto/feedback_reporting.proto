@@ -326,8 +326,8 @@ message FeedbackReportingAppContext {
     CRASH = 5;
   }
   EntryPoint entry_point = 1;
-  // Lists the topics that have been completed by the user.
-  repeated string topic_progress = 2;
+  // A list of exploration IDs that have been completed by the user..
+  repeated string completed_exploration_ids = 2;
   // The text size the app is set to.
   ReadingTextSize text_size = 3;
   // The text language the app is set to.
