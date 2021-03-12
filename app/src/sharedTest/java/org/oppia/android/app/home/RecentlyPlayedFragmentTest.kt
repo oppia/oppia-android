@@ -651,7 +651,8 @@ class RecentlyPlayedFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 0,
-          targetViewId = R.id.section_title_text_view)
+          targetViewId = R.id.section_title_text_view
+        )
       ).check(
         matches(withText(R.string.ongoing_story_last_week))
       )
