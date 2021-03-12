@@ -45,6 +45,10 @@ gradlew.bat @BenHenning
 /.github/*.md @BenHenning
 /.github/ISSUE_TEMPLATE @BenHenning
 
+# Git secret files & related configurations.
+/.gitsecret/ @BenHenning
+*.secret @BenHenning
+
 # CI configuration.
 /.github/workflows/ @BenHenning
 

@@ -26,7 +26,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/options_separator"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
         android:id="@+id/options_activity_selected_options_title"
@@ -34,13 +34,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
+        android:background="@color/transparent"
         android:fontFamily="sans-serif-medium"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="18sp"
-        android:background="@color/transparent"
-        app:layout_constraintStart_toEndOf="@id/multipane_guideline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintStart_toEndOf="@id/multipane_guideline"
+        app:layout_constraintTop_toTopOf="parent" />
 
       <FrameLayout
         android:id="@+id/multipane_options_container"
@@ -72,9 +72,9 @@
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </LinearLayout>
 

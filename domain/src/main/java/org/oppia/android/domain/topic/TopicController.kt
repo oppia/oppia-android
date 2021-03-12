@@ -37,7 +37,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -92,7 +91,6 @@ class TopicController @Inject constructor(
   private val revisionCardRetriever: RevisionCardRetriever,
   private val storyProgressController: StoryProgressController,
   private val exceptionsController: ExceptionsController,
-  private val oppiaClock: OppiaClock,
   private val assetRepository: AssetRepository,
   @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
 ) {
@@ -155,7 +153,7 @@ class TopicController @Inject constructor(
       try {
         AsyncResult.success(conceptCardRetriever.loadConceptCard(skillId))
       } catch (e: Exception) {
-        exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+        exceptionsController.logNonFatalException(e)
         AsyncResult.failed<ConceptCard>(e)
       }
     )
@@ -170,7 +168,7 @@ class TopicController @Inject constructor(
       try {
         AsyncResult.success(retrieveReviewCard(topicId, subtopicId))
       } catch (e: Exception) {
-        exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+        exceptionsController.logNonFatalException(e)
         AsyncResult.failed<RevisionCard>(e)
       }
     )
@@ -254,11 +252,6 @@ class TopicController @Inject constructor(
               ChapterPlayState.STARTED_NOT_COMPLETED
           }
       )
-    }
-
-    // If there is no completed chapter, it cannot be an ongoing-topic.
-    if (completedChapterProgressList.isEmpty()) {
-      return false
     }
 
     // If there is at least 1 completed chapter and 1 not-completed chapter, it is definitely an

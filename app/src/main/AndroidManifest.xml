@@ -28,7 +28,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.help.faq.FAQListActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/faq_activity_label" />
     <activity
       android:name=".app.help.faq.faqsingle.FAQSingleActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -84,6 +85,7 @@
       android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".app.profile.ProfileChooserActivity"
+      android:label="@string/profile_chooser_activity_label"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.profileprogress.ProfilePictureActivity"
@@ -127,7 +129,6 @@
       android:name=".app.testing.TestFontScaleConfigurationUtilActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.HomeFragmentTestActivity" />
-    <activity android:name=".app.testing.HomeInjectionActivity" />
     <activity android:name=".app.testing.HtmlParserTestActivity" />
     <activity android:name=".app.testing.HomeTestActivity" />
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
@@ -153,7 +154,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.topic.TopicActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/topic_page" />
     <activity
       android:name=".app.walkthrough.WalkthroughActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
