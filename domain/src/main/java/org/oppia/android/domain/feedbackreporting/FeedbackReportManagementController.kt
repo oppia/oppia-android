@@ -32,12 +32,14 @@ import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG =
   "Feedback Report Management Controller"
 private const val FEEDBACK_REPORTS_DATABASE_NAME = "feedback_reports_database"
 
 /** Controller for uploading feedback reports to remote storage or saving them on disk. */
+@Singleton
 class FeedbackReportManagementController @Inject constructor(
   private val context: Context,
   cacheStoreFactory: PersistentCacheStore.Factory,
@@ -234,7 +236,7 @@ class FeedbackReportManagementController @Inject constructor(
   private fun getAppContext(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingAppContext {
-    val eventLogs = getEventLogs()
+    val eventLogs = listOf<String>()//getEventLogs()
     return GaeFeedbackReportingAppContext(
       entryPoint = appContext.entryPoint.name,
       topicProgress = appContext.topicProgressList,

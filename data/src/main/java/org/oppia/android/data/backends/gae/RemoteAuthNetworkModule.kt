@@ -1,4 +1,4 @@
-package org.oppia.android.domain.feedbackreporting
+package org.oppia.android.data.backends.gae
 
 import dagger.Module
 import dagger.Provides
@@ -17,10 +17,8 @@ annotation class NetworkApiKey
  */
 @Module
 class NetworkAuthModule {
-  /**
-   * Provides the API key to validate messages received and messages being sent. A stronger, secret
-   * key will be used when putting app out in production.
-   */
+   // Provides the API key to validate messages received and messages being sent. A stronger, secret
+   // key will be used when putting app out in production.
   @Provides
   @NetworkApiKey
   fun provideNetworkApiKey(): String = ""
