@@ -1,5 +1,6 @@
 package org.oppia.android.domain.feedbackreporting
 
+import android.content.Context
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingDatabase
@@ -29,6 +30,7 @@ private const val FEEDBACK_REPORTS_DATABASE_NAME = "feedback_reports_database"
 
 /** Controller for uploading feedback reports to remote storage or saving them on disk. */
 class FeedbackReportManagementController @Inject constructor(
+  private val context: Context,
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val feedbackReportingService: FeedbackReportingService,
   private val consoleLogger: ConsoleLogger,
@@ -144,6 +146,7 @@ class FeedbackReportManagementController @Inject constructor(
     }
   }
 
+  // Helper function that creates a Moshi data class object based on the type of Issue report.
   private fun createGaeUserSuppliedFeedbackForIssue(
     reportTypeName: String,
     issue: Issue
@@ -197,18 +200,48 @@ class FeedbackReportManagementController @Inject constructor(
   private fun getSystemContext(
     systemContext: FeedbackReportingSystemContext
   ): GaeFeedbackReportingSystemContext {
-    return GaeFeedbackReportingSystemContext()
+    return GaeFeedbackReportingSystemContext(
+      packageVersionName = systemContext.packageVersionName,
+      packageVersionCode = systemContext.packageVersionCode,
+      countryLocale = systemContext.countryLocale,
+      languageLocale = systemContext.languageLocale
+    )
   }
 
   private fun getDeviceContext(
     deviceContext: FeedbackReportingDeviceContext
   ): GaeFeedbackReportingDeviceContext {
-    return GaeFeedbackReportingDeviceContext
+    return GaeFeedbackReportingDeviceContext(
+      deviceModel = deviceContext.deviceModel,
+      sdkVersion = deviceContext.sdkVersion,
+      deviceBrand = deviceContext.deviceBrand,
+      buildFingerprint = deviceContext.buildFingerprint,
+      networkType = deviceContext.networkType.name
+    )
   }
 
   private fun getAppContext(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingAppContext {
-    return GaeFeedbackReportingAppContext()
+    return GaeFeedbackReportingAppContext(
+      entryPoint = appContext.entryPoint.name,
+      topicProgress = appContext.topicProgressList,
+      textSize = appContext.textSize.name,
+      textLang = appContext.textLanguage.name,
+      audioLang = appContext.audioLanguage.name,
+      downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
+      automaticallyUpdateTopics = appContext.deviceSettings.automaticallyUpdateTopics,
+      isAdmin = appContext.isAdmin,
+      eventLogs = getEventlogs(),
+      logcatLogs = getLogcatLogs(),
+    )
+  }
+
+  private fun getEventlogs(): List<String> {
+    return listOf()
+  }
+
+  private fun getLogcatLogs(): List<String> {
+    return listOf()
   }
 }
