@@ -54,6 +54,7 @@ class AudioFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var prepared = false
+  private var pauseAudioRequestPending = false
   private val viewModel by lazy {
     getAudioViewModel()
   }
@@ -100,6 +101,8 @@ class AudioFragmentPresenter @Inject constructor(
       Observer {
         prepared = it != UiAudioPlayStatus.LOADING && it != UiAudioPlayStatus.FAILED
         binding.audioProgressSeekBar.isEnabled = prepared
+        if (prepared && pauseAudioRequestPending)
+          pauseAudio()
       }
     )
 
@@ -190,6 +193,7 @@ class AudioFragmentPresenter @Inject constructor(
     viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
 
   fun pauseAudio() {
+    pauseAudioRequestPending = !prepared
     if (prepared)
       viewModel.pauseAudio()
   }
