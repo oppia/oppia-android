@@ -5,9 +5,16 @@ import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingDatabase
 import org.oppia.android.app.model.FeedbackReportingDeviceContext
 import org.oppia.android.app.model.FeedbackReportingSystemContext
+import org.oppia.android.app.model.Issue
+import org.oppia.android.app.model.Issue.IssueCategoryCase
+import org.oppia.android.app.model.LanguageIssue
 import org.oppia.android.app.model.UserSuppliedFeedback
+import org.oppia.android.app.model.UserSuppliedFeedback.ReportTypeCase
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingAppContext
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingDeviceContext
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingSystemContext
 import org.oppia.android.data.backends.gae.model.GaeUserSuppliedFeedback
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.util.logging.ConsoleLogger
@@ -63,11 +70,12 @@ class FeedbackReportManagementController @Inject constructor(
    * @param report a [FeedbackReport] to upload
    */
   fun uploadFeedbackReport(report: FeedbackReport) {
-    val gaeUserSuppliedFeedback = createGaeUserSupppliedFeedback(report.userSuppliedFeedback)
     val gaeFeedbackReport = GaeFeedbackReport(
       reportCreationTimestampMs = report.reportCreationTimestampMs,
-      userSuppliedFeedback = getUserSuppliedInfo(),
-
+      userSuppliedFeedback = createGaeUserSuppliedFeedback(report.userSuppliedInfo),
+      systemContext = getSystemContext(report.systemContext),
+      deviceContext = getDeviceContext(report.deviceContext),
+      appContext = getAppContext(report.appContext)
     )
     feedbackReportingService.postFeedbackReport(report = gaeFeedbackReport)
 
@@ -102,23 +110,105 @@ class FeedbackReportManagementController @Inject constructor(
     }
   }
 
-  private fun createGaeUserSuppliedInfo(userSuppliedFeedback: UserSuppliedFeedback): GaeUserSuppliedFeedback {
-    return UserSuppliedFeedback.newBuilder()
-      .build()
+  // Creates the Moshi data class that gets sent in the service for the information collected from
+  // user reponses.
+  private fun createGaeUserSuppliedFeedback(
+    userSuppliedFeedback: UserSuppliedFeedback
+  ): GaeUserSuppliedFeedback {
+    val reportType = userSuppliedFeedback.reportTypeCase
+    when (reportType) {
+      ReportTypeCase.SUGGESTION -> {
+        val suggestion = userSuppliedFeedback.suggestion
+        return GaeUserSuppliedFeedback(
+          reportType = reportType.name,
+          category = suggestion.suggestionCategory.name,
+          feedbackList = null,
+          openTextUserInput = suggestion.userSubmittedSuggestion
+        )
+      }
+      ReportTypeCase.ISSUE -> {
+        return createGaeUserSuppliedFeedbackForIssue(reportType.name, userSuppliedFeedback.issue)
+      }
+      ReportTypeCase.CRASH -> {
+        val crash = userSuppliedFeedback.crash
+        return GaeUserSuppliedFeedback(
+          reportType = reportType.name,
+          category = crash.crashLocation.name,
+          feedbackList = null,
+          openTextUserInput = crash.crashExplanation
+        )
+      }
+      else -> throw IllegalArgumentException(
+        "Encountered unexpected feedback report type: ${userSuppliedFeedback.reportTypeCase.name}"
+      )
+    }
   }
 
-  private fun getSystemContext(): FeedbackReportingSystemContext {
-    return FeedbackReportingSystemContext.newBuilder()
-      .build()
+  private fun createGaeUserSuppliedFeedbackForIssue(
+    reportTypeName: String,
+    issue: Issue
+  ): GaeUserSuppliedFeedback {
+    var category = issue.issueCategoryCase.name
+    var issuesList: List<String>? = null
+    var userInput: String? = null
+    when (issue.issueCategoryCase) {
+      IssueCategoryCase.LESSON_QUESTION_ISSUE -> {
+        issuesList = issue.lessonQuestionIssue.userSelectedOptionsList.map { it.name }
+        userInput = issue.lessonQuestionIssue.otherUserInput
+      }
+      IssueCategoryCase.LANGUAGE_ISSUE -> {
+        category = issue.languageIssue.languageIssueCategoryCase.name
+        when (issue.languageIssue.languageIssueCategoryCase) {
+          LanguageIssue.LanguageIssueCategoryCase.AUDIO_LANGUAGE_ISSUE -> {
+            issuesList = issue.languageIssue.audioLanguageIssue.userSelectedOptionsList.map {
+              it.name
+            }
+            userInput = issue.languageIssue.audioLanguageIssue.otherUserInput
+          }
+          LanguageIssue.LanguageIssueCategoryCase.TEXT_LANGUAGE_ISSUE -> {
+            issuesList = issue.languageIssue.textLanguageIssue.userSelectedOptionsList.map {
+              it.name
+            }
+            userInput = issue.languageIssue.textLanguageIssue.otherUserInput
+          }
+          // General language issues will pass through with no user input or options list.
+        }
+      }
+      IssueCategoryCase.TOPICS_ISSUE -> {
+        issuesList = issue.topicsIssue.userSelectedOptionsList.map { it.name }
+        userInput = issue.topicsIssue.otherUserInput
+      }
+      IssueCategoryCase.PROFILE_ISSUE -> {
+        issuesList = issue.profileIssue.userSelectedOptionsList.map { it.name }
+        userInput = issue.profileIssue.otherUserInput
+      }
+      IssueCategoryCase.OTHER_ISSUE -> {
+        userInput = issue.otherIssue.openUserInput
+      }
+    }
+    return GaeUserSuppliedFeedback(
+      reportType = reportTypeName,
+      category = category,
+      feedbackList = issuesList,
+      openTextUserInput = userInput
+    )
   }
 
-  private fun getDeviceContext(): FeedbackReportingDeviceContext {
-    return FeedbackReportingDeviceContext.newBuilder()
-      .build()
+  private fun getSystemContext(
+    systemContext: FeedbackReportingSystemContext
+  ): GaeFeedbackReportingSystemContext {
+    return GaeFeedbackReportingSystemContext()
   }
 
-  private fun getAppContext(): FeedbackReportingAppContext {
-    return FeedbackReportingAppContext.newBuilder()
-      .build()
+  private fun getDeviceContext(
+    deviceContext: FeedbackReportingDeviceContext
+  ): GaeFeedbackReportingDeviceContext {
+    return GaeFeedbackReportingDeviceContext
+  }
+
+  private fun getAppContext(
+    appContext: FeedbackReportingAppContext
+  ): GaeFeedbackReportingAppContext {
+    return GaeFeedbackReportingAppContext()
   }
 }
