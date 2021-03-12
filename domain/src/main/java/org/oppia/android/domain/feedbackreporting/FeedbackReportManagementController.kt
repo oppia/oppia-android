@@ -1,10 +1,8 @@
 package org.oppia.android.domain.feedbackreporting
 
 import android.content.Context
-import androidx.work.CoroutineWorker
-import androidx.work.ListenableWorker
+import androidx.lifecycle.Transformations
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingDatabase
@@ -13,6 +11,7 @@ import org.oppia.android.app.model.FeedbackReportingSystemContext
 import org.oppia.android.app.model.Issue
 import org.oppia.android.app.model.Issue.IssueCategoryCase
 import org.oppia.android.app.model.LanguageIssue
+import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.UserSuppliedFeedback
 import org.oppia.android.app.model.UserSuppliedFeedback.ReportTypeCase
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
@@ -23,13 +22,10 @@ import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingSystemConte
 import org.oppia.android.data.backends.gae.model.GaeUserSuppliedFeedback
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
-import org.oppia.android.domain.oppialogger.exceptions.toException
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
-import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -45,15 +41,25 @@ class FeedbackReportManagementController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val feedbackReportingService: FeedbackReportingService,
   private val consoleLogger: ConsoleLogger,
-  private val eventLogger: EventLogger,
   private val analyticsController: AnalyticsController,
-  private val oppiaClock: OppiaClock,
   private val networkConnectionUtil: NetworkConnectionUtil,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) {
   private val feedbackReportDataStore = cacheStoreFactory.create(
     FEEDBACK_REPORTS_DATABASE_NAME, FeedbackReportingDatabase.getDefaultInstance()
   )
+
+  private val oppiaEventLogsLiveData by lazy {
+    analyticsController.getEventLogStore().toLiveData()
+  }
+
+  private val eventsLogListLiveData = Transformations.map(oppiaEventLogsLiveData) {
+    it.getOrDefault(OppiaEventLogs.getDefaultInstance())
+  }
+
+  private val eventsLogList = Transformations.map(eventsLogListLiveData) { oppiaEventLogs ->
+    oppiaEventLogs.eventLogList.map { it.toString() }
+  }.value
 
   /**
    * Stores a [FeedbackReport] proto in local storage if there is not internet connection, or sends
@@ -65,7 +71,7 @@ class FeedbackReportManagementController @Inject constructor(
     if (networkConnectionUtil.getCurrentConnectionStatus() == NONE) {
       storeFeedbackReport(feedbackReport)
     } else {
-       uploadFeedbackReport(feedbackReport)
+      uploadFeedbackReport(feedbackReport)
     }
   }
 
@@ -236,7 +242,6 @@ class FeedbackReportManagementController @Inject constructor(
   private fun getAppContext(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingAppContext {
-    val eventLogs = listOf<String>()//getEventLogs()
     return GaeFeedbackReportingAppContext(
       entryPoint = appContext.entryPoint.name,
       topicProgress = appContext.topicProgressList,
@@ -246,24 +251,9 @@ class FeedbackReportManagementController @Inject constructor(
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
       automaticallyUpdateTopics = appContext.deviceSettings.automaticallyUpdateTopics,
       isAdmin = appContext.isAdmin,
-      eventLogs = eventLogs,
+      eventLogs = eventsLogList ?: emptyList(),
       logcatLogs = getLogcatLogs(),
     )
-  }
-
-  private suspend fun getEventLogs(): List<String> {
-    return try {
-      val eventLogs = analyticsController.getEventLogStoreList()
-      eventLogs.let { eventsList ->
-        eventsList.map { it.toString() }
-      }
-    } catch (e: Exception) {
-      consoleLogger.e(
-        FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG,
-        "Failed to retrieve log events", e
-      )
-      listOf()
-    }
   }
 
   private fun getLogcatLogs(): List<String> {
