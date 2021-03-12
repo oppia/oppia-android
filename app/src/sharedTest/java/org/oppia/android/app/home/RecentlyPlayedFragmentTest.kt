@@ -148,8 +148,8 @@ class RecentlyPlayedFragmentTest {
 
   private fun createRecentlyPlayedActivityIntent(profileId: Int): Intent {
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-      context,
-      profileId
+      context = context,
+      internalProfileId = profileId
     )
   }
 
@@ -157,7 +157,7 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_clickOnToolbarNavigationButton_closeActivity() {
     activityTestRule.launchActivity(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     )
     onView(withContentDescription(R.string.navigate_up)).perform(click())
@@ -168,7 +168,7 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_defaultRecentlyPlayedToolbarTitleIsDisplayed() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       onView(
@@ -186,16 +186,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_sectionDividerIsNotDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -205,7 +205,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.divider_view)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 0,
+          targetViewId = R.id.divider_view
+        )
       ).check(
         matches(not(isDisplayed()))
       )
@@ -216,21 +220,25 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_lastWeekSectionTitleIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.section_title_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 0,
+          targetViewId = R.id.section_title_text_view
+        )
       ).check(
         matches(withText(R.string.ongoing_story_last_week))
       )
@@ -241,12 +249,12 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_fractionsPlayed_storiesForYouToolbarTitleIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -265,12 +273,12 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_showsRecommendedSectionTitle() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -280,7 +288,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 2, R.id.section_title_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 2,
+          targetViewId = R.id.section_title_text_view
+        )
       ).check(
         matches(withText(R.string.recommended_stories))
       )
@@ -291,17 +303,21 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_showsRecommendedSectionTitle() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 2, R.id.section_title_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 2,
+          targetViewId = R.id.section_title_text_view
+        )
       ).check(
         matches(withText(R.string.recommended_stories))
       )
@@ -312,12 +328,12 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_recommendedSection_topicNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -327,7 +343,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 3, R.id.topic_name_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 3,
+          targetViewId = R.id.topic_name_text_view
+        )
       ).check(
         matches(withText(containsString("Ratios and Proportional Reasoning")))
       )
@@ -338,16 +358,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_storyNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -357,7 +377,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.story_name_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.story_name_text_view
+        )
       ).check(
         matches(withText(containsString("Matthew Goes to the Bakery")))
       )
@@ -368,16 +392,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_topicNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -387,7 +411,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.topic_name_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.topic_name_text_view
+        )
       ).check(
         matches(withText(containsString("FRACTIONS")))
       )
@@ -398,16 +426,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_lessonThumbnailIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -417,7 +445,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.lesson_thumbnail)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.lesson_thumbnail
+        )
       ).check(
         matches(withDrawable(R.drawable.lesson_thumbnail_graphic_duck_and_chicken))
       )
@@ -428,16 +460,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_clickStory_opensExplorationActivity() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -447,7 +479,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.lesson_thumbnail)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.lesson_thumbnail
+        )
       ).perform(click())
       intended(
         allOf(
@@ -477,46 +513,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_lastMonthSectionTitleIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
-      )
-      onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 2, R.id.section_title_text_view)
-      ).check(
-        matches(withText(R.string.ongoing_story_last_month))
-      )
-    }
-  }
-
-  @Test
-  fun testRecentlyPlayedTestActivity_sectionDividerIsDisplayed() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
-      timestampOlderThanOneWeek = true
-    )
-    ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -527,9 +533,43 @@ class RecentlyPlayedFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.ongoing_story_recycler_view,
-          2,
-          R.id.divider_view
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 2,
+          targetViewId = R.id.section_title_text_view
+        )
+      ).check(
+        matches(withText(R.string.ongoing_story_last_month))
+      )
+    }
+  }
+
+  @Test
+  fun testRecentlyPlayedTestActivity_sectionDividerIsDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = true
+    )
+    ActivityScenario.launch<RecentlyPlayedActivity>(
+      createRecentlyPlayedActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.ongoing_story_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 2,
+          targetViewId = R.id.divider_view
         )
       ).check(matches(isDisplayed()))
     }
@@ -539,7 +579,7 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_toolbarTitleIsDisplayed() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -555,16 +595,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_sectionDividerIsNotDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -575,7 +615,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.divider_view)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 0,
+          targetViewId = R.id.divider_view
+        )
       ).check(matches(not(isDisplayed())))
     }
   }
@@ -584,16 +628,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_lastWeekSectionTitleIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -604,7 +648,10 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.section_title_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 0,
+          targetViewId = R.id.section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_week))
       )
@@ -615,16 +662,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_storyNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -635,7 +682,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.story_name_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.story_name_text_view
+        )
       ).check(
         matches(withText(containsString("Matthew Goes to the Bakery")))
       )
@@ -646,16 +697,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_topicNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -666,7 +717,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.topic_name_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.topic_name_text_view
+        )
       ).check(
         matches(withText(containsString("FRACTIONS")))
       )
@@ -677,16 +732,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_lessonThumbnailIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -697,7 +752,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.lesson_thumbnail)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.lesson_thumbnail
+        )
       ).check(
         matches(withDrawable(R.drawable.lesson_thumbnail_graphic_duck_and_chicken))
       )
@@ -708,16 +767,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_lastMonthSectionTitleIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -728,7 +787,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 2, R.id.section_title_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 2,
+          targetViewId = R.id.section_title_text_view
+        )
       ).check(
         matches(withText(R.string.ongoing_story_last_month))
       )
@@ -739,16 +802,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_checkSpanForItem1_spanSizeIsOne() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -759,7 +822,8 @@ class RecentlyPlayedFragmentTest {
       )
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
-          1, 1
+          spanCount = 1,
+          position = 1
         )
       )
     }
@@ -769,16 +833,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_checkSpanForItem3_spanSizeIsOne() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -789,7 +853,9 @@ class RecentlyPlayedFragmentTest {
       )
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
-          1, 3
+
+          spanCount = 1,
+          position = 3
         )
       )
     }
@@ -799,16 +865,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_checkSpanForItem1_spanSizeIsOne() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -820,7 +886,8 @@ class RecentlyPlayedFragmentTest {
       )
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
-          1, 1
+          spanCount = 1,
+          position = 1
         )
       )
     }
@@ -830,16 +897,16 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_checkSpanForItem3_spanSizeIsOne() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -851,7 +918,8 @@ class RecentlyPlayedFragmentTest {
       )
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
-          1, 3
+          spanCount = 1,
+          position = 3
         )
       )
     }
