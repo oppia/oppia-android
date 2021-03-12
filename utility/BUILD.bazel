@@ -17,16 +17,8 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/system/*.kt",
 ])
 
-filegroup(
-    name = "manifest",
-    srcs = [
-        "src/main/AndroidManifest.xml",
-    ],
-    visibility = ["//visibility:public"],
-)
-
 android_library(
-    name = "strings",
+    name = "resources",
     custom_package = "org.oppia.android.util",
     manifest = "src/main/AndroidManifest.xml",
     resource_files = ["src/main/res/values/strings.xml"],
@@ -40,12 +32,10 @@ kt_android_library(
         ["src/main/java/org/oppia/android/util/**/*.kt"],
         exclude = MIGRATED_PROD_FILES,
     ),
-    custom_package = "org.oppia.android.util",
-    manifest = "src/main/AndroidManifest.xml",
-    resource_files = glob(["src/main/res/**/*.xml"]),
     visibility = ["//visibility:public"],
     deps = [
         ":dagger",
+        ":resources",
         "//app:crashlytics",
         "//app:crashlytics_deps",
         "//model",
