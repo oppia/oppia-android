@@ -14,6 +14,7 @@ import org.oppia.android.app.model.ImageWithRegions.LabeledRegion.Region.RegionT
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.Misconception
 import org.oppia.android.app.model.NumberUnit
 import org.oppia.android.app.model.NumberWithUnits
 import org.oppia.android.app.model.Outcome
@@ -162,7 +163,7 @@ class StateRetriever @Inject constructor(
     answerGroupJson: JSONObject,
     interactionId: String
   ): AnswerGroup {
-    return AnswerGroup.newBuilder()
+    var answerGroup = AnswerGroup.newBuilder()
       .setOutcome(
         createOutcomeFromJson(answerGroupJson.getJSONObject("outcome"))
       )
@@ -171,7 +172,18 @@ class StateRetriever @Inject constructor(
           answerGroupJson.optJSONObject("rule_types_to_inputs"), interactionId
         )
       )
-      .build()
+
+    if (answerGroupJson.optJSONObject("tagged_skill_misconception_id") != null) {
+      answerGroup.setTaggedSkillMisconceptionId(
+        Misconception.newBuilder().setSkillId(
+          answerGroupJson.getJSONObject("tagged_skill_misconception_id").toString().split("-")[0]
+        )
+          .setMisconceptionId(
+            answerGroupJson.getJSONObject("tagged_skill_misconception_id").toString().split("-")[1]
+          )
+      )
+    }
+    return answerGroup.build()
   }
 
   // Creates an outcome object from JSON

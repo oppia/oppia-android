@@ -59,12 +59,13 @@ class AnswerClassificationController @Inject constructor(
         try {
           if (ruleClassifier.matches(answer, ruleSpec.inputMap)) {
             // Explicit classification matched.
-            return if (answerGroup.taggedSkillMisconceptionId.isEmpty()) {
+            return if (answerGroup.taggedSkillMisconceptionId.skillId.isNullOrEmpty()) {
               ClassificationResult.OutcomeOnly(answerGroup.outcome)
             } else {
               ClassificationResult.OutcomeWithMisconception(
                 answerGroup.outcome,
-                answerGroup.taggedSkillMisconceptionId
+                answerGroup.taggedSkillMisconceptionId.skillId,
+                answerGroup.taggedSkillMisconceptionId.misconceptionId,
               )
             }
           }
