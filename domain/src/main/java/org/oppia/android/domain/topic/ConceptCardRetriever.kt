@@ -3,23 +3,40 @@ package org.oppia.android.domain.topic
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.android.app.model.ConceptCard
+import org.oppia.android.app.model.ConceptCardList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Translation
 import org.oppia.android.app.model.TranslationMapping
 import org.oppia.android.app.model.Voiceover
 import org.oppia.android.app.model.VoiceoverMapping
 import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.util.caching.AssetRepository
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import javax.inject.Inject
 
 // TODO(#1580): Restrict access using Bazel visibilities.
 /** Retriever for [ConceptCard] objects from the filesystem. */
 class ConceptCardRetriever @Inject constructor(
-  private val jsonAssetRetriever: JsonAssetRetriever
+  private val jsonAssetRetriever: JsonAssetRetriever,
+  private val assetRepository: AssetRepository,
+  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
 ) {
   /**
    * Returns a [ConceptCard] corresponding to the specified skill ID, loaded from the filesystem.
    */
   fun loadConceptCard(skillId: String): ConceptCard {
+    return if (loadLessonProtosFromAssets) {
+      val conceptCardList =
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = "skills",
+          baseMessage = ConceptCardList.getDefaultInstance()
+        )
+      return conceptCardList.conceptCardsList.find { it.skillId == skillId } ?:
+        error("Failed to load concept card for skill: $skillId")
+    } else loadConceptCardFromJson(skillId)
+  }
+
+  private fun loadConceptCardFromJson(skillId: String): ConceptCard {
     val skillData = getSkillJsonObject(skillId)
     if (skillData.length() <= 0) {
       return ConceptCard.getDefaultInstance()

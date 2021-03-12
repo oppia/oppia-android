@@ -10,13 +10,18 @@ import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.model.TopicIdList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.app.model.TopicProgress
+import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.util.caching.AssetRepository
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -86,7 +91,9 @@ class TopicListController @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val topicController: TopicController,
   private val storyProgressController: StoryProgressController,
-  private val dataProviders: DataProviders
+  private val dataProviders: DataProviders,
+  private val assetRepository: AssetRepository,
+  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
 ) {
   /**
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
@@ -117,6 +124,23 @@ class TopicListController @Inject constructor(
   }
 
   private fun createTopicList(): TopicList {
+    return if (loadLessonProtosFromAssets) {
+      val topicIdList =
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = "topics",
+          baseMessage = TopicIdList.getDefaultInstance()
+        )
+      return TopicList.newBuilder().apply {
+        // Only include topics currently playable in the topic list.
+        addAllTopicSummary(
+          topicIdList.topicIdsList.map { createTopicSummary(it) }
+            .filter { it.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW }
+        )
+      }.build()
+    } else loadTopicListFromJson()
+  }
+
+  private fun loadTopicListFromJson(): TopicList {
     val topicIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
@@ -132,9 +156,32 @@ class TopicListController @Inject constructor(
   }
 
   private fun createTopicSummary(topicId: String): TopicSummary {
-    val topicJson =
-      jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
-    return createTopicSummaryFromJson(topicId, topicJson)
+    return if (loadLessonProtosFromAssets) {
+      val topicRecord =
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = topicId,
+          baseMessage = TopicRecord.getDefaultInstance()
+        )
+      val storyRecords = topicRecord.canonicalStoryIdsList.map {
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = it,
+          baseMessage = StoryRecord.getDefaultInstance()
+        )
+      }
+      TopicSummary.newBuilder().apply {
+        this.topicId = topicId
+        name = topicRecord.name
+        totalChapterCount = storyRecords.map { it.chaptersList.size }.sum()
+        topicThumbnail = topicRecord.topicThumbnail
+        topicPlayAvailability = if (topicRecord.isPublished) {
+          TopicPlayAvailability.newBuilder().setAvailableToPlayNow(true).build()
+        } else {
+          TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
+        }
+      }.build()
+    } else {
+      createTopicSummaryFromJson(topicId, jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!)
+    }
   }
 
   private fun createTopicSummaryFromJson(topicId: String, jsonObject: JSONObject): TopicSummary {
@@ -249,19 +296,64 @@ class TopicListController @Inject constructor(
   }
 
   private fun createRecommendedStoryList(): List<PromotedStory> {
-    val recommendedStories = ArrayList<PromotedStory>()
+    return if (loadLessonProtosFromAssets) {
+      val topicIdList =
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = "topics",
+          baseMessage = TopicIdList.getDefaultInstance()
+        )
+      return topicIdList.topicIdsList.mapNotNull { loadRecommendedStory(it) }
+    } else createRecommendedStoryListFromJson()
+  }
+
+  private fun createRecommendedStoryListFromJson(): List<PromotedStory> {
+    val recommendedStories = mutableListOf<PromotedStory>()
     val topicIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
     for (i in 0 until topicIdJsonArray.length()) {
-      createRecommendedStoryFromAssets(topicIdJsonArray[i].toString())?.let {
+      loadRecommendedStory(topicIdJsonArray[i].toString())?.let {
         recommendedStories.add(it)
       }
     }
     return recommendedStories
   }
 
-  private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory? {
+  private fun loadRecommendedStory(topicId: String): PromotedStory? {
+    return if (loadLessonProtosFromAssets) {
+      val topicRecord =
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = topicId,
+          baseMessage = TopicRecord.getDefaultInstance()
+        )
+
+      // Do not recommend unpublished topics.
+      if (!topicRecord.isPublished) return null
+
+      // Check if there are any stories to promote.
+      if (topicRecord.canonicalStoryIdsCount == 0) return PromotedStory.getDefaultInstance()
+
+      // Until better criteria is available, only recommend the first story of the topic.
+      val storySummary =
+        topicController.retrieveStory(topicId, topicRecord.canonicalStoryIdsList.first())
+
+      return PromotedStory.newBuilder().apply {
+        storyId = storySummary.storyId
+        storyName = storySummary.storyName
+        lessonThumbnail = storySummary.storyThumbnail
+        this.topicId = topicId
+        topicName = topicRecord.name
+        completedChapterCount = 0
+        totalChapterCount = storySummary.chapterCount
+        storySummary.chapterList.firstOrNull()?.let {
+          nextChapterName = it.name
+          explorationId = it.explorationId
+        }
+      }.build()
+    } else loadRecommendedStoryFromJson(topicId)
+  }
+
+  private fun loadRecommendedStoryFromJson(topicId: String): PromotedStory? {
     val topicJson = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
     if (!topicJson.getBoolean("published")) {
       // Do not recommend unpublished topics.

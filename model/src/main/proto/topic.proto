@@ -310,13 +310,101 @@ message RevisionCard {
   string subtopic_title = 1;
 
   // The core explanation of the subtopic being revised.
-  SubtitledHtml page_contents = 3;
+  SubtitledHtml page_contents = 2;
 
   // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this revision card that has corresponding
   // recorded audio to play.
-  map<string, VoiceoverMapping> recorded_voiceover = 5;
+  map<string, VoiceoverMapping> recorded_voiceover = 3;
 
   // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this revision card that has corresponding
   // translations.
-  map<string, TranslationMapping> written_translation = 6;
+  map<string, TranslationMapping> written_translation = 4;
+}
+
+// Corresponds to a local file cataloging all topics available to load.
+message TopicIdList {
+  // The list of IDs corresponding to topics available on the local filesystem.
+  repeated string topic_ids = 1;
+}
+
+// Corresponds to a local file cataloging all concept cards available to load.
+message ConceptCardList {
+  // The list of concept cards stored on the local filesystem.
+  repeated ConceptCard concept_cards = 1;
+}
+
+// Corresponds to a record of a topic available to be loaded from the local filesystem. This, along
+// with other local assets, can be used to constitute a Topic message.
+message TopicRecord {
+  // The topic's ID.
+  string id = 1;
+
+  // The name of the topic.
+  string name = 2;
+
+  // The topic's description.
+  string description = 3;
+
+  // The list of canonical story IDs that can be used to load stories from the local filesystem.
+  repeated string canonical_story_ids = 4;
+
+  // The list of subtopic IDs that can be used to load subtopics from the local filesystem.
+  repeated int32 subtopic_ids = 5;
+
+  // Whether this topic is published/availabel to be played.
+  bool is_published = 6;
+
+  // The thumbnail corresponding to this topic.
+  LessonThumbnail topic_thumbnail = 7;
+}
+
+// Corresponds to a record of a story available to be loaded from the local filesystem. This, along
+// with other local assets, can be used to constitute a StorySummary message.
+message StoryRecord {
+  string story_id = 1;
+  string story_name = 2;
+  LessonThumbnail story_thumbnail = 3;
+  repeated ChapterRecord chapters = 4;
+}
+
+// Corresponds to a record of a chapter & exploration available to be loaded from the local
+// filesystem. This, along with other local assets, can be used to constitute a ChapterSummary
+// message.
+message ChapterRecord {
+  // The ID of the exploration corresponding to this chapter.
+  string exploration_id = 1;
+
+  // The thumbnail of the chapter.
+  LessonThumbnail chapter_thumbnail = 2;
+
+  // The title of the chapter.
+  string title = 3;
+
+  // The outline/description that is used to provide an initial summary of the chapter's contents.
+  string outline = 4;
+}
+
+// Corresponds to a record of a subtopic/revision card available to be loaded from the local
+// filesystem. This, along with other local assets, can be used to constitute both a Subtopic and
+// RevisionCard message.
+message SubtopicRecord {
+  // The title corresponding to the subtopic.
+  string subtopic_title = 1;
+
+  // The core explanation of the subtopic being revised.
+  SubtitledHtml page_contents = 2;
+
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this revision card that has corresponding
+  // recorded audio to play.
+  map<string, VoiceoverMapping> recorded_voiceover = 3;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this revision card that has corresponding
+  // translations.
+  map<string, TranslationMapping> written_translation = 4;
+
+  // The list of skill ids associated with the subtopic.
+  repeated string skill_ids = 5;
+
+  // The thumbnail corresponding to this subtopic.
+  LessonThumbnail subtopic_thumbnail = 6;
 }

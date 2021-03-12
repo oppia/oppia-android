@@ -4,13 +4,10 @@ import com.bumptech.glide.load.Options
 import com.bumptech.glide.load.ResourceDecoder
 import com.bumptech.glide.load.engine.Resource
 import com.bumptech.glide.load.resource.SimpleResource
-import com.caverock.androidsvg.SVG
-import com.caverock.androidsvg.SVGParseException
-import java.io.IOException
 import java.io.InputStream
 
 /** Decodes an SVG internal representation from an {@link InputStream}. */
-class SvgDecoder : ResourceDecoder<InputStream?, SVG?> {
+class SvgDecoder : ResourceDecoder<InputStream?, OppiaSvg?> {
 
   override fun handles(source: InputStream, options: Options): Boolean {
     return true
@@ -21,11 +18,8 @@ class SvgDecoder : ResourceDecoder<InputStream?, SVG?> {
     width: Int,
     height: Int,
     options: Options
-  ): Resource<SVG?>? {
-    return try {
-      SimpleResource(source.use { SVG.getFromInputStream(it) })
-    } catch (ex: SVGParseException) {
-      throw IOException("Cannot load SVG from stream", ex)
-    }
+  ): Resource<OppiaSvg?> {
+    val svgSource = source.bufferedReader().readLines().joinToString(separator = "\n")
+    return SimpleResource(OppiaSvg(svgSource))
   }
 }

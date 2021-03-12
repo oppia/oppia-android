@@ -1,12 +1,14 @@
 package org.oppia.android.util.parser
 
 import android.text.Editable
+import android.text.Html
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
+import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
 import javax.inject.Inject
 
@@ -24,10 +26,12 @@ class HtmlParser private constructor(
   private val entityType: String,
   private val entityId: String,
   private val imageCenterAlign: Boolean,
+  private val consoleLogger: ConsoleLogger,
   customOppiaTagActionListener: CustomOppiaTagActionListener?
 ) {
   private val conceptCardTagHandler = ConceptCardTagHandler(customOppiaTagActionListener)
   private val bulletTagHandler = BulletTagHandler()
+  private val mathTagHandler by lazy { MathTagHandler(consoleLogger) }
 
   /**
    * Parses a raw HTML string with support for custom Oppia tags.
@@ -57,12 +61,12 @@ class HtmlParser private constructor(
         .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
     }
 
-    if (CUSTOM_IMG_TAG in htmlContent) {
-      htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG)
-      htmlContent =
-        htmlContent.replace(CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
-      htmlContent = htmlContent.replace("&amp;quot;", "")
-    }
+//    if (CUSTOM_IMG_TAG in htmlContent) {
+//      htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG)
+//      htmlContent =
+//        htmlContent.replace(CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
+//      htmlContent = htmlContent.replace("&amp;quot;", "")
+//    }
 
     // https://stackoverflow.com/a/8662457
     if (supportsLinks) {
@@ -88,6 +92,7 @@ class HtmlParser private constructor(
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
     handlersMap[CUSTOM_BULLET_LIST_TAG] = bulletTagHandler
+    handlersMap[CUSTOM_MATH_TAG] = mathTagHandler
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
@@ -102,7 +107,8 @@ class HtmlParser private constructor(
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
-      output: Editable
+      output: Editable,
+      imageGetter: Html.ImageGetter
     ) {
       // Replace the custom tag with a clickable piece of text based on the tag's customizations.
       val skillId = attributes.getValue("skill_id-with-value")
@@ -150,7 +156,10 @@ class HtmlParser private constructor(
   }
 
   /** Factory for creating new [HtmlParser]s. */
-  class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
+  class Factory @Inject constructor(
+    private val urlImageParserFactory: UrlImageParser.Factory,
+    private val consoleLogger: ConsoleLogger
+  ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
      * optionally specified [CustomOppiaTagActionListener] for handling custom Oppia tag events.
@@ -168,6 +177,7 @@ class HtmlParser private constructor(
         entityType,
         entityId,
         imageCenterAlign,
+        consoleLogger,
         customOppiaTagActionListener
       )
     }

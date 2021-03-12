@@ -81,7 +81,7 @@ message Interaction {
   string id = 1;
   repeated AnswerGroup answer_groups = 2;
   Solution solution = 3;
-  repeated AnswerGroup confirmed_unclassified_answers = 4;
+  reserved 4;
   repeated Hint hint = 5;
   Outcome default_outcome = 6;
   // Mapping from the name of a customization arg to the default interaction

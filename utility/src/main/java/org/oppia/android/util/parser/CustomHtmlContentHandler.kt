@@ -17,7 +17,8 @@ import java.util.ArrayDeque
  * This is based on the implementation provided in https://stackoverflow.com/a/36528149.
  */
 class CustomHtmlContentHandler private constructor(
-  private val customTagHandlers: Map<String, CustomTagHandler>
+  private val customTagHandlers: Map<String, CustomTagHandler>,
+  private val imageGetter: Html.ImageGetter
 ) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
@@ -107,7 +108,8 @@ class CustomHtmlContentHandler private constructor(
         }
         val (_, attributes, openTagIndex) = currentTrackedCustomTag
         customTagHandlers.getValue(tag).handleClosingTag(output)
-        customTagHandlers.getValue(tag).handleTag(attributes, openTagIndex, output.length, output)
+        customTagHandlers.getValue(tag)
+          .handleTag(attributes, openTagIndex, output.length, output, imageGetter)
       }
     }
   }
@@ -128,8 +130,16 @@ class CustomHtmlContentHandler private constructor(
      * @param openIndex the index in the output [Editable] at which this tag begins
      * @param closeIndex the index in the output [Editable] at which this tag ends
      * @param output the destination [Editable] to which spans can be added
+     * @param imageGetter a utility to load image drawables if needed by the handler
      */
-    fun handleTag(attributes: Attributes, openIndex: Int, closeIndex: Int, output: Editable) {}
+    fun handleTag(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable,
+      imageGetter: Html.ImageGetter
+    ) {
+    }
 
     /**
      * Called when the opening of a custom tag is encountered. This does not support processing
@@ -169,7 +179,7 @@ class CustomHtmlContentHandler private constructor(
         "<init-custom-handler/>$html",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
         imageGetter,
-        CustomHtmlContentHandler(customTagHandlers)
+        CustomHtmlContentHandler(customTagHandlers, imageGetter),
       ) as Spannable
     }
   }

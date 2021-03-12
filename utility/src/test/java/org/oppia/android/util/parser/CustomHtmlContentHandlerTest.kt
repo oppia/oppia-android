@@ -178,7 +178,8 @@ class CustomHtmlContentHandlerTest {
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
-      output: Editable
+      output: Editable,
+      imageGetter: Html.ImageGetter
     ) {
       handleTagCalled = true
       handleTagCallIndex = methodCallCount++
@@ -203,7 +204,8 @@ class CustomHtmlContentHandlerTest {
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
-      output: Editable
+      output: Editable,
+      imageGetter: Html.ImageGetter
     ) {
       output.replace(openIndex, closeIndex, attributes.getValue(attributeTextToReplaceWith))
     }

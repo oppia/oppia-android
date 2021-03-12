@@ -56,7 +56,9 @@ class UrlImageParser private constructor(
     urlDrawable, { resource -> BitmapDrawable(context.resources, resource) }
   )
 
-  private inner class SvgTarget(urlDrawable: UrlDrawable) : CustomImageTarget<PictureDrawable>(
+  private inner class SvgTarget(
+    urlDrawable: UrlDrawable
+  ) : CustomImageTarget<ScalablePictureDrawable>(
     urlDrawable, { it }
   )
 
@@ -84,8 +86,11 @@ class UrlImageParser private constructor(
             } else viewWidth
           } else viewWidth
 
-          var drawableHeight = drawable.intrinsicHeight
-          var drawableWidth = drawable.intrinsicWidth
+          // TODO: make this better by properly handling non-centering images and scalable drawables.
+          var (drawableWidth, drawableHeight) = if (drawable is ScalablePictureDrawable) {
+            drawable.initialize(htmlContentTextView.paint)
+            drawable.computeIntrinsicSize()
+          } else IntrinsicSize(drawable.intrinsicWidth.toFloat(), drawable.intrinsicHeight.toFloat())
           val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
           if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
             // The multipleFactor value is used to make sure that the aspect ratio of the image remains the same.
@@ -94,18 +99,18 @@ class UrlImageParser private constructor(
             // The new height will be 180 and new width will be 120.
             val multipleFactor = if (drawableHeight <= drawableWidth) {
               // If height is less then the width, multipleFactor value is determined by height.
-              (minimumImageSize.toDouble() / drawableHeight.toDouble())
+              minimumImageSize.toFloat() / drawableHeight
             } else {
               // If height is less then the width, multipleFactor value is determined by width.
-              (minimumImageSize.toDouble() / drawableWidth.toDouble())
+              minimumImageSize.toFloat() / drawableWidth
             }
-            drawableHeight = (drawableHeight.toDouble() * multipleFactor).toInt()
-            drawableWidth = (drawableWidth.toDouble() * multipleFactor).toInt()
+            drawableHeight *= multipleFactor
+            drawableWidth *= multipleFactor
           }
           val maxContentItemPadding =
             context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
           val maximumImageSize = maxAvailableWidth - maxContentItemPadding
-          if (drawableWidth >= maximumImageSize) {
+          /*if (drawableWidth >= maximumImageSize) {
             // The multipleFactor value is used to make sure that the aspect ratio of the image remains the same.
             // Example: Height is 420, width is 440 and maximumImageSize is 200.
             // Then multipleFactor will be (200/440).
@@ -119,14 +124,16 @@ class UrlImageParser private constructor(
             }
             drawableHeight = (drawableHeight.toDouble() * multipleFactor).toInt()
             drawableWidth = (drawableWidth.toDouble() * multipleFactor).toInt()
-          }
-          val initialDrawableMargin = if (imageCenterAlign) {
+          }*/
+          val drawableLeft = 0/*if (imageCenterAlign) {
             calculateInitialMargin(maxAvailableWidth, drawableWidth)
           } else {
             0
-          }
-          val rect =
-            Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
+          }*/
+          val drawableTop = 0
+          val drawableRight = (drawableLeft + drawableWidth).toInt()
+          val drawableBottom = (drawableTop + drawableHeight).toInt()
+          val rect = Rect(drawableLeft, drawableTop, drawableRight, drawableBottom)
           drawable.bounds = rect
           urlDrawable.bounds = rect
           urlDrawable.drawable = drawable

@@ -17,5 +17,5 @@ interface ImageLoader {
    * is an asynchronous operation, and may take a while if the image needs to be downloaded from the
    * internet.
    */
-  fun loadSvg(imageUrl: String, target: ImageTarget<PictureDrawable>)
+  fun loadSvg(imageUrl: String, target: ImageTarget<ScalablePictureDrawable>)
 }
