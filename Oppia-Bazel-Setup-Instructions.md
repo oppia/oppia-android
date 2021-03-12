@@ -11,7 +11,7 @@ Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. 
     - Linux: `export ANDROID_HOME=$HOME/Android/Sdk/`<br>
     - macOS: `export ANDROID_HOME=$HOME/Library/Android/sdk`
 
-1. Follow the instructions in [oppia-bazel-tools](https://github.com/oppia/oppia-bazel-tools)
+1. Follow the instructions in [oppia-bazel-tools](https://github.com/oppia/oppia-bazel-tools).
 
 #### Possible Error:
 ```
