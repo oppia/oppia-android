@@ -186,4 +186,8 @@
   <dimen name="feedback_item_question_view_margin_start">128dp</dimen>
   <dimen name="feedback_item_question_view_margin_top">24dp</dimen>
   <dimen name="feedback_item_question_view_margin_end">128dp</dimen>
+
+  <!--  Splash Screen-->
+  <dimen name="splash_screen_logo_width">720dp</dimen>
+  <dimen name="splash_screen_logo_height">1280dp</dimen>
 </resources>

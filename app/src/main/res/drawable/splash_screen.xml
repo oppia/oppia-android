@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:drawable="@color/oppiaPrimaryLight" />
+  <item
+    android:width="@dimen/splash_screen_logo_width"
+    android:height="@dimen/splash_screen_logo_height"
+    android:drawable="@drawable/splash_page"
+    android:gravity="center"
+    android:top="@dimen/splash_screen_logo_margin_top" />
+</layer-list>

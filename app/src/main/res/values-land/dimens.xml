@@ -133,4 +133,9 @@
   <dimen name="feedback_item_question_view_margin_start">64dp</dimen>
   <dimen name="feedback_item_question_view_margin_top">24dp</dimen>
   <dimen name="feedback_item_question_view_margin_end">64dp</dimen>
+
+  <!--  Splash Screen-->
+  <dimen name="splash_screen_logo_width">360dp</dimen>
+  <dimen name="splash_screen_logo_height">640dp</dimen>
+  <dimen name="splash_screen_logo_margin_top">100dp</dimen>
 </resources>

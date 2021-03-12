@@ -41,7 +41,7 @@
   </style>
 
   <style name="SplashScreenTheme" parent="OppiaThemeWithoutActionBar">
-    <item name="android:windowBackground">@drawable/splash_page</item>
+    <item name="android:windowBackground">@drawable/splash_screen</item>
     <item name="android:windowAnimationStyle">@style/FadeTransitionAnimation.Activity</item>
   </style>
   <!-- Base style for animations.  This style specifies no animations. -->
