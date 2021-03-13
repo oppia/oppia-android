@@ -5,6 +5,7 @@ import androidx.lifecycle.Transformations
 import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
+import org.oppia.android.app.model.FeedbackReportingAppContext.EntryPointCase
 import org.oppia.android.app.model.FeedbackReportingDatabase
 import org.oppia.android.app.model.FeedbackReportingDeviceContext
 import org.oppia.android.app.model.FeedbackReportingSystemContext
@@ -18,6 +19,7 @@ import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingAppContext
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingDeviceContext
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingEntryPoint
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingSystemContext
 import org.oppia.android.data.backends.gae.model.GaeUserSuppliedFeedback
 import org.oppia.android.data.persistence.PersistentCacheStore
@@ -243,7 +245,7 @@ class FeedbackReportManagementController @Inject constructor(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingAppContext {
     return GaeFeedbackReportingAppContext(
-      entryPoint = appContext.entryPoint.name,
+      entryPoint = getEntryPointData(appContext),
       topicProgress = appContext.topicProgressList,
       textSize = appContext.textSize.name,
       textLang = appContext.textLanguage.name,
@@ -256,9 +258,33 @@ class FeedbackReportManagementController @Inject constructor(
     )
   }
 
-  private fun getEntryPointInfo(appContext: FeedbackReportingAppContext): String {
-    return
-
+  private fun getEntryPointData(
+    appContext: FeedbackReportingAppContext
+  ): GaeFeedbackReportingEntryPoint {
+    var topicId: String? = null
+    var storyId: String? = null
+    var explorationId: String? = null
+    var subtopicId: String? = null
+    when (appContext.entryPointCase){
+      EntryPointCase.LESSON_PLAYER -> {
+        val lesson = appContext.lessonPlayer
+        topicId = lesson.topicId
+        storyId = lesson.storyId
+        explorationId = lesson.explorationId
+      }
+      EntryPointCase.REVISION_CARD -> {
+        val revisionCard = appContext.revisionCard
+        topicId = revisionCard.topicId
+        subtopicId = revisionCard.subtopicId
+      }
+    }
+    return GaeFeedbackReportingEntryPoint(
+      entryPointName = appContext.entryPointCase.name,
+      topicId = topicId,
+      storyId = storyId,
+      explorationId = explorationId,
+      subtopicId = subtopicId
+    )
   }
 
   private fun getLogcatLogs(): List<String> {
