@@ -141,8 +141,8 @@ class TopicRevisionFragmentTest {
       scrollToPosition(position = 0)
       onView(
         atPosition(
-        recyclerViewId = R.id.revision_recycler_view,
-        position = 0
+          recyclerViewId = R.id.revision_recycler_view,
+          position = 0
         )
       ).perform(click())
       intended(hasComponent(RevisionCardActivity::class.java.name))
@@ -159,9 +159,9 @@ class TopicRevisionFragmentTest {
       clickRevisionTab()
       onView(
         atPositionOnView(
-        recyclerViewId = R.id.revision_recycler_view,
-        position = 0,
-        targetViewId = R.id.subtopic_image_view
+          recyclerViewId = R.id.revision_recycler_view,
+          position = 0,
+          targetViewId = R.id.subtopic_image_view
         )
       ).check(
         matches(
@@ -198,9 +198,9 @@ class TopicRevisionFragmentTest {
       clickRevisionTab()
       onView(
         atPositionOnView(
-        recyclerViewId = R.id.revision_recycler_view,
-        position = 0,
-        targetViewId = R.id.subtopic_image_view
+          recyclerViewId = R.id.revision_recycler_view,
+          position = 0,
+          targetViewId = R.id.subtopic_image_view
         )
       ).check(
         matches(
