@@ -1,5 +1,5 @@
 """
-General purposes utilities for Android accessibility checking.
+General purposes utilities to manage Date and Time.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
