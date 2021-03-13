@@ -112,12 +112,17 @@ class TopicRevisionFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(topicRevisionFragmentTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(
+      topicRevisionFragmentTest = this
+    )
   }
 
   @Test
   fun testTopicRevisionFragment_loadFragment_displayRevisionTopics_isSuccessful() {
-    launchTopicActivityIntent(internalProfileId = internalProfileId, topicId = FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
       onView(atPosition(recyclerViewId = R.id.revision_recycler_view, position = 0))
@@ -127,24 +132,34 @@ class TopicRevisionFragmentTest {
 
   @Test
   fun testTopicRevisionFragment_loadFragment_selectRevisionTopics_opensRevisionCardActivity() {
-    launchTopicActivityIntent(internalProfileId = internalProfileId, topicId = FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
       scrollToPosition(position = 0)
-      onView(atPosition(recyclerViewId = R.id.revision_recycler_view, position = 0)).perform(click())
+      onView(atPosition(
+        recyclerViewId = R.id.revision_recycler_view,
+        position = 0)
+      ).perform(click())
       intended(hasComponent(RevisionCardActivity::class.java.name))
     }
   }
 
   @Test
   fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_isCorrect() {
-    launchTopicActivityIntent(internalProfileId = internalProfileId, topicId = FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
       onView(atPositionOnView(
         recyclerViewId = R.id.revision_recycler_view,
         position = 0,
-        targetViewId = R.id.subtopic_image_view)).check(
+        targetViewId = R.id.subtopic_image_view)
+      ).check(
         matches(
           withDrawable(
             subtopicThumbnail
@@ -156,7 +171,10 @@ class TopicRevisionFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_configurationChange_revisionSubtopicsAreDisplayed() {
-    launchTopicActivityIntent(internalProfileId = internalProfileId, topicId = FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       clickRevisionTab()
@@ -167,14 +185,18 @@ class TopicRevisionFragmentTest {
 
   @Test
   fun testTopicRevisionFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
-    launchTopicActivityIntent(internalProfileId = internalProfileId, topicId = FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       clickRevisionTab()
       onView(atPositionOnView(
         recyclerViewId = R.id.revision_recycler_view,
         position = 0,
-        targetViewId = R.id.subtopic_image_view)).check(
+        targetViewId = R.id.subtopic_image_view)
+      ).check(
         matches(
           withDrawable(
             subtopicThumbnail
@@ -196,7 +218,9 @@ class TopicRevisionFragmentTest {
     internalProfileId: Int,
     topicId: String
   ): ActivityScenario<TopicActivity> {
-    return launch(createTopicActivityIntent(internalProfileId = internalProfileId, topicId = topicId))
+    return launch(
+      createTopicActivityIntent(internalProfileId = internalProfileId, topicId = topicId)
+    )
   }
 
   private fun clickRevisionTab() {
@@ -258,7 +282,9 @@ class TopicRevisionFragmentTest {
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(appCompatActivity = activity).build()
+      return component.getActivityComponentBuilderProvider().get().setActivity(
+        appCompatActivity = activity
+      ).build()
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
