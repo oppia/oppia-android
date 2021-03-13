@@ -21,7 +21,7 @@ android_library(
     name = "resources",
     custom_package = "org.oppia.android.util",
     manifest = "src/main/AndroidManifest.xml",
-    resource_files = ["src/main/res/values/strings.xml"],
+    resource_files = glob(["src/main/res/**/*.xml"]),
     visibility = ["//visibility:public"],
 )
 
