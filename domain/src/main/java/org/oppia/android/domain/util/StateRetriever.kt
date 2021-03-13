@@ -163,27 +163,22 @@ class StateRetriever @Inject constructor(
     answerGroupJson: JSONObject,
     interactionId: String
   ): AnswerGroup {
-    var answerGroup = AnswerGroup.newBuilder()
-      .setOutcome(
-        createOutcomeFromJson(answerGroupJson.getJSONObject("outcome"))
-      )
-      .addAllRuleSpecs(
+    return AnswerGroup.newBuilder().apply {
+      outcome = createOutcomeFromJson(answerGroupJson.getJSONObject("outcome"))
+      addAllRuleSpecs(
         createRuleSpecsFromJson(
           answerGroupJson.optJSONObject("rule_types_to_inputs"), interactionId
         )
       )
-
-    if (answerGroupJson.optJSONObject("tagged_skill_misconception_id") != null) {
-      answerGroup.setTaggedSkillMisconceptionId(
-        Misconception.newBuilder().setSkillId(
-          answerGroupJson.getJSONObject("tagged_skill_misconception_id").toString().split("-")[0]
-        )
-          .setMisconceptionId(
-            answerGroupJson.getJSONObject("tagged_skill_misconception_id").toString().split("-")[1]
-          )
-      )
-    }
-    return answerGroup.build()
+      val misconceptionJson = answerGroupJson.optJSONObject("tagged_skill_misconception_id")
+      if (misconceptionJson != null) {
+        taggedSkillMisconception =
+          Misconception.newBuilder().apply {
+            skillId = misconceptionJson.toString().split("-")[0]
+            misconceptionId = misconceptionJson.toString().split("-")[1]
+          }.build()
+      }
+    }.build()
   }
 
   // Creates an outcome object from JSON
