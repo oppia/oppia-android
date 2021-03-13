@@ -256,6 +256,11 @@ class FeedbackReportManagementController @Inject constructor(
     )
   }
 
+  private fun getEntryPointInfo(appContext: FeedbackReportingAppContext): String {
+    return
+
+  }
+
   private fun getLogcatLogs(): List<String> {
     return listOf()
   }
