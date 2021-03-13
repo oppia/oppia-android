@@ -139,9 +139,11 @@ class TopicRevisionFragmentTest {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
       scrollToPosition(position = 0)
-      onView(atPosition(
+      onView(
+        atPosition(
         recyclerViewId = R.id.revision_recycler_view,
-        position = 0)
+        position = 0
+        )
       ).perform(click())
       intended(hasComponent(RevisionCardActivity::class.java.name))
     }
@@ -155,10 +157,12 @@ class TopicRevisionFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
-      onView(atPositionOnView(
+      onView(
+        atPositionOnView(
         recyclerViewId = R.id.revision_recycler_view,
         position = 0,
-        targetViewId = R.id.subtopic_image_view)
+        targetViewId = R.id.subtopic_image_view
+        )
       ).check(
         matches(
           withDrawable(
@@ -192,10 +196,12 @@ class TopicRevisionFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       clickRevisionTab()
-      onView(atPositionOnView(
+      onView(
+        atPositionOnView(
         recyclerViewId = R.id.revision_recycler_view,
         position = 0,
-        targetViewId = R.id.subtopic_image_view)
+        targetViewId = R.id.subtopic_image_view
+        )
       ).check(
         matches(
           withDrawable(
