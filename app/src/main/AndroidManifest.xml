@@ -22,6 +22,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.administratorcontrols.appversion.AppVersionActivity"
+      android:label="@string/label_app_version"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.completedstorylist.CompletedStoryListActivity"
