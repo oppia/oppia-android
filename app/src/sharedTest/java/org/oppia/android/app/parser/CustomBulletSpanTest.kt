@@ -80,7 +80,7 @@ class CustomBulletSpanTest {
   }
   private val testStringWithCustomBulletSpan = SpannableString("Text With \nBullet Point").apply {
     this.setSpan(
-      CustomBulletSpan(context),
+      CustomBulletSpan(context = context),
       10,
       22,
       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -91,8 +91,8 @@ class CustomBulletSpanTest {
   fun customBulletSpan_testReplaceBulletSpan_spannableStringWithoutBulletSpanRemainSame() {
     val spannableString1 = testStringWithoutBulletSpan
     val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
-      SpannableStringBuilder(spannableString1),
-      context
+      spannableStringBuilder = SpannableStringBuilder(spannableString1),
+      context = context
     )
     val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
     assertThat(getBulletSpanCount(spannableString1)).isEqualTo(0)
@@ -105,8 +105,8 @@ class CustomBulletSpanTest {
   fun customBulletSpan_testReplaceBulletSpan_spannableStringWithBulletSpan_isNotSame() {
     val spannableString1 = testStringWithBulletSpan
     val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
-      SpannableStringBuilder(spannableString1),
-      context
+      spannableStringBuilder = SpannableStringBuilder(spannableString1),
+      context = context
     )
     val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
 
@@ -120,8 +120,8 @@ class CustomBulletSpanTest {
   fun customBulletSpan_testReplaceBulletSpan_includingUnderlineSpan_underlineSpanRemainsSame() {
     val spannableString1 = testStringWithMultipleBulletSpan
     val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
-      SpannableStringBuilder(spannableString1),
-      context
+      spannableStringBuilder = SpannableStringBuilder(spannableString1),
+      context = context
     )
     val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
     assertThat(getBulletSpanCount(spannableString1)).isEqualTo(4)
@@ -136,8 +136,8 @@ class CustomBulletSpanTest {
   fun customBulletSpan_testReplaceBulletSpan_customBulletSpans_remainsSame() {
     val spannableString1 = testStringWithCustomBulletSpan
     val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
-      SpannableStringBuilder(spannableString1),
-      context
+      spannableStringBuilder = SpannableStringBuilder(spannableString1),
+      context = context
     )
     val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
     assertThat(getBulletSpanCount(spannableString1)).isEqualTo(0)
@@ -159,19 +159,22 @@ class CustomBulletSpanTest {
     )
     val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
     val spannableString = SpannableStringBuilder(testStringWithBulletSpan)
-    val customBulletSpannable = CustomBulletSpan.replaceBulletSpan(spannableString, context)
+    val customBulletSpannable = CustomBulletSpan.replaceBulletSpan(
+      spannableStringBuilder = spannableString,
+      context = context
+    )
     val leadingMargin = customBulletSpannable.getSpans(
       0,
       spannableString.length,
       CustomBulletSpan::class.java
-    )[0].getLeadingMargin(true)
+    )[0].getLeadingMargin(first = true)
     assertThat(leadingMargin).isEqualTo(expectedMargin)
   }
 
   private fun getBulletSpans(spannableString: SpannableString): Array<out BulletSpan> {
     return spannableString.getSpans<BulletSpan>(
-      0,
-      spannableString.length
+      start = 0,
+      end = spannableString.length
     )
   }
 
@@ -179,28 +182,28 @@ class CustomBulletSpanTest {
     spannableString: SpannableString
   ): Array<out CustomBulletSpan> {
     return spannableString.getSpans<CustomBulletSpan>(
-      0,
-      spannableString.length
+      start = 0,
+      end = spannableString.length
     )
   }
 
   private fun getUnderlineSpans(spannableString: SpannableString): Array<out UnderlineSpan> {
     return spannableString.getSpans<UnderlineSpan>(
-      0,
-      spannableString.length
+      start = 0,
+      end = spannableString.length
     )
   }
 
   private fun getBulletSpanCount(spannableString: SpannableString): Int {
-    return getBulletSpans(spannableString).size
+    return getBulletSpans(spannableString = spannableString).size
   }
 
   private fun getCustomBulletSpanCount(spannableString: SpannableString): Int {
-    return getCustomBulletSpans(spannableString).size
+    return getCustomBulletSpans(spannableString = spannableString).size
   }
 
   private fun getUnderlineSpanCount(spannableString: SpannableString): Int {
-    return getUnderlineSpans(spannableString).size
+    return getUnderlineSpans(spannableString = spannableString).size
   }
 
   @Singleton
@@ -237,11 +240,12 @@ class CustomBulletSpanTest {
     }
 
     fun inject(customBulletSpanTest: CustomBulletSpanTest) {
-      component.inject(customBulletSpanTest)
+      component.inject(customBulletSpanTest = customBulletSpanTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+      return component.getActivityComponentBuilderProvider().get()
+        .setActivity(appCompatActivity = activity).build()
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
