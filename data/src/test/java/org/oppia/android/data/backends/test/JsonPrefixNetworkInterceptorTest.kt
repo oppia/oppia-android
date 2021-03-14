@@ -71,7 +71,7 @@ class JsonPrefixNetworkInterceptorTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerNetworkInterceptorTest_TestApplicationComponent.builder()
+    DaggerJsonPrefixNetworkInterceptorTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
