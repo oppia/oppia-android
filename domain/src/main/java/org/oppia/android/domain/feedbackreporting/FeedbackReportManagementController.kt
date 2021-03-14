@@ -1,8 +1,6 @@
 package org.oppia.android.domain.feedbackreporting
 
-import android.content.Context
 import androidx.lifecycle.Transformations
-import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingAppContext.EntryPointCase
@@ -24,11 +22,11 @@ import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingSystemConte
 import org.oppia.android.data.backends.gae.model.GaeUserSuppliedFeedback
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
-import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,13 +37,11 @@ private const val FEEDBACK_REPORTS_DATABASE_NAME = "feedback_reports_database"
 /** Controller for uploading feedback reports to remote storage or saving them on disk. */
 @Singleton
 class FeedbackReportManagementController @Inject constructor(
-  private val context: Context,
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val feedbackReportingService: FeedbackReportingService,
   private val consoleLogger: ConsoleLogger,
   private val analyticsController: AnalyticsController,
   private val networkConnectionUtil: NetworkConnectionUtil,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) {
   private val feedbackReportDataStore = cacheStoreFactory.create(
     FEEDBACK_REPORTS_DATABASE_NAME, FeedbackReportingDatabase.getDefaultInstance()
@@ -86,6 +82,10 @@ class FeedbackReportManagementController @Inject constructor(
    */
   suspend fun getCachedReportsList(): MutableList<FeedbackReport> {
     return feedbackReportDataStore.readDataAsync().await().reportsList
+  }
+
+  fun getFeedbackReportStore(): DataProvider<FeedbackReportingDatabase> {
+    return feedbackReportDataStore
   }
 
   /**
@@ -195,7 +195,9 @@ class FeedbackReportManagementController @Inject constructor(
             }
             userInput = issue.languageIssue.textLanguageIssue.otherUserInput
           }
-          // General language issues will pass through with no user input or options list.
+          // General language issues will pass through with no user input or options list as users
+          // aren't presented with specific issues to choose from if they don't specify what type of
+          // language issue.
         }
       }
       IssueCategoryCase.TOPICS_ISSUE -> {
@@ -265,7 +267,8 @@ class FeedbackReportManagementController @Inject constructor(
     var storyId: String? = null
     var explorationId: String? = null
     var subtopicId: String? = null
-    when (appContext.entryPointCase){
+    when (appContext.entryPointCase) {
+      // Get the current topic information if the report is sent during a lesson or revision session.
       EntryPointCase.LESSON_PLAYER -> {
         val lesson = appContext.lessonPlayer
         topicId = lesson.topicId
