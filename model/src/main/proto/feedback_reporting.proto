@@ -323,8 +323,8 @@ message FeedbackReportingAppContext {
     // Indicates that the user started feedback reporting from a crash / the crash reporting dialog.
     CrashEntryPoint crash_dialog = 4;
   }
-  // Lists the topics that have been completed by the user.
-  repeated string topic_progress = 5;
+  // A list of exploration IDs that have been completed by the user.
+  repeated string completed_exploration_ids = 2;
   // The text size the app is set to.
   ReadingTextSize text_size = 6;
   // The text language the app is set to.
