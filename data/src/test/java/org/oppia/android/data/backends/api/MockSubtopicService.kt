@@ -3,7 +3,7 @@ package org.oppia.android.data.backends.api
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import org.oppia.android.data.backends.ApiUtils
-import org.oppia.android.data.backends.gae.NetworkInterceptor
+import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.SubtopicService
 import org.oppia.android.data.backends.gae.model.GaeSubtopic
@@ -25,7 +25,7 @@ class MockSubtopicService(private val delegate: BehaviorDelegate<SubtopicService
    * @return GaeSubtopic: GaeSubtopic with mock data
    */
   private fun createMockGaeSubtopic(): GaeSubtopic {
-    val networkInterceptor = NetworkInterceptor()
+    val networkInterceptor = JsonPrefixNetworkInterceptor()
     var subtopicResponseWithXssiPrefix =
       NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("subtopic.json")
 

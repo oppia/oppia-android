@@ -13,7 +13,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.ApiUtils
 import org.oppia.android.data.backends.api.MockTopicService
-import org.oppia.android.data.backends.gae.NetworkInterceptor
+import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -21,13 +21,13 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-/** Tests for [NetworkInterceptor] */
+/** Tests for [JsonPrefixNetworkInterceptorTest] */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class NetworkInterceptorTest {
+class JsonPrefixNetworkInterceptorTest {
 
   @Inject
-  lateinit var networkInterceptor: NetworkInterceptor
+  lateinit var networkInterceptor: JsonPrefixNetworkInterceptor
 
   @Before
   fun setUp() {
@@ -102,7 +102,7 @@ class NetworkInterceptorTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(networkInterceptorTest: NetworkInterceptorTest)
-    fun inject(networkInterceptor: NetworkInterceptor)
+    fun inject(networkInterceptorTest: JsonPrefixNetworkInterceptorTest)
+    fun inject(networkInterceptor: JsonPrefixNetworkInterceptor)
   }
 }

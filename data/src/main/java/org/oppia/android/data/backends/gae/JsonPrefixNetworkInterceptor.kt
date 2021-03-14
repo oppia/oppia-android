@@ -9,12 +9,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Interceptor on top of Retrofit to modify requests and response.
- *
- * The Interceptor removes XSSI_PREFIX from every response to produce valid Json.
+ * Interceptor on top of Retrofit that removes XSSI_PREFIX from every response to produce valid Json.
  */
 @Singleton
-class NetworkInterceptor @Inject constructor() : Interceptor {
+class JsonPrefixNetworkInterceptor @Inject constructor() : Interceptor {
 
   @Throws(IOException::class)
   override fun intercept(chain: Interceptor.Chain): Response {

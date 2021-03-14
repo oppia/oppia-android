@@ -1,5 +1,6 @@
 package org.oppia.android.data.backends.gae
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -8,6 +9,7 @@ import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -22,6 +24,12 @@ class NetworkModule {
   @Qualifier
   private annotation class OppiaRetrofit
 
+  @Inject
+  private lateinit var networkApiKey: String
+
+  @Inject
+  private lateinit var context: Context
+
   /**
    * Provides the Retrofit object.
    * @return the Retrofit object
@@ -31,7 +39,8 @@ class NetworkModule {
   @Singleton
   fun provideRetrofitInstance(): Retrofit {
     val client = OkHttpClient.Builder()
-    client.addInterceptor(NetworkInterceptor())
+    client.addInterceptor(JsonPrefixNetworkInterceptor())
+      .addInterceptor(RemoteAuthNetworkInterceptor(context, networkApiKey))
 
     return retrofit2.Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())

@@ -3,7 +3,7 @@ package org.oppia.android.data.backends.api
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import org.oppia.android.data.backends.ApiUtils
-import org.oppia.android.data.backends.gae.NetworkInterceptor
+import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.ConceptCardService
 import org.oppia.android.data.backends.gae.model.GaeConceptCard
@@ -25,7 +25,7 @@ class MockConceptCardService(private val delegate: BehaviorDelegate<ConceptCardS
    * @return GaeConceptCard: GaeConceptCard with mock data
    */
   private fun createMockGaeConceptCard(): GaeConceptCard {
-    val networkInterceptor = NetworkInterceptor()
+    val networkInterceptor = JsonPrefixNetworkInterceptor()
     var conceptCardResponseWithXssiPrefix =
       NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("concept_card.json")
 

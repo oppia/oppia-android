@@ -10,7 +10,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.ApiUtils
 import org.oppia.android.data.backends.api.MockFeedbackReportingService
-import org.oppia.android.data.backends.gae.NetworkInterceptor
+import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
@@ -30,7 +30,7 @@ class MockFeedbackReportingTest {
   @Before
   fun setUp() {
     val client = OkHttpClient.Builder()
-    client.addInterceptor(NetworkInterceptor())
+    client.addInterceptor(JsonPrefixNetworkInterceptor())
 
     retrofit = retrofit2.Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
