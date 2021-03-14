@@ -73,6 +73,7 @@
       android:name=".app.profile.AddProfileActivity"
       android:theme="@style/OppiaThemeNoActionBarColorAccentColorPrimary" />
     <activity
+      android:label="@string/admin_auth_controls_label"
       android:name=".app.profile.AdminAuthActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
