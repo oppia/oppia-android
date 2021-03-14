@@ -3,7 +3,6 @@ package org.oppia.android.data.backends.test
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -12,7 +11,6 @@ import okhttp3.Request
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.ApiUtils
 import org.oppia.android.data.backends.api.MockFeedbackReportingService
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.RemoteAuthNetworkInterceptor
@@ -38,8 +36,6 @@ class RemoteAuthNetworkInterceptorTest {
   @Test
   fun testNetworkInterceptor_withoutHeader_addsHeader() {
     val requestBuilder = Request.Builder()
-  }
-
   }
 
   private fun setUpTestApplicationComponent() {
@@ -79,3 +75,4 @@ class RemoteAuthNetworkInterceptorTest {
     fun inject(networkInterceptorTest: RemoteAuthNetworkInterceptorTest)
     fun inject(networkInterceptor: RemoteAuthNetworkInterceptor)
   }
+}

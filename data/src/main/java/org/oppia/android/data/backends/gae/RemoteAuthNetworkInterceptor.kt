@@ -15,10 +15,13 @@ import javax.inject.Singleton
  * The Interceptor adds header parameters to all outgoing messages.
  */
 @Singleton
-class RemoteAuthNetworkInterceptor @Inject constructor(
-  private val context: Context,
-  @NetworkApiKey private val networkApiKey: String
-) : Interceptor {
+class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
+
+  @Inject
+  lateinit var context: Context
+
+  @NetworkApiKey
+  lateinit var networkApiKey: String
 
   @Throws(IOException::class)
   override fun intercept(chain: Interceptor.Chain): Response {
@@ -32,7 +35,7 @@ class RemoteAuthNetworkInterceptor @Inject constructor(
    * @param request the request being sent over the network
    * @return the exact same request as the parameter with added headers
    */
-  fun addHeaders(request: Request) : Request {
+  fun addHeaders(request: Request): Request {
     return request.newBuilder()
       .addHeader("api_key", networkApiKey)
       .addHeader("app_package_name", context.packageName)

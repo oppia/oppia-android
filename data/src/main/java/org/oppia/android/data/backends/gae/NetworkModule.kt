@@ -24,12 +24,6 @@ class NetworkModule {
   @Qualifier
   private annotation class OppiaRetrofit
 
-  @Inject
-  private lateinit var networkApiKey: String
-
-  @Inject
-  private lateinit var context: Context
-
   /**
    * Provides the Retrofit object.
    * @return the Retrofit object
@@ -40,7 +34,7 @@ class NetworkModule {
   fun provideRetrofitInstance(): Retrofit {
     val client = OkHttpClient.Builder()
     client.addInterceptor(JsonPrefixNetworkInterceptor())
-      .addInterceptor(RemoteAuthNetworkInterceptor(context, networkApiKey))
+      .addInterceptor(RemoteAuthNetworkInterceptor())
 
     return retrofit2.Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
