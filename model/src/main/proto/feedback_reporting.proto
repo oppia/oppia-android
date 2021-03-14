@@ -324,7 +324,7 @@ message FeedbackReportingAppContext {
     CrashEntryPoint crash_dialog = 4;
   }
   // A list of exploration IDs that have been completed by the user.
-  repeated string completed_exploration_ids = 2;
+  repeated string completed_exploration_ids = 5;
   // The text size the app is set to.
   ReadingTextSize text_size = 6;
   // The text language the app is set to.

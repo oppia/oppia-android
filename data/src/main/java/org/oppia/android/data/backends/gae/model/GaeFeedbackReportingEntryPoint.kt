@@ -8,7 +8,7 @@ import com.squareup.moshi.JsonClass
  * TODO(#2801): Link backend domain model
  */
 @JsonClass(generateAdapter = true)
-data class GaeFeedbackReportingEntryPoint (
+data class GaeFeedbackReportingEntryPoint(
 
   /** Corresponds to a location in the app that a user can access feedback reporting. */
   @Json(name = "entry_point_name") val entryPointName: String,

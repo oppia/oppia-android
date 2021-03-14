@@ -195,7 +195,8 @@ class FeedbackReportManagementControllerTest {
     val removedReport = reportStoreResultCaptor.value.getOrThrow().getReports(0)
     feedbackReportManagementController.removeFirstCachedReport()
 
-    val updatedReportsStore = feedbackReportManagementController.getFeedbackReportStore().toLiveData()
+    val updatedReportsStore = feedbackReportManagementController.getFeedbackReportStore()
+      .toLiveData()
     updatedReportsStore.observeForever(mockReportsStoreObserver)
     testCoroutineDispatchers.advanceUntilIdle()
     verify(mockReportsStoreObserver, atLeastOnce()).onChanged(reportStoreResultCaptor.capture())
