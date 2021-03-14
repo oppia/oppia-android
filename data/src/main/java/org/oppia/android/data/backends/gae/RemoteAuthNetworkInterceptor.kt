@@ -25,7 +25,7 @@ class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
 
   @Throws(IOException::class)
   override fun intercept(chain: Interceptor.Chain): Response {
-    val request = addHeaders(chain.request())
+    val request = addAuthHeaders(chain.request())
     return chain.proceed(request)
   }
 
@@ -35,7 +35,7 @@ class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
    * @param request the request being sent over the network
    * @return the exact same request as the parameter with added headers
    */
-  fun addHeaders(request: Request): Request {
+  fun addAuthHeaders(request: Request): Request {
     return request.newBuilder()
       .addHeader("api_key", networkApiKey)
       .addHeader("app_package_name", context.packageName)
