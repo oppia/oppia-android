@@ -189,7 +189,9 @@ class StoryActivityTest {
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(
-        appCompatActivity = activity).build()
+        appCompatActivity = activity
+      )
+        .build()
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
