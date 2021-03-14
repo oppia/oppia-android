@@ -332,7 +332,7 @@
   <!-- AppVersionFragment -->
   <string name="app_version_name">App Version %s</string>
   <string name="app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
-  <string name="label_app_version">App Version</string>
+  <string name="app_version_activity_label">App Version</string>
   <!-- OptionsActivity -->
   <string name="title_reading_text_size">Reading Text Size</string>
   <string name="title_app_language">App Language</string>
