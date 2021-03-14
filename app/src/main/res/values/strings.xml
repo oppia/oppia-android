@@ -332,6 +332,7 @@
   <!-- AppVersionFragment -->
   <string name="app_version_name">App Version %s</string>
   <string name="app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
+  <string name="label_app_version">App Version</string>
   <!-- OptionsActivity -->
   <string name="title_reading_text_size">Reading Text Size</string>
   <string name="title_app_language">App Language</string>
@@ -429,5 +430,4 @@
   <string name="coming_soon">Coming Soon</string>
   <string name="recommended_stories">Recommended Stories</string>
   <string name="stories_for_you">Stories For You</string>
-  <string name="label_app_version">App Version</string>
 </resources>
