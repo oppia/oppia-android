@@ -60,8 +60,8 @@ class FeedbackReportManagementController @Inject constructor(
   }.value
 
   /**
-   * Stores a [FeedbackReport] proto in local storage if there is not internet connection, or sends
-   * them to remote storage to be processed in the admin dashboard.
+   * Submits a [FeedbackReport] to remote storage to be processed in the admin dashboard, or saves it
+   * to local storage if there is no internet connection available to send reports.
    *
    * @param feedbackReportViewModel for the view model representing the feedback provided by the user
    */
@@ -74,9 +74,9 @@ class FeedbackReportManagementController @Inject constructor(
   }
 
   /**
-   * Checks the local disk for any cached feedback reports and uploads them to remote storage.
-   * This is called by a [FeedbackReportUploadWorker] when it detects a network connection to send
-   * all local reports to remote storage.
+   * Gets any feedback reports saved locally on the device. This is called by a
+   * [FeedbackReportUploadWorker] when it detects a network reconnection to send all local reports
+   * to remote storage.
    *
    * @return a list of feedback reports to upload to remote storage
    */
@@ -84,6 +84,11 @@ class FeedbackReportManagementController @Inject constructor(
     return feedbackReportDataStore.readDataAsync().await().reportsList
   }
 
+  /**
+   * Gets the data store of all locally-saved feedback reports.
+   *
+   * @return the data provider for the storage database
+   */
   fun getFeedbackReportStore(): DataProvider<FeedbackReportingDatabase> {
     return feedbackReportDataStore
   }
@@ -119,6 +124,7 @@ class FeedbackReportManagementController @Inject constructor(
     }
   }
 
+  // Helper function to store a single report in memory on the device.
   private fun storeFeedbackReport(report: FeedbackReport) {
     feedbackReportDataStore.storeDataAsync(updateInMemoryCache = true) { feedbackReportDatabase ->
       return@storeDataAsync feedbackReportDatabase.toBuilder().addReports(report).build()
@@ -167,7 +173,8 @@ class FeedbackReportManagementController @Inject constructor(
     }
   }
 
-  // Helper function that creates a Moshi data class object based on the type of Issue report.
+  // Helper function that construct a Moshi data class object for the information provided by the user,
+  // based on the type of Issue report.
   private fun createGaeUserSuppliedFeedbackForIssue(
     reportTypeName: String,
     issue: Issue
@@ -220,6 +227,7 @@ class FeedbackReportManagementController @Inject constructor(
     )
   }
 
+  // Helper function that construct a Moshi data class object for the device's system information.
   private fun getSystemContext(
     systemContext: FeedbackReportingSystemContext
   ): GaeFeedbackReportingSystemContext {
@@ -231,6 +239,7 @@ class FeedbackReportManagementController @Inject constructor(
     )
   }
 
+  // Helper function that construct a Moshi data class object for the device's build information.
   private fun getDeviceContext(
     deviceContext: FeedbackReportingDeviceContext
   ): GaeFeedbackReportingDeviceContext {
@@ -243,6 +252,7 @@ class FeedbackReportManagementController @Inject constructor(
     )
   }
 
+  // Helper function that construct a Moshi data class object for the app's information.
   private fun getAppContext(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingAppContext {
@@ -260,6 +270,7 @@ class FeedbackReportManagementController @Inject constructor(
     )
   }
 
+  // Helper function that construct a Moshi data class object for the entry-point used by the user.
   private fun getEntryPointData(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingEntryPoint {
@@ -290,6 +301,7 @@ class FeedbackReportManagementController @Inject constructor(
     )
   }
 
+  // Helper function to retrieve the logcat logs from the device.
   private fun getLogcatLogs(): List<String> {
     return listOf()
   }
