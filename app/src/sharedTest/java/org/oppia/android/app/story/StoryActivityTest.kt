@@ -73,7 +73,7 @@ import javax.inject.Singleton
 
 /** Tests for [StoryActivity]. */
 @RunWith(AndroidJUnit4::class)
-@LooperMode(LooperMode.Mode.PAUSED)
+@LooperMode(value=LooperMode.Mode.PAUSED)
 @Config(application = StoryActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StoryActivityTest {
 
@@ -99,9 +99,9 @@ class StoryActivityTest {
   fun clickOnStory_intentsToExplorationActivity() {
     launch<StoryActivity>(
       createStoryActivityIntent(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_1
+        internalProfileId = internalProfileId,
+        topicId = TEST_TOPIC_ID_0,
+        storyId = TEST_STORY_ID_1
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -132,7 +132,7 @@ class StoryActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(storyActivityTest = this)
   }
 
   private fun createStoryActivityIntent(
@@ -141,10 +141,10 @@ class StoryActivityTest {
     storyId: String
   ): Intent {
     return StoryActivity.createStoryActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      topicId,
-      storyId
+      context = ApplicationProvider.getApplicationContext(),
+      internalProfileId = internalProfileId,
+      topicId = topicId,
+      storyId = storyId
     )
   }
 
@@ -179,16 +179,16 @@ class StoryActivityTest {
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerStoryActivityTest_TestApplicationComponent.builder()
-        .setApplication(this)
+        .setApplication(context = this)
         .build() as TestApplicationComponent
     }
 
     fun inject(storyActivityTest: StoryActivityTest) {
-      component.inject(storyActivityTest)
+      component.inject(storyActivityTest = storyActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+      return component.getActivityComponentBuilderProvider().get().setActivity(appCompatActivity = activity).build()
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
