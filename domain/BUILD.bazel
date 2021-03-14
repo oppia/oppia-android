@@ -21,7 +21,10 @@ kt_android_library(
     deps = [
         ":dagger",
         "//data:persistent_cache_store",
+        "//data:remote_service_models",
+        "//data:remote_services",
         "//model:onboarding_java_proto_lite",
+        "//model:feedback_reporting_java_proto_lite",
         "//third_party:androidx_work_work-runtime-ktx",
     ],
 )

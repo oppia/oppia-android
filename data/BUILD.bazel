@@ -23,4 +23,47 @@ kt_android_library(
     ],
 )
 
+kt_android_library(
+    name = "remote_service_models",
+    srcs = [
+        "src/main/java/org/oppia/android/data/backends/gae/model/GaeFeedbackReport.kt",
+        "src/main/java/org/oppia/android/data/backends/gae/model/GaeFeedbackReportingEntryPoint.kt",
+        "src/main/java/org/oppia/android/data/backends/gae/model/GaeFeedbackReportingAppContext.kt",
+        "src/main/java/org/oppia/android/data/backends/gae/model/GaeFeedbackReportingDeviceContext.kt",
+        "src/main/java/org/oppia/android/data/backends/gae/model/GaeFeedbackReportingSystemContext.kt",
+        "src/main/java/org/oppia/android/data/backends/gae/model/GaeUserSuppliedFeedback.kt"
+    ],
+    custom_package = "org.oppia.android.data.backends.gae.model",
+    manifest = "src/main/AndroidManifest.xml",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":dagger",
+        "//model",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+        "//third_party:com_caverock_androidsvg-aar",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//utility",
+    ],
+)
+
+kt_android_library(
+    name = "remote_services",
+    srcs = [
+        "src/main/java/org/oppia/android/data/backends/gae/api/FeedbackReportingService.kt",
+    ],
+    custom_package = "org.oppia.android.data.backends.gae.api",
+    manifest = "src/main/AndroidManifest.xml",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":dagger",
+        "//model",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+        "//third_party:com_caverock_androidsvg-aar",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//utility",
+    ],
+)
+
 dagger_rules()
