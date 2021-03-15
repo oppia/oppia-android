@@ -2,6 +2,7 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
@@ -30,7 +31,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.android.material.textfield.TextInputLayout
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -40,6 +43,7 @@ import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -99,6 +103,11 @@ import javax.inject.Singleton
 )
 class AdminPinActivityTest {
 
+  @get:Rule
+  val activityTestRule : ActivityTestRule<AdminPinActivity> = ActivityTestRule(
+    AdminPinActivity::class.java,true,false
+  )
+
   @Inject
   lateinit var context: Context
 
@@ -123,6 +132,14 @@ class AdminPinActivityTest {
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
+  }
+
+  @Test
+  fun testAdminPinActivity_hasCorrectActivityLabel(){
+    activityTestRule.launchActivity(createAdminPinActivityIntent())
+    val title =activityTestRule.activity.title
+
+    assertThat(title).isEqualTo(context.getString(R.string.admin_pin_activity_label))
   }
 
   @Test
@@ -1009,6 +1026,12 @@ class AdminPinActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun createAdminPinActivityIntent(): Intent {
+    return AdminPinActivity.createAdminPinActivityIntent(
+      ApplicationProvider.getApplicationContext(),0,-10710042,0
+    )
   }
 
   private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {

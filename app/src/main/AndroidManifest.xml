@@ -78,6 +78,7 @@
       android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".app.profile.AdminPinActivity"
+      android:label="@string/admin_pin_activity_label"
       android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".app.profile.PinPasswordActivity"
