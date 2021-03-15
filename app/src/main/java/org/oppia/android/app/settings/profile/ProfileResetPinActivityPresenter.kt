@@ -31,7 +31,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
   }
 
   fun handleOnCreate() {
-    activity.title = activity.getString(R.string.profile_reset_pin_title)
+    activity.title = activity.getString(R.string.profile_reset_pin_activity_title)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
