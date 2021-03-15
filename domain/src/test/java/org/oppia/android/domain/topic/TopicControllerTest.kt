@@ -1054,7 +1054,6 @@ class TopicControllerTest {
 
   @Test
   fun testOngoingTopicList_finishOneStory_ongoingListIsCorrect() {
-    // Mark entire fractions topic & only 1 chapter in ratios as finished.
     markRatiosStory0Chapter0AsCompleted()
     markRatiosStory0Chapter1AsCompleted()
 
@@ -1070,7 +1069,6 @@ class TopicControllerTest {
 
   @Test
   fun testOngoingTopicList_finishOneStoryAndStartAnotherStoryFromSameTopic_ongoingListIsCorrect() {
-    // Mark entire fractions topic & only 1 chapter in ratios as finished.
     markRatiosStory0Chapter0AsCompleted()
     markRatiosStory0Chapter1AsCompleted()
     markRatiosStory1Chapter0AsCompleted()
