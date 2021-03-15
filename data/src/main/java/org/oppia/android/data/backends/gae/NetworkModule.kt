@@ -1,6 +1,5 @@
 package org.oppia.android.data.backends.gae
 
-import android.content.Context
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -9,7 +8,6 @@ import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -71,4 +69,10 @@ class NetworkModule {
   fun provideFeedbackReportingService(@OppiaRetrofit retrofit: Retrofit): FeedbackReportingService {
     return retrofit.create(FeedbackReportingService::class.java)
   }
+
+  // Provides the API key to use in authenticating remote messages sent or received. This will be
+  // replaced with a stronger, secret key will in production.
+  @Provides
+  @NetworkApiKey
+  fun providerNetworkApiKey() = ""
 }
