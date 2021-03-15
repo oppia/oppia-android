@@ -161,6 +161,7 @@ format_import_proto_library(
 
 java_lite_proto_library(
     name = "feedback_reporting_java_proto_lite",
+    visibility = ["//visibility:public"],
     deps = [":feedback_reporting_proto"],
 )
 

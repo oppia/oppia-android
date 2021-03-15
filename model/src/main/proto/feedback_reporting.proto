@@ -313,29 +313,51 @@ message FeedbackReportingDeviceContext {
 // Information collected about the current version of the Oppia Android app.
 message FeedbackReportingAppContext {
   // The entry point that feedback reporting was launched from.
-  enum EntryPoint {
-    // Indicates that the user started the feedback reporting feature from an unknown location.
-    ENTRY_POINT_UNSPECIFIED = 0;
-    // Indicates that the user started feedback reporting from the main hamburger menu.
-    NAVIGATION_DRAWER = 2;
+  oneof entry_point {
+    // Indicates that the user started feedback reporting from the main navigation drawer.
+    NavigationDrawerEntryPoint navigation_drawer = 1;
     // Indicates that the user started feedback reporting from the exploration player.
-    EXPLORATION_PLAYER = 3;
+    LessonPlayerEntryPoint lesson_player = 2;
     // Indicates that the user started feedback reporting from a revision card / session.
-    REVISION_CARD = 4;
+    RevisionCardEntryPoint revision_card = 3;
     // Indicates that the user started feedback reporting from a crash / the crash reporting dialog.
-    CRASH = 5;
+    CrashEntryPoint crash_dialog = 4;
   }
-  EntryPoint entry_point = 1;
-  // Lists the topics that have been completed by the user.
-  repeated string topic_progress = 2;
+  // A list of exploration IDs that have been completed by the user.
+  repeated string completed_exploration_ids = 5;
   // The text size the app is set to.
-  ReadingTextSize text_size = 3;
+  ReadingTextSize text_size = 6;
   // The text language the app is set to.
-  AppLanguage text_language = 4;
+  AppLanguage text_language = 7;
   // The audio language the app is set to.
-  AudioLanguage audio_language = 5;
+  AudioLanguage audio_language = 8;
   // The app's specific device settings.
-  DeviceSettings device_settings = 6;
+  DeviceSettings device_settings = 9;
   // Whether the account sending the report is the admin account.
-  bool is_admin = 7;
+  bool is_admin = 10;
 }
+
+// Corresponds to the entry point to feedback reporting shown in the navigation drawer menu.
+message NavigationDrawerEntryPoint {}
+
+// Corresponds to the entry point to feedback reporting shown in the exploration player's three-dot
+// menu.
+message LessonPlayerEntryPoint {
+  // The topic ID for of the lesson being played.
+  string topic_id = 1;
+  // The story ID of the lesson being played.
+  string story_id = 2;
+  // The exploration ID of the lesson being played.
+  string exploration_id = 3;
+}
+
+// Corresponds to the entry point to feedback reporting shown in a revision session's three-dot menu.
+message RevisionCardEntryPoint {
+  // The topic ID of the subtopic being reviewed.
+  string topic_id = 1;
+  // The subtopic ID of the subtopic being reviewed.
+  string subtopic_id = 2;
+}
+
+// Corresponds to the entry point to feedback reporting from after an app crash.
+message CrashEntryPoint {}

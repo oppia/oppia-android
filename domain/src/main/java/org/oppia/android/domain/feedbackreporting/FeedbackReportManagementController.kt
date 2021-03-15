@@ -1,10 +1,9 @@
 package org.oppia.android.domain.feedbackreporting
 
-import android.content.Context
 import androidx.lifecycle.Transformations
-import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
+import org.oppia.android.app.model.FeedbackReportingAppContext.EntryPointCase
 import org.oppia.android.app.model.FeedbackReportingDatabase
 import org.oppia.android.app.model.FeedbackReportingDeviceContext
 import org.oppia.android.app.model.FeedbackReportingSystemContext
@@ -18,15 +17,16 @@ import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingAppContext
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingDeviceContext
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingEntryPoint
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingSystemContext
 import org.oppia.android.data.backends.gae.model.GaeUserSuppliedFeedback
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
-import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -37,13 +37,11 @@ private const val FEEDBACK_REPORTS_DATABASE_NAME = "feedback_reports_database"
 /** Controller for uploading feedback reports to remote storage or saving them on disk. */
 @Singleton
 class FeedbackReportManagementController @Inject constructor(
-  private val context: Context,
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val feedbackReportingService: FeedbackReportingService,
   private val consoleLogger: ConsoleLogger,
   private val analyticsController: AnalyticsController,
   private val networkConnectionUtil: NetworkConnectionUtil,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) {
   private val feedbackReportDataStore = cacheStoreFactory.create(
     FEEDBACK_REPORTS_DATABASE_NAME, FeedbackReportingDatabase.getDefaultInstance()
@@ -62,8 +60,8 @@ class FeedbackReportManagementController @Inject constructor(
   }.value
 
   /**
-   * Stores a [FeedbackReport] proto in local storage if there is not internet connection, or sends
-   * them to remote storage to be processed in the admin dashboard.
+   * Submits a [FeedbackReport] to remote storage to be processed in the admin dashboard, or saves it
+   * to local storage if there is no internet connection available to send reports.
    *
    * @param feedbackReportViewModel for the view model representing the feedback provided by the user
    */
@@ -76,14 +74,23 @@ class FeedbackReportManagementController @Inject constructor(
   }
 
   /**
-   * Checks the local disk for any cached feedback reports and uploads them to remote storage.
-   * This is called by a [FeedbackReportUploadWorker] when it detects a network connection to send
-   * all local reports to remote storage.
+   * Gets any feedback reports saved locally on the device. This is called by a
+   * [FeedbackReportUploadWorker] when it detects a network reconnection to send all local reports
+   * to remote storage.
    *
    * @return a list of feedback reports to upload to remote storage
    */
   suspend fun getCachedReportsList(): MutableList<FeedbackReport> {
     return feedbackReportDataStore.readDataAsync().await().reportsList
+  }
+
+  /**
+   * Gets the data store of all locally-saved feedback reports.
+   *
+   * @return the data provider for the storage database
+   */
+  fun getFeedbackReportStore(): DataProvider<FeedbackReportingDatabase> {
+    return feedbackReportDataStore
   }
 
   /**
@@ -117,6 +124,7 @@ class FeedbackReportManagementController @Inject constructor(
     }
   }
 
+  // Helper function to store a single report in memory on the device.
   private fun storeFeedbackReport(report: FeedbackReport) {
     feedbackReportDataStore.storeDataAsync(updateInMemoryCache = true) { feedbackReportDatabase ->
       return@storeDataAsync feedbackReportDatabase.toBuilder().addReports(report).build()
@@ -165,7 +173,8 @@ class FeedbackReportManagementController @Inject constructor(
     }
   }
 
-  // Helper function that creates a Moshi data class object based on the type of Issue report.
+  // Helper function that construct a Moshi data class object for the information provided by the user,
+  // based on the type of Issue report.
   private fun createGaeUserSuppliedFeedbackForIssue(
     reportTypeName: String,
     issue: Issue
@@ -193,7 +202,9 @@ class FeedbackReportManagementController @Inject constructor(
             }
             userInput = issue.languageIssue.textLanguageIssue.otherUserInput
           }
-          // General language issues will pass through with no user input or options list.
+          // General language issues will pass through with no user input or options list as users
+          // aren't presented with specific issues to choose from if they don't specify what type of
+          // language issue.
         }
       }
       IssueCategoryCase.TOPICS_ISSUE -> {
@@ -216,6 +227,7 @@ class FeedbackReportManagementController @Inject constructor(
     )
   }
 
+  // Helper function that construct a Moshi data class object for the device's system information.
   private fun getSystemContext(
     systemContext: FeedbackReportingSystemContext
   ): GaeFeedbackReportingSystemContext {
@@ -227,6 +239,7 @@ class FeedbackReportManagementController @Inject constructor(
     )
   }
 
+  // Helper function that construct a Moshi data class object for the device's build information.
   private fun getDeviceContext(
     deviceContext: FeedbackReportingDeviceContext
   ): GaeFeedbackReportingDeviceContext {
@@ -239,12 +252,13 @@ class FeedbackReportManagementController @Inject constructor(
     )
   }
 
+  // Helper function that construct a Moshi data class object for the app's information.
   private fun getAppContext(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingAppContext {
     return GaeFeedbackReportingAppContext(
-      entryPoint = appContext.entryPoint.name,
-      topicProgress = appContext.topicProgressList,
+      entryPoint = getEntryPointData(appContext),
+      completedExplorationIds = appContext.completedExplorationIdsList,
       textSize = appContext.textSize.name,
       textLang = appContext.textLanguage.name,
       audioLang = appContext.audioLanguage.name,
@@ -256,6 +270,38 @@ class FeedbackReportManagementController @Inject constructor(
     )
   }
 
+  // Helper function that construct a Moshi data class object for the entry-point used by the user.
+  private fun getEntryPointData(
+    appContext: FeedbackReportingAppContext
+  ): GaeFeedbackReportingEntryPoint {
+    var topicId: String? = null
+    var storyId: String? = null
+    var explorationId: String? = null
+    var subtopicId: String? = null
+    when (appContext.entryPointCase) {
+      // Get the current topic information if the report is sent during a lesson or revision session.
+      EntryPointCase.LESSON_PLAYER -> {
+        val lesson = appContext.lessonPlayer
+        topicId = lesson.topicId
+        storyId = lesson.storyId
+        explorationId = lesson.explorationId
+      }
+      EntryPointCase.REVISION_CARD -> {
+        val revisionCard = appContext.revisionCard
+        topicId = revisionCard.topicId
+        subtopicId = revisionCard.subtopicId
+      }
+    }
+    return GaeFeedbackReportingEntryPoint(
+      entryPointName = appContext.entryPointCase.name,
+      topicId = topicId,
+      storyId = storyId,
+      explorationId = explorationId,
+      subtopicId = subtopicId
+    )
+  }
+
+  // Helper function to retrieve the logcat logs from the device.
   private fun getLogcatLogs(): List<String> {
     return listOf()
   }
