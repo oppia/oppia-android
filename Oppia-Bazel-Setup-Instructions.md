@@ -25,25 +25,25 @@ After the installation completes you can build the app using Bazel. Move you com
 #### Building the app
 
 ```
-~/oppia-bazel/bazel build //:oppia
+bazel build //:oppia
 ```
 
 #### Building + installing the app
 
 ```
-~/oppia-bazel/bazel mobile-install //:oppia
+bazel mobile-install //:oppia
 ```
 
 #### Running specific module (app) Robolectric tests
 
 ```
-~/oppia-bazel/bazel test //app/...
+bazel test //app/...
 ```
 
 #### Running all Robolectric tests (slow)
 
 ```
-~/oppia-bazel/bazel test //...
+bazel test //...
 ```
 
 ## Concepts and Terminology
