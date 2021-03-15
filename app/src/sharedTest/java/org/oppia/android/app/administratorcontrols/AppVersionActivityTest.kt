@@ -144,7 +144,7 @@ class AppVersionActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         withId(
-          R.id.app_version_text_view
+          appVersionId = R.id.app_version_text_view
         )
       ).check(
         matches(
@@ -158,7 +158,7 @@ class AppVersionActivityTest {
       )
       onView(
         withId(
-          R.id.app_last_update_date_text_view
+         appLastUpdateDateId = R.id.app_last_update_date_text_view
         )
       ).check(
         matches(
@@ -177,7 +177,7 @@ class AppVersionActivityTest {
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       launchAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -189,15 +189,17 @@ class AppVersionActivityTest {
       onView(withText(R.string.administrator_controls_app_version)).perform(click())
       intended(hasComponent(AppVersionActivity::class.java.name))
       onView(isRoot()).perform(pressBack())
-      onView(withId(R.id.administrator_controls_list)).check(matches(isDisplayed()))
+      onView(withId(
+        administratorControlsListId = R.id.administrator_controls_list
+      )).check(matches(isDisplayed()))
     }
   }
 
   private fun getDateTime(dateTimeTimestamp: Long): String? {
     return oppiaDateTimeFormatter.formatDateFromDateString(
       OppiaDateTimeFormatter.DD_MMM_YYYY,
-      dateTimeTimestamp,
-      Locale.US
+      timestamp = dateTimeTimestamp,
+      locale = Locale.US
     )
   }
 
@@ -210,8 +212,8 @@ class AppVersionActivityTest {
 
   private fun launchAdministratorControlsActivityIntent(profileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      profileId
+      context = ApplicationProvider.getApplicationContext(),
+      profileId = profileId
     )
   }
 
