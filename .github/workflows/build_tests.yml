@@ -17,6 +17,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-18.04]
+    env:
+      ENABLE_CACHING: false
     steps:
       - uses: actions/checkout@v2
       - name: Clone Oppia Bazel
@@ -38,7 +40,7 @@ jobs:
       # This also uses a different directory to install git-secret to avoid requiring root access
       # when running the git secret command.
       - name: Install git-secret (non-fork only)
-        if: ${{ github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
         shell: bash
         run: |
           cd $HOME
@@ -49,7 +51,7 @@ jobs:
           echo "$HOME/gitsecret" >> $GITHUB_PATH
           echo "$HOME/gitsecret/bin" >> $GITHUB_PATH
       - name: Decrypt secrets (non-fork only)
-        if: ${{ github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
         env:
           GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
         run: |
@@ -67,13 +69,13 @@ jobs:
           chmod a+x $HOME/oppia-bazel/bazel
       # Note that caching only works on non-forks.
       - name: Build Oppia binary (with caching, non-fork only)
-        if: ${{ github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: |
           $HOME/oppia-bazel/bazel build --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia
-      - name: Build Oppia binary (without caching, fork only)
-        if: ${{ github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
+      - name: Build Oppia binary (without caching, or on a fork)
+        if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
           $HOME/oppia-bazel/bazel build --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools -- //:oppia
       - name: Copy Oppia APK for uploading
