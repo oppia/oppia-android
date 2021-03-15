@@ -3,6 +3,8 @@ package org.oppia.android.util.caching.testing
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadImagesFromAssets
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
 
 /**
@@ -14,6 +16,14 @@ class CachingTestModule {
   @Provides
   @CacheAssetsLocally
   fun provideCacheAssetsLocally(): Boolean = false
+
+  @Provides
+  @LoadImagesFromAssets
+  fun provideLoadImagesFromAssets(): Boolean = false
+
+  @Provides
+  @LoadLessonProtosFromAssets
+  fun provideLoadLessonProtosFromAssets(): Boolean = false
 
   @Provides
   @TopicListToCache

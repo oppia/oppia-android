@@ -20,9 +20,3 @@ import javax.inject.Qualifier
  * assets, and that these lessons are encoded using protos.
  */
 @Qualifier annotation class LoadLessonProtosFromAssets
-
-/**
- * Corresponds to an injectable boolean indicating whether practice sessions are enabled. When this
- * is false, the practice sessions tab itself will not be loaded.
- */
-@Qualifier annotation class EnablePracticeTab
