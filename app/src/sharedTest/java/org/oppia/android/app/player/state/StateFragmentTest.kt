@@ -72,6 +72,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
@@ -220,6 +221,15 @@ class StateFragmentTest {
 
       clickSubmitAnswerButton()
 
+      scrollToViewType(CONTENT)
+      val htmlResult =
+        "What fraction represents half of something?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
+
       scrollToViewType(FEEDBACK)
       onView(withId(R.id.feedback_text_view)).check(matches(isDisplayed()))
       onView(withId(R.id.fraction_input_interaction_view)).check(matches(isDisplayed()))
@@ -239,6 +249,46 @@ class StateFragmentTest {
       // Attempt to submit an wrong answer twice.
       typeFractionText("1/9")
       clickSubmitAnswerButton()
+
+      scrollToViewType(CONTENT)
+      val htmlResult =
+        "What fraction represents half of something?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
+
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.fraction_input_interaction_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_secondState_submitWrongAnswerTwice_configChange_feedbackAndQuestionIsVisible() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      // Attempt to submit an wrong answer.
+      typeFractionText("1/3")
+      clickSubmitAnswerButton()
+
+      // Attempt to submit an wrong answer twice.
+      typeFractionText("1/9")
+      clickSubmitAnswerButton()
+
+      rotateToLandscape()
+
+      scrollToViewType(CONTENT)
+      val htmlResult =
+        "What fraction represents half of something?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
 
       scrollToViewType(FEEDBACK)
       onView(withId(R.id.feedback_text_view)).check(matches(isDisplayed()))
@@ -281,6 +331,15 @@ class StateFragmentTest {
 
       rotateToLandscape()
 
+      scrollToViewType(CONTENT)
+      val htmlResult =
+        "What fraction represents half of something?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
+
       scrollToViewType(FEEDBACK)
       onView(withId(R.id.feedback_text_view)).check(matches(isDisplayed()))
       onView(withId(R.id.fraction_input_interaction_view)).check(matches(isDisplayed()))
@@ -289,6 +348,27 @@ class StateFragmentTest {
 
   //  6. Backward/forward navigation along with configuration changes to verify that you stay on the
   //     navigated state.
+  @Test
+  fun testStateFragment_loadExp_moveForward_stayOnTheNavigatedState() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      scrollToViewType(CONTENT)
+      val htmlResult =
+        "Which bird can sustain flight for long periods of time?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
+    }
+  }
+
   @Test
   fun testStateFragment_loadExp_moveForward_configChange_stayOnTheNavigatedState() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
@@ -312,7 +392,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_moveForward_moveBackward_changeConfiguration_stayOnSameState() {
+  fun testStateFragment_loadExp_moveForward_moveBackward_stayOnSameState() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -321,6 +401,134 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
       clickContinueNavigationButton()
 
+      clickPreviousNavigationButton()
+
+      scrollToViewType(CONTENT)
+      val htmlResult =
+        "What fraction represents half of something?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_moveForward_moveBackward_configChange_stayOnSameState() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      clickPreviousNavigationButton()
+
+      rotateToLandscape()
+      scrollToViewType(CONTENT)
+      val htmlResult =
+        "What fraction represents half of something?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_moveFwd_moveBackwd_moveFwd_stayOnTheNavigatedState() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+
+      clickContinueNavigationButton()
+      clickPreviousNavigationButton()
+      clickNextNavigationButton()
+
+      scrollToViewType(CONTENT)
+      val htmlResult =
+        "Which bird can sustain flight for long periods of time?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_moveFwd_moveBackwd_moveFwd_configChange_stayOnTheNavigatedState() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+
+      clickContinueNavigationButton()
+      clickPreviousNavigationButton()
+      clickNextNavigationButton()
+
+      rotateToLandscape()
+
+      scrollToViewType(CONTENT)
+      val htmlResult =
+        "Which bird can sustain flight for long periods of time?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_moveFwd_moveFwd_moveBackwd_moveBackwd_stayOnSameState() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      selectMultipleChoiceOption(optionPosition = 2)
+      clickContinueNavigationButton()
+
+      clickPreviousNavigationButton()
+      clickPreviousNavigationButton()
+
+      scrollToViewType(CONTENT)
+      val htmlResult =
+        "What fraction represents half of something?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_moveFwd_moveFwd_moveBackwd_moveBackwd_configChange_stayOnSameState() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      selectMultipleChoiceOption(optionPosition = 2)
+      clickContinueNavigationButton()
+
+      clickPreviousNavigationButton()
       clickPreviousNavigationButton()
 
       rotateToLandscape()
@@ -346,6 +554,29 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
       clickContinueNavigationButton()
 
+      clickPreviousNavigationButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(
+          withText("1/2")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_secondState_landscape_submitAnswer_moveForward_moveBackward_answerVisible() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      rotateToLandscape()
+      clickContinueInteractionButton()
+
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      scrollToViewType(PREVIOUS_NAVIGATION_BUTTON)
       clickPreviousNavigationButton()
 
       scrollToViewType(SUBMITTED_ANSWER)
