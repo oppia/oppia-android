@@ -25,7 +25,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.android.material.textfield.TextInputLayout
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -633,7 +633,7 @@ class AdminAuthActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    Truth.assertThat(title).isEqualTo(context.getString(R.string.admin_auth_controls_label))
+    assertThat(title).isEqualTo(context.getString(R.string.admin_auth_activity_access_controls_title))
   }
 
   @Test
@@ -651,7 +651,7 @@ class AdminAuthActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    Truth.assertThat(title).isEqualTo(context.getString(R.string.admin_auth_add_profiles_label))
+    assertThat(title).isEqualTo(context.getString(R.string.admin_auth_activity_add_profiles_title))
   }
 
   private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {

@@ -99,7 +99,7 @@ class AdminAuthActivityPresenter @Inject constructor(
   private fun setTitleAndSubTitle(binding: AdminAuthActivityBinding?) {
     when (activity.intent.getIntExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, 0)) {
       AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
-        activity.title = context.getString(R.string.admin_auth_controls_label)
+        activity.title = context.getString(R.string.admin_auth_activity_access_controls_title)
         binding?.adminAuthToolbar?.title =
           context.resources.getString(R.string.administrator_controls)
         binding?.adminAuthHeadingTextview?.text =
@@ -108,7 +108,7 @@ class AdminAuthActivityPresenter @Inject constructor(
           context.resources.getString(R.string.admin_auth_admin_controls_sub)
       }
       AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
-        activity.title = context.getString(R.string.admin_auth_add_profiles_label)
+        activity.title = context.getString(R.string.admin_auth_activity_add_profiles_title)
         binding?.adminAuthToolbar?.title = context.resources.getString(R.string.add_profile_title)
         binding?.adminAuthHeadingTextview?.text =
           context.resources.getString(R.string.admin_auth_heading)

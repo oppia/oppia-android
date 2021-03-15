@@ -198,8 +198,8 @@
   <string name="profile_chooser_language">Language</string>
   <!-- AdminAuthActivity -->
   <string name="admin_auth_toolbar">Administrator Controls</string>
-  <string name="admin_auth_add_profiles_label">Authorise to add profiles</string>
-  <string name="admin_auth_controls_label">Authorise to access Administrator Controls</string>
+  <string name="admin_auth_activity_add_profiles_title">Authorise to add profiles</string>
+  <string name="admin_auth_activity_access_controls_title">Authorise to access Administrator Controls</string>
   <string name="admin_auth_heading">Administrator Authorization Required</string>
   <string name="admin_auth_sub">Enter the Administrator PIN in order to create a new account.</string>
   <string name="admin_auth_admin_controls_sub">Enter the Administrator PIN in order to access Administrator Controls.</string>
