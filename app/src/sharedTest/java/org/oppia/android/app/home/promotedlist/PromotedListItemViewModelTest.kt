@@ -186,7 +186,8 @@ class PromotedListItemViewModelTest {
           promotedStory = promotedStory1
         )
 
-        assertThat(promotedListItemViewModelProfile1).isNotEqualTo(promotedListItemViewModelProfile2)
+        assertThat(promotedListItemViewModelProfile1).
+        isNotEqualTo(promotedListItemViewModelProfile2)
       }
     }
   }
