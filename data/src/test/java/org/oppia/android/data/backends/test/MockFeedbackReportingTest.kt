@@ -32,13 +32,14 @@ class MockFeedbackReportingTest {
     val client = OkHttpClient.Builder()
     client.addInterceptor(NetworkInterceptor())
 
-    retrofit = retrofit2.Retrofit.Builder()
+    retrofit = Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
       .addConverterFactory(MoshiConverterFactory.create())
       .client(client.build())
       .build()
 
     val behavior = NetworkBehavior.create()
+    behavior.setFailurePercent(0)
     mockRetrofit = MockRetrofit.Builder(retrofit)
       .networkBehavior(behavior)
       .build()
