@@ -80,14 +80,17 @@ class DragDropTestActivityTest {
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
-            0,
+            position = 0,
             ChildViewCoordinatesProvider(
-              R.id.text_view_for_string_no_data_binding,
-              GeneralLocation.CENTER
+              childViewId = R.id.text_view_for_string_no_data_binding,
+              insideChildViewCoordinatesProvider = GeneralLocation.CENTER
             )
           ),
-          RecyclerViewCoordinatesProvider(1, CustomGeneralLocation.UNDER_RIGHT),
-          Press.FINGER
+          RecyclerViewCoordinatesProvider(
+            position = 1,
+            childItemCoordinatesProvider = CustomGeneralLocation.UNDER_RIGHT
+          ),
+          precisionDescriber = Press.FINGER
         )
       )
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 0))
@@ -106,14 +109,17 @@ class DragDropTestActivityTest {
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
-            1,
+            position = 1,
             ChildViewCoordinatesProvider(
-              R.id.text_view_for_string_no_data_binding,
-              GeneralLocation.CENTER
+              childViewId = R.id.text_view_for_string_no_data_binding,
+              insideChildViewCoordinatesProvider = GeneralLocation.CENTER
             )
           ),
-          RecyclerViewCoordinatesProvider(2, CustomGeneralLocation.UNDER_RIGHT),
-          Press.FINGER
+          RecyclerViewCoordinatesProvider(
+            position = 2,
+            childItemCoordinatesProvider = CustomGeneralLocation.UNDER_RIGHT
+          ),
+          precisionDescriber = Press.FINGER
         )
       )
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 1))
@@ -133,14 +139,17 @@ class DragDropTestActivityTest {
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
-            3,
+            position = 3,
             ChildViewCoordinatesProvider(
-              R.id.text_view_for_string_no_data_binding,
-              GeneralLocation.CENTER
+              childViewId = R.id.text_view_for_string_no_data_binding,
+              insideChildViewCoordinatesProvider = GeneralLocation.CENTER
             )
           ),
-          RecyclerViewCoordinatesProvider(2, CustomGeneralLocation.ABOVE_RIGHT),
-          Press.FINGER
+          RecyclerViewCoordinatesProvider(
+            position = 2,
+            childItemCoordinatesProvider = CustomGeneralLocation.ABOVE_RIGHT
+          ),
+          precisionDescriber = Press.FINGER
         )
       )
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 2))
