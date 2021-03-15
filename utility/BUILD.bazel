@@ -14,6 +14,7 @@ load("//utility:utility_test.bzl", "utility_test")
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/accessibility/*.kt",
     "src/main/java/org/oppia/android/util/system/*.kt",
+    "src/main/java/org/oppia/android/util/networking/*.kt",
 ])
 
 # Library for general-purpose utilities.
