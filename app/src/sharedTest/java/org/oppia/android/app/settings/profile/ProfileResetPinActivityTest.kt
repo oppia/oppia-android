@@ -126,7 +126,7 @@ class ProfileResetPinActivityTest {
     activityTestRule.launchActivity(
       createProfileResetPinActivityIntent(
         internalProfileId,
-          isAdmin = true,
+        isAdmin = true,
       )
     )
     val title = activityTestRule.activity.title
