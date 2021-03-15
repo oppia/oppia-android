@@ -117,31 +117,51 @@ class TopicRevisionFragmentTest {
 
   @Test
   fun testTopicRevisionFragment_loadFragment_displayRevisionTopics_isSuccessful() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
-      onView(atPosition(R.id.revision_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.revision_recycler_view, position = 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
 
   @Test
   fun testTopicRevisionFragment_loadFragment_selectRevisionTopics_opensRevisionCardActivity() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
       scrollToPosition(position = 0)
-      onView(atPosition(R.id.revision_recycler_view, 0)).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.revision_recycler_view,
+          position = 0
+        )
+      ).perform(click())
       intended(hasComponent(RevisionCardActivity::class.java.name))
     }
   }
 
   @Test
   fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
-      onView(atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_image_view)).check(
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.revision_recycler_view,
+          position = 0,
+          targetViewId = R.id.subtopic_image_view
+        )
+      ).check(
         matches(
           withDrawable(
             subtopicThumbnail
@@ -153,22 +173,34 @@ class TopicRevisionFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_configurationChange_revisionSubtopicsAreDisplayed() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       clickRevisionTab()
-      onView(atPosition(R.id.revision_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.revision_recycler_view, position = 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
 
   @Test
   fun testTopicRevisionFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       clickRevisionTab()
-      onView(atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_image_view)).check(
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.revision_recycler_view,
+          position = 0,
+          targetViewId = R.id.subtopic_image_view
+        )
+      ).check(
         matches(
           withDrawable(
             subtopicThumbnail
@@ -180,7 +212,9 @@ class TopicRevisionFragmentTest {
 
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
-      ApplicationProvider.getApplicationContext(), internalProfileId, topicId
+      context = ApplicationProvider.getApplicationContext(),
+      internalProfileId = internalProfileId,
+      topicId = topicId
     )
   }
 
@@ -188,13 +222,15 @@ class TopicRevisionFragmentTest {
     internalProfileId: Int,
     topicId: String
   ): ActivityScenario<TopicActivity> {
-    return launch(createTopicActivityIntent(internalProfileId, topicId))
+    return launch(
+      createTopicActivityIntent(internalProfileId = internalProfileId, topicId = topicId)
+    )
   }
 
   private fun clickRevisionTab() {
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(3).name),
+        withText(TopicTab.getTabForPosition(position = 3).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
