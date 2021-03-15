@@ -112,9 +112,7 @@ class TopicRevisionFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(
-      topicRevisionFragmentTest = this
-    )
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
@@ -279,18 +277,16 @@ class TopicRevisionFragmentTest {
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerTopicRevisionFragmentTest_TestApplicationComponent.builder()
-        .setApplication(application = this)
+        .setApplication(this)
         .build() as TestApplicationComponent
     }
 
     fun inject(topicRevisionFragmentTest: TopicRevisionFragmentTest) {
-      component.inject(topicRevisionFragmentTest = topicRevisionFragmentTest)
+      component.inject(topicRevisionFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(
-        appCompatActivity = activity
-      ).build()
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
