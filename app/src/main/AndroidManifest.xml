@@ -96,7 +96,8 @@
     <activity android:name=".app.settings.profile.ProfileEditActivity" />
     <activity
       android:name=".app.settings.profile.ProfileListActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/profile_list_activity_title"/>
     <activity
       android:name=".app.settings.profile.ProfileRenameActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
