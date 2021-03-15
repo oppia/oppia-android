@@ -76,14 +76,11 @@ class AppLanguageActivityTest {
   @Inject
   lateinit var context: Context
 
+  private val summaryValue = "English"
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-  }
-
-  @After
-  fun tearDown() {
-    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -94,7 +91,7 @@ class AppLanguageActivityTest {
   fun testAppLanguageActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       createAppLanguageActivityIntent(
-        "English"
+        summaryValue
       )
     )
     val title = activityTestRule.activity.title

@@ -68,21 +68,18 @@ import javax.inject.Singleton
 )
 class AudioLanguageActivityTest {
   @get:Rule
-  val activityTestRule: ActivityTestRule<AppLanguageActivity> = ActivityTestRule(
-    AppLanguageActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  val activityTestRule: ActivityTestRule<AudioLanguageActivity> = ActivityTestRule(
+    AudioLanguageActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
   @Inject
   lateinit var context: Context
 
+  private val summaryValue = "English"
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-  }
-
-  @After
-  fun tearDown() {
-    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -93,7 +90,7 @@ class AudioLanguageActivityTest {
   fun testAppLanguageActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       createDefaultAudioActivityIntent(
-        "English"
+        summaryValue
       )
     )
     val title = activityTestRule.activity.title
