@@ -1,5 +1,4 @@
 {
-  "api_key": "",
   "app_context": {
     "entry_point": "navigation_drawer",
     "completed_exploration_ids": [
@@ -27,9 +26,7 @@
     "sdk_version": 23,
     "device_brand": "example_brand",
     "build_fingerprint": "example_fingerprint_id",
-    "phone_type": "telephony_network_type",
-    "network_type": "wifi",
-    "device_lang": "EN"
+    "network_type": "wifi"
   },
   "report_creation_timestamp_ms": 1610519337000,
   "system_context": {
