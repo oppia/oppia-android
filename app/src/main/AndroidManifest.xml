@@ -103,7 +103,7 @@
     <activity
       android:name=".app.settings.profile.ProfileResetPinActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
-      android:title ="@string/profile_reset_pin_activity_title" />
+      android:title="@string/profile_reset_pin_activity_title" />
     <activity
       android:name=".app.splash.SplashActivity"
       android:screenOrientation="portrait"
