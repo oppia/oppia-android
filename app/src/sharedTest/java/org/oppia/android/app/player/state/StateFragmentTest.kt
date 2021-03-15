@@ -266,7 +266,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_secondState_submitWrongAnswerTwice_configChange_feedbackAndQuestionIsVisible() {
+  fun testStateFragment_loadExp_submitWrongAnswerTwice_configChange_feedbackAndQuestionIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -516,7 +516,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_moveFwd_moveFwd_moveBackwd_moveBackwd_configChange_stayOnSameState() {
+  fun testStateFragment_loadExp_moveFwdTwice_moveBackwdTwice_configChange_stayOnSameState() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -566,7 +566,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_secondState_landscape_submitAnswer_moveForward_moveBackward_answerVisible() {
+  fun testStateFragment_loadExp_landscape_submitAnswer_moveForward_moveBackward_answerVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       rotateToLandscape()
