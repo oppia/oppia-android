@@ -179,7 +179,7 @@ class StoryActivityTest {
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerStoryActivityTest_TestApplicationComponent.builder()
-        .setApplication(context = this)
+        .setApplication(this)
         .build() as TestApplicationComponent
     }
 
@@ -188,10 +188,7 @@ class StoryActivityTest {
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(
-        appCompatActivity = activity
-      )
-        .build()
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
