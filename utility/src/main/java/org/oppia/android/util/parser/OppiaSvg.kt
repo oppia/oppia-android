@@ -2,6 +2,7 @@ package org.oppia.android.util.parser
 
 import android.graphics.Picture
 import android.text.TextPaint
+import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.utils.RenderOptionsBase
 
@@ -31,9 +32,12 @@ class OppiaSvg(private val svgSource: String) {
 
   fun renderToPicture(textPaint: TextPaint): Picture {
     return computeSize(textPaint)?.let { (width, height) ->
-      parsedSvg.renderToPicture(width.toInt(), height.toInt())
+      val options = RenderOptions().textPaint(textPaint).viewPort(0f, 0f, width, height) as RenderOptions
+      parsedSvg.renderToPicture(options)
     } ?: parsedSvg.renderToPicture()
   }
+
+  fun renderToPicture(): Picture = parsedSvg.renderToPicture()
 
   private fun parseDimension(regex: Regex): Float? =
     regex.find(svgSource)?.destructured?.let { (parsedValue) -> parsedValue.toFloatOrNull() }

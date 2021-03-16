@@ -12,6 +12,12 @@ import android.text.TextPaint
 class ScalablePictureDrawable(private val oppiaSvg: OppiaSvg) : Drawable() {
   private lateinit var textPaint: TextPaint
   private lateinit var renderedPicture: Picture
+  // TODO: remove for non-texts (& text shouldn't need this)
+  private val alternativePicture: Picture by lazy {
+    if (this::renderedPicture.isInitialized) {
+      renderedPicture
+    } else oppiaSvg.renderToPicture()
+  }
 
   fun computeIntrinsicSize(): IntrinsicSize {
     return oppiaSvg.computeSize(textPaint)?.let {
@@ -62,6 +68,12 @@ class ScalablePictureDrawable(private val oppiaSvg: OppiaSvg) : Drawable() {
 //    return computeIntrinsicSize().let {
 //      RectF(bounds.left.toFloat(), bounds.top.toFloat(), it.width, it.height)
 //    }
+  }
+
+  private fun getPictureToRender(): Picture {
+    return if (this::renderedPicture.isInitialized) {
+      renderedPicture
+    } else alternativePicture
   }
 }
 

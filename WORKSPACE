@@ -122,7 +122,7 @@ git_repository(
 
 git_repository(
     name = "androidsvg",
-    commit = "365d96f1db18e1476b849d26c15fc38e08856b16",
+    commit = "a9a16fc9da24b836b5794b0afeeea19c8207da0b",
     remote = "https://github.com/oppia/androidsvg",
 )
 
@@ -143,4 +143,5 @@ maven_install(
         "https://maven.google.com",
         "https://repo1.maven.org/maven2",
     ],
+    fetch_sources = True,
 )
