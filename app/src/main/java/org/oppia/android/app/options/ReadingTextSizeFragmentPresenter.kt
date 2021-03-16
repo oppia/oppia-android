@@ -1,24 +1,14 @@
 package org.oppia.android.app.options
 
 import android.content.Intent
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
 import androidx.fragment.app.Fragment
-import org.oppia.android.R
-import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.LanguageItemsBinding
 import org.oppia.android.databinding.ReadingTextSizeFragmentBinding
 import org.oppia.android.databinding.TextSizeItemsBinding
 import javax.inject.Inject
-
-private const val SMALL_TEXT_SIZE_SCALE = 0.8f
-private const val MEDIUM_TEXT_SIZE_SCALE = 1.0f
-private const val LARGE_TEXT_SIZE_SCALE = 1.2f
-private const val EXTRA_LARGE_TEXT_SIZE_SCALE = 1.4f
 
 /** The presenter for [ReadingTextSizeFragment]. */
 class ReadingTextSizeFragmentPresenter @Inject constructor(
@@ -51,7 +41,7 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
       (fragment.activity as ReadingTextSizeActivity).finish()
     }
 
-    binding.textSizeRecyclerView?.apply {
+    binding.textSizeRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }
     return binding.root

@@ -18,8 +18,8 @@ class ReadingTextSizeSelectionViewModel @Inject constructor(
   private val defaultReadingTextSizeInFloat = fragment.requireContext().resources.getDimension(
     R.dimen.default_reading_text_size
   )
-  val selectedTextSize = MutableLiveData<String>();
-  private val textSizeRadioButtonListener = fragment as TextSizeRadioButtonListener;
+  val selectedTextSize = MutableLiveData<String>()
+  private val textSizeRadioButtonListener = fragment as TextSizeRadioButtonListener
 
   private val textSizeList = listOf<TextSizeItemViewModel>(
     TextSizeItemViewModel(
@@ -48,7 +48,7 @@ class ReadingTextSizeSelectionViewModel @Inject constructor(
     ),
   )
 
-  val recyclerViewTextSizeList : List<TextSizeItemViewModel> by lazy {
+  val recyclerViewTextSizeList: List<TextSizeItemViewModel> by lazy {
     textSizeList
   }
 }
