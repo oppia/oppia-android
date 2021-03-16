@@ -20,9 +20,11 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import dagger.Component
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -75,6 +77,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.google.common.truth.Truth.assertThat
 
 /** Tests for [AppVersionActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -84,6 +87,10 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class AppVersionActivityTest {
+  @get:Rule
+  var activityTestRule: ActivityTestRule<AppVersionActivity> = ActivityTestRule(
+    AppVersionActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
   @Inject
   lateinit var context: Context
@@ -102,6 +109,14 @@ class AppVersionActivityTest {
     testCoroutineDispatchers.registerIdlingResource()
     val lastUpdateDateTime = context.getLastUpdateTime()
     lastUpdateDate = getDateTime(lastUpdateDateTime)!!
+  }
+  @Test
+  fun testAppVersionActivity_hasCorrectActivityLabel() {
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.faq_activity_label))
   }
 
   @After
