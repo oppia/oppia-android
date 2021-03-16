@@ -234,8 +234,8 @@ class FeedbackReportManagementController @Inject constructor(
     return GaeFeedbackReportingSystemContext(
       packageVersionName = systemContext.packageVersionName,
       packageVersionCode = systemContext.packageVersionCode,
-      countryLocale = systemContext.countryLocale,
-      languageLocale = systemContext.languageLocale
+      countryLocaleCode = systemContext.countryLocaleCode,
+      languageLocaleCode = systemContext.languageLocaleCode
     )
   }
 
