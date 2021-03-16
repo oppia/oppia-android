@@ -22,6 +22,7 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   val questionCount = ObservableField(0)
   val currentQuestion = ObservableField(0)
   val progressPercentage = ObservableField(0)
+  val isKeyboardVisible = ObservableBoolean(false)
   val isAtEndOfSession = ObservableBoolean(false)
   private val canSubmitAnswer = ObservableField(false)
 

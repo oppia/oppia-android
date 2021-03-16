@@ -91,6 +91,7 @@
         android:max="100"
         android:progress="@{viewModel.progressPercentage}"
         android:progressDrawable="@drawable/progress_bar"
+        android:visibility="@{viewModel.isKeyboardVisible ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toTopOf="@id/question_progress_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/hints_and_solution_fragment_container" />
@@ -138,6 +139,7 @@
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="12sp"
         android:textStyle="italic"
+        android:visibility="@{viewModel.isKeyboardVisible ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
