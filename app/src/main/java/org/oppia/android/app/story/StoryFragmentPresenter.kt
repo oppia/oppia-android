@@ -170,7 +170,12 @@ class StoryFragmentPresenter @Inject constructor(
                 ds.typeface = Typeface.DEFAULT_BOLD
               }
             }
-            chapterLockedSpannable.setSpan(clickableSpan, 9, chapterLockedSpannable.length - 24, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            chapterLockedSpannable.setSpan(
+              clickableSpan,
+              9,
+              chapterLockedSpannable.length - 24,
+              Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
             binding.htmlContent = chapterLockedSpannable
             binding.chapterSummary.movementMethod = LinkMovementMethod.getInstance()
           }
