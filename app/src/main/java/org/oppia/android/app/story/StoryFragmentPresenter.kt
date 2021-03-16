@@ -158,7 +158,7 @@ class StoryFragmentPresenter @Inject constructor(
               storyItemViewModel.index.toString(),
               storyItemViewModel.missingPrerequisiteChapter.name
             )
-            val ss = SpannableString(missingPrerequisiteSummary)
+            val chapterLockedSpannable = SpannableString(missingPrerequisiteSummary)
             val clickableSpan = object : ClickableSpan() {
               override fun onClick(widget: View) {
                 smoothScrollToPosition(storyItemViewModel.index - 1)
@@ -170,8 +170,8 @@ class StoryFragmentPresenter @Inject constructor(
                 ds.typeface = Typeface.DEFAULT_BOLD
               }
             }
-            ss.setSpan(clickableSpan, 9, ss.length - 24, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            binding.htmlContent = ss
+            chapterLockedSpannable.setSpan(clickableSpan, 9, chapterLockedSpannable.length - 24, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            binding.htmlContent = chapterLockedSpannable
             binding.chapterSummary.movementMethod = LinkMovementMethod.getInstance()
           }
         }
