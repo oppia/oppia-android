@@ -712,22 +712,6 @@ TEST_DEPS = [
 MIGRATED_TESTS = [
 ]
 
-# Unit tests.
-[app_test(
-    name = test_file_path,
-    filtered_tests = MIGRATED_TESTS,
-    manifest_values = {
-        "applicationId": "org.oppia.android",
-        "minSdkVersion": "19",
-        "targetSdkVersion": "28",
-        "versionCode": "0",
-        "versionName": "0.1-alpha",
-    },
-    processed_src = test_with_resources(test_file_path),
-    test_path_prefix = "src/sharedTest/java/",
-    deps = TEST_DEPS,
-) for test_file_path in glob(["src/sharedTest/java/org/oppia/android/app/**/*Test.kt"])]
-
 # Shared tests.
 [app_test(
     name = test_file_path,

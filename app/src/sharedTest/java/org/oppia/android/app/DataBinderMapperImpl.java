@@ -1,6 +1,9 @@
-package androidx.databinding;
+package org.oppia.android.app;
 
 // TODO(#1683): Remove when android_local_test works with data-binding.
+
+import androidx.databinding.MergedDataBinderMapper;
+
 /**
  * Generated code necessary to run tests with Bazel.
  * <p/>
