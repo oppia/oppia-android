@@ -61,28 +61,24 @@ class GlideImageLoader @Inject constructor(
       .intoTarget(target)
   }
 
-  private fun loadImage(imageUrl: String): Any {
-    return when {
-      cacheAssetsLocally -> object : ImageAssetFetcher {
-        override fun fetchImage(): ByteArray = assetRepository.loadRemoteBinaryAsset(imageUrl)()
+  private fun loadImage(imageUrl: String): Any = when {
+    cacheAssetsLocally -> object : ImageAssetFetcher {
+      override fun fetchImage(): ByteArray = assetRepository.loadRemoteBinaryAsset(imageUrl)()
 
-        override fun getImageIdentifier(): String = imageUrl
-      }
-      loadImagesFromAssets -> object : ImageAssetFetcher {
-        override fun fetchImage(): ByteArray =
-            assetRepository.loadImageAssetFromLocalAssets(imageUrl)()
-
-        override fun getImageIdentifier(): String = imageUrl
-      }
-      else -> imageUrl
+      override fun getImageIdentifier(): String = imageUrl
     }
+    loadImagesFromAssets -> object : ImageAssetFetcher {
+      override fun fetchImage(): ByteArray =
+          assetRepository.loadImageAssetFromLocalAssets(imageUrl)()
+
+      override fun getImageIdentifier(): String = imageUrl
+    }
+    else -> imageUrl
   }
 
-  private fun <T> RequestBuilder<T>.intoTarget(target: ImageTarget<T>) {
-    when (target) {
-      is CustomImageTarget -> into(target.customTarget)
-      is ImageViewTarget -> into(target.imageView)
-    }
+  private fun <T> RequestBuilder<T>.intoTarget(target: ImageTarget<T>) = when (target) {
+    is CustomImageTarget -> into(target.customTarget)
+    is ImageViewTarget -> into(target.imageView)
   }
 
   private fun List<ImageTransformation>.toGlideTransformations(): Array<Transformation<Bitmap>> {

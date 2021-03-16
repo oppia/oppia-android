@@ -3,6 +3,7 @@ package org.oppia.android.util.parser
 import android.graphics.Picture
 import android.text.TextPaint
 import com.caverock.androidsvg.SVG
+import com.caverock.androidsvg.utils.RenderOptionsBase
 
 class OppiaSvg(private val svgSource: String) {
   private val parsedSvg by lazy { SVG.getFromString(svgSource) }
@@ -17,6 +18,9 @@ class OppiaSvg(private val svgSource: String) {
   fun computeSize(textPaint: TextPaint): SvgSize? {
     val width = parsedWidth
     val height = parsedHeight
+    val options = RenderOptionsBase().textPaint(textPaint)
+    val documentWidth = parsedSvg.getDocumentWidth(options)
+    val documentHeight = parsedSvg.getDocumentHeight(options)
     return if (width != null && height != null) {
       // Follows CSS3 specification that 1ex=0.5em if the height of 'x' can't be easily computed. See
       // also: https://stackoverflow.com/q/42416622.

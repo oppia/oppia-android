@@ -120,6 +120,12 @@ git_repository(
     remote = "https://github.com/oppia/CircularImageview",
 )
 
+git_repository(
+    name = "androidsvg",
+    commit = "871dfa1b4c8acf4edf8b98c2c05e26c5e5e7a8bf",
+    remote = "https://github.com/oppia/androidsvg",
+)
+
 bind(
     name = "databinding_annotation_processor",
     actual = "//tools/android:compiler_annotation_processor",

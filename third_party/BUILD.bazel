@@ -45,6 +45,14 @@ android_library(
 )
 
 android_library(
+    name = "com_caverock_androidsvg",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@androidsvg//androidsvg"
+    ],
+)
+
+android_library(
     name = "robolectric_android-all",
     visibility = ["//visibility:public"],
     exports = [

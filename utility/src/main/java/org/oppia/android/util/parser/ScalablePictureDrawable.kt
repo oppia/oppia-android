@@ -21,7 +21,7 @@ class ScalablePictureDrawable(private val oppiaSvg: OppiaSvg) : Drawable() {
 
   fun initialize(textPaint: TextPaint) {
     this.textPaint = textPaint
-//    renderedPicture = oppiaSvg.renderToPicture(textPaint)
+    renderedPicture = oppiaSvg.renderToPicture(textPaint)
   }
 
   override fun draw(canvas: Canvas) {
