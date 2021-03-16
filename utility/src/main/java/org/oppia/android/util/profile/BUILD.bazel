@@ -1,5 +1,5 @@
 """
-General purposes utilities to manage Directories.
+General purposes utilities to manage directories.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
