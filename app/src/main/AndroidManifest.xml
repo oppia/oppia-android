@@ -99,7 +99,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.settings.profile.ProfileRenameActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/profile_rename_activity_label"/>
     <activity
       android:name=".app.settings.profile.ProfileResetPinActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
