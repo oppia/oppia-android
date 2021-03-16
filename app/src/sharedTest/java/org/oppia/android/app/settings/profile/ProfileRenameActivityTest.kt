@@ -136,9 +136,7 @@ class ProfileRenameActivityTest {
     )
 
     val title = activityTestRule.activity.title
-    assertThat(title).isEqualTo(
-      context.getString(R.string.profile_rename_activity_label)
-    )
+    assertThat(title).isEqualTo(context.getString(R.string.profile_rename_title))
   }
 
   @Test
