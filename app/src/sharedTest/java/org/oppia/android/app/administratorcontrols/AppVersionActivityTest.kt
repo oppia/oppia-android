@@ -143,9 +143,7 @@ class AppVersionActivityTest {
     launchAppVersionActivityIntent().use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
-        withId(
-          R.id.app_version_text_view
-        )
+        withId(R.id.app_version_text_view)
       ).check(
         matches(
           withText(
@@ -177,13 +175,13 @@ class AppVersionActivityTest {
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       launchAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          3
+          position = 3
         )
       )
       onView(withText(R.string.administrator_controls_app_version)).perform(click())
@@ -196,22 +194,22 @@ class AppVersionActivityTest {
   private fun getDateTime(dateTimeTimestamp: Long): String? {
     return oppiaDateTimeFormatter.formatDateFromDateString(
       OppiaDateTimeFormatter.DD_MMM_YYYY,
-      dateTimeTimestamp,
-      Locale.US
+      timestamp = dateTimeTimestamp,
+      locale = Locale.US
     )
   }
 
   private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
     val intent = AppVersionActivity.createAppVersionActivityIntent(
-      ApplicationProvider.getApplicationContext()
+      context = ApplicationProvider.getApplicationContext()
     )
     return ActivityScenario.launch(intent)
   }
 
   private fun launchAdministratorControlsActivityIntent(profileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      profileId
+      context = ApplicationProvider.getApplicationContext(),
+      profileId = profileId
     )
   }
 
