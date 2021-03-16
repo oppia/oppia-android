@@ -17,6 +17,6 @@ data class GaeUserSuppliedFeedback(
   /** Corresponds to checkbox options that a user selects in this report. */
   @Json(name = "feedback_list") val feedbackList: List<String>?,
   /** Text input that a user might provide if they choose "other" as a category or feedback list option. */
-  @Json(name = "open_text_user_input") val openTextUserInput: String?
+  @Json(name = "other_user_input_text") val otherUserInputText: String?
 
 )
