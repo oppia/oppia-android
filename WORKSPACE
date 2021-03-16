@@ -122,7 +122,7 @@ git_repository(
 
 git_repository(
     name = "androidsvg",
-    commit = "871dfa1b4c8acf4edf8b98c2c05e26c5e5e7a8bf",
+    commit = "365d96f1db18e1476b849d26c15fc38e08856b16",
     remote = "https://github.com/oppia/androidsvg",
 )
 
