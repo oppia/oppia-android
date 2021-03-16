@@ -172,10 +172,11 @@ class StateRetriever @Inject constructor(
       )
       val misconceptionJson = answerGroupJson.optJSONObject("tagged_skill_misconception_id")
       if (misconceptionJson != null) {
+        val misconceptionParts = misconceptionJson.toString().split("-")
         taggedSkillMisconception =
           Misconception.newBuilder().apply {
-            skillId = misconceptionJson.toString().split("-")[0]
-            misconceptionId = misconceptionJson.toString().split("-")[1]
+            skillId = misconceptionParts[0]
+            misconceptionId = misconceptionParts[1]
           }.build()
       }
     }.build()
