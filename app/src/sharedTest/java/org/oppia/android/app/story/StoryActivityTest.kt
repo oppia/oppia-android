@@ -184,7 +184,7 @@ class StoryActivityTest {
     }
 
     fun inject(storyActivityTest: StoryActivityTest) {
-      component.inject(storyActivityTest = storyActivityTest)
+      component.inject(storyActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
