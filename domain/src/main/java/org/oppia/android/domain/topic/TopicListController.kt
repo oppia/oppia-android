@@ -497,26 +497,35 @@ class TopicListController @Inject constructor(
   private fun computeSuggestedStories(
     topicProgressList: List<TopicProgress>
   ): List<PromotedStory> {
-    // asdf
-//    return if (loadLessonProtosFromAssets) {
-//      val topicIdList =
-//          assetRepository.loadProtoFromLocalAssets(
-//              assetName = "topics",
-//              baseMessage = TopicIdList.getDefaultInstance()
-//          )
-//      return topicIdList.topicIdsList.mapNotNull { loadRecommendedStory(it) }
-//    } else createRecommendedStoryListFromJson()
+    return if (loadLessonProtosFromAssets) {
+      val topicIdList =
+          assetRepository.loadProtoFromLocalAssets(
+              assetName = "topics",
+              baseMessage = TopicIdList.getDefaultInstance()
+          )
+      return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdList.topicIdsList)
+    } else computeSuggestedStoriesFromJson(topicProgressList)
+  }
 
-    val recommendedStories = mutableListOf<PromotedStory>()
+  private fun computeSuggestedStoriesFromJson(
+    topicProgressList: List<TopicProgress>
+  ): List<PromotedStory> {
     val topicIdJsonArray = jsonAssetRetriever
-      .loadJsonFromAsset("topics.json")!!
-      .getJSONArray("topic_id_list")
-
-    // The list of started or completed topic IDs.
-    val startedTopicIds = topicProgressList.map(TopicProgress::getTopicId)
+        .loadJsonFromAsset("topics.json")!!
+        .getJSONArray("topic_id_list")
     // All topics that could potentially be recommended.
     val topicIdList =
-      (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
+        (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
+    return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdList)
+  }
+
+  private fun computeSuggestedStoriesForTopicIds(
+    topicProgressList: List<TopicProgress>,
+    topicIdList: List<String>
+  ): List<PromotedStory> {
+    val recommendedStories = mutableListOf<PromotedStory>()
+    // The list of started or completed topic IDs.
+    val startedTopicIds = topicProgressList.map(TopicProgress::getTopicId)
     // The list of topic IDs that qualify for being recommended.
     val unstartedTopicIdList = topicIdList.filterNot { startedTopicIds.contains(it) }
 
@@ -541,9 +550,7 @@ class TopicListController @Inject constructor(
       if (topicId !in impliedFinishedTopicIds &&
         impliedFinishedTopicIds.containsAll(dependentTopicIds)
       ) {
-        createRecommendedStoryFromAssets(topicId)?.let {
-          recommendedStories.add(it)
-        }
+        loadRecommendedStory(topicId)?.let(recommendedStories::add)
       }
     }
     return recommendedStories
@@ -592,7 +599,14 @@ class TopicListController @Inject constructor(
     return (transitiveDependencies + directDependencies).toSet()
   }
 
-  private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory? {
+  private fun loadRecommendedStory(topicId: String): PromotedStory? {
+    return if (loadLessonProtosFromAssets) {
+      return PromotedStory.newBuilder().apply {
+      }.build()
+    } else loadRecommendedStoryFromJson(topicId)
+  }
+
+  private fun loadRecommendedStoryFromJson(topicId: String): PromotedStory? {
     val topicJson = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")
     if (topicJson!!.optString("topic_name").isNullOrEmpty()) {
       return null
