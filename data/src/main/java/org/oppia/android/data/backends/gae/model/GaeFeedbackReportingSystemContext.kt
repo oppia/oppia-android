@@ -10,8 +10,8 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GaeFeedbackReportingSystemContext(
 
-  /** The package version name for the user's instance of the app. */
-  @Json(name = "package_version_name") val packageVersionName: String,
+  /** The platform version for the user's instance of the app. */
+  @Json(name = "platform_version") val platformVersion: String,
   /** The package version code for the user's instance of the app. */
   @Json(name = "package_version_code") val packageVersionCode: Int,
   /** The ISO-639 code for the country locale set on the user's device. */
