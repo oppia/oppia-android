@@ -285,7 +285,7 @@ class FakeOppiaClockTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ImageParsingModule::class , CachingTestModule::class, LoggerModule::class
+      ImageParsingModule::class, CachingTestModule::class, LoggerModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

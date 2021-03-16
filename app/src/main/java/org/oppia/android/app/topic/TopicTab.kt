@@ -42,9 +42,11 @@ enum class TopicTab(
      * practice tab is enabled per [enablePracticeTab].
      */
     fun getTabForPosition(position: Int, enablePracticeTab: Boolean): TopicTab {
-      return checkNotNull(values().find {
-        position == if (enablePracticeTab) it.positionWithFourTabs else it.positionWithThreeTabs
-      }) { "No tab corresponding to position: $position" }
+      return checkNotNull(
+        values().find {
+          position == if (enablePracticeTab) it.positionWithFourTabs else it.positionWithThreeTabs
+        }
+      ) { "No tab corresponding to position: $position" }
     }
 
     /** Returns the number of active tabs considering [enablePracticeTab] */

@@ -15,7 +15,6 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.app.topic.EnablePracticeTab
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 

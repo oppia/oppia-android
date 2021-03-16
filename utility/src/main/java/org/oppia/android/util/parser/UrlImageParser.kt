@@ -85,14 +85,18 @@ class UrlImageParser private constructor(
             } else viewWidth
           } else viewWidth
 
-          // TODO: make this better by properly handling non-centering images and scalable drawables.
+          // TODO: make this better by properly handling non-centering images and scalable
+          //  drawables.
           var (drawableWidth, drawableHeight) = if (drawable is ScalablePictureDrawable) {
             drawable.initialize(htmlContentTextView.paint)
             drawable.computeIntrinsicSize()
-          } else IntrinsicSize(drawable.intrinsicWidth.toFloat(), drawable.intrinsicHeight.toFloat())
+          } else {
+            IntrinsicSize(drawable.intrinsicWidth.toFloat(), drawable.intrinsicHeight.toFloat())
+          }
           val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
           if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
-            // The multipleFactor value is used to make sure that the aspect ratio of the image remains the same.
+            // The multipleFactor value is used to make sure that the aspect ratio of the image
+            // remains the same.
             // Example: Height is 90, width is 60 and minimumImageSize is 120.
             // Then multipleFactor will be 2 (120/60).
             // The new height will be 180 and new width will be 120.
@@ -110,10 +114,10 @@ class UrlImageParser private constructor(
             context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
           val maximumImageSize = maxAvailableWidth - maxContentItemPadding
           /*if (drawableWidth >= maximumImageSize) {
-            // The multipleFactor value is used to make sure that the aspect ratio of the image remains the same.
-            // Example: Height is 420, width is 440 and maximumImageSize is 200.
-            // Then multipleFactor will be (200/440).
-            // The new height will be 191 and new width will be 200.
+            // The multipleFactor value is used to make sure that the aspect ratio of the image
+            // remains the same. Example: Height is 420, width is 440 and maximumImageSize is 200.
+            // Then multipleFactor will be (200/440). The new height will be 191 and new width will
+            // be 200.
             val multipleFactor = if (drawableHeight >= drawableWidth) {
               // If height is greater then the width, multipleFactor value is determined by height.
               (maximumImageSize.toDouble() / drawableHeight.toDouble())

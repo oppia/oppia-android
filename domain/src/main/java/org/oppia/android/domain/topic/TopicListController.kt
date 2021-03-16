@@ -11,9 +11,9 @@ import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
-import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.StoryProgress
+import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicIdList
@@ -499,10 +499,10 @@ class TopicListController @Inject constructor(
   ): List<PromotedStory> {
     return if (loadLessonProtosFromAssets) {
       val topicIdList =
-          assetRepository.loadProtoFromLocalAssets(
-              assetName = "topics",
-              baseMessage = TopicIdList.getDefaultInstance()
-          )
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = "topics",
+          baseMessage = TopicIdList.getDefaultInstance()
+        )
       return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdList.topicIdsList)
     } else computeSuggestedStoriesFromJson(topicProgressList)
   }
@@ -511,11 +511,11 @@ class TopicListController @Inject constructor(
     topicProgressList: List<TopicProgress>
   ): List<PromotedStory> {
     val topicIdJsonArray = jsonAssetRetriever
-        .loadJsonFromAsset("topics.json")!!
-        .getJSONArray("topic_id_list")
+      .loadJsonFromAsset("topics.json")!!
+      .getJSONArray("topic_id_list")
     // All topics that could potentially be recommended.
     val topicIdList =
-        (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
+      (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
     return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdList)
   }
 

@@ -60,7 +60,7 @@ class AssetRepository @Inject constructor(
    * name. The [baseMessage] is used to load the proto; its value will never actually be used (so
    * callers are recommended to use [T]'s default instance for this purpose).
    */
-  fun <T: MessageLite> loadProtoFromLocalAssets(assetName: String, baseMessage: T): T {
+  fun <T : MessageLite> loadProtoFromLocalAssets(assetName: String, baseMessage: T): T {
     @Suppress("UNCHECKED_CAST") // Safe type-cast per newBuilderForType's contract.
     return baseMessage.newBuilderForType()
       .mergeFrom(loadProtoBlobFromLocalAssets(assetName))

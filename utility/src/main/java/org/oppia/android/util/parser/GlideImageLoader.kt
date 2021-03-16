@@ -3,7 +3,6 @@ package org.oppia.android.util.parser
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.PictureDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.Transformation
@@ -23,21 +22,21 @@ class GlideImageLoader @Inject constructor(
 ) : ImageLoader {
 
   override fun loadBitmap(
-      imageUrl: String,
-      target: ImageTarget<Bitmap>,
-      transformations: List<ImageTransformation>
+    imageUrl: String,
+    target: ImageTarget<Bitmap>,
+    transformations: List<ImageTransformation>
   ) {
     Glide.with(context)
-        .asBitmap()
-        .load(loadImage(imageUrl))
-        .transform(*transformations.toGlideTransformations())
-        .intoTarget(target)
+      .asBitmap()
+      .load(loadImage(imageUrl))
+      .transform(*transformations.toGlideTransformations())
+      .intoTarget(target)
   }
 
   override fun loadSvg(
-      imageUrl: String,
-      target: ImageTarget<ScalablePictureDrawable>,
-      transformations: List<ImageTransformation>
+    imageUrl: String,
+    target: ImageTarget<ScalablePictureDrawable>,
+    transformations: List<ImageTransformation>
   ) {
     // TODO(#45): Ensure the image caching flow is properly hooked up.
     Glide.with(context)
@@ -45,7 +44,7 @@ class GlideImageLoader @Inject constructor(
       .fitCenter()
       .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
       .load(loadImage(imageUrl))
-        .transform(*transformations.toGlideTransformations())
+      .transform(*transformations.toGlideTransformations())
       .intoTarget(target)
   }
 
@@ -69,7 +68,7 @@ class GlideImageLoader @Inject constructor(
     }
     loadImagesFromAssets -> object : ImageAssetFetcher {
       override fun fetchImage(): ByteArray =
-          assetRepository.loadImageAssetFromLocalAssets(imageUrl)()
+        assetRepository.loadImageAssetFromLocalAssets(imageUrl)()
 
       override fun getImageIdentifier(): String = imageUrl
     }

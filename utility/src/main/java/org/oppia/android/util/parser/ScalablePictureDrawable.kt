@@ -53,7 +53,12 @@ class ScalablePictureDrawable(private val oppiaSvg: OppiaSvg) : Drawable() {
 
   private fun computeBounds(): RectF {
     // TODO: factor in vertical alignment if needed.
-    return RectF(bounds.left.toFloat(), bounds.top.toFloat(), bounds.right.toFloat(), bounds.bottom.toFloat())
+    return RectF(
+      bounds.left.toFloat(),
+      bounds.top.toFloat(),
+      bounds.right.toFloat(),
+      bounds.bottom.toFloat()
+    )
 //    return computeIntrinsicSize().let {
 //      RectF(bounds.left.toFloat(), bounds.top.toFloat(), it.width, it.height)
 //    }

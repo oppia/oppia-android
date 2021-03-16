@@ -54,6 +54,7 @@ import org.oppia.android.app.testing.BindableAdapterTestDataModel.StringModel
 import org.oppia.android.app.testing.BindableAdapterTestFragment
 import org.oppia.android.app.testing.BindableAdapterTestFragmentPresenter
 import org.oppia.android.app.testing.BindableAdapterTestViewModel
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.databinding.TestTextViewForIntWithDataBindingBinding
 import org.oppia.android.databinding.TestTextViewForLiveDataWithDataBindingBinding
 import org.oppia.android.databinding.TestTextViewForStringWithDataBindingBinding
@@ -80,7 +81,6 @@ import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule

@@ -31,8 +31,8 @@ class ConceptCardRetriever @Inject constructor(
           assetName = "skills",
           baseMessage = ConceptCardList.getDefaultInstance()
         )
-      return conceptCardList.conceptCardsList.find { it.skillId == skillId } ?:
-        error("Failed to load concept card for skill: $skillId")
+      return conceptCardList.conceptCardsList.find { it.skillId == skillId }
+        ?: error("Failed to load concept card for skill: $skillId")
     } else loadConceptCardFromJson(skillId)
   }
 

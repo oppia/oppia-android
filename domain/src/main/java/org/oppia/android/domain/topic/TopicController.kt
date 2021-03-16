@@ -595,15 +595,17 @@ class TopicController @Inject constructor(
       this.storyId = storyId
       storyName = storyRecord.storyName
       storyThumbnail = storyRecord.storyThumbnail
-      addAllChapter(storyRecord.chaptersList.map { chapterRecord ->
-        ChapterSummary.newBuilder().apply {
-          explorationId = chapterRecord.explorationId
-          name = chapterRecord.title
-          summary = chapterRecord.outline
-          chapterPlayState = ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED
-          chapterThumbnail = chapterRecord.chapterThumbnail
-        }.build()
-      })
+      addAllChapter(
+        storyRecord.chaptersList.map { chapterRecord ->
+          ChapterSummary.newBuilder().apply {
+            explorationId = chapterRecord.explorationId
+            name = chapterRecord.title
+            summary = chapterRecord.outline
+            chapterPlayState = ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED
+            chapterThumbnail = chapterRecord.chapterThumbnail
+          }.build()
+        }
+      )
     }.build()
   }
 
