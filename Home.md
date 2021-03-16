@@ -32,6 +32,13 @@ If you are on Windows, please set up the environment path correctly for `Java`.
        1. Open terminal
        2. Move to `opensource/oppia-android/`
        3. Run a script `bash scripts/setup.sh`
+    
+    - For Mac with Apple M1 chip
+       1. Locate Terminal in Finder
+       2. Right-click and create a duplicate Terminal (and rename it accordingly say Terminal x86 to avoid confusion)
+       3. For the Terminal x86 right-click and click Get info and check the option Open using Rosetta
+       4. Move to `opensource/oppia-android/`
+       5. Now run `bash scripts/setup.sh` in Terminal x86 and all the required files will be generated as they should
 
     - For Windows
        1. Install [Git Bash Command Line](https://gitforwindows.org/)
