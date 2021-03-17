@@ -619,7 +619,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_hasCorrectActivityLabel_adminControls() {
+  fun testAdminAuthActivity_forProfileAdminControls_hasAuthorizeAccessControlsTitle() {
     activityTestRule.launchActivity(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -639,7 +639,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_hasCorrectActivityLabel_addProfiles() {
+  fun testAdminAuthActivity_forAddProfile_hasAuthorizeAddProfileTitle() {
     activityTestRule.launchActivity(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
