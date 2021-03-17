@@ -19,7 +19,8 @@
     <meta-data android:name="expiration_date" android:value="2020-09-01" />
     <activity
       android:name=".app.administratorcontrols.AdministratorControlsActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:configChanges="orientation|screenSize"/>
     <activity
       android:name=".app.administratorcontrols.appversion.AppVersionActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
