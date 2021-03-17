@@ -2,19 +2,15 @@ package org.oppia.android.data.backends.test
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.api.MockSubtopicService
-import org.oppia.android.data.backends.gae.NetworkInterceptor
-import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.SubtopicService
+import org.oppia.android.testing.network.MockRetrofitHelper
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
-import retrofit2.mock.NetworkBehavior
 
 /**
  * Test for [SubtopicService] retrofit instance using [MockSubtopicService]
@@ -27,20 +23,7 @@ class MockSubtopicTest {
 
   @Before
   fun setUp() {
-    val client = OkHttpClient.Builder()
-    client.addInterceptor(NetworkInterceptor())
-
-    retrofit = Retrofit.Builder()
-      .baseUrl(NetworkSettings.getBaseUrl())
-      .addConverterFactory(MoshiConverterFactory.create())
-      .client(client.build())
-      .build()
-
-    val behavior = NetworkBehavior.create()
-    behavior.setFailurePercent(0)
-    mockRetrofit = MockRetrofit.Builder(retrofit)
-      .networkBehavior(behavior)
-      .build()
+    mockRetrofit = MockRetrofitHelper().createMockRetrofit()
   }
 
   @Test

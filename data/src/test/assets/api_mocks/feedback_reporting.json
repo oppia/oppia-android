@@ -30,7 +30,7 @@
   },
   "report_creation_timestamp_ms": 1610519337000,
   "system_context": {
-    "platform_version": "1.0-example_version",
+    "platform_version": "0.1-alpha-abcdef1234",
     "package_version_code": 1,
     "country_locale": "IN",
     "language_locale": "EN"
