@@ -15,6 +15,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//model",
+        "//testing",
         "//third_party:androidx_appcompat_appcompat",
         "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
         "//third_party:com_caverock_androidsvg-aar",
