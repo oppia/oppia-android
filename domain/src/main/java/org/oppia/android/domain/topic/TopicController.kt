@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
-import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.CompletedStory
 import org.oppia.android.app.model.CompletedStoryList
