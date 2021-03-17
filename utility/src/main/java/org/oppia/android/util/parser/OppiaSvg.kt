@@ -8,39 +8,28 @@ import com.caverock.androidsvg.utils.RenderOptionsBase
 
 class OppiaSvg(private val svgSource: String) {
   private val parsedSvg by lazy { SVG.getFromString(svgSource) }
-  private val widthRegex by lazy { Regex("width=\"([\\d.]+)ex\"") }
-  private val heightRegex by lazy { Regex("height=\"([\\d.]+)ex\"") }
 
-  // TODO: perform this parsing during SVG saving (e.g. by representing the SVG in proto form or
-  // wrapping it) to avoid needing expensive regex matches just for image rendering.
-  private val parsedWidth by lazy { parseDimension(widthRegex) }
-  private val parsedHeight by lazy { parseDimension(heightRegex) }
-
-  fun computeSize(textPaint: TextPaint): SvgSize? {
-    val width = parsedWidth
-    val height = parsedHeight
+  internal fun computeSizeSpecs(textPaint: TextPaint): SvgSizeSpecs {
     val options = RenderOptionsBase().textPaint(textPaint)
-    val documentWidth = parsedSvg.getDocumentWidth(options)
-    val documentHeight = parsedSvg.getDocumentHeight(options)
-    return if (width != null && height != null) {
-      // Follows CSS3 specification that 1ex=0.5em if the height of 'x' can't be easily computed. See
-      // also: https://stackoverflow.com/q/42416622.
-      val ex = textPaint.textSize * 0.5f
-      SvgSize(width * ex, height * ex)
-    } else null
+    val width = parsedSvg.getDocumentWidth(options)
+    val height = parsedSvg.getDocumentHeight(options)
+    val verticalAlignment = adjustAlignmentForAndroid(parsedSvg.getVerticalAlignment(options))
+    return SvgSizeSpecs(width, height, verticalAlignment)
   }
 
   fun renderToPicture(textPaint: TextPaint): Picture {
-    return computeSize(textPaint)?.let { (width, height) ->
+    return computeSizeSpecs(textPaint).let { (width, height, _) ->
       val options = RenderOptions().textPaint(textPaint).viewPort(0f, 0f, width, height) as RenderOptions
       parsedSvg.renderToPicture(options)
     } ?: parsedSvg.renderToPicture()
   }
 
-  fun renderToPicture(): Picture = parsedSvg.renderToPicture()
+  // It seems that vertical alignment needs to be halved to work in Android's coordinate system as
+  // compared with SVGs. This might be due to SVGs seemingly using an origin in the middle of the
+  // image vs. Android using an upper-left origin. Further, negative alignment pushes the image down
+  // in the SVG coordinate system, whereas Android's has positive y going down (requiring the y
+  // value to be reversed).
+  private fun adjustAlignmentForAndroid(value: Float) = value * -0.5f
 
-  private fun parseDimension(regex: Regex): Float? =
-    regex.find(svgSource)?.destructured?.let { (parsedValue) -> parsedValue.toFloatOrNull() }
-
-  data class SvgSize(val width: Float, val height: Float)
+  data class SvgSizeSpecs(val width: Float, val height: Float, val verticalAlignment: Float)
 }

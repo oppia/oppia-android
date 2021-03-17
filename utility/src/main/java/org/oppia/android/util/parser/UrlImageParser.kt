@@ -3,6 +3,8 @@ package org.oppia.android.util.parser
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.ColorFilter
+import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -39,31 +41,31 @@ class UrlImageParser private constructor(
    */
   override fun getDrawable(urlString: String): Drawable {
     val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
-    val urlDrawable = UrlDrawable()
+    val proxyDrawable = ProxyDrawable()
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      val target = SvgTarget(urlDrawable)
+      val target = SvgTarget(proxyDrawable)
       imageLoader.loadSvg("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(target))
     } else {
-      val target = BitmapTarget(urlDrawable)
+      val target = BitmapTarget(proxyDrawable)
       imageLoader.loadBitmap("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(target))
     }
-    return urlDrawable
+    return proxyDrawable
   }
 
-  private inner class BitmapTarget(urlDrawable: UrlDrawable) : CustomImageTarget<Bitmap>(
-    urlDrawable, { resource -> BitmapDrawable(context.resources, resource) }
+  private inner class BitmapTarget(proxyDrawable: ProxyDrawable) : CustomImageTarget<Bitmap>(
+      proxyDrawable, { resource -> BitmapDrawable(context.resources, resource) }
   )
 
   private inner class SvgTarget(
-    urlDrawable: UrlDrawable
+      proxyDrawable: ProxyDrawable
   ) : CustomImageTarget<ScalablePictureDrawable>(
-    urlDrawable, { it }
+      proxyDrawable, { it }
   )
 
   private open inner class CustomImageTarget<T>(
-    private val urlDrawable: UrlDrawable,
-    private val drawableFactory: (T) -> Drawable
+      private val proxyDrawable: ProxyDrawable,
+      private val drawableFactory: (T) -> Drawable
   ) : CustomTarget<T>() {
     override fun onLoadCleared(placeholder: Drawable?) {
       // No resources to clear.
@@ -87,14 +89,14 @@ class UrlImageParser private constructor(
 
           // TODO: make this better by properly handling non-centering images and scalable
           //  drawables.
-          var (drawableWidth, drawableHeight) = if (drawable is ScalablePictureDrawable) {
+          var (drawableWidth, drawableHeight, verticalAlignment) = if (drawable is ScalablePictureDrawable) {
             drawable.initialize(htmlContentTextView.paint)
             drawable.computeIntrinsicSize()
           } else {
-            IntrinsicSize(drawable.intrinsicWidth.toFloat(), drawable.intrinsicHeight.toFloat())
+            OppiaSvg.SvgSizeSpecs(drawable.intrinsicWidth.toFloat(), drawable.intrinsicHeight.toFloat(), verticalAlignment = 0f)
           }
           val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
-          if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
+          /*if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
             // The multipleFactor value is used to make sure that the aspect ratio of the image
             // remains the same.
             // Example: Height is 90, width is 60 and minimumImageSize is 120.
@@ -109,7 +111,7 @@ class UrlImageParser private constructor(
             }
             drawableHeight *= multipleFactor
             drawableWidth *= multipleFactor
-          }
+          }*/
           val maxContentItemPadding =
             context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
           val maximumImageSize = maxAvailableWidth - maxContentItemPadding
@@ -134,12 +136,14 @@ class UrlImageParser private constructor(
             0
           }*/
           val drawableTop = 0
-          val drawableRight = (drawableLeft + drawableWidth).toInt()
-          val drawableBottom = (drawableTop + drawableHeight).toInt()
-          val rect = Rect(drawableLeft, drawableTop, drawableRight, drawableBottom)
-          drawable.bounds = rect
-          urlDrawable.bounds = rect
-          urlDrawable.drawable = drawable
+//          val drawableRight = (drawableLeft + drawableWidth).toInt()
+//          val drawableBottom = (drawableTop + drawableHeight).toInt()
+//          val rect = Rect(drawableLeft, drawableTop, drawableRight, drawableBottom)
+//          proxyDrawable.bounds = expectedBounds
+//          proxyDrawable.drawable = bitmapDrawable
+          val bounds = Rect(0, 0, drawableWidth.toInt(), drawableHeight.toInt())
+          proxyDrawable.initialize(drawable, bounds, verticalAlignment)
+
           htmlContentTextView.text = htmlContentTextView.text
           htmlContentTextView.invalidate()
         }
@@ -147,11 +151,41 @@ class UrlImageParser private constructor(
     }
   }
 
-  class UrlDrawable : BitmapDrawable() {
-    var drawable: Drawable? = null
+  /**
+   * A [Drawable] that can be created & used immediately, but whose drawing properties will be
+   * defined later, asynchronously.
+   */
+  private class ProxyDrawable : Drawable() {
+    private var drawable: Drawable? = null
+    private var verticalAlignment: Float = 0f
+
+    fun initialize(drawable: Drawable, bounds: Rect, verticalAlignment: Float) {
+      this.drawable = drawable
+      this.bounds = bounds
+      this.verticalAlignment = verticalAlignment
+    }
+
     override fun draw(canvas: Canvas) {
       val currentDrawable = drawable
+      drawable?.apply {
+        bounds = this@ProxyDrawable.bounds
+        bounds.top += verticalAlignment.toInt()
+        bounds.bottom += verticalAlignment.toInt()
+      }
       currentDrawable?.draw(canvas)
+    }
+
+    override fun setAlpha(alpha: Int) {
+      drawable?.alpha = alpha
+    }
+
+    override fun setColorFilter(colorFilter: ColorFilter?) {
+      drawable?.colorFilter = colorFilter
+    }
+
+    override fun getOpacity(): Int {
+      @Suppress("DEPRECATION") // Needed to pass along the call to the proxied drawable.
+      return drawable?.opacity ?: PixelFormat.TRANSLUCENT
     }
   }
 

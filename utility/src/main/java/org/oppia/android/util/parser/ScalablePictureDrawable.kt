@@ -4,6 +4,7 @@ import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.graphics.Picture
 import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.text.TextPaint
@@ -12,18 +13,8 @@ import android.text.TextPaint
 class ScalablePictureDrawable(private val oppiaSvg: OppiaSvg) : Drawable() {
   private lateinit var textPaint: TextPaint
   private lateinit var renderedPicture: Picture
-  // TODO: remove for non-texts (& text shouldn't need this)
-  private val alternativePicture: Picture by lazy {
-    if (this::renderedPicture.isInitialized) {
-      renderedPicture
-    } else oppiaSvg.renderToPicture()
-  }
 
-  fun computeIntrinsicSize(): IntrinsicSize {
-    return oppiaSvg.computeSize(textPaint)?.let {
-      IntrinsicSize(it.width, it.height)
-    } ?: IntrinsicSize(intrinsicWidth.toFloat(), intrinsicHeight.toFloat())
-  }
+  fun computeIntrinsicSize(): OppiaSvg.SvgSizeSpecs = oppiaSvg.computeSizeSpecs(textPaint)
 
   fun initialize(textPaint: TextPaint) {
     this.textPaint = textPaint
@@ -36,9 +27,9 @@ class ScalablePictureDrawable(private val oppiaSvg: OppiaSvg) : Drawable() {
         // Set new clip bounds/translation to prepare to draw the image. This will be replaced with
         // the current bounds/translation after the picture is drawn.
         save()
-        computeBounds().apply {
+        bounds.apply {
           clipRect(this)
-          translate(left, top)
+          translate(left.toFloat(), top.toFloat())
         }
         drawPicture(renderedPicture)
         restore()
@@ -56,25 +47,4 @@ class ScalablePictureDrawable(private val oppiaSvg: OppiaSvg) : Drawable() {
 
   // Unsupported.
   override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
-
-  private fun computeBounds(): RectF {
-    // TODO: factor in vertical alignment if needed.
-    return RectF(
-      bounds.left.toFloat(),
-      bounds.top.toFloat(),
-      bounds.right.toFloat(),
-      bounds.bottom.toFloat()
-    )
-//    return computeIntrinsicSize().let {
-//      RectF(bounds.left.toFloat(), bounds.top.toFloat(), it.width, it.height)
-//    }
-  }
-
-  private fun getPictureToRender(): Picture {
-    return if (this::renderedPicture.isInitialized) {
-      renderedPicture
-    } else alternativePicture
-  }
 }
-
-data class IntrinsicSize(val width: Float, val height: Float)
