@@ -38,7 +38,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.*
+import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.application.ApplicationComponent
+import org.oppia.android.app.application.ApplicationInjectorProvider
+import org.oppia.android.app.application.ApplicationInjector
+import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -127,7 +132,7 @@ class ProfileRenameActivityTest {
   fun testProfileRenameActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
+        context = this.context.applicationContext,
         profileId = 1
       )
     )
