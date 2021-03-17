@@ -227,53 +227,31 @@ class TopicController @Inject constructor(
   }
 
   private fun checkIfTopicIsOngoing(topic: Topic, topicProgress: TopicProgress): Boolean {
-    val completedChapterProgressList = ArrayList<ChapterProgress>()
-    val startedChapterProgressList = ArrayList<ChapterProgress>()
-    topicProgress.storyProgressMap.values.toList().forEach { storyProgress ->
-      completedChapterProgressList.addAll(
-        storyProgress.chapterProgressMap.values
-          .filter { chapterProgress ->
-            chapterProgress.chapterPlayState ==
-              ChapterPlayState.COMPLETED
-          }
-      )
-      startedChapterProgressList.addAll(
-        storyProgress.chapterProgressMap.values
-          .filter { chapterProgress ->
-            chapterProgress.chapterPlayState ==
-              ChapterPlayState.STARTED_NOT_COMPLETED
-          }
-      )
+    // If there's at least one story with progress and not yet completed, then the topic
+    // is considered ongoing.
+    return topic.storyList.any { storySummary ->
+      topicProgress.storyProgressMap[storySummary.storyId]?.let { storyProgress ->
+        storySummary.isOngoing(storyProgress)
+      } ?: false
     }
+  }
 
-    // If there is at least 1 completed chapter and 1 not-completed chapter, it is definitely an
-    // ongoing-topic.
-    if (startedChapterProgressList.isNotEmpty()) {
-      return true
-    }
+  /** Return whether the current [StorySummary] can be considered "ongoing" given the specified
+   * [StoryProgress] (that is, at least one chapter has started and the final chapter isn't yet
+   * completed).
+   */
+  private fun StorySummary.isOngoing(storyProgress: StoryProgress): Boolean {
+    val firstChapterState = storyProgress.getChapterPlayState(chapterList.first().explorationId)
+    val lastChapterState = storyProgress.getChapterPlayState(chapterList.last().explorationId)
+    return firstChapterState != ChapterPlayState.NOT_STARTED &&
+      lastChapterState != ChapterPlayState.COMPLETED
+  }
 
-    topic.storyList.forEach { storySummary ->
-      if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
-        val storyProgress = topicProgress.storyProgressMap[storySummary.storyId]
-        val lastChapterSummary = storySummary.chapterList.last()
-        if (!storyProgress!!.chapterProgressMap.containsKey(lastChapterSummary.explorationId)) {
-          return true
-        }
-      }
-    }
-
-    topic.storyList.forEach { storySummary ->
-      if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
-        val storyProgress = topicProgress.storyProgressMap[storySummary.storyId]
-        val lastChapterSummary = storySummary.chapterList.last()
-        val lastChapterProgress =
-          storyProgress!!.chapterProgressMap[lastChapterSummary.explorationId]
-        if (lastChapterProgress!!.chapterPlayState != ChapterPlayState.COMPLETED) {
-          return true
-        }
-      }
-    }
-    return false
+  /** Returns the [ChapterPlayState] of this progress for the specified exploration, or
+   *  [ChapterPlayState.NOT_STARTED] if the exploration hasn't even been attempted yet.
+   */
+  private fun StoryProgress.getChapterPlayState(explorationId: String): ChapterPlayState {
+    return chapterProgressMap[explorationId]?.chapterPlayState ?: ChapterPlayState.NOT_STARTED
   }
 
   private fun createCompletedStoryListFromProgress(
