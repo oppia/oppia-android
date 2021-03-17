@@ -570,7 +570,7 @@ class StoryFragmentTest {
       }
 
       override fun getDescription(): String {
-        return "clicking on a ClickableSpan";
+        return "clicking on a ClickableSpan"
       }
 
       override fun perform(uiController: UiController, view: View) {
@@ -582,7 +582,7 @@ class StoryFragmentTest {
           throw NoMatchingViewException.Builder()
             .includeViewHierarchy(true)
             .withRootView(textView)
-            .build();
+            .build()
         }
 
         // Get the links inside the TextView and check if we find textToClick
@@ -600,7 +600,7 @@ class StoryFragmentTest {
             val sequence = spannableString.subSequence(start, end)
             if (textToClick.toString().contains(sequence.toString())) {
               span.onClick(textView)
-              return;
+              return
             }
           }
         }
@@ -610,7 +610,6 @@ class StoryFragmentTest {
           .includeViewHierarchy(true)
           .withRootView(textView)
           .build()
-
       }
     }
   }
