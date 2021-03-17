@@ -25,10 +25,8 @@ import org.oppia.android.app.model.FeedbackReportingDatabase
 import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
 import org.oppia.android.app.model.UserSuppliedFeedback
-import org.oppia.android.data.backends.api.MockFeedbackReportingService
-//import org.oppia.android.data.backends.api.MockFeedbackReportingService
+import org.oppia.android.testing.network.MockFeedbackReportingService
 import org.oppia.android.data.backends.gae.NetworkInterceptor
-import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
@@ -226,7 +224,7 @@ class FeedbackReportManagementControllerTest {
     @OppiaRetrofit
     @Provides
     @Singleton
-    fun provideRetrofitInstance(): MockRetrofit {
+    fun provideMockRetrofitInstance(): MockRetrofit {
       val client = OkHttpClient.Builder()
       client.addInterceptor(NetworkInterceptor())
 
@@ -245,9 +243,10 @@ class FeedbackReportManagementControllerTest {
     @Provides
     @Singleton
     fun provideFeedbackReportingService(
-      @OppiaRetrofit retrofit: Retrofit
+      @OppiaRetrofit mockRetrofit: MockRetrofit
     ): FeedbackReportingService {
-      return retrofit.create(MockFeedbackReportingService::class.java)
+      val delegate = mockRetrofit.create(FeedbackReportingService::class.java)
+      return MockFeedbackReportingService(delegate)
     }
   }
 
