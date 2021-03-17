@@ -4,17 +4,25 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.text.SpannableString
+import android.text.style.ClickableSpan
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -26,6 +34,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -51,6 +60,7 @@ import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -436,6 +446,73 @@ class StoryFragmentTest {
   }
 
   @Test
+  fun testStoryFragment_scrollToPrerequisiteChapter() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          2,
+          R.id.chapter_summary
+        )
+      ).perform(
+        clickClickableSpan(
+          "Complete Chapter 1: What is a Fraction? to unlock this chapter."
+        )
+      )
+      onView(
+        atPosition(
+          R.id.story_chapter_list,
+          1
+        )
+      ).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_scrollToPrerequisiteChapter() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          2,
+          R.id.chapter_summary
+        )
+      ).perform(
+        clickClickableSpan(
+          "Complete Chapter 1: What is a Fraction? to unlock this chapter."
+        )
+      )
+      onView(
+        atPosition(
+          R.id.story_chapter_list,
+          1
+        )
+      ).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
   fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -482,6 +559,59 @@ class StoryFragmentTest {
           withText(headerString)
         )
       )
+    }
+  }
+
+  fun clickClickableSpan(textToClick: CharSequence): ViewAction {
+    return object : ViewAction {
+
+      override fun getConstraints(): org.hamcrest.Matcher<View> {
+        return Matchers.instanceOf(TextView::class.java)
+      }
+
+      override fun getDescription(): String {
+        return "clicking on a ClickableSpan";
+      }
+
+      override fun perform(uiController: UiController, view: View) {
+        val textView = view as TextView
+        val spannableString = textView.text as SpannableString
+
+        if (spannableString.isEmpty()) {
+          // TextView is empty, nothing to do
+          throw NoMatchingViewException.Builder()
+            .includeViewHierarchy(true)
+            .withRootView(textView)
+            .build();
+        }
+
+        // Get the links inside the TextView and check if we find textToClick
+        val spans = spannableString.getSpans(
+          0,
+          spannableString.length,
+          ClickableSpan::class.java
+        )
+        if (spans.isNotEmpty()) {
+          var spanCandidate: ClickableSpan
+          for (span: ClickableSpan in spans) {
+            spanCandidate = span
+            val start = spannableString.getSpanStart(spanCandidate)
+            val end = spannableString.getSpanEnd(spanCandidate)
+            val sequence = spannableString.subSequence(start, end)
+            if (textToClick.toString().contains(sequence.toString())) {
+              span.onClick(textView)
+              return;
+            }
+          }
+        }
+
+        // textToClick not found in TextView
+        throw NoMatchingViewException.Builder()
+          .includeViewHierarchy(true)
+          .withRootView(textView)
+          .build()
+
+      }
     }
   }
 
