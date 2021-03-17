@@ -63,7 +63,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.ReadingTextSizeActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/reading_text_size"/>
     <activity
       android:name=".app.player.exploration.ExplorationActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
