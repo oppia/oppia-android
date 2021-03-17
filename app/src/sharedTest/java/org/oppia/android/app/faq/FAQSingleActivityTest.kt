@@ -108,7 +108,7 @@ class FAQSingleActivityTest {
   }
 
   @Test
-  fun testFAQSingleActivity_hasCorrectActivityLabel() {
+  fun testFaqSingleActivity_hasCorrectActivityLabel() {
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
