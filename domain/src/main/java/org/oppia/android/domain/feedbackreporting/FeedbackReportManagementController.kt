@@ -152,7 +152,7 @@ class FeedbackReportManagementController @Inject constructor(
           reportType = reportType.name,
           category = suggestion.suggestionCategory.name,
           feedbackList = null,
-          openTextUserInput = suggestion.userSubmittedSuggestion
+          otherUserInputText = suggestion.userSubmittedSuggestion
         )
       }
       ReportTypeCase.ISSUE -> {
@@ -164,7 +164,7 @@ class FeedbackReportManagementController @Inject constructor(
           reportType = reportType.name,
           category = crash.crashLocation.name,
           feedbackList = null,
-          openTextUserInput = crash.crashExplanation
+          otherUserInputText = crash.crashExplanation
         )
       }
       else -> throw IllegalArgumentException(
@@ -223,7 +223,7 @@ class FeedbackReportManagementController @Inject constructor(
       reportType = reportTypeName,
       category = category,
       feedbackList = issuesList,
-      openTextUserInput = userInput
+      otherUserInputText = userInput
     )
   }
 

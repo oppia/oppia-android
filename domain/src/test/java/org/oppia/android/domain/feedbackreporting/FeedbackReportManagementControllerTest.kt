@@ -10,6 +10,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,6 +26,10 @@ import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
 import org.oppia.android.app.model.UserSuppliedFeedback
 import org.oppia.android.data.backends.api.MockFeedbackReportingService
+//import org.oppia.android.data.backends.api.MockFeedbackReportingService
+import org.oppia.android.data.backends.gae.NetworkInterceptor
+import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.testing.RobolectricModule
@@ -45,6 +50,9 @@ import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.mock.MockRetrofit
+import retrofit2.mock.NetworkBehavior
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -215,6 +223,25 @@ class FeedbackReportManagementControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestNetworkModule {
+    @OppiaRetrofit
+    @Provides
+    @Singleton
+    fun provideRetrofitInstance(): MockRetrofit {
+      val client = OkHttpClient.Builder()
+      client.addInterceptor(NetworkInterceptor())
+
+      val retrofit = retrofit2.Retrofit.Builder()
+        .baseUrl(NetworkSettings.getBaseUrl())
+        .addConverterFactory(MoshiConverterFactory.create())
+        .client(client.build())
+        .build()
+
+      val behavior = NetworkBehavior.create()
+      return MockRetrofit.Builder(retrofit)
+        .networkBehavior(behavior)
+        .build()
+    }
+
     @Provides
     @Singleton
     fun provideFeedbackReportingService(
