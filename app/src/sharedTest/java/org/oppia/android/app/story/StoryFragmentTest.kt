@@ -446,7 +446,7 @@ class StoryFragmentTest {
   }
 
   @Test
-  fun testStoryFragment_scrollToPrerequisiteChapter() {
+  fun testStoryFragment_clickPrerequisiteChapter_prerequisiteChapterCardIsDisplayed() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
@@ -479,7 +479,7 @@ class StoryFragmentTest {
   }
 
   @Test
-  fun testStoryFragment_changeConfiguration_scrollToPrerequisiteChapter() {
+  fun testStoryFragment_configChange_clickPrerequisiteChapter_prerequisiteChapterCardIsDisplayed() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -576,7 +576,6 @@ class StoryFragmentTest {
       override fun perform(uiController: UiController, view: View) {
         val textView = view as TextView
         val spannableString = textView.text as SpannableString
-
         if (spannableString.isEmpty()) {
           // TextView is empty, nothing to do
           throw NoMatchingViewException.Builder()
@@ -584,7 +583,6 @@ class StoryFragmentTest {
             .withRootView(textView)
             .build()
         }
-
         // Get the links inside the TextView and check if we find textToClick
         val spans = spannableString.getSpans(
           0,
@@ -604,7 +602,6 @@ class StoryFragmentTest {
             }
           }
         }
-
         // textToClick not found in TextView
         throw NoMatchingViewException.Builder()
           .includeViewHierarchy(true)
