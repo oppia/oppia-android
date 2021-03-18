@@ -183,9 +183,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          0,
-          R.id.story_progress_chapter_completed_text
+          recyclerViewId = R.id.story_chapter_list,
+          position = 0,
+          targetViewId = R.id.story_progress_chapter_completed_text
         )
       ).check(
         matches(
@@ -215,9 +215,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          1,
-          R.id.chapter_title
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_title
         )
       ).check(
         matches(
@@ -238,9 +238,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          1,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_summary
         )
       ).check(
         matches(
@@ -262,9 +262,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          1,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_summary
         )
       ).check(
         matches(
@@ -285,9 +285,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          1,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_summary
         )
       ).check(
         matches(
@@ -313,9 +313,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          1,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_summary
         )
       ).check(
         matches(
@@ -340,18 +340,18 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          2,
-          R.id.chapter_thumbnail
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_thumbnail
         )
       ).check { view, noViewFoundException ->
         var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
           R.id.chapter_thumbnail
         )
         verify(lessonThumbnailImageView.imageLoader, atLeastOnce()).loadDrawable(
-          anyInt(),
-          anyOrNull(),
-          capture(listCaptor)
+          imageDrawableResId = anyInt(),
+          target = anyOrNull(),
+          transformations = capture(listCaptor)
         )
         assertThat(listCaptor.value).contains(ImageTransformation.BLUR)
       }
@@ -370,18 +370,18 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          2,
-          R.id.chapter_thumbnail
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_thumbnail
         )
       ).check { view, noViewFoundException ->
         var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
           R.id.chapter_thumbnail
         )
         verify(lessonThumbnailImageView.imageLoader, atLeastOnce()).loadDrawable(
-          anyInt(),
-          anyOrNull(),
-          capture(listCaptor)
+          imageDrawableResId = anyInt(),
+          target = anyOrNull(),
+          transformations = capture(listCaptor)
         )
         assertThat(listCaptor.value).contains(ImageTransformation.BLUR)
       }
@@ -399,9 +399,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          2,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_summary
         )
       ).check(
         matches(
@@ -423,9 +423,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          2,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_summary
         )
       ).check(
         matches(
@@ -446,7 +446,11 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.story_chapter_list, 1, R.id.story_chapter_card)
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.story_chapter_card
+        )
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ExplorationActivity::class.java.name))
@@ -460,7 +464,11 @@ class StoryFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       val headerString: String =
-        getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
+        getResources().getQuantityString(
+          R.plurals.story_total_chapters,
+          2,
+          1, 2
+        )
       onView(withId(R.id.story_chapter_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -473,9 +481,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          0,
-          R.id.story_progress_chapter_completed_text
+          recyclerViewId = R.id.story_chapter_list,
+          position = 0,
+          targetViewId = R.id.story_progress_chapter_completed_text
         )
       ).check(
         matches(
@@ -487,25 +495,25 @@ class StoryFragmentTest {
 
   private fun createFractionsStoryActivityIntent(): Intent {
     return StoryActivity.createStoryActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
+      context = ApplicationProvider.getApplicationContext(),
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      storyId = FRACTIONS_STORY_ID_0
     )
   }
 
   private fun createTestStoryActivityIntent(): Intent {
     return StoryActivity.createStoryActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_1
+      context = ApplicationProvider.getApplicationContext(),
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID_1,
+      storyId = TEST_STORY_ID_1
     )
   }
 
   private fun setStoryPartialProgressForFractions() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
   }
