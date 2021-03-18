@@ -41,7 +41,8 @@ private const val LANGUAGE_CODE_ENGLISH = "EN"
 private const val LANGUAGE_CODE_HINDI = "HI"
 private const val LANGUAGE_CODE_FRENCH = "FR"
 private const val LANGUAGE_CODE_CHINESE = "ZH"
-private const val LANGUAGE_CODE_NONE = "NONE"
+private const val LANGUAGE_CODE_ERROR = "ERROR"
+private const val LANGUAGE_CODE_UNSPECIFIED = "UNSPECIFIED"
 
 /** Controller for uploading feedback reports to remote storage or saving them on disk. */
 @Singleton
@@ -266,30 +267,27 @@ class FeedbackReportManagementController @Inject constructor(
   private fun getAppContext(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingAppContext {
-    val audioLanguageCode = when (appContext.audioLanguage) {
-      AudioLanguage.NO_AUDIO -> LANGUAGE_CODE_NONE
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> LANGUAGE_CODE_ENGLISH
-      AudioLanguage.HINDI_AUDIO_LANGUAGE -> LANGUAGE_CODE_HINDI
-      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> LANGUAGE_CODE_FRENCH
-      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> LANGUAGE_CODE_CHINESE
-      else -> throw IllegalArgumentException(
-        "Encountered unexpected audio language: ${appContext.audioLanguage.name}"
-      )
-    }
-    val textLanguageCode = when (appContext.textLanguage) {
-      AppLanguage.ENGLISH_APP_LANGUAGE -> LANGUAGE_CODE_ENGLISH
-      AppLanguage.HINDI_APP_LANGUAGE -> LANGUAGE_CODE_HINDI
-      AppLanguage.FRENCH_APP_LANGUAGE -> LANGUAGE_CODE_FRENCH
-      AppLanguage.CHINESE_APP_LANGUAGE -> LANGUAGE_CODE_CHINESE
-      else -> throw IllegalArgumentException(
-        "Encountered unexpected app text language: ${appContext.textLanguage.name}"
-      )
+    var textLanguageCode = ""
+    when (appContext.textLanguage) {
+      AppLanguage.APP_LANGUAGE_UNSPECIFIED -> textLanguageCode = LANGUAGE_CODE_UNSPECIFIED
+      AppLanguage.ENGLISH_APP_LANGUAGE -> textLanguageCode = LANGUAGE_CODE_ENGLISH
+      AppLanguage.HINDI_APP_LANGUAGE -> textLanguageCode = LANGUAGE_CODE_HINDI
+      AppLanguage.FRENCH_APP_LANGUAGE -> textLanguageCode = LANGUAGE_CODE_FRENCH
+      AppLanguage.CHINESE_APP_LANGUAGE -> textLanguageCode = LANGUAGE_CODE_CHINESE
+      else -> {
+        // If there is an unexpected language we still want to collect the feedback report.
+        consoleLogger.e(
+          FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG,
+          "Encountered unexpected app text language: ${appContext.textLanguage.name}"
+        )
+        textLanguageCode ="${LANGUAGE_CODE_ERROR}:${appContext.textLanguage.name}"
+      }
     }
     return GaeFeedbackReportingAppContext(
       entryPoint = getEntryPointData(appContext),
       textSize = appContext.textSize.name,
       textLanguageCode = textLanguageCode,
-      audioLanguageCode = audioLanguageCode,
+      audioLanguage = appContext.audioLanguage.name,
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
       automaticallyUpdateTopics = appContext.deviceSettings.automaticallyUpdateTopics,
       isAdmin = appContext.isAdmin,

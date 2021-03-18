@@ -10,7 +10,7 @@
     "topic_progress": {},
     "text_size": "large",
     "text_language_code": "EN",
-    "audio_language_code": "EN",
+    "audio_language": "EN",
     "download_and_update_only_on_wifi": true,
     "automatically_update_topics": false,
     "is_admin": false,
