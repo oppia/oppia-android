@@ -175,11 +175,11 @@ class CustomHtmlContentHandlerTest {
     private var methodCallCount = 0
 
     override fun handleTag(
-        attributes: Attributes,
-        openIndex: Int,
-        closeIndex: Int,
-        output: Editable,
-        imageRetriever: CustomHtmlContentHandler.ImageRetriever
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable,
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever
     ) {
       handleTagCalled = true
       handleTagCallIndex = methodCallCount++
@@ -201,11 +201,11 @@ class CustomHtmlContentHandlerTest {
     private val attributeTextToReplaceWith: String
   ) : CustomHtmlContentHandler.CustomTagHandler {
     override fun handleTag(
-        attributes: Attributes,
-        openIndex: Int,
-        closeIndex: Int,
-        output: Editable,
-        imageRetriever: CustomHtmlContentHandler.ImageRetriever
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable,
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever
     ) {
       output.replace(openIndex, closeIndex, attributes.getValue(attributeTextToReplaceWith))
     }

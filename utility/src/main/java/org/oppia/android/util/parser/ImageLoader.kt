@@ -29,9 +29,9 @@ interface ImageLoader {
    * internet. Optional [transformations] may be applied to the image.
    */
   fun loadBlockSvg(
-      imageUrl: String,
-      target: ImageTarget<BlockPictureDrawable>,
-      transformations: List<ImageTransformation> = listOf()
+    imageUrl: String,
+    target: ImageTarget<BlockPictureDrawable>,
+    transformations: List<ImageTransformation> = listOf()
   )
 
   /**
@@ -39,9 +39,9 @@ interface ImageLoader {
    * in-line with text.
    */
   fun loadTextSvg(
-      imageUrl: String,
-      target: ImageTarget<TextPictureDrawable>,
-      transformations: List<ImageTransformation> = listOf()
+    imageUrl: String,
+    target: ImageTarget<TextPictureDrawable>,
+    transformations: List<ImageTransformation> = listOf()
   )
 
   /**

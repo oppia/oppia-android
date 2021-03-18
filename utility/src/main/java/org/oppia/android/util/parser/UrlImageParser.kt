@@ -56,27 +56,27 @@ class UrlImageParser private constructor(
     return when (adjustedType) {
       ImageRetriever.Type.INLINE_TEXT_IMAGE -> {
         imageLoader.loadTextSvg(
-            imageUrl,
-            createCustomTarget(proxyDrawable, AutoAdjustingImageTarget.TextSvgTarget::create)
+          imageUrl,
+          createCustomTarget(proxyDrawable, AutoAdjustingImageTarget.TextSvgTarget::create)
         )
         proxyDrawable
       }
       ImageRetriever.Type.BLOCK_IMAGE -> {
         if (isSvg) {
           imageLoader.loadBlockSvg(
-              imageUrl,
-              createCustomTarget(
-                  proxyDrawable,
-                  AutoAdjustingImageTarget.BlockImageTarget.SvgTarget::create
-              )
+            imageUrl,
+            createCustomTarget(
+              proxyDrawable,
+              AutoAdjustingImageTarget.BlockImageTarget.SvgTarget::create
+            )
           )
         } else {
           imageLoader.loadBitmap(
-              imageUrl,
-              createCustomTarget(
-                  proxyDrawable,
-                  AutoAdjustingImageTarget.BlockImageTarget.BitmapTarget::create
-              )
+            imageUrl,
+            createCustomTarget(
+              proxyDrawable,
+              AutoAdjustingImageTarget.BlockImageTarget.BitmapTarget::create
+            )
           )
         }
         proxyDrawable
@@ -84,12 +84,12 @@ class UrlImageParser private constructor(
     }
   }
 
-  private fun <T, D: Drawable, C: AutoAdjustingImageTarget<T, D>> createCustomTarget(
-      proxyDrawable: ProxyDrawable,
-      createTarget: (AutoAdjustingImageTarget.TargetConfiguration) -> C
+  private fun <T, D : Drawable, C : AutoAdjustingImageTarget<T, D>> createCustomTarget(
+    proxyDrawable: ProxyDrawable,
+    createTarget: (AutoAdjustingImageTarget.TargetConfiguration) -> C
   ): CustomImageTarget<T> {
     val configuration = AutoAdjustingImageTarget.TargetConfiguration(
-        context, htmlContentTextView, imageCenterAlign, proxyDrawable
+      context, htmlContentTextView, imageCenterAlign, proxyDrawable
     )
     return CustomImageTarget(createTarget(configuration))
   }
@@ -100,9 +100,9 @@ class UrlImageParser private constructor(
    * [TargetConfiguration], and ensures that the drawable is only adjusted when it's safe to do so
    * per the holding TextView's lifecycle.
    */
-  private sealed class AutoAdjustingImageTarget<T, D: Drawable>(
-      private val targetConfiguration: TargetConfiguration
-  ): CustomTarget<T>() {
+  private sealed class AutoAdjustingImageTarget<T, D : Drawable>(
+    private val targetConfiguration: TargetConfiguration
+  ) : CustomTarget<T>() {
 
     protected val context by lazy { targetConfiguration.context }
     protected val htmlContentTextView by lazy { targetConfiguration.htmlContentTextView }
@@ -119,7 +119,7 @@ class UrlImageParser private constructor(
         htmlContentTextView.width { viewWidth ->
           val boundsAndAlignment = computeBounds(drawable, viewWidth)
           proxyDrawable.initialize(
-              drawable, boundsAndAlignment.bounds, boundsAndAlignment.verticalAlignment
+            drawable, boundsAndAlignment.bounds, boundsAndAlignment.verticalAlignment
           )
           htmlContentTextView.text = htmlContentTextView.text
           htmlContentTextView.invalidate()
@@ -140,9 +140,9 @@ class UrlImageParser private constructor(
      * A [AutoAdjustingImageTarget] that may automatically center and/or resize loaded images to
      * display them in a "block" fashion.
      */
-    sealed class BlockImageTarget<T, D: Drawable>(
-        targetConfiguration: TargetConfiguration
-    ): AutoAdjustingImageTarget<T, D>(targetConfiguration) {
+    sealed class BlockImageTarget<T, D : Drawable>(
+      targetConfiguration: TargetConfiguration
+    ) : AutoAdjustingImageTarget<T, D>(targetConfiguration) {
 
       override fun computeBounds(drawable: D, viewWidth: Int): BoundsAndAlignment {
         val layoutParams = htmlContentTextView.layoutParams
@@ -177,7 +177,7 @@ class UrlImageParser private constructor(
           drawableWidth *= multipleFactor
         }
         val maxContentItemPadding =
-            context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
+          context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
         val maximumImageSize = maxAvailableWidth - maxContentItemPadding
         if (drawableWidth >= maximumImageSize) {
           // The multipleFactor value is used to make sure that the aspect ratio of the image
@@ -203,18 +203,18 @@ class UrlImageParser private constructor(
         val drawableRight = drawableLeft + drawableWidth
         val drawableBottom = drawableTop + drawableHeight
         return BoundsAndAlignment(
-            bounds = Rect(
-                drawableLeft.toInt(), drawableTop.toInt(), drawableRight.toInt(), drawableBottom.toInt()
-            )
+          bounds = Rect(
+            drawableLeft.toInt(), drawableTop.toInt(), drawableRight.toInt(), drawableBottom.toInt()
+          )
         )
       }
 
       /** A [BlockImageTarget] used to load & arrange SVGs. */
       internal class SvgTarget(
-          targetConfiguration: TargetConfiguration
-      ): BlockImageTarget<BlockPictureDrawable, BlockPictureDrawable>(targetConfiguration) {
+        targetConfiguration: TargetConfiguration
+      ) : BlockImageTarget<BlockPictureDrawable, BlockPictureDrawable>(targetConfiguration) {
         override fun retrieveDrawable(resource: BlockPictureDrawable): BlockPictureDrawable =
-            resource
+          resource
 
         companion object {
           /** Returns a new [SvgTarget] for the specified configuration. */
@@ -224,8 +224,8 @@ class UrlImageParser private constructor(
 
       /** A [BlockImageTarget] used to load & arrange bitmaps. */
       internal class BitmapTarget(
-          targetConfiguration: TargetConfiguration
-      ): BlockImageTarget<Bitmap, BitmapDrawable>(targetConfiguration) {
+        targetConfiguration: TargetConfiguration
+      ) : BlockImageTarget<Bitmap, BitmapDrawable>(targetConfiguration) {
         override fun retrieveDrawable(resource: Bitmap): BitmapDrawable {
           return BitmapDrawable(context.resources, resource)
         }
@@ -243,16 +243,19 @@ class UrlImageParser private constructor(
      * automatically.
      */
     class TextSvgTarget(
-        targetConfiguration: TargetConfiguration
+      targetConfiguration: TargetConfiguration
     ) : AutoAdjustingImageTarget<TextPictureDrawable, TextPictureDrawable>(targetConfiguration) {
       override fun retrieveDrawable(resource: TextPictureDrawable): TextPictureDrawable = resource
 
-      override fun computeBounds(drawable: TextPictureDrawable, viewWidth: Int): BoundsAndAlignment {
+      override fun computeBounds(
+        drawable: TextPictureDrawable,
+        viewWidth: Int
+      ): BoundsAndAlignment {
         drawable.initialize(htmlContentTextView.paint)
         val (drawableWidth, drawableHeight, verticalAlignment) = drawable.computeIntrinsicSize()
         return BoundsAndAlignment(
-            bounds = Rect(0, 0, drawableWidth.toInt(), drawableHeight.toInt()),
-            verticalAlignment = verticalAlignment
+          bounds = Rect(0, 0, drawableWidth.toInt(), drawableHeight.toInt()),
+          verticalAlignment = verticalAlignment
         )
       }
 
@@ -264,14 +267,14 @@ class UrlImageParser private constructor(
 
     /** Temporary structure to convey both bounds and alignment for a loaded drawable. */
     protected data class BoundsAndAlignment(
-        /** The bounds in which the drawable should be displayed and positioned. */
-        val bounds: Rect,
-        /**
-         * Any vertical adjustments that should be made to the drawable. Note that this is
-         * intentionally separate from [bounds] so that the system is free to change bounds, if
-         * needed, for alignment.
-         */
-        val verticalAlignment: Float = 0f
+      /** The bounds in which the drawable should be displayed and positioned. */
+      val bounds: Rect,
+      /**
+       * Any vertical adjustments that should be made to the drawable. Note that this is
+       * intentionally separate from [bounds] so that the system is free to change bounds, if
+       * needed, for alignment.
+       */
+      val verticalAlignment: Float = 0f
     )
 
     /**
@@ -279,14 +282,14 @@ class UrlImageParser private constructor(
      * provided.
      */
     data class TargetConfiguration(
-        /** The application context. */
-        val context: Context,
-        /** The [TextView] in which the retrieved images are being rendered. */
-        val htmlContentTextView: TextView,
-        /** Whether to automatically align block-displayed images. */
-        val imageCenterAlign: Boolean,
-        /** The [ProxyDrawable] corresponding to the drawable that will be loaded for displaying. */
-        val proxyDrawable: ProxyDrawable
+      /** The application context. */
+      val context: Context,
+      /** The [TextView] in which the retrieved images are being rendered. */
+      val htmlContentTextView: TextView,
+      /** Whether to automatically align block-displayed images. */
+      val imageCenterAlign: Boolean,
+      /** The [ProxyDrawable] corresponding to the drawable that will be loaded for displaying. */
+      val proxyDrawable: ProxyDrawable
     )
   }
 
@@ -352,7 +355,7 @@ class UrlImageParser private constructor(
         entityId,
         imageCenterAlign,
         imageLoader,
-          consoleLogger
+        consoleLogger
       )
     }
   }

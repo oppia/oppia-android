@@ -1,7 +1,6 @@
 package org.oppia.android.util.parser
 
 import android.content.Context
-import android.graphics.drawable.PictureDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Registry
 import com.bumptech.glide.annotation.GlideModule
@@ -20,16 +19,16 @@ class RepositoryGlideModule : AppGlideModule() {
       TextSvgDrawableTranscoder()
     )
     registry.register(
-        OppiaSvg::class.java,
-        BlockPictureDrawable::class.java,
-        SvgDrawableTranscoder()
+      OppiaSvg::class.java,
+      BlockPictureDrawable::class.java,
+      SvgDrawableTranscoder()
     )
 
     registry.append(InputStream::class.java, OppiaSvg::class.java, SvgDecoder())
     registry.append(
-        ImageAssetFetcher::class.java,
-        InputStream::class.java,
-        RepositoryModelLoader.Factory()
-      )
+      ImageAssetFetcher::class.java,
+      InputStream::class.java,
+      RepositoryModelLoader.Factory()
+    )
   }
 }

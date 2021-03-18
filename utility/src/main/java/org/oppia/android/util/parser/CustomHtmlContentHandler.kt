@@ -134,11 +134,11 @@ class CustomHtmlContentHandler private constructor(
      * @param imageGetter a utility to load image drawables if needed by the handler
      */
     fun handleTag(
-        attributes: Attributes,
-        openIndex: Int,
-        closeIndex: Int,
-        output: Editable,
-        imageRetriever: ImageRetriever
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable,
+      imageRetriever: ImageRetriever
     ) {
     }
 
@@ -196,13 +196,13 @@ class CustomHtmlContentHandler private constructor(
       html: String,
       imageRetriever: T,
       customTagHandlers: Map<String, CustomTagHandler>
-    ): Spannable where T: Html.ImageGetter, T: ImageRetriever {
+    ): Spannable where T : Html.ImageGetter, T : ImageRetriever {
       // Adjust the HTML to allow the custom content handler to properly initialize custom tag
       // tracking.
       return HtmlCompat.fromHtml(
         "<init-custom-handler/>$html",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
-          imageRetriever,
+        imageRetriever,
         CustomHtmlContentHandler(customTagHandlers, imageRetriever),
       ) as Spannable
     }

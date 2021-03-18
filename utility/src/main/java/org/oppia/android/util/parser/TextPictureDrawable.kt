@@ -4,7 +4,7 @@ import android.graphics.drawable.PictureDrawable
 import android.text.TextPaint
 
 class TextPictureDrawable(
-    private val oppiaSvg: OppiaSvg
+  private val oppiaSvg: OppiaSvg
 ) : PictureDrawable(/* picture= */ null) {
   private lateinit var textPaint: TextPaint
 

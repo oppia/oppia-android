@@ -20,11 +20,11 @@ class MathTagHandler(
   private val consoleLogger: ConsoleLogger
 ) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleTag(
-      attributes: Attributes,
-      openIndex: Int,
-      closeIndex: Int,
-      output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever
+    attributes: Attributes,
+    openIndex: Int,
+    closeIndex: Int,
+    output: Editable,
+    imageRetriever: CustomHtmlContentHandler.ImageRetriever
   ) {
     // Only insert the image tag if it's parsed correctly.
     val content = MathContent.parseMathContent(attributes.getValue(CUSTOM_MATH_SVG_PATH_ATTRIBUTE))
@@ -33,10 +33,10 @@ class MathTagHandler(
       // could also load a LaTeX span, instead. Note that this approach is based on Android's Html
       // parser.
       val drawable =
-          imageRetriever.loadDrawable(
-              content.svgFilename,
-              CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
-          )
+        imageRetriever.loadDrawable(
+          content.svgFilename,
+          CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
+        )
       val (startIndex, endIndex) = output.run {
         // Use a control character to ensure that there's at least 1 character on which to "attach"
         // the image when rendering the HTML.

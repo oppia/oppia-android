@@ -20,7 +20,7 @@ class OppiaSvg(private val svgSource: String) {
   fun renderToTextPicture(textPaint: TextPaint): Picture {
     return computeSizeSpecs(textPaint).let { (width, height, _) ->
       val options =
-          RenderOptions().textPaint(textPaint).viewPort(0f, 0f, width, height) as RenderOptions
+        RenderOptions().textPaint(textPaint).viewPort(0f, 0f, width, height) as RenderOptions
       parsedSvg.renderToPicture(options)
     }
   }

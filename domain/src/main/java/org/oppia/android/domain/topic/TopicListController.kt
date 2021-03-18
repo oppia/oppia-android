@@ -602,10 +602,10 @@ class TopicListController @Inject constructor(
   private fun loadRecommendedStory(topicId: String): PromotedStory? {
     return if (loadLessonProtosFromAssets) {
       val topicRecord =
-          assetRepository.loadProtoFromLocalAssets(
-              assetName = topicId,
-              baseMessage = TopicRecord.getDefaultInstance()
-          )
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = topicId,
+          baseMessage = TopicRecord.getDefaultInstance()
+        )
       if (!topicRecord.isPublished || topicRecord.canonicalStoryIdsCount == 0) {
         // Do not recommend unpublished topics, or topics without stories (which shouldn't happen).
         return null
@@ -613,10 +613,10 @@ class TopicListController @Inject constructor(
       // Only recommend the first story of unstarted topics.
       val firstStoryId = topicRecord.canonicalStoryIdsList.first()
       val storyRecord =
-          assetRepository.loadProtoFromLocalAssets(
-              assetName = firstStoryId,
-              baseMessage = StoryRecord.getDefaultInstance()
-          )
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = firstStoryId,
+          baseMessage = StoryRecord.getDefaultInstance()
+        )
       return PromotedStory.newBuilder().apply {
         storyId = firstStoryId
         storyName = storyRecord.storyName

@@ -12,7 +12,7 @@ import java.io.InputStream
 class SvgDecoder : ResourceDecoder<InputStream?, OppiaSvg?> {
 
   override fun handles(source: InputStream, options: Options): Boolean =
-      options.get(LOAD_OPPIA_SVG) ?: false
+    options.get(LOAD_OPPIA_SVG) ?: false
 
   override fun decode(
     source: InputStream,
@@ -27,9 +27,9 @@ class SvgDecoder : ResourceDecoder<InputStream?, OppiaSvg?> {
   companion object {
     // Reference: https://stackoverflow.com/q/54360199.
     val LOAD_OPPIA_SVG: Option<Boolean> =
-        Option.memory(/* key= */ "load_oppia_svg", /* defaultValue= */ false)
+      Option.memory(/* key= */ "load_oppia_svg", /* defaultValue= */ false)
 
     fun createLoadOppiaSvgOption(): RequestOptions =
-        RequestOptions.option(LOAD_OPPIA_SVG, /* value= */ true)
+      RequestOptions.option(LOAD_OPPIA_SVG, /* value= */ true)
   }
 }

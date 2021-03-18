@@ -103,11 +103,11 @@ class HtmlParser private constructor(
     private val customOppiaTagActionListener: CustomOppiaTagActionListener?
   ) : CustomHtmlContentHandler.CustomTagHandler {
     override fun handleTag(
-        attributes: Attributes,
-        openIndex: Int,
-        closeIndex: Int,
-        output: Editable,
-        imageRetriever: CustomHtmlContentHandler.ImageRetriever
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable,
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever
     ) {
       // Replace the custom tag with a clickable piece of text based on the tag's customizations.
       val skillId = attributes.getValue("skill_id-with-value")
