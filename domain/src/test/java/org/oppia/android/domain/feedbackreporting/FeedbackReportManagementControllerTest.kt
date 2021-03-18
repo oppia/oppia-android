@@ -19,6 +19,7 @@ import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
 import org.oppia.android.app.model.Crash
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingDatabase
@@ -114,6 +115,7 @@ class FeedbackReportManagementControllerTest {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
     setUpFakeLogcatFile()
+    MockitoAnnotations.initMocks(this)
   }
 
   @Test
@@ -122,7 +124,7 @@ class FeedbackReportManagementControllerTest {
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
 
     val reportsStore = feedbackReportManagementController.getFeedbackReportStore().toLiveData()
-    reportsStore.observeForever(mockReportsStoreObserver)
+    reportsStore.observeForever(this.mockReportsStoreObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockReportsStoreObserver, atLeastOnce()).onChanged(reportStoreResultCaptor.capture())
