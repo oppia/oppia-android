@@ -175,13 +175,13 @@ class AppVersionActivityTest {
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       launchAdministratorControlsActivityIntent(
-        profileId = 0
+        internalProfileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          position = 3
+          3
         )
       )
       onView(withText(R.string.administrator_controls_app_version)).perform(click())
@@ -201,15 +201,15 @@ class AppVersionActivityTest {
 
   private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
     val intent = AppVersionActivity.createAppVersionActivityIntent(
-      context = ApplicationProvider.getApplicationContext()
+      ApplicationProvider.getApplicationContext()
     )
     return ActivityScenario.launch(intent)
   }
 
-  private fun launchAdministratorControlsActivityIntent(profileId: Int): Intent {
+  private fun launchAdministratorControlsActivityIntent(internalProfileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-      context = ApplicationProvider.getApplicationContext(),
-      profileId = profileId
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId
     )
   }
 
