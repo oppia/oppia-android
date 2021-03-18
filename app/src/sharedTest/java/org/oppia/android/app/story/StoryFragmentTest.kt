@@ -464,11 +464,7 @@ class StoryFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       val headerString: String =
-        getResources().getQuantityString(
-          R.plurals.story_total_chapters,
-          2,
-          1, 2
-        )
+        getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
       onView(withId(R.id.story_chapter_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -495,25 +491,25 @@ class StoryFragmentTest {
 
   private fun createFractionsStoryActivityIntent(): Intent {
     return StoryActivity.createStoryActivityIntent(
-      context = ApplicationProvider.getApplicationContext(),
-      internalProfileId = internalProfileId,
-      topicId = FRACTIONS_TOPIC_ID,
-      storyId = FRACTIONS_STORY_ID_0
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
     )
   }
 
   private fun createTestStoryActivityIntent(): Intent {
     return StoryActivity.createStoryActivityIntent(
-      context = ApplicationProvider.getApplicationContext(),
-      internalProfileId = internalProfileId,
-      topicId = TEST_TOPIC_ID_1,
-      storyId = TEST_STORY_ID_1
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_1
     )
   }
 
   private fun setStoryPartialProgressForFractions() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
-      profileId = profileId,
+      profileId,
       timestampOlderThanOneWeek = false
     )
   }
