@@ -369,36 +369,6 @@ class StoryFragmentTest {
   }
 
   @Test
-  fun testStoryFragment_configChange_chapterMissingPrerequisiteThumbnailIsBlurred() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.story_chapter_list))).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
-      )
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.story_chapter_list,
-          position = 2,
-          targetViewId = R.id.chapter_thumbnail
-        )
-      ).check { view, noViewFoundException ->
-        var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
-          R.id.chapter_thumbnail
-        )
-        verify(lessonThumbnailImageView.imageLoader, atLeastOnce()).loadDrawable(
-          imageDrawableResId = anyInt(),
-          target = anyOrNull(),
-          transformations = capture(listCaptor)
-        )
-        assertThat(listCaptor.value).contains(ImageTransformation.BLUR)
-      }
-    }
-  }
-
-  @Test
   fun testStoryFragment_chapterMissingPrerequisiteIsShownCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -456,9 +426,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          2,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_summary
         )
       ).perform(
         clickClickableSpan(
@@ -467,8 +437,8 @@ class StoryFragmentTest {
       )
       onView(
         atPosition(
-          R.id.story_chapter_list,
-          1
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1
         )
       ).check(
         matches(
@@ -490,9 +460,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          2,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_summary
         )
       ).perform(
         clickClickableSpan(
@@ -501,8 +471,8 @@ class StoryFragmentTest {
       )
       onView(
         atPosition(
-          R.id.story_chapter_list,
-          1
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1
         )
       ).check(
         matches(
