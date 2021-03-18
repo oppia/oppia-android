@@ -17,11 +17,12 @@ import javax.inject.Singleton
 @Singleton
 class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
 
-  @Inject
-  lateinit var context: Context
+//  @Inject
+//  lateinit var context: Context
 
-  @Inject
-  @NetworkApiKey lateinit var networkApiKey: String
+//  @Inject
+  @NetworkApiKey
+  lateinit var networkApiKey: String
 
   @Throws(IOException::class)
   override fun intercept(chain: Interceptor.Chain): Response {
@@ -38,7 +39,7 @@ class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
   fun addAuthHeaders(request: Request): Request {
     return request.newBuilder()
       .addHeader("api_key", networkApiKey)
-      .addHeader("app_package_name", context.packageName)
+//      .addHeader("app_package_name", context.packageName)
       .addHeader("app_version_name", BuildConfig.VERSION_NAME)
       .addHeader("app_version_code", BuildConfig.VERSION_CODE.toString())
       .build()

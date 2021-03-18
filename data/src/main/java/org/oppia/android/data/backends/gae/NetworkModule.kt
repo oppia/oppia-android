@@ -74,5 +74,5 @@ class NetworkModule {
   // replaced with a stronger, secret key will in production.
   @Provides
   @NetworkApiKey
-  fun providerNetworkApiKey() = ""
+  fun provideNetworkApiKey() = ""
 }
