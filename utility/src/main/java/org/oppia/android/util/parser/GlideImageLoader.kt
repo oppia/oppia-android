@@ -22,42 +22,54 @@ class GlideImageLoader @Inject constructor(
 ) : ImageLoader {
 
   override fun loadBitmap(
-    imageUrl: String,
-    target: ImageTarget<Bitmap>,
-    transformations: List<ImageTransformation>
+      imageUrl: String,
+      target: ImageTarget<Bitmap>,
+      transformations: List<ImageTransformation>
   ) {
     Glide.with(context)
-      .asBitmap()
-      .load(loadImage(imageUrl))
-      .transform(*transformations.toGlideTransformations())
-      .intoTarget(target)
+        .asBitmap()
+        .load(loadImage(imageUrl))
+        .transform(*transformations.toGlideTransformations())
+        .intoTarget(target)
   }
 
-  override fun loadSvg(
-    imageUrl: String,
-    target: ImageTarget<ScalablePictureDrawable>,
-    transformations: List<ImageTransformation>
-  ) {
-    // TODO(#45): Ensure the image caching flow is properly hooked up.
-    Glide.with(context)
-      .`as`(ScalablePictureDrawable::class.java)
-      .fitCenter()
-      .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
-      .load(loadImage(imageUrl))
-      .transform(*transformations.toGlideTransformations())
-      .intoTarget(target)
-  }
+  override fun loadBlockSvg(
+      imageUrl: String,
+      target: ImageTarget<BlockPictureDrawable>,
+      transformations: List<ImageTransformation>
+  ) = loadSvgWithGlide(imageUrl, target, transformations)
+
+  override fun loadTextSvg(
+      imageUrl: String,
+      target: ImageTarget<TextPictureDrawable>,
+      transformations: List<ImageTransformation>
+  ) = loadSvgWithGlide(imageUrl, target, transformations)
 
   override fun loadDrawable(
-    imageDrawableResId: Int,
-    target: ImageTarget<Drawable>,
-    transformations: List<ImageTransformation>
+      imageDrawableResId: Int,
+      target: ImageTarget<Drawable>,
+      transformations: List<ImageTransformation>
   ) {
     Glide.with(context)
-      .asDrawable()
-      .load(imageDrawableResId)
-      .transform(*transformations.toGlideTransformations())
-      .intoTarget(target)
+        .asDrawable()
+        .load(imageDrawableResId)
+        .transform(*transformations.toGlideTransformations())
+        .intoTarget(target)
+  }
+
+  private inline fun <reified T : Drawable> loadSvgWithGlide(
+      imageUrl: String,
+      target: ImageTarget<T>,
+      transformations: List<ImageTransformation>) {
+    // TODO(#45): Ensure the image caching flow is properly hooked up.
+    Glide.with(context)
+        .`as`(T::class.java)
+        .fitCenter()
+        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
+        .apply(SvgDecoder.createLoadOppiaSvgOption())
+        .load(loadImage(imageUrl))
+        .transform(*transformations.toGlideTransformations())
+        .intoTarget(target)
   }
 
   private fun loadImage(imageUrl: String): Any = when {
@@ -68,7 +80,7 @@ class GlideImageLoader @Inject constructor(
     }
     loadImagesFromAssets -> object : ImageAssetFetcher {
       override fun fetchImage(): ByteArray =
-        assetRepository.loadImageAssetFromLocalAssets(imageUrl)()
+          assetRepository.loadImageAssetFromLocalAssets(imageUrl)()
 
       override fun getImageIdentifier(): String = imageUrl
     }

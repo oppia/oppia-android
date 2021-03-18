@@ -111,7 +111,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     )
     val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      imageLoader.loadSvg(imageUrl, ImageViewTarget(this), transformations)
+      imageLoader.loadBlockSvg(imageUrl, ImageViewTarget(this), transformations)
     } else {
       imageLoader.loadBitmap(imageUrl, ImageViewTarget(this), transformations)
     }

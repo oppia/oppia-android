@@ -1,6 +1,7 @@
 package org.oppia.android.util.parser
 
 import android.content.Context
+import android.graphics.drawable.PictureDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Registry
 import com.bumptech.glide.annotation.GlideModule
@@ -15,11 +16,17 @@ class RepositoryGlideModule : AppGlideModule() {
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
     registry.register(
       OppiaSvg::class.java,
-      ScalablePictureDrawable::class.java,
-      SvgDrawableTranscoder()
+      TextPictureDrawable::class.java,
+      TextSvgDrawableTranscoder()
     )
-      .append(InputStream::class.java, OppiaSvg::class.java, SvgDecoder())
-      .append(
+    registry.register(
+        OppiaSvg::class.java,
+        BlockPictureDrawable::class.java,
+        SvgDrawableTranscoder()
+    )
+
+    registry.append(InputStream::class.java, OppiaSvg::class.java, SvgDecoder())
+    registry.append(
         ImageAssetFetcher::class.java,
         InputStream::class.java,
         RepositoryModelLoader.Factory()

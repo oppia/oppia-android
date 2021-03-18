@@ -17,12 +17,15 @@ class OppiaSvg(private val svgSource: String) {
     return SvgSizeSpecs(width, height, verticalAlignment)
   }
 
-  fun renderToPicture(textPaint: TextPaint): Picture {
+  fun renderToTextPicture(textPaint: TextPaint): Picture {
     return computeSizeSpecs(textPaint).let { (width, height, _) ->
-      val options = RenderOptions().textPaint(textPaint).viewPort(0f, 0f, width, height) as RenderOptions
+      val options =
+          RenderOptions().textPaint(textPaint).viewPort(0f, 0f, width, height) as RenderOptions
       parsedSvg.renderToPicture(options)
-    } ?: parsedSvg.renderToPicture()
+    }
   }
+
+  fun renderToBlockPicture(): Picture = parsedSvg.renderToPicture()
 
   // It seems that vertical alignment needs to be halved to work in Android's coordinate system as
   // compared with SVGs. This might be due to SVGs seemingly using an origin in the middle of the

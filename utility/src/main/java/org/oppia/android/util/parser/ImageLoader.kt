@@ -28,10 +28,20 @@ interface ImageLoader {
    * is an asynchronous operation, and may take a while if the image needs to be downloaded from the
    * internet. Optional [transformations] may be applied to the image.
    */
-  fun loadSvg(
-    imageUrl: String,
-    target: ImageTarget<ScalablePictureDrawable>,
-    transformations: List<ImageTransformation> = listOf()
+  fun loadBlockSvg(
+      imageUrl: String,
+      target: ImageTarget<BlockPictureDrawable>,
+      transformations: List<ImageTransformation> = listOf()
+  )
+
+  /**
+   * Same as [loadBlockSvg] except this specifically loads a [TextPictureDrawable] which can be rendered
+   * in-line with text.
+   */
+  fun loadTextSvg(
+      imageUrl: String,
+      target: ImageTarget<TextPictureDrawable>,
+      transformations: List<ImageTransformation> = listOf()
   )
 
   /**

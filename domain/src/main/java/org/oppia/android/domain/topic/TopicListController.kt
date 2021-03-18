@@ -601,7 +601,36 @@ class TopicListController @Inject constructor(
 
   private fun loadRecommendedStory(topicId: String): PromotedStory? {
     return if (loadLessonProtosFromAssets) {
+      val topicRecord =
+          assetRepository.loadProtoFromLocalAssets(
+              assetName = topicId,
+              baseMessage = TopicRecord.getDefaultInstance()
+          )
+      if (!topicRecord.isPublished || topicRecord.canonicalStoryIdsCount == 0) {
+        // Do not recommend unpublished topics, or topics without stories (which shouldn't happen).
+        return null
+      }
+      // Only recommend the first story of unstarted topics.
+      val firstStoryId = topicRecord.canonicalStoryIdsList.first()
+      val storyRecord =
+          assetRepository.loadProtoFromLocalAssets(
+              assetName = firstStoryId,
+              baseMessage = StoryRecord.getDefaultInstance()
+          )
       return PromotedStory.newBuilder().apply {
+        storyId = firstStoryId
+        storyName = storyRecord.storyName
+        this.topicId = topicId
+        topicName = topicRecord.name
+        completedChapterCount = 0
+        totalChapterCount = storyRecord.chaptersCount
+        lessonThumbnail = storyRecord.storyThumbnail
+        isTopicLearned = false
+        // Only populate next chapter information if there is a next chapter.
+        storyRecord.chaptersList.firstOrNull()?.let {
+          nextChapterName = it.title
+          explorationId = it.explorationId
+        }
       }.build()
     } else loadRecommendedStoryFromJson(topicId)
   }

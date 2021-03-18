@@ -19,11 +19,17 @@ class TestGlideImageLoader @Inject constructor(
     transformations: List<ImageTransformation>
   ) = glideImageLoader.loadBitmap(imageUrl, target, transformations)
 
-  override fun loadSvg(
-    imageUrl: String,
-    target: ImageTarget<ScalablePictureDrawable>,
-    transformations: List<ImageTransformation>
-  ) = glideImageLoader.loadSvg(imageUrl, target, transformations)
+  override fun loadBlockSvg(
+      imageUrl: String,
+      target: ImageTarget<BlockPictureDrawable>,
+      transformations: List<ImageTransformation>
+  ) = glideImageLoader.loadBlockSvg(imageUrl, target, transformations)
+
+  override fun loadTextSvg(
+      imageUrl: String,
+      target: ImageTarget<TextPictureDrawable>,
+      transformations: List<ImageTransformation>
+  ) = glideImageLoader.loadTextSvg(imageUrl, target, transformations)
 
   /**
    * [loadDrawable] can be used in tests to match drawable ids:

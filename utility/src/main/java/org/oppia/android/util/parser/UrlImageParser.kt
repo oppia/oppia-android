@@ -16,6 +16,8 @@ import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import org.oppia.android.util.R
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.CustomHtmlContentHandler.ImageRetriever
 import javax.inject.Inject
 import kotlin.math.max
 
@@ -32,123 +34,260 @@ class UrlImageParser private constructor(
   private val entityType: String,
   private val entityId: String,
   private val imageCenterAlign: Boolean,
-  private val imageLoader: ImageLoader
-) : Html.ImageGetter {
-  /**
-   * This method is called when the HTML parser encounters an <img> tag.
-   * @param urlString : urlString argument is the string from the "src" attribute.
-   * @return Drawable : Drawable representation of the image.
-   */
+  private val imageLoader: ImageLoader,
+  private val consoleLogger: ConsoleLogger
+) : Html.ImageGetter, ImageRetriever {
   override fun getDrawable(urlString: String): Drawable {
-    val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
-    val proxyDrawable = ProxyDrawable()
-    // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
-    if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      val target = SvgTarget(proxyDrawable)
-      imageLoader.loadSvg("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(target))
-    } else {
-      val target = BitmapTarget(proxyDrawable)
-      imageLoader.loadBitmap("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(target))
-    }
-    return proxyDrawable
+    // Only block images can be loaded through the standard ImageGetter.
+    return loadDrawable(urlString, ImageRetriever.Type.BLOCK_IMAGE)
   }
 
-  private inner class BitmapTarget(proxyDrawable: ProxyDrawable) : CustomImageTarget<Bitmap>(
-      proxyDrawable, { resource -> BitmapDrawable(context.resources, resource) }
-  )
+  override fun loadDrawable(sourceUrl: String, type: ImageRetriever.Type): Drawable {
+    val imagePath = String.format(imageDownloadUrlTemplate, entityType, entityId, sourceUrl)
+    val imageUrl = "$gcsPrefix/$gcsResourceName/$imagePath"
+    val proxyDrawable = ProxyDrawable()
+    // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
+    val isSvg = imageUrl.endsWith("svg", ignoreCase = true)
+    val adjustedType = if (type == ImageRetriever.Type.INLINE_TEXT_IMAGE && !isSvg) {
+      // Treat non-svg in-line images as block, instead, since only SVG is supported.
+      consoleLogger.w("UrlImageParser", "Forcing image $sourceUrl to block image")
+      ImageRetriever.Type.BLOCK_IMAGE
+    } else type
+    return when (adjustedType) {
+      ImageRetriever.Type.INLINE_TEXT_IMAGE -> {
+        imageLoader.loadTextSvg(
+            imageUrl,
+            createCustomTarget(proxyDrawable, AutoAdjustingImageTarget.TextSvgTarget::create)
+        )
+        proxyDrawable
+      }
+      ImageRetriever.Type.BLOCK_IMAGE -> {
+        if (isSvg) {
+          imageLoader.loadBlockSvg(
+              imageUrl,
+              createCustomTarget(
+                  proxyDrawable,
+                  AutoAdjustingImageTarget.BlockImageTarget.SvgTarget::create
+              )
+          )
+        } else {
+          imageLoader.loadBitmap(
+              imageUrl,
+              createCustomTarget(
+                  proxyDrawable,
+                  AutoAdjustingImageTarget.BlockImageTarget.BitmapTarget::create
+              )
+          )
+        }
+        proxyDrawable
+      }
+    }
+  }
 
-  private inner class SvgTarget(
-      proxyDrawable: ProxyDrawable
-  ) : CustomImageTarget<ScalablePictureDrawable>(
-      proxyDrawable, { it }
-  )
+  private fun <T, D: Drawable, C: AutoAdjustingImageTarget<T, D>> createCustomTarget(
+      proxyDrawable: ProxyDrawable,
+      createTarget: (AutoAdjustingImageTarget.TargetConfiguration) -> C
+  ): CustomImageTarget<T> {
+    val configuration = AutoAdjustingImageTarget.TargetConfiguration(
+        context, htmlContentTextView, imageCenterAlign, proxyDrawable
+    )
+    return CustomImageTarget(createTarget(configuration))
+  }
 
-  private open inner class CustomImageTarget<T>(
-      private val proxyDrawable: ProxyDrawable,
-      private val drawableFactory: (T) -> Drawable
-  ) : CustomTarget<T>() {
+  /**
+   * A [CustomTarget] that can automatically resized, or align, the loaded image as needed. This
+   * class coordinates with a [ProxyDrawable] defined as part of the specified
+   * [TargetConfiguration], and ensures that the drawable is only adjusted when it's safe to do so
+   * per the holding TextView's lifecycle.
+   */
+  private sealed class AutoAdjustingImageTarget<T, D: Drawable>(
+      private val targetConfiguration: TargetConfiguration
+  ): CustomTarget<T>() {
+
+    protected val context by lazy { targetConfiguration.context }
+    protected val htmlContentTextView by lazy { targetConfiguration.htmlContentTextView }
+    protected val imageCenterAlign by lazy { targetConfiguration.imageCenterAlign }
+    protected val proxyDrawable by lazy { targetConfiguration.proxyDrawable }
+
     override fun onLoadCleared(placeholder: Drawable?) {
       // No resources to clear.
     }
 
     override fun onResourceReady(resource: T, transition: Transition<in T>?) {
-      val drawable = drawableFactory(resource)
+      val drawable = retrieveDrawable(resource)
       htmlContentTextView.post {
         htmlContentTextView.width { viewWidth ->
-          val layoutParams = htmlContentTextView.layoutParams
-          val maxAvailableWidth = if (layoutParams.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
-            // Assume that wrap_content cases means that the view cannot exceed its parent's width
-            // minus margins.
-            val parent = htmlContentTextView.parent
-            if (parent is View && layoutParams is ViewGroup.MarginLayoutParams) {
-              // Only pick the computed space if it allows the view to expand to accommodate larger
-              // images.
-              max(viewWidth, parent.width - (layoutParams.leftMargin + layoutParams.rightMargin))
-            } else viewWidth
-          } else viewWidth
-
-          // TODO: make this better by properly handling non-centering images and scalable
-          //  drawables.
-          var (drawableWidth, drawableHeight, verticalAlignment) = if (drawable is ScalablePictureDrawable) {
-            drawable.initialize(htmlContentTextView.paint)
-            drawable.computeIntrinsicSize()
-          } else {
-            OppiaSvg.SvgSizeSpecs(drawable.intrinsicWidth.toFloat(), drawable.intrinsicHeight.toFloat(), verticalAlignment = 0f)
-          }
-          val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
-          /*if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
-            // The multipleFactor value is used to make sure that the aspect ratio of the image
-            // remains the same.
-            // Example: Height is 90, width is 60 and minimumImageSize is 120.
-            // Then multipleFactor will be 2 (120/60).
-            // The new height will be 180 and new width will be 120.
-            val multipleFactor = if (drawableHeight <= drawableWidth) {
-              // If height is less then the width, multipleFactor value is determined by height.
-              minimumImageSize.toFloat() / drawableHeight
-            } else {
-              // If height is less then the width, multipleFactor value is determined by width.
-              minimumImageSize.toFloat() / drawableWidth
-            }
-            drawableHeight *= multipleFactor
-            drawableWidth *= multipleFactor
-          }*/
-          val maxContentItemPadding =
-            context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
-          val maximumImageSize = maxAvailableWidth - maxContentItemPadding
-          /*if (drawableWidth >= maximumImageSize) {
-            // The multipleFactor value is used to make sure that the aspect ratio of the image
-            // remains the same. Example: Height is 420, width is 440 and maximumImageSize is 200.
-            // Then multipleFactor will be (200/440). The new height will be 191 and new width will
-            // be 200.
-            val multipleFactor = if (drawableHeight >= drawableWidth) {
-              // If height is greater then the width, multipleFactor value is determined by height.
-              (maximumImageSize.toDouble() / drawableHeight.toDouble())
-            } else {
-              // If height is greater then the width, multipleFactor value is determined by width.
-              (maximumImageSize.toDouble() / drawableWidth.toDouble())
-            }
-            drawableHeight = (drawableHeight.toDouble() * multipleFactor).toInt()
-            drawableWidth = (drawableWidth.toDouble() * multipleFactor).toInt()
-          }*/
-          val drawableLeft = 0/*if (imageCenterAlign) {
-            calculateInitialMargin(maxAvailableWidth, drawableWidth)
-          } else {
-            0
-          }*/
-          val drawableTop = 0
-//          val drawableRight = (drawableLeft + drawableWidth).toInt()
-//          val drawableBottom = (drawableTop + drawableHeight).toInt()
-//          val rect = Rect(drawableLeft, drawableTop, drawableRight, drawableBottom)
-//          proxyDrawable.bounds = expectedBounds
-//          proxyDrawable.drawable = bitmapDrawable
-          val bounds = Rect(0, 0, drawableWidth.toInt(), drawableHeight.toInt())
-          proxyDrawable.initialize(drawable, bounds, verticalAlignment)
-
+          val boundsAndAlignment = computeBounds(drawable, viewWidth)
+          proxyDrawable.initialize(
+              drawable, boundsAndAlignment.bounds, boundsAndAlignment.verticalAlignment
+          )
           htmlContentTextView.text = htmlContentTextView.text
           htmlContentTextView.invalidate()
         }
       }
     }
+
+    /** Returns the drawable corresponding to the specified loaded resource. */
+    protected abstract fun retrieveDrawable(resource: T): D
+
+    /**
+     * Returns the bounds and/or alignment of the specified drawable, given the current text view's
+     * width.
+     */
+    protected abstract fun computeBounds(drawable: D, viewWidth: Int): BoundsAndAlignment
+
+    /**
+     * A [AutoAdjustingImageTarget] that may automatically center and/or resize loaded images to
+     * display them in a "block" fashion.
+     */
+    sealed class BlockImageTarget<T, D: Drawable>(
+        targetConfiguration: TargetConfiguration
+    ): AutoAdjustingImageTarget<T, D>(targetConfiguration) {
+
+      override fun computeBounds(drawable: D, viewWidth: Int): BoundsAndAlignment {
+        val layoutParams = htmlContentTextView.layoutParams
+        val maxAvailableWidth = if (layoutParams.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
+          // Assume that wrap_content cases means that the view cannot exceed its parent's width
+          // minus margins.
+          val parent = htmlContentTextView.parent
+          if (parent is View && layoutParams is ViewGroup.MarginLayoutParams) {
+            // Only pick the computed space if it allows the view to expand to accommodate larger
+            // images.
+            max(viewWidth, parent.width - (layoutParams.leftMargin + layoutParams.rightMargin))
+          } else viewWidth
+        } else viewWidth
+
+        var drawableWidth = drawable.intrinsicWidth.toFloat()
+        var drawableHeight = drawable.intrinsicHeight.toFloat()
+        val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
+        if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
+          // The multipleFactor value is used to make sure that the aspect ratio of the image
+          // remains the same.
+          // Example: Height is 90, width is 60 and minimumImageSize is 120.
+          // Then multipleFactor will be 2 (120/60).
+          // The new height will be 180 and new width will be 120.
+          val multipleFactor = if (drawableHeight <= drawableWidth) {
+            // If height is less then the width, multipleFactor value is determined by height.
+            minimumImageSize.toFloat() / drawableHeight
+          } else {
+            // If height is less then the width, multipleFactor value is determined by width.
+            minimumImageSize.toFloat() / drawableWidth
+          }
+          drawableHeight *= multipleFactor
+          drawableWidth *= multipleFactor
+        }
+        val maxContentItemPadding =
+            context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
+        val maximumImageSize = maxAvailableWidth - maxContentItemPadding
+        if (drawableWidth >= maximumImageSize) {
+          // The multipleFactor value is used to make sure that the aspect ratio of the image
+          // remains the same. Example: Height is 420, width is 440 and maximumImageSize is 200.
+          // Then multipleFactor will be (200/440). The new height will be 191 and new width will
+          // be 200.
+          val multipleFactor = if (drawableHeight >= drawableWidth) {
+            // If height is greater then the width, multipleFactor value is determined by height.
+            (maximumImageSize.toFloat() / drawableHeight.toFloat())
+          } else {
+            // If height is greater then the width, multipleFactor value is determined by width.
+            (maximumImageSize.toFloat() / drawableWidth.toFloat())
+          }
+          drawableHeight *= multipleFactor
+          drawableWidth *= multipleFactor
+        }
+        val drawableLeft = if (imageCenterAlign) {
+          calculateInitialMargin(maxAvailableWidth, drawableWidth)
+        } else {
+          0f
+        }
+        val drawableTop = 0f
+        val drawableRight = drawableLeft + drawableWidth
+        val drawableBottom = drawableTop + drawableHeight
+        return BoundsAndAlignment(
+            bounds = Rect(
+                drawableLeft.toInt(), drawableTop.toInt(), drawableRight.toInt(), drawableBottom.toInt()
+            )
+        )
+      }
+
+      /** A [BlockImageTarget] used to load & arrange SVGs. */
+      internal class SvgTarget(
+          targetConfiguration: TargetConfiguration
+      ): BlockImageTarget<BlockPictureDrawable, BlockPictureDrawable>(targetConfiguration) {
+        override fun retrieveDrawable(resource: BlockPictureDrawable): BlockPictureDrawable =
+            resource
+
+        companion object {
+          /** Returns a new [SvgTarget] for the specified configuration. */
+          fun create(targetConfiguration: TargetConfiguration) = SvgTarget(targetConfiguration)
+        }
+      }
+
+      /** A [BlockImageTarget] used to load & arrange bitmaps. */
+      internal class BitmapTarget(
+          targetConfiguration: TargetConfiguration
+      ): BlockImageTarget<Bitmap, BitmapDrawable>(targetConfiguration) {
+        override fun retrieveDrawable(resource: Bitmap): BitmapDrawable {
+          return BitmapDrawable(context.resources, resource)
+        }
+
+        companion object {
+          /** Returns a new [BitmapTarget] for the specified configuration. */
+          fun create(targetConfiguration: TargetConfiguration) = BitmapTarget(targetConfiguration)
+        }
+      }
+    }
+
+    /**
+     * A [AutoAdjustingImageTarget] that should be used for in-line SVG images that will not be
+     * resized or aligned beyond what the SVG itself requires, and what the system performs
+     * automatically.
+     */
+    class TextSvgTarget(
+        targetConfiguration: TargetConfiguration
+    ) : AutoAdjustingImageTarget<TextPictureDrawable, TextPictureDrawable>(targetConfiguration) {
+      override fun retrieveDrawable(resource: TextPictureDrawable): TextPictureDrawable = resource
+
+      override fun computeBounds(drawable: TextPictureDrawable, viewWidth: Int): BoundsAndAlignment {
+        drawable.initialize(htmlContentTextView.paint)
+        val (drawableWidth, drawableHeight, verticalAlignment) = drawable.computeIntrinsicSize()
+        return BoundsAndAlignment(
+            bounds = Rect(0, 0, drawableWidth.toInt(), drawableHeight.toInt()),
+            verticalAlignment = verticalAlignment
+        )
+      }
+
+      companion object {
+        /** Returns a new [TextSvgTarget] for the specified configuration. */
+        fun create(targetConfiguration: TargetConfiguration) = TextSvgTarget(targetConfiguration)
+      }
+    }
+
+    /** Temporary structure to convey both bounds and alignment for a loaded drawable. */
+    protected data class BoundsAndAlignment(
+        /** The bounds in which the drawable should be displayed and positioned. */
+        val bounds: Rect,
+        /**
+         * Any vertical adjustments that should be made to the drawable. Note that this is
+         * intentionally separate from [bounds] so that the system is free to change bounds, if
+         * needed, for alignment.
+         */
+        val verticalAlignment: Float = 0f
+    )
+
+    /**
+     * Configures a [AutoAdjustingImageTarget]. See the specified parameters for what needs to be
+     * provided.
+     */
+    data class TargetConfiguration(
+        /** The application context. */
+        val context: Context,
+        /** The [TextView] in which the retrieved images are being rendered. */
+        val htmlContentTextView: TextView,
+        /** Whether to automatically align block-displayed images. */
+        val imageCenterAlign: Boolean,
+        /** The [ProxyDrawable] corresponding to the drawable that will be loaded for displaying. */
+        val proxyDrawable: ProxyDrawable
+    )
   }
 
   /**
@@ -189,34 +328,12 @@ class UrlImageParser private constructor(
     }
   }
 
-  private fun calculateInitialMargin(availableAreaWidth: Int, drawableWidth: Int): Int {
-    val margin = (availableAreaWidth - drawableWidth) / 2
-    return if (margin > 0) {
-      margin
-    } else {
-      0
-    }
-  }
-
-  // Reference: https://stackoverflow.com/a/51865494
-  private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
-    if (width == 0) {
-      viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-        override fun onGlobalLayout() {
-          viewTreeObserver.removeOnGlobalLayoutListener(this)
-          computeWidthOnGlobalLayout(width)
-        }
-      })
-    } else {
-      computeWidthOnGlobalLayout(width)
-    }
-  }
-
   class Factory @Inject constructor(
     private val context: Context,
     @DefaultGcsPrefix private val gcsPrefix: String,
     @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
+    private val consoleLogger: ConsoleLogger
   ) {
     fun create(
       htmlContentTextView: TextView,
@@ -234,8 +351,28 @@ class UrlImageParser private constructor(
         entityType,
         entityId,
         imageCenterAlign,
-        imageLoader
+        imageLoader,
+          consoleLogger
       )
     }
+  }
+}
+
+private fun calculateInitialMargin(availableAreaWidth: Int, drawableWidth: Float): Float {
+  val margin = (availableAreaWidth - drawableWidth) / 2
+  return margin.coerceAtLeast(0f)
+}
+
+// Reference: https://stackoverflow.com/a/51865494
+private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
+  if (width == 0) {
+    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+      override fun onGlobalLayout() {
+        viewTreeObserver.removeOnGlobalLayoutListener(this)
+        computeWidthOnGlobalLayout(width)
+      }
+    })
+  } else {
+    computeWidthOnGlobalLayout(width)
   }
 }

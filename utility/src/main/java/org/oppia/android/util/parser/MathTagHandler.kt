@@ -1,7 +1,6 @@
 package org.oppia.android.util.parser
 
 import android.text.Editable
-import android.text.Html
 import android.text.Spannable
 import android.text.style.ImageSpan
 import org.json.JSONException
@@ -21,11 +20,11 @@ class MathTagHandler(
   private val consoleLogger: ConsoleLogger
 ) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleTag(
-    attributes: Attributes,
-    openIndex: Int,
-    closeIndex: Int,
-    output: Editable,
-    imageGetter: Html.ImageGetter
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable,
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever
   ) {
     // Only insert the image tag if it's parsed correctly.
     val content = MathContent.parseMathContent(attributes.getValue(CUSTOM_MATH_SVG_PATH_ATTRIBUTE))
@@ -33,7 +32,11 @@ class MathTagHandler(
       // Insert an image span where the custom tag currently is to load the SVG. In the future, this
       // could also load a LaTeX span, instead. Note that this approach is based on Android's Html
       // parser.
-      val drawable = imageGetter.getDrawable(content.svgFilename)
+      val drawable =
+          imageRetriever.loadDrawable(
+              content.svgFilename,
+              CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
+          )
       val (startIndex, endIndex) = output.run {
         // Use a control character to ensure that there's at least 1 character on which to "attach"
         // the image when rendering the HTML.
