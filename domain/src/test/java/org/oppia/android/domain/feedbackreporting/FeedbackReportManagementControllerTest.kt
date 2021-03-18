@@ -52,13 +52,13 @@ import org.robolectric.annotation.LooperMode
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
 // Timestamp in ms for 3/2/21, 12:38pm GMT.
 private const val EARLIER_TIMESTAMP = 1614688684445
-
 // Timestamp in ms for 3/14/21, 2:24am GMT.
 private const val LATER_TIMESTAMP = 1615688684445
 
@@ -67,6 +67,9 @@ private const val LATER_TIMESTAMP = 1615688684445
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = FeedbackReportManagementControllerTest.TestApplication::class)
 class FeedbackReportManagementControllerTest {
+
+  @Inject
+  lateinit var context: Context
 
   @Inject
   lateinit var feedbackReportManagementController: FeedbackReportManagementController
@@ -110,6 +113,7 @@ class FeedbackReportManagementControllerTest {
   fun setUp() {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
+    setUpFakeLogcatFile()
   }
 
   @Test
@@ -190,7 +194,7 @@ class FeedbackReportManagementControllerTest {
   }
 
   @Test
-  fun testController_removeCachedReports_inOrder() {
+  fun testController_removeCachedReports_removedInOrder() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     feedbackReportManagementController.submitFeedbackReport(earlierCrashReport)
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
@@ -214,6 +218,11 @@ class FeedbackReportManagementControllerTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun setUpFakeLogcatFile() {
+    val logFile = File(context.filesDir, "oppia_app.log")
+    logFile.printWriter().use { out -> out.println("Fake logcat log") }
   }
 
   @Qualifier

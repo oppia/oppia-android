@@ -310,11 +310,7 @@ class FeedbackReportManagementController @Inject constructor(
     val logcatReader = consoleLogger.getLogReader()
     val logcatList = ArrayList<String>()
     try {
-      val log = StringBuilder()
-      var line = ""
-      while (logcatReader.readLine().also { line = it } != null) {
-        logcatList.add(log.append(line).toString())
-      }
+      logcatReader.forEachLine { logcatList.add(it) }
     } catch (e: IOException) {
       exceptionsController.logNonFatalException(e)
       consoleLogger.e(
