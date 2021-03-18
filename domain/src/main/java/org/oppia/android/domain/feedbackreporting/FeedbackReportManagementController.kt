@@ -1,6 +1,8 @@
 package org.oppia.android.domain.feedbackreporting
 
 import androidx.lifecycle.Transformations
+import org.oppia.android.app.model.AppLanguage
+import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingAppContext.EntryPointCase
@@ -259,11 +261,30 @@ class FeedbackReportManagementController @Inject constructor(
   private fun getAppContext(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingAppContext {
+    val audioLanguageCode = when (appContext.audioLanguage) {
+      AudioLanguage.NO_AUDIO -> "NONE"
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "EN"
+      AudioLanguage.HINDI_AUDIO_LANGUAGE -> "HI"
+      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "FR"
+      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "ZH"
+      else -> throw IllegalArgumentException(
+        "Encountered unexpected audio language: ${appContext.audioLanguage.name}"
+      )
+    }
+    val textLanguageCode = when (appContext.textLanguage) {
+      AppLanguage.ENGLISH_APP_LANGUAGE -> "EN"
+      AppLanguage.HINDI_APP_LANGUAGE -> "HI"
+      AppLanguage.FRENCH_APP_LANGUAGE -> "FR"
+      AppLanguage.CHINESE_APP_LANGUAGE -> "ZH"
+      else -> throw IllegalArgumentException(
+        "Encountered unexpected app text language: ${appContext.textLanguage.name}"
+      )
+    }
     return GaeFeedbackReportingAppContext(
       entryPoint = getEntryPointData(appContext),
       textSize = appContext.textSize.name,
-      textLang = appContext.textLanguage.name,
-      audioLang = appContext.audioLanguage.name,
+      textLanguageCode = textLanguageCode,
+      audioLanguageCode = audioLanguageCode,
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
       automaticallyUpdateTopics = appContext.deviceSettings.automaticallyUpdateTopics,
       isAdmin = appContext.isAdmin,
