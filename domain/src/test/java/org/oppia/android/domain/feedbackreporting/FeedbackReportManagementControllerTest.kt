@@ -223,6 +223,8 @@ class FeedbackReportManagementControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  // Creates a fake logcat file in this directory so that the controller being testedhas a file to
+  // read when recording the logcat events.
   private fun setUpFakeLogcatFile() {
     val logFile = File(context.filesDir, "oppia_app.log")
     logFile.printWriter().use { out -> out.println("Fake logcat log") }
