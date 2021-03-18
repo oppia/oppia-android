@@ -1,5 +1,7 @@
 package org.oppia.android.domain.feedbackreporting
 
+import android.R
+import android.widget.TextView
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
@@ -22,11 +24,13 @@ import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingSystemConte
 import org.oppia.android.data.backends.gae.model.GaeUserSuppliedFeedback
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -40,6 +44,7 @@ class FeedbackReportManagementController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val feedbackReportingService: FeedbackReportingService,
   private val consoleLogger: ConsoleLogger,
+  private val exceptionsController: ExceptionsController,
   private val analyticsController: AnalyticsController,
   private val networkConnectionUtil: NetworkConnectionUtil,
 ) {
@@ -303,6 +308,20 @@ class FeedbackReportManagementController @Inject constructor(
 
   // Helper function to retrieve the logcat logs from the device.
   private fun getLogcatLogs(): List<String> {
-    return listOf()
+    val logcatReader = consoleLogger.getLogReader()
+    val logcatList = ArrayList<String>()
+    try {
+      val log = StringBuilder()
+      var line = ""
+      while (logcatReader.readLine().also { line = it } != null) {
+        logcatList.add(log.append(line).toString())
+      }
+    } catch (e: IOException) {
+      exceptionsController.logNonFatalException(e)
+      consoleLogger.e(
+        FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG,
+        "Failed to read logcat file")
+    }
+    return logcatList
   }
 }
