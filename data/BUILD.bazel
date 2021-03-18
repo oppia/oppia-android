@@ -34,7 +34,6 @@ kt_android_library(
     visibility = ["//visibility:public"],
     deps = [
         ":dagger",
-        "//third_party:com_squareup_moshi_moshi",
         "//third_party:com_squareup_retrofit2_retrofit",
         "//utility",
     ],

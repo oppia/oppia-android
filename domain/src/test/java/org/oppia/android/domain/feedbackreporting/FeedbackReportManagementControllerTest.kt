@@ -20,11 +20,16 @@ import org.mockito.Mock
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.oppia.android.app.model.AppLanguage
+import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.Crash
 import org.oppia.android.app.model.FeedbackReport
+import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingDatabase
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
+import org.oppia.android.app.model.TextLanguageIssue
 import org.oppia.android.app.model.UserSuppliedFeedback
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
@@ -88,6 +93,13 @@ class FeedbackReportManagementControllerTest {
   @Captor
   lateinit var reportStoreResultCaptor: ArgumentCaptor<AsyncResult<FeedbackReportingDatabase>>
 
+  private val appContext = FeedbackReportingAppContext.newBuilder()
+    .setIsAdmin(false)
+    .setTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
+    .setAudioLanguage(AudioLanguage.NO_AUDIO)
+    .setTextLanguage(AppLanguage.ENGLISH_APP_LANGUAGE)
+    .build()
+
   private val featureSuggestion = Suggestion.newBuilder()
     .setSuggestionCategory(SuggestionCategory.FEATURE_SUGGESTION)
     .setUserSubmittedSuggestion("A feature suggestion")
@@ -100,6 +112,7 @@ class FeedbackReportManagementControllerTest {
   private val laterSuggestionReport = FeedbackReport.newBuilder()
     .setReportCreationTimestampMs(LATER_TIMESTAMP)
     .setUserSuppliedInfo(userSuggestion)
+    .setAppContext(appContext)
     .build()
 
   private val userCrash = UserSuppliedFeedback.newBuilder()
@@ -109,6 +122,7 @@ class FeedbackReportManagementControllerTest {
   private val earlierCrashReport = FeedbackReport.newBuilder()
     .setReportCreationTimestampMs(EARLIER_TIMESTAMP)
     .setUserSuppliedInfo(userCrash)
+    .setAppContext(appContext)
     .build()
 
   @Before
