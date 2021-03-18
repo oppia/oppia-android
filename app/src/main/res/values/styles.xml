@@ -187,6 +187,9 @@
     <item name="boxStrokeColor">@color/oppiaPrimaryText</item>
     <item name="boxStrokeWidth">@dimen/text_input_layout_stroke_width</item>
     <item name="errorEnabled">true</item>
+    <item name="errorIconTint">@color/oppiaRed</item>
+    <item name="errorTextColor">@color/oppiaRed</item>
+    <item name="boxStrokeErrorColor">@color/oppiaRed</item>
     <item name="hintTextColor">@color/oppiaPrimaryText</item>
     <item name="android:textAlignment">viewStart</item>
   </style>

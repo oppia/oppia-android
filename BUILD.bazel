@@ -1,4 +1,50 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
+
+# Corresponds to being accessible to all Oppia targets. This should be used for production APIs &
+# modules that may be used both in production targets and in tests.
+package_group(
+    name = "oppia_api_visibility",
+    packages = [
+        "//...",
+    ],
+)
+
+# Corresponds to being accessible to the Oppia binary. This should only be used by production-facing
+# modules that must be included in the top-level binary in order for the app to build.
+package_group(
+    name = "oppia_binary_visibility",
+    packages = [
+        "//",
+    ],
+)
+
+# Corresponds to being accessible to Oppia tests. This should be used by fakes & test-only modules
+# that can be included in tests for custom state arrangement or to satisfy upstream/downstream
+# dependency requirements for components whose production implementations cannot be used in test
+# environments.
+# TODO(#2773): Remove the open visibility access granted here & instead restrict this access to only
+# test targets.
+package_group(
+    name = "oppia_testing_visibility",
+    packages = [
+        "//app/...",
+        "//data/...",
+        "//domain/...",
+        "//testing/...",
+        "//utility/...",
+    ],
+)
+
+# Special visibility group specific to prod modules. This provides access to the module for both the
+# Oppia binary & tests.
+package_group(
+    name = "oppia_prod_module_visibility",
+    includes = [
+        ":oppia_binary_visibility",
+        ":oppia_testing_visibility",
+    ],
+)
+
 # TODO(#1640): Move binary manifest to top-level package post-Gradle.
 android_binary(
     name = "oppia",

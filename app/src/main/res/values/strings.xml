@@ -52,6 +52,7 @@
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
+  <string name="faq_activity_title">FAQs (Frequently Asked Questions)</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="info">Info</string>
   <string name="lessons">Lessons</string>
@@ -79,7 +80,7 @@
   <string name="lesson_thumbnail_content_description">Image for %s</string>
   <string name="all_topics">All Topics</string>
   <string name="stories_you_can_play">Stories You Can Play</string>
-  <string name="go_to_previous_page">Go to previous page.</string>
+  <string name="navigate_up">Navigate up</string>
   <string name="recently_played_activity">Recently-Played Stories</string>
   <string name="topic_downloaded">Topic Downloaded</string>
   <string name="downloaded">Downloaded</string>
@@ -197,6 +198,8 @@
   <string name="profile_chooser_language">Language</string>
   <!-- AdminAuthActivity -->
   <string name="admin_auth_toolbar">Administrator Controls</string>
+  <string name="admin_auth_activity_add_profiles_title">Authorise to add profiles</string>
+  <string name="admin_auth_activity_access_controls_title">Authorise to access Administrator Controls</string>
   <string name="admin_auth_heading">Administrator Authorization Required</string>
   <string name="admin_auth_sub">Enter the Administrator PIN in order to create a new account.</string>
   <string name="admin_auth_admin_controls_sub">Enter the Administrator PIN in order to access Administrator Controls.</string>
@@ -230,8 +233,8 @@
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <string name="add_profile_info_content_description">More information on 3-digit PINs.</string>
   <string name="required_fields_content_description">Fields marked with an * are required.</string>
-  <string name="current_profile_picture_content_description">Current profile picture.</string>
-  <string name="edit_profile_picture_content_description">Edit profile picture.</string>
+  <string name="current_profile_picture_content_description">Current profile picture</string>
+  <string name="edit_profile_picture_content_description">Edit profile picture</string>
   <!-- OnboardingActivity -->
   <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
   <string name="onboarding_slide_0_description">Learn anything you want in an effective and enjoyable way.</string>
@@ -299,7 +302,7 @@
   <string name="profile_rename_label">New Name</string>
   <string name="profile_rename_save">save</string>
   <!-- ProfileResetPinActivity -->
-  <string name="profile_reset_pin_title">Reset PIN</string>
+  <string name="profile_reset_pin_activity_title">Reset PIN</string>
   <string name="profile_reset_pin_main">Enter a new PIN for the user to enter when accessing their profile.</string>
   <string name="profile_reset_pin_user_pin_label">3-Digit PIN</string>
   <string name="profile_reset_pin_admin_pin_label">5-Digit PIN</string>

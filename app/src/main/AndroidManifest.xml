@@ -28,9 +28,11 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.help.faq.FAQListActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/faq_activity_title" />
     <activity
       android:name=".app.help.faq.faqsingle.FAQSingleActivity"
+      android:label="@string/faq_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.help.HelpActivity"
@@ -74,6 +76,7 @@
     <activity
       android:name=".app.profile.AdminAuthActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/admin_auth_activity_access_controls_title"
       android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".app.profile.AdminPinActivity"
@@ -101,7 +104,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.settings.profile.ProfileResetPinActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/profile_reset_pin_activity_title" />
     <activity
       android:name=".app.splash.SplashActivity"
       android:screenOrientation="portrait"
