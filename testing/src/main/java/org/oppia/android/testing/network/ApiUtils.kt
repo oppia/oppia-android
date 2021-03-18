@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends
+package org.oppia.android.testing.network
 
 import org.json.JSONException
 import org.json.JSONObject
@@ -9,7 +9,7 @@ class ApiUtils {
 
   companion object {
     fun getFakeJson(jsonPath: String): String {
-      val assetsPath: String = "../data/src/test/assets/api_mocks/$jsonPath"
+      val assetsPath: String = "../testing/src/test/assets/network_mocks/$jsonPath"
       val inputStream = FileInputStream(assetsPath)
       val json: String = inputStream.bufferedReader().use { it.readText() }
       return try {

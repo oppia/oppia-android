@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends.api
+package org.oppia.android.testing.network
 
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport

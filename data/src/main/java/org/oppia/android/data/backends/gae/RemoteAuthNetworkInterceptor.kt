@@ -1,6 +1,7 @@
 package org.oppia.android.data.backends.gae
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -17,10 +18,10 @@ import javax.inject.Singleton
 @Singleton
 class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
 
-//  @Inject
-//  lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
-//  @Inject
+  @Inject
   @NetworkApiKey
   lateinit var networkApiKey: String
 
@@ -39,7 +40,7 @@ class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
   fun addAuthHeaders(request: Request): Request {
     return request.newBuilder()
       .addHeader("api_key", networkApiKey)
-//      .addHeader("app_package_name", context.packageName)
+      .addHeader("app_package_name", context.packageName)
       .addHeader("app_version_name", BuildConfig.VERSION_NAME)
       .addHeader("app_version_code", BuildConfig.VERSION_CODE.toString())
       .build()

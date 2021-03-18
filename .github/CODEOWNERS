@@ -149,6 +149,7 @@ LICENSE @BenHenning
 
 # Global testing module code ownership.
 /testing/**/*.kt @anandwana001 @BenHenning
+/testing/src/test/**/*.json @BenHenning
 
 #####################################################################################
 #                                    data module                                    #
@@ -156,7 +157,6 @@ LICENSE @BenHenning
 
 # Global data module code ownership.
 /data/**/*.kt @BenHenning
-/data/src/test/**/*.json @BenHenning
 
 #####################################################################################
 #                                  utility module                                   #

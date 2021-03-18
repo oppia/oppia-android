@@ -277,15 +277,15 @@ message FeedbackReportingSystemContext {
   string package_version_name = 1;
   // The package code for the specific app version on the device.
   int32 package_version_code = 2;
-  // The ISO-639 country code for the country locale set by the user (otherwise determined by the
+  // The ISO-3166 country code for the country locale set by the user (otherwise determined by the
   // environment JVM). EX: A locale of Canada is different than a locale of French Canada and
   // differentiates user environments. Similarly, even if two language locales are both French,
   // a country locale of French Canada indicates a different user than someone with a country locale
   // of France.
-  string country_locale = 3;
-  // The ISO-3166  code for the device's language locale set by the user (otherwise determined by the
+  string country_locale_code = 3;
+  // The ISO-639  code for the device's language locale set by the user (otherwise determined by the
   // system JVM). EX: Traditional Chinese and simplified Chinese correspond to different language codes.
-  string language_locale = 4;
+  string language_locale_code = 4;
 }
 
 // Information collected about the user's device build.
@@ -323,18 +323,16 @@ message FeedbackReportingAppContext {
     // Indicates that the user started feedback reporting from a crash / the crash reporting dialog.
     CrashEntryPoint crash_dialog = 4;
   }
-  // A list of exploration IDs that have been completed by the user.
-  repeated string completed_exploration_ids = 5;
   // The text size the app is set to.
-  ReadingTextSize text_size = 6;
+  ReadingTextSize text_size = 5;
   // The text language the app is set to.
-  AppLanguage text_language = 7;
+  AppLanguage text_language = 6;
   // The audio language the app is set to.
-  AudioLanguage audio_language = 8;
+  AudioLanguage audio_language = 7;
   // The app's specific device settings.
-  DeviceSettings device_settings = 9;
+  DeviceSettings device_settings = 8;
   // Whether the account sending the report is the admin account.
-  bool is_admin = 10;
+  bool is_admin = 9;
 }
 
 // Corresponds to the entry point to feedback reporting shown in the navigation drawer menu.

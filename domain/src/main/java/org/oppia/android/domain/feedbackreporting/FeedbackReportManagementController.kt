@@ -1,6 +1,8 @@
 package org.oppia.android.domain.feedbackreporting
 
 import androidx.lifecycle.Transformations
+import org.oppia.android.app.model.AppLanguage
+import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingAppContext.EntryPointCase
@@ -22,17 +24,24 @@ import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingSystemConte
 import org.oppia.android.data.backends.gae.model.GaeUserSuppliedFeedback
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG =
   "Feedback Report Management Controller"
 private const val FEEDBACK_REPORTS_DATABASE_NAME = "feedback_reports_database"
+private const val LANGUAGE_CODE_ENGLISH = "EN"
+private const val LANGUAGE_CODE_HINDI = "HI"
+private const val LANGUAGE_CODE_FRENCH = "FR"
+private const val LANGUAGE_CODE_CHINESE = "ZH"
+private const val LANGUAGE_CODE_NONE = "NONE"
 
 /** Controller for uploading feedback reports to remote storage or saving them on disk. */
 @Singleton
@@ -40,6 +49,7 @@ class FeedbackReportManagementController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val feedbackReportingService: FeedbackReportingService,
   private val consoleLogger: ConsoleLogger,
+  private val exceptionsController: ExceptionsController,
   private val analyticsController: AnalyticsController,
   private val networkConnectionUtil: NetworkConnectionUtil,
 ) {
@@ -151,8 +161,8 @@ class FeedbackReportManagementController @Inject constructor(
         return GaeUserSuppliedFeedback(
           reportType = reportType.name,
           category = suggestion.suggestionCategory.name,
-          feedbackList = null,
-          openTextUserInput = suggestion.userSubmittedSuggestion
+          userFeedbackSelectedItems = null,
+          userFeedbackOtherTextInput = suggestion.userSubmittedSuggestion
         )
       }
       ReportTypeCase.ISSUE -> {
@@ -163,8 +173,8 @@ class FeedbackReportManagementController @Inject constructor(
         return GaeUserSuppliedFeedback(
           reportType = reportType.name,
           category = crash.crashLocation.name,
-          feedbackList = null,
-          openTextUserInput = crash.crashExplanation
+          userFeedbackSelectedItems = null,
+          userFeedbackOtherTextInput = crash.crashExplanation
         )
       }
       else -> throw IllegalArgumentException(
@@ -180,24 +190,24 @@ class FeedbackReportManagementController @Inject constructor(
     issue: Issue
   ): GaeUserSuppliedFeedback {
     var category = issue.issueCategoryCase.name
-    var issuesList: List<String>? = null
+    var optionsList: List<String>? = null
     var userInput: String? = null
     when (issue.issueCategoryCase) {
       IssueCategoryCase.LESSON_QUESTION_ISSUE -> {
-        issuesList = issue.lessonQuestionIssue.userSelectedOptionsList.map { it.name }
+        optionsList = issue.lessonQuestionIssue.userSelectedOptionsList.map { it.name }
         userInput = issue.lessonQuestionIssue.otherUserInput
       }
       IssueCategoryCase.LANGUAGE_ISSUE -> {
         category = issue.languageIssue.languageIssueCategoryCase.name
         when (issue.languageIssue.languageIssueCategoryCase) {
           LanguageIssue.LanguageIssueCategoryCase.AUDIO_LANGUAGE_ISSUE -> {
-            issuesList = issue.languageIssue.audioLanguageIssue.userSelectedOptionsList.map {
+            optionsList = issue.languageIssue.audioLanguageIssue.userSelectedOptionsList.map {
               it.name
             }
             userInput = issue.languageIssue.audioLanguageIssue.otherUserInput
           }
           LanguageIssue.LanguageIssueCategoryCase.TEXT_LANGUAGE_ISSUE -> {
-            issuesList = issue.languageIssue.textLanguageIssue.userSelectedOptionsList.map {
+            optionsList = issue.languageIssue.textLanguageIssue.userSelectedOptionsList.map {
               it.name
             }
             userInput = issue.languageIssue.textLanguageIssue.otherUserInput
@@ -208,11 +218,11 @@ class FeedbackReportManagementController @Inject constructor(
         }
       }
       IssueCategoryCase.TOPICS_ISSUE -> {
-        issuesList = issue.topicsIssue.userSelectedOptionsList.map { it.name }
+        optionsList = issue.topicsIssue.userSelectedOptionsList.map { it.name }
         userInput = issue.topicsIssue.otherUserInput
       }
       IssueCategoryCase.PROFILE_ISSUE -> {
-        issuesList = issue.profileIssue.userSelectedOptionsList.map { it.name }
+        optionsList = issue.profileIssue.userSelectedOptionsList.map { it.name }
         userInput = issue.profileIssue.otherUserInput
       }
       IssueCategoryCase.OTHER_ISSUE -> {
@@ -222,8 +232,8 @@ class FeedbackReportManagementController @Inject constructor(
     return GaeUserSuppliedFeedback(
       reportType = reportTypeName,
       category = category,
-      feedbackList = issuesList,
-      openTextUserInput = userInput
+      userFeedbackSelectedItems = optionsList,
+      userFeedbackOtherTextInput = userInput
     )
   }
 
@@ -234,8 +244,8 @@ class FeedbackReportManagementController @Inject constructor(
     return GaeFeedbackReportingSystemContext(
       packageVersionName = systemContext.packageVersionName,
       packageVersionCode = systemContext.packageVersionCode,
-      countryLocale = systemContext.countryLocale,
-      languageLocale = systemContext.languageLocale
+      countryLocaleCode = systemContext.countryLocaleCode,
+      languageLocaleCode = systemContext.languageLocaleCode
     )
   }
 
@@ -256,12 +266,30 @@ class FeedbackReportManagementController @Inject constructor(
   private fun getAppContext(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingAppContext {
+    val audioLanguageCode = when (appContext.audioLanguage) {
+      AudioLanguage.NO_AUDIO -> LANGUAGE_CODE_NONE
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> LANGUAGE_CODE_ENGLISH
+      AudioLanguage.HINDI_AUDIO_LANGUAGE -> LANGUAGE_CODE_HINDI
+      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> LANGUAGE_CODE_FRENCH
+      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> LANGUAGE_CODE_CHINESE
+      else -> throw IllegalArgumentException(
+        "Encountered unexpected audio language: ${appContext.audioLanguage.name}"
+      )
+    }
+    val textLanguageCode = when (appContext.textLanguage) {
+      AppLanguage.ENGLISH_APP_LANGUAGE -> LANGUAGE_CODE_ENGLISH
+      AppLanguage.HINDI_APP_LANGUAGE -> LANGUAGE_CODE_HINDI
+      AppLanguage.FRENCH_APP_LANGUAGE -> LANGUAGE_CODE_FRENCH
+      AppLanguage.CHINESE_APP_LANGUAGE -> LANGUAGE_CODE_CHINESE
+      else -> throw IllegalArgumentException(
+        "Encountered unexpected app text language: ${appContext.textLanguage.name}"
+      )
+    }
     return GaeFeedbackReportingAppContext(
       entryPoint = getEntryPointData(appContext),
-      completedExplorationIds = appContext.completedExplorationIdsList,
       textSize = appContext.textSize.name,
-      textLang = appContext.textLanguage.name,
-      audioLang = appContext.audioLanguage.name,
+      textLanguageCode = textLanguageCode,
+      audioLanguageCode = audioLanguageCode,
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
       automaticallyUpdateTopics = appContext.deviceSettings.automaticallyUpdateTopics,
       isAdmin = appContext.isAdmin,
@@ -303,6 +331,17 @@ class FeedbackReportManagementController @Inject constructor(
 
   // Helper function to retrieve the logcat logs from the device.
   private fun getLogcatLogs(): List<String> {
-    return listOf()
+    val logcatReader = consoleLogger.getLogReader()
+    val logcatList = ArrayList<String>()
+    try {
+      logcatReader.forEachLine { logcatList.add(it) }
+    } catch (e: IOException) {
+      exceptionsController.logNonFatalException(e)
+      consoleLogger.e(
+        FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG,
+        "Failed to read logcat file"
+      )
+    }
+    return logcatList
   }
 }
