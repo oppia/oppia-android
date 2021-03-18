@@ -23,5 +23,4 @@ kt_android_library(
     ],
 )
 
-
 dagger_rules()
