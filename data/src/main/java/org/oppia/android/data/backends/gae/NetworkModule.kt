@@ -8,6 +8,7 @@ import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -73,6 +74,7 @@ class NetworkModule {
   // Provides the API key to use in authenticating remote messages sent or received. This will be
   // replaced with a stronger, secret key will in production.
   @Provides
+  @Singleton
   @NetworkApiKey
-  fun provideNetworkApiKey() = ""
+  fun provideNetworkApiKey(): String = ""
 }

@@ -1,7 +1,6 @@
 package org.oppia.android.data.backends.gae
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -13,7 +12,7 @@ import javax.inject.Singleton
 /**
  * Interceptor on top of Retrofit to modify outgoing requests for authenticating messages.
  *
- * The Interceptor adds header parameters to all outgoing messages.
+ * The Interceptor adds header parameters to outgoing messages.
  */
 @Singleton
 class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
@@ -22,8 +21,7 @@ class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
   lateinit var context: Context
 
   @Inject
-  @NetworkApiKey
-  lateinit var networkApiKey: String
+  @NetworkApiKey lateinit var networkApiKey: String
 
   @Throws(IOException::class)
   override fun intercept(chain: Interceptor.Chain): Response {
