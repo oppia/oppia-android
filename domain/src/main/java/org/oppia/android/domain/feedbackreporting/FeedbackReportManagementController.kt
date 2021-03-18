@@ -263,7 +263,6 @@ class FeedbackReportManagementController @Inject constructor(
   ): GaeFeedbackReportingAppContext {
     return GaeFeedbackReportingAppContext(
       entryPoint = getEntryPointData(appContext),
-      completedExplorationIds = appContext.completedExplorationIdsList,
       textSize = appContext.textSize.name,
       textLang = appContext.textLanguage.name,
       audioLang = appContext.audioLanguage.name,
