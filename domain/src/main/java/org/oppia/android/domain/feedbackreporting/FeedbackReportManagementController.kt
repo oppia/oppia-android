@@ -1,7 +1,5 @@
 package org.oppia.android.domain.feedbackreporting
 
-import android.R
-import android.widget.TextView
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
@@ -315,7 +313,8 @@ class FeedbackReportManagementController @Inject constructor(
       exceptionsController.logNonFatalException(e)
       consoleLogger.e(
         FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG,
-        "Failed to read logcat file")
+        "Failed to read logcat file"
+      )
     }
     return logcatList
   }

@@ -60,6 +60,7 @@ import javax.inject.Singleton
 
 // Timestamp in ms for 3/2/21, 12:38pm GMT.
 private const val EARLIER_TIMESTAMP = 1614688684445
+
 // Timestamp in ms for 3/14/21, 2:24am GMT.
 private const val LATER_TIMESTAMP = 1615688684445
 
