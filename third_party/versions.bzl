@@ -53,6 +53,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.firebase:firebase-crashlytics": "17.1.1",
     "com.google.gms:google-services": "4.3.3",
     "com.google.guava:guava": "28.1-android",
+    "com.squareup.moshi:moshi":"1.11.0",
     "com.squareup.retrofit2:converter-gson": "2.5.0",
     "com.squareup.retrofit2:retrofit": "2.9.0",
     "de.hdodenhof:circleimageview": "3.0.1",
