@@ -235,7 +235,8 @@ class TopicController @Inject constructor(
     }
   }
 
-  /** Return whether the current [StorySummary] can be considered "ongoing" given the specified
+  /**
+   * Return whether the current [StorySummary] can be considered "ongoing" given the specified
    * [StoryProgress] (that is, at least one chapter has started and the final chapter isn't yet
    * completed).
    */
@@ -246,8 +247,9 @@ class TopicController @Inject constructor(
       lastChapterState != ChapterPlayState.COMPLETED
   }
 
-  /** Returns the [ChapterPlayState] of this progress for the specified exploration, or
-   *  [ChapterPlayState.NOT_STARTED] if the exploration hasn't even been attempted yet.
+  /**
+   * Returns the [ChapterPlayState] of this progress for the specified exploration, or
+   * [ChapterPlayState.NOT_STARTED] if the exploration hasn't even been attempted yet.
    */
   private fun StoryProgress.getChapterPlayState(explorationId: String): ChapterPlayState {
     return chapterProgressMap[explorationId]?.chapterPlayState ?: ChapterPlayState.NOT_STARTED
