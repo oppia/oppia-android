@@ -151,8 +151,8 @@ class FeedbackReportManagementController @Inject constructor(
         return GaeUserSuppliedFeedback(
           reportType = reportType.name,
           category = suggestion.suggestionCategory.name,
-          feedbackList = null,
-          otherUserInputText = suggestion.userSubmittedSuggestion
+          userFeedbackSelectedItems = null,
+          userFeedbackOtherTextInput = suggestion.userSubmittedSuggestion
         )
       }
       ReportTypeCase.ISSUE -> {
@@ -163,8 +163,8 @@ class FeedbackReportManagementController @Inject constructor(
         return GaeUserSuppliedFeedback(
           reportType = reportType.name,
           category = crash.crashLocation.name,
-          feedbackList = null,
-          otherUserInputText = crash.crashExplanation
+          userFeedbackSelectedItems = null,
+          userFeedbackOtherTextInput = crash.crashExplanation
         )
       }
       else -> throw IllegalArgumentException(
@@ -180,24 +180,24 @@ class FeedbackReportManagementController @Inject constructor(
     issue: Issue
   ): GaeUserSuppliedFeedback {
     var category = issue.issueCategoryCase.name
-    var issuesList: List<String>? = null
+    var optionsList: List<String>? = null
     var userInput: String? = null
     when (issue.issueCategoryCase) {
       IssueCategoryCase.LESSON_QUESTION_ISSUE -> {
-        issuesList = issue.lessonQuestionIssue.userSelectedOptionsList.map { it.name }
+        optionsList = issue.lessonQuestionIssue.userSelectedOptionsList.map { it.name }
         userInput = issue.lessonQuestionIssue.otherUserInput
       }
       IssueCategoryCase.LANGUAGE_ISSUE -> {
         category = issue.languageIssue.languageIssueCategoryCase.name
         when (issue.languageIssue.languageIssueCategoryCase) {
           LanguageIssue.LanguageIssueCategoryCase.AUDIO_LANGUAGE_ISSUE -> {
-            issuesList = issue.languageIssue.audioLanguageIssue.userSelectedOptionsList.map {
+            optionsList = issue.languageIssue.audioLanguageIssue.userSelectedOptionsList.map {
               it.name
             }
             userInput = issue.languageIssue.audioLanguageIssue.otherUserInput
           }
           LanguageIssue.LanguageIssueCategoryCase.TEXT_LANGUAGE_ISSUE -> {
-            issuesList = issue.languageIssue.textLanguageIssue.userSelectedOptionsList.map {
+            optionsList = issue.languageIssue.textLanguageIssue.userSelectedOptionsList.map {
               it.name
             }
             userInput = issue.languageIssue.textLanguageIssue.otherUserInput
@@ -208,11 +208,11 @@ class FeedbackReportManagementController @Inject constructor(
         }
       }
       IssueCategoryCase.TOPICS_ISSUE -> {
-        issuesList = issue.topicsIssue.userSelectedOptionsList.map { it.name }
+        optionsList = issue.topicsIssue.userSelectedOptionsList.map { it.name }
         userInput = issue.topicsIssue.otherUserInput
       }
       IssueCategoryCase.PROFILE_ISSUE -> {
-        issuesList = issue.profileIssue.userSelectedOptionsList.map { it.name }
+        optionsList = issue.profileIssue.userSelectedOptionsList.map { it.name }
         userInput = issue.profileIssue.otherUserInput
       }
       IssueCategoryCase.OTHER_ISSUE -> {
@@ -222,8 +222,8 @@ class FeedbackReportManagementController @Inject constructor(
     return GaeUserSuppliedFeedback(
       reportType = reportTypeName,
       category = category,
-      feedbackList = issuesList,
-      otherUserInputText = userInput
+      userFeedbackSelectedItems = optionsList,
+      userFeedbackOtherTextInput = userInput
     )
   }
 

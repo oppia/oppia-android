@@ -40,7 +40,7 @@
   "user_supplied_feedback": {
     "report_type": "suggestion",
     "category": "language_suggestion",
-    "feedback_list": [],
-    "user_input": "french"
+    "user_feedback_selected_items": [],
+    "user_feedback_other_text_input": "french"
   }
 }
