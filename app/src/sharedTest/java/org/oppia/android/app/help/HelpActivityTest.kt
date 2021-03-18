@@ -94,7 +94,7 @@ class HelpActivityTest {
     return HelpActivity.createHelpActivityIntent(
       ApplicationProvider.getApplicationContext(),
       isFromNavigationDrawer = false,
-      profileId = null
+      profileId = 0
     )
   }
 
