@@ -20,7 +20,7 @@
     <activity
       android:name=".app.administratorcontrols.AdministratorControlsActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
-      android:configChanges="orientation|screenSize"/>
+      android:configChanges="orientation|screenSize" />
     <activity
       android:name=".app.administratorcontrols.appversion.AppVersionActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
