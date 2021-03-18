@@ -136,10 +136,14 @@ class AdminPinActivityTest {
 
   @Test
   fun testAdminPinActivity_hasCorrectActivityLabel(){
-    activityTestRule.launchActivity(createAdminPinActivityIntent())
-    val title =activityTestRule.activity.title
-
-    assertThat(title).isEqualTo(context.getString(R.string.admin_pin_activity_label))
+    activityTestRule.launchActivity(AdminPinActivity.createAdminPinActivityIntent(
+      context = context,
+      profileId = 0,
+      colorRgb = -10710042,
+      adminPinEnum = 0
+    ))
+    val title = activityTestRule.activity.title
+    assertThat(title).isEqualTo(context.getString(R.string.admin_pin_activity_title))
   }
 
   @Test
@@ -1026,12 +1030,6 @@ class AdminPinActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun createAdminPinActivityIntent(): Intent {
-    return AdminPinActivity.createAdminPinActivityIntent(
-      ApplicationProvider.getApplicationContext(),0,-10710042,0
-    )
   }
 
   private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
