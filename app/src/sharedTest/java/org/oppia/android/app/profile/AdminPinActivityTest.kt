@@ -2,7 +2,6 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
@@ -103,9 +102,9 @@ import javax.inject.Singleton
 )
 class AdminPinActivityTest {
 
-  @get:Rule
-  val activityTestRule : ActivityTestRule<AdminPinActivity> = ActivityTestRule(
-    AdminPinActivity::class.java,true,false
+  @get: Rule
+  val activityTestRule: ActivityTestRule<AdminPinActivity> = ActivityTestRule(
+    AdminPinActivity::class.java, true, false
   )
 
   @Inject
@@ -135,13 +134,15 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_hasCorrectActivityLabel(){
-    activityTestRule.launchActivity(AdminPinActivity.createAdminPinActivityIntent(
-      context = context,
-      profileId = 0,
-      colorRgb = -10710042,
-      adminPinEnum = 0
-    ))
+  fun testAdminPinActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
+      )
+    )
     val title = activityTestRule.activity.title
     assertThat(title).isEqualTo(context.getString(R.string.admin_pin_activity_title))
   }
