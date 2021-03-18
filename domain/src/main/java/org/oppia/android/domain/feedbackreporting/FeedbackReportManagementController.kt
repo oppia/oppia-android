@@ -37,6 +37,11 @@ import javax.inject.Singleton
 private const val FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG =
   "Feedback Report Management Controller"
 private const val FEEDBACK_REPORTS_DATABASE_NAME = "feedback_reports_database"
+private const val LANGUAGE_CODE_ENGLISH = "EN"
+private const val LANGUAGE_CODE_HINDI = "HI"
+private const val LANGUAGE_CODE_FRENCH = "FR"
+private const val LANGUAGE_CODE_CHINESE = "ZH"
+private const val LANGUAGE_CODE_NONE = "NONE"
 
 /** Controller for uploading feedback reports to remote storage or saving them on disk. */
 @Singleton
@@ -262,20 +267,20 @@ class FeedbackReportManagementController @Inject constructor(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingAppContext {
     val audioLanguageCode = when (appContext.audioLanguage) {
-      AudioLanguage.NO_AUDIO -> "NONE"
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "EN"
-      AudioLanguage.HINDI_AUDIO_LANGUAGE -> "HI"
-      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "FR"
-      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "ZH"
+      AudioLanguage.NO_AUDIO -> LANGUAGE_CODE_NONE
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> LANGUAGE_CODE_ENGLISH
+      AudioLanguage.HINDI_AUDIO_LANGUAGE -> LANGUAGE_CODE_HINDI
+      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> LANGUAGE_CODE_FRENCH
+      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> LANGUAGE_CODE_CHINESE
       else -> throw IllegalArgumentException(
         "Encountered unexpected audio language: ${appContext.audioLanguage.name}"
       )
     }
     val textLanguageCode = when (appContext.textLanguage) {
-      AppLanguage.ENGLISH_APP_LANGUAGE -> "EN"
-      AppLanguage.HINDI_APP_LANGUAGE -> "HI"
-      AppLanguage.FRENCH_APP_LANGUAGE -> "FR"
-      AppLanguage.CHINESE_APP_LANGUAGE -> "ZH"
+      AppLanguage.ENGLISH_APP_LANGUAGE -> LANGUAGE_CODE_ENGLISH
+      AppLanguage.HINDI_APP_LANGUAGE -> LANGUAGE_CODE_HINDI
+      AppLanguage.FRENCH_APP_LANGUAGE -> LANGUAGE_CODE_FRENCH
+      AppLanguage.CHINESE_APP_LANGUAGE -> LANGUAGE_CODE_CHINESE
       else -> throw IllegalArgumentException(
         "Encountered unexpected app text language: ${appContext.textLanguage.name}"
       )
