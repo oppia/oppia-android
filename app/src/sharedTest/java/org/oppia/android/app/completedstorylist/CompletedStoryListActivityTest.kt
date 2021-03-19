@@ -138,7 +138,7 @@ class CompletedStoryListActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createFAQListActivityIntent(): Intent {
+  private fun createCompletedStoryListActivityIntent(): Intent {
     return CompletedStoryListActivity.createCompletedStoryListActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId
@@ -146,8 +146,8 @@ class CompletedStoryListActivityTest {
   }
 
   @Test
-  fun testFAQListActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createFAQListActivityIntent())
+  fun testCompletedStoryList_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createCompletedStoryListActivityIntent())
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
