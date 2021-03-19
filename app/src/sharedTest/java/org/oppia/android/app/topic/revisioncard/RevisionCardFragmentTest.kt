@@ -110,7 +110,8 @@ class RevisionCardFragmentTest {
     ).use {
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
-      onView(withText(context.getString(R.string.help))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.help_activity_title)))
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -125,7 +126,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.help))).perform(ViewActions.click())
+      onView(withText(context.getString(R.string.help_activity_title))).perform(ViewActions.click())
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
         hasExtra(
