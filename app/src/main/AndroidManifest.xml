@@ -25,8 +25,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.completedstorylist.CompletedStoryListActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:label="@string/completed_story_list_activity_title"/>
+      android:label="@string/completed_story_list_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.help.faq.FAQListActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
