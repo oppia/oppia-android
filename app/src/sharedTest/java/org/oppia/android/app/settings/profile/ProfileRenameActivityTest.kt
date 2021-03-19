@@ -108,8 +108,8 @@ class ProfileRenameActivityTest {
   @get:Rule
   val activityTestRule: ActivityTestRule<ProfileRenameActivity> = ActivityTestRule(
     ProfileRenameActivity::class.java,
-    /* initialTouchMode= */true,
-    /* launchActivity= */false
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
   )
 
   @Before
