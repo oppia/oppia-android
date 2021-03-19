@@ -116,7 +116,7 @@ class FeedbackReportManagementController @Inject constructor(
       deviceContext = getDeviceContext(report.deviceContext),
       appContext = getAppContext(report.appContext)
     )
-    feedbackReportingService.postFeedbackReport(report = gaeFeedbackReport)
+    feedbackReportingService.postFeedbackReport(gaeFeedbackReport)
   }
 
   /** Removes the first cached report from the store. */
