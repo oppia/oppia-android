@@ -2,7 +2,6 @@ package org.oppia.android.domain.feedbackreporting
 
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.model.AppLanguage
-import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingAppContext.EntryPointCase

@@ -29,7 +29,6 @@ import org.oppia.android.app.model.FeedbackReportingDatabase
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
-import org.oppia.android.app.model.TextLanguageIssue
 import org.oppia.android.app.model.UserSuppliedFeedback
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
