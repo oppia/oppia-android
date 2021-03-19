@@ -1,9 +1,13 @@
 package org.oppia.android.data.backends.test
 
+import android.app.Application
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import dagger.BindsInstance
+import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -11,19 +15,23 @@ import org.oppia.android.data.backends.ApiUtils
 import org.oppia.android.data.backends.api.MockFeedbackReportingService
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
-import org.oppia.android.testing.network.MockRetrofitHelper
+import org.oppia.android.testing.network.MockRetrofitModule
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Test for [FeedbackReportingService] retrofit instance using a [MockFeedbackReportingService]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class MockFeedbackReportingTest {
-  private lateinit var mockRetrofit: MockRetrofit
+
+  @Inject
+  lateinit var mockRetrofit: MockRetrofit
 
   @Before
   fun setUp() {
-    mockRetrofit = MockRetrofitHelper().createMockRetrofit()
+    setUpTestApplicationComponent()
   }
 
   @Test
@@ -45,5 +53,26 @@ class MockFeedbackReportingTest {
     val adapter: JsonAdapter<GaeFeedbackReport> = moshi.adapter(GaeFeedbackReport::class.java)
     val mockGaeFeedbackReport = adapter.fromJson(feedbackReportJson)
     return mockGaeFeedbackReport!!
+  }
+
+  private fun setUpTestApplicationComponent() {
+    DaggerMockFeedbackReportingTest_TestApplicationComponent
+      .builder()
+      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+  }
+
+  // TODO(#89): Move this to a common test application component.
+  @Singleton
+  @Component(modules = [MockRetrofitModule::class])
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(test: MockFeedbackReportingTest)
   }
 }

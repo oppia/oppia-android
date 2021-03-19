@@ -1,5 +1,7 @@
 package org.oppia.android.testing.network
 
+import dagger.Module
+import dagger.Provides
 import okhttp3.OkHttpClient
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
@@ -7,17 +9,18 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
-import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
- * This helper allows us to create customized [MockRetrofit] instances.
+ * Dagger [Module] that provides specifically configured [MockRetrofit] instance to have zero
+ * network failures to avoid unwanted test flakes. Tests may override this behavior if they
+ * wish to test uncertain network conditions.
  */
-class MockRetrofitHelper @Inject constructor() {
-
-  /**
-   * This method returns a MockRetrofit object with [NetworkBehavior] that has 0 failurePercent.
-   */
-  fun createMockRetrofit(): MockRetrofit {
+@Module
+class MockRetrofitModule {
+  @Provides
+  @Singleton
+  fun provideMockRetrofit(): MockRetrofit {
     val client = OkHttpClient.Builder()
     client.addInterceptor(NetworkInterceptor())
 
