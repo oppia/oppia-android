@@ -57,15 +57,11 @@ internal class QuestionAssessmentProgress {
    * Tracks how many answers the user submits for each question, along with any misconceptions. This
    * is expected to be called for every answer submitted.
    */
-  internal fun trackAnswerSubmitted(taggedSkillMisconceptionId: String?) {
+  internal fun trackAnswerSubmitted(taggedSkillId: String?) {
     val currentQuestionIndex = getCurrentQuestionIndex()
     questionSessionMetrics[currentQuestionIndex].numberOfAnswersSubmitted++
-    if (taggedSkillMisconceptionId != null) {
-      // Misconceptions are formatted as <skill ID>-<misconception ID> from the AnswerClassificationController,
-      // but we only need the related skill ID for our purposes
-      questionSessionMetrics[currentQuestionIndex].taggedSkillMisconceptionIds.add(
-        taggedSkillMisconceptionId.split("-")[0]
-      )
+    if (taggedSkillId != null) {
+      questionSessionMetrics[currentQuestionIndex].taggedSkillIds.add(taggedSkillId)
     }
   }
 
