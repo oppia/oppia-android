@@ -35,6 +35,8 @@ class AdministratorControlsViewModel @Inject constructor(
   private val loadProfileListListener = activity as LoadProfileListListener
   private lateinit var userProfileId: ProfileId
   val selectedFragmentIndex = ObservableField<Int>(1)
+  val administratorControlsAccountActionsViewModel =
+    AdministratorControlsAccountActionsViewModel(fragment, IntentFactoryShim)
 
   private val deviceSettingsLiveData: LiveData<DeviceSettings> by lazy {
     Transformations.map(
@@ -94,5 +96,11 @@ class AdministratorControlsViewModel @Inject constructor(
 
   fun setProfileId(profileId: ProfileId) {
     userProfileId = profileId
+  }
+
+  fun getDialog(): Boolean = administratorControlsAccountActionsViewModel.getDialog()
+
+  fun callDialog() {
+    administratorControlsAccountActionsViewModel.onLogOutClicked()
   }
 }

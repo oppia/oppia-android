@@ -46,4 +46,10 @@ class AdministratorControlsFragment : InjectableFragment() {
   fun setSelectedFragment(selectedFragment: String) {
     administratorControlsFragmentPresenter.setSelectedFragment(selectedFragment)
   }
+
+  fun getDialog(): Boolean = administratorControlsFragmentPresenter.getDialog()
+
+  fun callDialog() {
+    administratorControlsFragmentPresenter.callDialog()
+  }
 }

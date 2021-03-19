@@ -94,6 +94,12 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     binding.extraControlsTitle?.text = title
   }
 
+  fun getDialog(): Boolean? = getAdministratorControlsFragment()?.getDialog()
+
+  fun callDialog() {
+    getAdministratorControlsFragment()?.callDialog()
+  }
+
   fun handleOnSaveInstanceState(outState: Bundle) {
     val titleTextView = binding.extraControlsTitle
     if (titleTextView != null) {
