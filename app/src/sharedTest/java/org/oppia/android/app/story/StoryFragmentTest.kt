@@ -536,7 +536,11 @@ class StoryFragmentTest {
     }
   }
 
-  fun clickClickableSpan(textToClick: CharSequence): ViewAction {
+  /**
+   * Reference:
+   * https://stackoverflow.com/questions/38314077/how-to-click-a-clickablespan-using-espresso
+   */
+  private fun clickClickableSpan(textToClick: CharSequence): ViewAction {
     return object : ViewAction {
 
       override fun getConstraints(): org.hamcrest.Matcher<View> {
