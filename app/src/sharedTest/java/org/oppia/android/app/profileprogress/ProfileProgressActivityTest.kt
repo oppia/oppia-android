@@ -87,7 +87,7 @@ class ProfileProgressActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.profile_progress_activity_label))
+    assertThat(title).isEqualTo(context.getString(R.string.profile_progress_activity_title))
   }
 
   private fun setUpTestApplicationComponent() {
@@ -97,7 +97,7 @@ class ProfileProgressActivityTest {
   private fun createProfileProgressActivityIntent(): Intent {
     return ProfileProgressActivity.createProfileProgressActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId = -1
+      internalProfileId = 0
     )
   }
 
