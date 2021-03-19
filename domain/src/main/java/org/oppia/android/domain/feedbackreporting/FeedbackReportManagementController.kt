@@ -111,7 +111,7 @@ class FeedbackReportManagementController @Inject constructor(
    */
   fun uploadFeedbackReport(report: FeedbackReport) {
     val gaeFeedbackReport = GaeFeedbackReport(
-      reportCreationTimestampMs = report.reportCreationTimestampMs,
+      reportSubmissionTimestampSec = report.reportSubmissionTimestampSec,
       userSuppliedFeedback = createGaeUserSuppliedFeedback(report.userSuppliedInfo),
       systemContext = getSystemContext(report.systemContext),
       deviceContext = getDeviceContext(report.deviceContext),

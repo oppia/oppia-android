@@ -10,8 +10,8 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GaeFeedbackReport(
 
-  /** The date and time in ms that the report was created. */
-  @Json(name = "report_creation_timestamp_ms") val reportCreationTimestampMs: Long,
+  /** The date and time in sec that the report was created. */
+  @Json(name = "report_submission_timestamp_sec") val reportSubmissionTimestampSec: Long,
   /** The information that user's provide in the feedback report. */
   @Json(name = "user_supplied_feedback") val userSuppliedFeedback: GaeUserSuppliedFeedback,
   /** Information collected about the user device's system. */
