@@ -22,7 +22,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private lateinit var lastLoadedFragment: String
   private lateinit var binding: AdministratorControlsActivityBinding
 
-  fun handleOnCreate(extraControlsTitle: String?, lastLoadedFragment: String) {
+  fun handleOnCreate(extraControlsTitle: String?, lastLoadedFragment: String, check: Boolean?) {
     binding = DataBindingUtil.setContentView(
       activity,
       R.layout.administrator_controls_activity
@@ -47,6 +47,8 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         APP_VERSION_FRAGMENT -> (activity as AdministratorControlsActivity).loadAppVersion()
       }
     }
+    if (check == true)
+      callDialog()
   }
 
   private fun setUpNavigationDrawer() {
@@ -106,5 +108,9 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       outState.putString(SELECTED_CONTROLS_TITLE_SAVED_KEY, titleTextView.text.toString())
     }
     outState.putString(LAST_LOADED_FRAGMENT_KEY, lastLoadedFragment)
+    val check = getDialog()
+    if (check != null) {
+      outState.putBoolean(CHECK_DIALOG, check)
+    }
   }
 }

@@ -39,12 +39,13 @@ class AdministratorControlsActivity :
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
     }
-    administratorControlsActivityPresenter.handleOnCreate(extraControlsTitle, lastLoadedFragment)
+    val check = savedInstanceState?.getBoolean(CHECK_DIALOG)
+    administratorControlsActivityPresenter.handleOnCreate(
+      extraControlsTitle,
+      lastLoadedFragment,
+      check
+    )
     title = getString(R.string.administrator_controls)
-    if (savedInstanceState != null) {
-      if (savedInstanceState.getBoolean(CHECK_DIALOG))
-        callDialog()
-    }
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -86,18 +87,8 @@ class AdministratorControlsActivity :
     administratorControlsActivityPresenter.loadAppVersion()
   }
 
-  fun getDialog(): Boolean? = administratorControlsActivityPresenter.getDialog()
-
-  private fun callDialog() {
-    administratorControlsActivityPresenter.callDialog()
-  }
-
   override fun onSaveInstanceState(outState: Bundle) {
     administratorControlsActivityPresenter.handleOnSaveInstanceState(outState)
-    val check = getDialog()
-    if (check != null) {
-      outState.putBoolean(CHECK_DIALOG, check)
-    }
     super.onSaveInstanceState(outState)
   }
 }
