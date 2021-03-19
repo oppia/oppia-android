@@ -101,4 +101,10 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     }
     outState.putString(LAST_LOADED_FRAGMENT_KEY, lastLoadedFragment)
   }
+
+  fun getDialog(): Boolean? = getAdministratorControlsFragment()?.getDialog()
+
+  fun callDialog() {
+    getAdministratorControlsFragment()?.callDialog()
+  }
 }

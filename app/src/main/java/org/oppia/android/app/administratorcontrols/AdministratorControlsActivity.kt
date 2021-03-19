@@ -16,6 +16,7 @@ const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
 const val LAST_LOADED_FRAGMENT_KEY = "LAST_LOADED_FRAGMENT_KEY"
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
+const val CHECK_DIALOG = "CHECK_DIALOG"
 
 /** Activity for Administrator Controls. */
 class AdministratorControlsActivity :
@@ -40,6 +41,10 @@ class AdministratorControlsActivity :
     }
     administratorControlsActivityPresenter.handleOnCreate(extraControlsTitle, lastLoadedFragment)
     title = getString(R.string.administrator_controls)
+    if (savedInstanceState != null) {
+      if (savedInstanceState.getBoolean(CHECK_DIALOG))
+        callDialog()
+    }
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -81,8 +86,18 @@ class AdministratorControlsActivity :
     administratorControlsActivityPresenter.loadAppVersion()
   }
 
+  fun getDialog(): Boolean? = administratorControlsActivityPresenter.getDialog()
+
+  private fun callDialog() {
+    administratorControlsActivityPresenter.callDialog()
+  }
+
   override fun onSaveInstanceState(outState: Bundle) {
     administratorControlsActivityPresenter.handleOnSaveInstanceState(outState)
+    val check = getDialog()
+    if (check != null) {
+      outState.putBoolean(CHECK_DIALOG, check)
+    }
     super.onSaveInstanceState(outState)
   }
 }

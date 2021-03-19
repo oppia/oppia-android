@@ -165,6 +165,12 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     }
   }
 
+  fun getDialog(): Boolean = administratorControlsViewModel.getDialog()
+
+  fun callDialog() {
+    administratorControlsViewModel.callDialog()
+  }
+
   private enum class ViewType {
     VIEW_TYPE_GENERAL,
     VIEW_TYPE_PROFILE,
