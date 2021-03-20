@@ -9,9 +9,9 @@ kt_android_library(
     srcs = [
         "NetworkConnectionUtil.kt",
     ],
-    deps = [
-         "//third_party:androidx_annotation_annotation",
-         "//third_party:javax_inject_javax_inject",
-    ],
     visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:javax_inject_javax_inject",
+    ],
 )
