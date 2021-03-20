@@ -104,7 +104,7 @@ class AdminPinActivityTest {
 
   @get: Rule
   val activityTestRule: ActivityTestRule<AdminPinActivity> = ActivityTestRule(
-    AdminPinActivity::class.java, true, false
+    AdminPinActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
   @Inject
@@ -144,6 +144,9 @@ class AdminPinActivityTest {
       )
     )
     val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
     assertThat(title).isEqualTo(context.getString(R.string.admin_pin_activity_title))
   }
 
