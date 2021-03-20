@@ -15,7 +15,7 @@ import org.oppia.android.data.backends.ApiUtils
 import org.oppia.android.data.backends.api.MockFeedbackReportingService
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
-import org.oppia.android.testing.network.MockRetrofitModule
+import org.oppia.android.testing.network.RetrofitTestModule
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
@@ -63,7 +63,7 @@ class MockFeedbackReportingTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [MockRetrofitModule::class])
+  @Component(modules = [RetrofitTestModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

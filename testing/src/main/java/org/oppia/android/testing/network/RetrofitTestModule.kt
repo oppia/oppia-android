@@ -17,7 +17,7 @@ import javax.inject.Singleton
  * wish to test uncertain network conditions.
  */
 @Module
-class MockRetrofitModule {
+class RetrofitTestModule {
   @Provides
   @Singleton
   fun provideMockRetrofit(): MockRetrofit {
