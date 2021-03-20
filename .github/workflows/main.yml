@@ -34,18 +34,28 @@ jobs:
        uses: actions/setup-java@v1
        with:
           java-version: 1.9
+      
+     - name: Check Java version & path
+       run: |
+         which java
+         java -version
+         echo "Java home: $JAVA_HOME"
+         $JAVA_HOME/bin/java -version
 
      - name: Install Dependencies
        if: steps.cache.outputs.cache-hit != 'true'
-       run: ./gradlew --full-stacktrace androidDependencies
+       run: ./gradlew --full-stacktrace androidDependencies -Dorg.gradle.java.home=$JAVA_HOME
+
+     - name: Check Gradle environment
+       run: ./gradlew -Dorg.gradle.java.home=$JAVA_HOME -v
 
      - name: Build App
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run: sudo ./gradlew --full-stacktrace assembleDebug
+       run: sudo ./gradlew --full-stacktrace assembleDebug -Dorg.gradle.java.home=$JAVA_HOME
 
      - name: Utility tests
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run:  sudo ./gradlew --full-stacktrace :utility:testDebugUnitTest
+       run:  sudo ./gradlew --full-stacktrace :utility:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
      - name: Upload Utility Test Reports
        uses: actions/upload-artifact@v2
        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
@@ -55,7 +65,7 @@ jobs:
 
      - name: Domain tests
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run:  sudo ./gradlew --full-stacktrace :domain:testDebugUnitTest
+       run:  sudo ./gradlew --full-stacktrace :domain:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
      - name: Upload Domain Test Reports
        uses: actions/upload-artifact@v2
        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
@@ -65,7 +75,7 @@ jobs:
 
      - name: Testing tests
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run:  sudo ./gradlew --full-stacktrace :testing:testDebugUnitTest
+       run:  sudo ./gradlew --full-stacktrace :testing:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
      - name: Upload Testing Test Reports
        uses: actions/upload-artifact@v2
        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
@@ -92,10 +102,20 @@ jobs:
         with:
           java-version: 1.9
 
+      - name: Check Java version & path
+        run: |
+          which java
+          java -version
+          echo "Java home: $JAVA_HOME"
+          $JAVA_HOME/bin/java -version
+
+      - name: Check Gradle environment
+        run: ./gradlew -Dorg.gradle.java.home=$JAVA_HOME -v
+
       - name: Robolectric tests - App Module
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run: |
-          sudo ./gradlew --full-stacktrace :app:testDebugUnitTest
+          sudo ./gradlew --full-stacktrace :app:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload App Test Reports
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status

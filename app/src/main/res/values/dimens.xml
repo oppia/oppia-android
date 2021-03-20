@@ -92,7 +92,7 @@
   <dimen name="enter_text_view_padding_start">60dp</dimen>
   <dimen name="enter_text_view_padding_end">60dp</dimen>
   <dimen name="promoted_story_card_width">280dp</dimen>
-  <dimen name="home_padding_end">44dp</dimen>
+  <dimen name="home_padding_end">20dp</dimen>
   <dimen name="home_padding_start">20dp</dimen>
   <dimen name="home_outer_margin">28dp</dimen>
   <dimen name="home_inner_margin">8dp</dimen>
@@ -179,7 +179,7 @@
   <dimen name="previous_responses_item_exploration_view_margin_top">24dp</dimen>
   <dimen name="previous_responses_item_question_split_view_margin_top">24dp</dimen>
   <dimen name="previous_responses_item_question_view_margin_top">24dp</dimen>
-  <dimen name="profile_chooser_add_view_margin_top_profile_not_added">24dp</dimen>
+  <dimen name="profile_chooser_add_view_margin_top_profile_not_added">84dp</dimen>
   <dimen name="profile_chooser_description_margin_start_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_add_view_margin_end_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_add_view_margin_start_profile_not_added">24dp</dimen>
