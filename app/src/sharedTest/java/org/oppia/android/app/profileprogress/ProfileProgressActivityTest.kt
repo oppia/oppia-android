@@ -64,7 +64,6 @@ import javax.inject.Singleton
   application = ProfileProgressActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-
 class ProfileProgressActivityTest {
 
   @get:Rule
