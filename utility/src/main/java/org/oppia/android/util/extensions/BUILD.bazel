@@ -20,4 +20,7 @@ kt_android_library(
     srcs = [
         "LiveDataExt.kt",
     ],
+    deps = [
+        "//third_party:androidx_lifecycle_lifecycle-extensions",
+    ],
 )
