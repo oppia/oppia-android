@@ -20,8 +20,4 @@ kt_android_library(
     srcs = [
         "LiveDataExt.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//third_party:androidx_lifecycle_lifecycle-extensions",
-    ],
 )
