@@ -21,6 +21,7 @@ kt_android_library(
     srcs = [
         "GcsResourceModule.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":dagger",
     ],
