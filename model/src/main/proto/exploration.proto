@@ -119,10 +119,20 @@ message CustomSchemaValue {
 // Structure for a single answer group
 // Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeAnswerGroup.kt
 message AnswerGroup {
-  string tagged_skill_misconception_id = 1;
+  Misconception tagged_skill_misconception = 1;
   Outcome outcome = 2;
   repeated RuleSpec rule_specs = 3;
   repeated TrainingData training_data = 4;
+}
+
+// Structure for a single misconception, after parsing the original string received from the backend:
+// https://github.com/oppia/oppia/blob/896466ae8bdd34641ea2e0031a5b9fa4243a3de7/core/templates/pages/
+// exploration-editor-page/editor-tab/templates/modal-templates/add-answer-group-modal.controller.ts#L60
+message Misconception {
+  // Skill ID parsed from the misconception.
+  string skill_id = 1;
+  // Misconception ID parsed from the misconception.
+  string misconception_id = 2;
 }
 
 // Structure for a single training data instance

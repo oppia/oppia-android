@@ -16,6 +16,7 @@ import org.oppia.android.app.model.AnswerGroup
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.Misconception
 import org.oppia.android.app.model.NumberUnit
 import org.oppia.android.app.model.NumberWithUnits
 import org.oppia.android.app.model.Outcome
@@ -119,6 +120,7 @@ class AnswerClassificationControllerTest {
       .setFeedback(SubtitledHtml.newBuilder().setContentId("content_id_1").setHtml("Feedback 2"))
       .build()
 
+    private val TEST_SKILL_ID_0 = "test-skill-id-0"
     private val TEST_MISCONCEPTION_ID_0 = "test-misconception-id-0"
   }
 
@@ -228,18 +230,22 @@ class AnswerClassificationControllerTest {
 
   @Test
   fun testClassify_nonDefaultOutcome_withMisconception_returnOutcomeWithMisconceptionId() {
-    val interaction = Interaction.newBuilder()
-      .setId("ItemSelectionInput")
-      .addAnswerGroups(
-        AnswerGroup.newBuilder()
-          .addRuleSpecs(
+    val interaction = Interaction.newBuilder().apply {
+      id = "ItemSelectionInput"
+      addAnswerGroups(
+        AnswerGroup.newBuilder().apply {
+          addRuleSpecs(
             RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_ITEM_SELECTION_SET_0)
           )
-          .setOutcome(OUTCOME_0)
-          .setTaggedSkillMisconceptionId(TEST_MISCONCEPTION_ID_0)
+          outcome = OUTCOME_0
+          taggedSkillMisconception = Misconception.newBuilder().apply {
+            skillId = TEST_SKILL_ID_0
+            misconceptionId = TEST_MISCONCEPTION_ID_0
+          }.build()
+        }
       )
-      .setDefaultOutcome(DEFAULT_OUTCOME)
-      .build()
+      defaultOutcome = DEFAULT_OUTCOME
+    }.build()
 
     val classificationResult = answerClassificationController.classify(
       interaction,
@@ -251,11 +257,12 @@ class AnswerClassificationControllerTest {
     // Classification result should return a tagged skill misconception ID
     assertThat(classificationResult)
       .isInstanceOf(ClassificationResult.OutcomeWithMisconception::class.java)
-    // Verify that the correct misconception ID is returned
+    // Verify that the correct misconception is returned
     assertThat(
       (classificationResult as ClassificationResult.OutcomeWithMisconception)
-        .taggedSkillMisconceptionId
-    ).isEqualTo(TEST_MISCONCEPTION_ID_0)
+        .taggedSkillId
+    ).isEqualTo(TEST_SKILL_ID_0)
+    assertThat(classificationResult.taggedMisconceptionId).isEqualTo(TEST_MISCONCEPTION_ID_0)
   }
 
   @Test
