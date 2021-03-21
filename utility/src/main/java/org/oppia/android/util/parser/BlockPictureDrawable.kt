@@ -1,6 +1,11 @@
 package org.oppia.android.util.parser
 
-class BlockPictureDrawable internal constructor(oppiaSvg: OppiaSvg) : SvgPictureDrawable(oppiaSvg) {
+import android.content.Context
+
+class BlockPictureDrawable internal constructor(
+  context: Context,
+  oppiaSvg: OppiaSvg
+) : SvgPictureDrawable(context, oppiaSvg) {
   init {
     computeBlockPicture()
   }

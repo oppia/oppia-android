@@ -26,7 +26,7 @@ class GlideImageLoader @Inject constructor(
 ) : ImageLoader {
   private val glide by lazy { Glide.with(context) }
   private val bitmapBlurTransformation by lazy { BitmapBlurTransformation(context) }
-  private val pictureBitmapBlurTransformation by lazy { PictureBlurTransformation(context) }
+  private val pictureBitmapBlurTransformation by lazy { SvgBlurTransformation() }
 
   override fun loadBitmap(
     imageUrl: String,
@@ -101,9 +101,9 @@ class GlideImageLoader @Inject constructor(
   }
 
   private fun <T> RequestBuilder<T>.transformWithAll(
-    transformations: List<Transformation<TransformablePictureDrawable>>
+    transformations: List<Transformation<OppiaSvg>>
   ): RequestBuilder<T> {
-    transformations.forEach { transform(TransformablePictureDrawable::class.java, it) }
+    transformations.forEach { transform(OppiaSvg::class.java, it) }
     return this
   }
 
@@ -117,7 +117,7 @@ class GlideImageLoader @Inject constructor(
   }
 
   private fun List<ImageTransformation>.toPictureGlideTransformations():
-    List<Transformation<TransformablePictureDrawable>> {
+    List<Transformation<OppiaSvg>> {
     return map {
       when (it) {
         ImageTransformation.BLUR -> pictureBitmapBlurTransformation

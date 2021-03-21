@@ -16,12 +16,12 @@ class RepositoryGlideModule : AppGlideModule() {
     registry.register(
       OppiaSvg::class.java,
       TextPictureDrawable::class.java,
-      TextSvgDrawableTranscoder()
+      TextSvgDrawableTranscoder(context)
     )
     registry.register(
       OppiaSvg::class.java,
       BlockPictureDrawable::class.java,
-      SvgDrawableTranscoder()
+      SvgDrawableTranscoder(context)
     )
 
     registry.append(InputStream::class.java, OppiaSvg::class.java, SvgDecoder())

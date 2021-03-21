@@ -6,33 +6,52 @@ import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.utils.RenderOptionsBase
 
-class OppiaSvg(private val svgSource: String) {
-  private val parsedSvg by lazy { SVG.getFromString(svgSource) }
+class OppiaSvg {
+  private val parsedSvg: Lazy<SVG>
+  val transformations: List<ImageTransformation>
+
+  constructor(svgSource: String) {
+    parsedSvg = lazy { SVG.getFromString(svgSource) }
+    transformations = listOf()
+  }
+
+  private constructor(parsedSvg: SVG, transformations: List<ImageTransformation>) {
+    this.parsedSvg = lazy { parsedSvg }
+    this.transformations = transformations.distinct()
+  }
 
   internal fun computeSizeSpecs(textPaint: TextPaint?): SvgSizeSpecs {
-    return if (textPaint != null) {
-      val options = RenderOptionsBase().textPaint(textPaint)
-      val width = parsedSvg.getDocumentWidth(options)
-      val height = parsedSvg.getDocumentHeight(options)
-      val verticalAlignment = adjustAlignmentForAndroid(parsedSvg.getVerticalAlignment(options))
-      SvgSizeSpecs(width, height, verticalAlignment)
-    } else {
-      val options = RenderOptionsBase()
-      val width = parsedSvg.getDocumentWidth(options)
-      val height = parsedSvg.getDocumentHeight(options)
-      SvgSizeSpecs(width, height, verticalAlignment = 0f)
+    return parsedSvg.value.let { svg ->
+      if (textPaint != null) {
+        val options = RenderOptionsBase().textPaint(textPaint)
+        val width = svg.getDocumentWidth(options)
+        val height = svg.getDocumentHeight(options)
+        val verticalAlignment = adjustAlignmentForAndroid(svg.getVerticalAlignment(options))
+        SvgSizeSpecs(width, height, verticalAlignment)
+      } else {
+        val options = RenderOptionsBase()
+        val width = svg.getDocumentWidth(options)
+        val height = svg.getDocumentHeight(options)
+        SvgSizeSpecs(width, height, verticalAlignment = 0f)
+      }
     }
   }
 
   fun renderToTextPicture(textPaint: TextPaint): Picture {
-    return computeSizeSpecs(textPaint).let { (width, height, _) ->
-      val options =
-        RenderOptions().textPaint(textPaint).viewPort(0f, 0f, width, height) as RenderOptions
-      parsedSvg.renderToPicture(options)
+    return parsedSvg.value.let { svg ->
+      computeSizeSpecs(textPaint).let { (width, height, _) ->
+        val options =
+          RenderOptions().textPaint(textPaint).viewPort(0f, 0f, width, height) as RenderOptions
+        svg.renderToPicture(options)
+      }
     }
   }
 
-  fun renderToBlockPicture(): Picture = parsedSvg.renderToPicture()
+  fun renderToBlockPicture(): Picture = parsedSvg.value.renderToPicture()
+
+  fun transform(transformations: List<ImageTransformation>): OppiaSvg {
+    return OppiaSvg(parsedSvg.value, this.transformations + transformations)
+  }
 
   // It seems that vertical alignment needs to be halved to work in Android's coordinate system as
   // compared with SVGs. This might be due to SVGs seemingly using an origin in the middle of the
