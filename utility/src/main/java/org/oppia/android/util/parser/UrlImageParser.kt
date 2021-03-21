@@ -212,12 +212,9 @@ class UrlImageParser private constructor(
       /** A [BlockImageTarget] used to load & arrange SVGs. */
       internal class SvgTarget(
         targetConfiguration: TargetConfiguration
-      ) : BlockImageTarget<TransformablePictureDrawable, TransformablePictureDrawable>(
-        targetConfiguration
-      ) {
-        override fun retrieveDrawable(
-          resource: TransformablePictureDrawable
-        ): TransformablePictureDrawable = resource
+      ) : BlockImageTarget<BlockPictureDrawable, BlockPictureDrawable>(targetConfiguration) {
+        override fun retrieveDrawable(resource: BlockPictureDrawable): BlockPictureDrawable =
+          resource
 
         companion object {
           /** Returns a new [SvgTarget] for the specified configuration. */
@@ -247,15 +244,11 @@ class UrlImageParser private constructor(
      */
     class TextSvgTarget(
       targetConfiguration: TargetConfiguration
-    ) : AutoAdjustingImageTarget<TransformablePictureDrawable, TransformablePictureDrawable>(
-      targetConfiguration
-    ) {
-      override fun retrieveDrawable(
-        resource: TransformablePictureDrawable
-      ): TransformablePictureDrawable = resource
+    ) : AutoAdjustingImageTarget<TextPictureDrawable, TextPictureDrawable>(targetConfiguration) {
+      override fun retrieveDrawable(resource: TextPictureDrawable): TextPictureDrawable = resource
 
       override fun computeBounds(
-        drawable: TransformablePictureDrawable,
+        drawable: TextPictureDrawable,
         viewWidth: Int
       ): BoundsAndAlignment {
         drawable.computeTextPicture(htmlContentTextView.paint)

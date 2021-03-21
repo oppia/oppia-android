@@ -11,11 +11,6 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
 import javax.inject.Inject
 
-private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
-private const val REPLACE_IMG_TAG = "img"
-private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
-private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
-
 private const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
@@ -30,6 +25,7 @@ class HtmlParser private constructor(
 ) {
   private val conceptCardTagHandler = ConceptCardTagHandler(customOppiaTagActionListener)
   private val bulletTagHandler = BulletTagHandler()
+  private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
   private val mathTagHandler by lazy { MathTagHandler(consoleLogger) }
 
   /**
@@ -60,13 +56,6 @@ class HtmlParser private constructor(
         .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
     }
 
-//    if (CUSTOM_IMG_TAG in htmlContent) {
-//      htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG)
-//      htmlContent =
-//        htmlContent.replace(CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
-//      htmlContent = htmlContent.replace("&amp;quot;", "")
-//    }
-
     // https://stackoverflow.com/a/8662457
     if (supportsLinks) {
       htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
@@ -91,6 +80,7 @@ class HtmlParser private constructor(
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
     handlersMap[CUSTOM_BULLET_LIST_TAG] = bulletTagHandler
+    handlersMap[CUSTOM_IMG_TAG] = imageTagHandler
     handlersMap[CUSTOM_MATH_TAG] = mathTagHandler
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler

@@ -30,7 +30,7 @@ interface ImageLoader {
    */
   fun loadBlockSvg(
     imageUrl: String,
-    target: ImageTarget<TransformablePictureDrawable>,
+    target: ImageTarget<BlockPictureDrawable>,
     transformations: List<ImageTransformation> = listOf()
   )
 
@@ -40,7 +40,7 @@ interface ImageLoader {
    */
   fun loadTextSvg(
     imageUrl: String,
-    target: ImageTarget<TransformablePictureDrawable>,
+    target: ImageTarget<TextPictureDrawable>,
     transformations: List<ImageTransformation> = listOf()
   )
 

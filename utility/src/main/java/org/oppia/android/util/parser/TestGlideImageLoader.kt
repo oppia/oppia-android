@@ -21,13 +21,13 @@ class TestGlideImageLoader @Inject constructor(
 
   override fun loadBlockSvg(
     imageUrl: String,
-    target: ImageTarget<TransformablePictureDrawable>,
+    target: ImageTarget<BlockPictureDrawable>,
     transformations: List<ImageTransformation>
   ) = glideImageLoader.loadBlockSvg(imageUrl, target, transformations)
 
   override fun loadTextSvg(
     imageUrl: String,
-    target: ImageTarget<TransformablePictureDrawable>,
+    target: ImageTarget<TextPictureDrawable>,
     transformations: List<ImageTransformation>
   ) = glideImageLoader.loadTextSvg(imageUrl, target, transformations)
 
