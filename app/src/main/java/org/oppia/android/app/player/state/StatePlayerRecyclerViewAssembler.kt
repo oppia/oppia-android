@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -172,6 +173,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     delayShowAdditionalHintsFromWrongAnswerMs
   )
 
+  private lateinit var stateContentId: String
+  private var contentViewModel: ContentViewModel? = null
+  private var feedbackViewModel: FeedbackViewModel? = null
+
   /** The most recent content ID read by the audio system. */
   private var audioPlaybackContentId: String? = null
 
@@ -208,7 +213,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     isSplitView: Boolean
   ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
     this.isSplitView.set(isSplitView)
-
+    stateContentId = ephemeralState.state.content.contentId
     val hasPreviousState = ephemeralState.hasPreviousState
     previousAnswerViewModels.clear()
     val conversationPendingItemList = mutableListOf<StateItemViewModel>()
@@ -322,13 +327,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
     gcsEntityId: String
   ) {
     val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
-    pendingItemList += ContentViewModel(
+    contentViewModel = ContentViewModel(
+      contentSubtitledHtml.contentId,
       contentSubtitledHtml.html,
       gcsEntityId,
       hasConversationView,
       isSplitView.get()!!,
       playerFeatureSet.conceptCardSupport
     )
+    if (isAudioPlaybackEnabled()) {
+      handleContentCardHighlighting(contentViewModel!!.contentId, true)
+    }
+    pendingItemList += contentViewModel!!
   }
 
   private fun addPreviousAnswers(
@@ -397,6 +407,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
       }
       if (playerFeatureSet.feedbackSupport) {
+        Log.d("MYSELF", "FEEDBACK ENABLED")
         createFeedbackItem(answerAndResponse.feedback, gcsEntityId)?.let(
           pendingItemList::add
         )
@@ -498,9 +509,27 @@ class StatePlayerRecyclerViewAssembler private constructor(
       val audioUiManager = getAudioUiManager()
       if (!isAudioPlaybackEnabled()) {
         audioUiManager?.enableAudioPlayback(audioPlaybackContentId)
+        handleContentCardHighlighting(audioPlaybackContentId ?: stateContentId, true)
       } else {
         audioUiManager?.disableAudioPlayback()
+        handleContentCardHighlighting(audioPlaybackContentId ?: stateContentId, false)
       }
+    }
+  }
+
+  /*
+  * Handle the Content Card highlighting -
+  * */
+  fun handleContentCardHighlighting(contentId: String, isPlaying: Boolean) {
+
+    if (contentViewModel != null && contentViewModel!!.contentId == contentId) {
+      contentViewModel!!.updateIsAudioPlaying(isPlaying)
+    }
+
+    if (feedbackViewModel != null && feedbackViewModel!!.contentId == contentId) {
+      contentViewModel!!.updateIsAudioPlaying(false)
+      feedbackViewModel!!.updateIsAudioPlaying(isPlaying)
+
     }
   }
 
@@ -511,6 +540,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   fun readOutAnswerFeedback(feedback: SubtitledHtml) {
     if (playerFeatureSet.supportAudioVoiceovers && isAudioPlaybackEnabled()) {
       audioPlaybackContentId = feedback.contentId
+      handleContentCardHighlighting(feedback.contentId, true)
       getAudioUiManager()?.loadFeedbackAudio(feedback.contentId, allowAutoPlay = true)
     }
   }
@@ -554,13 +584,20 @@ class StatePlayerRecyclerViewAssembler private constructor(
   ): FeedbackViewModel? {
     // Only show feedback if there's some to show.
     if (feedback.html.isNotEmpty()) {
-      return FeedbackViewModel(
+      Log.d("MYSELF", "FEEDBACK.HTML NOT NULL")
+      feedbackViewModel = FeedbackViewModel(
+        feedback.contentId,
         feedback.html,
         gcsEntityId,
         hasConversationView,
         isSplitView.get()!!,
         playerFeatureSet.conceptCardSupport
       )
+      feedbackViewModel!!.updateIsAudioPlaying(false)
+      if (isAudioPlaybackEnabled()) {
+        readOutAnswerFeedback(feedback)
+      }
+      return feedbackViewModel
     }
     return null
   }
@@ -922,6 +959,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
               supportsLinks = true,
               supportsConceptCards = contentViewModel.supportsConceptCards
             )
+          binding.viewModel = contentViewModel
         }
       )
       featureSets += PlayerFeatureSet(contentSupport = true)
@@ -956,6 +994,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
               supportsLinks = true,
               supportsConceptCards = feedbackViewModel.supportsConceptCards
             )
+          binding.viewModel = feedbackViewModel
         }
       )
       featureSets += PlayerFeatureSet(feedbackSupport = true)

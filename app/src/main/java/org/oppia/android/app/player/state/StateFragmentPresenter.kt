@@ -30,6 +30,7 @@ import org.oppia.android.app.player.audio.AudioUiManager
 import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
+import org.oppia.android.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.utility.SplitScreenManager
@@ -79,6 +80,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
+  private var feedbackViewModel: FeedbackViewModel? = null
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -216,6 +218,10 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  fun handleContentCardHighlighting(contentId: String, playing: Boolean) {
+    recyclerViewAssembler.handleContentCardHighlighting(contentId, playing)
+  }
+
   fun handleAudioClick() = recyclerViewAssembler.toggleAudioPlaybackState()
 
   fun handleKeyboardAction() {
@@ -287,6 +293,8 @@ class StateFragmentPresenter @Inject constructor(
       val audioFragment: AudioFragment = AudioFragment.newInstance(profileId.internalId)
       fragment.childFragmentManager.beginTransaction()
         .add(R.id.audio_fragment_placeholder, audioFragment, TAG_AUDIO_FRAGMENT).commitNow()
+
+//      (getAudioFragment() as AudioFragment).setContentIdListener(fragment as AudioContentIdListener)
     }
     return getAudioFragment() as? AudioUiManager
   }
@@ -413,7 +421,7 @@ class StateFragmentPresenter @Inject constructor(
           } else {
             viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
           }
-          recyclerViewAssembler.readOutAnswerFeedback(result.feedback)
+//          recyclerViewAssembler.readOutAnswerFeedback(result.feedback, fragment)
         }
       }
     )
