@@ -1,6 +1,7 @@
 package org.oppia.android.app.settings.profile
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -26,7 +27,9 @@ class ProfileEditActivityPresenter @Inject constructor(
   @Inject
   lateinit var profileEditViewModel: ProfileEditViewModel
 
-  fun handleOnCreate() {
+  private var dialog: AlertDialog? = null
+
+  fun handleOnCreate(savedInstanceState: Bundle?) {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
@@ -93,10 +96,12 @@ class ProfileEditActivityPresenter @Inject constructor(
         )
       }
     }
+    if (savedInstanceState?.getBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY) == true)
+      showDeletionDialog(profileId)
   }
 
   private fun showDeletionDialog(profileId: Int) {
-    AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+    dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.profile_edit_delete_dialog_title)
       .setMessage(R.string.profile_edit_delete_dialog_message)
       .setNegativeButton(R.string.profile_edit_delete_dialog_negative) { dialog, _ ->
@@ -121,6 +126,11 @@ class ProfileEditActivityPresenter @Inject constructor(
               }
             }
           )
-      }.create().show()
+      }.create()
+    dialog!!.show()
+  }
+
+  fun handleOnSaveInstanceState(outState: Bundle) {
+    outState.putBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY, dialog?.isShowing ?: false)
   }
 }
