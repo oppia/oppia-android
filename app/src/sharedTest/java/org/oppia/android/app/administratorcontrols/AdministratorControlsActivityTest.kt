@@ -76,11 +76,12 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -223,17 +224,17 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(not(isChecked())))
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
     }
@@ -250,55 +251,55 @@ class AdministratorControlsActivityTest {
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(not(isChecked())))
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(isChecked()))
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
       onView(isRoot()).perform(orientationPortrait())
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(isChecked()))
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
     }
@@ -402,7 +403,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_selectAdminNavItem_adminControlsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       it.openNavigationDrawer()
@@ -442,8 +443,8 @@ class AdministratorControlsActivityTest {
 
   private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-      context,
-      profileId
+      context = context,
+      profileId = profileId
     )
   }
 
@@ -507,9 +508,9 @@ class AdministratorControlsActivityTest {
   ) {
     onView(
       atPositionOnView(
-        R.id.administrator_controls_list,
-        itemPosition,
-        targetView
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetView
       )
     ).check(matches(isDisplayed()))
   }
@@ -521,9 +522,9 @@ class AdministratorControlsActivityTest {
   ) {
     onView(
       atPositionOnView(
-        R.id.administrator_controls_list,
-        itemPosition,
-        targetViewId
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetViewId
       )
     ).check(matches(withText(context.getString(stringIdToMatch))))
   }
@@ -555,12 +556,12 @@ class AdministratorControlsActivityTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

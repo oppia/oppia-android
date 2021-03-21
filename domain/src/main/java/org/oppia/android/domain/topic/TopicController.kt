@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
-import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.CompletedStory
 import org.oppia.android.app.model.CompletedStoryList
@@ -31,7 +30,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -85,8 +83,7 @@ class TopicController @Inject constructor(
   private val conceptCardRetriever: ConceptCardRetriever,
   private val revisionCardRetriever: RevisionCardRetriever,
   private val storyProgressController: StoryProgressController,
-  private val exceptionsController: ExceptionsController,
-  private val oppiaClock: OppiaClock
+  private val exceptionsController: ExceptionsController
 ) {
 
   /**
@@ -147,7 +144,7 @@ class TopicController @Inject constructor(
       try {
         AsyncResult.success(conceptCardRetriever.loadConceptCard(skillId))
       } catch (e: Exception) {
-        exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+        exceptionsController.logNonFatalException(e)
         AsyncResult.failed<ConceptCard>(e)
       }
     )
@@ -162,7 +159,7 @@ class TopicController @Inject constructor(
       try {
         AsyncResult.success(retrieveReviewCard(topicId, subtopicId))
       } catch (e: Exception) {
-        exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+        exceptionsController.logNonFatalException(e)
         AsyncResult.failed<RevisionCard>(e)
       }
     )
@@ -229,47 +226,33 @@ class TopicController @Inject constructor(
   }
 
   private fun checkIfTopicIsOngoing(topic: Topic, topicProgress: TopicProgress): Boolean {
-    val completedChapterProgressList = ArrayList<ChapterProgress>()
-    val startedChapterProgressList = ArrayList<ChapterProgress>()
-    topicProgress.storyProgressMap.values.toList().forEach { storyProgress ->
-      completedChapterProgressList.addAll(
-        storyProgress.chapterProgressMap.values
-          .filter { chapterProgress ->
-            chapterProgress.chapterPlayState ==
-              ChapterPlayState.COMPLETED
-          }
-      )
-      startedChapterProgressList.addAll(
-        storyProgress.chapterProgressMap.values
-          .filter { chapterProgress ->
-            chapterProgress.chapterPlayState ==
-              ChapterPlayState.STARTED_NOT_COMPLETED
-          }
-      )
+    // If there's at least one story with progress and not yet completed, then the topic
+    // is considered ongoing.
+    return topic.storyList.any { storySummary ->
+      topicProgress.storyProgressMap[storySummary.storyId]?.let { storyProgress ->
+        storySummary.isOngoing(storyProgress)
+      } ?: false
     }
+  }
 
-    // If there is at least 1 completed chapter and 1 not-completed chapter, it is definitely an
-    // ongoing-topic.
-    if (startedChapterProgressList.isNotEmpty()) {
-      return true
-    }
+  /**
+   * Return whether the current [StorySummary] can be considered "ongoing" given the specified
+   * [StoryProgress] (that is, at least one chapter has started and the final chapter isn't yet
+   * completed).
+   */
+  private fun StorySummary.isOngoing(storyProgress: StoryProgress): Boolean {
+    val firstChapterState = storyProgress.getChapterPlayState(chapterList.first().explorationId)
+    val lastChapterState = storyProgress.getChapterPlayState(chapterList.last().explorationId)
+    return firstChapterState != ChapterPlayState.NOT_STARTED &&
+      lastChapterState != ChapterPlayState.COMPLETED
+  }
 
-    if (topic.storyCount != topicProgress.storyProgressCount &&
-      topicProgress.storyProgressMap.isNotEmpty()
-    ) {
-      return true
-    }
-
-    topic.storyList.forEach { storySummary ->
-      if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
-        val storyProgress = topicProgress.storyProgressMap[storySummary.storyId]
-        val lastChapterSummary = storySummary.chapterList.last()
-        if (!storyProgress!!.chapterProgressMap.containsKey(lastChapterSummary.explorationId)) {
-          return true
-        }
-      }
-    }
-    return false
+  /**
+   * Returns the [ChapterPlayState] of this progress for the specified exploration, or
+   * [ChapterPlayState.NOT_STARTED] if the exploration hasn't even been attempted yet.
+   */
+  private fun StoryProgress.getChapterPlayState(explorationId: String): ChapterPlayState {
+    return chapterProgressMap[explorationId]?.chapterPlayState ?: ChapterPlayState.NOT_STARTED
   }
 
   private fun createCompletedStoryListFromProgress(

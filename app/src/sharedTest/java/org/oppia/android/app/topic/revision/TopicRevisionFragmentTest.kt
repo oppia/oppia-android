@@ -63,10 +63,11 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -116,31 +117,51 @@ class TopicRevisionFragmentTest {
 
   @Test
   fun testTopicRevisionFragment_loadFragment_displayRevisionTopics_isSuccessful() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
-      onView(atPosition(R.id.revision_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.revision_recycler_view, position = 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
 
   @Test
   fun testTopicRevisionFragment_loadFragment_selectRevisionTopics_opensRevisionCardActivity() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
       scrollToPosition(position = 0)
-      onView(atPosition(R.id.revision_recycler_view, 0)).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.revision_recycler_view,
+          position = 0
+        )
+      ).perform(click())
       intended(hasComponent(RevisionCardActivity::class.java.name))
     }
   }
 
   @Test
   fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
-      onView(atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_image_view)).check(
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.revision_recycler_view,
+          position = 0,
+          targetViewId = R.id.subtopic_image_view
+        )
+      ).check(
         matches(
           withDrawable(
             subtopicThumbnail
@@ -152,22 +173,34 @@ class TopicRevisionFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_configurationChange_revisionSubtopicsAreDisplayed() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       clickRevisionTab()
-      onView(atPosition(R.id.revision_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.revision_recycler_view, position = 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
 
   @Test
   fun testTopicRevisionFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       clickRevisionTab()
-      onView(atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_image_view)).check(
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.revision_recycler_view,
+          position = 0,
+          targetViewId = R.id.subtopic_image_view
+        )
+      ).check(
         matches(
           withDrawable(
             subtopicThumbnail
@@ -179,7 +212,9 @@ class TopicRevisionFragmentTest {
 
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
-      ApplicationProvider.getApplicationContext(), internalProfileId, topicId
+      context = ApplicationProvider.getApplicationContext(),
+      internalProfileId = internalProfileId,
+      topicId = topicId
     )
   }
 
@@ -187,13 +222,15 @@ class TopicRevisionFragmentTest {
     internalProfileId: Int,
     topicId: String
   ): ActivityScenario<TopicActivity> {
-    return launch(createTopicActivityIntent(internalProfileId, topicId))
+    return launch(
+      createTopicActivityIntent(internalProfileId = internalProfileId, topicId = topicId)
+    )
   }
 
   private fun clickRevisionTab() {
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(3).name),
+        withText(TopicTab.getTabForPosition(position = 3).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
@@ -222,12 +259,12 @@ class TopicRevisionFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

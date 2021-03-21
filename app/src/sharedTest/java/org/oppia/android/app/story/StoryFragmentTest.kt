@@ -76,15 +76,17 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.domain.topic.TEST_STORY_ID_1
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -119,6 +121,9 @@ class StoryFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Captor
   lateinit var listCaptor: ArgumentCaptor<List<ImageTransformation>>
 
@@ -138,7 +143,7 @@ class StoryFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    testCoroutineDispatchers.runCurrent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   @After
@@ -151,7 +156,7 @@ class StoryFragmentTest {
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
-    onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+    onView(withContentDescription(R.string.navigate_up)).perform(click())
     assertThat(activityTestRule.activity.isFinishing).isTrue()
   }
 
@@ -178,9 +183,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          0,
-          R.id.story_progress_chapter_completed_text
+          recyclerViewId = R.id.story_chapter_list,
+          position = 0,
+          targetViewId = R.id.story_progress_chapter_completed_text
         )
       ).check(
         matches(
@@ -210,9 +215,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          1,
-          R.id.chapter_title
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_title
         )
       ).check(
         matches(
@@ -233,9 +238,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          1,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_summary
         )
       ).check(
         matches(
@@ -257,9 +262,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          1,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_summary
         )
       ).check(
         matches(
@@ -280,9 +285,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          1,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_summary
         )
       ).check(
         matches(
@@ -308,9 +313,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          1,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_summary
         )
       ).check(
         matches(
@@ -335,18 +340,18 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          2,
-          R.id.chapter_thumbnail
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_thumbnail
         )
       ).check { view, noViewFoundException ->
         var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
           R.id.chapter_thumbnail
         )
         verify(lessonThumbnailImageView.imageLoader, atLeastOnce()).loadDrawable(
-          anyInt(),
-          anyOrNull(),
-          capture(listCaptor)
+          imageDrawableResId = anyInt(),
+          target = anyOrNull(),
+          transformations = capture(listCaptor)
         )
         assertThat(listCaptor.value).contains(ImageTransformation.BLUR)
       }
@@ -365,18 +370,18 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          2,
-          R.id.chapter_thumbnail
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_thumbnail
         )
       ).check { view, noViewFoundException ->
         var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
           R.id.chapter_thumbnail
         )
         verify(lessonThumbnailImageView.imageLoader, atLeastOnce()).loadDrawable(
-          anyInt(),
-          anyOrNull(),
-          capture(listCaptor)
+          imageDrawableResId = anyInt(),
+          target = anyOrNull(),
+          transformations = capture(listCaptor)
         )
         assertThat(listCaptor.value).contains(ImageTransformation.BLUR)
       }
@@ -394,9 +399,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          2,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_summary
         )
       ).check(
         matches(
@@ -418,9 +423,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          2,
-          R.id.chapter_summary
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_summary
         )
       ).check(
         matches(
@@ -441,7 +446,11 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.story_chapter_list, 1, R.id.story_chapter_card)
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.story_chapter_card
+        )
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ExplorationActivity::class.java.name))
@@ -468,9 +477,9 @@ class StoryFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.story_chapter_list,
-          0,
-          R.id.story_progress_chapter_completed_text
+          recyclerViewId = R.id.story_chapter_list,
+          position = 0,
+          targetViewId = R.id.story_progress_chapter_completed_text
         )
       ).check(
         matches(
@@ -499,7 +508,7 @@ class StoryFragmentTest {
   }
 
   private fun setStoryPartialProgressForFractions() {
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -526,12 +535,12 @@ class StoryFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, TestModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
