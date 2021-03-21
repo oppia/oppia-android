@@ -136,7 +136,7 @@ class ProfileRenameActivityTest {
         profileId = 1
       )
     )
-
+    // Check if the activity title matches the resource string
     val title = activityTestRule.activity.title
     assertThat(title).isEqualTo(context.getString(R.string.profile_rename_activity_title))
   }
