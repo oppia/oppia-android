@@ -212,9 +212,12 @@ class UrlImageParser private constructor(
       /** A [BlockImageTarget] used to load & arrange SVGs. */
       internal class SvgTarget(
         targetConfiguration: TargetConfiguration
-      ) : BlockImageTarget<BlockPictureDrawable, BlockPictureDrawable>(targetConfiguration) {
-        override fun retrieveDrawable(resource: BlockPictureDrawable): BlockPictureDrawable =
-          resource
+      ) : BlockImageTarget<TransformablePictureDrawable, TransformablePictureDrawable>(
+        targetConfiguration
+      ) {
+        override fun retrieveDrawable(
+          resource: TransformablePictureDrawable
+        ): TransformablePictureDrawable = resource
 
         companion object {
           /** Returns a new [SvgTarget] for the specified configuration. */
@@ -244,15 +247,19 @@ class UrlImageParser private constructor(
      */
     class TextSvgTarget(
       targetConfiguration: TargetConfiguration
-    ) : AutoAdjustingImageTarget<TextPictureDrawable, TextPictureDrawable>(targetConfiguration) {
-      override fun retrieveDrawable(resource: TextPictureDrawable): TextPictureDrawable = resource
+    ) : AutoAdjustingImageTarget<TransformablePictureDrawable, TransformablePictureDrawable>(
+      targetConfiguration
+    ) {
+      override fun retrieveDrawable(
+        resource: TransformablePictureDrawable
+      ): TransformablePictureDrawable = resource
 
       override fun computeBounds(
-        drawable: TextPictureDrawable,
+        drawable: TransformablePictureDrawable,
         viewWidth: Int
       ): BoundsAndAlignment {
-        drawable.initialize(htmlContentTextView.paint)
-        val (drawableWidth, drawableHeight, verticalAlignment) = drawable.computeIntrinsicSize()
+        drawable.computeTextPicture(htmlContentTextView.paint)
+        val (drawableWidth, drawableHeight, verticalAlignment) = drawable.getIntrinsicSize()
         return BoundsAndAlignment(
           bounds = Rect(0, 0, drawableWidth.toInt(), drawableHeight.toInt()),
           verticalAlignment = verticalAlignment

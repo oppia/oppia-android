@@ -9,12 +9,19 @@ import com.caverock.androidsvg.utils.RenderOptionsBase
 class OppiaSvg(private val svgSource: String) {
   private val parsedSvg by lazy { SVG.getFromString(svgSource) }
 
-  internal fun computeSizeSpecs(textPaint: TextPaint): SvgSizeSpecs {
-    val options = RenderOptionsBase().textPaint(textPaint)
-    val width = parsedSvg.getDocumentWidth(options)
-    val height = parsedSvg.getDocumentHeight(options)
-    val verticalAlignment = adjustAlignmentForAndroid(parsedSvg.getVerticalAlignment(options))
-    return SvgSizeSpecs(width, height, verticalAlignment)
+  internal fun computeSizeSpecs(textPaint: TextPaint?): SvgSizeSpecs {
+    return if (textPaint != null) {
+      val options = RenderOptionsBase().textPaint(textPaint)
+      val width = parsedSvg.getDocumentWidth(options)
+      val height = parsedSvg.getDocumentHeight(options)
+      val verticalAlignment = adjustAlignmentForAndroid(parsedSvg.getVerticalAlignment(options))
+      SvgSizeSpecs(width, height, verticalAlignment)
+    } else {
+      val options = RenderOptionsBase()
+      val width = parsedSvg.getDocumentWidth(options)
+      val height = parsedSvg.getDocumentHeight(options)
+      SvgSizeSpecs(width, height, verticalAlignment = 0f)
+    }
   }
 
   fun renderToTextPicture(textPaint: TextPaint): Picture {

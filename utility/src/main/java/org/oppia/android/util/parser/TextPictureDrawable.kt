@@ -1,17 +1,9 @@
 package org.oppia.android.util.parser
 
-import android.graphics.drawable.PictureDrawable
 import android.text.TextPaint
 
-class TextPictureDrawable(
-  private val oppiaSvg: OppiaSvg
-) : PictureDrawable(/* picture= */ null) {
-  private lateinit var textPaint: TextPaint
-
-  fun computeIntrinsicSize(): OppiaSvg.SvgSizeSpecs = oppiaSvg.computeSizeSpecs(textPaint)
-
+class TextPictureDrawable internal constructor(oppiaSvg: OppiaSvg) : SvgPictureDrawable(oppiaSvg) {
   fun initialize(textPaint: TextPaint) {
-    this.textPaint = textPaint
-    this.picture = oppiaSvg.renderToTextPicture(textPaint)
+    computeTextPicture(textPaint)
   }
 }
