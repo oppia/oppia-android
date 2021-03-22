@@ -13,7 +13,7 @@ data class GaeFeedbackReportingDeviceContext(
   /** The model code of the user's device. */
   @Json(name = "device_model") val deviceModel: String,
   /** The SDK version code on the user's device. */
-  @Json(name = "sdk_version") val sdkVersion: Int,
+  @Json(name = "android_sdk_version") val sdkVersion: Int,
   /** The consumer brand of the user's device. */
   @Json(name = "device_brand") val deviceBrand: String,
   /** The unique fingerprint ID of the specific device build. */
