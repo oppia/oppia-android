@@ -96,7 +96,9 @@ class CompletedStoryListActivityTest {
 
   @get:Rule
   val activityTestRule = ActivityTestRule(
-    CompletedStoryListActivity::class.java,/* initialTouchMode= */ true,/* launchActivity= */ false
+    CompletedStoryListActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
   )
 
   @Inject
