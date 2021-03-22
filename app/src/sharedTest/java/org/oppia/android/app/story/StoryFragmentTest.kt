@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.text.SpannableString
+import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
@@ -34,7 +33,9 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.Matchers
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -431,8 +432,8 @@ class StoryFragmentTest {
           targetViewId = R.id.chapter_summary
         )
       ).perform(
-        clickClickableSpan(
-          "Complete Chapter 1: What is a Fraction? to unlock this chapter."
+        openClickableSpan(
+          "Chapter 1: What is a Fraction?"
         )
       )
       onView(
@@ -465,8 +466,8 @@ class StoryFragmentTest {
           targetViewId = R.id.chapter_summary
         )
       ).perform(
-        clickClickableSpan(
-          "Complete Chapter 1: What is a Fraction? to unlock this chapter."
+        openClickableSpan(
+          "Chapter 1: What is a Fraction?"
         )
       )
       onView(
@@ -537,56 +538,53 @@ class StoryFragmentTest {
   }
 
   /**
-   * Reference:
-   * https://stackoverflow.com/questions/38314077/how-to-click-a-clickablespan-using-espresso
+   * Returns an action that finds a TextView containing the specific text, finds a ClickableSpan
+   * within that text view that contains the specified text, then clicks it. The need for this was
+   * inspired by https://stackoverflow.com/q/38314077.
    */
-  private fun clickClickableSpan(textToClick: CharSequence): ViewAction {
+  @Suppress("SameParameterValue")
+  private fun openClickableSpan(text: String): ViewAction {
     return object : ViewAction {
+      override fun getDescription(): String = "openClickableSpan"
 
-      override fun getConstraints(): org.hamcrest.Matcher<View> {
-        return Matchers.instanceOf(TextView::class.java)
-      }
+      override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
 
-      override fun getDescription(): String {
-        return "clicking on a ClickableSpan"
-      }
-
-      override fun perform(uiController: UiController, view: View) {
-        val textView = view as TextView
-        val spannableString = textView.text as SpannableString
-        if (spannableString.isEmpty()) {
-          // TextView is empty, nothing to do
-          throw NoMatchingViewException.Builder()
-            .includeViewHierarchy(true)
-            .withRootView(textView)
-            .build()
-        }
-        // Get the links inside the TextView and check if we find textToClick
-        val spans = spannableString.getSpans(
-          0,
-          spannableString.length,
-          ClickableSpan::class.java
-        )
-        if (spans.isNotEmpty()) {
-          var spanCandidate: ClickableSpan
-          for (span: ClickableSpan in spans) {
-            spanCandidate = span
-            val start = spannableString.getSpanStart(spanCandidate)
-            val end = spannableString.getSpanEnd(spanCandidate)
-            val sequence = spannableString.subSequence(start, end)
-            if (textToClick.toString().contains(sequence.toString())) {
-              span.onClick(textView)
-              return
-            }
-          }
-        }
-        // textToClick not found in TextView
-        throw NoMatchingViewException.Builder()
-          .includeViewHierarchy(true)
-          .withRootView(textView)
-          .build()
+      override fun perform(uiController: UiController?, view: View?) {
+        // The view shouldn't be null if the constraints are being met.
+        (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
       }
     }
+  }
+
+  /**
+   * Returns a matcher that matches against text views with clickable spans that contain the
+   * specified text.
+   */
+  private fun hasClickableSpanWithText(text: String): Matcher<View> {
+    return object : TypeSafeMatcher<View>(TextView::class.java) {
+      override fun describeTo(description: Description?) {
+        description?.appendText("has ClickableSpan with text")?.appendValue(text)
+      }
+
+      override fun matchesSafely(item: View?): Boolean {
+        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
+      }
+    }
+  }
+
+  private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
+    val viewText = text
+    return (viewText as Spannable).getSpans(
+      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
+    ).map {
+      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+    }
+  }
+
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(
+    text: String
+  ): ClickableSpan? {
+    return find { text in it.first }?.second
   }
 
   private fun createFractionsStoryActivityIntent(): Intent {
