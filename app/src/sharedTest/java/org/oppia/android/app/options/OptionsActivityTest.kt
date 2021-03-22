@@ -77,7 +77,7 @@ class OptionsActivityTest {
   }
 
   @Test
-  fun testFaqListActivity_hasCorrectActivityLabel() {
+  fun testOptionsActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(createOptionsActivityIntent())
     val title = activityTestRule.activity.title
 
@@ -93,8 +93,8 @@ class OptionsActivityTest {
   private fun createOptionsActivityIntent(): Intent {
     return OptionsActivity.createOptionsActivity(
       ApplicationProvider.getApplicationContext(),
-      0,
-      false
+      profileId = 0,
+      isFromNavigationDrawer = false
     )
   }
 
