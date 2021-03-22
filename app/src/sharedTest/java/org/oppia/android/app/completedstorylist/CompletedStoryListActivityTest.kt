@@ -95,7 +95,9 @@ class CompletedStoryListActivityTest {
   private val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @get:Rule
-  val activityTestRule = ActivityTestRule(CompletedStoryListActivity::class.java)
+  val activityTestRule = ActivityTestRule(
+    CompletedStoryListActivity::class.java,/* initialTouchMode= */ true,/* launchActivity= */ false
+  )
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -137,7 +139,7 @@ class CompletedStoryListActivityTest {
   }
 
   @Test
-  fun testFAQListActivity_hasCorrectActivityLabel() {
+  fun testCompletedStoryList_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(createCompletedStoryListActivityIntent(internalProfileId))
     val title = activityTestRule.activity.title
 
