@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -76,7 +76,6 @@ import org.oppia.android.domain.question.QuestionCountPerTrainingSession
 import org.oppia.android.domain.question.QuestionTrainingSeed
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.TEST_SKILL_ID_0
 import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RobolectricModule
@@ -102,7 +101,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
-private val TEXT_INPUT_SKILL = listOf(TEST_SKILL_ID_0)
 
 /** Tests for [QuestionPlayerActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -298,25 +296,33 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun textQuestionPlayer_startQuestionPlayer_progressBarIsVisible() {
-    launchForSkillList(TEXT_INPUT_SKILL).use {
+  fun textQuestionPlayer_startQuestionPlayer_progressBarIsDisplayed() {
+    launchForSkillList(SKILL_ID_LIST).use {
       onView(withId(R.id.question_progress_bar)).check(matches(isCompletelyDisplayed()))
     }
   }
 
   @Test
-  fun textQuestionPlayer_openKeyboard_progressBarIsGone() {
-    launchForSkillList(TEXT_INPUT_SKILL).use {
+  fun textQuestionPlayer_openKeyboard_progressBarIsNotDisplayed() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      selectMultipleChoiceOption(optionPosition = 2)
+      onView(withId(R.id.continue_navigation_button)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.text_input_interaction_view)).perform(click())
       onView(withId(R.id.question_progress_bar)).check(matches(not(isDisplayed())))
     }
   }
 
   @Test
-  fun textQuestionPlayer_openThenCloseKeyboard_progressBarIsVisible() {
-    launchForSkillList(TEXT_INPUT_SKILL).use {
+  fun textQuestionPlayer_openThenCloseKeyboard_progressBarIsDisplayed() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      selectMultipleChoiceOption(optionPosition = 2)
+      onView(withId(R.id.continue_navigation_button)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.text_input_interaction_view)).perform(click())
-      Espresso.closeSoftKeyboard()
+      closeSoftKeyboard()
       onView(withId(R.id.question_progress_bar)).check(matches(isCompletelyDisplayed()))
     }
   }
