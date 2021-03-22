@@ -6,9 +6,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.android.R
 import org.oppia.android.app.drawer.NavigationDrawerFragment
-import org.oppia.android.app.help.HelpFragment
 import javax.inject.Inject
 
+/** The presenter for the [FeedbackReportingEntryActivity]. */
 class FeedbackReportingEntryActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
@@ -26,10 +26,10 @@ class FeedbackReportingEntryActivityPresenter @Inject constructor(
         activity.finish()
       }
     }
-    if (getHelpFragment() == null) {
+    if (getFeedbackReportingEntryFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
-        R.id.help_fragment_placeholder,
-        HelpFragment()
+        R.id.feedback_reporting_entry_fragment_placeholder,
+        FeedbackReportingEntryFragment()
       ).commitNow()
     }
   }
@@ -44,18 +44,18 @@ class FeedbackReportingEntryActivityPresenter @Inject constructor(
     navigationDrawerFragment = activity
       .supportFragmentManager
       .findFragmentById(
-        R.id.help_activity_fragment_navigation_drawer
+        R.id.feedback_reporting_entry_activity_fragment_navigation_drawer
       ) as NavigationDrawerFragment
     navigationDrawerFragment.setUpDrawer(
-      activity.findViewById<View>(R.id.help_activity_drawer_layout) as DrawerLayout,
-      toolbar, R.id.nav_help
+      activity.findViewById<View>(R.id.feedback_reporting_entry_activity_drawer_layout) as DrawerLayout,
+      toolbar, R.id.nav_send_feedback
     )
   }
 
-  private fun getHelpFragment(): HelpFragment? {
-    return activity
-      .supportFragmentManager
-      .findFragmentById(R.id.help_fragment_placeholder) as HelpFragment?
+  private fun getFeedbackReportingEntryFragment(): FeedbackReportingEntryFragment? {
+    return activity.supportFragmentManager.findFragmentById(
+      R.id.feedback_reporting_entry_fragment_placeholder
+    ) as FeedbackReportingEntryFragment?
   }
 
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="buttonViewModel"
+      type="org.oppia.android.app.player.state.itemviewmodel.NextButtonViewModel" />
+  </data>
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
+
+    <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/feedback_report_type_suggestion">
+      <!--        click=viewModel.onSubmissionButtonClicked()-->
+    </Button>
+
+
+  </FrameLayout>
+</layout>
