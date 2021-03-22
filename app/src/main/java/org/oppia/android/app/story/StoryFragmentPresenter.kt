@@ -1,12 +1,12 @@
 package org.oppia.android.app.story
 
 import android.content.res.Resources
-import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.TypefaceSpan
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -167,11 +167,16 @@ class StoryFragmentPresenter @Inject constructor(
               override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.typeface = Typeface.DEFAULT_BOLD
               }
             }
             chapterLockedSpannable.setSpan(
               clickableSpan,
+              9,
+              chapterLockedSpannable.length - 24,
+              Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            chapterLockedSpannable.setSpan(
+              TypefaceSpan("sans-serif-medium"),
               9,
               chapterLockedSpannable.length - 24,
               Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
