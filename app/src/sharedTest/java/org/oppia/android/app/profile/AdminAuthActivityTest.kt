@@ -23,7 +23,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.android.material.textfield.TextInputLayout
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -32,6 +34,7 @@ import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -101,6 +104,11 @@ class AdminAuthActivityTest {
   lateinit var editTextInputAction: EditTextInputAction
 
   private val internalProfileId: Int = 0
+
+  @get:Rule
+  val activityTestRule: ActivityTestRule<AdminAuthActivity> = ActivityTestRule(
+    AdminAuthActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
   @Before
   fun setUp() {
@@ -609,6 +617,44 @@ class AdminAuthActivityTest {
       onView(withId(R.id.admin_auth_input_pin))
         .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
     }
+  }
+
+  @Test
+  fun testAdminAuthActivity_forProfileAdminControls_hasAuthorizeAccessControlsTitle() {
+    activityTestRule.launchActivity(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    )
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(
+      context.getString(R.string.admin_auth_activity_access_controls_title)
+    )
+  }
+
+  @Test
+  fun testAdminAuthActivity_forAddProfile_hasAuthorizeAddProfileTitle() {
+    activityTestRule.launchActivity(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
+      )
+    )
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.admin_auth_activity_add_profiles_title))
   }
 
   private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {

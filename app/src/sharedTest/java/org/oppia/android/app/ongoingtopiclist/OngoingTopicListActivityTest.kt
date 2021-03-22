@@ -112,6 +112,12 @@ class OngoingTopicListActivityTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
+    // Start the second ratios story so that the ratios topic is considered in-progress despite the
+    // first story being completed.
+    storyProfileTestHelper.markCompletedRatiosStory1Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
     storyProfileTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false

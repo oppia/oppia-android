@@ -1054,6 +1054,38 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testOngoingTopicList_finishOneStory_ongoingListIsCorrect() {
+    markRatiosStory0Chapter0AsCompleted()
+    markRatiosStory0Chapter1AsCompleted()
+
+    topicController.getOngoingTopicList(
+      profileId1
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetOngoingTopicListSucceeded()
+    val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.topicCount).isEqualTo(0)
+  }
+
+  @Test
+  fun testOngoingTopicList_finishOneStoryAndStartAnotherStoryFromSameTopic_ongoingListIsCorrect() {
+    markRatiosStory0Chapter0AsCompleted()
+    markRatiosStory0Chapter1AsCompleted()
+    markRatiosStory1Chapter0AsCompleted()
+
+    topicController.getOngoingTopicList(
+      profileId1
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyGetOngoingTopicListSucceeded()
+    val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.topicCount).isEqualTo(1)
+    assertThat(ongoingTopicList.topicList[0].topicId).isEqualTo(RATIOS_TOPIC_ID)
+  }
+
+  @Test
   fun testCompletedStoryList_validData_withoutAnyProgress_completedStoryListIsEmpty() {
     topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
@@ -1187,6 +1219,13 @@ class TopicControllerTest {
 
   private fun markRatiosStory0Chapter1AsCompleted() {
     storyProgressTestHelper.markCompletedRatiosStory0Exp1(
+      profileId1,
+      timestampOlderThanOneWeek = false
+    )
+  }
+
+  private fun markRatiosStory1Chapter0AsCompleted() {
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId1,
       timestampOlderThanOneWeek = false
     )

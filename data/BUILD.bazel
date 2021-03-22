@@ -20,6 +20,7 @@ kt_android_library(
         "//third_party:com_caverock_androidsvg",
         "//third_party:com_github_bumptech_glide_glide",
         "//utility",
+        "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
     ],
 )
 

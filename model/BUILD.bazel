@@ -67,6 +67,7 @@ proto_library(
 
 java_lite_proto_library(
     name = "interaction_object_java_proto_lite",
+    visibility = ["//visibility:public"],
     deps = [":interaction_object_proto"],
 )
 
@@ -219,10 +220,8 @@ android_library(
     visibility = ["//visibility:public"],
     exports = [
         ":arguments_java_proto_lite",
-        ":interaction_object_java_proto_lite",
         ":profile_java_proto_lite",
         ":question_java_proto_lite",
-        ":subtitled_html_java_proto_lite",
         ":subtitled_unicode_java_proto_lite",
         ":thumbnail_java_proto_lite",
         ":topic_java_proto_lite",
