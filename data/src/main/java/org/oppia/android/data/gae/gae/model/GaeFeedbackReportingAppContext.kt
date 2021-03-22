@@ -1,4 +1,4 @@
-package org.oppia.android.data.gae.gae.model
+package org.oppia.android.data.backends.gae.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -11,13 +11,13 @@ import com.squareup.moshi.JsonClass
 data class GaeFeedbackReportingAppContext(
 
   /** Corresponds to a location in the app that a user can access feedback reporting. */
-  @Json(name = "entry_point") val entryPoint: String,
+  @Json(name = "entry_point") val entryPoint: GaeFeedbackReportingEntryPoint,
   /** The text size used in the app. */
   @Json(name = "text_size") val textSize: String,
   /** The text language of the app. */
-  @Json(name = "text_lang") val textLang: String,
+  @Json(name = "text_language_code") val textLanguageCode: String,
   /** The audio language set in the app. */
-  @Json(name = "audio_lang") val audioLang: String,
+  @Json(name = "audio_language_code") val audioLanguageCode: String,
   /** Whether the app downloads items and updates only when connected to wifi. */
   @Json(name = "download_and_update_only_on_wifi") val downloadAndUpdateOnlyOnWifi: Boolean,
   /** Whether the app automatically updates topics. */
