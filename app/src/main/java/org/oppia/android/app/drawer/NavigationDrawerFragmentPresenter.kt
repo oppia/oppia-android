@@ -237,6 +237,15 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           }
           drawerLayout.closeDrawers()
         }
+        NavigationDrawerItem.SEND_FEEDBACK -> {
+          val intent =
+            MyDownloadsActivity.createMyDownloadsActivityIntent(activity, internalProfileId)
+          fragment.activity!!.startActivity(intent)
+          if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
+            fragment.activity!!.finish()
+          }
+          drawerLayout.closeDrawers()
+        }
         NavigationDrawerItem.SWITCH_PROFILE -> {
           val previousFragment =
             fragment.childFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)

@@ -9,7 +9,7 @@ import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.help.faq.FAQListActivity
 import javax.inject.Inject
 
-/** The help page activity for FAQs and feedback. */
+/** The help page activity for FAQs. */
 class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter
