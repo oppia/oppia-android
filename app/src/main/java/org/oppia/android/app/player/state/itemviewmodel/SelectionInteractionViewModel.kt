@@ -33,7 +33,7 @@ class SelectionInteractionViewModel(
     interaction.customizationArgsMap["choices"]
       ?.schemaObjectList
       ?.schemaObjectList
-      ?.map { schemaObject -> schemaObject.subtitledHtml.html }
+      ?.map { schemaObject -> schemaObject.customSchemaValue.subtitledHtml.html }
       ?: listOf()
   }
   private val minAllowableSelectionCount: Int by lazy {
@@ -49,7 +49,7 @@ class SelectionInteractionViewModel(
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
     computeChoiceItems(choiceStrings, hasConversationView, this)
 
-  private val isAnswerAvailable = ObservableField<Boolean>(false)
+  private val isAnswerAvailable = ObservableField(false)
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
@@ -73,6 +73,10 @@ class SelectionInteractionViewModel(
     val userAnswerBuilder = UserAnswer.newBuilder()
     val selectedItemsHtml = selectedItems.map(choiceItems::get).map { it.htmlContent }
     if (interactionId == "ItemSelectionInput") {
+      // TODO: asdf
+//      InteractionObject.newBuilder().apply {
+//        setOfTranslatableHtmlContentIds = ListOfSets
+//      }.build()
       userAnswerBuilder.answer = InteractionObject.newBuilder().setSetOfHtmlString(
         StringList.newBuilder().addAllHtml(selectedItemsHtml)
       ).build()

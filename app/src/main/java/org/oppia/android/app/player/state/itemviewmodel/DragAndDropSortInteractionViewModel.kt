@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
@@ -32,6 +33,8 @@ class DragAndDropSortInteractionViewModel(
     interaction.customizationArgsMap["choices"]
       ?.schemaObjectList
       ?.schemaObjectList
+      // TODO: asdf. This is broken since a list of list of dicts needs to be retrieved to extract
+      //  content IDs & then look them up in the state translations table.
       ?.map { schemaObject -> schemaObject.subtitledHtml.html }
       ?: listOf()
   }
@@ -99,6 +102,12 @@ class DragAndDropSortInteractionViewModel(
     val userAnswerBuilder = UserAnswer.newBuilder()
     val listItems = choiceItems.map { it.htmlContent }
     userAnswerBuilder.listOfHtmlAnswers = convertItemsToAnswer(listItems)
+    // TODO: asdf
+//    InteractionObject.newBuilder().apply {
+//      listOfSetsOfTranslatableHtmlContentIds = ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
+//        addAllContentIdLists(listItems)
+//      }.build()
+//    }.build()
     userAnswerBuilder.answer =
       InteractionObject.newBuilder().setListOfSetsOfHtmlString(
         ListOfSetsOfHtmlStrings.newBuilder().addAllSetOfHtmlStrings(listItems).build()
