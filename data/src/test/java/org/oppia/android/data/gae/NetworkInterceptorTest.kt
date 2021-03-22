@@ -11,8 +11,8 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.gae.gae.NetworkInterceptor
-import org.oppia.android.data.gae.gae.NetworkModule
+import org.oppia.android.data.backends.gae.NetworkInterceptor
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.testing.ApiUtils
 import org.oppia.android.testing.network.MockTopicService
 import org.robolectric.annotation.LooperMode

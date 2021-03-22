@@ -7,9 +7,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.network.MockExplorationService
-import org.oppia.android.data.gae.gae.NetworkInterceptor
-import org.oppia.android.data.gae.gae.NetworkSettings
-import org.oppia.android.data.gae.gae.api.ExplorationService
+import org.oppia.android.data.backends.gae.NetworkInterceptor
+import org.oppia.android.data.backends.gae.NetworkSettings
+import org.oppia.android.data.backends.gae.api.ExplorationService
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
