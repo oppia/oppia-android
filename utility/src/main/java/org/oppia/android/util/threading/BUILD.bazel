@@ -18,7 +18,9 @@ kt_android_library(
     srcs = [
         "DispatcherModule.kt",
     ],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
+        ":annotations",
         ":dagger",
         "//third_party:javax_inject_javax_inject",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-android",
