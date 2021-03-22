@@ -1,5 +1,5 @@
 """
-This file contains the dependecies needed by the files under the networking package to run
+Package for networking utilities
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
