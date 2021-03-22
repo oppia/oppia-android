@@ -13,6 +13,7 @@ load("//utility:utility_test.bzl", "utility_test")
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/accessibility/*.kt",
+    "src/main/java/org/oppia/android/util/profile/*.kt",
     "src/main/java/org/oppia/android/util/datetime/*.kt",
     "src/main/java/org/oppia/android/util/system/*.kt",
 ])
