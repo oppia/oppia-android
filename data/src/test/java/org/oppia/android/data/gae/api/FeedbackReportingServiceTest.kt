@@ -13,7 +13,7 @@ import org.oppia.android.testing.network.MockFeedbackReportingService
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
-import org.oppia.android.data.gae.backends.model.GaeFeedbackReport
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory

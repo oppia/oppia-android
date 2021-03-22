@@ -1,6 +1,6 @@
 package org.oppia.android.data.backends.gae.api
 
-import org.oppia.android.data.gae.backends.model.GaeFeedbackReport
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST

@@ -1,7 +1,7 @@
 package org.oppia.android.testing.network
 
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
-import org.oppia.android.data.gae.backends.model.GaeFeedbackReport
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import retrofit2.Call
 import retrofit2.mock.BehaviorDelegate
 
