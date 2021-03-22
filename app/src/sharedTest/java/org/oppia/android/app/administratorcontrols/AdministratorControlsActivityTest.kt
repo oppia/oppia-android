@@ -53,7 +53,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.profile.ProfileChooserActivity
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -75,6 +74,8 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewTesting.Companion.verifyItemDisplayedOnRecyclerView
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -138,7 +139,8 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      verifyItemDisplayedOnAdministratorControlListItem(
+      verifyItemDisplayedOnRecyclerView(
+        recyclerView = R.id.administrator_controls_list,
         itemPosition = 0,
         targetView = R.id.general_text_view
       )
@@ -147,7 +149,8 @@ class AdministratorControlsActivityTest {
         targetViewId = R.id.edit_account_text_view,
         stringIdToMatch = R.string.administrator_controls_edit_account
       )
-      verifyItemDisplayedOnAdministratorControlListItem(
+      verifyItemDisplayedOnRecyclerView(
+        recyclerView = R.id.administrator_controls_list,
         itemPosition = 1,
         targetView = R.id.profile_management_text_view
       )
@@ -172,12 +175,14 @@ class AdministratorControlsActivityTest {
         targetViewId = R.id.download_permissions_text_view,
         stringIdToMatch = R.string.administrator_controls_download_permissions_label
       )
-      verifyItemDisplayedOnAdministratorControlListItem(
+      verifyItemDisplayedOnRecyclerView(
+        recyclerView = R.id.administrator_controls_list,
         itemPosition = 2,
         targetView = R.id.topic_update_on_wifi_constraint_layout
       )
       scrollToPosition(position = 2)
-      verifyItemDisplayedOnAdministratorControlListItem(
+      verifyItemDisplayedOnRecyclerView(
+        recyclerView = R.id.administrator_controls_list,
         itemPosition = 2,
         targetView = R.id.auto_update_topic_constraint_layout
       )
@@ -193,7 +198,8 @@ class AdministratorControlsActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
-      verifyItemDisplayedOnAdministratorControlListItem(
+      verifyItemDisplayedOnRecyclerView(
+        recyclerView = R.id.administrator_controls_list,
         itemPosition = 3,
         targetView = R.id.app_information_text_view
       )
@@ -202,7 +208,8 @@ class AdministratorControlsActivityTest {
         targetViewId = R.id.app_version_text_view,
         stringIdToMatch = R.string.administrator_controls_app_version
       )
-      verifyItemDisplayedOnAdministratorControlListItem(
+      verifyItemDisplayedOnRecyclerView(
+        recyclerView = R.id.administrator_controls_list,
         itemPosition = 4,
         targetView = R.id.account_actions_text_view
       )
@@ -500,19 +507,6 @@ class AdministratorControlsActivityTest {
 
   private fun findParent(view: ViewParent): ViewParent {
     return view.getParent()
-  }
-
-  private fun verifyItemDisplayedOnAdministratorControlListItem(
-    itemPosition: Int,
-    targetView: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
-        position = itemPosition,
-        targetViewId = targetView
-      )
-    ).check(matches(isDisplayed()))
   }
 
   private fun verifyTextOnAdministratorListItemAtPosition(

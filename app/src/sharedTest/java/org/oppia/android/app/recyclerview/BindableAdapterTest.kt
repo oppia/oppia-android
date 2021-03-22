@@ -42,7 +42,7 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.android.app.recyclerview.BindableAdapter.MultiTypeBuilder
 import org.oppia.android.app.recyclerview.BindableAdapter.SingleTypeBuilder
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.BINDABLE_TEST_FRAGMENT_TAG
