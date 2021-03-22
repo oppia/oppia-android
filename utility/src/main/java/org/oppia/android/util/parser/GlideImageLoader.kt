@@ -62,7 +62,7 @@ class GlideImageLoader @Inject constructor(
       .intoTarget(target)
   }
 
-  private inline fun <reified T: TransformablePictureDrawable> loadSvgWithGlide(
+  private inline fun <reified T : TransformablePictureDrawable> loadSvgWithGlide(
     imageUrl: String,
     target: ImageTarget<T>,
     transformations: List<ImageTransformation>
@@ -107,19 +107,19 @@ class GlideImageLoader @Inject constructor(
 
   private fun List<ImageTransformation>.toBitmapGlideTransformations():
     List<Transformation<Bitmap>> {
-    return map {
-      when (it) {
-        ImageTransformation.BLUR -> bitmapBlurTransformation
+      return map {
+        when (it) {
+          ImageTransformation.BLUR -> bitmapBlurTransformation
+        }
       }
     }
-  }
 
   private fun List<ImageTransformation>.toPictureGlideTransformations():
     List<Transformation<OppiaSvg>> {
-    return map {
-      when (it) {
-        ImageTransformation.BLUR -> pictureBitmapBlurTransformation
+      return map {
+        when (it) {
+          ImageTransformation.BLUR -> pictureBitmapBlurTransformation
+        }
       }
     }
-  }
 }

@@ -7,7 +7,7 @@ import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
 import android.text.TextPaint
 
-abstract class TransformablePictureDrawable: Drawable() {
+abstract class TransformablePictureDrawable : Drawable() {
   // Force children to specifically implement this function.
   abstract override fun draw(canvas: Canvas)
 
@@ -17,7 +17,7 @@ abstract class TransformablePictureDrawable: Drawable() {
 
   override fun setAlpha(alpha: Int) { /* Unsupported. */ }
 
-  override fun setColorFilter(colorFilter: ColorFilter?)  { /* Unsupported. */ }
+  override fun setColorFilter(colorFilter: ColorFilter?) { /* Unsupported. */ }
 
   override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 

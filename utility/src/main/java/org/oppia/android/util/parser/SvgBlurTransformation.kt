@@ -6,7 +6,7 @@ import com.bumptech.glide.load.engine.Resource
 import com.bumptech.glide.load.resource.SimpleResource
 import java.security.MessageDigest
 
-class SvgBlurTransformation: Transformation<OppiaSvg> {
+class SvgBlurTransformation : Transformation<OppiaSvg> {
   private companion object {
     // See: https://bumptech.github.io/glide/doc/transformations.html#required-methods.
     private val ID = SvgBlurTransformation::class.java.name

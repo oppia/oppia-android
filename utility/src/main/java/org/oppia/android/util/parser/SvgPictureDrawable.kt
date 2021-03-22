@@ -11,7 +11,7 @@ import android.text.TextPaint
 open class SvgPictureDrawable(
   context: Context,
   private val oppiaSvg: OppiaSvg
-): TransformablePictureDrawable() {
+) : TransformablePictureDrawable() {
   private val bitmapBlurrer by lazy { BitmapBlurrer(context) }
 
   /**

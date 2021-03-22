@@ -6,7 +6,6 @@ import android.text.style.ImageSpan
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
 
-
 /** The custom tag corresponding to [MathTagHandler]. */
 const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
 private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
