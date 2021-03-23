@@ -50,6 +50,7 @@ kt_android_library(
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:com_google_guava_guava",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//tools:glide_compiler",
         "//utility/src/main/java/org/oppia/android/util/datetime:date_time_util",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
