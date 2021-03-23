@@ -16,20 +16,23 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      android:paddingStart="32dp"
+      android:paddingEnd="32dp">
 
       <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="top">
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp">
 
         <TextView
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_gravity="center"
+          android:fontFamily="sans-serif"
+          android:minHeight="48dp"
           android:text="@string/feedback_report_explanation">
-<!--          margins= // Some amount of margins around entire text view-->
-
         </TextView>
       </FrameLayout>
 
@@ -43,23 +46,34 @@
           android:layout_height="match_parent"
           android:layout_gravity="center"
           android:text="@string/feedback_report_type_prompt">
-<!--          margins= // Some amount of margins around entire text view-->
         </TextView>
       </FrameLayout>
 
-      <Button
+      <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/feedback_report_type_suggestion"
-        android:onClick="@{() -> viewModel.onSuggestionButtonClicked()}">
-      </Button>
+        android:orientation="horizontal"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp">
 
-      <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/feedback_report_type_issue"
-        android:onClick="@{() -> viewModel.onIssueButtonClicked()}">
-      </Button>
+        <Button
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="12dp"
+          style="@style/StateButtonActive"
+          android:text="@string/feedback_report_type_suggestion"
+          android:onClick="@{() -> viewModel.onSuggestionButtonClicked()}">
+        </Button>
+
+        <Button
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="12dp"
+          style="@style/StateButtonActive"
+          android:text="@string/feedback_report_type_issue"
+          android:onClick="@{() -> viewModel.onIssueButtonClicked()}">
+        </Button>
+      </LinearLayout>
     </LinearLayout>
 
   </androidx.constraintlayout.widget.ConstraintLayout>
