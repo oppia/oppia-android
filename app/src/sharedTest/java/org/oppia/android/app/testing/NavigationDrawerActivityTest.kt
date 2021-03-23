@@ -371,6 +371,27 @@ class NavigationDrawerActivityTest {
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
+  fun testNavDrawer_openNavDrawer_sendFeedback_switchProfile_cancel_sendFeedbackIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_send_feedback)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.SEND_FEEDBACK)))
+    }
+  }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
   fun testNavDrawer_openNavDrawer_admin_switchProfile_cancel_adminIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
