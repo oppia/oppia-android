@@ -26,22 +26,21 @@
 
     <FrameLayout
       android:layout_width="wrap_content"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent"
+      android:layout_marginEnd="24dp">
 
       <org.oppia.android.app.customview.VerticalDashedLineView
         android:layout_width="48dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="@{viewModel.index != 1 ? @dimen/story_chapter_view_tablet_margin_top_first_item : @dimen/space_0dp}"
-        android:layout_marginEnd="24dp"
-        android:visibility="@{viewModel.index != viewModel.totalChapters ? View.VISIBLE : View.GONE}" />
+        android:visibility="@{viewModel.index == (viewModel.totalChapters - 1) ? View.INVISIBLE : View.VISIBLE}"
+        app:color="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED ? @color/grey : @color/colorPrimary}"
+        app:layoutMarginTop="@{viewModel.index != 1 ? @dimen/story_chapter_view_tablet_margin_top_first_item : @dimen/space_0dp}" />
 
       <ImageView
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
         android:importantForAccessibility="no"
         android:src="@{viewModel.chapterSummary.chapterPlayState}" />
 
@@ -49,11 +48,10 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
         android:importantForAccessibility="no"
         android:padding="8dp"
         android:src="@drawable/ic_lessons_icon_24dp"
-        android:visibility="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED ? View.VISIBLE : View.GONE}" />
+        android:visibility="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED ? View.GONE : View.VISIBLE}" />
     </FrameLayout>
 
     <FrameLayout
@@ -65,7 +63,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="28dp"
         android:layout_marginBottom="16dp"
         android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"

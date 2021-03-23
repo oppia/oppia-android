@@ -10,47 +10,46 @@ import android.view.View
 import org.oppia.android.R
 
 /**
- * CustomView to represent chapter progress in StoryActivity.
+ * CustomView to represent chapter progress in [StoryActivity].
  *
  * Reference: https://stackoverflow.com/a/27054463
  */
 class VerticalDashedLineView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null
-) :
-  View(context, attrs) {
+) : View(context, attrs) {
   private val paint: Paint
+  private lateinit var canvas: Canvas
 
   init {
     val dashGap: Float = dpToPx(16)
     val dashLength: Float = dpToPx(32)
     val dashThickness: Float = dpToPx(6)
-    val color: Int
-
-    val attributes =
-      context.theme.obtainStyledAttributes(attrs, R.styleable.VerticalDashedLineView, 0, 0)
-
-    try {
-      color = attributes.getColor(
-        R.styleable.VerticalDashedLineView_color,
-        resources.getColor(R.color.colorPrimary)
-      )
-    } finally {
-      attributes.recycle()
-    }
 
     paint = Paint()
     paint.isAntiAlias = true
-    paint.color = color
+    paint.color = resources.getColor(R.color.colorPrimary)
     paint.style = Paint.Style.STROKE
     paint.strokeCap = Paint.Cap.ROUND
     paint.strokeWidth = dashThickness
     paint.pathEffect = DashPathEffect(floatArrayOf(dashLength, dashGap), 0F)
   }
 
+  fun setColor(colorId: Int) {
+    paint.color = colorId
+    drawLine()
+  }
+
   override fun onDraw(canvas: Canvas) {
-    val center = width * .5f
-    canvas.drawLine(center, 0f, center, height.toFloat(), paint)
+    this.canvas = canvas
+    drawLine()
+  }
+
+  private fun drawLine() {
+    if (::canvas.isInitialized) {
+      val center = width * .5f
+      this.canvas.drawLine(center, 0f, center, height.toFloat(), paint)
+    }
   }
 
   private fun dpToPx(dp: Int): Float {
