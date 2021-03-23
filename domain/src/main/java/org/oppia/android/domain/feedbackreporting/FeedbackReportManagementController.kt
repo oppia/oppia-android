@@ -270,7 +270,7 @@ class FeedbackReportManagementController @Inject constructor(
       entryPoint = getEntryPointData(appContext),
       textSize = appContext.textSize.name,
       textLanguageCode = appContext.textLanguage.toLanguageCode().toString(),
-      audioLanguage = appContext.audioLanguage.toLanguageCode().toString(),
+      audioLanguageCode = appContext.audioLanguage.toLanguageCode().toString(),
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
       automaticallyUpdateTopics = appContext.deviceSettings.automaticallyUpdateTopics,
       isAdmin = appContext.isAdmin,
@@ -300,6 +300,7 @@ class FeedbackReportManagementController @Inject constructor(
         topicId = revisionCard.topicId
         subtopicId = revisionCard.subtopicId
       }
+      // If entry point is not an exploration player or revision card, leave story values as null
     }
     return GaeFeedbackReportingEntryPoint(
       entryPointName = appContext.entryPointCase.name,

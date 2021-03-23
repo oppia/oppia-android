@@ -9,8 +9,8 @@
     ],
     "topic_progress": {},
     "text_size": "large",
-    "text_language_code": "en",
-    "audio_language_code": "en",
+    "text_language_code": "EN",
+    "audio_language_code": "EN",
     "download_and_update_only_on_wifi": true,
     "automatically_update_topics": false,
     "is_admin": false,
@@ -25,17 +25,17 @@
   },
   "device_context": {
     "device_model": "example_model",
-    "sdk_version": 23,
+    "android_sdk_version": 23,
     "device_brand": "example_brand",
     "build_fingerprint": "example_fingerprint_id",
     "network_type": "wifi"
   },
   "report_submission_timestamp_sec": 1610519337,
   "system_context": {
-    "platform_version": "0.1-alpha-abcdef1234",
+    "platform_version": "1.0-example_version",
     "package_version_code": 1,
-    "country_locale_code": "in",
-    "language_locale_code": "en"
+    "country_locale_code": "IN",
+    "language_locale_code": "EN"
   },
   "user_supplied_feedback": {
     "report_type": "suggestion",
