@@ -78,6 +78,7 @@ import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 import com.google.common.truth.Truth.assertThat
+import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity.Companion.createAppVersionActivityIntent
 
 /** Tests for [AppVersionActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -88,7 +89,7 @@ import com.google.common.truth.Truth.assertThat
 )
 class AppVersionActivityTest {
   @get:Rule
-  var activityTestRule: ActivityTestRule<AppVersionActivity> = ActivityTestRule(
+  val activityTestRule: ActivityTestRule<AppVersionActivity> = ActivityTestRule(
     AppVersionActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
@@ -112,11 +113,17 @@ class AppVersionActivityTest {
   }
   @Test
   fun testAppVersionActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createAppVersionActivityIntent())
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_label))
+    assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_title))
+  }
+
+  private fun createAppVersionActivityIntent(): Intent {
+        return AppVersionActivity.createAppVersionActivityIntent(
+          ApplicationProvider.getApplicationContext())
   }
 
   @After
