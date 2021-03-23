@@ -27,13 +27,13 @@ class CustomHtmlContentHandlerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock lateinit var mockImageGetter: Html.ImageGetter
+  @Mock lateinit var mockImageRetriever: FakeImageRetriever
 
   @Test
   fun testParseHtml_emptyString_returnsEmptyString() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        html = "", imageGetter = mockImageGetter, customTagHandlers = mapOf()
+        html = "", imageRetriever = mockImageRetriever, customTagHandlers = mapOf()
       )
 
     assertThat(parsedHtml.length).isEqualTo(0)
@@ -43,7 +43,9 @@ class CustomHtmlContentHandlerTest {
   fun testParseHtml_standardBoldHtml_returnsStringWithBoldSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        html = "<strong>Text</strong>", imageGetter = mockImageGetter, customTagHandlers = mapOf()
+        html = "<strong>Text</strong>",
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf()
       )
 
     assertThat(parsedHtml.toString()).isEqualTo("Text")
@@ -54,11 +56,11 @@ class CustomHtmlContentHandlerTest {
   fun testParseHtml_withImage_callsImageGetter() {
     CustomHtmlContentHandler.fromHtml(
       html = "<img src=\"test_source.png\"></img>",
-      imageGetter = mockImageGetter,
+      imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf()
     )
 
-    verify(mockImageGetter).getDrawable(anyString())
+    verify(mockImageRetriever).getDrawable(anyString())
   }
 
   @Test
@@ -68,7 +70,7 @@ class CustomHtmlContentHandlerTest {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
-        imageGetter = mockImageGetter,
+        imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
       )
 
@@ -83,7 +85,7 @@ class CustomHtmlContentHandlerTest {
 
     CustomHtmlContentHandler.fromHtml(
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
-      imageGetter = mockImageGetter,
+      imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
     )
 
@@ -102,7 +104,7 @@ class CustomHtmlContentHandlerTest {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
-        imageGetter = mockImageGetter,
+        imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf()
       )
 
@@ -114,7 +116,7 @@ class CustomHtmlContentHandlerTest {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
-        imageGetter = mockImageGetter,
+        imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
           "custom-tag" to ReplacingTagHandler("custom-attribute")
         )
@@ -132,7 +134,7 @@ class CustomHtmlContentHandlerTest {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = "<outer-tag>some <inner-tag>other</inner-tag> content</outer-tag>",
-        imageGetter = mockImageGetter,
+        imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
           "outer-tag" to outerFakeTagHandler,
           "inner-tag" to innerFakeTagHandler
@@ -151,7 +153,8 @@ class CustomHtmlContentHandlerTest {
 
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        html = htmlString, imageGetter = mockImageGetter,
+        html = htmlString,
+        imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
           CUSTOM_BULLET_LIST_TAG to BulletTagHandler()
         )
@@ -178,7 +181,8 @@ class CustomHtmlContentHandlerTest {
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
-      output: Editable
+      output: Editable,
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever
     ) {
       handleTagCalled = true
       handleTagCallIndex = methodCallCount++
@@ -203,9 +207,16 @@ class CustomHtmlContentHandlerTest {
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
-      output: Editable
+      output: Editable,
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever
     ) {
       output.replace(openIndex, closeIndex, attributes.getValue(attributeTextToReplaceWith))
     }
   }
+
+  /**
+   * A fake image retriever that satisifies both the contracts of [Html.ImageGetter] and
+   * [CustomHtmlContentHandler.ImageRetriever].
+   */
+  interface FakeImageRetriever : Html.ImageGetter, CustomHtmlContentHandler.ImageRetriever
 }
