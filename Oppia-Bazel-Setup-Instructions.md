@@ -1,8 +1,10 @@
 ## Overview
 Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. It uses a human-readable, high-level build language.
 
-
 ## Installation
+
+**WARNING: Do not use the Android Studio Bazel plugin, since it's currently not compatible with the project.**
+
 **We don't officially support Windows for now so the Windows instructions may not be complete and may require additional tweaking.**<br>
 
 1. Install Bazel from [here](https://docs.bazel.build/versions/master/install.html). 
