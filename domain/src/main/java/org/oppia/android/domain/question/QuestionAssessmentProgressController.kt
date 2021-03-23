@@ -145,7 +145,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
           // Track the number of answers the user submitted, including any misconceptions
           val misconception = if (classificationResult is OutcomeWithMisconception) {
-            classificationResult.taggedSkillMisconceptionId
+            classificationResult.taggedSkillId
           } else null
           progress.trackAnswerSubmitted(misconception)
 

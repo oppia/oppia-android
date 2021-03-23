@@ -16,6 +16,7 @@ sealed class ClassificationResult {
   /** This is used in the scenario that the classification result has a tagged skill misconception ID. */
   data class OutcomeWithMisconception(
     override val outcome: Outcome,
-    val taggedSkillMisconceptionId: String
+    val taggedSkillId: String,
+    val taggedMisconceptionId: String,
   ) : ClassificationResult()
 }
