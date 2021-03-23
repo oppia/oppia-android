@@ -37,6 +37,7 @@ import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
@@ -871,7 +872,8 @@ class TopicListControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      CachingTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
