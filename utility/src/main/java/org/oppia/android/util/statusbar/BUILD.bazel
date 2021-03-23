@@ -12,5 +12,5 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:androidx_appcompat_appcompat",
-    ]
+    ],
 )
