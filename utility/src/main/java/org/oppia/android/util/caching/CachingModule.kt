@@ -19,7 +19,7 @@ class CachingModule {
 
   @Provides
   @LoadImagesFromAssets
-  fun provideLoadImagesFromAssets(): Boolean = false
+  fun provideLoadImagesFromAssets(): Boolean = true
 
   @Provides
   @LoadLessonProtosFromAssets

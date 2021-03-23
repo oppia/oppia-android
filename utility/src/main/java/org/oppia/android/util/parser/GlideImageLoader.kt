@@ -17,12 +17,14 @@ import javax.inject.Singleton
 /** An [ImageLoader] that uses Glide. */
 @Singleton
 class GlideImageLoader @Inject constructor(
-  private val context: Context,
+  context: Context,
   @CacheAssetsLocally private val cacheAssetsLocally: Boolean,
   @LoadImagesFromAssets private val loadImagesFromAssets: Boolean,
   private val assetRepository: AssetRepository
 ) : ImageLoader {
   private val glide by lazy { Glide.with(context) }
+  private val bitmapBlurTransformation by lazy { BitmapBlurTransformation(context) }
+  private val pictureBitmapBlurTransformation by lazy { SvgBlurTransformation() }
 
   override fun loadBitmap(
     imageUrl: String,
@@ -32,7 +34,7 @@ class GlideImageLoader @Inject constructor(
     glide
       .asBitmap()
       .load(loadImage(imageUrl))
-      .transform(*transformations.toGlideTransformations())
+      .transform(*transformations.toBitmapGlideTransformations().toTypedArray())
       .intoTarget(target)
   }
 
@@ -56,7 +58,7 @@ class GlideImageLoader @Inject constructor(
     glide
       .asDrawable()
       .load(imageDrawableResId)
-      .transform(*transformations.toGlideTransformations())
+      .transform(*transformations.toBitmapGlideTransformations().toTypedArray())
       .intoTarget(target)
   }
 
@@ -72,7 +74,7 @@ class GlideImageLoader @Inject constructor(
       .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
       .apply(SvgDecoder.createLoadOppiaSvgOption())
       .load(loadImage(imageUrl))
-      .transform(*transformations.toGlideTransformations())
+      .transformWithAll(transformations.toPictureGlideTransformations())
       .intoTarget(target)
   }
 
@@ -96,11 +98,28 @@ class GlideImageLoader @Inject constructor(
     is ImageViewTarget -> into(target.imageView)
   }
 
-  private fun List<ImageTransformation>.toGlideTransformations(): Array<Transformation<Bitmap>> {
-    return map {
-      when (it) {
-        ImageTransformation.BLUR -> BlurTransformation(context)
-      }
-    }.toTypedArray()
+  private fun <T> RequestBuilder<T>.transformWithAll(
+    transformations: List<Transformation<OppiaSvg>>
+  ): RequestBuilder<T> {
+    transformations.forEach { transform(OppiaSvg::class.java, it) }
+    return this
   }
+
+  private fun List<ImageTransformation>.toBitmapGlideTransformations():
+    List<Transformation<Bitmap>> {
+      return map {
+        when (it) {
+          ImageTransformation.BLUR -> bitmapBlurTransformation
+        }
+      }
+    }
+
+  private fun List<ImageTransformation>.toPictureGlideTransformations():
+    List<Transformation<OppiaSvg>> {
+      return map {
+        when (it) {
+          ImageTransformation.BLUR -> pictureBitmapBlurTransformation
+        }
+      }
+    }
 }
