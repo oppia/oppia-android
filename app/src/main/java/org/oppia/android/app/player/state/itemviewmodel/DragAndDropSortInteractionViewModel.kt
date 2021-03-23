@@ -192,9 +192,11 @@ class DragAndDropSortInteractionViewModel(
         DragDropInteractionContentViewModel(
           contentIdHtmlMap = contentIdHtmlMap,
           htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-            addContentIds(TranslatableHtmlContentId.newBuilder().apply {
-              contentId = subtitledHtml.contentId
-            })
+            addContentIds(
+              TranslatableHtmlContentId.newBuilder().apply {
+                contentId = subtitledHtml.contentId
+              }
+            )
           }.build(),
           itemIndex = index,
           listSize = choiceStrings.size,

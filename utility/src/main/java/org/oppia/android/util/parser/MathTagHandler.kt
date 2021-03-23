@@ -3,7 +3,6 @@ package org.oppia.android.util.parser
 import android.text.Editable
 import android.text.Spannable
 import android.text.style.ImageSpan
-import org.json.JSONException
 import org.json.JSONObject
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes

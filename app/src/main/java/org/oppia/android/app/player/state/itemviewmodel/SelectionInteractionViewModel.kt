@@ -6,7 +6,6 @@ import androidx.databinding.ObservableList
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
-import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
@@ -78,11 +77,13 @@ class SelectionInteractionViewModel(
     if (interactionId == "ItemSelectionInput") {
       userAnswerBuilder.answer = InteractionObject.newBuilder().apply {
         setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-          addAllContentIds(selectedItemSubtitledHtmls.map { subtitledHtml ->
-            TranslatableHtmlContentId.newBuilder().apply {
-              contentId = subtitledHtml.contentId
-            }.build()
-          })
+          addAllContentIds(
+            selectedItemSubtitledHtmls.map { subtitledHtml ->
+              TranslatableHtmlContentId.newBuilder().apply {
+                contentId = subtitledHtml.contentId
+              }.build()
+            }
+          )
         }.build()
       }.build()
       userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(selectedItemSubtitledHtmls)
