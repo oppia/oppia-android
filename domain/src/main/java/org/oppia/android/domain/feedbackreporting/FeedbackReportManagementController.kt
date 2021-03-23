@@ -279,7 +279,7 @@ class FeedbackReportManagementController @Inject constructor(
           FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG,
           "Encountered unexpected app text language: ${appContext.textLanguage.name}"
         )
-        textLanguageCode ="${LANGUAGE_CODE_ERROR}:${appContext.textLanguage.name}"
+        textLanguageCode = "LANGUAGE_CODE_ERROR:${appContext.textLanguage.name}"
       }
     }
     return GaeFeedbackReportingAppContext(
