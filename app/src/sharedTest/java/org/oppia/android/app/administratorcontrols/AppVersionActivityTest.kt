@@ -124,7 +124,6 @@ class AppVersionActivityTest {
   private fun createAppVersionActivityIntent(): Intent {
         return AppVersionActivity.createAppVersionActivityIntent(
           ApplicationProvider.getApplicationContext())
-
   }
 
   @After
