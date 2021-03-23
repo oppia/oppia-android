@@ -1,5 +1,6 @@
 package org.oppia.android.util.parser
 
+import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
@@ -17,7 +18,8 @@ import java.util.ArrayDeque
  * This is based on the implementation provided in https://stackoverflow.com/a/36528149.
  */
 class CustomHtmlContentHandler private constructor(
-  private val customTagHandlers: Map<String, CustomTagHandler>
+  private val customTagHandlers: Map<String, CustomTagHandler>,
+  private val imageRetriever: ImageRetriever
 ) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
@@ -107,7 +109,8 @@ class CustomHtmlContentHandler private constructor(
         }
         val (_, attributes, openTagIndex) = currentTrackedCustomTag
         customTagHandlers.getValue(tag).handleClosingTag(output)
-        customTagHandlers.getValue(tag).handleTag(attributes, openTagIndex, output.length, output)
+        customTagHandlers.getValue(tag)
+          .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
       }
     }
   }
@@ -128,8 +131,16 @@ class CustomHtmlContentHandler private constructor(
      * @param openIndex the index in the output [Editable] at which this tag begins
      * @param closeIndex the index in the output [Editable] at which this tag ends
      * @param output the destination [Editable] to which spans can be added
+     * @param imageRetriever a utility to load image drawables if needed by the handler
      */
-    fun handleTag(attributes: Attributes, openIndex: Int, closeIndex: Int, output: Editable) {}
+    fun handleTag(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable,
+      imageRetriever: ImageRetriever
+    ) {
+    }
 
     /**
      * Called when the opening of a custom tag is encountered. This does not support processing
@@ -152,25 +163,54 @@ class CustomHtmlContentHandler private constructor(
     fun handleClosingTag(output: Editable) {}
   }
 
+  /**
+   * Retriever of images for custom tag handlers. The built-in Android analog for this class is
+   * Html's ImageGetter.
+   */
+  interface ImageRetriever {
+    /** Returns a new [Drawable] corresponding to the specified URL and [Type]. */
+    fun loadDrawable(sourceUrl: String, type: Type): Drawable
+
+    /** Corresponds to the types of images that can be retrieved. */
+    enum class Type {
+      /**
+       * Corresponds to a block image that should be positioned in a way that may break text, and
+       * potentially centered depending on the configuration of the implementation.
+       */
+      BLOCK_IMAGE
+    }
+  }
+
   companion object {
     /**
      * Returns a new [Spannable] with HTML parsed from [html] using the specified [imageGetter] for
      * handling image retrieval, and map of tags to [CustomTagHandler]s for handling custom tags.
      * All possible custom tags must be registered in the [customTagHandlers] map.
      */
-    fun fromHtml(
+    fun <T> fromHtml(
       html: String,
-      imageGetter: Html.ImageGetter,
+      imageRetriever: T,
       customTagHandlers: Map<String, CustomTagHandler>
-    ): Spannable {
+    ): Spannable where T : Html.ImageGetter, T : ImageRetriever {
       // Adjust the HTML to allow the custom content handler to properly initialize custom tag
       // tracking.
       return HtmlCompat.fromHtml(
         "<init-custom-handler/>$html",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
-        imageGetter,
-        CustomHtmlContentHandler(customTagHandlers)
+        imageRetriever,
+        CustomHtmlContentHandler(customTagHandlers, imageRetriever),
       ) as Spannable
     }
   }
+}
+
+/**
+ * Returns a string value from this [Attributes] object, but interpreted as a JSON string, or null
+ * if the corresponding value doesn't exist in this attributes map.
+ */
+fun Attributes.getJsonStringValue(name: String): String? {
+  // Note that the attribute is actually an encoded JSON string (so it has escaped quotes around
+  // it). Since it's only a source string, the quotes can simply be removed in order to extract
+  // the string value.
+  return getValue(name)?.replace("&quot;", "")
 }

@@ -1,21 +1,12 @@
 package org.oppia.android.util.parser
 
-import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
-import org.xml.sax.Attributes
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
-
-private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
-private const val REPLACE_IMG_TAG = "img"
-private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
-private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
-
-private const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
@@ -24,10 +15,14 @@ class HtmlParser private constructor(
   private val entityType: String,
   private val entityId: String,
   private val imageCenterAlign: Boolean,
+  private val consoleLogger: ConsoleLogger,
   customOppiaTagActionListener: CustomOppiaTagActionListener?
 ) {
-  private val conceptCardTagHandler = ConceptCardTagHandler(customOppiaTagActionListener)
-  private val bulletTagHandler = BulletTagHandler()
+  private val conceptCardTagHandler by lazy {
+    ConceptCardTagHandler(customOppiaTagActionListener, consoleLogger)
+  }
+  private val bulletTagHandler by lazy { BulletTagHandler() }
+  private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
 
   /**
    * Parses a raw HTML string with support for custom Oppia tags.
@@ -57,13 +52,6 @@ class HtmlParser private constructor(
         .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
     }
 
-    if (CUSTOM_IMG_TAG in htmlContent) {
-      htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG)
-      htmlContent =
-        htmlContent.replace(CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
-      htmlContent = htmlContent.replace("&amp;quot;", "")
-    }
-
     // https://stackoverflow.com/a/8662457
     if (supportsLinks) {
       htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
@@ -88,36 +76,11 @@ class HtmlParser private constructor(
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
     handlersMap[CUSTOM_BULLET_LIST_TAG] = bulletTagHandler
+    handlersMap[CUSTOM_IMG_TAG] = imageTagHandler
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
     return handlersMap
-  }
-
-  // https://mohammedlakkadshaw.com/blog/handling-custom-tags-in-android-using-html-taghandler.html/
-  private class ConceptCardTagHandler(
-    private val customOppiaTagActionListener: CustomOppiaTagActionListener?
-  ) : CustomHtmlContentHandler.CustomTagHandler {
-    override fun handleTag(
-      attributes: Attributes,
-      openIndex: Int,
-      closeIndex: Int,
-      output: Editable
-    ) {
-      // Replace the custom tag with a clickable piece of text based on the tag's customizations.
-      val skillId = attributes.getValue("skill_id-with-value")
-      val text = attributes.getValue("text-with-value")
-      val spannableBuilder = SpannableStringBuilder(text)
-      spannableBuilder.setSpan(
-        object : ClickableSpan() {
-          override fun onClick(view: View) {
-            customOppiaTagActionListener?.onConceptCardLinkClicked(view, skillId)
-          }
-        },
-        0, text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-      )
-      output.replace(openIndex, closeIndex, spannableBuilder)
-    }
   }
 
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
@@ -150,7 +113,10 @@ class HtmlParser private constructor(
   }
 
   /** Factory for creating new [HtmlParser]s. */
-  class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
+  class Factory @Inject constructor(
+    private val urlImageParserFactory: UrlImageParser.Factory,
+    private val consoleLogger: ConsoleLogger
+  ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
      * optionally specified [CustomOppiaTagActionListener] for handling custom Oppia tag events.
@@ -168,6 +134,7 @@ class HtmlParser private constructor(
         entityType,
         entityId,
         imageCenterAlign,
+        consoleLogger,
         customOppiaTagActionListener
       )
     }
