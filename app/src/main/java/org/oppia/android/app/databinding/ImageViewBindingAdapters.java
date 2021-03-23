@@ -3,18 +3,15 @@ package org.oppia.android.app.databinding;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
-
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-
 import org.oppia.android.R;
 import org.oppia.android.app.model.ChapterPlayState;
 import org.oppia.android.app.model.LessonThumbnailGraphic;
