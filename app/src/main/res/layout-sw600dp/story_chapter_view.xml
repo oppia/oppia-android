@@ -30,6 +30,7 @@
       android:layout_marginEnd="24dp">
 
       <org.oppia.android.app.customview.VerticalDashedLineView
+        android:id="@+id/verticalDashedLineView"
         android:layout_width="48dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
@@ -38,6 +39,7 @@
         app:layoutMarginTop="@{viewModel.index != 1 ? @dimen/story_chapter_view_tablet_margin_top_first_item : @dimen/space_0dp}" />
 
       <ImageView
+        android:id="@+id/progress_image_view"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
@@ -45,6 +47,7 @@
         android:src="@{viewModel.chapterSummary.chapterPlayState}" />
 
       <ImageView
+        android:id="@+id/completed_chapter_image_view"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
