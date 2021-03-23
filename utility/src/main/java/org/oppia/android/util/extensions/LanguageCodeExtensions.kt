@@ -1,6 +1,5 @@
 package org.oppia.android.util.extensions
 
-import org.intellij.lang.annotations.Language
 import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.AudioLanguage
 
@@ -56,4 +55,3 @@ fun AudioLanguage.toLanguageCode(): LanguageCode {
     else -> LanguageCode.UNKNOWN_LANGUAGE_CODE
   }
 }
-

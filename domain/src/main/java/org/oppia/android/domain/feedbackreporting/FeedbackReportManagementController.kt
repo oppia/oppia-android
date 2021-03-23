@@ -1,7 +1,6 @@
 package org.oppia.android.domain.feedbackreporting
 
 import androidx.lifecycle.Transformations
-import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingAppContext.EntryPointCase
@@ -27,8 +26,6 @@ import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.toLanguageCode
-import org.oppia.android.util.extensions.toLanguageCodeString
-import org.oppia.android.util.extensions.toString
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
@@ -273,7 +270,7 @@ class FeedbackReportManagementController @Inject constructor(
       entryPoint = getEntryPointData(appContext),
       textSize = appContext.textSize.name,
       textLanguageCode = appContext.textLanguage.toLanguageCode().toString(),
-      audioLanguage = appContext.audioLanguage.toLanguageCodeString().toString(),
+      audioLanguage = appContext.audioLanguage.toLanguageCode().toString(),
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
       automaticallyUpdateTopics = appContext.deviceSettings.automaticallyUpdateTopics,
       isAdmin = appContext.isAdmin,
