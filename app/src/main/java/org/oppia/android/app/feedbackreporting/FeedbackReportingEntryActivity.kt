@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
 
 /** The first activity displayed for feedback reporting. */
@@ -28,12 +29,13 @@ class FeedbackReportingEntryActivity : InjectableAppCompatActivity() {
     const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
       "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
 
-    fun createFeedbackReportingEntrytActivityIntent(
+    fun createFeedbackReportingEntryActivityIntent(
       context: Context,
       profileId: Int?,
       isFromNavigationDrawer: Boolean
     ): Intent {
       val intent = Intent(context, FeedbackReportingEntryActivity::class.java)
+      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
       intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
       return intent
     }
