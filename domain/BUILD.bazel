@@ -21,7 +21,10 @@ kt_android_library(
     deps = [
         ":dagger",
         "//data:persistent_cache_store",
+        "//data:remote_service_models",
+        "//data:remote_services",
         "//model:onboarding_java_proto_lite",
+        "//model:feedback_reporting_java_proto_lite",
         "//third_party:androidx_work_work-runtime-ktx",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
         "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
@@ -34,6 +37,9 @@ kt_android_library(
     srcs = glob(["src/main/java/org/oppia/android/domain/testing/**/*.kt"]),
     deps = [
         ":domain",
+        "//data:remote_service_models",
+        "//data:remote_services",
+        "//model:feedback_reporting_java_proto_lite",
         "//third_party:androidx_work_work-runtime-ktx",
     ],
 )

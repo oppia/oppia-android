@@ -24,4 +24,37 @@ kt_android_library(
     ],
 )
 
+kt_android_library(
+    name = "remote_service_models",
+    testonly = False,
+    srcs = glob([
+        "src/main/java/org/oppia/android/data/backends/gae/model/*.kt",
+    ]),
+    custom_package = "org.oppia.android.data.backends.gae.model",
+    manifest = "src/main/AndroidManifest.xml",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":dagger",
+        "//third_party:com_squareup_retrofit2_retrofit",
+        "//utility",
+    ],
+)
+
+kt_android_library(
+    name = "remote_services",
+    testonly = False,
+    srcs = [
+        "src/main/java/org/oppia/android/data/backends/gae/api/FeedbackReportingService.kt",
+    ],
+    custom_package = "org.oppia.android.data.backends",
+    manifest = "src/main/AndroidManifest.xml",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":dagger",
+        ":remote_service_models",
+        "//model:feedback_reporting_java_proto_lite",
+        "//utility",
+    ],
+)
+
 dagger_rules()

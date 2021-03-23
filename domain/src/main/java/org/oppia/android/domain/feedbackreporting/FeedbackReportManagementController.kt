@@ -1,8 +1,6 @@
 package org.oppia.android.domain.feedbackreporting
 
 import androidx.lifecycle.Transformations
-import org.oppia.android.app.model.AppLanguage
-import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingAppContext.EntryPointCase
@@ -27,6 +25,7 @@ import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.toLanguageCode
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
@@ -41,7 +40,8 @@ private const val LANGUAGE_CODE_ENGLISH = "EN"
 private const val LANGUAGE_CODE_HINDI = "HI"
 private const val LANGUAGE_CODE_FRENCH = "FR"
 private const val LANGUAGE_CODE_CHINESE = "ZH"
-private const val LANGUAGE_CODE_NONE = "NONE"
+private const val LANGUAGE_CODE_ERROR = "ERROR"
+private const val LANGUAGE_CODE_UNSPECIFIED = "UNSPECIFIED"
 
 /** Controller for uploading feedback reports to remote storage or saving them on disk. */
 @Singleton
@@ -110,13 +110,13 @@ class FeedbackReportManagementController @Inject constructor(
    */
   fun uploadFeedbackReport(report: FeedbackReport) {
     val gaeFeedbackReport = GaeFeedbackReport(
-      reportCreationTimestampMs = report.reportCreationTimestampMs,
+      reportSubmissionTimestampSec = report.reportSubmissionTimestampSec,
       userSuppliedFeedback = createGaeUserSuppliedFeedback(report.userSuppliedInfo),
       systemContext = getSystemContext(report.systemContext),
       deviceContext = getDeviceContext(report.deviceContext),
       appContext = getAppContext(report.appContext)
     )
-    feedbackReportingService.postFeedbackReport(report = gaeFeedbackReport)
+    feedbackReportingService.postFeedbackReport(gaeFeedbackReport)
   }
 
   /** Removes the first cached report from the store. */
@@ -266,30 +266,11 @@ class FeedbackReportManagementController @Inject constructor(
   private fun getAppContext(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingAppContext {
-    val audioLanguageCode = when (appContext.audioLanguage) {
-      AudioLanguage.NO_AUDIO -> LANGUAGE_CODE_NONE
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> LANGUAGE_CODE_ENGLISH
-      AudioLanguage.HINDI_AUDIO_LANGUAGE -> LANGUAGE_CODE_HINDI
-      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> LANGUAGE_CODE_FRENCH
-      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> LANGUAGE_CODE_CHINESE
-      else -> throw IllegalArgumentException(
-        "Encountered unexpected audio language: ${appContext.audioLanguage.name}"
-      )
-    }
-    val textLanguageCode = when (appContext.textLanguage) {
-      AppLanguage.ENGLISH_APP_LANGUAGE -> LANGUAGE_CODE_ENGLISH
-      AppLanguage.HINDI_APP_LANGUAGE -> LANGUAGE_CODE_HINDI
-      AppLanguage.FRENCH_APP_LANGUAGE -> LANGUAGE_CODE_FRENCH
-      AppLanguage.CHINESE_APP_LANGUAGE -> LANGUAGE_CODE_CHINESE
-      else -> throw IllegalArgumentException(
-        "Encountered unexpected app text language: ${appContext.textLanguage.name}"
-      )
-    }
     return GaeFeedbackReportingAppContext(
       entryPoint = getEntryPointData(appContext),
       textSize = appContext.textSize.name,
-      textLanguageCode = textLanguageCode,
-      audioLanguageCode = audioLanguageCode,
+      textLanguageCode = appContext.textLanguage.toLanguageCode().toString(),
+      audioLanguage = appContext.audioLanguage.toLanguageCode().toString(),
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
       automaticallyUpdateTopics = appContext.deviceSettings.automaticallyUpdateTopics,
       isAdmin = appContext.isAdmin,
