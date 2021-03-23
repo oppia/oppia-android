@@ -84,7 +84,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   }
 
   private fun loadLessonThumbnail() {
-    var transformations = if (isBlurred) {
+    val transformations = if (isBlurred) {
       listOf(ImageTransformation.BLUR)
     } else {
       listOf()
@@ -98,7 +98,9 @@ class LessonThumbnailImageView @JvmOverloads constructor(
         transformations
       )
     }
-    imageView.setBackgroundColor(lessonThumbnail.backgroundColorRgb)
+    imageView.setBackgroundColor(
+      (0xff000000L or lessonThumbnail.backgroundColorRgb.toLong()).toInt()
+    )
   }
 
   /** Loads an image using Glide from [filename]. */
