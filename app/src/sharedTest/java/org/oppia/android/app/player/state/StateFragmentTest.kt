@@ -80,6 +80,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.ChildViewCoordinatesProvider
 import org.oppia.android.app.utility.CustomGeneralLocation
 import org.oppia.android.app.utility.DragViewAction
@@ -1409,7 +1410,8 @@ class StateFragmentTest {
       ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       HintsAndSolutionConfigFastShowTestModule::class, WorkManagerConfigurationModule::class,
-      LogUploadWorkerModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      LogUploadWorkerModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
+      PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

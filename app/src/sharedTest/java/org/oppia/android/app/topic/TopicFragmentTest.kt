@@ -100,6 +100,10 @@ class TopicFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @JvmField
+  @field:[Inject EnablePracticeTab]
+  var enablePracticeTab: Boolean = false
+
   private val internalProfileId = 0
 
   private val TOPIC_NAME = "Fractions"
@@ -160,7 +164,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_infoTopicTab_isDisplayedInTabLayout() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(withText(TopicTab.getTabForPosition(0).name)).check(
+      onView(withText(TopicTab.getTabForPosition(position = 0, enablePracticeTab).name)).check(
         matches(
           isDescendantOfA(
             withId(
@@ -437,7 +441,7 @@ class TopicFragmentTest {
   private fun clickTabAtPosition(position: Int) {
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position).name),
+        withText(TopicTab.getTabForPosition(position, enablePracticeTab).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
@@ -447,7 +451,7 @@ class TopicFragmentTest {
     onView(withId(R.id.topic_tabs_container)).check(
       matches(
         matchCurrentTabTitle(
-          TopicTab.getTabForPosition(position).name
+          TopicTab.getTabForPosition(position, enablePracticeTab).name
         )
       )
     )
@@ -495,7 +499,7 @@ class TopicFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
