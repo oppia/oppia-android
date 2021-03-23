@@ -60,7 +60,8 @@ public final class ImageViewBindingAdapters {
   ) {
     if (chapterPlayState == ChapterPlayState.COMPLETED) {
       setImageDrawable(imageView, R.drawable.circular_solid_color_primary_32dp);
-    } else if (chapterPlayState == ChapterPlayState.NOT_STARTED || chapterPlayState == ChapterPlayState.STARTED_NOT_COMPLETED) {
+    } else if (chapterPlayState == ChapterPlayState.NOT_STARTED
+        || chapterPlayState == ChapterPlayState.STARTED_NOT_COMPLETED) {
       setImageDrawable(imageView, R.drawable.circular_stroke_2dp_color_primary_32dp);
     } else if (chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES) {
       setImageDrawable(imageView, R.drawable.circular_stroke_1dp_grey_32dp);
