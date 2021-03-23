@@ -4,21 +4,24 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import javax.inject.Inject
 
-class RecyclerViewTesting {
-  companion object {
-    fun verifyItemDisplayedOnRecyclerView(
-      recyclerView: Int,
-      itemPosition: Int,
-      targetView: Int
-    ) {
-      onView(
-        atPositionOnView(
-          recyclerViewId = recyclerView,
-          position = itemPosition,
-          targetViewId = targetView
-        )
-      ).check(matches(isDisplayed()))
-    }
+/**
+ * Central utility for testing items present in RecyclerView.
+ */
+class RecyclerViewTesting @Inject constructor() {
+
+  fun verifyItemDisplayedOnRecyclerView(
+    recyclerView: Int,
+    itemPosition: Int,
+    targetView: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = recyclerView,
+        position = itemPosition,
+        targetViewId = targetView
+      )
+    ).check(matches(isDisplayed()))
   }
 }

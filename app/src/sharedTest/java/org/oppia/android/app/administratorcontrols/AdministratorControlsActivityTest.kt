@@ -75,7 +75,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.android.testing.RecyclerViewTesting.Companion.verifyItemDisplayedOnRecyclerView
+import org.oppia.android.testing.RecyclerViewTesting
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -106,6 +106,9 @@ class AdministratorControlsActivityTest {
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var recyclerViewTesting: RecyclerViewTesting
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -139,7 +142,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      verifyItemDisplayedOnRecyclerView(
+      recyclerViewTesting.verifyItemDisplayedOnRecyclerView(
         recyclerView = R.id.administrator_controls_list,
         itemPosition = 0,
         targetView = R.id.general_text_view
@@ -149,7 +152,7 @@ class AdministratorControlsActivityTest {
         targetViewId = R.id.edit_account_text_view,
         stringIdToMatch = R.string.administrator_controls_edit_account
       )
-      verifyItemDisplayedOnRecyclerView(
+      recyclerViewTesting.verifyItemDisplayedOnRecyclerView(
         recyclerView = R.id.administrator_controls_list,
         itemPosition = 1,
         targetView = R.id.profile_management_text_view
@@ -175,13 +178,13 @@ class AdministratorControlsActivityTest {
         targetViewId = R.id.download_permissions_text_view,
         stringIdToMatch = R.string.administrator_controls_download_permissions_label
       )
-      verifyItemDisplayedOnRecyclerView(
+      recyclerViewTesting.verifyItemDisplayedOnRecyclerView(
         recyclerView = R.id.administrator_controls_list,
         itemPosition = 2,
         targetView = R.id.topic_update_on_wifi_constraint_layout
       )
       scrollToPosition(position = 2)
-      verifyItemDisplayedOnRecyclerView(
+      recyclerViewTesting.verifyItemDisplayedOnRecyclerView(
         recyclerView = R.id.administrator_controls_list,
         itemPosition = 2,
         targetView = R.id.auto_update_topic_constraint_layout
@@ -198,7 +201,7 @@ class AdministratorControlsActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
-      verifyItemDisplayedOnRecyclerView(
+      recyclerViewTesting.verifyItemDisplayedOnRecyclerView(
         recyclerView = R.id.administrator_controls_list,
         itemPosition = 3,
         targetView = R.id.app_information_text_view
@@ -208,7 +211,7 @@ class AdministratorControlsActivityTest {
         targetViewId = R.id.app_version_text_view,
         stringIdToMatch = R.string.administrator_controls_app_version
       )
-      verifyItemDisplayedOnRecyclerView(
+      recyclerViewTesting.verifyItemDisplayedOnRecyclerView(
         recyclerView = R.id.administrator_controls_list,
         itemPosition = 4,
         targetView = R.id.account_actions_text_view
