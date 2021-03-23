@@ -9,4 +9,8 @@
     android:id="@+id/action_help"
     android:title="@string/help"
     app:showAsAction="never" />
+  <item
+    android:id="@+id/action_send_feedback"
+    android:title="@string/send_feedback"
+    app:showAsAction="never" />
 </menu>

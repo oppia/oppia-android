@@ -10,7 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.feedbackreporting.FeedbackReportingEntryActivity
 import org.oppia.android.app.help.HelpActivity
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.RevisionCard
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.databinding.RevisionCardActivityBinding
@@ -82,6 +84,14 @@ class RevisionCardActivityPresenter @Inject constructor(
       }
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
+          activity, internalProfileId,
+          /* isFromNavigationDrawer= */false
+        )
+        activity.startActivity(intent)
+        true
+      }
+      R.id.action_send_feedback -> {
+        val intent = FeedbackReportingEntryActivity.createFeedbackReportingEntryActivityIntent(
           activity, internalProfileId,
           /* isFromNavigationDrawer= */false
         )
