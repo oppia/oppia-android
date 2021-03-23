@@ -85,7 +85,7 @@ class AudioLanguageActivityTest {
   }
 
   @Test
-  fun testAppLanguageActivity_hasCorrectActivityLabel() {
+  fun testAudioLanguageActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       createDefaultAudioActivityIntent(
         summaryValue
