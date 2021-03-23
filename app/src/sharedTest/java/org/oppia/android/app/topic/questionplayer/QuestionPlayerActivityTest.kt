@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -31,6 +33,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -40,6 +43,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.AdditionalMatchers.not
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -95,6 +99,7 @@ import org.oppia.android.util.parser.ImageParsingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -293,22 +298,195 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testQuestionPlayer_hintNotImmediatelyVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      onView(withId(R.id.hints_and_solution_fragment_container)).check(
+        matches(not(isDisplayed()))
+      )
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testQuestionPlayer_wait60Seconds_newHintAndSolVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+      onView(withId(R.id.dot_hint)).check(
+        matches(isDisplayed())
+      )
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testQuestionPlayer_submitOneWrongAnswer_hintAndSolNotVisibleVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      submitWrongAnswer(1)
+      onView(withId(R.id.hints_and_solution_fragment_container)).check(
+        matches(not(isDisplayed()))
+      )
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_submitTwoWrongAnswers_newHintAndSolVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      submitWrongAnswer(1)
+      submitWrongAnswer(1)
+      onView(withId(R.id.dot_hint)).check(
+        matches(isDisplayed())
+      )
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testQuestionPlayer_newHintVisible_submitWrongAnswer_newHintAndSolVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      makeNewHintsVisible()
+      submitWrongAnswer(1)
+      onView(withId(R.id.dot_hint)).check(
+        matches(isDisplayed())
+      )
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testQuestionPlayer_newHintVisible_submitCorrectAnswer_hintAndSolNotVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      makeNewHintsVisible()
+      submitCorrectAnswer(1)
+      onView(withId(R.id.dot_hint)).check(
+        matches(not(isDisplayed()))
+      )
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testQuestionPlayer_newHintVisible_hintConsumed_newHintAndSolNotVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      makeNewHintsVisible()
+      consumeNewHint(0)
+      onView(withId(R.id.dot_hint)).check(
+        matches(not(isDisplayed()))
+      )
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_newHintVisible_hintConsumed_hintAndSolIconVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      makeNewHintsVisible()
+      consumeNewHint(0)
+      onView(withId(R.id.hints_and_solution_fragment_container)).check(
+        matches(isDisplayed())
+      )
+
+    }
+  }
+
   /*
-  *Tests for hints and solution
-  *
-  * testQuestionPlayer_hintNotVisible_wait60Seconds_hintVisible()
-  * testQuestionPlayer_submitOneWrongAnswer_hintNotVisible()
-  * testQuestionPlayer_submitTwoWrongAnswer_hintVisible()
-  * testQuestionPlayer_hintVisible_submitWrongAnswer_hintVisible()
-  * testQuestionPlayer_hintVisible_hintConsumed_hintNotVisible()
-  * testQuestionPlayer_hintConsumed_wait30Seconds_hintAvailable()
-  * testQuestionPlayer_hintConsumed_submitWrongAnswer_hintNotVisible()
-  * testQuestionPlayer_hintConsumed_submitWrongAnswer_wait10Seconds_hintVisible()
-  *
-  */
+  tests for multiple hints and solutions
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testQuestionPlayer_hintConsumed_submitWrongAnswer_hintAndSolNotVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      makeNewHintsVisible()
+      consumeNewHint(0)
+      submitWrongAnswer(1)
+      onView(withId(R.id.hints_and_solution_fragment_container)).check(
+        matches(not(isDisplayed()))
+      )
+
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testQuestionPlayer_hintConsumed_wait30Seconds_newHintAvailable() {
+    launchForSkillList(SKILL_ID_LIST).use { //multiple hints
+      makeNewHintsVisible()
+      consumeNewHint(0)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      onView(withId(R.id.dot_hint)).check(
+        matches(isDisplayed())
+      )
+    }
+  }
+
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  @Test
+  fun testQuestionPlayer_hintConsumed_submitWrongAnswer_wait10Seconds_newHintAvailable() {
+    launchForSkillList(SKILL_ID_LIST).use { //multiple hints
+      makeNewHintsVisible()
+      consumeNewHint(0)
+      submitWrongAnswer(1)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+      onView(withId(R.id.dot_hint)).check(
+        matches(isDisplayed())
+      )
+    }
+  }
+
+   */
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  /**
+   * Makes a new hint visible by submitting two wrong answers
+   * provided hint is available and no answer is submitted until
+   * this function is completely executes.
+   */
+  private fun makeNewHintsVisible() {
+    submitWrongAnswer(1)
+    testCoroutineDispatchers.runCurrent()
+    submitWrongAnswer(1)
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  /**
+   * opens hints and solution dialog, reveals the hint and then exits the hint and solution dialog
+   */
+  private fun consumeNewHint(hintIndex: Int) {
+    onView(withId(R.id.hints_and_solution_fragment_container)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+    pressRevealHintOrSolutionButton(hintIndex)
+    testCoroutineDispatchers.runCurrent()
+    pressBack()
+  }
+
+  /** Scrolls to the hint that has not been viewed yet and reveals it. */
+  private fun pressRevealHintOrSolutionButton(hintIndex: Int) {
+    onView(withId(R.id.hints_and_solution_recycler_view))
+      .inRoot(isDialog())
+      .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(hintIndex * 2))
+    onView(CoreMatchers.allOf(withId(R.id.reveal_hint_button), isDisplayed()))
+      .inRoot(isDialog())
+      .perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  /** submits a wrong answer to the question. */
+  private fun submitWrongAnswer(questionIndex: Int) {
+    when (questionIndex) {
+      // option 1 is a wrong answer.
+      1 -> selectMultipleChoiceOption(optionPosition = 1)
+    }
+
+  }
+
+  private fun submitCorrectAnswer(questionIndex: Int) {
+    when (questionIndex) {
+      // option 2 is the correct answer for question 1.
+      1 -> selectMultipleChoiceOption(2)
+    }
   }
 
   private fun launchForSkillList(
