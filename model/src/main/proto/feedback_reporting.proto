@@ -18,7 +18,7 @@ message FeedbackReportingDatabase {
 // device, and build information.
 message FeedbackReport {
   // The date as a Unix timestamp for when the report was submitted.
-  int64 report_submission_timestamp_sec = 1;
+  int32 report_submission_timestamp_sec = 1;
   // The information supplied by the user in a feedback report.
   UserSuppliedFeedback user_supplied_info = 2;
   // Information collected about the user's physical device.

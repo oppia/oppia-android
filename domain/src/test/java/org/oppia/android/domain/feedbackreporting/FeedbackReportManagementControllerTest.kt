@@ -63,10 +63,10 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 // Timestamp in ms for 3/2/21, 12:38pm GMT.
-private const val EARLIER_TIMESTAMP = 1614688684445
+private const val EARLIER_TIMESTAMP = 1614688684
 
 // Timestamp in ms for 3/14/21, 2:24am GMT.
-private const val LATER_TIMESTAMP = 1615688684445
+private const val LATER_TIMESTAMP = 1615688684
 
 /** Tests for [FeedbackReportManagementController]. */
 @RunWith(AndroidJUnit4::class)
@@ -109,7 +109,7 @@ class FeedbackReportManagementControllerTest {
     .build()
 
   private val laterSuggestionReport = FeedbackReport.newBuilder()
-    .setReportCreationTimestampMs(LATER_TIMESTAMP)
+    .setReportSubmissionTimestampSec(LATER_TIMESTAMP)
     .setUserSuppliedInfo(userSuggestion)
     .setAppContext(appContext)
     .build()
@@ -119,7 +119,7 @@ class FeedbackReportManagementControllerTest {
     .build()
 
   private val earlierCrashReport = FeedbackReport.newBuilder()
-    .setReportCreationTimestampMs(EARLIER_TIMESTAMP)
+    .setReportSubmissionTimestampSec(EARLIER_TIMESTAMP)
     .setUserSuppliedInfo(userCrash)
     .setAppContext(appContext)
     .build()
@@ -161,7 +161,7 @@ class FeedbackReportManagementControllerTest {
     verify(mockReportsStoreObserver, atLeastOnce()).onChanged(reportStoreResultCaptor.capture())
 
     val report = reportStoreResultCaptor.value.getOrThrow().getReports(0)
-    assertThat(report.reportCreationTimestampMs).isEqualTo(LATER_TIMESTAMP)
+    assertThat(report.reportSubmissionTimestampSec).isEqualTo(LATER_TIMESTAMP)
     assertThat(report.userSuppliedInfo.suggestion.suggestionCategory)
       .isEqualTo(SuggestionCategory.FEATURE_SUGGESTION)
     assertThat(report.userSuppliedInfo.suggestion.userSubmittedSuggestion)
