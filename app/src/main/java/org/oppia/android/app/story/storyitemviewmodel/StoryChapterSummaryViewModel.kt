@@ -14,6 +14,7 @@ private const val STORY_VIEWER_TAG = "StoryViewer"
 /** Chapter summary view model for the recycler view in [StoryFragment]. */
 class StoryChapterSummaryViewModel(
   val index: Int,
+  val totalChapters: Int,
   private val fragment: Fragment,
   private val explorationSelectionListener: ExplorationSelectionListener,
   private val explorationDataController: ExplorationDataController,

@@ -389,4 +389,7 @@
   <dimen name="feedback_item_question_view_margin_start">32dp</dimen>
   <dimen name="feedback_item_question_view_margin_top">24dp</dimen>
   <dimen name="feedback_item_question_view_margin_end">32dp</dimen>
+
+  <!-- Story Chapter View Tablet -->
+  <dimen name="story_chapter_view_tablet_margin_top_first_item">20dp</dimen>
 </resources>

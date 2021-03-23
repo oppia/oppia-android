@@ -3,20 +3,26 @@ package org.oppia.android.app.databinding;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+
 import org.oppia.android.R;
+import org.oppia.android.app.model.ChapterPlayState;
 import org.oppia.android.app.model.LessonThumbnailGraphic;
 import org.oppia.android.app.model.ProfileAvatar;
 
-/** Holds all custom binding adapters that bind to [ImageView]. */
+/**
+ * Holds all custom binding adapters that bind to [ImageView].
+ */
 public final class ImageViewBindingAdapters {
   /**
    * Allows binding drawables to an [ImageView] via "android:src".
@@ -41,6 +47,24 @@ public final class ImageViewBindingAdapters {
       @DrawableRes int drawableResourceId
   ) {
     imageView.setImageResource(drawableResourceId);
+  }
+
+  /**
+   * Allows binding drawables to an [ImageView] via "android:src".
+   * Reference: https://stackoverflow.com/a/35809319/3689782.
+   */
+  @BindingAdapter("android:src")
+  public static void setImageDrawable(
+      @NonNull ImageView imageView,
+      ChapterPlayState chapterPlayState
+  ) {
+    if (chapterPlayState == ChapterPlayState.COMPLETED) {
+      setImageDrawable(imageView, R.drawable.circular_solid_color_primary_32dp);
+    } else if (chapterPlayState == ChapterPlayState.NOT_STARTED) {
+      setImageDrawable(imageView, R.drawable.circular_stroke_2dp_color_primary_32dp);
+    } else if (chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES) {
+      setImageDrawable(imageView, R.drawable.circular_stroke_1dp_grey_32dp);
+    }
   }
 
   /**
@@ -126,7 +150,7 @@ public final class ImageViewBindingAdapters {
    * Binding adapter for profile images. Used to either display a local image or custom
    * colored avatar.
    *
-   * @param imageView view where the profile avatar will be loaded into
+   * @param imageView     view where the profile avatar will be loaded into
    * @param profileAvatar represents either a colorId or local image uri
    */
   @BindingAdapter("profile:src")
