@@ -26,6 +26,9 @@ import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.toLanguageCode
+import org.oppia.android.util.extensions.toLanguageCodeString
+import org.oppia.android.util.extensions.toString
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
@@ -266,27 +269,11 @@ class FeedbackReportManagementController @Inject constructor(
   private fun getAppContext(
     appContext: FeedbackReportingAppContext
   ): GaeFeedbackReportingAppContext {
-    var textLanguageCode = ""
-    when (appContext.textLanguage) {
-      AppLanguage.APP_LANGUAGE_UNSPECIFIED -> textLanguageCode = LANGUAGE_CODE_UNSPECIFIED
-      AppLanguage.ENGLISH_APP_LANGUAGE -> textLanguageCode = LANGUAGE_CODE_ENGLISH
-      AppLanguage.HINDI_APP_LANGUAGE -> textLanguageCode = LANGUAGE_CODE_HINDI
-      AppLanguage.FRENCH_APP_LANGUAGE -> textLanguageCode = LANGUAGE_CODE_FRENCH
-      AppLanguage.CHINESE_APP_LANGUAGE -> textLanguageCode = LANGUAGE_CODE_CHINESE
-      else -> {
-        // If there is an unexpected language we still want to collect the feedback report.
-        consoleLogger.e(
-          FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG,
-          "Encountered unexpected app text language: ${appContext.textLanguage.name}"
-        )
-        textLanguageCode = "LANGUAGE_CODE_ERROR:${appContext.textLanguage.name}"
-      }
-    }
     return GaeFeedbackReportingAppContext(
       entryPoint = getEntryPointData(appContext),
       textSize = appContext.textSize.name,
-      textLanguageCode = textLanguageCode,
-      audioLanguage = appContext.audioLanguage.name,
+      textLanguageCode = appContext.textLanguage.toLanguageCode().toString(),
+      audioLanguage = appContext.audioLanguage.toLanguageCodeString().toString(),
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
       automaticallyUpdateTopics = appContext.deviceSettings.automaticallyUpdateTopics,
       isAdmin = appContext.isAdmin,
