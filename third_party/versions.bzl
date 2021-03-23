@@ -5,13 +5,13 @@ dependency elsewhere in the app.
 
 Note that dependencies can only be represented once in the list--that's by design to protect against
 one-version violations. See https://docs.bazel.build/versions/master/best-practices.html#versioning
-for more information on mutli-version violations.
+for more information on multi-version violations.
 
 Note that each of the dependencies will have all ':'s & '.'s replaced with underscores. For example,
 the dependency "android.arch.core:core-testing": "1.1.1" will be referencable with the following:
 //third_party:android_arch_core_core-testing (no version is included so that versions can be easily
 updated here).
-"""
+"""sss
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
 # This list should contain only production (non-test) dependencies.
