@@ -27,7 +27,9 @@ class MathTagHandler(
     imageRetriever: CustomHtmlContentHandler.ImageRetriever
   ) {
     // Only insert the image tag if it's parsed correctly.
-    val content = MathContent.parseMathContent(attributes.getValue(CUSTOM_MATH_SVG_PATH_ATTRIBUTE))
+    val content = MathContent.parseMathContent(
+      attributes.getJsonObjectValue(CUSTOM_MATH_SVG_PATH_ATTRIBUTE)
+    )
     if (content != null) {
       // Insert an image span where the custom tag currently is to load the SVG. In the future, this
       // could also load a LaTeX span, instead. Note that this approach is based on Android's Html
@@ -55,13 +57,9 @@ class MathTagHandler(
 
   private data class MathContent(val rawLatex: String, val svgFilename: String) {
     companion object {
-      internal fun parseMathContent(rawContentValue: String): MathContent? {
-        // The raw content value is a JSON blob with escaped quotes.
-        val obj = try {
-          JSONObject(rawContentValue.replace("&quot;", "\"").replace("\\\\", "\\"))
-        } catch (e: JSONException) { return null }
-        val rawLatex = obj.getOptionalString("raw_latex")
-        val svgFilename = obj.getOptionalString("svg_filename")
+      internal fun parseMathContent(obj: JSONObject?): MathContent? {
+        val rawLatex = obj?.getOptionalString("raw_latex")
+        val svgFilename = obj?.getOptionalString("svg_filename")
         return if (rawLatex != null && svgFilename != null) {
           MathContent(rawLatex, svgFilename)
         } else null

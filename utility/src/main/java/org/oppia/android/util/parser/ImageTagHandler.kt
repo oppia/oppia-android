@@ -23,10 +23,7 @@ class ImageTagHandler(
     output: Editable,
     imageRetriever: CustomHtmlContentHandler.ImageRetriever
   ) {
-    // Note that the attribute is actually an encoded JSON string (so it has escaped quotes around
-    // it). Since it's only a source string, the quotes can simply be removed in order to extract
-    // the string value.
-    val source = attributes.getValue(CUSTOM_IMG_FILE_PATH_ATTRIBUTE)?.replace("&quot;", "")
+    val source = attributes.getJsonStringValue(CUSTOM_IMG_FILE_PATH_ATTRIBUTE)
     if (source != null) {
       val (startIndex, endIndex) = output.run {
         // Use a control character to ensure that there's at least 1 character on which to "attach"

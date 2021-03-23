@@ -1,17 +1,12 @@
 package org.oppia.android.util.parser
 
-import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
 import org.oppia.android.util.logging.ConsoleLogger
-import org.xml.sax.Attributes
 import javax.inject.Inject
-
-private const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
@@ -23,8 +18,10 @@ class HtmlParser private constructor(
   private val consoleLogger: ConsoleLogger,
   customOppiaTagActionListener: CustomOppiaTagActionListener?
 ) {
-  private val conceptCardTagHandler = ConceptCardTagHandler(customOppiaTagActionListener)
-  private val bulletTagHandler = BulletTagHandler()
+  private val conceptCardTagHandler by lazy {
+    ConceptCardTagHandler(customOppiaTagActionListener, consoleLogger)
+  }
+  private val bulletTagHandler by lazy { BulletTagHandler() }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
   private val mathTagHandler by lazy { MathTagHandler(consoleLogger) }
 
@@ -86,33 +83,6 @@ class HtmlParser private constructor(
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
     return handlersMap
-  }
-
-  // https://mohammedlakkadshaw.com/blog/handling-custom-tags-in-android-using-html-taghandler.html/
-  private class ConceptCardTagHandler(
-    private val customOppiaTagActionListener: CustomOppiaTagActionListener?
-  ) : CustomHtmlContentHandler.CustomTagHandler {
-    override fun handleTag(
-      attributes: Attributes,
-      openIndex: Int,
-      closeIndex: Int,
-      output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever
-    ) {
-      // Replace the custom tag with a clickable piece of text based on the tag's customizations.
-      val skillId = attributes.getValue("skill_id-with-value")
-      val text = attributes.getValue("text-with-value")
-      val spannableBuilder = SpannableStringBuilder(text)
-      spannableBuilder.setSpan(
-        object : ClickableSpan() {
-          override fun onClick(view: View) {
-            customOppiaTagActionListener?.onConceptCardLinkClicked(view, skillId)
-          }
-        },
-        0, text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-      )
-      output.replace(openIndex, closeIndex, spannableBuilder)
-    }
   }
 
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {

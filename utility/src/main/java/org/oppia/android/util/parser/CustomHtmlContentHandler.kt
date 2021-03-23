@@ -5,6 +5,8 @@ import android.text.Editable
 import android.text.Html
 import android.text.Spannable
 import androidx.core.text.HtmlCompat
+import org.json.JSONException
+import org.json.JSONObject
 import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
@@ -207,4 +209,26 @@ class CustomHtmlContentHandler private constructor(
       ) as Spannable
     }
   }
+}
+
+/**
+ * Returns a string value from this [Attributes] object, but interpreted as a JSON string, or null
+ * if the corresponding value doesn't exist in this attributes map.
+ */
+fun Attributes.getJsonStringValue(name: String): String? {
+  // Note that the attribute is actually an encoded JSON string (so it has escaped quotes around
+  // it). Since it's only a source string, the quotes can simply be removed in order to extract
+  // the string value.
+  return getValue(name)?.replace("&quot;", "")
+}
+
+/**
+ * Returns a [JSONObject] value from this [Attributes] object that was encoded as a string, or null
+ * if the corresponding value cannot be interpreted as a JSON object (or doesn't exist).
+ */
+fun Attributes.getJsonObjectValue(name: String): JSONObject? {
+  // The raw content value is a JSON blob with escaped quotes.
+  return try {
+    JSONObject(getValue(name).replace("&quot;", "\"").replace("\\\\", "\\"))
+  } catch (e: JSONException) { return null }
 }
