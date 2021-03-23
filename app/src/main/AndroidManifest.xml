@@ -94,7 +94,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.profileprogress.ProfileProgressActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/profile_progress_activity_title" />
     <activity android:name=".app.settings.profile.ProfileEditActivity" />
     <activity
       android:name=".app.settings.profile.ProfileListActivity"
