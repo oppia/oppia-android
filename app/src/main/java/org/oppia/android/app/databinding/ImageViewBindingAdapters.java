@@ -17,9 +17,7 @@ import org.oppia.android.app.model.ChapterPlayState;
 import org.oppia.android.app.model.LessonThumbnailGraphic;
 import org.oppia.android.app.model.ProfileAvatar;
 
-/**
- * Holds all custom binding adapters that bind to [ImageView].
- */
+/** Holds all custom binding adapters that bind to [ImageView]. */
 public final class ImageViewBindingAdapters {
   /**
    * Allows binding drawables to an [ImageView] via "android:src".
@@ -148,7 +146,7 @@ public final class ImageViewBindingAdapters {
    * Binding adapter for profile images. Used to either display a local image or custom
    * colored avatar.
    *
-   * @param imageView     view where the profile avatar will be loaded into
+   * @param imageView view where the profile avatar will be loaded into
    * @param profileAvatar represents either a colorId or local image uri
    */
   @BindingAdapter("profile:src")

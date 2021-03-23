@@ -10,7 +10,7 @@ import android.view.View
 import org.oppia.android.R
 
 /**
- * CustomView to represent chapter progress in [StoryActivity].
+ * Custom view to represent chapter progress in [StoryActivity].
  *
  * Reference: https://stackoverflow.com/a/27054463
  */
