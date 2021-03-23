@@ -8,7 +8,6 @@ import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -18,7 +17,8 @@ import javax.inject.Singleton
  * Sample resource: https://github.com/gahfy/Feed-Me/tree/unitTests
  */
 @Module
-class NetworkModule {
+class
+NetworkModule {
 
   @Qualifier
   private annotation class OppiaRetrofit
