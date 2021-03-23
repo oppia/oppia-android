@@ -36,12 +36,6 @@ import javax.inject.Singleton
 private const val FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG =
   "Feedback Report Management Controller"
 private const val FEEDBACK_REPORTS_DATABASE_NAME = "feedback_reports_database"
-private const val LANGUAGE_CODE_ENGLISH = "EN"
-private const val LANGUAGE_CODE_HINDI = "HI"
-private const val LANGUAGE_CODE_FRENCH = "FR"
-private const val LANGUAGE_CODE_CHINESE = "ZH"
-private const val LANGUAGE_CODE_ERROR = "ERROR"
-private const val LANGUAGE_CODE_UNSPECIFIED = "UNSPECIFIED"
 
 /** Controller for uploading feedback reports to remote storage or saving them on disk. */
 @Singleton
@@ -116,6 +110,8 @@ class FeedbackReportManagementController @Inject constructor(
       deviceContext = getDeviceContext(report.deviceContext),
       appContext = getAppContext(report.appContext)
     )
+    // TODO(#76): Implement a callback for success / failure handling once a network retry policy is
+    // established.
     feedbackReportingService.postFeedbackReport(gaeFeedbackReport).execute()
   }
 
