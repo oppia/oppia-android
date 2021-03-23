@@ -24,7 +24,7 @@
         android:id="@+id/feedback_reporting_entry_fragment_placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/oppiaGreyBackground" />
+        android:background="@color/oppiaLightGreen" />
 
       <View
         android:id="@+id/feedback_reporting_entry_activity_toolbar_shadow_view"
