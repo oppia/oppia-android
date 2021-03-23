@@ -5,6 +5,8 @@ import android.text.Editable
 import android.text.Html
 import android.text.Spannable
 import androidx.core.text.HtmlCompat
+import org.json.JSONException
+import org.json.JSONObject
 import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
@@ -131,7 +133,7 @@ class CustomHtmlContentHandler private constructor(
      * @param openIndex the index in the output [Editable] at which this tag begins
      * @param closeIndex the index in the output [Editable] at which this tag ends
      * @param output the destination [Editable] to which spans can be added
-     * @param imageRetriever a utility to load image drawables if needed by the handler
+     * @param imageGetter a utility to load image drawables if needed by the handler
      */
     fun handleTag(
       attributes: Attributes,
@@ -174,6 +176,11 @@ class CustomHtmlContentHandler private constructor(
     /** Corresponds to the types of images that can be retrieved. */
     enum class Type {
       /**
+       * Corresponds to an image that can be rendered in-line (such as LaTeX). Only SVGs are
+       * currently supported.
+       */
+      INLINE_TEXT_IMAGE,
+      /**
        * Corresponds to a block image that should be positioned in a way that may break text, and
        * potentially centered depending on the configuration of the implementation.
        */
@@ -213,4 +220,15 @@ fun Attributes.getJsonStringValue(name: String): String? {
   // it). Since it's only a source string, the quotes can simply be removed in order to extract
   // the string value.
   return getValue(name)?.replace("&quot;", "")
+}
+
+/**
+ * Returns a [JSONObject] value from this [Attributes] object that was encoded as a string, or null
+ * if the corresponding value cannot be interpreted as a JSON object (or doesn't exist).
+ */
+fun Attributes.getJsonObjectValue(name: String): JSONObject? {
+  // The raw content value is a JSON blob with escaped quotes.
+  return try {
+    JSONObject(getValue(name).replace("&quot;", "\"").replace("\\\\", "\\"))
+  } catch (e: JSONException) { return null }
 }

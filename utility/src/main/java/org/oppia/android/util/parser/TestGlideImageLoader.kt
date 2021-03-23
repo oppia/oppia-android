@@ -2,7 +2,6 @@ package org.oppia.android.util.parser
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.PictureDrawable
 import javax.inject.Inject
 
 /**
@@ -20,11 +19,17 @@ class TestGlideImageLoader @Inject constructor(
     transformations: List<ImageTransformation>
   ) = glideImageLoader.loadBitmap(imageUrl, target, transformations)
 
-  override fun loadSvg(
+  override fun loadBlockSvg(
     imageUrl: String,
-    target: ImageTarget<PictureDrawable>,
+    target: ImageTarget<BlockPictureDrawable>,
     transformations: List<ImageTransformation>
-  ) = glideImageLoader.loadSvg(imageUrl, target, transformations)
+  ) = glideImageLoader.loadBlockSvg(imageUrl, target, transformations)
+
+  override fun loadTextSvg(
+    imageUrl: String,
+    target: ImageTarget<TextPictureDrawable>,
+    transformations: List<ImageTransformation>
+  ) = glideImageLoader.loadTextSvg(imageUrl, target, transformations)
 
   /**
    * [loadDrawable] can be used in tests to match drawable ids:

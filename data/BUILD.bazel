@@ -17,7 +17,7 @@ kt_android_library(
         "//model",
         "//third_party:androidx_appcompat_appcompat",
         "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
-        "//third_party:com_caverock_androidsvg-aar",
+        "//third_party:com_caverock_androidsvg",
         "//third_party:com_github_bumptech_glide_glide",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
