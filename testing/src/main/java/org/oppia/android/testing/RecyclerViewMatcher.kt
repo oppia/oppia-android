@@ -4,12 +4,12 @@ import android.content.res.Resources
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -88,13 +88,13 @@ class RecyclerViewMatcher @Inject constructor() {
     itemPosition: Int,
     targetView: Int
   ) {
-    Espresso.onView(
+    onView(
       atPositionOnView(
         recyclerViewId = recyclerView,
         position = itemPosition,
         targetViewId = targetView
       )
-    ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    ).check(matches(isDisplayed()))
   }
 
   private class RecyclerViewItemCountAssertion(private val count: Int) : ViewAssertion {
