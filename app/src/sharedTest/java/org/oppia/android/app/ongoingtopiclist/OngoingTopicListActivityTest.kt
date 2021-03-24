@@ -115,7 +115,6 @@ class OngoingTopicListActivityTest {
     // correct string when it's read out.
     assertThat(title).isEqualTo(context.getString(R.string.ongoing_topic_activity_label))
   }
-  }
 
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
