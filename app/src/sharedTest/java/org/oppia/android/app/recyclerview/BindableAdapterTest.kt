@@ -375,9 +375,11 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the bound data did not change despite the underlying live data changing.
-      onView(recyclerViewMatcher.atPosition(
+      onView(
+        recyclerViewMatcher.atPosition(
         R.id.test_recycler_view, 0
-      )).check(matches(withText("initial")))
+      )
+      ).check(matches(withText("initial")))
     }
   }
 

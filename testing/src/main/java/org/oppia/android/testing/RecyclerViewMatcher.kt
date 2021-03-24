@@ -93,9 +93,9 @@ class RecyclerViewMatcher @Inject constructor() {
         recyclerViewId = recyclerView,
         position = itemPosition,
         targetViewId = targetView
-        )
-      ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-    }
+      )
+    ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+  }
 
   private class RecyclerViewItemCountAssertion(private val count: Int) : ViewAssertion {
     override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
