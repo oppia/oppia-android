@@ -97,13 +97,17 @@ class DragDropTestActivityTest {
           precisionDescriber = Press.FINGER
         )
       )
-      onView(recyclerViewMatcher.atPosition(
-        recyclerViewId = R.id.drag_drop_recycler_view, position = 0
-      ))
+      onView(
+        recyclerViewMatcher.atPosition(
+          recyclerViewId = R.id.drag_drop_recycler_view, position = 0
+        )
+      )
         .check(matches(withText("Item 2")))
-      onView(recyclerViewMatcher.atPosition(
-        recyclerViewId = R.id.drag_drop_recycler_view, position = 1
-      ))
+      onView(
+        recyclerViewMatcher.atPosition(
+          recyclerViewId = R.id.drag_drop_recycler_view, position = 1
+        )
+      )
         .check(matches(withText("Item 1")))
     }
   }
@@ -130,13 +134,17 @@ class DragDropTestActivityTest {
           precisionDescriber = Press.FINGER
         )
       )
-      onView(recyclerViewMatcher.atPosition(
-        recyclerViewId = R.id.drag_drop_recycler_view, position = 1
-      ))
+      onView(
+        recyclerViewMatcher.atPosition(
+          recyclerViewId = R.id.drag_drop_recycler_view, position = 1
+        )
+      )
         .check(matches(withText("Item 3")))
-      onView(recyclerViewMatcher.atPosition(
-        recyclerViewId = R.id.drag_drop_recycler_view, position = 2
-      ))
+      onView(
+        recyclerViewMatcher.atPosition(
+          recyclerViewId = R.id.drag_drop_recycler_view, position = 2
+        )
+      )
         .check(matches(withText("Item 2")))
     }
   }
@@ -164,9 +172,11 @@ class DragDropTestActivityTest {
           precisionDescriber = Press.FINGER
         )
       )
-      onView(recyclerViewMatcher.atPosition(
-        recyclerViewId = R.id.drag_drop_recycler_view, position = 2
-      ))
+      onView(
+        recyclerViewMatcher.atPosition(
+          recyclerViewId = R.id.drag_drop_recycler_view, position = 2
+        )
+      )
         .check(matches(withText("Item 4")))
       onView(recyclerViewMatcher.atPosition(
         recyclerViewId = R.id.drag_drop_recycler_view, position = 3

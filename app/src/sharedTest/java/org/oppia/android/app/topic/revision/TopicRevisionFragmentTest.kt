@@ -125,9 +125,11 @@ class TopicRevisionFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
-      onView(recyclerViewMatcher.atPosition(
-        recyclerViewId = R.id.revision_recycler_view, position = 0
-      ))
+      onView(
+        recyclerViewMatcher.atPosition(
+          recyclerViewId = R.id.revision_recycler_view, position = 0
+        )
+      )
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
@@ -184,9 +186,11 @@ class TopicRevisionFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       clickRevisionTab()
-      onView(recyclerViewMatcher.atPosition(
-        recyclerViewId = R.id.revision_recycler_view, position = 0
-      ))
+      onView(
+        recyclerViewMatcher.atPosition(
+          recyclerViewId = R.id.revision_recycler_view, position = 0
+        )
+      )
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }

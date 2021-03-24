@@ -377,8 +377,8 @@ class BindableAdapterTest {
       // Verify that the bound data did not change despite the underlying live data changing.
       onView(
         recyclerViewMatcher.atPosition(
-        R.id.test_recycler_view, 0
-      )
+          R.id.test_recycler_view, 0
+        )
       ).check(matches(withText("initial")))
     }
   }
@@ -402,9 +402,11 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
-      onView(recyclerViewMatcher.atPosition(
-        R.id.test_recycler_view, 0
-      )).check(matches(withText("new value")))
+      onView(
+        recyclerViewMatcher.atPosition(
+          R.id.test_recycler_view, 0
+        )
+      ).check(matches(withText("new value")))
     }
   }
 
@@ -425,9 +427,11 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the bound data did not change despite the underlying live data changing.
-      onView(recyclerViewMatcher.atPosition(
-        R.id.test_recycler_view, 0
-      )).check(matches(withText("initial")))
+      onView(
+        recyclerViewMatcher.atPosition(
+          R.id.test_recycler_view, 0
+        )
+      ).check(matches(withText("initial")))
     }
   }
 
@@ -450,9 +454,11 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
-      onView(recyclerViewMatcher.atPosition(
-        R.id.test_recycler_view, 0
-      )).check(matches(withText("new value")))
+      onView(
+        recyclerViewMatcher.atPosition(
+          R.id.test_recycler_view, 0
+        )
+      ).check(matches(withText("new value")))
     }
   }
 
