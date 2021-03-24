@@ -20,9 +20,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -77,6 +80,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+
 /** Tests for [OngoingTopicListActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -91,11 +95,27 @@ class OngoingTopicListActivityTest {
   @Inject
   lateinit var context: Context
 
+  @get:Rule
+  val activityTestRule = ActivityTestRule(
+    OngoingTopicListActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var storyProfileTestHelper: StoryProgressTestHelper
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Test
+  fun testOngoingTopicList_hasCorrectActivityLabel(){
+    activityTestRule.launchActivity(createOngoingTopicListActivityIntent(internalProfileId))
+    val title = activityTestRule.activity.title
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.ongoing_topic_list_activity_title))
+  }
 
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
