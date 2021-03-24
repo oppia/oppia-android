@@ -47,8 +47,6 @@ import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -72,6 +70,7 @@ import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -115,6 +114,9 @@ class RecentlyPlayedFragmentTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -205,7 +207,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 0,
           targetViewId = R.id.divider_view
@@ -234,7 +236,7 @@ class RecentlyPlayedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 0,
           targetViewId = R.id.section_title_text_view
@@ -288,7 +290,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 2,
           targetViewId = R.id.section_title_text_view
@@ -313,7 +315,7 @@ class RecentlyPlayedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 2,
           targetViewId = R.id.section_title_text_view
@@ -343,7 +345,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 3,
           targetViewId = R.id.topic_name_text_view
@@ -377,7 +379,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 1,
           targetViewId = R.id.story_name_text_view
@@ -411,7 +413,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 1,
           targetViewId = R.id.topic_name_text_view
@@ -445,7 +447,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 1,
           targetViewId = R.id.lesson_thumbnail
@@ -479,7 +481,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 1,
           targetViewId = R.id.lesson_thumbnail
@@ -532,7 +534,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 2,
           targetViewId = R.id.section_title_text_view
@@ -566,7 +568,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 2,
           targetViewId = R.id.divider_view
@@ -615,7 +617,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 0,
           targetViewId = R.id.divider_view
@@ -648,7 +650,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 0,
           targetViewId = R.id.section_title_text_view
@@ -683,7 +685,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 1,
           targetViewId = R.id.story_name_text_view
@@ -718,7 +720,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 1,
           targetViewId = R.id.topic_name_text_view
@@ -753,7 +755,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 1,
           targetViewId = R.id.lesson_thumbnail
@@ -788,7 +790,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_story_recycler_view,
           position = 2,
           targetViewId = R.id.section_title_text_view
@@ -822,7 +824,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(withId(R.id.ongoing_story_recycler_view)).check(
-        hasGridItemCount(
+        recyclerViewMatcher.hasGridItemCount(
           spanCount = 1,
           position = 1
         )
@@ -853,7 +855,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(withId(R.id.ongoing_story_recycler_view)).check(
-        hasGridItemCount(
+        recyclerViewMatcher.hasGridItemCount(
           spanCount = 1,
           position = 3
         )
@@ -885,7 +887,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(withId(R.id.ongoing_story_recycler_view)).check(
-        hasGridItemCount(
+        recyclerViewMatcher.hasGridItemCount(
           spanCount = 1,
           position = 1
         )
@@ -917,7 +919,7 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(withId(R.id.ongoing_story_recycler_view)).check(
-        hasGridItemCount(
+        recyclerViewMatcher.hasGridItemCount(
           spanCount = 1,
           position = 3
         )
