@@ -96,8 +96,6 @@ class OngoingTopicListActivityTest {
 
   @Inject
   lateinit var storyProfileTestHelper: StoryProgressTestHelper
-
-
   @get:Rule
   val activityTestRule = ActivityTestRule(
     OngoingTopicListActivity::class.java,
