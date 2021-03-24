@@ -167,6 +167,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/completedstorylist/CompletedStoryListViewModel.kt",
     "src/main/java/org/oppia/android/app/drawer/NavigationDrawerFooterViewModel.kt",
     "src/main/java/org/oppia/android/app/drawer/NavigationDrawerHeaderViewModel.kt",
+    "src/main/java/org/oppia/android/app/feedbackreporting/FeedbackReportingEntryViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/faqItemViewModel/FAQContentViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/faqItemViewModel/FAQHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/faqItemViewModel/FAQItemViewModel.kt",
