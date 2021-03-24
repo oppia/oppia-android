@@ -65,11 +65,8 @@ class StartSnapHelper : LinearSnapHelper() {
       }
 
       val child = layoutManager.findViewByPosition(firstChild)
-      return if (helper.getDecoratedEnd(child) >=
-        helper.getDecoratedMeasurement(child) / 2 &&
-        helper.getDecoratedEnd(
-            child
-          ) > 0
+      return if (helper.getDecoratedEnd(child) >= helper.getDecoratedMeasurement(child) / 2 &&
+        helper.getDecoratedEnd(child) > 0
       ) {
         child
       } else {
