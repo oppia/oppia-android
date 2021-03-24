@@ -9,6 +9,7 @@ import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.CLICK_ON_IMA
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.FRACTION
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.IMAGE_WITH_REGIONS
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NORMALIZED_STRING
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS
@@ -16,7 +17,10 @@ import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.OBJECTTYPE_N
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.REAL
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.SET_OF_TRANSLATABLE_HTML_CONTENT_IDS
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.SIGNED_INT
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.TRANSLATABLE_HTML_CONTENT_ID
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.TRANSLATABLE_SET_OF_NORMALIZED_STRING
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.android.app.model.NumberUnit
 import org.oppia.android.app.model.NumberWithUnits
@@ -37,6 +41,11 @@ fun InteractionObject.toAnswerString(): String {
     IMAGE_WITH_REGIONS -> imageWithRegions.toAnswerString()
     CLICK_ON_IMAGE -> clickOnImage.toAnswerString()
     RATIO_EXPRESSION -> ratioExpression.toAnswerString()
+    // TODO(#2985): Add support for these object types.
+    TRANSLATABLE_HTML_CONTENT_ID,
+    SET_OF_TRANSLATABLE_HTML_CONTENT_IDS,
+    LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS,
+    TRANSLATABLE_SET_OF_NORMALIZED_STRING,
     OBJECTTYPE_NOT_SET -> "" // The default InteractionObject should be an empty string.
   }
 }
