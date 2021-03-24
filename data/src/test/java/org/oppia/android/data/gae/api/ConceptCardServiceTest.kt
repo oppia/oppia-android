@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends.gae.api
+package org.oppia.android.data.gae.api
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -6,9 +6,10 @@ import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.network.MockConceptCardService
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
-import org.oppia.android.testing.network.MockStoryService
+import org.oppia.android.data.backends.gae.api.ConceptCardService
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -16,11 +17,11 @@ import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 
 /**
- * Test for [StoryService] retrofit instance using [MockStoryService]
+ * Test for [ConceptCardService] retrofit instance using [MockConceptCardService]
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class StoryServiceTest {
+class ConceptCardServiceTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit
 
@@ -42,14 +43,20 @@ class StoryServiceTest {
   }
 
   @Test
-  fun testStoryService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(StoryService::class.java)
-    val mockStoryService = MockStoryService(delegate)
+  fun testConceptCardService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(ConceptCardService::class.java)
+    val mockConceptCardService = MockConceptCardService(delegate)
 
-    val story = mockStoryService.getStory("1", "randomUserId", "rt4914")
-    val storyResponse = story.execute()
+    val skillIdList = ArrayList<String>()
+    skillIdList.add("1")
+    skillIdList.add("2")
+    skillIdList.add("3")
 
-    assertThat(storyResponse.isSuccessful).isTrue()
-    assertThat(storyResponse.body()!!.storyTitle).isEqualTo("Story 1")
+    val skillIds = skillIdList.joinToString(separator = ", ")
+    val conceptCard = mockConceptCardService.getSkillContents(skillIds)
+    val conceptCardResponse = conceptCard.execute()
+
+    assertThat(conceptCardResponse.isSuccessful).isTrue()
+    assertThat(conceptCardResponse.body()!!.conceptCardDicts!!.size).isEqualTo(1)
   }
 }

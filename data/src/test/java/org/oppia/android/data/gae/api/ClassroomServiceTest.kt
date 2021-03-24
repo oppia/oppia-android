@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends.gae.api
+package org.oppia.android.data.gae.api
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -6,9 +6,10 @@ import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.network.MockClassroomService
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
-import org.oppia.android.testing.network.MockTopicService
+import org.oppia.android.data.backends.gae.api.ClassroomService
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -16,11 +17,11 @@ import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 
 /**
- * Test for [TopicService] retrofit instance using [MockTopicService]
+ * Test for [ClassroomService] retrofit instance using [MockClassroomService]
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class TopicServiceTest {
+class ClassroomServiceTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit
 
@@ -42,14 +43,14 @@ class TopicServiceTest {
   }
 
   @Test
-  fun testTopicService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(TopicService::class.java)
-    val mockTopicService = MockTopicService(delegate)
+  fun testClassroomService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(ClassroomService::class.java)
+    val mockClassroomService = MockClassroomService(delegate)
 
-    val topic = mockTopicService.getTopicByName("Topic1")
-    val topicResponse = topic.execute()
+    val classroom = mockClassroomService.getClassroom("Math")
+    val classroomResponse = classroom.execute()
 
-    assertThat(topicResponse.isSuccessful).isTrue()
-    assertThat(topicResponse.body()!!.topicName).isEqualTo("Topic1")
+    assertThat(classroomResponse.isSuccessful).isTrue()
+    assertThat(classroomResponse.body()!!.topicSummaryDicts?.get(0)?.name).isEqualTo("Math")
   }
 }
