@@ -171,14 +171,14 @@ class StoryFragmentPresenter @Inject constructor(
             }
             chapterLockedSpannable.setSpan(
               clickableSpan,
-              9,
-              chapterLockedSpannable.length - 24,
+              /* start= */ 9,
+              /* end= */ chapterLockedSpannable.length - 24,
               Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             chapterLockedSpannable.setSpan(
               TypefaceSpan("sans-serif-medium"),
-              9,
-              chapterLockedSpannable.length - 24,
+              /* start= */ 9,
+              /* end= */ chapterLockedSpannable.length - 24,
               Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             binding.htmlContent = chapterLockedSpannable
