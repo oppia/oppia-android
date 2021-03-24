@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
+import androidx.core.content.ContextCompat
 import org.oppia.android.R
 
 /**
@@ -28,7 +29,7 @@ class VerticalDashedLineView @JvmOverloads constructor(
 
     paint = Paint()
     paint.isAntiAlias = true
-    paint.color = resources.getColor(R.color.colorPrimary)
+    paint.color = ContextCompat.getColor(context, R.color.colorPrimary)
     paint.style = Paint.Style.STROKE
     paint.strokeCap = Paint.Cap.ROUND
     paint.strokeWidth = dashThickness
