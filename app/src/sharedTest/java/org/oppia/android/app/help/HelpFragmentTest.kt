@@ -135,6 +135,15 @@ class HelpFragmentTest {
   }
 
   @Test
+  fun testHelpFragment_notFromNavigationDrawer_configChange_navigationDrawerIsNotPresent() {
+    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+      orientationLandscape()
+      onView(withId(R.id.help_activity_fragment_navigation_drawer))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
   fun testHelpFragment_parentIsNotExploration_checkBackArrowNotVisible() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
