@@ -11,7 +11,7 @@ option java_multiple_files = true;
 // them to the remote service.
 message FeedbackReportingDatabase {
   // The reports that are cached locally on the device.
-  repeated FeedbackReport reports = 1;
+  repeated FeedbackReport reports_list = 1;
 }
 
 // Corresponds to an entire feedback report with user reported information and collected app,
@@ -277,15 +277,15 @@ message FeedbackReportingSystemContext {
   string package_version_name = 1;
   // The package code for the specific app version on the device.
   int32 package_version_code = 2;
-  // The ISO-3166 country code for the country locale set by the user (otherwise determined by the
+  // The ISO-639 country code for the country locale set by the user (otherwise determined by the
   // environment JVM). EX: A locale of Canada is different than a locale of French Canada and
   // differentiates user environments. Similarly, even if two language locales are both French,
   // a country locale of French Canada indicates a different user than someone with a country locale
   // of France.
-  string country_locale_code = 3;
-  // The ISO-639  code for the device's language locale set by the user (otherwise determined by the
+  string country_locale = 3;
+  // The ISO-3166  code for the device's language locale set by the user (otherwise determined by the
   // system JVM). EX: Traditional Chinese and simplified Chinese correspond to different language codes.
-  string language_locale_code = 4;
+  string language_locale = 4;
 }
 
 // Information collected about the user's device build.
@@ -313,49 +313,29 @@ message FeedbackReportingDeviceContext {
 // Information collected about the current version of the Oppia Android app.
 message FeedbackReportingAppContext {
   // The entry point that feedback reporting was launched from.
-  oneof entry_point {
-    // Indicates that the user started feedback reporting from the main navigation drawer.
-    NavigationDrawerEntryPoint navigation_drawer = 1;
+  enum EntryPoint {
+    // Indicates that the user started the feedback reporting feature from an unknown location.
+    ENTRY_POINT_UNSPECIFIED = 0;
+    // Indicates that the user started feedback reporting from the main hamburger menu.
+    NAVIGATION_DRAWER = 2;
     // Indicates that the user started feedback reporting from the exploration player.
-    LessonPlayerEntryPoint lesson_player = 2;
+    EXPLORATION_PLAYER = 3;
     // Indicates that the user started feedback reporting from a revision card / session.
-    RevisionCardEntryPoint revision_card = 3;
+    REVISION_CARD = 4;
     // Indicates that the user started feedback reporting from a crash / the crash reporting dialog.
-    CrashEntryPoint crash_dialog = 4;
+    CRASH = 5;
   }
+  EntryPoint entry_point = 1;
+  // A list of exploration IDs that have been completed by the user.
+  repeated string completed_exploration_ids = 2;
   // The text size the app is set to.
-  ReadingTextSize text_size = 5;
+  ReadingTextSize text_size = 3;
   // The text language the app is set to.
-  AppLanguage text_language = 6;
+  AppLanguage text_language = 4;
   // The audio language the app is set to.
-  AudioLanguage audio_language = 7;
+  AudioLanguage audio_language = 5;
   // The app's specific device settings.
-  DeviceSettings device_settings = 8;
+  DeviceSettings device_settings = 6;
   // Whether the account sending the report is the admin account.
-  bool is_admin = 9;
+  bool is_admin = 7;
 }
-
-// Corresponds to the entry point to feedback reporting shown in the navigation drawer menu.
-message NavigationDrawerEntryPoint {}
-
-// Corresponds to the entry point to feedback reporting shown in the exploration player's three-dot
-// menu.
-message LessonPlayerEntryPoint {
-  // The topic ID for of the lesson being played.
-  string topic_id = 1;
-  // The story ID of the lesson being played.
-  string story_id = 2;
-  // The exploration ID of the lesson being played.
-  string exploration_id = 3;
-}
-
-// Corresponds to the entry point to feedback reporting shown in a revision session's three-dot menu.
-message RevisionCardEntryPoint {
-  // The topic ID of the subtopic being reviewed.
-  string topic_id = 1;
-  // The subtopic ID of the subtopic being reviewed.
-  string subtopic_id = 2;
-}
-
-// Corresponds to the entry point to feedback reporting from after an app crash.
-message CrashEntryPoint {}
