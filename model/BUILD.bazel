@@ -149,7 +149,8 @@ proto_library(
 
 java_lite_proto_library(
     name = "voiceover_java_proto_lite",
-    deps = [":voiceover_proto"],
+    visibility = ["//visibility:public"],
+    deps = [":voiceover_proto"],    
 )
 
 format_import_proto_library(
@@ -226,7 +227,6 @@ android_library(
         ":thumbnail_java_proto_lite",
         ":topic_java_proto_lite",
         ":translation_java_proto_lite",
-        ":voiceover_java_proto_lite",
     ],
 )
 
