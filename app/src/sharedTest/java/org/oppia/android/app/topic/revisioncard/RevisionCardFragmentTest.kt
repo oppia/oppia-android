@@ -32,6 +32,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.feedbackreporting.FeedbackReportingEntryActivity
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.parser.RichTextViewMatcher.Companion.containsRichText
@@ -152,6 +153,28 @@ class RevisionCardFragmentTest {
       intended(
         hasExtra(
           OptionsActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+          /* value= */ false
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testRevisionCardTest_openOverflowMenu_selectSendFeedbackInMenu_opensFeedbackEntryActivity() {
+    launch<ExplorationActivity>(
+      createRevisionCardActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        SUBTOPIC_TOPIC_ID
+      )
+    ).use {
+      openActionBarOverflowOrOptionsMenu(context)
+      onView(withText(context.getString(R.string.menu_send_feedback))).perform(ViewActions.click())
+      intended(hasComponent(FeedbackReportingEntryActivity::class.java.name))
+      intended(
+        hasExtra(
+          FeedbackReportingEntryActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
           /* value= */ false
         )
       )
