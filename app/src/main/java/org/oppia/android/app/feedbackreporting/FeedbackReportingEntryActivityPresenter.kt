@@ -47,7 +47,9 @@ class FeedbackReportingEntryActivityPresenter @Inject constructor(
         R.id.feedback_reporting_entry_activity_fragment_navigation_drawer
       ) as NavigationDrawerFragment
     navigationDrawerFragment.setUpDrawer(
-      activity.findViewById<View>(R.id.feedback_reporting_entry_activity_drawer_layout) as DrawerLayout,
+      activity.findViewById<View>(
+        R.id.feedback_reporting_entry_activity_drawer_layout
+      ) as DrawerLayout,
       toolbar, R.id.nav_send_feedback
     )
   }
@@ -57,5 +59,4 @@ class FeedbackReportingEntryActivityPresenter @Inject constructor(
       R.id.feedback_reporting_entry_fragment_placeholder
     ) as FeedbackReportingEntryFragment?
   }
-
 }
