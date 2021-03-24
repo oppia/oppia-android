@@ -52,7 +52,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -88,6 +88,9 @@ class AppLanguageFragmentTest {
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -126,7 +129,7 @@ class AppLanguageFragmentTest {
 
   private fun checkSelectedLanguage(index: Int) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.language_recycler_view,
         index,
         R.id.language_radio_button
@@ -142,7 +145,7 @@ class AppLanguageFragmentTest {
 
   private fun selectChangeAppLanguage() {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.options_recyclerview,
         1,
         R.id.app_language_item_layout
@@ -155,7 +158,7 @@ class AppLanguageFragmentTest {
 
   private fun selectLanguage(index: Int) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         recyclerViewId = R.id.language_recycler_view,
         position = index,
         targetViewId = R.id.language_radio_button
@@ -168,7 +171,7 @@ class AppLanguageFragmentTest {
 
   private fun checkAppLanguage(appLanguage: String) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.options_recyclerview,
         1,
         R.id.app_language_text_view

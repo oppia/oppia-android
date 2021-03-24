@@ -52,7 +52,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -89,6 +89,9 @@ class AudioLanguageFragmentTest {
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -146,7 +149,7 @@ class AudioLanguageFragmentTest {
 
   private fun selectLanguage(index: Int) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         recyclerViewId = R.id.audio_language_recycler_view,
         position = index,
         targetViewId = R.id.language_radio_button
@@ -164,7 +167,7 @@ class AudioLanguageFragmentTest {
 
   private fun checkSelectedLanguage(index: Int) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.audio_language_recycler_view,
         index,
         R.id.language_radio_button
@@ -175,7 +178,7 @@ class AudioLanguageFragmentTest {
 
   private fun selectChangeAudioLanguage() {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.options_recyclerview,
         2,
         R.id.audio_laguage_item_layout
@@ -188,7 +191,7 @@ class AudioLanguageFragmentTest {
 
   private fun checkAudioLanguage(audioLanguage: String) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.options_recyclerview,
         2,
         R.id.audio_language_text_view

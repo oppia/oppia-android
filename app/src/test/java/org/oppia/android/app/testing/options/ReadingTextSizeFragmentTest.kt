@@ -60,7 +60,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -95,6 +95,9 @@ class ReadingTextSizeFragmentTest {
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -201,7 +204,7 @@ class ReadingTextSizeFragmentTest {
 
   private fun checkTextSizeLabel(label: String) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.options_recyclerview,
         0,
         R.id.reading_text_size_text_view

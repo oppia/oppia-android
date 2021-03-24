@@ -57,7 +57,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -95,6 +95,9 @@ class OptionsFragmentTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -184,7 +187,7 @@ class OptionsFragmentTest {
       getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.options_recyclerview,
           0,
           R.id.reading_text_size_text_view
@@ -218,7 +221,7 @@ class OptionsFragmentTest {
       getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.options_recyclerview,
           2,
           R.id.audio_language_text_view
@@ -252,7 +255,7 @@ class OptionsFragmentTest {
       getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.options_recyclerview,
           1, R.id.app_language_text_view
         )

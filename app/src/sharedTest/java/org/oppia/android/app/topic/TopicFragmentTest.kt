@@ -59,7 +59,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -96,6 +96,9 @@ class TopicFragmentTest {
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
     TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -461,7 +464,7 @@ class TopicFragmentTest {
     stringToMatch: String
   ) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         recyclerView,
         itemPosition,
         targetViewId

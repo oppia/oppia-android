@@ -4,17 +4,21 @@ import android.content.res.Resources
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import javax.inject.Inject
 
 // Reference Link: https://github.com/dannyroa/espresso-samples/blob/master/RecyclerView/app/src/androidTest/java/com/dannyroa/espresso_samples/recyclerview/RecyclerViewMatcher.java
-class RecyclerViewMatcher {
-  companion object {
+class RecyclerViewMatcher @Inject constructor() {
+
     /**
      * This function returns a Matcher for an item inside RecyclerView from a specified position.
      */
@@ -78,7 +82,20 @@ class RecyclerViewMatcher {
     fun hasGridColumnCount(expectedColumnCount: Int): ViewAssertion {
       return GridLayoutManagerColumnCountAssertion(expectedColumnCount)
     }
-  }
+
+    fun verifyItemDisplayedOnRecyclerView(
+      recyclerView: Int,
+      itemPosition: Int,
+      targetView: Int
+    ) {
+      Espresso.onView(
+        atPositionOnView(
+          recyclerViewId = recyclerView,
+          position = itemPosition,
+          targetViewId = targetView
+        )
+      ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
 
   private class RecyclerViewItemCountAssertion(private val count: Int) : ViewAssertion {
     override fun check(view: View, noViewFoundException: NoMatchingViewException?) {

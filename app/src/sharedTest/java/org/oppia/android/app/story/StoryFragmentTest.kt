@@ -76,8 +76,7 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_STORY_ID_1
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.hasItemCount
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -117,6 +116,9 @@ class StoryFragmentTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -182,7 +184,7 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 0,
           targetViewId = R.id.story_progress_chapter_completed_text
@@ -199,7 +201,7 @@ class StoryFragmentTest {
   fun testStoryFragment_correctNumberOfStoriesLoadedInRecyclerView() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.story_chapter_list)).check(hasItemCount(3))
+      onView(withId(R.id.story_chapter_list)).check(recyclerViewMatcher.hasItemCount(3))
     }
   }
 
@@ -214,7 +216,7 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
           targetViewId = R.id.chapter_title
@@ -237,7 +239,7 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
           targetViewId = R.id.chapter_summary
@@ -261,7 +263,7 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
           targetViewId = R.id.chapter_summary
@@ -284,7 +286,7 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
           targetViewId = R.id.chapter_summary
@@ -312,7 +314,7 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
           targetViewId = R.id.chapter_summary
@@ -339,7 +341,7 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,
           targetViewId = R.id.chapter_thumbnail
@@ -369,7 +371,7 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,
           targetViewId = R.id.chapter_thumbnail
@@ -398,7 +400,7 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,
           targetViewId = R.id.chapter_summary
@@ -422,7 +424,7 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,
           targetViewId = R.id.chapter_summary
@@ -446,7 +448,7 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
           targetViewId = R.id.story_chapter_card
@@ -476,7 +478,7 @@ class StoryFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 0,
           targetViewId = R.id.story_progress_chapter_completed_text

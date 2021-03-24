@@ -56,7 +56,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -90,6 +90,9 @@ class OngoingTopicListActivityTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var storyProfileTestHelper: StoryProgressTestHelper
@@ -147,7 +150,7 @@ class OngoingTopicListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 0,
           targetViewId = R.id.topic_name_text_view
@@ -174,7 +177,7 @@ class OngoingTopicListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 0,
           targetViewId = R.id.topic_name_text_view
@@ -201,7 +204,7 @@ class OngoingTopicListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 0,
           targetViewId = R.id.topic_name_text_view
@@ -227,7 +230,7 @@ class OngoingTopicListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 0,
           targetViewId = R.id.story_count_text_view
@@ -255,7 +258,7 @@ class OngoingTopicListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 1,
           targetViewId = R.id.topic_name_text_view
@@ -280,7 +283,7 @@ class OngoingTopicListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 1,
           targetViewId = R.id.topic_name_text_view
@@ -307,7 +310,7 @@ class OngoingTopicListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 1,
           targetViewId = R.id.story_count_text_view
@@ -335,7 +338,7 @@ class OngoingTopicListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 1,
           targetViewId = R.id.story_count_text_view
@@ -363,7 +366,7 @@ class OngoingTopicListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 0,
           targetViewId = R.id.topic_name_text_view

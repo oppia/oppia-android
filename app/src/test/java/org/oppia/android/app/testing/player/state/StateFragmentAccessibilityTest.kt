@@ -87,6 +87,9 @@ class StateFragmentAccessibilityTest {
   lateinit var context: Context
 
   @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
+
+  @Inject
   lateinit var fakeAccessibilityManager: FakeAccessibilityChecker
 
   private val internalProfileId: Int = 1
@@ -103,14 +106,14 @@ class StateFragmentAccessibilityTest {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
       onView(
-        RecyclerViewMatcher.atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
           targetViewId = R.id.drag_drop_move_down_item
         )
       ).perform(click())
       onView(
-        RecyclerViewMatcher.atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 1,
           targetViewId = R.id.drag_drop_content_text_view
@@ -124,14 +127,14 @@ class StateFragmentAccessibilityTest {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
       onView(
-        RecyclerViewMatcher.atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 1,
           targetViewId = R.id.drag_drop_move_up_item
         )
       ).perform(click())
       onView(
-        RecyclerViewMatcher.atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
           targetViewId = R.id.drag_drop_content_text_view

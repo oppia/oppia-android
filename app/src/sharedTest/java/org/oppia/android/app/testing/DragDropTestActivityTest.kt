@@ -49,7 +49,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -64,12 +64,16 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = DragDropTestActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class DragDropTestActivityTest {
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Test
   fun testDragDropTestActivity_dragItem0ToPosition1() {
@@ -93,9 +97,13 @@ class DragDropTestActivityTest {
           precisionDescriber = Press.FINGER
         )
       )
-      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 0))
+      onView(recyclerViewMatcher.atPosition(
+        recyclerViewId = R.id.drag_drop_recycler_view, position = 0
+      ))
         .check(matches(withText("Item 2")))
-      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 1))
+      onView(recyclerViewMatcher.atPosition(
+        recyclerViewId = R.id.drag_drop_recycler_view, position = 1
+      ))
         .check(matches(withText("Item 1")))
     }
   }
@@ -122,9 +130,13 @@ class DragDropTestActivityTest {
           precisionDescriber = Press.FINGER
         )
       )
-      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 1))
+      onView(recyclerViewMatcher.atPosition(
+        recyclerViewId = R.id.drag_drop_recycler_view, position = 1
+      ))
         .check(matches(withText("Item 3")))
-      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 2))
+      onView(recyclerViewMatcher.atPosition(
+        recyclerViewId = R.id.drag_drop_recycler_view, position = 2
+      ))
         .check(matches(withText("Item 2")))
     }
   }
@@ -152,9 +164,13 @@ class DragDropTestActivityTest {
           precisionDescriber = Press.FINGER
         )
       )
-      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 2))
+      onView(recyclerViewMatcher.atPosition(
+        recyclerViewId = R.id.drag_drop_recycler_view, position = 2
+      ))
         .check(matches(withText("Item 4")))
-      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 3))
+      onView(recyclerViewMatcher.atPosition(
+        recyclerViewId = R.id.drag_drop_recycler_view, position = 3
+      ))
         .check(matches(withText("Item 3")))
     }
   }

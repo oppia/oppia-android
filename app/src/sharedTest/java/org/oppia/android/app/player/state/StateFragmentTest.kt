@@ -114,7 +114,7 @@ import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.IsOnRobolectric
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -152,6 +152,9 @@ class StateFragmentTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -479,7 +482,7 @@ class StateFragmentTest {
 
       scrollToViewType(DRAG_DROP_SORT_INTERACTION)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
           targetViewId = R.id.drag_drop_item_recyclerview
@@ -499,7 +502,7 @@ class StateFragmentTest {
       scrollToViewType(SUBMITTED_ANSWER)
       onView(withId(R.id.submitted_answer_recycler_view)).check(matches(hasChildCount(3)))
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.submitted_answer_recycler_view,
           position = 0,
           targetViewId = R.id.submitted_html_answer_recycler_view
@@ -522,7 +525,7 @@ class StateFragmentTest {
 
       scrollToViewType(DRAG_DROP_SORT_INTERACTION)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 2,
           targetViewId = R.id.drag_drop_content_text_view
@@ -541,7 +544,7 @@ class StateFragmentTest {
 
       scrollToViewType(DRAG_DROP_SORT_INTERACTION)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
           targetViewId = R.id.drag_drop_item_recyclerview
@@ -873,7 +876,9 @@ class StateFragmentTest {
         "Hi, welcome to Oppia! is a tool that helps you create interactive learning " +
           "activities that can be continually improved over time.\n\nIncidentally, do you " +
           "know where the name 'Oppia' comes from?"
-      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+      onView(recyclerViewMatcher.atPositionOnView(
+        R.id.state_recycler_view, 0, R.id.content_text_view
+        )).check(
         matches(
           withText(htmlResult)
         )
@@ -892,7 +897,9 @@ class StateFragmentTest {
         "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities " +
           "that can be continually improved over time.\n\nIncidentally, do you know where " +
           "the name 'Oppia' comes from?"
-      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+      onView(recyclerViewMatcher.atPositionOnView(
+        R.id.state_recycler_view, 0, R.id.content_text_view
+      )).check(
         matches(
           withText(htmlResult)
         )
@@ -1078,7 +1085,7 @@ class StateFragmentTest {
     dragAndDropItem(fromPosition = 0, toPosition = 3)
     clickSubmitAnswerButton()
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         recyclerViewId = R.id.submitted_answer_recycler_view,
         position = 0,
         targetViewId = R.id.submitted_answer_content_text_view
@@ -1094,7 +1101,7 @@ class StateFragmentTest {
     dragAndDropItem(fromPosition = 1, toPosition = 2)
     clickSubmitAnswerButton()
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         recyclerViewId = R.id.submitted_answer_recycler_view,
         position = 0,
         targetViewId = R.id.submitted_answer_content_text_view
@@ -1229,7 +1236,7 @@ class StateFragmentTest {
   private fun clickSelection(optionPosition: Int, targetViewId: Int) {
     scrollToViewType(SELECTION_INTERACTION)
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         recyclerViewId = R.id.selection_interaction_recyclerview,
         position = optionPosition,
         targetViewId = targetViewId
@@ -1241,7 +1248,7 @@ class StateFragmentTest {
   private fun clickDragAndDropOption(position: Int, targetViewId: Int) {
     scrollToViewType(DRAG_DROP_SORT_INTERACTION)
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         recyclerViewId = R.id.drag_drop_interaction_recycler_view,
         position = position,
         targetViewId = targetViewId

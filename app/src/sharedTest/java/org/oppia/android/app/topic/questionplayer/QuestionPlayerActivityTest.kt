@@ -75,7 +75,7 @@ import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -119,6 +119,9 @@ class QuestionPlayerActivityTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   @field:BackgroundDispatcher
@@ -326,7 +329,7 @@ class QuestionPlayerActivityTest {
   private fun clickSelection(optionPosition: Int, targetViewId: Int) {
     scrollToViewType(SELECTION_INTERACTION)
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         recyclerViewId = R.id.selection_interaction_recyclerview,
         position = optionPosition,
         targetViewId = targetViewId

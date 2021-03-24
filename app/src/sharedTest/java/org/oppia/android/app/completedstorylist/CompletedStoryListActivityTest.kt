@@ -58,7 +58,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -96,6 +96,9 @@ class CompletedStoryListActivityTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var storyProfileTestHelper: StoryProgressTestHelper
@@ -145,7 +148,7 @@ class CompletedStoryListActivityTest {
           )
         )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 0,
           targetViewId = R.id.completed_story_lesson_thumbnail
@@ -172,7 +175,7 @@ class CompletedStoryListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 0,
           targetViewId = R.id.completed_story_name_text_view
@@ -199,7 +202,7 @@ class CompletedStoryListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 0,
           targetViewId = R.id.completed_story_name_text_view
@@ -227,7 +230,7 @@ class CompletedStoryListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 0,
           targetViewId = R.id.completed_story_name_text_view
@@ -254,7 +257,7 @@ class CompletedStoryListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 0,
           targetViewId = R.id.completed_story_topic_name_text_view
@@ -281,7 +284,7 @@ class CompletedStoryListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 1,
           targetViewId = R.id.completed_story_name_text_view
@@ -309,7 +312,7 @@ class CompletedStoryListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 1,
           targetViewId = R.id.completed_story_name_text_view
@@ -336,7 +339,7 @@ class CompletedStoryListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 1,
           targetViewId = R.id.completed_story_lesson_thumbnail
@@ -364,7 +367,7 @@ class CompletedStoryListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 1,
           targetViewId = R.id.completed_story_lesson_thumbnail
@@ -391,7 +394,7 @@ class CompletedStoryListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 1,
           targetViewId = R.id.completed_story_topic_name_text_view
@@ -419,7 +422,7 @@ class CompletedStoryListActivityTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 1,
           targetViewId = R.id.completed_story_topic_name_text_view

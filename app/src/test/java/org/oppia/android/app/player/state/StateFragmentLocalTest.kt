@@ -140,6 +140,9 @@ class StateFragmentLocalTest {
   lateinit var context: Context
 
   @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
+
+  @Inject
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
@@ -545,7 +548,7 @@ class StateFragmentLocalTest {
         .perform(scrollToPosition<ViewHolder>(0))
       testCoroutineDispatchers.runCurrent()
       onView(
-        RecyclerViewMatcher.atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.hints_and_solution_recycler_view, 0, R.id.hint_summary_container
         )
       ).perform(click())

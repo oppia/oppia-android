@@ -76,7 +76,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -118,6 +118,9 @@ class ProfileProgressFragmentTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -551,7 +554,7 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.profile_progress_list,
           0,
           R.id.ongoing_topics_container
@@ -565,7 +568,7 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.profile_progress_list,
           0,
           R.id.completed_stories_container
@@ -581,7 +584,7 @@ class ProfileProgressFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.profile_progress_list,
           0,
           R.id.completed_stories_container
@@ -662,7 +665,7 @@ class ProfileProgressFragmentTest {
     stringToMatch: String
   ) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.profile_progress_list,
         itemPosition,
         targetViewId
@@ -672,7 +675,7 @@ class ProfileProgressFragmentTest {
 
   private fun clickProfileProgressItem(itemPosition: Int, targetViewId: Int) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.profile_progress_list,
         itemPosition,
         targetViewId

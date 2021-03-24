@@ -60,7 +60,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -92,6 +92,9 @@ class TopicPracticeFragmentTest {
   private val internalProfileId = 0
 
   @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
+
+  @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
@@ -118,7 +121,7 @@ class TopicPracticeFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           0,
           R.id.master_skills_text_view
@@ -133,14 +136,14 @@ class TopicPracticeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 5)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           5,
           R.id.topic_practice_start_button
         )
       ).check(matches(isCompletelyDisplayed()))
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           5,
           R.id.topic_practice_start_button
@@ -155,7 +158,7 @@ class TopicPracticeFragmentTest {
       clickPracticeTab()
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           1,
           R.id.subtopic_check_box
@@ -163,7 +166,7 @@ class TopicPracticeFragmentTest {
       ).check(matches(isChecked()))
       clickPracticeItem(position = 2, targetViewId = R.id.subtopic_check_box)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           2,
           R.id.subtopic_check_box
@@ -180,7 +183,7 @@ class TopicPracticeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 5)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           5,
           R.id.topic_practice_start_button
@@ -196,7 +199,7 @@ class TopicPracticeFragmentTest {
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           1,
           R.id.subtopic_check_box
@@ -214,7 +217,7 @@ class TopicPracticeFragmentTest {
       scrollToPosition(position = 5)
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           5,
           R.id.topic_practice_start_button
@@ -242,7 +245,7 @@ class TopicPracticeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           1,
           R.id.subtopic_check_box
@@ -258,7 +261,7 @@ class TopicPracticeFragmentTest {
       scrollToPosition(position = 5)
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           5,
           R.id.topic_practice_start_button
@@ -267,7 +270,7 @@ class TopicPracticeFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 5)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           5,
           R.id.topic_practice_start_button
@@ -285,7 +288,7 @@ class TopicPracticeFragmentTest {
       scrollToPosition(position = 5)
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           5,
           R.id.topic_practice_start_button
@@ -299,7 +302,7 @@ class TopicPracticeFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           0,
           R.id.master_skills_text_view
@@ -313,7 +316,7 @@ class TopicPracticeFragmentTest {
       )
       onView(isRoot()).perform(orientationLandscape())
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.topic_practice_skill_list,
           0,
           R.id.master_skills_text_view
@@ -363,7 +366,7 @@ class TopicPracticeFragmentTest {
 
   private fun clickPracticeItem(position: Int, targetViewId: Int) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.topic_practice_skill_list,
         position,
         targetViewId

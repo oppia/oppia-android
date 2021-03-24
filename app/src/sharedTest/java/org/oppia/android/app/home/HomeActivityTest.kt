@@ -72,11 +72,7 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.hasGridColumnCount
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.hasGridItemCount
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.hasItemCount
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -126,6 +122,9 @@ class HomeActivityTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -655,7 +654,7 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.home_recycler_view,
           position = 1,
           targetViewId = R.id.view_all_text_view
@@ -769,7 +768,7 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.home_recycler_view,
           position = 1,
           targetViewId = R.id.promoted_story_list_recycler_view
@@ -870,7 +869,7 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.home_recycler_view,
           0,
           R.id.profile_name_textview
@@ -889,7 +888,7 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.home_recycler_view,
           0,
           R.id.profile_name_textview
@@ -907,7 +906,7 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.home_recycler_view,
           0,
           R.id.profile_name_textview
@@ -926,7 +925,7 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.home_recycler_view,
           0,
           R.id.profile_name_textview
@@ -954,7 +953,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
-      onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
+      onView(recyclerViewMatcher.atPosition(R.id.home_recycler_view, 3)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
     }
@@ -1001,9 +1000,9 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
+        onView(withId(R.id.home_recycler_view)).check(recyclerViewMatcher.hasGridItemCount(3, 0))
       } else {
-        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(2, 0))
+        onView(withId(R.id.home_recycler_view)).check(recyclerViewMatcher.hasGridItemCount(2, 0))
       }
     }
   }
@@ -1012,7 +1011,7 @@ class HomeActivityTest {
   fun testHomeActivity_checkSpanForItem4_spanSizeIsOne() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
+      onView(withId(R.id.home_recycler_view)).check(recyclerViewMatcher.hasGridItemCount(1, 4))
     }
   }
 
@@ -1021,7 +1020,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
+      onView(withId(R.id.home_recycler_view)).check(recyclerViewMatcher.hasGridItemCount(1, 4))
     }
   }
 
@@ -1036,7 +1035,7 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.home_recycler_view,
           2,
           R.id.promoted_story_list_recycler_view
@@ -1137,7 +1136,7 @@ class HomeActivityTest {
 
       scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view))
-        .check(hasGridItemCount(spanCount = 1, position = 3))
+        .check(recyclerViewMatcher.hasGridItemCount(spanCount = 1, position = 3))
     }
   }
 
@@ -1157,7 +1156,7 @@ class HomeActivityTest {
 
       scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view))
-        .check(hasGridItemCount(spanCount = 1, position = 3))
+        .check(recyclerViewMatcher.hasGridItemCount(spanCount = 1, position = 3))
     }
   }
 
@@ -1172,7 +1171,7 @@ class HomeActivityTest {
 
       scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view))
-        .check(hasGridItemCount(spanCount = 1, position = 3))
+        .check(recyclerViewMatcher.hasGridItemCount(spanCount = 1, position = 3))
     }
   }
 
@@ -1188,7 +1187,7 @@ class HomeActivityTest {
 
       scrollToPosition(position = 3)
       onView(withId(R.id.home_recycler_view))
-        .check(hasGridItemCount(spanCount = 1, position = 3))
+        .check(recyclerViewMatcher.hasGridItemCount(spanCount = 1, position = 3))
     }
   }
 
@@ -1218,12 +1217,12 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.home_recycler_view,
           position = 1,
           targetViewId = R.id.promoted_story_list_recycler_view
         )
-      ).check(hasItemCount(count = 3))
+      ).check(recyclerViewMatcher.hasItemCount(count = 3))
     }
   }
 
@@ -1255,12 +1254,12 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.home_recycler_view,
           position = 1,
           targetViewId = R.id.promoted_story_list_recycler_view
         )
-      ).check(hasItemCount(count = 3))
+      ).check(recyclerViewMatcher.hasItemCount(count = 3))
     }
   }
 
@@ -1292,12 +1291,12 @@ class HomeActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 1)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.home_recycler_view,
           position = 1,
           targetViewId = R.id.promoted_story_list_recycler_view
         )
-      ).check(hasItemCount(count = 4))
+      ).check(recyclerViewMatcher.hasItemCount(count = 4))
     }
   }
 
@@ -1323,7 +1322,7 @@ class HomeActivityTest {
 
       scrollToPosition(position = 0)
       onView(withId(R.id.promoted_story_list_recycler_view))
-        .check(hasItemCount(count = 3))
+        .check(recyclerViewMatcher.hasItemCount(count = 3))
     }
   }
 
@@ -1374,7 +1373,7 @@ class HomeActivityTest {
     stringToMatch: String
   ) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.home_recycler_view,
         itemPosition,
         targetViewId
@@ -1388,7 +1387,7 @@ class HomeActivityTest {
     stringToMatch: String
   ) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.promoted_story_list_recycler_view,
         itemPosition,
         targetViewId
@@ -1402,7 +1401,7 @@ class HomeActivityTest {
     stringToMatch: String
   ) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.coming_soon_topic_list_recycler_view,
         itemPosition,
         targetViewId
@@ -1416,7 +1415,7 @@ class HomeActivityTest {
     stringToMatch: String
   ) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.home_recycler_view,
         itemPosition,
         targetViewId
@@ -1425,7 +1424,9 @@ class HomeActivityTest {
   }
 
   private fun verifyHomeRecyclerViewHasGridColumnCount(columnCount: Int) {
-    onView(withId(R.id.home_recycler_view)).check(hasGridColumnCount(columnCount))
+    onView(withId(R.id.home_recycler_view)).check(
+      recyclerViewMatcher.hasGridColumnCount(columnCount)
+    )
   }
 
   private fun createProfileId(internalProfileId: Int): ProfileId {

@@ -44,7 +44,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.hasGridItemCount
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -72,6 +72,9 @@ class RecentlyPlayedSpanTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -120,7 +123,7 @@ class RecentlyPlayedSpanTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
-        hasGridItemCount(
+        recyclerViewMatcher.hasGridItemCount(
           spanCount = 2,
           position = 0
         )
@@ -134,7 +137,7 @@ class RecentlyPlayedSpanTest {
     launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
-        hasGridItemCount(
+        recyclerViewMatcher.hasGridItemCount(
           spanCount = 3,
           position = 0
         )
@@ -152,7 +155,7 @@ class RecentlyPlayedSpanTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
-        hasGridItemCount(
+        recyclerViewMatcher.hasGridItemCount(
           spanCount = 3,
           position = 0
         )
@@ -170,7 +173,7 @@ class RecentlyPlayedSpanTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
-        hasGridItemCount(
+        recyclerViewMatcher.hasGridItemCount(
           spanCount = 4,
           position = 0
         )
@@ -188,7 +191,7 @@ class RecentlyPlayedSpanTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
-        hasGridItemCount(
+        recyclerViewMatcher.hasGridItemCount(
           spanCount = 2,
           position = 2
         )
@@ -206,7 +209,7 @@ class RecentlyPlayedSpanTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
-        hasGridItemCount(
+        recyclerViewMatcher.hasGridItemCount(
           spanCount = 3,
           position = 2
         )
@@ -224,7 +227,7 @@ class RecentlyPlayedSpanTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
-        hasGridItemCount(
+        recyclerViewMatcher.hasGridItemCount(
           spanCount = 3,
           position = 2
         )
@@ -242,7 +245,7 @@ class RecentlyPlayedSpanTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
-        hasGridItemCount(
+        recyclerViewMatcher.hasGridItemCount(
           spanCount = 4,
           position = 2
         )

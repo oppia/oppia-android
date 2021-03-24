@@ -69,8 +69,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -102,6 +101,9 @@ class TopicLessonsFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper
@@ -216,7 +218,7 @@ class TopicLessonsFragmentTest {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.story_summary_recycler_view,
           position = 1,
           R.id.chapter_list_drop_down_icon
@@ -235,7 +237,7 @@ class TopicLessonsFragmentTest {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.story_summary_recycler_view,
           position = 1,
           R.id.chapter_recycler_view
@@ -251,7 +253,7 @@ class TopicLessonsFragmentTest {
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.story_summary_recycler_view,
           position = 1,
           R.id.chapter_recycler_view
@@ -297,7 +299,7 @@ class TopicLessonsFragmentTest {
       clickStoryItem(position = 2, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.story_summary_recycler_view,
           position = 1,
           R.id.chapter_recycler_view
@@ -316,7 +318,7 @@ class TopicLessonsFragmentTest {
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 2)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.story_summary_recycler_view,
           position = 2,
           R.id.chapter_recycler_view
@@ -333,7 +335,7 @@ class TopicLessonsFragmentTest {
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.story_summary_recycler_view,
           position = 1,
           R.id.chapter_recycler_view
@@ -350,7 +352,7 @@ class TopicLessonsFragmentTest {
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           R.id.story_summary_recycler_view,
           position = 1,
           R.id.chapter_recycler_view
@@ -380,7 +382,7 @@ class TopicLessonsFragmentTest {
 
   private fun clickStoryItem(position: Int, targetViewId: Int) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         R.id.story_summary_recycler_view,
         position,
         targetViewId
@@ -400,7 +402,7 @@ class TopicLessonsFragmentTest {
 
   private fun verifyTextOnStorySummaryListItemAtPosition(itemPosition: Int, stringToMatch: String) {
     onView(
-      atPosition(
+      recyclerViewMatcher.atPosition(
         R.id.story_summary_recycler_view,
         itemPosition
       )

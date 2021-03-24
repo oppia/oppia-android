@@ -60,8 +60,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -103,6 +102,9 @@ class ProfileChooserFragmentTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -156,7 +158,7 @@ class ProfileChooserFragmentTest {
         stringToMatch = "Ben"
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 1,
           targetViewId = R.id.profile_is_admin_text
@@ -182,7 +184,7 @@ class ProfileChooserFragmentTest {
       }
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 0,
           targetViewId = R.id.profile_last_visited
@@ -208,7 +210,7 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 0,
           targetViewId = R.id.profile_last_visited
@@ -297,7 +299,7 @@ class ProfileChooserFragmentTest {
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPosition(
+        recyclerViewMatcher.atPosition(
           recyclerViewId = R.id.profile_recycler_view,
           position = 0
         )
@@ -319,7 +321,7 @@ class ProfileChooserFragmentTest {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 1,
           targetViewId = R.id.add_profile_item
@@ -383,7 +385,7 @@ class ProfileChooserFragmentTest {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 1,
           targetViewId = R.id.add_profile_description_text
@@ -411,7 +413,7 @@ class ProfileChooserFragmentTest {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 4,
           targetViewId = R.id.add_profile_description_text
@@ -437,7 +439,7 @@ class ProfileChooserFragmentTest {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPosition(
+        recyclerViewMatcher.atPosition(
           recyclerViewId = R.id.profile_recycler_view,
           position = 4
         )
@@ -466,7 +468,7 @@ class ProfileChooserFragmentTest {
     stringToMatch: String
   ) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         recyclerViewId = R.id.profile_recycler_view,
         position = itemPosition,
         targetViewId = targetView

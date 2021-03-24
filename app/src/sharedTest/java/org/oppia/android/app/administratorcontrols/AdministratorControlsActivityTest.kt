@@ -74,8 +74,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.android.testing.RecyclerViewTesting
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -108,7 +107,7 @@ class AdministratorControlsActivityTest {
   lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
-  lateinit var recyclerViewTesting: RecyclerViewTesting
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -142,7 +141,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      recyclerViewTesting.verifyItemDisplayedOnRecyclerView(
+      recyclerViewMatcher.verifyItemDisplayedOnRecyclerView(
         recyclerView = R.id.administrator_controls_list,
         itemPosition = 0,
         targetView = R.id.general_text_view
@@ -152,7 +151,7 @@ class AdministratorControlsActivityTest {
         targetViewId = R.id.edit_account_text_view,
         stringIdToMatch = R.string.administrator_controls_edit_account
       )
-      recyclerViewTesting.verifyItemDisplayedOnRecyclerView(
+      recyclerViewMatcher.verifyItemDisplayedOnRecyclerView(
         recyclerView = R.id.administrator_controls_list,
         itemPosition = 1,
         targetView = R.id.profile_management_text_view
@@ -178,13 +177,13 @@ class AdministratorControlsActivityTest {
         targetViewId = R.id.download_permissions_text_view,
         stringIdToMatch = R.string.administrator_controls_download_permissions_label
       )
-      recyclerViewTesting.verifyItemDisplayedOnRecyclerView(
+      recyclerViewMatcher.verifyItemDisplayedOnRecyclerView(
         recyclerView = R.id.administrator_controls_list,
         itemPosition = 2,
         targetView = R.id.topic_update_on_wifi_constraint_layout
       )
       scrollToPosition(position = 2)
-      recyclerViewTesting.verifyItemDisplayedOnRecyclerView(
+      recyclerViewMatcher.verifyItemDisplayedOnRecyclerView(
         recyclerView = R.id.administrator_controls_list,
         itemPosition = 2,
         targetView = R.id.auto_update_topic_constraint_layout
@@ -201,7 +200,7 @@ class AdministratorControlsActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
-      recyclerViewTesting.verifyItemDisplayedOnRecyclerView(
+      recyclerViewMatcher.verifyItemDisplayedOnRecyclerView(
         recyclerView = R.id.administrator_controls_list,
         itemPosition = 3,
         targetView = R.id.app_information_text_view
@@ -211,7 +210,7 @@ class AdministratorControlsActivityTest {
         targetViewId = R.id.app_version_text_view,
         stringIdToMatch = R.string.administrator_controls_app_version
       )
-      recyclerViewTesting.verifyItemDisplayedOnRecyclerView(
+      recyclerViewMatcher.verifyItemDisplayedOnRecyclerView(
         recyclerView = R.id.administrator_controls_list,
         itemPosition = 4,
         targetView = R.id.account_actions_text_view
@@ -233,7 +232,7 @@ class AdministratorControlsActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
           position = 2,
           targetViewId = R.id.topic_update_on_wifi_switch
@@ -241,7 +240,7 @@ class AdministratorControlsActivityTest {
       ).check(matches(not(isChecked())))
       scrollToPosition(position = 2)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
           position = 2,
           targetViewId = R.id.auto_update_topic_switch
@@ -260,21 +259,21 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
           position = 2,
           targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(not(isChecked())))
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
           position = 2,
           targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
           position = 2,
           targetViewId = R.id.topic_update_on_wifi_switch
@@ -283,14 +282,14 @@ class AdministratorControlsActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 2)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
           position = 2,
           targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(isChecked()))
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
           position = 2,
           targetViewId = R.id.auto_update_topic_switch
@@ -299,14 +298,14 @@ class AdministratorControlsActivityTest {
       onView(isRoot()).perform(orientationPortrait())
       scrollToPosition(position = 2)
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
           position = 2,
           targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(isChecked()))
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
           position = 2,
           targetViewId = R.id.auto_update_topic_switch
@@ -518,7 +517,7 @@ class AdministratorControlsActivityTest {
     @StringRes stringIdToMatch: Int
   ) {
     onView(
-      atPositionOnView(
+      recyclerViewMatcher.atPositionOnView(
         recyclerViewId = R.id.administrator_controls_list,
         position = itemPosition,
         targetViewId = targetViewId

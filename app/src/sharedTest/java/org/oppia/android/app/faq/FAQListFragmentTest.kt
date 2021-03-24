@@ -55,8 +55,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -71,6 +70,7 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [FAQListFragment]. */
@@ -78,6 +78,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = FAQListFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class FAQListFragmentTest {
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Before
   fun setUp() {
@@ -97,7 +100,7 @@ class FAQListFragmentTest {
         scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.faq_fragment_recycler_view,
           position = 0,
           targetViewId = R.id.faq_question_text_view
@@ -110,7 +113,7 @@ class FAQListFragmentTest {
   fun openFAQListActivity_selectFAQQuestion_opensFAQSingleActivity() {
     launch(FAQListActivity::class.java).use {
       onView(
-        atPosition(
+        recyclerViewMatcher.atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
           position = 1
         )
@@ -136,7 +139,7 @@ class FAQListFragmentTest {
     launch(FAQListActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
-        atPosition(
+        recyclerViewMatcher.atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
           position = 1
         )

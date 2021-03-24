@@ -52,8 +52,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -88,6 +87,9 @@ class ProfileListFragmentTest {
   lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
+
+  @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
@@ -118,7 +120,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
           targetViewId = R.id.profile_list_name
@@ -127,7 +129,7 @@ class ProfileListFragmentTest {
         matches(withText("Admin"))
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
           targetViewId = R.id.profile_list_admin_text
@@ -141,7 +143,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
           targetViewId = R.id.profile_list_name
@@ -150,7 +152,7 @@ class ProfileListFragmentTest {
         matches(withText("Ben"))
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
           targetViewId = R.id.profile_list_admin_text
@@ -173,7 +175,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
           targetViewId = R.id.profile_list_name
@@ -182,7 +184,7 @@ class ProfileListFragmentTest {
         matches(withText("Admin"))
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
           targetViewId = R.id.profile_list_admin_text
@@ -196,7 +198,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
           targetViewId = R.id.profile_list_name
@@ -205,7 +207,7 @@ class ProfileListFragmentTest {
         matches(withText("Ben"))
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
           targetViewId = R.id.profile_list_admin_text
@@ -228,7 +230,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
           targetViewId = R.id.profile_list_name
@@ -242,7 +244,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
           targetViewId = R.id.profile_list_name
@@ -256,7 +258,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 2,
           targetViewId = R.id.profile_list_name
@@ -270,7 +272,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 3,
           targetViewId = R.id.profile_list_name
@@ -284,7 +286,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 4,
           targetViewId = R.id.profile_list_name
@@ -298,7 +300,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 5,
           targetViewId = R.id.profile_list_name
@@ -312,7 +314,7 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 6,
           targetViewId = R.id.profile_list_name
@@ -328,7 +330,7 @@ class ProfileListFragmentTest {
     profileTestHelper.initializeProfiles()
     launch(ProfileListActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPosition(R.id.profile_list_recycler_view, 0)).perform(click())
+      onView(recyclerViewMatcher.atPosition(R.id.profile_list_recycler_view, 0)).perform(click())
       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }

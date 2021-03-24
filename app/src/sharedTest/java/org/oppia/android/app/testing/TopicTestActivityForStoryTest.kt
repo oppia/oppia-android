@@ -48,8 +48,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -79,6 +78,9 @@ class TopicTestActivityForStoryTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Before
   fun setUp() {
@@ -119,7 +121,7 @@ class TopicTestActivityForStoryTest {
         )
       )
       onView(
-        atPosition(
+        recyclerViewMatcher.atPosition(
           recyclerViewId = R.id.story_summary_recycler_view,
           position = 1
         )
@@ -132,7 +134,7 @@ class TopicTestActivityForStoryTest {
     launch(TopicTestActivityForStory::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.story_summary_recycler_view,
           position = 2,
           targetViewId = R.id.chapter_recycler_view

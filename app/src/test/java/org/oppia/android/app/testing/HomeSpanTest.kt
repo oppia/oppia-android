@@ -42,7 +42,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.hasGridItemCount
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -68,6 +68,9 @@ class HomeSpanTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
+
   private val internalProfileId: Int = 1
 
   @Before
@@ -85,7 +88,7 @@ class HomeSpanTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withId(R.id.home_recycler_view))
         .check(
-          hasGridItemCount(
+          recyclerViewMatcher.hasGridItemCount(
             spanCount = 2,
             position = 0
           )
@@ -99,7 +102,7 @@ class HomeSpanTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withId(R.id.home_recycler_view))
         .check(
-          hasGridItemCount(
+          recyclerViewMatcher.hasGridItemCount(
             spanCount = 3,
             position = 0
           )
@@ -113,7 +116,7 @@ class HomeSpanTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withId(R.id.home_recycler_view))
         .check(
-          hasGridItemCount(
+          recyclerViewMatcher.hasGridItemCount(
             spanCount = 3,
             position = 0
           )
@@ -127,7 +130,7 @@ class HomeSpanTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withId(R.id.home_recycler_view))
         .check(
-          hasGridItemCount(
+          recyclerViewMatcher.hasGridItemCount(
             spanCount = 4,
             position = 0
           )

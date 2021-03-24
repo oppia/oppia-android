@@ -60,8 +60,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -91,6 +90,9 @@ class TopicRevisionFragmentTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -123,7 +125,9 @@ class TopicRevisionFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
-      onView(atPosition(recyclerViewId = R.id.revision_recycler_view, position = 0))
+      onView(recyclerViewMatcher.atPosition(
+        recyclerViewId = R.id.revision_recycler_view, position = 0
+      ))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
@@ -138,7 +142,7 @@ class TopicRevisionFragmentTest {
       clickRevisionTab()
       scrollToPosition(position = 0)
       onView(
-        atPosition(
+        recyclerViewMatcher.atPosition(
           recyclerViewId = R.id.revision_recycler_view,
           position = 0
         )
@@ -156,7 +160,7 @@ class TopicRevisionFragmentTest {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.revision_recycler_view,
           position = 0,
           targetViewId = R.id.subtopic_image_view
@@ -180,7 +184,9 @@ class TopicRevisionFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       clickRevisionTab()
-      onView(atPosition(recyclerViewId = R.id.revision_recycler_view, position = 0))
+      onView(recyclerViewMatcher.atPosition(
+        recyclerViewId = R.id.revision_recycler_view, position = 0
+      ))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
@@ -195,7 +201,7 @@ class TopicRevisionFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       clickRevisionTab()
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.revision_recycler_view,
           position = 0,
           targetViewId = R.id.subtopic_image_view

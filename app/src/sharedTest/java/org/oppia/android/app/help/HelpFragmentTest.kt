@@ -61,8 +61,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -93,6 +92,9 @@ class HelpFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Before
   fun setUp() {
@@ -156,7 +158,7 @@ class HelpFragmentTest {
         scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.help_fragment_recycler_view,
           position = 0,
           targetViewId = R.id.help_item_text_view
@@ -180,7 +182,7 @@ class HelpFragmentTest {
         scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        atPositionOnView(
+        recyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.help_fragment_recycler_view,
           position = 0,
           targetViewId = R.id.help_item_text_view
@@ -198,7 +200,7 @@ class HelpFragmentTest {
       )
     ).use {
       onView(
-        atPosition(
+        recyclerViewMatcher.atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
           position = 0
         )

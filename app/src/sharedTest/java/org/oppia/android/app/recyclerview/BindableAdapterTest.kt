@@ -73,7 +73,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.android.testing.RecyclerViewMatcher
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -109,6 +109,9 @@ class BindableAdapterTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var recyclerViewMatcher: RecyclerViewMatcher
 
   @Before
   fun setUp() {
@@ -160,7 +163,7 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(recyclerViewMatcher.atPosition(R.id.test_recycler_view, 0))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
     }
   }
@@ -196,11 +199,11 @@ class BindableAdapterTest {
           getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(recyclerViewMatcher.atPosition(R.id.test_recycler_view, 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 1))
+      onView(recyclerViewMatcher.atPosition(R.id.test_recycler_view, 1))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 2))
+      onView(recyclerViewMatcher.atPosition(R.id.test_recycler_view, 2))
         .check(matches(withText(STR_VALUE_2.boundStringValue)))
     }
   }
@@ -224,16 +227,16 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(recyclerViewMatcher.atPosition(R.id.test_recycler_view, 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
       onView(
-        atPosition(
+        recyclerViewMatcher.atPosition(
           R.id.test_recycler_view,
           1
         )
       ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
       onView(
-        atPosition(
+        recyclerViewMatcher.atPosition(
           R.id.test_recycler_view,
           2
         )
@@ -259,7 +262,7 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(recyclerViewMatcher.atPosition(R.id.test_recycler_view, 0))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
     }
   }
@@ -282,11 +285,11 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(recyclerViewMatcher.atPosition(R.id.test_recycler_view, 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 1))
+      onView(recyclerViewMatcher.atPosition(R.id.test_recycler_view, 1))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 2))
+      onView(recyclerViewMatcher.atPosition(R.id.test_recycler_view, 2))
         .check(matches(withText(STR_VALUE_2.boundStringValue)))
     }
   }
@@ -310,16 +313,16 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(recyclerViewMatcher.atPosition(R.id.test_recycler_view, 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
       onView(
-        atPosition(
+        recyclerViewMatcher.atPosition(
           R.id.test_recycler_view,
           1
         )
       ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
       onView(
-        atPosition(
+        recyclerViewMatcher.atPosition(
           R.id.test_recycler_view,
           2
         )
@@ -372,7 +375,9 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the bound data did not change despite the underlying live data changing.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("initial")))
+      onView(recyclerViewMatcher.atPosition(
+        R.id.test_recycler_view, 0
+      )).check(matches(withText("initial")))
     }
   }
 
@@ -395,7 +400,9 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("new value")))
+      onView(recyclerViewMatcher.atPosition(
+        R.id.test_recycler_view, 0
+      )).check(matches(withText("new value")))
     }
   }
 
@@ -416,7 +423,9 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the bound data did not change despite the underlying live data changing.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("initial")))
+      onView(recyclerViewMatcher.atPosition(
+        R.id.test_recycler_view, 0
+      )).check(matches(withText("initial")))
     }
   }
 
@@ -439,7 +448,9 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("new value")))
+      onView(recyclerViewMatcher.atPosition(
+        R.id.test_recycler_view, 0
+      )).check(matches(withText("new value")))
     }
   }
 
