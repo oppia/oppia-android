@@ -1,4 +1,5 @@
 {
+  "android_report_info_schema_version": 1,
   "app_context": {
     "entry_point": {
       "entry_point_name" : "navigation_drawer"
