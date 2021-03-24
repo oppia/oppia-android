@@ -73,7 +73,7 @@ import javax.inject.Singleton
 
 /** Tests for [StoryActivity]. */
 @RunWith(AndroidJUnit4::class)
-@LooperMode(value = LooperMode.Mode.PAUSED)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StoryActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StoryActivityTest {
 
@@ -132,7 +132,7 @@ class StoryActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(storyActivityTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun createStoryActivityIntent(
