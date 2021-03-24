@@ -27,7 +27,7 @@ class ProfileEditActivityPresenter @Inject constructor(
   @Inject
   lateinit var profileEditViewModel: ProfileEditViewModel
 
-  private var dialog: AlertDialog? = null
+  private lateinit var dialog: AlertDialog
 
   fun handleOnCreate(savedInstanceState: Bundle?) {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -127,10 +127,11 @@ class ProfileEditActivityPresenter @Inject constructor(
             }
           )
       }.create()
-    dialog!!.show()
+    dialog.show()
   }
 
   fun handleOnSaveInstanceState(outState: Bundle) {
-    outState.putBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY, dialog?.isShowing ?: false)
+    val isDialogVisible = ::dialog.isInitialized && dialog.isShowing
+    outState.putBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY, isDialogVisible)
   }
 }
