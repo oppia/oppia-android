@@ -10,6 +10,8 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GaeFeedbackReport(
 
+  /** The current version of the feedback report used. */
+  @Json(name = "android_report_info_schema_version") val schemaVersion: Int,
   /** The date and time in ms that the report was created. */
   @Json(name = "report_creation_timestamp_ms") val reportCreationTimestampMs: Long,
   /** The information that user's provide in the feedback report. */
