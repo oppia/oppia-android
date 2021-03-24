@@ -27,7 +27,7 @@ class FeedbackReportingEntryActivity : InjectableAppCompatActivity() {
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
-      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
+      "FeedbackReportingEntryActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
 
     fun createFeedbackReportingEntryActivityIntent(
       context: Context,
