@@ -26,7 +26,6 @@
   "device_context": {
     "device_model": "example_model",
     "sdk_version": 23,
-    "device_brand": "example_brand",
     "build_fingerprint": "example_fingerprint_id",
     "network_type": "wifi"
   },
