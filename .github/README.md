@@ -64,10 +64,13 @@ We also have public chat rooms on Gitter: [https://gitter.im/oppia/oppia-android
 [<img height="30" src="https://img.shields.io/badge/linkedin-0077B5.svg?&style=for-the-badge&logo=linkedin&logoColor=white" />][LinkedIn]
 [<img height="30" src = "https://img.shields.io/badge/facebook-1877F2.svg?&style=for-the-badge&logo=facebook&logoColor=white">][Facebook]
 [<img height="30" src = "https://img.shields.io/badge/medium-12100E.svg?&style=for-the-badge&logo=medium&logoColor=white">][medium]
-[<img height="30" src = "https://img.shields.io/badge/youtube-FF0000.svg?&style=for-the-badge&logo=youtube&logoColor=white">][youtube]
+[<img height="30" src = "https://img.shields.io/badge/oppia.org%20youtube-FF0000.svg?&style=for-the-badge&logo=youtube&logoColor=white">][oppia-org-youtube]
+[<img height="30" src = "https://img.shields.io/badge/oppia%20dev%20youtube-FF0000.svg?&style=for-the-badge&logo=youtube&logoColor=white">][dev-youtube]
 
 [twitter]: https://twitter.com/oppiaorg
 [linkedIn]: https://www.linkedin.com/in/oppia-org/
 [medium]: https://medium.com/@oppia.org
 [facebook]: https://www.facebook.com/oppiaorg/
-[youtube]: https://www.youtube.com/channel/UC5c1G7BNDCfv1rczcBp9FPw
+[oppia-org-youtube]: https://www.youtube.com/channel/UC5c1G7BNDCfv1rczcBp9FPw
+[dev-youtube]: https://www.youtube.com/channel/UCsrAX-oeqm0-NIQzQrdiUkQ
+
