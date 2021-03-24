@@ -2,10 +2,10 @@ package org.oppia.android.testing.network
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import org.oppia.android.data.backends.gae.NetworkInterceptor
-import org.oppia.android.data.backends.gae.NetworkSettings
-import org.oppia.android.data.backends.gae.api.TopicService
-import org.oppia.android.data.backends.gae.model.GaeTopic
+import org.oppia.android.data.gae.gae.NetworkInterceptor
+import org.oppia.android.data.gae.gae.NetworkSettings
+import org.oppia.android.data.gae.gae.api.TopicService
+import org.oppia.android.data.gae.gae.model.GaeTopic
 import org.oppia.android.testing.ApiUtils
 import retrofit2.Call
 import retrofit2.mock.BehaviorDelegate
