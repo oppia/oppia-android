@@ -53,7 +53,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.ongoingtopiclist.OngoingTopicListActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/ongoing_topic_activity_label"/>
     <activity
       android:name=".app.options.AppLanguageActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
