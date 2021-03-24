@@ -30,7 +30,7 @@
     "build_fingerprint": "example_fingerprint_id",
     "network_type": "wifi"
   },
-  "report_creation_timestamp_ms": 1610519337000,
+  "report_submission_timestamp_sec": 1610519337,
   "system_context": {
     "platform_version": "1.0-example_version",
     "package_version_code": 1,
