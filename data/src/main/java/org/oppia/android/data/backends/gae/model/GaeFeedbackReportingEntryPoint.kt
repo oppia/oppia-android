@@ -3,10 +3,8 @@ package org.oppia.android.data.backends.gae.model
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-/**
- * Data class for feedback reporting entry point represented in the backend domain model
- * TODO(#2801): Link backend domain model
- */
+/** Data class for the feedback reporting entry point represented in the backend storage model. */
+// TODO(#2801): Link backend domain model
 @JsonClass(generateAdapter = true)
 data class GaeFeedbackReportingEntryPoint(
 
