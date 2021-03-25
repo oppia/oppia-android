@@ -157,7 +157,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.topic.revisioncard.RevisionCardActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/revision_card_activity_title" />
     <activity
       android:name=".app.topic.TopicActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
