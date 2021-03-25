@@ -81,7 +81,6 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionCountPerTrainingSession
 import org.oppia.android.domain.question.QuestionTrainingSeed
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
-import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_1
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_2
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.CoroutineExecutorService
@@ -435,7 +434,6 @@ class QuestionPlayerActivityTest {
       onView(withId(R.id.hints_and_solution_fragment_container)).check(
         matches(isDisplayed())
       )
-
     }
   }
 
@@ -451,14 +449,13 @@ class QuestionPlayerActivityTest {
       onView(withId(R.id.dot_hint)).check(
         matches(not(isDisplayed()))
       )
-
     }
   }
 
   @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testQuestionPlayer_hintConsumed_wait30Seconds_newHintAndSolAvailable() {
-    launchForSkillList(SKILL_ID_LIST_1).use { //multiple hints
+    launchForSkillList(SKILL_ID_LIST_1).use { // multiple hints
       makeFirstNewHintsVisible(SKILL_ID_1)
       openHintsAndSolutionDialog()
       consumeNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
@@ -528,7 +525,6 @@ class QuestionPlayerActivityTest {
           matches(isDisplayed())
         )
     }
-
   }
 
   private fun setUpTestApplicationComponent() {
@@ -589,10 +585,9 @@ class QuestionPlayerActivityTest {
     when (skillId) {
       // option 1 is the correct answer for the first question of FRACTION_SKILL_ID_0.
       FRACTIONS_SKILL_ID_0 -> selectMultipleChoiceOption(optionPosition = 1)
-      // "8" is the correct answer for the first question of FRACTION_SKILL_ID_2
+      // "5" is a wrong answer for the first question of FRACTION_SKILL_ID_2
       FRACTIONS_SKILL_ID_2 -> submitWrongAnswerToQuestionPlayerIntegerInput()
     }
-
   }
 
   /** submits a correct answer answer to multiple choice question. */
