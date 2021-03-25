@@ -1,6 +1,7 @@
 package org.oppia.android.app.feedbackreporting
 
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import org.oppia.android.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
@@ -9,8 +10,13 @@ import javax.inject.Inject
  * or issue to submit feedback on.
  */
 class FeedbackReportingEntryViewModel @Inject constructor(
-  val activity: AppCompatActivity
+  private val fragment: Fragment,
 ) : ObservableViewModel() {
+
+  fun showPopupMenu() {
+    val listener = fragment as FeedbackReportInteractionListener
+    listener.onItemSelected(R.id.feedback_report_type_dropdown)
+  }
 
   /** Click handler for the "Suggestion" button, initializes the feedback report for submitting a suggestion. */
   fun onSuggestionButtonClicked() {

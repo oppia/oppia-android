@@ -51,33 +51,14 @@
         </TextView>
       </FrameLayout>
 
-      <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp">
-
-        <Button
-          android:id="@+id/feedback_report_type_suggestion_button"
-          android:layout_width="wrap_content"
+      <Button
+          android:id="@+id/feedback_report_type_dropdown"
           android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
           android:layout_margin="12dp"
-          style="@style/StateButtonActive"
           android:text="@string/feedback_report_type_suggestion"
-          android:onClick="@{() -> viewModel.onSuggestionButtonClicked()}">
-        </Button>
-
-        <Button
-          android:id="@+id/feedback_report_type_issue_button"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_margin="12dp"
-          style="@style/StateButtonActive"
-          android:text="@string/feedback_report_type_issue"
-          android:onClick="@{() -> viewModel.onIssueButtonClicked()}">
-        </Button>
-      </LinearLayout>
+          android:onClick="@{() -> viewModel.showPopupMenu()}">
+      </Button>
     </LinearLayout>
 
   </androidx.constraintlayout.widget.ConstraintLayout>

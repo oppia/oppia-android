@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_height="wrap_content"
+  android:layout_width="wrap_content">
+  <item
+    android:id="@+id/feedback_report_type_suggestion_item"
+    android:title="@string/feedback_report_type_suggestion"/>
+  <item
+    android:id="@+id/feedback_report_type_issue_item"
+    android:title="@string/feedback_report_type_issue"/>
+</menu>
