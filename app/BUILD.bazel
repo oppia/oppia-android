@@ -62,6 +62,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToAppVersionListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/android/app/drawer/RouteToProfileProgressListener.kt",
+    "src/main/java/org/oppia/android/app/feedbackreporting/FeedbackReportInteractionListener.kt",
     "src/main/java/org/oppia/android/app/help/RouteToFAQListListener.kt",
     "src/main/java/org/oppia/android/app/help/faq/RouteToFAQSingleListener.kt",
     "src/main/java/org/oppia/android/app/home/RouteToRecentlyPlayedListener.kt",
@@ -128,6 +129,7 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 # keep sorted
 VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
+    "src/main/java/org/oppia/android/app/feedbackreporting/FeedbackReportingEntryViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpItemViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpListViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/FAQListViewModel.kt",
