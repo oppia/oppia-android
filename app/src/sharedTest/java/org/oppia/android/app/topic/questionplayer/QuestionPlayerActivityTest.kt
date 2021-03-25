@@ -110,10 +110,10 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private val SKILL_ID_0 = FRACTIONS_SKILL_ID_0
-private val SKILL_ID_1 = FRACTIONS_SKILL_ID_2
+private const val SKILL_ID_0 = FRACTIONS_SKILL_ID_0
+private const val SKILL_ID_1 = FRACTIONS_SKILL_ID_2
 
-private val SKILL_ID_LIST_0 = listOf(FRACTIONS_SKILL_ID_1)
+private val SKILL_ID_LIST_0 = listOf(FRACTIONS_SKILL_ID_0)
 private val SKILL_ID_LIST_1 = listOf(FRACTIONS_SKILL_ID_2)
 
 /** Tests for [QuestionPlayerActivity]. */
@@ -325,7 +325,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
+  @RunOn(TestPlatform.ROBOLECTRIC) // this tests incorrectly passes on Espresso.
   @Test
   fun testQuestionPlayer_wait60Seconds_newHintAndSolVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
@@ -348,7 +348,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
+  @RunOn(TestPlatform.ROBOLECTRIC) // this tests incorrectly passes on Espresso.
   @Test
   fun testQuestionPlayer_wait30Seconds_configChange_wait30Seconds_newHintAndSolVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
@@ -374,6 +374,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC) // this tests incorrectly passes on Espresso.
   @Test
   fun testQuestionPlayer_submitTwoWrongAnswers_newHintAndSolVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
@@ -423,6 +424,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testQuestionPlayer_newHintVisible_hintConsumed_hintAndSolIconVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
@@ -436,8 +438,6 @@ class QuestionPlayerActivityTest {
 
     }
   }
-
-  // tests for multiple hints and solutions
 
   @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
