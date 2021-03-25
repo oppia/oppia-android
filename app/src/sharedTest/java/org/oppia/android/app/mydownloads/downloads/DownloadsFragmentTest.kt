@@ -65,9 +65,7 @@ class DownloadsFragmentTest {
   }
 
   @After
-  fun tearDown() {
-
-  }
+  fun tearDown() { }
 
   /**
    * testDownloadsFragment_sortByTitle_isDisplayed
