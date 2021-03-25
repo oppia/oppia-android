@@ -352,6 +352,7 @@
   <string name="topic_in_progress">Topic in Progress</string>
   <string name="stories_completed">Stories Completed</string>
   <string name="story_completed">Story Completed</string>
+  <string name="options_activity_title">Options</string>
   <!-- CompletedStoryListActivity -->
   <string name="completed_story_list_activity_title">Stories Completed</string>
   <!-- WalkthroughActivity -->

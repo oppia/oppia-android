@@ -64,6 +64,7 @@
       android:label="@string/audio_language_activity_title" />
     <activity
       android:name=".app.options.OptionsActivity"
+      android:label="@string/options_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.ReadingTextSizeActivity"
