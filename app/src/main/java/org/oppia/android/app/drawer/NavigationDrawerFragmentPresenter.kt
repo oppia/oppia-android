@@ -16,6 +16,7 @@ import androidx.lifecycle.Transformations
 import com.google.android.material.navigation.NavigationView
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.feedbackreporting.FeedbackReportingEntryActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.home.HomeActivity
@@ -231,6 +232,19 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         NavigationDrawerItem.DOWNLOADS -> {
           val intent =
             MyDownloadsActivity.createMyDownloadsActivityIntent(activity, internalProfileId)
+          fragment.activity!!.startActivity(intent)
+          if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
+            fragment.activity!!.finish()
+          }
+          drawerLayout.closeDrawers()
+        }
+        NavigationDrawerItem.SEND_FEEDBACK -> {
+          val intent = FeedbackReportingEntryActivity
+            .createFeedbackReportingEntryActivityIntent(
+              activity,
+              internalProfileId,
+              isFromNavigationDrawer = true
+            )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()

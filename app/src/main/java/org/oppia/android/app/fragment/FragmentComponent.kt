@@ -8,6 +8,7 @@ import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
+import org.oppia.android.app.feedbackreporting.FeedbackReportingEntryFragment
 import org.oppia.android.app.help.HelpFragment
 import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
@@ -84,6 +85,7 @@ interface FragmentComponent {
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(explorationManagerFragment: ExplorationManagerFragment)
   fun inject(faqListFragment: FAQListFragment)
+  fun inject(feedbackReportingEntryFragment: FeedbackReportingEntryFragment)
   fun inject(helpFragment: HelpFragment)
   fun inject(hintsAndSolutionDialogFragment: HintsAndSolutionDialogFragment)
   fun inject(hintsAndSolutionExplorationManagerFragment: HintsAndSolutionExplorationManagerFragment)

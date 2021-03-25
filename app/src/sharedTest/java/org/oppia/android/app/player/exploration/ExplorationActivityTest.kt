@@ -55,6 +55,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.feedbackreporting.FeedbackReportingEntryActivity
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
@@ -223,6 +224,7 @@ class ExplorationActivityTest {
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
       onView(withText(context.getString(R.string.help))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.send_feedback))).check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -263,6 +265,30 @@ class ExplorationActivityTest {
       intended(
         hasExtra(
           OptionsActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+          /* value= */ false
+        )
+      )
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_openOverflowMenu_selectSendFeedbackInMenu_opensFeedbackEntryActivity() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+      openActionBarOverflowOrOptionsMenu(context)
+      onView(withText(context.getString(R.string.menu_send_feedback))).perform(click())
+      intended(hasComponent(FeedbackReportingEntryActivity::class.java.name))
+      intended(
+        hasExtra(
+          FeedbackReportingEntryActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
           /* value= */ false
         )
       )

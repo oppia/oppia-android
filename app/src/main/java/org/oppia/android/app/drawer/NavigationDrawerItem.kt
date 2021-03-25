@@ -8,6 +8,7 @@ enum class NavigationDrawerItem(val value: Int) {
   OPTIONS(R.id.nav_options),
   HELP(R.id.nav_help),
   DOWNLOADS(R.id.nav_my_downloads),
+  SEND_FEEDBACK(R.id.nav_send_feedback),
   SWITCH_PROFILE(
     R.id.nav_switch_profile
   );

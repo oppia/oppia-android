@@ -36,6 +36,10 @@
       android:label="@string/faq_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".app.feedbackreporting.FeedbackReportingEntryActivity"
+      android:label="@string/feedback_reporting_entry_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".app.help.HelpActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity

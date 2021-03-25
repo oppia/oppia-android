@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.feedbackreporting.FeedbackReportingEntryActivity
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ReadingTextSize
@@ -153,6 +154,15 @@ class ExplorationActivityPresenter @Inject constructor(
       }
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
+          activity, internalProfileId,
+          /* isFromNavigationDrawer= */false
+        )
+        fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
+        context.startActivity(intent)
+        true
+      }
+      R.id.action_send_feedback -> {
+        val intent = FeedbackReportingEntryActivity.createFeedbackReportingEntryActivityIntent(
           activity, internalProfileId,
           /* isFromNavigationDrawer= */false
         )

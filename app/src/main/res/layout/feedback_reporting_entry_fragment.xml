@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.feedbackreporting.FeedbackReportingEntryViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:paddingStart="32dp"
+      android:paddingEnd="32dp">
+
+      <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp">
+
+        <TextView
+          android:id="@+id/feedback_report_explanation"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="center"
+          android:fontFamily="sans-serif"
+          android:minHeight="48dp"
+          android:text="@string/feedback_report_explanation">
+        </TextView>
+      </FrameLayout>
+
+      <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top">
+
+        <TextView
+          android:id="@+id/feedback_report_type_prompt"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_gravity="center"
+          android:text="@string/feedback_report_type_prompt">
+        </TextView>
+      </FrameLayout>
+
+      <Spinner
+          android:id="@+id/feedback_report_type_dropdown"
+          android:background="@android:drawable/btn_dropdown"
+          android:layout_height="wrap_content"
+          android:layout_width="match_parent"
+          android:layout_margin="12dp"
+          android:text="@string/feedback_report_type_suggestion"
+          android:onClick="@{() -> viewModel.showPopupMenu()}">
+      </Spinner>
+    </LinearLayout>
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

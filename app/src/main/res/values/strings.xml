@@ -6,6 +6,7 @@
   <string name="menu_options">Options</string>
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
+  <string name="menu_send_feedback">Send Feedback</string>
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="administrator_controls">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
@@ -97,6 +98,7 @@
   <string name="preferences">Preferences</string>
   <string name="profile_progress_activity_title">Profile Progress Page</string>
   <string name="search">Search</string>
+  <string name="send_feedback">Send Feedback</string>
   <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
   <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
   <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
@@ -237,6 +239,12 @@
   <string name="required_fields_content_description">Fields marked with an * are required.</string>
   <string name="current_profile_picture_content_description">Current profile picture</string>
   <string name="edit_profile_picture_content_description">Edit profile picture</string>
+  <!-- FeedbackReportingEntryActivity -->
+  <string name="feedback_reporting_entry_activity_title">Send Feedback</string>
+  <string name="feedback_report_explanation">To provide you with the best possible learning experience, we are constantly making changes and fixing issues that arise. If you have any suggestions or see anything that needs our attention, let us know below.</string>
+  <string name="feedback_report_type_prompt">I have a(n)…</string>
+  <string name="feedback_report_type_issue">Issue</string>
+  <string name="feedback_report_type_suggestion">Suggestion</string>
   <!-- OnboardingActivity -->
   <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
   <string name="onboarding_slide_0_description">Learn anything you want in an effective and enjoyable way.</string>
