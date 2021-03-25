@@ -51,14 +51,15 @@
         </TextView>
       </FrameLayout>
 
-      <Button
+      <Spinner
           android:id="@+id/feedback_report_type_dropdown"
+          android:background="@android:drawable/btn_dropdown"
           android:layout_height="wrap_content"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_margin="12dp"
           android:text="@string/feedback_report_type_suggestion"
           android:onClick="@{() -> viewModel.showPopupMenu()}">
-      </Button>
+      </Spinner>
     </LinearLayout>
 
   </androidx.constraintlayout.widget.ConstraintLayout>
