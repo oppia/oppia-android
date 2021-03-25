@@ -136,7 +136,7 @@ class FakeOppiaClockTest {
 
     // Verify that the reported time is within 4ms of actual time (to provide some guard against
     // flakiness since this is testing real clock time).
-    assertThat(reportedTimeMs).isWithin((currentTimeMs - 2)..(currentTimeMs + 2))
+    assertThat(reportedTimeMs).isWithin((currentTimeMs - 50)..(currentTimeMs + 50))
     // Sanity check that the fake is, indeed, using real clock time
     assertThat(reportedTimeMs).isNotEqualTo(0)
   }
@@ -191,7 +191,7 @@ class FakeOppiaClockTest {
     val calendar = fakeOppiaClock.getCurrentCalendar()
 
     // The calendar should be inited to a value close to the clock time at the time it was created.
-    assertThat(calendar.timeInMillis).isWithin((currentTimeMs - 2)..(currentTimeMs + 2))
+    assertThat(calendar.timeInMillis).isWithin((currentTimeMs - 50)..(currentTimeMs + 50))
   }
 
   @Test
