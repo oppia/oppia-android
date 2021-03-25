@@ -23,5 +23,5 @@ class CachingModule {
 
   @Provides
   @LoadLessonProtosFromAssets
-  fun provideLoadLessonProtosFromAssets(): Boolean = false
+  fun provideLoadLessonProtosFromAssets(): Boolean = true
 }
