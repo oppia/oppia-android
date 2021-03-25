@@ -204,7 +204,7 @@ class QuestionPlayerActivityTest {
   fun testQuestionPlayer_forMisconception_clickLinkText_opensConceptCard() {
     launchForSkillList(SKILL_ID_LIST_0).use {
 
-      submitWrongAnswer(SKILL_ID_0) // Misconception.
+      selectMultipleChoiceOption(optionPosition = 3) // Misconception.
       scrollToViewType(FEEDBACK)
 
       onView(withId(R.id.feedback_text_view)).perform(openClickableSpan("refresher lesson"))
@@ -222,7 +222,7 @@ class QuestionPlayerActivityTest {
     launchForSkillList(SKILL_ID_LIST_0).use {
       rotateToLandscape()
 
-      submitWrongAnswer(SKILL_ID_0) // Misconception.
+      selectMultipleChoiceOption(optionPosition = 3) // Misconception.
       scrollToViewType(FEEDBACK)
 
       onView(withId(R.id.feedback_text_view)).perform(openClickableSpan("refresher lesson"))
@@ -563,7 +563,9 @@ class QuestionPlayerActivityTest {
   }
 
   /**
-   * opens hints and solution dialog, reveals the hint and then exits the hint and solution dialog
+   * reveal hints and solution.
+   * for this function to work correctly it should always be called
+   * after [openHintsAndSolutionDialog]
    */
   private fun consumeNewHintAndSol(hintAndSolIndex: Int, isSolution: Boolean) {
     val buttonId = if (isSolution) R.id.reveal_solution_button else R.id.reveal_hint_button
@@ -571,7 +573,7 @@ class QuestionPlayerActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  /** Scrolls to the hint that has not been viewed yet and reveals it. */
+  /** Scrolls to the hint or solution that has not been viewed yet and reveals it. */
   private fun pressRevealHintOrSolutionButton(hintOrSolIndex: Int, @IdRes buttonId: Int) {
     onView(withId(R.id.hints_and_solution_recycler_view))
       .inRoot(isDialog())
@@ -603,7 +605,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  /** submit correct answer to text input question */
+  /** submit correct answer to numeric input question */
   private fun submitCorrectAnswerToQuestionPlayerIntegerInput() {
     scrollToViewType(NUMERIC_INPUT_INTERACTION)
     onView(withId(R.id.numeric_input_interaction_view)).perform(
@@ -617,7 +619,7 @@ class QuestionPlayerActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  /** submit wrong answer to text input question */
+  /** submit wrong answer to numeric input question. */
   private fun submitWrongAnswerToQuestionPlayerIntegerInput() {
     scrollToViewType(NUMERIC_INPUT_INTERACTION)
     onView(withId(R.id.numeric_input_interaction_view)).perform(
