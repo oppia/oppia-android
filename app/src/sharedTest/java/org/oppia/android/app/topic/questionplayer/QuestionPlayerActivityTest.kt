@@ -23,9 +23,11 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -54,6 +56,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity.Companion.createQuestionPlayerActivityIntent
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -111,6 +114,13 @@ class QuestionPlayerActivityTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
+  @get:Rule
+  val activityTestRule = ActivityTestRule(
+    QuestionPlayerActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -146,6 +156,21 @@ class QuestionPlayerActivityTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
+  @Test
+  fun testQuestionPlayer_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(
+      createQuestionPlayerActivityIntent(
+        context,
+        SKILL_ID_LIST as ArrayList<String>
+      )
+    )
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.question_player_activity_title))
   }
 
   @Test

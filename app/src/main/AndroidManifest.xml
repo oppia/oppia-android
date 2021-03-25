@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   package="org.oppia.android">
+
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
   <!-- TODO(#56): Reenable landscape support. -->
@@ -13,10 +14,19 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
-    <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
-    <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
-    <meta-data android:name="automatic_app_expiration_enabled" android:value="false" />
-    <meta-data android:name="expiration_date" android:value="2020-09-01" />
+    <meta-data
+      android:name="firebase_analytics_collection_deactivated"
+      android:value="true" />
+    <meta-data
+      android:name="firebase_crashlytics_collection_enabled"
+      android:value="false" />
+    <meta-data
+      android:name="automatic_app_expiration_enabled"
+      android:value="false" />
+    <meta-data
+      android:name="expiration_date"
+      android:value="2020-09-01" />
+
     <activity
       android:name=".app.administratorcontrols.AdministratorControlsActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -29,8 +39,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.help.faq.FAQListActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:label="@string/faq_activity_title" />
+      android:label="@string/faq_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.help.faq.faqsingle.FAQSingleActivity"
       android:label="@string/faq_activity_title"
@@ -56,12 +66,12 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.AppLanguageActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:label="@string/app_language_activity_title" />
+      android:label="@string/app_language_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.AudioLanguageActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:label="@string/audio_language_activity_title" />
+      android:label="@string/audio_language_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.OptionsActivity"
       android:label="@string/options_activity_title"
@@ -79,8 +89,8 @@
       android:theme="@style/OppiaThemeNoActionBarColorAccentColorPrimary" />
     <activity
       android:name=".app.profile.AdminAuthActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
       android:label="@string/admin_auth_activity_access_controls_title"
+      android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".app.profile.AdminPinActivity"
@@ -99,8 +109,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.profileprogress.ProfileProgressActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:label="@string/profile_progress_activity_title" />
+      android:label="@string/profile_progress_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.settings.profile.ProfileEditActivity" />
     <activity
       android:name=".app.settings.profile.ProfileListActivity"
@@ -110,8 +120,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.settings.profile.ProfileResetPinActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:label="@string/profile_reset_pin_activity_title" />
+      android:label="@string/profile_reset_pin_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.splash.SplashActivity"
       android:screenOrientation="portrait"
@@ -157,21 +167,23 @@
     <activity android:name=".app.testing.TopicRevisionTestActivity" />
     <activity
       android:name=".app.topic.questionplayer.QuestionPlayerActivity"
+      android:label="@string/question_player_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.topic.revisioncard.RevisionCardActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.topic.TopicActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:label="@string/topic_page" />
+      android:label="@string/topic_page"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.walkthrough.WalkthroughActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"
       android:authorities="${applicationId}.workmanager-init"
       android:exported="false"
-      tools:node="remove"/>
+      tools:node="remove" />
   </application>
 </manifest>
