@@ -42,7 +42,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.utility.OrientationChangeAction
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -164,7 +164,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_notFromNavigationDrawer_configChange_navigationDrawerIsNotPresent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
-      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.options_activity_fragment_navigation_drawer))
         .check(doesNotExist())
     }
