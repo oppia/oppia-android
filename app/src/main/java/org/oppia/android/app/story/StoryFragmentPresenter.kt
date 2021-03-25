@@ -171,14 +171,14 @@ class StoryFragmentPresenter @Inject constructor(
             }
             chapterLockedSpannable.setSpan(
               clickableSpan,
-              /* start= */ 9,
-              /* end= */ chapterLockedSpannable.length - 24,
+              /* start= */ LOCKED_CARD_PREFIX_LENGTH,
+              /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
               Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             chapterLockedSpannable.setSpan(
               TypefaceSpan("sans-serif-medium"),
-              /* start= */ 9,
-              /* end= */ chapterLockedSpannable.length - 24,
+              /* start= */ LOCKED_CARD_PREFIX_LENGTH,
+              /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
               Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             binding.htmlContent = chapterLockedSpannable
@@ -232,5 +232,10 @@ class StoryFragmentPresenter @Inject constructor(
       EventLog.EventAction.OPEN_STORY_ACTIVITY,
       oppiaLogger.createStoryContext(topicId, storyId)
     )
+  }
+
+  companion object {
+    private const val LOCKED_CARD_PREFIX_LENGTH = 9
+    private const val LOCKED_CARD_SUFFIX_LENGTH = 24
   }
 }
