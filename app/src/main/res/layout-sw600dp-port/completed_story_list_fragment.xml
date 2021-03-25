@@ -33,7 +33,7 @@
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/stories_completed"
+        app:title="@string/completed_story_list_activity_title"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 

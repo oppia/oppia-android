@@ -52,7 +52,7 @@
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
-  <string name="faq_activity_label">FAQs (Frequently Asked Questions)</string>
+  <string name="faq_activity_title">FAQs (Frequently Asked Questions)</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="info">Info</string>
   <string name="lessons">Lessons</string>
@@ -95,6 +95,7 @@
   <string name="play_pause_audio">Play/Pause Audio</string>
   <string name="help">Help</string>
   <string name="preferences">Preferences</string>
+  <string name="profile_progress_activity_title">Profile Progress Page</string>
   <string name="search">Search</string>
   <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
   <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
@@ -198,6 +199,8 @@
   <string name="profile_chooser_language">Language</string>
   <!-- AdminAuthActivity -->
   <string name="admin_auth_toolbar">Administrator Controls</string>
+  <string name="admin_auth_activity_add_profiles_title">Authorise to add profiles</string>
+  <string name="admin_auth_activity_access_controls_title">Authorise to access Administrator Controls</string>
   <string name="admin_auth_heading">Administrator Authorization Required</string>
   <string name="admin_auth_sub">Enter the Administrator PIN in order to create a new account.</string>
   <string name="admin_auth_admin_controls_sub">Enter the Administrator PIN in order to access Administrator Controls.</string>
@@ -213,6 +216,7 @@
   <string name="admin_pin_error_pin_length">Your PIN should be 5 digits long.</string>
   <string name="admin_pin_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <string name="save">Save</string>
+  <string name="admin_pin_activity_title">Authorise to add profiles</string>
   <!-- AddProfileActivity -->
   <string name="add_profile_title">Add Profile</string>
   <string name="add_profile_input_name">Name*</string>
@@ -300,7 +304,7 @@
   <string name="profile_rename_label">New Name</string>
   <string name="profile_rename_save">save</string>
   <!-- ProfileResetPinActivity -->
-  <string name="profile_reset_pin_title">Reset PIN</string>
+  <string name="profile_reset_pin_activity_title">Reset PIN</string>
   <string name="profile_reset_pin_main">Enter a new PIN for the user to enter when accessing their profile.</string>
   <string name="profile_reset_pin_user_pin_label">3-Digit PIN</string>
   <string name="profile_reset_pin_admin_pin_label">5-Digit PIN</string>
@@ -333,9 +337,9 @@
   <string name="app_version_name">App Version %s</string>
   <string name="app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
   <!-- OptionsActivity -->
+  <string name="app_language_activity_title">App Language</string>
+  <string name="audio_language_activity_title">Default Audio Language</string>
   <string name="title_reading_text_size">Reading Text Size</string>
-  <string name="title_app_language">App Language</string>
-  <string name="title_default_audio">Default Audio Language</string>
   <string name="story_text_will_look_like_this">Story text will look like this.</string>
   <string name="constant_string_for_text_size">A</string>
   <string name="audio_language">Default Audio</string>
@@ -348,6 +352,9 @@
   <string name="topic_in_progress">Topic in Progress</string>
   <string name="stories_completed">Stories Completed</string>
   <string name="story_completed">Story Completed</string>
+  <string name="options_activity_title">Options</string>
+  <!-- CompletedStoryListActivity -->
+  <string name="completed_story_list_activity_title">Stories Completed</string>
   <!-- WalkthroughActivity -->
   <string name="walkthrough_welcome_description">Learn new math skills with stories that show you how to use them in your daily life</string>
   <string name="welcome">"Welcome %s!"</string>

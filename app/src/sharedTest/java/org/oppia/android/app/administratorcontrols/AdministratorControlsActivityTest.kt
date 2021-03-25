@@ -224,17 +224,17 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(not(isChecked())))
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
     }
@@ -251,55 +251,55 @@ class AdministratorControlsActivityTest {
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(not(isChecked())))
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(isChecked()))
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
       onView(isRoot()).perform(orientationPortrait())
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(isChecked()))
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
     }
@@ -403,7 +403,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_selectAdminNavItem_adminControlsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       it.openNavigationDrawer()
@@ -443,8 +443,8 @@ class AdministratorControlsActivityTest {
 
   private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-      context,
-      profileId
+      context = context,
+      profileId = profileId
     )
   }
 
@@ -508,9 +508,9 @@ class AdministratorControlsActivityTest {
   ) {
     onView(
       atPositionOnView(
-        R.id.administrator_controls_list,
-        itemPosition,
-        targetView
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetView
       )
     ).check(matches(isDisplayed()))
   }
@@ -522,9 +522,9 @@ class AdministratorControlsActivityTest {
   ) {
     onView(
       atPositionOnView(
-        R.id.administrator_controls_list,
-        itemPosition,
-        targetViewId
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetViewId
       )
     ).check(matches(withText(context.getString(stringIdToMatch))))
   }
