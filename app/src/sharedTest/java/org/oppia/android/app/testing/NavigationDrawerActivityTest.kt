@@ -726,9 +726,7 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
   @Test
-  @Ignore("My Downloads is removed until we have full download support.")
   fun testNavDrawer_myDownloadsMenu_myDownloadsFragmentIsDisplayed() {
     launch(NavigationDrawerTestActivity::class.java).use {
       it.openNavigationDrawer()

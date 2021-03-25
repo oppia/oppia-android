@@ -1,4 +1,4 @@
-package org.oppia.android.app.mydownloads
+package org.oppia.android.app.mydownloads.downloads
 
 import android.content.Context
 import android.os.Bundle
@@ -9,9 +9,9 @@ import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that contains downloaded topic list. */
-class DownloadsTabFragment : InjectableFragment() {
+class DownloadsFragment : InjectableFragment() {
   @Inject
-  lateinit var downloadsTabFragmentPresenter: DownloadsTabFragmentPresenter
+  lateinit var downloadsFragmentPresenter: DownloadsFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -23,6 +23,6 @@ class DownloadsTabFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return downloadsTabFragmentPresenter.handleCreateView(inflater, container)
+    return downloadsFragmentPresenter.handleCreateView(inflater, container)
   }
 }

@@ -13,9 +13,9 @@ import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.home.HomeFragment
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedFragment
-import org.oppia.android.app.mydownloads.DownloadsTabFragment
 import org.oppia.android.app.mydownloads.MyDownloadsFragment
-import org.oppia.android.app.mydownloads.UpdatesTabFragment
+import org.oppia.android.app.mydownloads.downloads.DownloadsFragment
+import org.oppia.android.app.mydownloads.updates.UpdatesFragment
 import org.oppia.android.app.onboarding.OnboardingFragment
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListFragment
 import org.oppia.android.app.options.AppLanguageFragment
@@ -80,7 +80,7 @@ interface FragmentComponent {
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
   fun inject(audioLanguageFragment: AudioLanguageFragment)
-  fun inject(downloadsTabFragment: DownloadsTabFragment)
+  fun inject(downloadsFragment: DownloadsFragment)
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(explorationManagerFragment: ExplorationManagerFragment)
   fun inject(faqListFragment: FAQListFragment)
@@ -110,7 +110,7 @@ interface FragmentComponent {
   fun inject(topicLessonsFragment: TopicLessonsFragment)
   fun inject(topicReviewFragment: TopicRevisionFragment)
   fun inject(topicPracticeFragment: TopicPracticeFragment)
-  fun inject(updatesTabFragment: UpdatesTabFragment)
+  fun inject(updatesFragment: UpdatesFragment)
   fun inject(walkthroughFinalFragment: WalkthroughFinalFragment)
   fun inject(walkthroughTopicListFragment: WalkthroughTopicListFragment)
   fun inject(walkthroughWelcomeFragment: WalkthroughWelcomeFragment)

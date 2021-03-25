@@ -1,4 +1,4 @@
-package org.oppia.android.app.mydownloads
+package org.oppia.android.app.mydownloads.updates
 
 import android.content.Context
 import android.os.Bundle
@@ -9,9 +9,9 @@ import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that contains downloaded topic list that needs update. */
-class UpdatesTabFragment : InjectableFragment() {
+class UpdatesFragment : InjectableFragment() {
   @Inject
-  lateinit var updatesTabFragmentPresenter: UpdatesTabFragmentPresenter
+  lateinit var updatesTabFragmentPresenter: UpdatesFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

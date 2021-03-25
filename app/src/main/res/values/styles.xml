@@ -194,6 +194,16 @@
     <item name="android:textAlignment">viewStart</item>
   </style>
 
+  <style name="TextInputLayoutDropDown" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+    <item name="boxBackgroundColor">@color/white</item>
+    <item name="boxCornerRadiusBottomEnd">0dp</item>
+    <item name="boxCornerRadiusBottomStart">0dp</item>
+    <item name="boxCornerRadiusTopEnd">0dp</item>
+    <item name="boxCornerRadiusTopStart">0dp</item>
+    <item name="boxStrokeColor">@color/oppiaPrimaryText</item>
+    <item name="boxStrokeWidth">@dimen/text_input_layout_stroke_width</item>
+  </style>
+
   <style name="TextInputEditText" parent="Widget.AppCompat.EditText">
     <item name="fontFamily">sans-serif</item>
     <item name="android:fontFamily">sans-serif</item>
