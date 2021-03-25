@@ -15,7 +15,7 @@
 BAZEL_BINARY=$1
 
 # Reference: https://stackoverflow.com/a/6245587.
-current_branch=$(git  rev-parse --abbrev-ref HEAD)
+current_branch=$(git rev-parse --abbrev-ref HEAD)
 
 if [[ "$current_branch" != "develop" ]]; then
   # Compute all files that have been changed on this branch. https://stackoverflow.com/a/9294015 for
