@@ -6,7 +6,6 @@ import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.ClassroomService
 import org.oppia.android.data.backends.gae.model.GaeClassroom
-import org.oppia.android.testing.ApiUtils
 import retrofit2.Call
 import retrofit2.mock.BehaviorDelegate
 

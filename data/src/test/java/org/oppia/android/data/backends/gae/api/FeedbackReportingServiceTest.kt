@@ -11,7 +11,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
-import org.oppia.android.testing.ApiUtils
+import org.oppia.android.testing.network.ApiUtils
 import org.oppia.android.testing.network.MockFeedbackReportingService
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit

@@ -11,7 +11,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.ApiUtils
+import org.oppia.android.testing.network.ApiUtils
 import org.oppia.android.testing.network.MockTopicService
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit

@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.network
 
 import org.json.JSONException
 import org.json.JSONObject
