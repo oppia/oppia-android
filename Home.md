@@ -45,7 +45,7 @@ If you are on Windows, please set up the environment path correctly for `Java`.
        2. Open git bash command line
        3. Move to `opensource/oppia-android/`
        4. Run a script `bash scripts/setup.sh`
-       5. Download the [google_checks.xml](https://github.com/checkstyle/checkstyle/blob/14005e371803bd52dff429904b354dc3e72638c0/src/main/resources/google_checks.xml) file.
+       5. Download the [google_checks.xml](https://github.com/checkstyle/checkstyle/blob/14005e371803bd52dff429904b354dc3e72638c0/src/main/resources/google_checks.xml) file. To download this file, you can simply right-click on the `Raw` button and click on `Save Link as`. 
        6. Copy it to directory where Git is installed (usually C:/Program Files/Git/).
 
      - If you find any error related to `cURL`, please set up cURL at your machine. For Linux, you can use `sudo apt install curl`. No need to set up `cURL` for Windows as you are using git bash command line.<br>
