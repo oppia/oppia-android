@@ -63,7 +63,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = RevisionCardActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi")
+  qualifiers = "port-xxhdpi"
+)
 class RevisionCardActivityTest {
 
   @Inject
