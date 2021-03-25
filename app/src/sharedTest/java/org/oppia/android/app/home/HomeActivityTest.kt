@@ -499,8 +499,8 @@ class HomeActivityTest {
    * # Logic for recommendation system
    *
    * We always recommend the next topic that all dependencies are completed for. If a topic with
-   * prerequisites is completed out-of-order (e.g. test topic 1 above) then we assume fractions is already done.
-   * In the same way, finishing test topic 2 means there's nothing else to recommend.
+   * prerequisites is completed out-of-order (e.g. test topic 1 above) then we assume fractions is
+   * already done. In the same way, finishing test topic 2 means there's nothing else to recommend.
    */
   @Test
   fun testHomeActivity_markStory0DonePlayStory1FirstTestTopic_playFractionsTopic_orderIsCorrect() {
@@ -513,7 +513,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp1(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -541,7 +541,7 @@ class HomeActivityTest {
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "First Test Topic"
+        stringToMatch = "Second Test Topic"
       )
     }
   }

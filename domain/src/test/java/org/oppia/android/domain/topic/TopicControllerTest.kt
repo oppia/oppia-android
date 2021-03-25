@@ -12,6 +12,7 @@ import dagger.Module
 import dagger.Provides
 import org.json.JSONException
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,11 +40,13 @@ import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
-import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
@@ -55,6 +58,7 @@ import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
+import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -148,8 +152,7 @@ class TopicControllerTest {
 
     verifyGetTopicSucceeded()
     val topic = topicResultCaptor.value!!.getOrThrow()
-    assertThat(topic.topicThumbnail.thumbnailGraphic)
-      .isEqualTo(LessonThumbnailGraphic.BAKER)
+    assertThat(topic.topicThumbnail.backgroundColorRgb).isNotEqualTo(0)
   }
 
   @Test
@@ -391,84 +394,7 @@ class TopicControllerTest {
     verifyGetStorySucceeded()
     val story = storySummaryResultCaptor.value!!.getOrThrow()
     val chapter = story.getChapter(0)
-    assertThat(chapter.chapterThumbnail.thumbnailGraphic)
-      .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-  }
-
-  @Test
-  fun testRetrieveStory_validSecondStory_isSuccessful() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetStorySucceeded()
-    val storyResult = storySummaryResultCaptor.value
-    assertThat(storyResult).isNotNull()
-    assertThat(storyResult!!.isSuccess()).isTrue()
-  }
-
-  @Test
-  fun testRetrieveStory_validSecondStory_returnsCorrectStory() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
-    assertThat(story.storyId).isEqualTo(TEST_STORY_ID_1)
-  }
-
-  @Test
-  fun testRetrieveStory_validSecondStory_returnsStoryWithMultipleChapters() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
-    assertThat(getExplorationIds(story)).containsExactly(
-      TEST_EXPLORATION_ID_1,
-      TEST_EXPLORATION_ID_0,
-      TEST_EXPLORATION_ID_3
-    ).inOrder()
-  }
-
-  @Test
-  fun testRetrieveStory_validSecondStory_returnsStoryWithoutProgress() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
-    assertThat(story.getChapter(0).chapterPlayState)
-      .isEqualTo(ChapterPlayState.NOT_STARTED)
-    assertThat(story.getChapter(1).chapterPlayState)
-      .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-    assertThat(story.getChapter(1).missingPrerequisiteChapter.name)
-      .isEqualTo(story.getChapter(0).name)
-    assertThat(story.getChapter(2).chapterPlayState)
-      .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-    assertThat(story.getChapter(2).missingPrerequisiteChapter.name)
-      .isEqualTo(story.getChapter(1).name)
-  }
-
-  @Test
-  fun testRetrieveStory_validSecondStory_returnsStoryWithProgress() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    markSecondStory1Chapter1AsCompleted()
-
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
-    assertThat(story.getChapter(0).chapterPlayState)
-      .isEqualTo(ChapterPlayState.COMPLETED)
-    assertThat(story.getChapter(1).chapterPlayState)
-      .isEqualTo(ChapterPlayState.NOT_STARTED)
-    assertThat(story.getChapter(2).chapterPlayState)
-      .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-    assertThat(story.getChapter(2).missingPrerequisiteChapter.name)
-      .isEqualTo(story.getChapter(1).name)
+    assertThat(chapter.chapterThumbnail.backgroundColorRgb).isNotEqualTo(0)
   }
 
   @Test
@@ -665,8 +591,7 @@ class TopicControllerTest {
       .getConceptCard(TEST_SKILL_ID_2)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.skillDescription)
-      .isEqualTo("A different skill in a different topic")
+    assertThat(conceptCard.skillDescription).isEqualTo("A different skill in a different topic")
   }
 
   @Test
@@ -747,7 +672,7 @@ class TopicControllerTest {
 
     val exception = fakeExceptionLogger.getMostRecentException()
 
-    assertThat(exception).isInstanceOf(JSONException::class.java)
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
   }
 
   @Test
@@ -770,12 +695,11 @@ class TopicControllerTest {
 
     verifyGetTopicSucceeded()
     val topic = topicResultCaptor.value!!.getOrThrow()
-    assertThat(topic.subtopicList[0].subtopicThumbnail.thumbnailGraphic).isEqualTo(
-      LessonThumbnailGraphic.WHAT_IS_A_FRACTION
-    )
+    assertThat(topic.subtopicList[0].subtopicThumbnail.backgroundColorRgb).isNotEqualTo(0)
   }
 
   @Test
+  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForSkillIds_returnsAllQuestions() {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
@@ -798,6 +722,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForFractionsSkillId0_returnsAllQuestions() {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
@@ -821,6 +746,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForFractionsSkillId1_returnsAllQuestions() {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
@@ -843,6 +769,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForFractionsSkillId2_returnsAllQuestions() {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
@@ -866,6 +793,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForRatiosSkillId0_returnsAllQuestions() {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
@@ -888,6 +816,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForInvalidSkillIds_returnsResultForValidSkillsOnly() {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
@@ -1203,13 +1132,6 @@ class TopicControllerTest {
     )
   }
 
-  private fun markSecondStory1Chapter1AsCompleted() {
-    storyProgressTestHelper.markCompletedTestTopic0Story1Exp0(
-      profileId1,
-      timestampOlderThanOneWeek = false
-    )
-  }
-
   private fun markRatiosStory0Chapter0AsCompleted() {
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId1,
@@ -1297,6 +1219,15 @@ class TopicControllerTest {
     @CacheAssetsLocally
     @Provides
     fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @TopicListToCache
+    fun provideTopicListToCache(): List<String> = listOf()
+
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
+      testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1304,8 +1235,7 @@ class TopicControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      CachingTestModule::class
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

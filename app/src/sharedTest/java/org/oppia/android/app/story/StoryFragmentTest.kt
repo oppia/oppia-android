@@ -76,8 +76,8 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.TEST_STORY_ID_1
-import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -502,8 +502,8 @@ class StoryFragmentTest {
     return StoryActivity.createStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_1
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0
     )
   }
 

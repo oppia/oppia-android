@@ -23,7 +23,7 @@ def _gen_binary_proto_from_text_impl(ctx):
     input_proto_files = _extract_proto_sources(ctx.attr.proto_deps)
 
     # See 'protoc --help' for specifics on the arguments passed to the tool for converting text
-    # proto to binary, and epxected stdin/stdout configurations. Note that the actual proto files
+    # proto to binary, and expected stdin/stdout configurations. Note that the actual proto files
     # are passed to the compiler since it requires them in order to transcode the text proto file.
     command_path = ctx.executable._protoc_tool.path
     arguments = [command_path] + [
@@ -68,7 +68,7 @@ _gen_binary_proto_from_text = rule(
         "_protoc_tool": attr.label(
             # This was partly inspired by https://stackoverflow.com/a/39138074.
             executable = True,
-            cfg = "exec",
+            cfg = "host",
             default = "@protobuf_tools//:protoc",
         ),
     },
@@ -113,7 +113,7 @@ def _generate_single_asset_proto_binary(name, proto_dep_name, proto_type_name):
         proto_dep_name: str. The name of the proto library under //model that contains the proto
             definition being converted to binary.
         proto_type_name: str. The name of the proto type being converted in the text proto. This is
-            assumed to be part of the shared 'model' packa
+            assumed to be part of the shared 'model' package.
 
     Returns:
         str. The path to the newly generated binary file.

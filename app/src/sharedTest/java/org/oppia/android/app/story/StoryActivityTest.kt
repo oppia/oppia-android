@@ -51,7 +51,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_1
-import org.oppia.android.domain.topic.TEST_STORY_ID_1
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
@@ -101,7 +101,7 @@ class StoryActivityTest {
       createStoryActivityIntent(
         internalProfileId,
         TEST_TOPIC_ID_0,
-        TEST_STORY_ID_1
+        TEST_STORY_ID_0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
