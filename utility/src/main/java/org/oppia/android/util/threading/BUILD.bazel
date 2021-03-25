@@ -1,5 +1,5 @@
 """
-General purpose utilities for Dispatcher module and Concurrent collections.
+General purpose utilities for multi-threading and concurrency.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
