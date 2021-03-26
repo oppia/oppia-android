@@ -86,7 +86,6 @@ buf.yaml @anandwana001
 
 # Important codebase files.
 LICENSE @BenHenning
-NOTICE @BenHenning
 
 #####################################################################################
 #                                    app module                                     #

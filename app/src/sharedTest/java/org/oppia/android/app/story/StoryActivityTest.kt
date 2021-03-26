@@ -99,9 +99,9 @@ class StoryActivityTest {
   fun clickOnStory_intentsToExplorationActivity() {
     launch<StoryActivity>(
       createStoryActivityIntent(
-        internalProfileId = internalProfileId,
-        topicId = TEST_TOPIC_ID_0,
-        storyId = TEST_STORY_ID_1
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_1
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -141,10 +141,10 @@ class StoryActivityTest {
     storyId: String
   ): Intent {
     return StoryActivity.createStoryActivityIntent(
-      context = ApplicationProvider.getApplicationContext(),
-      internalProfileId = internalProfileId,
-      topicId = topicId,
-      storyId = storyId
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      topicId,
+      storyId
     )
   }
 
