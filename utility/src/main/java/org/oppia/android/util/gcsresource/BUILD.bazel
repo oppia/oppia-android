@@ -23,6 +23,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
+        ":annotations",
         ":dagger",
     ],
 )
