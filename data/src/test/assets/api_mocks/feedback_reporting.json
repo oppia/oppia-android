@@ -4,10 +4,6 @@
     "entry_point": {
       "entry_point_name" : "navigation_drawer"
     },
-    "completed_exploration_ids": [
-      0,
-      1
-    ],
     "topic_progress": {},
     "text_size": "large",
     "text_language_code": "EN",
