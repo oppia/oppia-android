@@ -67,6 +67,13 @@ import javax.inject.Singleton
 )
 class RevisionCardActivityTest {
 
+  @get:Rule
+  val activityTestRule: ActivityTestRule<RevisionCardActivity> = ActivityTestRule(
+    RevisionCardActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var context: Context
 
@@ -77,6 +84,22 @@ class RevisionCardActivityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+  }
+
+  @Test
+  fun testRevisionCardActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(
+      createRevisionCardActivityIntent(
+        internalProfileId = internalProfileId,
+        topicId = TEST_TOPIC_ID_0,
+        subTopicId = subTopicId
+      )
+    )
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.revision_card_activity_title))
   }
 
   private fun setUpTestApplicationComponent() {
@@ -95,29 +118,6 @@ class RevisionCardActivityTest {
       topicId,
       subTopicId
     )
-  }
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<RevisionCardActivity> = ActivityTestRule(
-    RevisionCardActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
-  @Test
-  fun testRevisionCardActivity_hasCorrectLabel() {
-    activityTestRule.launchActivity(
-      createRevisionCardActivityIntent(
-        internalProfileId = internalProfileId,
-        topicId = TEST_TOPIC_ID_0,
-        subTopicId = subTopicId
-      )
-    )
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.revision_card_activity_title))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -150,10 +150,10 @@ class RevisionCardActivityTest {
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
-    private val component: RevisionCardActivityTest.TestApplicationComponent by lazy {
+    private val component: TestApplicationComponent by lazy {
       DaggerRevisionCardActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
-        .build() as RevisionCardActivityTest.TestApplicationComponent
+        .build() as TestApplicationComponent
     }
 
     fun inject(revisionCardActivityTest: RevisionCardActivityTest) {
