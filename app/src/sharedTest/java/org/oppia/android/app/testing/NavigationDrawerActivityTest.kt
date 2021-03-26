@@ -228,7 +228,13 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavDrawer_openNavDrawer_profileProgressIsDisplayed() {
+  fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileProgressIsDisplayedCorrectly() {
+    storyProfileTestHelper.markCompletedRatiosStory1Exp0(
+      ProfileId.newBuilder().setInternalId(
+        internalProfileId
+      ).build(),
+      timestampOlderThanOneWeek = false
+    )
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId

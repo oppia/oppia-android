@@ -15,9 +15,9 @@ internal data class QuestionSessionMetrics(val question: Question) {
   var didViewSolution: Boolean = false
 
   /**
-   * Tracks the skill misconception IDs corresponding to the user's wrong answers for this question.
-   * A skill misconception ID is a skill ID which identifies which skill the user needs to work on,
-   * based on which misconception the user had when they submitted a wrong answer for a question.
+   * Tracks the skill IDs corresponding to the misconceptions of the user's wrong answers for this
+   * question. These skill IDs identify which skills the user needs to work on, based on which
+   * misconceptions the user had when they submitted wrong answers for this question.
    */
-  var taggedSkillMisconceptionIds: MutableList<String> = mutableListOf()
+  var taggedSkillIds: MutableList<String> = mutableListOf()
 }

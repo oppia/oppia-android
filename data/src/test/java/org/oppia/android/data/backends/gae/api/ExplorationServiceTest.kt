@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends.test
+package org.oppia.android.data.backends.gae.api
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -6,10 +6,9 @@ import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.api.MockConceptCardService
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
-import org.oppia.android.data.backends.gae.api.ConceptCardService
+import org.oppia.android.testing.network.MockExplorationService
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -17,11 +16,11 @@ import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 
 /**
- * Test for [ConceptCardService] retrofit instance using [MockConceptCardService]
+ * Test for [ExplorationService] retrofit instance using [MockExplorationService]
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class MockConceptCardTest {
+class ExplorationServiceTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit
 
@@ -43,20 +42,14 @@ class MockConceptCardTest {
   }
 
   @Test
-  fun testConceptCardService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(ConceptCardService::class.java)
-    val mockConceptCardService = MockConceptCardService(delegate)
+  fun testExplorationService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(ExplorationService::class.java)
+    val mockExplorationService = MockExplorationService(delegate)
 
-    val skillIdList = ArrayList<String>()
-    skillIdList.add("1")
-    skillIdList.add("2")
-    skillIdList.add("3")
+    val explorationContainer = mockExplorationService.getExplorationById("4")
+    val explorationContainerResponse = explorationContainer.execute()
 
-    val skillIds = skillIdList.joinToString(separator = ", ")
-    val conceptCard = mockConceptCardService.getSkillContents(skillIds)
-    val conceptCardResponse = conceptCard.execute()
-
-    assertThat(conceptCardResponse.isSuccessful).isTrue()
-    assertThat(conceptCardResponse.body()!!.conceptCardDicts!!.size).isEqualTo(1)
+    assertThat(explorationContainerResponse.isSuccessful).isTrue()
+    assertThat(explorationContainerResponse.body()!!.explorationId).isEqualTo("4")
   }
 }
