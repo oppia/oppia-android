@@ -162,7 +162,7 @@ class QuestionPlayerActivityTest {
   fun testQuestionPlayer_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       createQuestionPlayerActivityIntent(
-        context,
+        ApplicationProvider.getApplicationContext(),
         SKILL_ID_LIST as ArrayList<String>
       )
     )
