@@ -1,4 +1,4 @@
-package org.oppia.android.app.faq
+package org.oppia.android.app.options
 
 import android.app.Application
 import android.content.Context
@@ -21,7 +21,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -58,42 +57,51 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [FAQListActivity]. */
+/** Tests for [AudioLanguageActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = FaqListActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
-class FaqListActivityTest {
-
+@Config(
+  application = AudioLanguageActivityTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
+class AudioLanguageActivityTest {
   @get:Rule
-  val activityTestRule: ActivityTestRule<FAQListActivity> = ActivityTestRule(
-    FAQListActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  val activityTestRule: ActivityTestRule<AudioLanguageActivity> = ActivityTestRule(
+    AudioLanguageActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
   @Inject
   lateinit var context: Context
+
+  private val summaryValue = "English"
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
-  @Test
-  fun testFaqListActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createFaqListActivityIntent())
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.faq_activity_title))
-  }
-
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createFaqListActivityIntent(): Intent {
-    return FAQListActivity.createFAQListActivityIntent(
-      ApplicationProvider.getApplicationContext()
+  @Test
+  fun testAudioLanguageActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(
+      createDefaultAudioActivityIntent(
+        summaryValue
+      )
+    )
+    val title = activityTestRule.activity.title
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.audio_language_activity_title))
+  }
+
+  private fun createDefaultAudioActivityIntent(summaryValue: String): Intent {
+    return AudioLanguageActivity.createAudioLanguageActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      AUDIO_LANGUAGE,
+      summaryValue
     )
   }
 
@@ -122,18 +130,18 @@ class FaqListActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(faqListActivityTest: FaqListActivityTest)
+    fun inject(audioLanguageActivityTest: AudioLanguageActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFaqListActivityTest_TestApplicationComponent.builder()
+      DaggerAudioLanguageActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(faqListActivityTest: FaqListActivityTest) {
-      component.inject(faqListActivityTest)
+    fun inject(audioLanguageActivityTest: AudioLanguageActivityTest) {
+      component.inject(audioLanguageActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
