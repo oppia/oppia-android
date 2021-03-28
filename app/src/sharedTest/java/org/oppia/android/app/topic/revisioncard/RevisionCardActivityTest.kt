@@ -39,8 +39,8 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -79,7 +79,7 @@ class RevisionCardActivityTest {
 
   private val internalProfileId = 0
 
-  private val subTopicId = 0
+  private val subTopicId = 1
 
   @Before
   fun setUp() {
@@ -91,7 +91,7 @@ class RevisionCardActivityTest {
     activityTestRule.launchActivity(
       createRevisionCardActivityIntent(
         internalProfileId = internalProfileId,
-        topicId = TEST_TOPIC_ID_0,
+        topicId = FRACTIONS_TOPIC_ID,
         subTopicId = subTopicId
       )
     )
@@ -103,8 +103,7 @@ class RevisionCardActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<RevisionCardActivityTest.TestApplication>()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun createRevisionCardActivityIntent(
