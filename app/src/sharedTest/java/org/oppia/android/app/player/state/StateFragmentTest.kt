@@ -1393,8 +1393,7 @@ class StateFragmentTest {
     return find { text in it.first }?.second
   }
 
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
-  @Singleton
+@Singleton
   @Component(
     modules = [
       RobolectricModule::class,
