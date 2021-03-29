@@ -691,7 +691,7 @@ class BindableAdapterTest {
     ): ActivityComponent.Builder
   }
 
-@Singleton
+  @Singleton
   @Component(
     modules = [
       RobolectricModule::class, TestModule::class,

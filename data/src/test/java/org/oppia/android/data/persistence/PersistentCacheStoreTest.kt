@@ -1,6 +1,5 @@
 package org.oppia.android.data.persistence
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.Observer
@@ -14,6 +13,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import org.junit.Before
 import org.junit.Rule

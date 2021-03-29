@@ -1393,7 +1393,7 @@ class StateFragmentTest {
     return find { text in it.first }?.second
   }
 
-@Singleton
+  @Singleton
   @Component(
     modules = [
       RobolectricModule::class,
