@@ -26,7 +26,7 @@ class MockClassroomService(private val delegate: BehaviorDelegate<ClassroomServi
   private fun createMockGaeClassroom(): GaeClassroom {
     val networkInterceptor = NetworkInterceptor()
     var classroomResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("classroom.json")
+      NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("classroom.json")
     classroomResponseWithXssiPrefix =
       networkInterceptor.removeXSSIPrefix(classroomResponseWithXssiPrefix)
 

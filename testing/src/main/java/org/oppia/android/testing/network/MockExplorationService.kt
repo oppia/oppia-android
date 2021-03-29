@@ -26,7 +26,7 @@ class MockExplorationService(private val delegate: BehaviorDelegate<ExplorationS
   private fun createMockGaeExplorationContainer(): GaeExplorationContainer {
     val networkInterceptor = NetworkInterceptor()
     var explorationResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("exploration.json")
+      NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("exploration.json")
     explorationResponseWithXssiPrefix =
       networkInterceptor.removeXSSIPrefix(explorationResponseWithXssiPrefix)
 

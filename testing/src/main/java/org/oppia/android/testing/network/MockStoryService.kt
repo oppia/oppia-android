@@ -25,7 +25,7 @@ class MockStoryService(private val delegate: BehaviorDelegate<StoryService>) : S
   private fun createMockGaeStory(): GaeStory {
     val networkInterceptor = NetworkInterceptor()
     var storyResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("story.json")
+      NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("story.json")
 
     storyResponseWithXssiPrefix = networkInterceptor.removeXSSIPrefix(storyResponseWithXssiPrefix)
 
