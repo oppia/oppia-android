@@ -1,4 +1,4 @@
-package org.oppia.android.app.faq
+package org.oppia.android.app.options
 
 import android.app.Application
 import android.content.Context
@@ -21,7 +21,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -58,15 +57,15 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [FAQListActivity]. */
+/** Tests for [OptionsActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = FaqListActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
-class FaqListActivityTest {
+@Config(application = OptionsActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
+class OptionsActivityTest {
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<FAQListActivity> = ActivityTestRule(
-    FAQListActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  val activityTestRule: ActivityTestRule<OptionsActivity> = ActivityTestRule(
+    OptionsActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
   @Inject
@@ -78,22 +77,24 @@ class FaqListActivityTest {
   }
 
   @Test
-  fun testFaqListActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createFaqListActivityIntent())
+  fun testOptionsActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createOptionsActivityIntent())
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.faq_activity_title))
+    assertThat(title).isEqualTo(context.getString(R.string.options_activity_title))
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createFaqListActivityIntent(): Intent {
-    return FAQListActivity.createFAQListActivityIntent(
-      ApplicationProvider.getApplicationContext()
+  private fun createOptionsActivityIntent(): Intent {
+    return OptionsActivity.createOptionsActivity(
+      ApplicationProvider.getApplicationContext(),
+      profileId = 0,
+      isFromNavigationDrawer = false
     )
   }
 
@@ -122,18 +123,18 @@ class FaqListActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(faqListActivityTest: FaqListActivityTest)
+    fun inject(optionsActivityTest: OptionsActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFaqListActivityTest_TestApplicationComponent.builder()
+      DaggerOptionsActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(faqListActivityTest: FaqListActivityTest) {
-      component.inject(faqListActivityTest)
+    fun inject(optionsActivityTest: OptionsActivityTest) {
+      component.inject(optionsActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
