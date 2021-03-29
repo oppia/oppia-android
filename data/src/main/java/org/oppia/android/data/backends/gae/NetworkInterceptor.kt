@@ -3,7 +3,6 @@ package org.oppia.android.data.backends.gae
 import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.ResponseBody
-import org.oppia.android.data.Constants
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -21,8 +20,8 @@ class NetworkInterceptor @Inject constructor() : Interceptor {
     val request = chain.request()
     val response = chain.proceed(request)
 
-    if (response.code() == Constants.HTTP_OK) {
-      response.body()?.let { responseBody ->
+    if (response.code == Constants.HTTP_OK) {
+      response.body?.let { responseBody ->
         var rawJson = responseBody.string()
         rawJson = removeXSSIPrefix(rawJson)
         val contentType = responseBody.contentType()

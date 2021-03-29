@@ -1,0 +1,36 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Library for providing top-level HTTP networking support for Oppia's App Engine backend.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "impl",
+    srcs = [
+        "Constants.kt",
+        "NetworkInterceptor.kt",
+        "NetworkSettings.kt",
+    ],
+    deps = [
+        "//third_party:com_squareup_okhttp3_okhttp",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = [
+        "NetworkModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":impl",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/api",
+        "//third_party:com_squareup_retrofit2_converter-moshi",
+    ],
+)
+
+dagger_rules()

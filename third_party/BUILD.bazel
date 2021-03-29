@@ -51,3 +51,12 @@ android_library(
         "@robolectric//bazel:android-all",
     ],
 )
+
+android_library(
+    name = "moshi",
+    visibility = ["//visibility:public"],
+    exports = [
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+        "//tools:moshi_library",
+    ],
+)
