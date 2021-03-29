@@ -33,7 +33,7 @@ class MockQuestionPlayerService(private val delegate: BehaviorDelegate<QuestionP
       NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("question_player.json")
 
     questionPlayerResponseWithXssiPrefix =
-      networkInterceptor.removeXSSIPrefix(questionPlayerResponseWithXssiPrefix)
+      networkInterceptor.removeXssiPrefix(questionPlayerResponseWithXssiPrefix)
 
     val moshi = Moshi.Builder().build()
     val adapter: JsonAdapter<GaeQuestionPlayer> = moshi.adapter(GaeQuestionPlayer::class.java)

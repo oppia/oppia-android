@@ -12,17 +12,9 @@ java_plugin(
     name = "moshi_annotation_processor_plugin",
     generates_api = True,
     processor_class = "com.squareup.moshi.kotlin.codegen.JsonClassCodegenProcessor",
+    visibility = ["//third_party:__pkg__"],
     deps = [
         "//third_party:com_squareup_moshi_moshi-kotlin",
-        "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
-    ],
-)
-
-java_library(
-    name = "moshi_library",
-    exported_plugins = [":moshi_annotation_processor_plugin"],
-    visibility = ["//third_party:__pkg__"],
-    exports = [
         "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
     ],
 )

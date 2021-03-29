@@ -52,11 +52,12 @@ android_library(
     ],
 )
 
-android_library(
+java_library(
     name = "moshi",
+    exported_plugins = ["//tools:moshi_annotation_processor_plugin"],
     visibility = ["//visibility:public"],
     exports = [
         "//third_party:com_squareup_moshi_moshi-kotlin",
-        "//tools:moshi_library",
+        "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
     ],
 )

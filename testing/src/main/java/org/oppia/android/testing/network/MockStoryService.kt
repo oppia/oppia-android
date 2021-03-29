@@ -27,7 +27,7 @@ class MockStoryService(private val delegate: BehaviorDelegate<StoryService>) : S
     var storyResponseWithXssiPrefix =
       NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("story.json")
 
-    storyResponseWithXssiPrefix = networkInterceptor.removeXSSIPrefix(storyResponseWithXssiPrefix)
+    storyResponseWithXssiPrefix = networkInterceptor.removeXssiPrefix(storyResponseWithXssiPrefix)
 
     val moshi = Moshi.Builder().build()
     val adapter: JsonAdapter<GaeStory> = moshi.adapter(GaeStory::class.java)

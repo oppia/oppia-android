@@ -36,6 +36,9 @@ kt_android_library(
     srcs = [
         "ApiMockLoader.kt",
     ],
+    deps = [
+        "//third_party:androidx_test_core",
+    ],
 )
 
 dagger_rules()
