@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends.test
+package org.oppia.android.data.backends.gae.api
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -8,8 +8,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
-import org.oppia.android.data.backends.gae.api.SubtopicService
-import org.oppia.android.testing.network.MockSubtopicService
+import org.oppia.android.testing.network.MockTopicService
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -17,11 +16,11 @@ import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 
 /**
- * Test for [SubtopicService] retrofit instance using [MockSubtopicService]
+ * Test for [TopicService] retrofit instance using [MockTopicService]
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class MockSubtopicTest {
+class TopicServiceTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit
 
@@ -43,14 +42,14 @@ class MockSubtopicTest {
   }
 
   @Test
-  fun testSubtopicService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(SubtopicService::class.java)
-    val mockSubtopicService = MockSubtopicService(delegate)
+  fun testTopicService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(TopicService::class.java)
+    val mockTopicService = MockTopicService(delegate)
 
-    val subtopic = mockSubtopicService.getSubtopic("Subtopic 1", "randomId")
-    val subtopicResponse = subtopic.execute()
+    val topic = mockTopicService.getTopicByName("Topic1")
+    val topicResponse = topic.execute()
 
-    assertThat(subtopicResponse.isSuccessful).isTrue()
-    assertThat(subtopicResponse.body()!!.subtopicTitle).isEqualTo("Subtopic 1")
+    assertThat(topicResponse.isSuccessful).isTrue()
+    assertThat(topicResponse.body()!!.topicName).isEqualTo("Topic1")
   }
 }

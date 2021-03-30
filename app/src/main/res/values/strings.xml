@@ -336,10 +336,11 @@
   <!-- AppVersionFragment -->
   <string name="app_version_name">App Version %s</string>
   <string name="app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
+  <string name="app_version_activity_title">App Version</string>
   <!-- OptionsActivity -->
+  <string name="app_language_activity_title">App Language</string>
+  <string name="audio_language_activity_title">Default Audio Language</string>
   <string name="title_reading_text_size">Reading Text Size</string>
-  <string name="title_app_language">App Language</string>
-  <string name="title_default_audio">Default Audio Language</string>
   <string name="story_text_will_look_like_this">Story text will look like this.</string>
   <string name="constant_string_for_text_size">A</string>
   <string name="audio_language">Default Audio</string>
@@ -352,6 +353,7 @@
   <string name="topic_in_progress">Topic in Progress</string>
   <string name="stories_completed">Stories Completed</string>
   <string name="story_completed">Story Completed</string>
+  <string name="options_activity_title">Options</string>
   <!-- CompletedStoryListActivity -->
   <string name="completed_story_list_activity_title">Stories Completed</string>
   <!-- WalkthroughActivity -->
