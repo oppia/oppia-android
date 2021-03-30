@@ -39,6 +39,22 @@ class ReportSchemaVersionTest {
 
   @Test
   fun testSchemaVersion_forCurrentSchemaVersion_reportCollectsExpectedData() {
+    // For report schema V1, the information collected includes the following:
+    // UserSuppliedFeedback: a user-selected report-type, a report category, a list of
+    //                       checkbox options a user can select, and a short open-text input.
+    // SystemContext: the package version name of this Oppia instance, the package version code of
+    //                this Oppia instance, the country locale code set on the user's device, and the
+    //                language locale code set on the user's device.
+    // DeviceContext: the user's device model, the Android SDK version on the user's device, the
+    //                build fingerprint of the device, and the network type when the reports was
+    //                submitted by the user.
+    // ReportContext: the entry point to feedback reporting used by the learner, the text size of
+    //                the  app as set in the Oppia settings, the text language code set in the
+    //                Oppia settings, the audio language code set in the Oppia settings, whether
+    //                the learner can download and update topics only on wifi, whether the app can
+    //                can automatically update topics, whether the account sending the report is
+    //                a profile admin, a list of the event logs collected in the app, and a list of
+    //                the logcat logs collected in the app.
   }
 
   private fun setUpTestApplicationComponent() {

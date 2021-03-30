@@ -14,7 +14,6 @@ annotation class ReportSchemaVersion
 class FeedbackReportingModule {
   // Provides the Feedback Reporting service implementation.
   @Provides
-  @Singleton
   @ReportSchemaVersion
   fun provideReportSchemaVersion(): Int = 1
 }
