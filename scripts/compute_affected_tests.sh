@@ -71,6 +71,10 @@ if [[ "$current_branch" != "develop" ]]; then
   shopt -u nocasematch
   (IFS=",$IFS"; printf "Changed Bazel support files: %s\n\n" "${changed_bazel_support_files[*]}"; IFS="${IFS:1}")
 
+  printf "Clear Bazel cache between target analyses\n\n"
+  bazel clean
+  bazel shutdown
+
   # Compute the list of affected tests based on BUILD/Bazel/WORKSPACE files. These are generally
   # framed as: if a BUILD file changes, run all tests transitively connected to it.
   # Reference for joining an array to string: https://stackoverflow.com/a/53839433.
