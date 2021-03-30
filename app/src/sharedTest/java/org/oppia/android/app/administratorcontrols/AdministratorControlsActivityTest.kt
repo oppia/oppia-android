@@ -140,7 +140,7 @@ class AdministratorControlsActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnRecyclerView(
-        recyclerView =  R.id.administrator_controls_list,
+        recyclerView = R.id.administrator_controls_list,
         itemPosition = 0,
         targetView = R.id.general_text_view
       )
@@ -150,7 +150,7 @@ class AdministratorControlsActivityTest {
         stringIdToMatch = R.string.administrator_controls_edit_account
       )
       verifyItemDisplayedOnRecyclerView(
-        recyclerView =  R.id.administrator_controls_list,
+        recyclerView = R.id.administrator_controls_list,
         itemPosition = 1,
         targetView = R.id.profile_management_text_view
       )
@@ -176,13 +176,13 @@ class AdministratorControlsActivityTest {
         stringIdToMatch = R.string.administrator_controls_download_permissions_label
       )
       verifyItemDisplayedOnRecyclerView(
-        recyclerView =  R.id.administrator_controls_list,
+        recyclerView = R.id.administrator_controls_list,
         itemPosition = 2,
         targetView = R.id.topic_update_on_wifi_constraint_layout
       )
       scrollToPosition(position = 2)
       verifyItemDisplayedOnRecyclerView(
-        recyclerView =  R.id.administrator_controls_list,
+        recyclerView = R.id.administrator_controls_list,
         itemPosition = 2,
         targetView = R.id.auto_update_topic_constraint_layout
       )
@@ -199,7 +199,7 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       verifyItemDisplayedOnRecyclerView(
-        recyclerView =  R.id.administrator_controls_list,
+        recyclerView = R.id.administrator_controls_list,
         itemPosition = 3,
         targetView = R.id.app_information_text_view
       )
@@ -209,7 +209,7 @@ class AdministratorControlsActivityTest {
         stringIdToMatch = R.string.administrator_controls_app_version
       )
       verifyItemDisplayedOnRecyclerView(
-        recyclerView =  R.id.administrator_controls_list,
+        recyclerView = R.id.administrator_controls_list,
         itemPosition = 4,
         targetView = R.id.account_actions_text_view
       )
