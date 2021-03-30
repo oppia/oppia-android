@@ -116,7 +116,7 @@ class StoryActivityTest {
       createStoryActivityIntent(
         internalProfileId = internalProfileId,
         topicId = TEST_TOPIC_ID_0,
-        storyId = TEST_TOPIC_ID_1
+        storyId = TEST_STORY_ID_1
       )
     )
     val title = activityTestRule.activity.title
