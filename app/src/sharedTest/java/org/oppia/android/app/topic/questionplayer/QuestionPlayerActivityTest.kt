@@ -163,7 +163,7 @@ class QuestionPlayerActivityTest {
     activityTestRule.launchActivity(
       createQuestionPlayerActivityIntent(
         ApplicationProvider.getApplicationContext(),
-        ArrayList<String>()
+        SKILL_ID_LIST.toCollection(ArrayList<String>())
       )
     )
     val title = activityTestRule.activity.title
