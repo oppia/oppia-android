@@ -19,6 +19,7 @@ kt_android_library(
         ":dagger",
         "//domain",
         "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+        "//third_party:androidx_recyclerview_recyclerview",
         "//third_party:androidx_test_espresso_espresso-contrib",
         "//third_party:androidx_test_espresso_espresso-core",
         "//third_party:androidx_test_espresso_espresso-intents",

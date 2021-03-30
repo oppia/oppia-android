@@ -1,12 +1,15 @@
-package org.oppia.android.app.recyclerview
+package org.oppia.android.testing
 
 import android.content.res.Resources
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -63,6 +66,20 @@ class RecyclerViewMatcher {
           }
         }
       }
+    }
+
+    fun verifyItemDisplayedOnRecyclerView(
+      recyclerView: Int,
+      itemPosition: Int,
+      targetView: Int
+    ) {
+      onView(
+        atPositionOnView(
+          recyclerViewId = recyclerView,
+          position = itemPosition,
+          targetViewId = targetView
+        )
+      ).check(matches(isDisplayed()))
     }
 
     /** Returns item count ViewAssertion for a recycler view. */
