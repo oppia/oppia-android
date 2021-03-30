@@ -22,6 +22,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.administratorcontrols.appversion.AppVersionActivity"
+      android:label="@string/app_version_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.completedstorylist.CompletedStoryListActivity"
@@ -56,12 +57,15 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.AppLanguageActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/app_language_activity_title" />
     <activity
       android:name=".app.options.AudioLanguageActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/audio_language_activity_title" />
     <activity
       android:name=".app.options.OptionsActivity"
+      android:label="@string/options_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.ReadingTextSizeActivity"
