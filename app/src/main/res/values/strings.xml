@@ -216,6 +216,7 @@
   <string name="admin_pin_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <string name="save">Save</string>
   <!-- AddProfileActivity -->
+  <string name="add_profile_activity_label">Add Profile</string>
   <string name="add_profile_title">Add Profile</string>
   <string name="add_profile_input_name">Name*</string>
   <string name="add_profile_input_pin">3-Digit PIN*</string>

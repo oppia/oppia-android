@@ -35,6 +35,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.textfield.TextInputLayout
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -128,6 +129,19 @@ class AddProfileActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testAddProfileActivity_hasCorrectActivityLabel() {
+    launch(AddProfileActivity::class.java).use {
+      it.onActivity { addProfileActivity ->
+        val label = addProfileActivity.title
+
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(label).isEqualTo(context.getString(R.string.add_profile_activity_label))
+      }
+    }
   }
 
   @Test
