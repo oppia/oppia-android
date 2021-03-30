@@ -46,6 +46,7 @@ class FeedbackReportManagementController @Inject constructor(
   private val exceptionsController: ExceptionsController,
   private val analyticsController: AnalyticsController,
   private val networkConnectionUtil: NetworkConnectionUtil,
+  @ReportSchemaVersion private val reportSchemaVersion: Int
 ) {
   private val feedbackReportDataStore = cacheStoreFactory.create(
     FEEDBACK_REPORTS_DATABASE_NAME, FeedbackReportingDatabase.getDefaultInstance()
@@ -104,6 +105,7 @@ class FeedbackReportManagementController @Inject constructor(
    */
   fun uploadFeedbackReport(report: FeedbackReport) {
     val gaeFeedbackReport = GaeFeedbackReport(
+      schemaVersion = reportSchemaVersion,
       reportSubmissionTimestampSec = report.reportSubmissionTimestampSec,
       userSuppliedFeedback = createGaeUserSuppliedFeedback(report.userSuppliedInfo),
       systemContext = getSystemContext(report.systemContext),
@@ -252,7 +254,6 @@ class FeedbackReportManagementController @Inject constructor(
     return GaeFeedbackReportingDeviceContext(
       deviceModel = deviceContext.deviceModel,
       sdkVersion = deviceContext.sdkVersion,
-      deviceBrand = deviceContext.deviceBrand,
       buildFingerprint = deviceContext.buildFingerprint,
       networkType = deviceContext.networkType.name
     )
