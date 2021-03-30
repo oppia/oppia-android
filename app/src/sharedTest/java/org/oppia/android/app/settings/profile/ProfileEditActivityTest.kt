@@ -119,7 +119,7 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEdit_updateName_checkNewNameDisplayed() {
     profileManagementController.updateName(
-      profileId = ProfileId.newBuilder().setInternalId(1).build(),
+      ProfileId.newBuilder().setInternalId(1).build(),
       newName = "Akshay"
     )
     launch<ProfileEditActivity>(
