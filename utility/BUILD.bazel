@@ -17,6 +17,8 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/datetime/*.kt",
     "src/main/java/org/oppia/android/util/extensions/*.kt",
     "src/main/java/org/oppia/android/util/system/*.kt",
+    "src/main/java/org/oppia/android/util/networking/*.kt",
+    "src/main/java/org/oppia/android/util/threading/*.kt",
 ])
 
 android_library(
@@ -54,6 +56,8 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/threading:concurrent_collections",
+        "//utility/src/main/java/org/oppia/android/util/threading:prod_module",
     ],
 )
 
