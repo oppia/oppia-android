@@ -59,6 +59,7 @@ import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -88,6 +89,9 @@ class StoryActivityLocalTest {
 
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper

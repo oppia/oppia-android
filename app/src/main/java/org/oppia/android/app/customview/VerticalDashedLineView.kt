@@ -25,7 +25,6 @@ class VerticalDashedLineView @JvmOverloads constructor(
   attrs: AttributeSet? = null
 ) : View(context, attrs) {
   private val paint: Paint
-  private lateinit var canvas: Canvas
 
   init {
     val dashGap: Float = dpToPx(DASH_GAP_IN_DP)
@@ -43,19 +42,12 @@ class VerticalDashedLineView @JvmOverloads constructor(
 
   fun setColor(colorId: Int) {
     paint.color = colorId
-    drawLine()
+    invalidate()
   }
 
   override fun onDraw(canvas: Canvas) {
-    this.canvas = canvas
-    drawLine()
-  }
-
-  private fun drawLine() {
-    if (::canvas.isInitialized) {
-      val center = width * .5f
-      this.canvas.drawLine(center, /* startY= */ 0f, center, height.toFloat(), paint)
-    }
+    val center = width * .5f
+    canvas.drawLine(center, /* startY= */ 0f, center, height.toFloat(), paint)
   }
 
   private fun dpToPx(dp: Int): Float {
