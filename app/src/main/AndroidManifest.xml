@@ -89,7 +89,7 @@
       android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".app.profile.PinPasswordActivity"
-      android:label="PIN verification"
+      android:label="@string/pin_password_title"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity
