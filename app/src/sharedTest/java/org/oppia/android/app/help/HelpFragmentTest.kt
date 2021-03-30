@@ -137,7 +137,7 @@ class HelpFragmentTest {
   @Test
   fun testHelpFragment_notFromNavigationDrawer_configChange_navigationDrawerIsNotPresent() {
     launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
-      orientationLandscape()
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_activity_fragment_navigation_drawer))
         .check(doesNotExist())
     }
