@@ -1,5 +1,5 @@
 """
-Utilities to Provides GCS resource bucket names.
+Utilities for interacting with GCS backend resources.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
