@@ -16,11 +16,13 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   private lateinit var toolbar: Toolbar
 
   fun handleOnCreate(isFromNavigationDrawer: Boolean) {
-    activity.setContentView(R.layout.help_activity)
-    setUpToolbar()
     if (isFromNavigationDrawer) {
+      activity.setContentView(R.layout.help_activity)
+      setUpToolbar()
       setUpNavigationDrawer()
     } else {
+      activity.setContentView(R.layout.help_without_drawer_activity)
+      setUpToolbar()
       activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
       toolbar.setNavigationOnClickListener {
         activity.finish()
