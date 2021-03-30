@@ -119,12 +119,12 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEdit_updateName_checkNewNameDisplayed() {
     profileManagementController.updateName(
-      ProfileId.newBuilder().setInternalId(1).build(),
+      profileId = ProfileId.newBuilder().setInternalId(1).build(),
       newName = "Akshay"
     )
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -138,7 +138,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithAdminProfile_checkAdminInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 0
       )
     ).use {
@@ -154,7 +154,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithAdminProfile_checkAdminInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 0
       )
     ).use {
@@ -171,7 +171,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithUserProfile_checkUserInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -187,7 +187,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithUserProfile_checkUserInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -213,7 +213,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithUserProfile_clickRenameButton_checkOpensProfileRename() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -226,7 +226,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithUserProfile_clickRename_checkOpensProfileRename() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -240,7 +240,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -253,7 +253,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -267,7 +267,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -286,7 +286,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -307,7 +307,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -328,7 +328,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_landscape_deleteProfile_checkReturnsProfileListOnTabletAdminControlOnPhone() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -358,7 +358,7 @@ class ProfileEditActivityTest {
     ).toLiveData()
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 4
       )
     ).use {
@@ -379,7 +379,7 @@ class ProfileEditActivityTest {
     ).toLiveData()
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 4
       )
     ).use {
