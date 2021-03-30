@@ -2,6 +2,7 @@ package org.oppia.android.app.topic.questionplayer
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
@@ -56,7 +57,6 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity.Companion.createQuestionPlayerActivityIntent
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -115,7 +115,7 @@ class QuestionPlayerActivityTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule = ActivityTestRule(
+  val activityTestRule: ActivityTestRule<QuestionPlayerActivity> = ActivityTestRule(
     QuestionPlayerActivity::class.java,
     /* initialTouchMode= */ true,
     /* launchActivity= */ false
@@ -160,17 +160,19 @@ class QuestionPlayerActivityTest {
 
   @Test
   fun testQuestionPlayer_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(
-      createQuestionPlayerActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        SKILL_ID_LIST.toCollection(ArrayList<String>())
-      )
-    )
+    activityTestRule.launchActivity(createQuestionPlayerActivityIntent())
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
     assertThat(title).isEqualTo(context.getString(R.string.question_player_activity_title))
+  }
+
+  private fun createQuestionPlayerActivityIntent(): Intent {
+    return QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      SKILL_ID_LIST.toCollection(ArrayList<String>())
+    )
   }
 
   @Test
