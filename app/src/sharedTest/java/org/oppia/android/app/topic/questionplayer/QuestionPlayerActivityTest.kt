@@ -302,6 +302,9 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  // Incorrectly fails on Robolectric as Robolectric is unable to open or close soft-keyboard
+  // Reference: https://github.com/robolectric/robolectric/pull/4231
+  @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun textQuestionPlayer_openKeyboard_progressBarIsNotDisplayed() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -314,6 +317,9 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  // Incorrectly passes on Robolectric as Robolectric is unable to open or close soft-keyboard
+  // Reference: https://github.com/robolectric/robolectric/pull/4231
+  @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun textQuestionPlayer_openThenCloseKeyboard_progressBarIsDisplayed() {
     launchForSkillList(SKILL_ID_LIST).use {
