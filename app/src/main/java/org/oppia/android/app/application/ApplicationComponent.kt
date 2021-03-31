@@ -1,6 +1,5 @@
 package org.oppia.android.app.application
 
-// TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
 import android.app.Application
 import androidx.work.Configuration
 import dagger.BindsInstance
@@ -9,6 +8,7 @@ import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -28,7 +28,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.util.accessibility.AccessibilityModule
+import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -59,13 +59,14 @@ import javax.inject.Singleton
     GlideImageLoaderModule::class, ImageParsingModule::class,
     HtmlParserEntityTypeModule::class, CachingModule::class,
     QuestionModule::class, LogReportingModule::class,
-    AccessibilityModule::class, ImageClickInputModule::class,
+    AccessibilityProdModule::class, ImageClickInputModule::class,
     LogStorageModule::class, IntentFactoryShimModule::class,
     ViewBindingShimModule::class, PrimeTopicAssetsControllerModule::class,
     ExpirationMetaDataRetrieverModule::class, RatioInputModule::class,
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-    HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class
+    HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
+    NetworkModule::class,
   ]
 )
 interface ApplicationComponent : ApplicationInjector {

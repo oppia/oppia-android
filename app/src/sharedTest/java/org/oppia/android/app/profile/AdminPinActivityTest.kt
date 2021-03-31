@@ -30,7 +30,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.android.material.textfield.TextInputLayout
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -40,6 +42,7 @@ import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -73,12 +76,12 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -98,6 +101,11 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class AdminPinActivityTest {
+
+  @get: Rule
+  val activityTestRule: ActivityTestRule<AdminPinActivity> = ActivityTestRule(
+    AdminPinActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
   @Inject
   lateinit var context: Context
@@ -123,6 +131,23 @@ class AdminPinActivityTest {
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
+  }
+
+  @Test
+  fun testAdminPinActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
+      )
+    )
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.admin_pin_activity_title))
   }
 
   @Test
@@ -1037,7 +1062,6 @@ class AdminPinActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -1049,7 +1073,7 @@ class AdminPinActivityTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,

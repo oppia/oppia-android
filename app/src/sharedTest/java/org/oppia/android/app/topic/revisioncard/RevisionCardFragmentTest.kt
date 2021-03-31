@@ -61,10 +61,10 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -110,7 +110,8 @@ class RevisionCardFragmentTest {
     ).use {
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
-      onView(withText(context.getString(R.string.help))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.menu_help)))
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -125,7 +126,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.help))).perform(ViewActions.click())
+      onView(withText(context.getString(R.string.menu_help))).perform(ViewActions.click())
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
         hasExtra(
@@ -297,7 +298,6 @@ class RevisionCardFragmentTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -309,7 +309,7 @@ class RevisionCardFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,

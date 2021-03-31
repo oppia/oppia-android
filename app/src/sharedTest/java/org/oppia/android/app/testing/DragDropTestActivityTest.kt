@@ -51,10 +51,10 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -80,18 +80,23 @@ class DragDropTestActivityTest {
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
-            0,
+            position = 0,
             ChildViewCoordinatesProvider(
-              R.id.text_view_for_string_no_data_binding,
-              GeneralLocation.CENTER
+              childViewId = R.id.text_view_for_string_no_data_binding,
+              insideChildViewCoordinatesProvider = GeneralLocation.CENTER
             )
           ),
-          RecyclerViewCoordinatesProvider(1, CustomGeneralLocation.UNDER_RIGHT),
-          Press.FINGER
+          RecyclerViewCoordinatesProvider(
+            position = 1,
+            childItemCoordinatesProvider = CustomGeneralLocation.UNDER_RIGHT
+          ),
+          precisionDescriber = Press.FINGER
         )
       )
-      onView(atPosition(R.id.drag_drop_recycler_view, 0)).check(matches(withText("Item 2")))
-      onView(atPosition(R.id.drag_drop_recycler_view, 1)).check(matches(withText("Item 1")))
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 0))
+        .check(matches(withText("Item 2")))
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 1))
+        .check(matches(withText("Item 1")))
     }
   }
 
@@ -104,18 +109,23 @@ class DragDropTestActivityTest {
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
-            1,
+            position = 1,
             ChildViewCoordinatesProvider(
-              R.id.text_view_for_string_no_data_binding,
-              GeneralLocation.CENTER
+              childViewId = R.id.text_view_for_string_no_data_binding,
+              insideChildViewCoordinatesProvider = GeneralLocation.CENTER
             )
           ),
-          RecyclerViewCoordinatesProvider(2, CustomGeneralLocation.UNDER_RIGHT),
-          Press.FINGER
+          RecyclerViewCoordinatesProvider(
+            position = 2,
+            childItemCoordinatesProvider = CustomGeneralLocation.UNDER_RIGHT
+          ),
+          precisionDescriber = Press.FINGER
         )
       )
-      onView(atPosition(R.id.drag_drop_recycler_view, 1)).check(matches(withText("Item 3")))
-      onView(atPosition(R.id.drag_drop_recycler_view, 2)).check(matches(withText("Item 2")))
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 1))
+        .check(matches(withText("Item 3")))
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 2))
+        .check(matches(withText("Item 2")))
     }
   }
 
@@ -129,18 +139,23 @@ class DragDropTestActivityTest {
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
-            3,
+            position = 3,
             ChildViewCoordinatesProvider(
-              R.id.text_view_for_string_no_data_binding,
-              GeneralLocation.CENTER
+              childViewId = R.id.text_view_for_string_no_data_binding,
+              insideChildViewCoordinatesProvider = GeneralLocation.CENTER
             )
           ),
-          RecyclerViewCoordinatesProvider(2, CustomGeneralLocation.ABOVE_RIGHT),
-          Press.FINGER
+          RecyclerViewCoordinatesProvider(
+            position = 2,
+            childItemCoordinatesProvider = CustomGeneralLocation.ABOVE_RIGHT
+          ),
+          precisionDescriber = Press.FINGER
         )
       )
-      onView(atPosition(R.id.drag_drop_recycler_view, 2)).check(matches(withText("Item 4")))
-      onView(atPosition(R.id.drag_drop_recycler_view, 3)).check(matches(withText("Item 3")))
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 2))
+        .check(matches(withText("Item 4")))
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 3))
+        .check(matches(withText("Item 3")))
     }
   }
 
@@ -158,7 +173,6 @@ class DragDropTestActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -170,7 +184,7 @@ class DragDropTestActivityTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,

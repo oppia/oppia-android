@@ -55,12 +55,12 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -118,12 +118,20 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Admin"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_admin_text)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_list_admin_text
+        )
       ).check(
         matches(withText(context.getString(R.string.profile_chooser_admin)))
       )
@@ -133,12 +141,20 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 1,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Ben"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_admin_text)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 1,
+          targetViewId = R.id.profile_list_admin_text
+        )
       ).check(
         matches(not(isDisplayed()))
       )
@@ -157,12 +173,20 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Admin"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_admin_text)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_list_admin_text
+        )
       ).check(
         matches(withText(context.getString(R.string.profile_chooser_admin)))
       )
@@ -172,12 +196,20 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 1,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Ben"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_admin_text)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 1,
+          targetViewId = R.id.profile_list_admin_text
+        )
       ).check(
         matches(not(isDisplayed()))
       )
@@ -187,7 +219,7 @@ class ProfileListFragmentTest {
   @Test
   fun testProfileListFragment_addManyProfiles_checkProfilesAreSorted() {
     profileTestHelper.initializeProfiles()
-    profileTestHelper.addMoreProfiles(5)
+    profileTestHelper.addMoreProfiles(numProfiles = 5)
     launch(ProfileListActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_list_recycler_view)).perform(
@@ -196,7 +228,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Admin"))
       )
@@ -206,7 +242,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 1,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("A"))
       )
@@ -216,7 +256,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 2, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 2,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("B"))
       )
@@ -226,7 +270,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 3, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 3,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Ben"))
       )
@@ -236,7 +284,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 4, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 4,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("C"))
       )
@@ -246,7 +298,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 5, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 5,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("D"))
       )
@@ -256,7 +312,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 6, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 6,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("E"))
       )
@@ -274,7 +334,6 @@ class ProfileListFragmentTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -286,7 +345,7 @@ class ProfileListFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,

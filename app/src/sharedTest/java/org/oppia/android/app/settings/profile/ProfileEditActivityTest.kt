@@ -58,12 +58,12 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -124,7 +124,7 @@ class ProfileEditActivityTest {
     )
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -138,7 +138,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithAdminProfile_checkAdminInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 0
       )
     ).use {
@@ -154,7 +154,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithAdminProfile_checkAdminInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 0
       )
     ).use {
@@ -171,7 +171,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithUserProfile_checkUserInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -187,7 +187,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithUserProfile_checkUserInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -213,7 +213,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithUserProfile_clickRenameButton_checkOpensProfileRename() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -226,7 +226,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithUserProfile_clickRename_checkOpensProfileRename() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -240,7 +240,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -253,7 +253,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -267,7 +267,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -286,7 +286,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -307,7 +307,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -328,7 +328,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_landscape_deleteProfile_checkReturnsProfileListOnTabletAdminControlOnPhone() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -358,7 +358,7 @@ class ProfileEditActivityTest {
     ).toLiveData()
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 4
       )
     ).use {
@@ -379,7 +379,7 @@ class ProfileEditActivityTest {
     ).toLiveData()
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 4
       )
     ).use {
@@ -390,7 +390,6 @@ class ProfileEditActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -402,7 +401,7 @@ class ProfileEditActivityTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
