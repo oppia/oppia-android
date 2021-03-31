@@ -26,10 +26,10 @@ class MockSubtopicService(private val delegate: BehaviorDelegate<SubtopicService
   private fun createMockGaeSubtopic(): GaeSubtopic {
     val networkInterceptor = NetworkInterceptor()
     var subtopicResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("subtopic.json")
+      NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("subtopic.json")
 
     subtopicResponseWithXssiPrefix =
-      networkInterceptor.removeXSSIPrefix(subtopicResponseWithXssiPrefix)
+      networkInterceptor.removeXssiPrefix(subtopicResponseWithXssiPrefix)
 
     val moshi = Moshi.Builder().build()
     val adapter: JsonAdapter<GaeSubtopic> = moshi.adapter(GaeSubtopic::class.java)
