@@ -170,8 +170,8 @@ class QuestionPlayerActivityTest {
 
   private fun createQuestionPlayerActivityIntent(): Intent {
     return QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      SKILL_ID_LIST.toCollection(ArrayList<String>())
+      context,
+      ArrayList(SKILL_ID_LIST)
     )
   }
 
