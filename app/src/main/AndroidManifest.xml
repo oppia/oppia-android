@@ -121,6 +121,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.settings.profile.ProfileRenameActivity"
+      android:label="@string/profile_rename_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.settings.profile.ProfileResetPinActivity"
