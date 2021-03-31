@@ -201,7 +201,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun  testPinPasswordActivity_hasCorrectActivityLabel()  {
+  fun  testPinPasswordActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -213,7 +213,7 @@ class PinPasswordActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.pin_password_title))
+    assertThat(title).isEqualTo(context.getString(R.string.pin_password_activity_title))
   }
 
   @Test
