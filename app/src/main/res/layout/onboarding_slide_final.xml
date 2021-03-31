@@ -21,7 +21,8 @@
       android:id="@+id/final_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:overScrollMode="always">
+      android:overScrollMode="always"
+      android:contentDescription="@string/onboarding_slide_3_titledescriptionmerged">
 
       <ImageView
         android:id="@+id/slide_image_view"
@@ -38,6 +39,7 @@
         android:id="@+id/slide_title_text_view"
         style="@style/Heading1"
         android:layout_width="0dp"
+        android:importantForAccessibility="no"
         android:layout_marginStart="28dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="28dp"
@@ -54,6 +56,7 @@
         android:id="@+id/slide_description_text_view"
         style="@style/Subtitle1"
         android:layout_width="0dp"
+        android:importantForAccessibility="no"
         android:layout_marginStart="48dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="48dp"
