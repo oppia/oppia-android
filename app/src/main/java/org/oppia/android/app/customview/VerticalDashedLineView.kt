@@ -16,8 +16,10 @@ private const val DASH_THICKNESS_IN_DP = 6
 
 /**
  * Custom view for drawing a vertical dashed line.
+ *
  * This view can be customised by changing the values of [DASH_GAP_IN_DP], [DASH_LENGTH_IN_DP] and
  * [DASH_THICKNESS_IN_DP].
+ *
  * Reference: https://stackoverflow.com/a/27054463
  */
 class VerticalDashedLineView @JvmOverloads constructor(

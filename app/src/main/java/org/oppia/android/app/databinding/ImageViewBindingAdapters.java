@@ -38,8 +38,8 @@ public final class ImageViewBindingAdapters {
    */
   @BindingAdapter("android:src")
   public static void setImageDrawable(
-      @NonNull ImageView imageView,
-      @DrawableRes int drawableResourceId
+    @NonNull ImageView imageView,
+    @DrawableRes int drawableResourceId
   ) {
     imageView.setImageResource(drawableResourceId);
   }
@@ -51,8 +51,8 @@ public final class ImageViewBindingAdapters {
    */
   @BindingAdapter("android:src")
   public static void setImageDrawable(
-      @NonNull ImageView imageView,
-      ChapterPlayState chapterPlayState
+    @NonNull ImageView imageView,
+    ChapterPlayState chapterPlayState
   ) {
     switch (chapterPlayState) {
       case COMPLETED:
@@ -74,8 +74,8 @@ public final class ImageViewBindingAdapters {
    */
   @BindingAdapter("android:src")
   public static void setImageDrawable(
-      ImageView imageView,
-      LessonThumbnailGraphic thumbnailGraphic
+    ImageView imageView,
+    LessonThumbnailGraphic thumbnailGraphic
   ) {
     int drawableResourceId;
     switch (thumbnailGraphic) {
@@ -149,7 +149,7 @@ public final class ImageViewBindingAdapters {
    * Binding adapter for profile images. Used to either display a local image or custom
    * colored avatar.
    *
-   * @param imageView     view where the profile avatar will be loaded into
+   * @param imageView view where the profile avatar will be loaded into
    * @param profileAvatar represents either a colorId or local image uri
    */
   @BindingAdapter("profile:src")
