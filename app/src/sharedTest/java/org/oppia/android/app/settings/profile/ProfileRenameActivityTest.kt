@@ -22,7 +22,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.android.material.textfield.TextInputLayout
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -31,6 +33,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -102,6 +105,13 @@ class ProfileRenameActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
+  @get:Rule
+  val activityTestRule: ActivityTestRule<ProfileRenameActivity> = ActivityTestRule(
+    ProfileRenameActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
+
   @Before
   fun setUp() {
     Intents.init()
@@ -116,6 +126,21 @@ class ProfileRenameActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testProfileRenameActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(
+      ProfileRenameActivity.createProfileRenameActivity(
+        context = this.context.applicationContext,
+        profileId = 1
+      )
+    )
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.profile_rename_activity_title))
   }
 
   @Test
