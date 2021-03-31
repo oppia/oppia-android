@@ -220,6 +220,7 @@
   <string name="save">Save</string>
   <string name="admin_pin_activity_title">Authorise to add profiles</string>
   <!-- AddProfileActivity -->
+  <string name="add_profile_activity_label">Add Profile</string>
   <string name="add_profile_title">Add Profile</string>
   <string name="add_profile_input_name">Name*</string>
   <string name="add_profile_input_pin">3-Digit PIN*</string>
