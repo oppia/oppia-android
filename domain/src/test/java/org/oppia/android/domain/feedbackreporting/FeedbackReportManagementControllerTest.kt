@@ -318,7 +318,7 @@ class FeedbackReportManagementControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class, TestNetworkModule::class,
-      FakeOppiaClockModule::class
+      FakeOppiaClockModule::class, FeedbackReportingModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

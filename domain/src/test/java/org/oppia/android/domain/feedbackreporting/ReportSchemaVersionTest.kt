@@ -68,7 +68,6 @@ class ReportSchemaVersionTest {
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
-
       fun build(): TestApplicationComponent
     }
 
