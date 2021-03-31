@@ -79,7 +79,7 @@ class RevisionCardActivityTest {
 
   private val internalProfileId = 0
 
-  private val subTopicId = 1
+  private val subtopicId = 1
 
   @Before
   fun setUp() {
@@ -92,7 +92,7 @@ class RevisionCardActivityTest {
       createRevisionCardActivityIntent(
         internalProfileId = internalProfileId,
         topicId = FRACTIONS_TOPIC_ID,
-        subTopicId = subTopicId
+        subtopicId = subtopicId
       )
     )
     val title = activityTestRule.activity.title
@@ -109,18 +109,16 @@ class RevisionCardActivityTest {
   private fun createRevisionCardActivityIntent(
     internalProfileId: Int,
     topicId: String,
-    subTopicId: Int
+    subtopicId: Int
   ): Intent {
     return RevisionCardActivity.createRevisionCardActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
       topicId,
-      subTopicId
+      subtopicId
     )
   }
 
-  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
