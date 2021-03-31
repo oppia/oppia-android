@@ -12,8 +12,12 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingAppContext
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingDeviceContext
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingEntryPoint
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingSystemContext
+import org.oppia.android.data.backends.gae.model.GaeUserSuppliedFeedback
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -22,8 +26,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Test for [ReportSchemaVersion] that validates the proper schema version is passed in feedback
- * report network requests.
+ * Test for [ReportSchemaVersion] that validates the proper schema version is sent in feedback
+ * report with the expected data.
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -37,6 +41,7 @@ class ReportSchemaVersionTest {
   // feedback report format is changed.
   private val latestSchemaVersion = 1
 
+  // The expected data can included in V1 of the report.
   private val gaeFeedbackReportParameterNamesV1 = listOf(
     "schemaVersion",
     "reportSubmissionTimestampSec",
@@ -44,6 +49,29 @@ class ReportSchemaVersionTest {
     "systemContext",
     "deviceContext",
     "appContext"
+  )
+  private val gaeUserSuppliedFeedbackParameterNamesV1 = listOf(
+    "reportType", "category", "userFeedbackSelectedItems", "userFeedbackOtherTextInput"
+  )
+  private val gaeFeedbackReportingSystemContextParameterNamesV1 = listOf(
+    "packageVersionName", "packageVersionCode", "countryLocaleCode", "languageLocaleCode"
+  )
+  private val gaeFeedbackReportingDeviceContextParameterNamesV1 = listOf(
+    "deviceMode,", "sdkVersion", "buildFingerprint", "networkType"
+  )
+  private val gaeFeedbackReportingAppContextParameterNamesV1 = listOf(
+    "entryPoint",
+    "textSize",
+    "textLanguageCode",
+    "audioLanguageCode",
+    "downloadAndUpdateOnlyOnWifi",
+    "automaticallyUpdateTopics",
+    "isAdmin",
+    "eventLogs",
+    "logcatLogs"
+  )
+  private val gaeFeedbackReportingEntryPointParameterNamesV1 = listOf(
+    "entryPointName", "topicId", "storyId", "explorationId", "subtopicId"
   )
 
   @Before
@@ -57,7 +85,7 @@ class ReportSchemaVersionTest {
   }
 
   @Test
-  fun testSchemaVersion_forCurrentSchemaVersion_hasExpectedFeedbackReportMembers() {
+  fun testSchemaVersion_currentReportSchemaVersion_hasExpectedFeedbackReportMembers() {
     val gaeFeedbackReportClassMembers = GaeFeedbackReport::class.members
     val feedbackReportFields = gaeFeedbackReportClassMembers.map { it.name }
     gaeFeedbackReportParameterNamesV1.forEach {
@@ -66,26 +94,63 @@ class ReportSchemaVersionTest {
   }
 
   @Test
-  fun testSchemaVersion_forCurrentSchemaVersion_hasExpectedUserSuppliedFeedbackMembers() {
-    // For report schema V1, the information in the GaeUserSuppliedFeedback should include:
-    //      a user-selected report-type
-    //      a report category
-    //      a list of checkbox options a user can select
-    //      a short open-text input
-    // SystemContext: the package version name of this Oppia instance, the package version code of
-    //                this Oppia instance, the country locale code set on the user's device, and the
-    //                language locale code set on the user's device.
-    // DeviceContext: the user's device model, the Android SDK version on the user's device, the
-    //                build fingerprint of the device, and the network type when the reports was
-    //                submitted by the user.
-    // ReportContext: the entry point to feedback reporting used by the learner, the text size of
-    //                the  app as set in the Oppia settings, the text language code set in the
-    //                Oppia settings, the audio language code set in the Oppia settings, whether
-    //                the learner can download and update topics only on wifi, whether the app can
-    //                can automatically update topics, whether the account sending the report is
-    //                a profile admin, a list of the event logs collected in the app, and a list of
-    //                the logcat logs collected in the app.
+  fun testSchemaVersion_currentReportSchemaVersion_hasExpectedUserSuppliedFeedbackMembers() {
+    val gaeUserSuppliedFeedbackClassMembers = GaeUserSuppliedFeedback::class.members
+    val userSuppliedFeedbackFields = gaeUserSuppliedFeedbackClassMembers.map { it.name }
 
+    gaeUserSuppliedFeedbackParameterNamesV1.forEach {
+      assertThat(userSuppliedFeedbackFields.contains(it)).isTrue()
+    }
+  }
+
+  @Test
+  fun testSchemaVersion_currentReportSchemaVersion_hasExpectedSystemContextMembers() {
+    val gaeFeedbackReportingSystemContextClassMembers =
+      GaeFeedbackReportingSystemContext::class.members
+    val feedbackReportingSystemContextFields = gaeFeedbackReportingSystemContextClassMembers.map {
+      it.name
+    }
+
+    gaeFeedbackReportingSystemContextParameterNamesV1.forEach {
+      assertThat(feedbackReportingSystemContextFields.contains(it)).isTrue()
+    }
+  }
+
+  @Test
+  fun testSchemaVersion_currentReportSchemaVersion_hasExpectedDeviceContextMembers() {
+    val gaeFeedbackReportingDeviceContextClassMembers =
+      GaeFeedbackReportingDeviceContext::class.members
+    val feedbackReportingDeviceContextFields = gaeFeedbackReportingDeviceContextClassMembers.map {
+      it.name
+    }
+
+    gaeFeedbackReportingDeviceContextParameterNamesV1.forEach {
+      assertThat(feedbackReportingDeviceContextFields.contains(it)).isTrue()
+    }
+  }
+
+  @Test
+  fun testSchemaVersion_currentReportSchemaVersion_hasExpectedAppContextMembers() {
+    val gaeFeedbackReportingAppContextClassMembers = GaeFeedbackReportingAppContext::class.members
+    val feedbackReportingAppContextFields = gaeFeedbackReportingAppContextClassMembers.map {
+      it.name
+    }
+
+    gaeFeedbackReportingAppContextParameterNamesV1.forEach {
+      assertThat(feedbackReportingAppContextFields.contains(it)).isTrue()
+    }
+  }
+
+  @Test
+  fun testSchemaVersion_currentReportSchemaVersion_hasExpectedEntryPointMembers() {
+    val gaeFeedbackReportingEntryPointClassMembers = GaeFeedbackReportingEntryPoint::class.members
+    val feedbackReportingEntryPointFields = gaeFeedbackReportingEntryPointClassMembers.map {
+      it.name
+    }
+
+    gaeFeedbackReportingEntryPointParameterNamesV1.forEach {
+      assertThat(feedbackReportingEntryPointFields.contains(it)).isTrue()
+    }
   }
 
   private fun setUpTestApplicationComponent() {
