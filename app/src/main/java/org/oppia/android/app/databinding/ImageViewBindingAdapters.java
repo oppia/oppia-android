@@ -59,6 +59,7 @@ public final class ImageViewBindingAdapters {
         setImageDrawable(imageView, R.drawable.circular_solid_color_primary_32dp);
         break;
       case NOT_STARTED:
+      case STARTED_NOT_COMPLETED:
         setImageDrawable(imageView, R.drawable.circular_stroke_2dp_color_primary_32dp);
         break;
       default:
