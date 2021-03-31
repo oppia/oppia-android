@@ -24,6 +24,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.reflect.KCallable
 
 /**
  * Test for [ReportSchemaVersion] that validates the proper schema version is sent in feedback
@@ -57,7 +58,7 @@ class ReportSchemaVersionTest {
     "packageVersionName", "packageVersionCode", "countryLocaleCode", "languageLocaleCode"
   )
   private val gaeFeedbackReportingDeviceContextParameterNamesV1 = listOf(
-    "deviceMode,", "sdkVersion", "buildFingerprint", "networkType"
+    "deviceModel", "sdkVersion", "buildFingerprint", "networkType"
   )
   private val gaeFeedbackReportingAppContextParameterNamesV1 = listOf(
     "entryPoint",
@@ -86,71 +87,58 @@ class ReportSchemaVersionTest {
 
   @Test
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedFeedbackReportMembers() {
-    val gaeFeedbackReportClassMembers = GaeFeedbackReport::class.members
-    val feedbackReportFields = gaeFeedbackReportClassMembers.map { it.name }
-    gaeFeedbackReportParameterNamesV1.forEach {
-      assertThat(feedbackReportFields.contains(it)).isTrue()
-    }
+    verifyDataFields(
+      dataClassMembers = GaeFeedbackReport::class.members,
+      expectedFields = gaeFeedbackReportParameterNamesV1
+    )
   }
 
   @Test
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedUserSuppliedFeedbackMembers() {
-    val gaeUserSuppliedFeedbackClassMembers = GaeUserSuppliedFeedback::class.members
-    val userSuppliedFeedbackFields = gaeUserSuppliedFeedbackClassMembers.map { it.name }
-
-    gaeUserSuppliedFeedbackParameterNamesV1.forEach {
-      assertThat(userSuppliedFeedbackFields.contains(it)).isTrue()
-    }
+    verifyDataFields(
+      dataClassMembers = GaeUserSuppliedFeedback::class.members,
+      expectedFields = gaeUserSuppliedFeedbackParameterNamesV1
+    )
   }
 
   @Test
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedSystemContextMembers() {
-    val gaeFeedbackReportingSystemContextClassMembers =
-      GaeFeedbackReportingSystemContext::class.members
-    val feedbackReportingSystemContextFields = gaeFeedbackReportingSystemContextClassMembers.map {
-      it.name
-    }
-
-    gaeFeedbackReportingSystemContextParameterNamesV1.forEach {
-      assertThat(feedbackReportingSystemContextFields.contains(it)).isTrue()
-    }
+    verifyDataFields(
+      dataClassMembers = GaeFeedbackReportingSystemContext::class.members,
+      expectedFields = gaeFeedbackReportingSystemContextParameterNamesV1
+    )
   }
 
   @Test
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedDeviceContextMembers() {
-    val gaeFeedbackReportingDeviceContextClassMembers =
-      GaeFeedbackReportingDeviceContext::class.members
-    val feedbackReportingDeviceContextFields = gaeFeedbackReportingDeviceContextClassMembers.map {
-      it.name
-    }
-
-    gaeFeedbackReportingDeviceContextParameterNamesV1.forEach {
-      assertThat(feedbackReportingDeviceContextFields.contains(it)).isTrue()
-    }
+    verifyDataFields(
+      dataClassMembers = GaeFeedbackReportingDeviceContext::class.members,
+      expectedFields = gaeFeedbackReportingDeviceContextParameterNamesV1
+    )
   }
 
   @Test
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedAppContextMembers() {
-    val gaeFeedbackReportingAppContextClassMembers = GaeFeedbackReportingAppContext::class.members
-    val feedbackReportingAppContextFields = gaeFeedbackReportingAppContextClassMembers.map {
-      it.name
-    }
-
-    gaeFeedbackReportingAppContextParameterNamesV1.forEach {
-      assertThat(feedbackReportingAppContextFields.contains(it)).isTrue()
-    }
+    verifyDataFields(
+      dataClassMembers = GaeFeedbackReportingAppContext::class.members,
+      expectedFields = gaeFeedbackReportingAppContextParameterNamesV1
+    )
   }
 
   @Test
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedEntryPointMembers() {
-    val gaeFeedbackReportingEntryPointClassMembers = GaeFeedbackReportingEntryPoint::class.members
-    val feedbackReportingEntryPointFields = gaeFeedbackReportingEntryPointClassMembers.map {
-      it.name
-    }
+    verifyDataFields(
+      dataClassMembers = GaeFeedbackReportingEntryPoint::class.members,
+      expectedFields = gaeFeedbackReportingEntryPointParameterNamesV1
+    )
+  }
 
-    gaeFeedbackReportingEntryPointParameterNamesV1.forEach {
-      assertThat(feedbackReportingEntryPointFields.contains(it)).isTrue()
-    }
+  private fun verifyDataFields(
+    dataClassMembers: Collection<KCallable<*>>,
+    expectedFields: List<String>
+  ) {
+    val dataClassFields = dataClassMembers.map { it.name }
+    expectedFields.forEach { assertThat(dataClassFields.contains(it)).isTrue() }
   }
 
   private fun setUpTestApplicationComponent() {
