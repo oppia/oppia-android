@@ -3,7 +3,6 @@ package org.oppia.android.domain.feedbackreporting
 import dagger.Module
 import dagger.Provides
 import javax.inject.Qualifier
-import javax.inject.Singleton
 
 /** Qualifier for the current report schema supported by the Android app. */
 @Qualifier
