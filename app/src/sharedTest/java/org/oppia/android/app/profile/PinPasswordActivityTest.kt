@@ -15,7 +15,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import com.google.common.truth.Truth.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -27,6 +26,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.chaos.view.PinView
 import com.google.android.material.textfield.TextInputLayout
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -201,7 +201,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun  testPinPasswordActivity_hasCorrectActivityLabel() {
+  fun testPinPasswordActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
