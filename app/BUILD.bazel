@@ -635,6 +635,7 @@ kt_android_library(
         "//third_party:javax_annotation_javax_annotation-api_jar",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
     ],
 )
 

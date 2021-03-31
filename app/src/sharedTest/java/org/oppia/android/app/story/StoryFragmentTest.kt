@@ -4,17 +4,24 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.text.Spannable
+import android.text.style.ClickableSpan
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -26,6 +33,9 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -51,6 +61,7 @@ import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -359,36 +370,6 @@ class StoryFragmentTest {
   }
 
   @Test
-  fun testStoryFragment_configChange_chapterMissingPrerequisiteThumbnailIsBlurred() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.story_chapter_list))).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
-      )
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.story_chapter_list,
-          position = 2,
-          targetViewId = R.id.chapter_thumbnail
-        )
-      ).check { view, noViewFoundException ->
-        var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
-          R.id.chapter_thumbnail
-        )
-        verify(lessonThumbnailImageView.imageLoader, atLeastOnce()).loadDrawable(
-          imageDrawableResId = anyInt(),
-          target = anyOrNull(),
-          transformations = capture(listCaptor)
-        )
-        assertThat(listCaptor.value).contains(ImageTransformation.BLUR)
-      }
-    }
-  }
-
-  @Test
   fun testStoryFragment_chapterMissingPrerequisiteIsShownCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -430,6 +411,73 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText("Complete Chapter 1: What is a Fraction? to unlock this chapter.")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_clickPrerequisiteChapter_prerequisiteChapterCardIsDisplayed() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_summary
+        )
+      ).perform(
+        openClickableSpan(
+          "Chapter 1: What is a Fraction?"
+        )
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1
+        )
+      ).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_configChange_clickPrerequisiteChapter_prerequisiteChapterCardIsDisplayed() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_summary
+        )
+      ).perform(
+        openClickableSpan(
+          "Chapter 1: What is a Fraction?"
+        )
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1
+        )
+      ).check(
+        matches(
+          isDisplayed()
         )
       )
     }
@@ -487,6 +535,56 @@ class StoryFragmentTest {
         )
       )
     }
+  }
+
+  /**
+   * Returns an action that finds a TextView containing the specific text, finds a ClickableSpan
+   * within that text view that contains the specified text, then clicks it. The need for this was
+   * inspired by https://stackoverflow.com/q/38314077.
+   */
+  @Suppress("SameParameterValue")
+  private fun openClickableSpan(text: String): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String = "openClickableSpan"
+
+      override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
+
+      override fun perform(uiController: UiController?, view: View?) {
+        // The view shouldn't be null if the constraints are being met.
+        (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
+      }
+    }
+  }
+
+  /**
+   * Returns a matcher that matches against text views with clickable spans that contain the
+   * specified text.
+   */
+  private fun hasClickableSpanWithText(text: String): Matcher<View> {
+    return object : TypeSafeMatcher<View>(TextView::class.java) {
+      override fun describeTo(description: Description?) {
+        description?.appendText("has ClickableSpan with text")?.appendValue(text)
+      }
+
+      override fun matchesSafely(item: View?): Boolean {
+        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
+      }
+    }
+  }
+
+  private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
+    val viewText = text
+    return (viewText as Spannable).getSpans(
+      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
+    ).map {
+      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+    }
+  }
+
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(
+    text: String
+  ): ClickableSpan? {
+    return find { text in it.first }?.second
   }
 
   private fun createFractionsStoryActivityIntent(): Intent {
