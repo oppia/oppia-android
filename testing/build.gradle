@@ -57,7 +57,7 @@ dependencies {
       'com.google.truth:truth:0.43',
       'nl.dionsegijn:konfetti:1.2.5',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
-      'org.robolectric:robolectric:4.3',
+      'org.robolectric:robolectric:4.4',
       'org.jetbrains.kotlin:kotlin-reflect:$kotlin_version',
       'org.mockito:mockito-core:2.19.0',
       project(":domain"),
