@@ -5,7 +5,7 @@ dependency elsewhere in the app.
 
 Note that dependencies can only be represented once in the list--that's by design to protect against
 one-version violations. See https://docs.bazel.build/versions/master/best-practices.html#versioning
-for more information on mutli-version violations.
+for more information on multi-version violations.
 
 Note that each of the dependencies will have all ':'s & '.'s replaced with underscores. For example,
 the dependency "android.arch.core:core-testing": "1.1.1" will be referencable with the following:
@@ -53,6 +53,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.firebase:firebase-crashlytics": "17.1.1",
     "com.google.gms:google-services": "4.3.3",
     "com.google.guava:guava": "28.1-android",
+    "com.google.protobuf:protobuf-lite": "3.0.0",
     "com.squareup.retrofit2:converter-gson": "2.5.0",
     "com.squareup.retrofit2:retrofit": "2.9.0",
     "de.hdodenhof:circleimageview": "3.0.1",
