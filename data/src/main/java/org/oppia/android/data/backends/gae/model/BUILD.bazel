@@ -19,6 +19,7 @@ kt_android_library(
         "GaeFeedbackReport.kt",
         "GaeFeedbackReportingAppContext.kt",
         "GaeFeedbackReportingDeviceContext.kt",
+        "GaeFeedbackReportingEntryPoint.kt",
         "GaeFeedbackReportingSystemContext.kt",
         "GaeHint.kt",
         "GaeInteractionInstance.kt",
