@@ -312,7 +312,7 @@ class ProfileEditActivityTest {
         profileId = 1
       )
     ).use {
-      onView(withId(R.id.profile_delete_button)).perform(click())
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_dialog_message))
