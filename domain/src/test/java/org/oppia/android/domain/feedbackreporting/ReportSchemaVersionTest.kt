@@ -12,6 +12,8 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.FeedbackReport
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -31,6 +33,19 @@ class ReportSchemaVersionTest {
   @field:[Inject ReportSchemaVersion]
   var reportSchemaVersion: Int = 0
 
+  // The latest schema version of the feedback report used. This should be updated each time the
+  // feedback report format is changed.
+  private val latestSchemaVersion = 1
+
+  private val gaeFeedbackReportParameterNamesV1 = listOf(
+    "schemaVersion",
+    "reportSubmissionTimestampSec",
+    "userSuppliedFeedback",
+    "systemContext",
+    "deviceContext",
+    "appContext"
+  )
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -38,15 +53,25 @@ class ReportSchemaVersionTest {
 
   @Test
   fun testSchemaVersion_providerMatchesExpectedSchemaVersion() {
-    val latestSchemaVersion = 1
     assertThat(reportSchemaVersion).isEqualTo(latestSchemaVersion)
   }
 
   @Test
-  fun testSchemaVersion_forCurrentSchemaVersion_reportCollectsExpectedData() {
-    // For report schema V1, the information collected includes the following:
-    // UserSuppliedFeedback: a user-selected report-type, a report category, a list of
-    //                       checkbox options a user can select, and a short open-text input.
+  fun testSchemaVersion_forCurrentSchemaVersion_hasExpectedFeedbackReportMembers() {
+    val gaeFeedbackReportClassMembers = GaeFeedbackReport::class.members
+    val feedbackReportFields = gaeFeedbackReportClassMembers.map { it.name }
+    gaeFeedbackReportParameterNamesV1.forEach {
+      assertThat(feedbackReportFields.contains(it)).isTrue()
+    }
+  }
+
+  @Test
+  fun testSchemaVersion_forCurrentSchemaVersion_hasExpectedUserSuppliedFeedbackMembers() {
+    // For report schema V1, the information in the GaeUserSuppliedFeedback should include:
+    //      a user-selected report-type
+    //      a report category
+    //      a list of checkbox options a user can select
+    //      a short open-text input
     // SystemContext: the package version name of this Oppia instance, the package version code of
     //                this Oppia instance, the country locale code set on the user's device, and the
     //                language locale code set on the user's device.
@@ -60,6 +85,7 @@ class ReportSchemaVersionTest {
     //                can automatically update topics, whether the account sending the report is
     //                a profile admin, a list of the event logs collected in the app, and a list of
     //                the logcat logs collected in the app.
+
   }
 
   private fun setUpTestApplicationComponent() {
