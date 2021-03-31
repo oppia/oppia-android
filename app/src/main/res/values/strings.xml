@@ -6,6 +6,7 @@
   <string name="menu_options">Options</string>
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
+  <string name="help_activity_title">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="administrator_controls">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
@@ -93,7 +94,6 @@
   <string name="status_completed">Completed</string>
   <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>
   <string name="play_pause_audio">Play/Pause Audio</string>
-  <string name="help">Help</string>
   <string name="preferences">Preferences</string>
   <string name="profile_progress_activity_title">Profile Progress Page</string>
   <string name="search">Search</string>
