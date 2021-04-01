@@ -116,14 +116,14 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
       )
 
       verify(onClickableAreaClickedListener)
         .onClickableAreaTouched(
           capture(regionClickedEvent)
         )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 3"))
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3")) // ktlint-disable max-line-length
     }
   }
 
@@ -137,7 +137,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
@@ -145,7 +145,7 @@ class ImageRegionSelectionInteractionViewTest {
         )
 
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.7f, 0.3f)
+        clickPoint(pointX = 0.7f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 2"))))
         .check(
@@ -160,7 +160,7 @@ class ImageRegionSelectionInteractionViewTest {
           regionClickedEvent
         )
       )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 2"))
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2")) // ktlint-disable max-line-length
     }
   }
 
@@ -174,7 +174,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.0f, 0.0f)
+        clickPoint(pointX = 0.0f, pointY = 0.0f)
       )
       onView(withId(R.id.default_selected_region)).check(
         matches(isDisplayed())
@@ -196,7 +196,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
@@ -204,7 +204,7 @@ class ImageRegionSelectionInteractionViewTest {
         )
 
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.7f, 0.3f)
+        clickPoint(pointX = 0.7f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 2"))))
         .check(
@@ -219,7 +219,7 @@ class ImageRegionSelectionInteractionViewTest {
           regionClickedEvent
         )
       )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 2"))
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2")) // ktlint-disable max-line-length
     }
   }
 
@@ -232,7 +232,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
@@ -243,7 +243,7 @@ class ImageRegionSelectionInteractionViewTest {
         .onClickableAreaTouched(
           capture(regionClickedEvent)
         )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 3"))
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3")) // ktlint-disable max-line-length
     }
   }
 
@@ -256,7 +256,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.0f, 0.0f)
+        clickPoint(pointX = 0.0f, pointY = 0.0f)
       )
       onView(withId(R.id.default_selected_region)).check(
         matches(not(isDisplayed()))
