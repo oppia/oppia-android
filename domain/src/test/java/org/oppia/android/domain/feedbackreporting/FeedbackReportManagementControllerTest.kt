@@ -64,10 +64,10 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-// Timestamp in ms for 3/2/21, 12:38pm GMT.
+// Timestamp in sec for 3/2/21, 12:38pm GMT.
 private const val EARLIER_TIMESTAMP = 1614688684
 
-// Timestamp in ms for 3/14/21, 2:24am GMT.
+// Timestamp in sec for 3/14/21, 2:24am GMT.
 private const val LATER_TIMESTAMP = 1615688684
 
 /** Tests for [FeedbackReportManagementController]. */
@@ -240,7 +240,7 @@ class FeedbackReportManagementControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  // Creates a fake logcat file in this directory so that the controller being testedhas a file to
+  // Creates a fake logcat file in this directory so that the controller being tested has a file to
   // read when recording the logcat events.
   private fun setUpFakeLogcatFile() {
     val logFile = File(context.filesDir, "oppia_app.log")
@@ -282,7 +282,6 @@ class FeedbackReportManagementControllerTest {
     }
   }
 
-  // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides

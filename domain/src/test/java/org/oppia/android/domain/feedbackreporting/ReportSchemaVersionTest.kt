@@ -42,7 +42,7 @@ class ReportSchemaVersionTest {
   // feedback report format is changed.
   private val latestSchemaVersion = 1
 
-  // The expected data can included in V1 of the report.
+  // The expected data that can be included in V1 of the report.
   private val gaeFeedbackReportParameterNamesV1 = listOf(
     "schemaVersion",
     "reportSubmissionTimestampSec",
@@ -51,15 +51,19 @@ class ReportSchemaVersionTest {
     "deviceContext",
     "appContext"
   )
+
   private val gaeUserSuppliedFeedbackParameterNamesV1 = listOf(
     "reportType", "category", "userFeedbackSelectedItems", "userFeedbackOtherTextInput"
   )
+
   private val gaeFeedbackReportingSystemContextParameterNamesV1 = listOf(
     "packageVersionName", "packageVersionCode", "countryLocaleCode", "languageLocaleCode"
   )
+
   private val gaeFeedbackReportingDeviceContextParameterNamesV1 = listOf(
     "deviceModel", "sdkVersion", "buildFingerprint", "networkType"
   )
+
   private val gaeFeedbackReportingAppContextParameterNamesV1 = listOf(
     "entryPoint",
     "textSize",
@@ -71,6 +75,7 @@ class ReportSchemaVersionTest {
     "eventLogs",
     "logcatLogs"
   )
+
   private val gaeFeedbackReportingEntryPointParameterNamesV1 = listOf(
     "entryPointName", "topicId", "storyId", "explorationId", "subtopicId"
   )

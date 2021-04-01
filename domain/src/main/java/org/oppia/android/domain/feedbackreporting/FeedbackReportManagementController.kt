@@ -307,10 +307,10 @@ class FeedbackReportManagementController @Inject constructor(
         subtopicId = revisionCard.subtopicId
       }
       EntryPointCase.NAVIGATION_DRAWER -> {
-        // If entry point is not an exploration player or revision card, leave story values as null
+        // If entry point is not an exploration player or revision card, leave story values as null.
       }
       EntryPointCase.CRASH_DIALOG -> {
-        // If entry point is not an exploration player or revision card, leave story values as null
+        // If entry point is not an exploration player or revision card, leave story values as null.
       }
       else -> throw IllegalArgumentException(
         "Encountered unexpected entry point: ${appContext.entryPointCase.name}"
