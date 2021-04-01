@@ -56,7 +56,7 @@ class RemoteAuthNetworkInterceptorTest {
 
     val newRequest = networkInterceptor.addAuthHeaders(request)
 
-    assertThat(newRequest.header("api_key")).isNotNull()
+    assertThat(newRequest.header("api_key")).isEqualTo("test_api_key")
     assertThat(newRequest.header("app_package_name")).isNotNull()
     assertThat(newRequest.header("app_version_name")).isNotNull()
     assertThat(newRequest.header("app_version_code")).isNotNull()
@@ -77,7 +77,7 @@ class RemoteAuthNetworkInterceptorTest {
 
     val newRequest = networkInterceptor.addAuthHeaders(request)
 
-    assertThat(newRequest.header("api_key")).isNotEqualTo("wrong_api_key")
+    assertThat(newRequest.header("api_key")).isEqualTo("test_api_key")
     assertThat(newRequest.header("app_package_name"))
       .isNotEqualTo("wrong_package_name")
     assertThat(newRequest.header("app_version_name"))
@@ -124,7 +124,7 @@ class RemoteAuthNetworkInterceptorTest {
     @Provides
     @Singleton
     @NetworkApiKey
-    fun provideNetworkApiKey(): String = ""
+    fun provideNetworkApiKey(): String = "test_api_key"
   }
 
   @Module

@@ -20,8 +20,9 @@ class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
   @Inject
   lateinit var context: Context
 
-  @Inject
-  @NetworkApiKey lateinit var networkApiKey: String
+  @JvmField
+  @field:[Inject NetworkApiKey]
+  var networkApiKey: String = ""
 
   @Throws(IOException::class)
   override fun intercept(chain: Interceptor.Chain): Response {
