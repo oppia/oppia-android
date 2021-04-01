@@ -154,5 +154,5 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: oppia-bazel-apk
+          name: oppia-bazel.apk
           path: /home/runner/work/oppia-android/oppia-android/oppia.apk
