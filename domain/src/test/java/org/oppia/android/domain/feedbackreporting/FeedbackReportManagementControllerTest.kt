@@ -41,7 +41,6 @@ import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.network.MockFeedbackReportingService
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncResult
@@ -61,7 +60,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 import java.io.File
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton

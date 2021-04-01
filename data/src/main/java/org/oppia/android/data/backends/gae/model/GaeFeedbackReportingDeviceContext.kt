@@ -9,7 +9,7 @@ import com.squareup.moshi.JsonClass
 data class GaeFeedbackReportingDeviceContext(
 
   /** The model code of the user's device. */
-  @Json(name = "device_model") val deviceModel: String,
+  @Json(name = "android_device_model") val deviceModel: String,
   /** The SDK version code on the user's device. */
   @Json(name = "android_sdk_version") val sdkVersion: Int,
   /** The unique fingerprint ID of the specific device build. */
