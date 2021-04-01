@@ -19,7 +19,7 @@ jobs:
         os: [ubuntu-18.04]
     env:
       ENABLE_CACHING: false
-      CACHE_DIRECTORY: $HOME/.bazel_cache
+      CACHE_DIRECTORY: ~/.bazel_cache
     steps:
       - uses: actions/checkout@v2
 
@@ -86,7 +86,11 @@ jobs:
 
       - name: Configure Bazel to use a local cache
         run: |
-          echo "build --disk_cache=$BAZEL_CACHE_DIR" >> $HOME/.bazelrc
+          # See https://stackoverflow.com/a/27485157 for reference.
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
 
