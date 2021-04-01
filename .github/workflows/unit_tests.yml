@@ -79,6 +79,15 @@ jobs:
           echo "Java home: $JAVA_HOME"
           $JAVA_HOME/bin/java -version
 
+      - name: Compute test caching bucket
+        env:
+          TEST_TARGET: ${{ matrix.test-target }}
+        run: |
+          echo "Test target: $TEST_TARGET"
+          TEST_CATEGORY=$(echo "$TEST_TARGET" | grep -oP 'org/oppia/android/(.+?)/' | cut -f 4 -d "/")
+          echo "Test category: $TEST_CATEGORY"
+          echo "::set-env name=TEST_CACHING_BUCKET::$TEST_CATEGORY"
+
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
       # https://github.com/actions/cache/issues/109#issuecomment-558771281. Note that these work
@@ -89,8 +98,11 @@ jobs:
         id: cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
-          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-${{ github.sha }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-${{ env.TEST_CACHING_BUCKET }}-${{ github.sha }}
           restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-${{ env.TEST_CACHING_BUCKET }}-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-
             ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
 
       # This check is needed to ensure that Bazel's unbounded cache growth doesn't result in a
