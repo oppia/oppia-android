@@ -5,7 +5,7 @@ dependency elsewhere in the app.
 
 Note that dependencies can only be represented once in the list--that's by design to protect against
 one-version violations. See https://docs.bazel.build/versions/master/best-practices.html#versioning
-for more information on mutli-version violations.
+for more information on multi-version violations.
 
 Note that each of the dependencies will have all ':'s & '.'s replaced with underscores. For example,
 the dependency "android.arch.core:core-testing": "1.1.1" will be referencable with the following:
@@ -53,6 +53,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.firebase:firebase-crashlytics": "17.1.1",
     "com.google.gms:google-services": "4.3.3",
     "com.google.guava:guava": "28.1-android",
+    "com.google.protobuf:protobuf-lite": "3.0.0",
     "com.squareup.moshi:moshi-kotlin": "1.11.0",
     "com.squareup.moshi:moshi-kotlin-codegen": "1.11.0",
     "com.squareup.okhttp3:okhttp": "4.1.0",
@@ -90,8 +91,8 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.2.2",
     "org.mockito:mockito-core": "2.19.0",
-    "org.robolectric:annotations": "4.3",
-    "org.robolectric:robolectric": "4.3",
+    "org.robolectric:annotations": "4.4",
+    "org.robolectric:robolectric": "4.4",
 }
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
