@@ -183,11 +183,52 @@ class TopicListController @Inject constructor(
     return TopicSummary.newBuilder()
       .setTopicId(topicId)
       .setName(jsonObject.getString("topic_name"))
+      .setDiskSizeBytes(computeTopicSizeBytes(getAssetFileNameList(topicId)))
       .setVersion(jsonObject.optInt("version"))
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(createTopicThumbnail(jsonObject))
       .setTopicPlayAvailability(topicPlayAvailability)
       .build()
+  }
+
+  private fun computeTopicSizeBytes(constituentFiles: List<String>): Long {
+    // TODO(#169): Compute this based on protos & the combined topic package.
+    // TODO(#386): Incorporate audio & image files in this computation.
+    return constituentFiles.map(jsonAssetRetriever::getAssetSize).map(Int::toLong)
+      .reduceRight(Long::plus)
+  }
+
+  private fun getAssetFileNameList(topicId: String): List<String> {
+    val assetFileNameList = mutableListOf<String>()
+    assetFileNameList.add("questions.json")
+    assetFileNameList.add("skills.json")
+    assetFileNameList.add("$topicId.json")
+
+    val topicJsonObject = jsonAssetRetriever
+      .loadJsonFromAsset("$topicId.json")!!
+    val storySummaryJsonArray = topicJsonObject
+      .optJSONArray("canonical_story_dicts")
+    for (i in 0 until storySummaryJsonArray.length()) {
+      val storySummaryJsonObject = storySummaryJsonArray.optJSONObject(i)
+      val storyId = storySummaryJsonObject.optString("id")
+      assetFileNameList.add("$storyId.json")
+
+      val storyJsonObject = jsonAssetRetriever
+        .loadJsonFromAsset("$storyId.json")!!
+      val storyNodeJsonArray = storyJsonObject.optJSONArray("story_nodes")
+      for (j in 0 until storyNodeJsonArray.length()) {
+        val storyNodeJsonObject = storyNodeJsonArray.optJSONObject(j)
+        val explorationId = storyNodeJsonObject.optString("exploration_id")
+        assetFileNameList.add("$explorationId.json")
+      }
+    }
+    val subtopicJsonArray = topicJsonObject.optJSONArray("subtopics")
+    for (i in 0 until subtopicJsonArray.length()) {
+      val subtopicJsonObject = subtopicJsonArray.optJSONObject(i)
+      val subtopicId = subtopicJsonObject.optInt("id")
+      assetFileNameList.add(topicId + "_" + subtopicId + ".json")
+    }
+    return assetFileNameList
   }
 
   private fun createUpcomingTopicSummaryFromJson(

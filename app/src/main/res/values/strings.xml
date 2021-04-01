@@ -128,11 +128,6 @@
     description="The error message for ratio when there is 0 term in the ratio.">
     Ratios cannot have 0 as an element.
   </string>
-  <string name="unknown_size">Unknown size</string>
-  <string name="size_bytes">%d Bytes</string>
-  <string name="size_kb">%d KB</string>
-  <string name="size_mb">%d MB</string>
-  <string name="size_gb">%d GB</string>
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
   <string name="welcome_profile_name">%s!</string>
@@ -273,6 +268,9 @@
   <string name="tab_downloads">Downloads</string>
   <string name="tab_updates">Updates (2)</string>
   <string name="sort_by">Sort By</string>
+  <string name="download_topic_delete_dialog_message">Delete this topic from the device?</string>
+  <string name="download_topic_delete__dialog_cancel">Cancel</string>
+  <string name="download_topic_delete__dialog_delete">Delete</string>
   <!-- HomeActivityBackDialog -->
   <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
   <string name="home_activity_back_dialog_cancel">Cancel</string>

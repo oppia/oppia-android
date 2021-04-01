@@ -71,7 +71,8 @@
             android:layout_marginTop="16dp"
             android:layout_weight=".6"
             android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:onClick="@{(v) -> viewModel.onTopicItemClicked()}">
 
             <TextView
               android:id="@+id/story_name_text_view"
@@ -79,7 +80,7 @@
               android:layout_height="wrap_content"
               android:fontFamily="sans-serif-medium"
               android:paddingBottom="4dp"
-              android:text="@{viewModel.name}"
+              android:text="@{viewModel.topicSummary.name}"
               android:textColor="@color/oppiaPrimaryText"
               android:textSize="18sp" />
 
@@ -88,7 +89,7 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:fontFamily="sans-serif"
-              android:text="@{@plurals/story_count(viewModel.totalChapterCount, viewModel.totalChapterCount)}"
+              android:text="@{@plurals/story_count(viewModel.topicSummary.totalChapterCount, viewModel.topicSummary.totalChapterCount)}"
               android:textColor="@color/oppiaPrimaryText"
               android:textSize="16sp" />
 
@@ -98,7 +99,7 @@
               android:layout_height="wrap_content"
               android:layout_marginBottom="16dp"
               android:fontFamily="sans-serif"
-              android:text="54 MB"
+              android:text="@{viewModel.topicSize}"
               android:textColor="@color/oppiaPrimaryText"
               android:textSize="14sp" />
           </LinearLayout>
@@ -138,6 +139,7 @@
             android:background="@drawable/divider" />
 
           <ImageView
+            android:id="@+id/delete_image_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"

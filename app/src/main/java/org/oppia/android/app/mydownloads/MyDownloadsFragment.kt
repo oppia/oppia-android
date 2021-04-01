@@ -23,6 +23,7 @@ class MyDownloadsFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return myDownloadsFragmentPresenter.handleCreateView(inflater, container)
+    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
+    return myDownloadsFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 }

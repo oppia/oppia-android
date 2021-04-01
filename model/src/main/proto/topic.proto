@@ -209,7 +209,7 @@ message PromotedStory {
   bool is_topic_learned = 10;
 }
 
-// A homescreen summary of a topic.
+// A home screen summary of a topic.
 message TopicSummary {
   // The ID of the topic.
   string topic_id = 1;
@@ -228,6 +228,9 @@ message TopicSummary {
 
   // Specifics about whether this topic is playable.
   TopicPlayAvailability topic_play_availability = 6;
+
+  // The number of on-disk bytes this topic consumes.
+  int64 disk_size_bytes = 7;
 }
 
 // Represents the play state of a single chapter.

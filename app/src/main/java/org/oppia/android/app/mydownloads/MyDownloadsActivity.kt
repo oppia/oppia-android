@@ -17,8 +17,8 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    myDownloadsActivityPresenter.handleOnCreate()
     internalProfileId = intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+    myDownloadsActivityPresenter.handleOnCreate(internalProfileId)
   }
 
   companion object {

@@ -15,13 +15,21 @@ import javax.inject.Inject
 /** The presenter for [MyDownloadsFragment]. */
 @FragmentScope
 class MyDownloadsFragmentPresenter @Inject constructor(private val fragment: Fragment) {
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+
+  private var internalProfileId: Int = -1
+
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int
+  ): View? {
     val binding = MyDownloadsFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
     binding.lifecycleOwner = fragment
+    this.internalProfileId = internalProfileId
     val tabLayout = binding
       .root
       .findViewById(
@@ -37,7 +45,7 @@ class MyDownloadsFragmentPresenter @Inject constructor(private val fragment: Fra
   }
 
   private fun setUpViewPager(tabLayout: TabLayout, viewPager2: ViewPager2) {
-    val adapter = MyDownloadsViewPagerAdapter(fragment)
+    val adapter = MyDownloadsViewPagerAdapter(fragment, internalProfileId)
     viewPager2.adapter = adapter
 
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->

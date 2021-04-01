@@ -16,6 +16,7 @@ import org.oppia.android.databinding.TopicInfoFragmentBinding
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.filesize.FileSizeUtil
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.HtmlParser
@@ -28,22 +29,13 @@ class TopicInfoFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<TopicInfoViewModel>,
   private val logger: ConsoleLogger,
   private val topicController: TopicController,
-  private val htmlParserFactory: HtmlParser.Factory,
-  @DefaultResourceBucketName private val resourceBucketName: String
+  @DefaultResourceBucketName private val resourceBucketName: String,
+  private val fileSizeUtil: FileSizeUtil
 ) {
   private lateinit var binding: TopicInfoFragmentBinding
   private val topicInfoViewModel = getTopicInfoViewModel()
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
-  private val htmlParser: HtmlParser by lazy {
-    htmlParserFactory
-      .create(
-        resourceBucketName,
-        /* entityType= */ "topic",
-        topicId,
-        /* imageCenterAlign= */ true
-      )
-  }
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -78,7 +70,9 @@ class TopicInfoFragmentPresenter @Inject constructor(
       Observer<Topic> { topic ->
         topicInfoViewModel.topic.set(topic)
         topicInfoViewModel.topicDescription.set(topic.description)
-        topicInfoViewModel.calculateTopicSizeWithUnit()
+        topicInfoViewModel.topicSize.set(
+          fileSizeUtil.calculateTopicSizeWithBytes(topic.diskSizeBytes)
+        )
         controlSeeMoreTextVisibility()
       }
     )

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
 /** Fragment that contains downloaded topic list. */
@@ -23,6 +24,7 @@ class DownloadsFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return downloadsFragmentPresenter.handleCreateView(inflater, container)
+    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
+    return downloadsFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 }

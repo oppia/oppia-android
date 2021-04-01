@@ -1,13 +1,19 @@
 package org.oppia.android.app.mydownloads.downloads
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicList
+import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.filesize.FileSizeUtil
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
@@ -15,10 +21,43 @@ import javax.inject.Inject
 /** [ObservableViewModel] for [DownloadsFragment]. */
 @FragmentScope
 class DownloadsViewModel @Inject constructor(
+  private val activity: AppCompatActivity,
   private val logger: ConsoleLogger,
   private val downloadManagementController: TopicListController,
-  @TopicHtmlParserEntityType private val topicEntityType: String
+  @TopicHtmlParserEntityType private val topicEntityType: String,
+  private val fileSizeUtil: FileSizeUtil,
+  private val intentFactoryShim: IntentFactoryShim,
+  private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
+
+  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
+
+  val isAllowedDownloadAccess: LiveData<Boolean> by lazy {
+    Transformations.map(
+      profileManagementController.getProfile(profileId).toLiveData(),
+      ::processGetProfileDownloadAccessResult
+    )
+  }
+
+  private fun processGetProfileDownloadAccessResult(profileResult: AsyncResult<Profile>): Boolean {
+    if (profileResult.isFailure()) {
+      logger.e(
+        "ProfileEditViewModel",
+        "Failed to retrieve the profile with ID: ${profileId.internalId}",
+        profileResult.getErrorOrNull()!!
+      )
+    }
+    return profileResult.getOrDefault(Profile.getDefaultInstance()).allowDownloadAccess
+  }
+
+  fun setInternalProfileId(internalProfileId: Int) {
+    this.internalProfileId = internalProfileId
+  }
+
+  fun setProfileId(internalProfileId: Int) {
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  }
 
   val downloadsViewModelLiveData: LiveData<List<DownloadsItemViewModel>> by lazy {
     Transformations.map(downloadedTopicListLiveData, ::processDownloadedTopicList)
@@ -59,8 +98,12 @@ class DownloadsViewModel @Inject constructor(
     downloadsItemViewModelList.addAll(
       downloadedTopicList.topicSummaryList.map { topic ->
         DownloadsTopicViewModel(
-          topic,
-          topicEntityType
+          activity = activity,
+          topicSummary = topic,
+          topicEntityType = topicEntityType,
+          topicSize = fileSizeUtil.calculateTopicSizeWithBytes(topic.diskSizeBytes),
+          intentFactoryShim = intentFactoryShim,
+          internalProfileId = internalProfileId
         )
       }
     )

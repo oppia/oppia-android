@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -13,27 +14,38 @@ import org.oppia.android.databinding.DownloadsSortbyBinding
 import org.oppia.android.databinding.DownloadsTopicCardBinding
 import javax.inject.Inject
 
+const val TAG_DOWNLOAD_TOPIC_DELETE_DIALOG = "DOWNLOAD_TOPIC_DELETE_DIALOG"
+
 /** The presenter for [DownloadsFragment]. */
 @FragmentScope
 class DownloadsFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {
 
+  private var internalProfileId: Int = -1
+
   @Inject
   lateinit var downloadsViewModel: DownloadsViewModel
 
   lateinit var binding: DownloadsFragmentBinding
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int
+  ): View? {
     binding = DownloadsFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
+    this.internalProfileId = internalProfileId
     binding.apply {
       this.lifecycleOwner = fragment
       this.viewModel = downloadsViewModel
     }
+    downloadsViewModel.setInternalProfileId(internalProfileId)
+    downloadsViewModel.setProfileId(internalProfileId)
     binding.downloadsRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }
@@ -102,6 +114,17 @@ class DownloadsFragmentPresenter @Inject constructor(
         }
       }
       binding.isDeleteExpanded = isDeleteExpanded
+    }
+
+    binding.deleteImageView.setOnClickListener {
+      downloadsViewModel.isAllowedDownloadAccess.observe(
+        fragment,
+        Observer { isAllowedDownloadAccess ->
+          val dialogFragment = DownloadsTopicDeleteDialogFragment
+            .newInstance(internalProfileId, isAllowedDownloadAccess)
+          dialogFragment.showNow(fragment.childFragmentManager, TAG_DOWNLOAD_TOPIC_DELETE_DIALOG)
+        }
+      )
     }
   }
 }
