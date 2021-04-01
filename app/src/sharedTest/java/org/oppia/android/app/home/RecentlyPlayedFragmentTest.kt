@@ -146,10 +146,10 @@ class RecentlyPlayedFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createRecentlyPlayedActivityIntent(profileId: Int): Intent {
+  private fun createRecentlyPlayedActivityIntent(InternalProfileId: Int): Intent {
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
       context,
-      profileId
+      InternalProfileId
     )
   }
 
@@ -205,7 +205,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.promoted_story_recycler_view, 0, R.id.divider_view)
+        atPositionOnView(
+          recyclerViewId = R.id. promoted_story_recycler_view,
+          position = 0,
+          targetViewId = R.id.divider_view
+        )
       ).check(
         matches(not(isDisplayed()))
       )
@@ -230,7 +234,11 @@ class RecentlyPlayedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(R.id.promoted_story_recycler_view, 0, R.id.section_title_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.promoted_story_recycler_view,
+          position = 0,
+          targetViewId = R.id.section_title_text_view
+        )
       ).check(
         matches(withText(R.string.ongoing_story_last_week))
       )
@@ -280,7 +288,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.promoted_story_recycler_view, 2, R.id.section_title_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.promoted_story_recycler_view,
+          position = 2,
+          targetViewId = R.id.section_title_text_view
+        )
       ).check(
         matches(withText(R.string.recommended_stories))
       )
@@ -301,7 +313,11 @@ class RecentlyPlayedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
-        atPositionOnView(R.id.promoted_story_recycler_view, 2, R.id.section_title_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.promoted_story_recycler_view,
+          position = 2,
+          targetViewId = R.id.section_title_text_view
+        )
       ).check(
         matches(withText(R.string.recommended_stories))
       )
@@ -327,7 +343,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.promoted_story_recycler_view, 3, R.id.topic_name_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.promoted_story_recycler_view,
+          position = 3,
+          targetViewId = R.id.topic_name_text_view
+        )
       ).check(
         matches(withText(containsString("Ratios and Proportional Reasoning")))
       )
@@ -357,7 +377,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.promoted_story_recycler_view, 1, R.id.story_name_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.promoted_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.story_name_text_view
+        )
       ).check(
         matches(withText(containsString("Matthew Goes to the Bakery")))
       )
@@ -387,7 +411,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.promoted_story_recycler_view, 1, R.id.topic_name_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.promoted_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.topic_name_text_view
+        )
       ).check(
         matches(withText(containsString("FRACTIONS")))
       )
@@ -417,7 +445,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.promoted_story_recycler_view, 1, R.id.lesson_thumbnail)
+        atPositionOnView(
+          recyclerViewId = R.id.promoted_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.lesson_thumbnail
+        )
       ).check(
         matches(withDrawable(R.drawable.lesson_thumbnail_graphic_duck_and_chicken))
       )
@@ -447,7 +479,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.promoted_story_recycler_view, 1, R.id.lesson_thumbnail)
+        atPositionOnView(
+          recyclerViewId = R.id.promoted_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.lesson_thumbnail
+        )
       ).perform(click())
       intended(
         allOf(
@@ -496,7 +532,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.promoted_story_recycler_view, 2, R.id.section_title_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.promoted_story_recycler_view,
+          position = 2,
+          targetViewId = R.id.section_title_text_view
+        )
       ).check(
         matches(withText(R.string.ongoing_story_last_month))
       )
@@ -527,9 +567,9 @@ class RecentlyPlayedFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.promoted_story_recycler_view,
-          2,
-          R.id.divider_view
+          recyclerViewId = R.id.promoted_story_recycler_view,
+          position = 2,
+          targetViewId = R.id.divider_view
         )
       ).check(matches(isDisplayed()))
     }
@@ -575,7 +615,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.promoted_story_recycler_view, 0, R.id.divider_view)
+        atPositionOnView(
+          recyclerViewId = R.id.promoted_story_recycler_view,
+          position = 0,
+          targetViewId = R.id.divider_view
+        )
       ).check(matches(not(isDisplayed())))
     }
   }
@@ -789,7 +833,8 @@ class RecentlyPlayedFragmentTest {
       )
       onView(withId(R.id.promoted_story_recycler_view)).check(
         hasGridItemCount(
-          1, 3
+          spanCount = 1,
+          position = 1
         )
       )
     }
