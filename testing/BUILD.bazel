@@ -22,7 +22,6 @@ kt_android_library(
         "//third_party:androidx_test_espresso_espresso-contrib",
         "//third_party:androidx_test_espresso_espresso-core",
         "//third_party:androidx_test_espresso_espresso-intents",
-
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_runner",
         "//third_party:com_google_truth_truth",
