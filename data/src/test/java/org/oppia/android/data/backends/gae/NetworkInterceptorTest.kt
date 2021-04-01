@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends.test
+package org.oppia.android.data.backends.gae
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
@@ -8,13 +8,12 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.ApiUtils
-import org.oppia.android.data.backends.api.MockTopicService
-import org.oppia.android.data.backends.gae.NetworkInterceptor
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.testing.network.ApiMockLoader
+import org.oppia.android.testing.network.MockTopicService
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import javax.inject.Inject
@@ -41,14 +40,14 @@ class NetworkInterceptorTest {
   @Test
   fun testNetworkInterceptor_withXssiPrefix_removesXssiPrefix() {
     val rawJson: String =
-      networkInterceptor.removeXSSIPrefix(
-        ApiUtils.getFakeJson(
+      networkInterceptor.removeXssiPrefix(
+        loadUnformattedFakeJson(
           "dummy_response_with_xssi_prefix.json"
         )
       ).trim()
 
-    assertThat(removeSpaces(rawJson)).isEqualTo(
-      ApiUtils.getFakeJson(
+    assertThat(removeSpaces(formatJson(rawJson))).isEqualTo(
+      loadFormattedFakeJson(
         "dummy_response_without_xssi_prefix.json"
       )
     )
@@ -57,18 +56,26 @@ class NetworkInterceptorTest {
   @Test
   fun testNetworkInterceptor_withoutXssiPrefix_removesXssiPrefix() {
     val rawJson: String =
-      networkInterceptor.removeXSSIPrefix(
-        ApiUtils.getFakeJson(
+      networkInterceptor.removeXssiPrefix(
+        loadUnformattedFakeJson(
           "dummy_response_without_xssi_prefix.json"
         )
       )
 
-    assertThat(rawJson).isEqualTo(
-      ApiUtils.getFakeJson(
+    assertThat(formatJson(rawJson)).isEqualTo(
+      loadFormattedFakeJson(
         "dummy_response_without_xssi_prefix.json"
       )
     )
   }
+
+  private fun loadUnformattedFakeJson(filename: String): String =
+    ApiMockLoader.getFakeJson(filename)
+
+  private fun loadFormattedFakeJson(filename: String): String =
+    formatJson(loadUnformattedFakeJson(filename))
+
+  private fun formatJson(rawJson: String): String = JSONObject(rawJson).toString()
 
   private fun setUpTestApplicationComponent() {
     DaggerNetworkInterceptorTest_TestApplicationComponent.builder()

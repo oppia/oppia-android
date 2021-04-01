@@ -1,8 +1,7 @@
-package org.oppia.android.data.backends.api
+package org.oppia.android.testing.network
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import org.oppia.android.data.backends.ApiUtils
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.ClassroomService
@@ -27,9 +26,9 @@ class MockClassroomService(private val delegate: BehaviorDelegate<ClassroomServi
   private fun createMockGaeClassroom(): GaeClassroom {
     val networkInterceptor = NetworkInterceptor()
     var classroomResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("classroom.json")
+      NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("classroom.json")
     classroomResponseWithXssiPrefix =
-      networkInterceptor.removeXSSIPrefix(classroomResponseWithXssiPrefix)
+      networkInterceptor.removeXssiPrefix(classroomResponseWithXssiPrefix)
 
     val moshi = Moshi.Builder().build()
     val adapter: JsonAdapter<GaeClassroom> = moshi.adapter(GaeClassroom::class.java)

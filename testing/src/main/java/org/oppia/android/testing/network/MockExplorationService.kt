@@ -1,8 +1,7 @@
-package org.oppia.android.data.backends.api
+package org.oppia.android.testing.network
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import org.oppia.android.data.backends.ApiUtils
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.ExplorationService
@@ -27,9 +26,9 @@ class MockExplorationService(private val delegate: BehaviorDelegate<ExplorationS
   private fun createMockGaeExplorationContainer(): GaeExplorationContainer {
     val networkInterceptor = NetworkInterceptor()
     var explorationResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("exploration.json")
+      NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("exploration.json")
     explorationResponseWithXssiPrefix =
-      networkInterceptor.removeXSSIPrefix(explorationResponseWithXssiPrefix)
+      networkInterceptor.removeXssiPrefix(explorationResponseWithXssiPrefix)
 
     val moshi = Moshi.Builder().build()
     val adapter: JsonAdapter<GaeExplorationContainer> =

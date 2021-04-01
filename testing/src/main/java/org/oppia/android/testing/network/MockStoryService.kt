@@ -1,8 +1,7 @@
-package org.oppia.android.data.backends.api
+package org.oppia.android.testing.network
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import org.oppia.android.data.backends.ApiUtils
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.StoryService
@@ -26,9 +25,9 @@ class MockStoryService(private val delegate: BehaviorDelegate<StoryService>) : S
   private fun createMockGaeStory(): GaeStory {
     val networkInterceptor = NetworkInterceptor()
     var storyResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("story.json")
+      NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("story.json")
 
-    storyResponseWithXssiPrefix = networkInterceptor.removeXSSIPrefix(storyResponseWithXssiPrefix)
+    storyResponseWithXssiPrefix = networkInterceptor.removeXssiPrefix(storyResponseWithXssiPrefix)
 
     val moshi = Moshi.Builder().build()
     val adapter: JsonAdapter<GaeStory> = moshi.adapter(GaeStory::class.java)
