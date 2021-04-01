@@ -1,5 +1,7 @@
-package org.oppia.android.data.backends.test
+package org.oppia.android.data.backends.gae.api
 
+import android.app.Application
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -7,8 +9,8 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.api.MockSubtopicService
-import org.oppia.android.data.backends.gae.api.SubtopicService
+import org.oppia.android.testing.network.MockSubtopicService
+import org.oppia.android.testing.network.RetrofitTestModule
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
@@ -42,7 +44,7 @@ class SubtopicServiceTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockSubtopicTest_TestApplicationComponent
+    DaggerSubtopicServiceTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -59,6 +61,6 @@ class SubtopicServiceTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: MockSubtopicTest)
+    fun inject(test: SubtopicServiceTest)
   }
 }

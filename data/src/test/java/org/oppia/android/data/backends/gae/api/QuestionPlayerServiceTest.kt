@@ -9,7 +9,8 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.api.MockQuestionPlayerService
+import org.oppia.android.testing.network.MockQuestionPlayerService
+import org.oppia.android.testing.network.RetrofitTestModule
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
@@ -48,7 +49,7 @@ class QuestionPlayerServiceTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockQuestionPlayerTest_TestApplicationComponent
+    DaggerQuestionPlayerServiceTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -65,6 +66,6 @@ class QuestionPlayerServiceTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: MockQuestionPlayerTest)
+    fun inject(test: QuestionPlayerServiceTest)
   }
 }

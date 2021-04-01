@@ -1,5 +1,7 @@
 package org.oppia.android.data.backends.gae.api
 
+import android.app.Application
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -8,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.network.MockExplorationService
+import org.oppia.android.testing.network.RetrofitTestModule
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
@@ -41,7 +44,7 @@ class ExplorationServiceTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockExplorationTest_TestApplicationComponent
+    DaggerExplorationServiceTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -58,6 +61,6 @@ class ExplorationServiceTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: MockExplorationTest)
+    fun inject(test: ExplorationServiceTest)
   }
 }

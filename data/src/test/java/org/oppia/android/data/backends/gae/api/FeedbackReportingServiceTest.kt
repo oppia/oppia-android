@@ -1,14 +1,21 @@
 package org.oppia.android.data.backends.test
 
+import android.app.Application
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import dagger.BindsInstance
+import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
+import org.oppia.android.testing.network.ApiMockLoader
 import org.oppia.android.testing.network.MockFeedbackReportingService
+import org.oppia.android.testing.network.RetrofitTestModule
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
@@ -40,7 +47,7 @@ class FeedbackReportingServiceTest {
   }
 
   private fun createMockGaeFeedbackReport(): GaeFeedbackReport {
-    val feedbackReportJson = ApiUtils.getFakeJson("feedback_reporting.json")
+    val feedbackReportJson = ApiMockLoader.getFakeJson("feedback_reporting.json")
     val moshi = Moshi.Builder().build()
 
     val adapter: JsonAdapter<GaeFeedbackReport> = moshi.adapter(GaeFeedbackReport::class.java)
@@ -49,7 +56,7 @@ class FeedbackReportingServiceTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockFeedbackReportingTest_TestApplicationComponent
+    DaggerFeedbackReportingServiceTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -66,6 +73,6 @@ class FeedbackReportingServiceTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: MockFeedbackReportingTest)
+    fun inject(test: FeedbackReportingServiceTest)
   }
 }

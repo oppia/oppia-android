@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.network.MockConceptCardService
+import org.oppia.android.testing.network.RetrofitTestModule
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
@@ -49,7 +50,7 @@ class ConceptCardServiceTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockConceptCardTest_TestApplicationComponent
+    DaggerConceptCardServiceTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -66,6 +67,6 @@ class ConceptCardServiceTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: MockConceptCardTest)
+    fun inject(test: ConceptCardServiceTest)
   }
 }
