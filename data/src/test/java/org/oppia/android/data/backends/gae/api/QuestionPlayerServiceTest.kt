@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends.test
+package org.oppia.android.data.backends.gae.api
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -8,8 +8,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
-import org.oppia.android.data.backends.gae.api.ClassroomService
-import org.oppia.android.testing.network.MockClassroomService
+import org.oppia.android.testing.network.MockQuestionPlayerService
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -17,11 +16,11 @@ import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 
 /**
- * Test for [ClassroomService] retrofit instance using [MockClassroomService]
+ * Test for [QuestionPlayerService] retrofit instance using [MockQuestionPlayerService]
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class MockClassroomTest {
+class QuestionPlayerServiceTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit
 
@@ -43,14 +42,19 @@ class MockClassroomTest {
   }
 
   @Test
-  fun testClassroomService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(ClassroomService::class.java)
-    val mockClassroomService = MockClassroomService(delegate)
+  fun testQuestionPlayerService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(QuestionPlayerService::class.java)
+    val mockQuestionPlayerService = MockQuestionPlayerService(delegate)
 
-    val classroom = mockClassroomService.getClassroom("Math")
-    val classroomResponse = classroom.execute()
+    val skillIdList = ArrayList<String>()
+    skillIdList.add("1")
+    skillIdList.add("2")
+    skillIdList.add("3")
+    val skillIds = skillIdList.joinToString(separator = ", ")
+    val questionPlayer = mockQuestionPlayerService.getQuestionPlayerBySkillIds(skillIds, 10)
+    val questionPlayerResponse = questionPlayer.execute()
 
-    assertThat(classroomResponse.isSuccessful).isTrue()
-    assertThat(classroomResponse.body()!!.topicSummaryDicts?.get(0)?.name).isEqualTo("Math")
+    assertThat(questionPlayerResponse.isSuccessful).isTrue()
+    assertThat(questionPlayerResponse.body()!!.questions!!.size).isEqualTo(1)
   }
 }

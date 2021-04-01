@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends.test
+package org.oppia.android.data.backends.gae.api
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -8,7 +8,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
-import org.oppia.android.data.backends.gae.api.TopicService
 import org.oppia.android.testing.network.MockTopicService
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -21,7 +20,7 @@ import retrofit2.mock.NetworkBehavior
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class MockTopicTest {
+class TopicServiceTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit
 

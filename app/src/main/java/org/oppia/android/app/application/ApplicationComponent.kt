@@ -1,6 +1,5 @@
 package org.oppia.android.app.application
 
-// TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
 import android.app.Application
 import androidx.work.Configuration
 import dagger.BindsInstance
@@ -9,6 +8,7 @@ import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -20,6 +20,7 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.feedbackreporting.FeedbackReportingModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -65,7 +66,8 @@ import javax.inject.Singleton
     ExpirationMetaDataRetrieverModule::class, RatioInputModule::class,
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-    HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class
+    HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
+    NetworkModule::class, FeedbackReportingModule::class
   ]
 )
 interface ApplicationComponent : ApplicationInjector {

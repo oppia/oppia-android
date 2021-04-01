@@ -13,6 +13,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import org.junit.Before
 import org.junit.Rule
@@ -99,6 +100,7 @@ class PersistentCacheStoreTest {
 
   // TODO(#59): Create a test-only proto for this test rather than needing to reuse a production-facing proto.
   @Test
+  @ExperimentalCoroutinesApi
   fun testCache_toLiveData_initialState_isPending() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
 

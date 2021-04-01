@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends.test
+package org.oppia.android.data.backends.gae
 
 import android.app.Application
 import android.content.Context
@@ -13,10 +13,6 @@ import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
-import org.oppia.android.data.backends.gae.NetworkApiKey
-import org.oppia.android.data.backends.gae.NetworkSettings
-import org.oppia.android.data.backends.gae.RemoteAuthNetworkInterceptor
 import org.oppia.android.data.backends.gae.api.TopicService
 import org.oppia.android.testing.network.MockTopicService
 import org.robolectric.annotation.LooperMode

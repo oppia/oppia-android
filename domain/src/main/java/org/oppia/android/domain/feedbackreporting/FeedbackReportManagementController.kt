@@ -36,12 +36,6 @@ import javax.inject.Singleton
 private const val FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG =
   "Feedback Report Management Controller"
 private const val FEEDBACK_REPORTS_DATABASE_NAME = "feedback_reports_database"
-private const val LANGUAGE_CODE_ENGLISH = "EN"
-private const val LANGUAGE_CODE_HINDI = "HI"
-private const val LANGUAGE_CODE_FRENCH = "FR"
-private const val LANGUAGE_CODE_CHINESE = "ZH"
-private const val LANGUAGE_CODE_ERROR = "ERROR"
-private const val LANGUAGE_CODE_UNSPECIFIED = "UNSPECIFIED"
 
 /** Controller for uploading feedback reports to remote storage or saving them on disk. */
 @Singleton
@@ -52,6 +46,7 @@ class FeedbackReportManagementController @Inject constructor(
   private val exceptionsController: ExceptionsController,
   private val analyticsController: AnalyticsController,
   private val networkConnectionUtil: NetworkConnectionUtil,
+  @ReportSchemaVersion private val reportSchemaVersion: Int
 ) {
   private val feedbackReportDataStore = cacheStoreFactory.create(
     FEEDBACK_REPORTS_DATABASE_NAME, FeedbackReportingDatabase.getDefaultInstance()
@@ -110,13 +105,16 @@ class FeedbackReportManagementController @Inject constructor(
    */
   fun uploadFeedbackReport(report: FeedbackReport) {
     val gaeFeedbackReport = GaeFeedbackReport(
+      schemaVersion = reportSchemaVersion,
       reportSubmissionTimestampSec = report.reportSubmissionTimestampSec,
       userSuppliedFeedback = createGaeUserSuppliedFeedback(report.userSuppliedInfo),
       systemContext = getSystemContext(report.systemContext),
       deviceContext = getDeviceContext(report.deviceContext),
       appContext = getAppContext(report.appContext)
     )
-    feedbackReportingService.postFeedbackReport(gaeFeedbackReport)
+    // TODO(#76): Implement a callback for success / failure handling once a network retry policy is
+    // established.
+    feedbackReportingService.postFeedbackReport(gaeFeedbackReport).execute()
   }
 
   /** Removes the first cached report from the store. */
@@ -150,7 +148,7 @@ class FeedbackReportManagementController @Inject constructor(
   }
 
   // Creates the Moshi data class that gets sent in the service for the information collected from
-  // user reponses.
+  // user responses.
   private fun createGaeUserSuppliedFeedback(
     userSuppliedFeedback: UserSuppliedFeedback
   ): GaeUserSuppliedFeedback {
@@ -212,9 +210,15 @@ class FeedbackReportManagementController @Inject constructor(
             }
             userInput = issue.languageIssue.textLanguageIssue.otherUserInput
           }
-          // General language issues will pass through with no user input or options list as users
-          // aren't presented with specific issues to choose from if they don't specify what type of
-          // language issue.
+          LanguageIssue.LanguageIssueCategoryCase.GENERAL_LANGUAGE_ISSUE -> {
+            // General language issues will pass through with no user input or options list as users
+            // aren't presented with specific issues to choose from if they don't specify a type of
+            // language issue.
+          }
+          else -> throw IllegalArgumentException(
+            "Encountered unexpected language issue type: " +
+              issue.languageIssue.languageIssueCategoryCase.name
+          )
         }
       }
       IssueCategoryCase.TOPICS_ISSUE -> {
@@ -228,6 +232,9 @@ class FeedbackReportManagementController @Inject constructor(
       IssueCategoryCase.OTHER_ISSUE -> {
         userInput = issue.otherIssue.openUserInput
       }
+      else -> throw IllegalArgumentException(
+        "Encountered unexpected issue category: ${issue.issueCategoryCase.name}"
+      )
     }
     return GaeUserSuppliedFeedback(
       reportType = reportTypeName,
@@ -256,7 +263,6 @@ class FeedbackReportManagementController @Inject constructor(
     return GaeFeedbackReportingDeviceContext(
       deviceModel = deviceContext.deviceModel,
       sdkVersion = deviceContext.sdkVersion,
-      deviceBrand = deviceContext.deviceBrand,
       buildFingerprint = deviceContext.buildFingerprint,
       networkType = deviceContext.networkType.name
     )
@@ -270,7 +276,7 @@ class FeedbackReportManagementController @Inject constructor(
       entryPoint = getEntryPointData(appContext),
       textSize = appContext.textSize.name,
       textLanguageCode = appContext.textLanguage.toLanguageCode().toString(),
-      audioLanguage = appContext.audioLanguage.toLanguageCode().toString(),
+      audioLanguageCode = appContext.audioLanguage.toLanguageCode().toString(),
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
       automaticallyUpdateTopics = appContext.deviceSettings.automaticallyUpdateTopics,
       isAdmin = appContext.isAdmin,
@@ -300,6 +306,15 @@ class FeedbackReportManagementController @Inject constructor(
         topicId = revisionCard.topicId
         subtopicId = revisionCard.subtopicId
       }
+      EntryPointCase.NAVIGATION_DRAWER -> {
+        // If entry point is not an exploration player or revision card, leave story values as null.
+      }
+      EntryPointCase.CRASH_DIALOG -> {
+        // If entry point is not an exploration player or revision card, leave story values as null.
+      }
+      else -> throw IllegalArgumentException(
+        "Encountered unexpected entry point: ${appContext.entryPointCase.name}"
+      )
     }
     return GaeFeedbackReportingEntryPoint(
       entryPointName = appContext.entryPointCase.name,

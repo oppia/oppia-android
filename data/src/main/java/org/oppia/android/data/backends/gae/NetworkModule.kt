@@ -35,7 +35,7 @@ NetworkModule {
     client.addInterceptor(JsonPrefixNetworkInterceptor())
       .addInterceptor(RemoteAuthNetworkInterceptor())
 
-    return retrofit2.Retrofit.Builder()
+    return Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
       .addConverterFactory(MoshiConverterFactory.create())
       .client(client.build())

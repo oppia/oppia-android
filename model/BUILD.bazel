@@ -227,7 +227,6 @@ android_library(
         ":thumbnail_java_proto_lite",
         ":topic_java_proto_lite",
         ":translation_java_proto_lite",
-        ":voiceover_java_proto_lite",
     ],
 )
 

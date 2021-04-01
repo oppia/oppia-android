@@ -23,9 +23,11 @@ import org.mockito.MockitoAnnotations
 import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.Crash
+import org.oppia.android.app.model.DeviceSettings
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingDatabase
+import org.oppia.android.app.model.NavigationDrawerEntryPoint
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
@@ -62,11 +64,11 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-// Timestamp in ms for 3/2/21, 12:38pm GMT.
-private const val EARLIER_TIMESTAMP = 1614688684445
+// Timestamp in sec for 3/2/21, 12:38pm GMT.
+private const val EARLIER_TIMESTAMP = 1614688684
 
-// Timestamp in ms for 3/14/21, 2:24am GMT.
-private const val LATER_TIMESTAMP = 1615688684445
+// Timestamp in sec for 3/14/21, 2:24am GMT.
+private const val LATER_TIMESTAMP = 1615688684
 
 /** Tests for [FeedbackReportManagementController]. */
 @RunWith(AndroidJUnit4::class)
@@ -93,10 +95,12 @@ class FeedbackReportManagementControllerTest {
   lateinit var reportStoreResultCaptor: ArgumentCaptor<AsyncResult<FeedbackReportingDatabase>>
 
   private val appContext = FeedbackReportingAppContext.newBuilder()
-    .setIsAdmin(false)
+    .setNavigationDrawer(NavigationDrawerEntryPoint.getDefaultInstance())
     .setTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
+    .setDeviceSettings(DeviceSettings.getDefaultInstance())
     .setAudioLanguage(AudioLanguage.NO_AUDIO)
     .setTextLanguage(AppLanguage.ENGLISH_APP_LANGUAGE)
+    .setIsAdmin(false)
     .build()
 
   private val featureSuggestion = Suggestion.newBuilder()
@@ -104,23 +108,23 @@ class FeedbackReportManagementControllerTest {
     .setUserSubmittedSuggestion("A feature suggestion")
     .build()
 
-  private val userSuggestion = UserSuppliedFeedback.newBuilder()
+  private val userSuppliedSuggestionFeedback = UserSuppliedFeedback.newBuilder()
     .setSuggestion(featureSuggestion)
     .build()
 
   private val laterSuggestionReport = FeedbackReport.newBuilder()
-    .setReportCreationTimestampMs(LATER_TIMESTAMP)
-    .setUserSuppliedInfo(userSuggestion)
+    .setReportSubmissionTimestampSec(LATER_TIMESTAMP)
+    .setUserSuppliedInfo(userSuppliedSuggestionFeedback)
     .setAppContext(appContext)
     .build()
 
-  private val userCrash = UserSuppliedFeedback.newBuilder()
+  private val userSuppliedCrashFeedback = UserSuppliedFeedback.newBuilder()
     .setCrash(Crash.getDefaultInstance())
     .build()
 
   private val earlierCrashReport = FeedbackReport.newBuilder()
-    .setReportCreationTimestampMs(EARLIER_TIMESTAMP)
-    .setUserSuppliedInfo(userCrash)
+    .setReportSubmissionTimestampSec(EARLIER_TIMESTAMP)
+    .setUserSuppliedInfo(userSuppliedCrashFeedback)
     .setAppContext(appContext)
     .build()
 
@@ -161,7 +165,7 @@ class FeedbackReportManagementControllerTest {
     verify(mockReportsStoreObserver, atLeastOnce()).onChanged(reportStoreResultCaptor.capture())
 
     val report = reportStoreResultCaptor.value.getOrThrow().getReports(0)
-    assertThat(report.reportCreationTimestampMs).isEqualTo(LATER_TIMESTAMP)
+    assertThat(report.reportSubmissionTimestampSec).isEqualTo(LATER_TIMESTAMP)
     assertThat(report.userSuppliedInfo.suggestion.suggestionCategory)
       .isEqualTo(SuggestionCategory.FEATURE_SUGGESTION)
     assertThat(report.userSuppliedInfo.suggestion.userSubmittedSuggestion)
@@ -236,7 +240,7 @@ class FeedbackReportManagementControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  // Creates a fake logcat file in this directory so that the controller being testedhas a file to
+  // Creates a fake logcat file in this directory so that the controller being tested has a file to
   // read when recording the logcat events.
   private fun setUpFakeLogcatFile() {
     val logFile = File(context.filesDir, "oppia_app.log")
@@ -278,7 +282,6 @@ class FeedbackReportManagementControllerTest {
     }
   }
 
-  // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
@@ -318,7 +321,7 @@ class FeedbackReportManagementControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class, TestNetworkModule::class,
-      FakeOppiaClockModule::class
+      FakeOppiaClockModule::class, FeedbackReportingModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
