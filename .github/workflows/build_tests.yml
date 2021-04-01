@@ -55,8 +55,12 @@ jobs:
       # few slower CI actions around the time cache is detected to be too large, but it should
       # incrementally improve thereafter.
       - name: Ensure cache size
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
-          CACHE_SIZE_MB=$(du -smc $BAZEL_CACHE_DIR | grep total | cut -f1)
+          # See https://stackoverflow.com/a/27485157 for reference.
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
           echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
           # Use a 4.5GB threshold since actions/cache compresses the results, and Bazel caches seem
           # to only increase by a few hundred megabytes across changes for unrelated branches. This
@@ -65,10 +69,8 @@ jobs:
           # compressed cache).
           if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
             echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
-            rm -rf $BAZEL_CACHE_DIR
+            rm -rf $EXPANDED_BAZEL_CACHE_PATH
           fi
-        env:
-          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
@@ -85,14 +87,13 @@ jobs:
           echo "build:linux --sandbox_tmpfs_path=/tmp" >> $HOME/.bazelrc
 
       - name: Configure Bazel to use a local cache
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
-          # See https://stackoverflow.com/a/27485157 for reference.
           EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
           echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
-        env:
-          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
 
       - name: Check Bazel environment
         run: bazel info
