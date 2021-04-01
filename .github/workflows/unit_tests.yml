@@ -86,7 +86,7 @@ jobs:
           echo "Test target: $TEST_TARGET"
           TEST_CATEGORY=$(echo "$TEST_TARGET" | grep -oP 'org/oppia/android/(.+?)/' | cut -f 4 -d "/")
           echo "Test category: $TEST_CATEGORY"
-          echo "::set-env name=TEST_CACHING_BUCKET::$TEST_CATEGORY"
+          echo "TEST_CACHING_BUCKET=$TEST_CATEGORY" >> $GITHUB_ENV
 
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
