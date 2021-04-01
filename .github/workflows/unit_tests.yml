@@ -16,6 +16,7 @@ jobs:
   bazel_compute_affected_targets:
     name: Compute affected tests
     runs-on: ubuntu-18.04
+    if: false
     outputs:
       matrix: ${{ steps.compute-test-matrix-from-affected.outputs.matrix || steps.compute-test-matrix-from-all.outputs.matrix }}
       have_tests_to_run: ${{ steps.compute-test-matrix-from-affected.outputs.have_tests_to_run || steps.compute-test-matrix-from-all.outputs.have_tests_to_run }}
