@@ -1,5 +1,5 @@
 """
-Macros for domain testing tests.
+Macros for testing tests.
 """
 
 load("//:oppia_android_test.bzl", "oppia_android_module_level_test")

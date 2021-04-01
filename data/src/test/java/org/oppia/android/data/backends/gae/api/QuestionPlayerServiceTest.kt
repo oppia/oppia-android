@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends.test
+package org.oppia.android.data.backends.gae.api
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
@@ -9,20 +9,18 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.api.MockExplorationService
-import org.oppia.android.data.backends.gae.api.ExplorationService
-import org.oppia.android.testing.network.RetrofitTestModule
+import org.oppia.android.data.backends.api.MockQuestionPlayerService
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Test for [ExplorationService] retrofit instance using [MockExplorationService]
+ * Test for [QuestionPlayerService] retrofit instance using [MockQuestionPlayerService]
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class MockExplorationTest {
+class QuestionPlayerServiceTest {
 
   @Inject
   lateinit var mockRetrofit: MockRetrofit
@@ -33,19 +31,24 @@ class MockExplorationTest {
   }
 
   @Test
-  fun testExplorationService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(ExplorationService::class.java)
-    val mockExplorationService = MockExplorationService(delegate)
+  fun testQuestionPlayerService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(QuestionPlayerService::class.java)
+    val mockQuestionPlayerService = MockQuestionPlayerService(delegate)
 
-    val explorationContainer = mockExplorationService.getExplorationById("4")
-    val explorationContainerResponse = explorationContainer.execute()
+    val skillIdList = ArrayList<String>()
+    skillIdList.add("1")
+    skillIdList.add("2")
+    skillIdList.add("3")
+    val skillIds = skillIdList.joinToString(separator = ", ")
+    val questionPlayer = mockQuestionPlayerService.getQuestionPlayerBySkillIds(skillIds, 10)
+    val questionPlayerResponse = questionPlayer.execute()
 
-    assertThat(explorationContainerResponse.isSuccessful).isTrue()
-    assertThat(explorationContainerResponse.body()!!.explorationId).isEqualTo("4")
+    assertThat(questionPlayerResponse.isSuccessful).isTrue()
+    assertThat(questionPlayerResponse.body()!!.questions!!.size).isEqualTo(1)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockExplorationTest_TestApplicationComponent
+    DaggerMockQuestionPlayerTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -62,6 +65,6 @@ class MockExplorationTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: MockExplorationTest)
+    fun inject(test: MockQuestionPlayerTest)
   }
 }

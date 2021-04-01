@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends.test
+package org.oppia.android.data.backends.gae.api
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
@@ -9,20 +9,18 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.api.MockQuestionPlayerService
-import org.oppia.android.data.backends.gae.api.QuestionPlayerService
-import org.oppia.android.testing.network.RetrofitTestModule
+import org.oppia.android.testing.network.MockConceptCardService
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Test for [QuestionPlayerService] retrofit instance using [MockQuestionPlayerService]
+ * Test for [ConceptCardService] retrofit instance using [MockConceptCardService]
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class MockQuestionPlayerTest {
+class ConceptCardServiceTest {
 
   @Inject
   lateinit var mockRetrofit: MockRetrofit
@@ -33,24 +31,25 @@ class MockQuestionPlayerTest {
   }
 
   @Test
-  fun testQuestionPlayerService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(QuestionPlayerService::class.java)
-    val mockQuestionPlayerService = MockQuestionPlayerService(delegate)
+  fun testConceptCardService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(ConceptCardService::class.java)
+    val mockConceptCardService = MockConceptCardService(delegate)
 
     val skillIdList = ArrayList<String>()
     skillIdList.add("1")
     skillIdList.add("2")
     skillIdList.add("3")
-    val skillIds = skillIdList.joinToString(separator = ", ")
-    val questionPlayer = mockQuestionPlayerService.getQuestionPlayerBySkillIds(skillIds, 10)
-    val questionPlayerResponse = questionPlayer.execute()
 
-    assertThat(questionPlayerResponse.isSuccessful).isTrue()
-    assertThat(questionPlayerResponse.body()!!.questions!!.size).isEqualTo(1)
+    val skillIds = skillIdList.joinToString(separator = ", ")
+    val conceptCard = mockConceptCardService.getSkillContents(skillIds)
+    val conceptCardResponse = conceptCard.execute()
+
+    assertThat(conceptCardResponse.isSuccessful).isTrue()
+    assertThat(conceptCardResponse.body()!!.conceptCardDicts!!.size).isEqualTo(1)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockQuestionPlayerTest_TestApplicationComponent
+    DaggerMockConceptCardTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -67,6 +66,6 @@ class MockQuestionPlayerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: MockQuestionPlayerTest)
+    fun inject(test: MockConceptCardTest)
   }
 }

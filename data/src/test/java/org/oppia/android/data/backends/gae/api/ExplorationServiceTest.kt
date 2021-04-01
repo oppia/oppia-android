@@ -1,7 +1,5 @@
-package org.oppia.android.data.backends.test
+package org.oppia.android.data.backends.gae.api
 
-import android.app.Application
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -9,20 +7,18 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.api.MockTopicService
-import org.oppia.android.data.backends.gae.api.TopicService
-import org.oppia.android.testing.network.RetrofitTestModule
+import org.oppia.android.testing.network.MockExplorationService
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Test for [TopicService] retrofit instance using [MockTopicService]
+ * Test for [ExplorationService] retrofit instance using [MockExplorationService]
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class MockTopicTest {
+class ExplorationServiceTest {
 
   @Inject
   lateinit var mockRetrofit: MockRetrofit
@@ -33,19 +29,19 @@ class MockTopicTest {
   }
 
   @Test
-  fun testTopicService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(TopicService::class.java)
-    val mockTopicService = MockTopicService(delegate)
+  fun testExplorationService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(ExplorationService::class.java)
+    val mockExplorationService = MockExplorationService(delegate)
 
-    val topic = mockTopicService.getTopicByName("Topic1")
-    val topicResponse = topic.execute()
+    val explorationContainer = mockExplorationService.getExplorationById("4")
+    val explorationContainerResponse = explorationContainer.execute()
 
-    assertThat(topicResponse.isSuccessful).isTrue()
-    assertThat(topicResponse.body()!!.topicName).isEqualTo("Topic1")
+    assertThat(explorationContainerResponse.isSuccessful).isTrue()
+    assertThat(explorationContainerResponse.body()!!.explorationId).isEqualTo("4")
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockTopicTest_TestApplicationComponent
+    DaggerMockExplorationTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -62,6 +58,6 @@ class MockTopicTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: MockTopicTest)
+    fun inject(test: MockExplorationTest)
   }
 }

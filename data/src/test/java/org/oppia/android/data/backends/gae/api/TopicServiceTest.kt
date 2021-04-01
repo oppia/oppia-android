@@ -1,28 +1,23 @@
 package org.oppia.android.data.backends.test
 
-import android.app.Application
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import dagger.BindsInstance
-import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.api.MockStoryService
-import org.oppia.android.data.backends.gae.api.StoryService
-import org.oppia.android.testing.network.RetrofitTestModule
+import org.oppia.android.data.backends.api.MockTopicService
+import org.oppia.android.data.backends.gae.api.TopicService
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Test for [StoryService] retrofit instance using [MockStoryService]
+ * Test for [TopicService] retrofit instance using [MockTopicService]
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class MockStoryTest {
+class TopicServiceTest {
 
   @Inject
   lateinit var mockRetrofit: MockRetrofit
@@ -33,19 +28,19 @@ class MockStoryTest {
   }
 
   @Test
-  fun testStoryService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(StoryService::class.java)
-    val mockStoryService = MockStoryService(delegate)
+  fun testTopicService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(TopicService::class.java)
+    val mockTopicService = MockTopicService(delegate)
 
-    val story = mockStoryService.getStory("1", "randomUserId", "rt4914")
-    val storyResponse = story.execute()
+    val topic = mockTopicService.getTopicByName("Topic1")
+    val topicResponse = topic.execute()
 
-    assertThat(storyResponse.isSuccessful).isTrue()
-    assertThat(storyResponse.body()!!.storyTitle).isEqualTo("Story 1")
+    assertThat(topicResponse.isSuccessful).isTrue()
+    assertThat(topicResponse.body()!!.topicName).isEqualTo("Topic1")
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockStoryTest_TestApplicationComponent
+    DaggerMockTopicTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -62,6 +57,6 @@ class MockStoryTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: MockStoryTest)
+    fun inject(test: MockTopicTest)
   }
 }

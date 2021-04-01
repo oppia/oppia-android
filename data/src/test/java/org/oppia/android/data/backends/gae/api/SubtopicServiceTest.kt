@@ -1,7 +1,5 @@
 package org.oppia.android.data.backends.test
 
-import android.app.Application
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -9,20 +7,19 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.api.MockClassroomService
-import org.oppia.android.data.backends.gae.api.ClassroomService
-import org.oppia.android.testing.network.RetrofitTestModule
+import org.oppia.android.data.backends.api.MockSubtopicService
+import org.oppia.android.data.backends.gae.api.SubtopicService
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Test for [ClassroomService] retrofit instance using [MockClassroomService]
+ * Test for [SubtopicService] retrofit instance using [MockSubtopicService]
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class MockClassroomTest {
+class SubtopicServiceTest {
 
   @Inject
   lateinit var mockRetrofit: MockRetrofit
@@ -33,19 +30,19 @@ class MockClassroomTest {
   }
 
   @Test
-  fun testClassroomService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(ClassroomService::class.java)
-    val mockClassroomService = MockClassroomService(delegate)
+  fun testSubtopicService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(SubtopicService::class.java)
+    val mockSubtopicService = MockSubtopicService(delegate)
 
-    val classroom = mockClassroomService.getClassroom("Math")
-    val classroomResponse = classroom.execute()
+    val subtopic = mockSubtopicService.getSubtopic("Subtopic 1", "randomId")
+    val subtopicResponse = subtopic.execute()
 
-    assertThat(classroomResponse.isSuccessful).isTrue()
-    assertThat(classroomResponse.body()!!.topicSummaryDicts?.get(0)?.name).isEqualTo("Math")
+    assertThat(subtopicResponse.isSuccessful).isTrue()
+    assertThat(subtopicResponse.body()!!.subtopicTitle).isEqualTo("Subtopic 1")
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockClassroomTest_TestApplicationComponent
+    DaggerMockSubtopicTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -62,6 +59,6 @@ class MockClassroomTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: MockClassroomTest)
+    fun inject(test: MockSubtopicTest)
   }
 }

@@ -9,8 +9,8 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.api.MockConceptCardService
-import org.oppia.android.data.backends.gae.api.ConceptCardService
+import org.oppia.android.data.backends.gae.api.ClassroomService
+import org.oppia.android.testing.network.MockClassroomService
 import org.oppia.android.testing.network.RetrofitTestModule
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
@@ -18,11 +18,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Test for [ConceptCardService] retrofit instance using [MockConceptCardService]
+ * Test for [ClassroomService] retrofit instance using [MockClassroomService]
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class MockConceptCardTest {
+class ClassroomServiceTest {
 
   @Inject
   lateinit var mockRetrofit: MockRetrofit
@@ -33,25 +33,19 @@ class MockConceptCardTest {
   }
 
   @Test
-  fun testConceptCardService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(ConceptCardService::class.java)
-    val mockConceptCardService = MockConceptCardService(delegate)
+  fun testClassroomService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(ClassroomService::class.java)
+    val mockClassroomService = MockClassroomService(delegate)
 
-    val skillIdList = ArrayList<String>()
-    skillIdList.add("1")
-    skillIdList.add("2")
-    skillIdList.add("3")
+    val classroom = mockClassroomService.getClassroom("Math")
+    val classroomResponse = classroom.execute()
 
-    val skillIds = skillIdList.joinToString(separator = ", ")
-    val conceptCard = mockConceptCardService.getSkillContents(skillIds)
-    val conceptCardResponse = conceptCard.execute()
-
-    assertThat(conceptCardResponse.isSuccessful).isTrue()
-    assertThat(conceptCardResponse.body()!!.conceptCardDicts!!.size).isEqualTo(1)
+    assertThat(classroomResponse.isSuccessful).isTrue()
+    assertThat(classroomResponse.body()!!.topicSummaryDicts?.get(0)?.name).isEqualTo("Math")
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockConceptCardTest_TestApplicationComponent
+    DaggerMockClassroomTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -68,6 +62,6 @@ class MockConceptCardTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: MockConceptCardTest)
+    fun inject(test: MockClassroomTest)
   }
 }

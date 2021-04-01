@@ -1,28 +1,22 @@
-package org.oppia.android.data.backends.test
+package org.oppia.android.data.backends.gae.api
 
-import android.app.Application
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import dagger.BindsInstance
-import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.api.MockSubtopicService
-import org.oppia.android.data.backends.gae.api.SubtopicService
-import org.oppia.android.testing.network.RetrofitTestModule
+import org.oppia.android.data.backends.api.MockStoryService
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Test for [SubtopicService] retrofit instance using [MockSubtopicService]
+ * Test for [StoryService] retrofit instance using [MockStoryService]
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class MockSubtopicTest {
+class StoryServiceTest {
 
   @Inject
   lateinit var mockRetrofit: MockRetrofit
@@ -33,19 +27,19 @@ class MockSubtopicTest {
   }
 
   @Test
-  fun testSubtopicService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(SubtopicService::class.java)
-    val mockSubtopicService = MockSubtopicService(delegate)
+  fun testStoryService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(StoryService::class.java)
+    val mockStoryService = MockStoryService(delegate)
 
-    val subtopic = mockSubtopicService.getSubtopic("Subtopic 1", "randomId")
-    val subtopicResponse = subtopic.execute()
+    val story = mockStoryService.getStory("1", "randomUserId", "rt4914")
+    val storyResponse = story.execute()
 
-    assertThat(subtopicResponse.isSuccessful).isTrue()
-    assertThat(subtopicResponse.body()!!.subtopicTitle).isEqualTo("Subtopic 1")
+    assertThat(storyResponse.isSuccessful).isTrue()
+    assertThat(storyResponse.body()!!.storyTitle).isEqualTo("Story 1")
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockSubtopicTest_TestApplicationComponent
+    DaggerMockStoryTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -62,6 +56,6 @@ class MockSubtopicTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: MockSubtopicTest)
+    fun inject(test: MockStoryTest)
   }
 }
