@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends.test
+package org.oppia.android.data.backends.gae.api
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
@@ -11,7 +11,6 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.testing.network.ApiMockLoader
 import org.oppia.android.testing.network.MockFeedbackReportingService
