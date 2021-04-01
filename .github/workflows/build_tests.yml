@@ -46,7 +46,7 @@ jobs:
         with:
           path: ${{ env.CACHE_DIRECTORY }}
           key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-${{ github.sha }}
-          restory-keys: |
+          restore-keys: |
             ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
 
       # This check is needed to ensure that Bazel's unbounded cache growth doesn't result in a
