@@ -19,7 +19,6 @@ jobs:
   robolectric_tests:
     name: Non-app Module Robolectric Tests
     runs-on: ${{ matrix.os }}
-    if: false
     strategy:
       matrix:
         os: [ubuntu-18.04]
@@ -86,7 +85,6 @@ jobs:
 
   app_tests:
     name: App Module Robolectric Tests
-    if: false
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
