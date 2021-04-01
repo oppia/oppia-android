@@ -148,7 +148,7 @@ class FeedbackReportManagementController @Inject constructor(
   }
 
   // Creates the Moshi data class that gets sent in the service for the information collected from
-  // user reponses.
+  // user responses.
   private fun createGaeUserSuppliedFeedback(
     userSuppliedFeedback: UserSuppliedFeedback
   ): GaeUserSuppliedFeedback {
@@ -210,9 +210,15 @@ class FeedbackReportManagementController @Inject constructor(
             }
             userInput = issue.languageIssue.textLanguageIssue.otherUserInput
           }
-          // General language issues will pass through with no user input or options list as users
-          // aren't presented with specific issues to choose from if they don't specify what type of
-          // language issue.
+          LanguageIssue.LanguageIssueCategoryCase.GENERAL_LANGUAGE_ISSUE -> {
+            // General language issues will pass through with no user input or options list as users
+            // aren't presented with specific issues to choose from if they don't specify a type of
+            // language issue.
+          }
+          else -> throw IllegalArgumentException(
+            "Encountered unexpected language issue type: " +
+              issue.languageIssue.languageIssueCategoryCase.name
+          )
         }
       }
       IssueCategoryCase.TOPICS_ISSUE -> {
@@ -226,6 +232,9 @@ class FeedbackReportManagementController @Inject constructor(
       IssueCategoryCase.OTHER_ISSUE -> {
         userInput = issue.otherIssue.openUserInput
       }
+      else -> throw IllegalArgumentException(
+        "Encountered unexpected issue category: ${issue.issueCategoryCase.name}"
+      )
     }
     return GaeUserSuppliedFeedback(
       reportType = reportTypeName,
@@ -297,7 +306,15 @@ class FeedbackReportManagementController @Inject constructor(
         topicId = revisionCard.topicId
         subtopicId = revisionCard.subtopicId
       }
-      // If entry point is not an exploration player or revision card, leave story values as null
+      EntryPointCase.NAVIGATION_DRAWER -> {
+        // If entry point is not an exploration player or revision card, leave story values as null
+      }
+      EntryPointCase.CRASH_DIALOG -> {
+        // If entry point is not an exploration player or revision card, leave story values as null
+      }
+      else -> throw IllegalArgumentException(
+        "Encountered unexpected entry point: ${appContext.entryPointCase.name}"
+      )
     }
     return GaeFeedbackReportingEntryPoint(
       entryPointName = appContext.entryPointCase.name,

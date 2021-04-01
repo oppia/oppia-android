@@ -23,9 +23,11 @@ import org.mockito.MockitoAnnotations
 import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.Crash
+import org.oppia.android.app.model.DeviceSettings
 import org.oppia.android.app.model.FeedbackReport
 import org.oppia.android.app.model.FeedbackReportingAppContext
 import org.oppia.android.app.model.FeedbackReportingDatabase
+import org.oppia.android.app.model.NavigationDrawerEntryPoint
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
@@ -39,6 +41,7 @@ import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.network.MockFeedbackReportingService
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncResult
@@ -58,6 +61,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 import java.io.File
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -93,10 +97,12 @@ class FeedbackReportManagementControllerTest {
   lateinit var reportStoreResultCaptor: ArgumentCaptor<AsyncResult<FeedbackReportingDatabase>>
 
   private val appContext = FeedbackReportingAppContext.newBuilder()
-    .setIsAdmin(false)
+    .setNavigationDrawer(NavigationDrawerEntryPoint.getDefaultInstance())
     .setTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
+    .setDeviceSettings(DeviceSettings.getDefaultInstance())
     .setAudioLanguage(AudioLanguage.NO_AUDIO)
     .setTextLanguage(AppLanguage.ENGLISH_APP_LANGUAGE)
+    .setIsAdmin(false)
     .build()
 
   private val featureSuggestion = Suggestion.newBuilder()
@@ -104,23 +110,23 @@ class FeedbackReportManagementControllerTest {
     .setUserSubmittedSuggestion("A feature suggestion")
     .build()
 
-  private val userSuggestion = UserSuppliedFeedback.newBuilder()
+  private val userSuppliedSuggestionFeedback = UserSuppliedFeedback.newBuilder()
     .setSuggestion(featureSuggestion)
     .build()
 
   private val laterSuggestionReport = FeedbackReport.newBuilder()
     .setReportSubmissionTimestampSec(LATER_TIMESTAMP)
-    .setUserSuppliedInfo(userSuggestion)
+    .setUserSuppliedInfo(userSuppliedSuggestionFeedback)
     .setAppContext(appContext)
     .build()
 
-  private val userCrash = UserSuppliedFeedback.newBuilder()
+  private val userSuppliedCrashFeedback = UserSuppliedFeedback.newBuilder()
     .setCrash(Crash.getDefaultInstance())
     .build()
 
   private val earlierCrashReport = FeedbackReport.newBuilder()
     .setReportSubmissionTimestampSec(EARLIER_TIMESTAMP)
-    .setUserSuppliedInfo(userCrash)
+    .setUserSuppliedInfo(userSuppliedCrashFeedback)
     .setAppContext(appContext)
     .build()
 
