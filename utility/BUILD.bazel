@@ -15,6 +15,7 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/accessibility/*.kt",
     "src/main/java/org/oppia/android/util/profile/*.kt",
     "src/main/java/org/oppia/android/util/datetime/*.kt",
+    "src/main/java/org/oppia/android/util/extensions/*.kt",
     "src/main/java/org/oppia/android/util/system/*.kt",
     "src/main/java/org/oppia/android/util/networking/*.kt",
     "src/main/java/org/oppia/android/util/threading/*.kt",
@@ -75,6 +76,7 @@ TEST_DEPS = [
     "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",
+    "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &

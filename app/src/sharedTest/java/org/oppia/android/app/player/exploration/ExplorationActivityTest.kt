@@ -222,7 +222,8 @@ class ExplorationActivityTest {
       explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
-      onView(withText(context.getString(R.string.help))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.menu_help)))
+        .check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -239,7 +240,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
       openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.help))).perform(click())
+      onView(withText(context.getString(R.string.menu_help))).perform(click())
       intended(hasComponent(HelpActivity::class.java.name))
       intended(hasExtra(HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, /* value= */ false))
     }
@@ -844,7 +845,6 @@ class ExplorationActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
