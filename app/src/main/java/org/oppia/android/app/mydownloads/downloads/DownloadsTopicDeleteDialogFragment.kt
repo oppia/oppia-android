@@ -38,7 +38,6 @@ class DownloadsTopicDeleteDialogFragment : DialogFragment() {
     val internalProfileId = args.getInt(PROFILE_ID_ARGUMENT_KEY)
     val isAllowedDownloadAccess = args.getBoolean(PROFILE_DOWNLOAD_ACCESS_ARGUMENT_KEY)
 
-
     if (isAllowedDownloadAccess) {
       alertDialog = AlertDialog
         .Builder(ContextThemeWrapper(activity as Context, R.style.AlertDialogTheme))
