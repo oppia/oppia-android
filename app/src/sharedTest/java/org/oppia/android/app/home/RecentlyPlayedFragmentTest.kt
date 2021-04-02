@@ -206,7 +206,7 @@ class RecentlyPlayedFragmentTest {
       )
       onView(
         atPositionOnView(
-          recyclerViewId = R.id. promoted_story_recycler_view,
+          recyclerViewId = R.id.promoted_story_recycler_view,
           position = 0,
           targetViewId = R.id.divider_view
         )

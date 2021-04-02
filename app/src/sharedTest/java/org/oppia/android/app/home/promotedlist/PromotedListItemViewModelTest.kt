@@ -95,7 +95,7 @@ class PromotedListItemViewModelTest {
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedListItemViewModel = createBasicPromotedListItemViewModel(
 
-           homeFragmentTestActivity)
+          homeFragmentTestActivity)
 
         // Verify the reflexive property of equals(): a == a.
         assertThat(promotedListItemViewModel).isEqualTo(promotedListItemViewModel)
@@ -199,31 +199,30 @@ class PromotedListItemViewModelTest {
 
   @Test
   fun testPromotedListItemViewModelEquals_storyCount2AndStoryCount3_isNotEqual() {
-      launch<HomeFragmentTestActivity>(
-        HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-      ).use { homeFragmentTestActivityScenario ->
-        homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-          val promotedListItemViewModelStoryCount2 = PromotedListItemViewModel(
-            activity = homeFragmentTestActivity,
-            internalProfileId = 1,
-            totalStoryCount = 2,
-            entityType = "entity",
-            promotedStory = promotedStory1
-          )
-          val promotedListItemViewModelStoryCount3 = PromotedListItemViewModel(
-            activity = homeFragmentTestActivity,
-            internalProfileId = 1,
-            totalStoryCount = 3,
-            entityType = "entity",
-            promotedStory = promotedStory1
-          )
+    launch<HomeFragmentTestActivity>(
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+    ).use { homeFragmentTestActivityScenario ->
+      homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
+        val promotedListItemViewModelStoryCount2 = PromotedListItemViewModel(
+          activity = homeFragmentTestActivity,
+          internalProfileId = 1,
+          totalStoryCount = 2,
+          entityType = "entity",
+          promotedStory = promotedStory1
+        )
+        val promotedListItemViewModelStoryCount3 = PromotedListItemViewModel(
+          activity = homeFragmentTestActivity,
+          internalProfileId = 1,
+          totalStoryCount = 3,
+          entityType = "entity",
+          promotedStory = promotedStory1
+        )
 
-          assertThat(promotedListItemViewModelStoryCount2)
-            .isNotEqualTo(promotedListItemViewModelStoryCount3)
-        }
+        assertThat(promotedListItemViewModelStoryCount2)
+          .isNotEqualTo(promotedListItemViewModelStoryCount3)
       }
+    }
   }
-
 
   @Test
   fun testPromotedListItemViewModelEquals_entity1AndEntity2_isNotEqual() {
@@ -285,8 +284,10 @@ class PromotedListItemViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedListItemViewModel = createBasicPromotedListItemViewModel(homeFragmentTestActivity)
-        val promotedListItemViewModelCopy = createBasicPromotedListItemViewModel(homeFragmentTestActivity)
+        val promotedListItemViewModel =
+          createBasicPromotedListItemViewModel(homeFragmentTestActivity)
+        val promotedListItemViewModelCopy =
+          createBasicPromotedListItemViewModel(homeFragmentTestActivity)
         assertThat(promotedListItemViewModel).isEqualTo(promotedListItemViewModelCopy)
 
         // Verify that if a == b, then a.hashCode == b.hashCode
@@ -296,14 +297,14 @@ class PromotedListItemViewModelTest {
     }
   }
 
-
   @Test
   fun testPromotedListItemViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedListItemViewModel = createBasicPromotedListItemViewModel(homeFragmentTestActivity)
+        val promotedListItemViewModel =
+          createBasicPromotedListItemViewModel(homeFragmentTestActivity)
         val firstHash = promotedListItemViewModel.hashCode()
         val secondHash = promotedListItemViewModel.hashCode()
 
