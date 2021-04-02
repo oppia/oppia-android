@@ -93,9 +93,8 @@ class PromotedListItemViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedListItemViewModel = createBasicPromotedListItemViewModel(
-
-          homeFragmentTestActivity)
+        val promotedListItemViewModel =
+          createBasicPromotedListItemViewModel(homeFragmentTestActivity)
 
         // Verify the reflexive property of equals(): a == a.
         assertThat(promotedListItemViewModel).isEqualTo(promotedListItemViewModel)
@@ -109,8 +108,10 @@ class PromotedListItemViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedListItemViewModel = createBasicPromotedListItemViewModel(homeFragmentTestActivity)
-        val promotedListItemViewModelCopy = createBasicPromotedListItemViewModel(homeFragmentTestActivity)
+        val promotedListItemViewModel =
+          createBasicPromotedListItemViewModel(homeFragmentTestActivity)
+        val promotedListItemViewModelCopy =
+          createBasicPromotedListItemViewModel(homeFragmentTestActivity)
 
         // Verify the symmetric property of equals(): a == b iff b == a.
         assertThat(promotedListItemViewModel).isEqualTo(promotedListItemViewModelCopy)
@@ -146,8 +147,10 @@ class PromotedListItemViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedListItemViewModel = createBasicPromotedListItemViewModel(homeFragmentTestActivity)
-        val promotedListItemViewModelCopy = createBasicPromotedListItemViewModel(homeFragmentTestActivity)
+        val promotedListItemViewModel =
+          createBasicPromotedListItemViewModel(homeFragmentTestActivity)
+        val promotedListItemViewModelCopy =
+          createBasicPromotedListItemViewModel(homeFragmentTestActivity)
         assertThat(promotedListItemViewModel).isEqualTo(promotedListItemViewModelCopy)
 
         // Verify the consistent property of equals(): if neither object is modified, then a == b
@@ -163,7 +166,8 @@ class PromotedListItemViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedListItemViewModel = createBasicPromotedListItemViewModel(homeFragmentTestActivity)
+        val promotedListItemViewModel =
+          createBasicPromotedListItemViewModel(homeFragmentTestActivity)
 
         assertThat(promotedListItemViewModel).isNotEqualTo(null)
       }
@@ -176,8 +180,8 @@ class PromotedListItemViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedListItemViewModelProfile1  = PromotedListItemViewModel(
-          activity =  homeFragmentTestActivity,
+        val promotedListItemViewModelProfile1 = PromotedListItemViewModel(
+          activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity",
