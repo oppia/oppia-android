@@ -94,7 +94,8 @@ class PromotedListItemViewModelTest {
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedListItemViewModel = createBasicPromotedListItemViewModel(
-          homeFragmentTestActivity)
+
+           homeFragmentTestActivity)
 
         // Verify the reflexive property of equals(): a == a.
         assertThat(promotedListItemViewModel).isEqualTo(promotedListItemViewModel)
