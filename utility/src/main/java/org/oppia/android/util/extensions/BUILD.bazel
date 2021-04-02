@@ -16,7 +16,7 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "context_extensinos",
+    name = "context_extensions",
     srcs = [
         "ContextExtensions.kt",
     ],
