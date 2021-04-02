@@ -271,6 +271,8 @@
   <string name="download_topic_delete_dialog_message">Delete this topic from the device?</string>
   <string name="download_topic_delete__dialog_cancel">Cancel</string>
   <string name="download_topic_delete__dialog_delete">Delete</string>
+  <string name="downloads_access_dialog_heading">Administrator Permission</string>
+  <string name="downloads_access_dialog_message">Administrator\'s PIN is required to delete this topic from the device.</string>
   <!-- HomeActivityBackDialog -->
   <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
   <string name="home_activity_back_dialog_cancel">Cancel</string>

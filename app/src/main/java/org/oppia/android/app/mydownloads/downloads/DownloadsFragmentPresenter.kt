@@ -14,7 +14,10 @@ import org.oppia.android.databinding.DownloadsSortbyBinding
 import org.oppia.android.databinding.DownloadsTopicCardBinding
 import javax.inject.Inject
 
-const val TAG_DOWNLOAD_TOPIC_DELETE_DIALOG = "DOWNLOAD_TOPIC_DELETE_DIALOG"
+const val DELETE_DOWNLOAD_TOPIC_DIALOG_TAG =
+  "DownloadsTopicDeleteDialogFragment.delete_download_topic_dialog_tag"
+const val ADMIN_PIN_CONFIRMATION_DIALOG_TAG =
+  "DownloadsAccessDialogFragment.admin_pin_confirmation_dialog_tag"
 
 /** The presenter for [DownloadsFragment]. */
 @FragmentScope
@@ -117,12 +120,19 @@ class DownloadsFragmentPresenter @Inject constructor(
     }
 
     binding.deleteImageView.setOnClickListener {
-      downloadsViewModel.isAllowedDownloadAccess.observe(
+      downloadsViewModel.profileLiveData.observe(
         fragment,
-        Observer { isAllowedDownloadAccess ->
-          val dialogFragment = DownloadsTopicDeleteDialogFragment
-            .newInstance(internalProfileId, isAllowedDownloadAccess)
-          dialogFragment.showNow(fragment.childFragmentManager, TAG_DOWNLOAD_TOPIC_DELETE_DIALOG)
+        Observer { profile ->
+          if (profile.allowDownloadAccess) {
+            val dialogFragment = DownloadsTopicDeleteDialogFragment
+              .newInstance(internalProfileId, profile.allowDownloadAccess)
+            dialogFragment.showNow(fragment.childFragmentManager, DELETE_DOWNLOAD_TOPIC_DIALOG_TAG)
+          } else {
+            val adminPin = downloadsViewModel.adminPin
+            val dialogFragment = DownloadsAccessDialogFragment
+              .newInstance(adminPin, internalProfileId, profile.allowDownloadAccess)
+            dialogFragment.showNow(fragment.childFragmentManager, ADMIN_PIN_CONFIRMATION_DIALOG_TAG)
+          }
         }
       )
     }

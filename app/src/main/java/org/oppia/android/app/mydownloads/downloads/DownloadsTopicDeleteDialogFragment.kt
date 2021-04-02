@@ -7,8 +7,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
-import org.oppia.android.app.mydownloads.PROFILE_DOWNLOAD_ACCESS_ARGUMENT_KEY
-import org.oppia.android.app.mydownloads.PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.mydownloads.INTERNAL_PROFILE_ID_SAVED_KEY
+import org.oppia.android.app.mydownloads.IS_ALLOWED_DOWNLOAD_ACCESS_SAVED_KEY
 
 class DownloadsTopicDeleteDialogFragment : DialogFragment() {
 
@@ -22,8 +22,8 @@ class DownloadsTopicDeleteDialogFragment : DialogFragment() {
     ): DownloadsTopicDeleteDialogFragment {
       val downloadsTopicDeleteDialogFragment = DownloadsTopicDeleteDialogFragment()
       val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putBoolean(PROFILE_DOWNLOAD_ACCESS_ARGUMENT_KEY, allowedDownloadAccess)
+      args.putInt(INTERNAL_PROFILE_ID_SAVED_KEY, internalProfileId)
+      args.putBoolean(IS_ALLOWED_DOWNLOAD_ACCESS_SAVED_KEY, allowedDownloadAccess)
       downloadsTopicDeleteDialogFragment.arguments = args
       return downloadsTopicDeleteDialogFragment
     }
@@ -35,22 +35,19 @@ class DownloadsTopicDeleteDialogFragment : DialogFragment() {
         "Expected arguments to be pass to DownloadsTopicDeleteDialogFragment"
       }
 
-    val internalProfileId = args.getInt(PROFILE_ID_ARGUMENT_KEY)
-    val isAllowedDownloadAccess = args.getBoolean(PROFILE_DOWNLOAD_ACCESS_ARGUMENT_KEY)
+    val internalProfileId = args.getInt(INTERNAL_PROFILE_ID_SAVED_KEY)
+    val isAllowedDownloadAccess = args.getBoolean(IS_ALLOWED_DOWNLOAD_ACCESS_SAVED_KEY)
 
-    if (isAllowedDownloadAccess) {
-      alertDialog = AlertDialog
-        .Builder(ContextThemeWrapper(activity as Context, R.style.AlertDialogTheme))
-        .setMessage(R.string.download_topic_delete_dialog_message)
-        .setNegativeButton(R.string.download_topic_delete__dialog_cancel) { dialog, _ ->
-          dialog.dismiss()
-        }
-        .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
-          // TODO(): call delete API in DownloadManagementController
-        }
-        .create()
-    } else {
-    }
+    val alertDialog = AlertDialog
+      .Builder(ContextThemeWrapper(activity as Context, R.style.AlertDialogTheme))
+      .setMessage(R.string.download_topic_delete_dialog_message)
+      .setNegativeButton(R.string.download_topic_delete__dialog_cancel) { dialog, _ ->
+        dialog.dismiss()
+      }
+      .setPositiveButton(R.string.download_topic_delete__dialog_delete) { _, _ ->
+        // TODO(): call delete API in DownloadManagementController
+      }
+      .create()
 
     alertDialog.setCanceledOnTouchOutside(false)
     return alertDialog

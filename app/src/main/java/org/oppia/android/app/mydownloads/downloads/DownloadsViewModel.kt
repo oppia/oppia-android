@@ -32,23 +32,35 @@ class DownloadsViewModel @Inject constructor(
 
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
+  lateinit var adminPin: String
 
-  val isAllowedDownloadAccess: LiveData<Boolean> by lazy {
+  val profileLiveData: LiveData<Profile> by lazy {
     Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
-      ::processGetProfileDownloadAccessResult
+      profileManagementController.getProfiles().toLiveData(),
+      ::processGetProfilesResult
     )
   }
 
-  private fun processGetProfileDownloadAccessResult(profileResult: AsyncResult<Profile>): Boolean {
-    if (profileResult.isFailure()) {
+  private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): Profile {
+    if (profilesResult.isFailure()) {
       logger.e(
-        "ProfileEditViewModel",
-        "Failed to retrieve the profile with ID: ${profileId.internalId}",
-        profileResult.getErrorOrNull()!!
+        "DownloadsViewModel",
+        "Failed to retrieve the list of profiles",
+        profilesResult.getErrorOrNull()!!
       )
     }
-    return profileResult.getOrDefault(Profile.getDefaultInstance()).allowDownloadAccess
+
+    val profileList = profilesResult.getOrDefault(emptyList())
+    val adminProfile = profileList.single { profile ->
+      profile.isAdmin
+    }
+    adminPin = adminProfile.pin
+
+    val currentProfile = profileList.single { profile ->
+      profileId == profile.id
+    }
+
+    return currentProfile
   }
 
   fun setInternalProfileId(internalProfileId: Int) {

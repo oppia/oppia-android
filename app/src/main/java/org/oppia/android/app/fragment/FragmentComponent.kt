@@ -14,6 +14,7 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.home.HomeFragment
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedFragment
 import org.oppia.android.app.mydownloads.MyDownloadsFragment
+import org.oppia.android.app.mydownloads.downloads.DownloadsAccessDialogFragment
 import org.oppia.android.app.mydownloads.downloads.DownloadsFragment
 import org.oppia.android.app.mydownloads.updates.UpdatesFragment
 import org.oppia.android.app.onboarding.OnboardingFragment
@@ -80,6 +81,7 @@ interface FragmentComponent {
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
   fun inject(audioLanguageFragment: AudioLanguageFragment)
+  fun inject(downloadsAccessDialogFragment: DownloadsAccessDialogFragment)
   fun inject(downloadsFragment: DownloadsFragment)
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(explorationManagerFragment: ExplorationManagerFragment)
