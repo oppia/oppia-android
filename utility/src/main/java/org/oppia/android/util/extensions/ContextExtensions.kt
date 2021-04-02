@@ -9,7 +9,7 @@ fun Context.getVersionName(): String {
   return this.packageManager.getPackageInfo(this.packageName, /* flags=*/ 0).versionName
 }
 
-/** Returns the current app version Code. */
+/** Returns the current app version code. */
 fun Context.getVersionCode(): Int {
   return this.packageManager.getPackageInfo(this.packageName, /* flags=*/ 0).versionCode
 }
