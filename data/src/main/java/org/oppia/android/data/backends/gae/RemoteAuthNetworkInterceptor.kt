@@ -4,7 +4,8 @@ import android.content.Context
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import org.oppia.android.util.BuildConfig
+import org.oppia.android.app.utility.getVersionCode
+import org.oppia.android.app.utility.getVersionName
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -40,8 +41,8 @@ class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
     return request.newBuilder()
       .addHeader("api_key", networkApiKey)
       .addHeader("app_package_name", context.packageName)
-      .addHeader("app_version_name", BuildConfig.VERSION_NAME)
-      .addHeader("app_version_code", BuildConfig.VERSION_CODE.toString())
+      .addHeader("app_version_name", context.getVersionName())
+      .addHeader("app_version_code", context.getVersionCode().toString())
       .build()
   }
 }

@@ -3,18 +3,24 @@ package org.oppia.android.data.backends.gae
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.core.content.pm.ApplicationInfoBuilder
+import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import okhttp3.Headers
 import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.utility.getVersionCode
+import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.data.backends.gae.api.TopicService
 import org.oppia.android.testing.network.MockTopicService
+import org.robolectric.Shadows
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -40,7 +46,24 @@ class RemoteAuthNetworkInterceptorTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    setUpApplicationForContext(context)
     setUpMockRetrofit()
+  }
+
+  private fun setUpApplicationForContext(
+    context: Context
+  ) {
+    val packageManager = Shadows.shadowOf(context.packageManager)
+    val applicationInfo =
+      ApplicationInfoBuilder.newBuilder()
+//        .setPackageName("test_package_name")
+        .build()
+    val packageInfo =
+      PackageInfoBuilder.newBuilder()
+//        .setPackageName("test_package_name")
+        .setApplicationInfo(applicationInfo)
+        .build()
+    packageManager.installPackage(packageInfo)
   }
 
   @Test
@@ -55,11 +78,7 @@ class RemoteAuthNetworkInterceptorTest {
     assertThat(request.header("app_version_code")).isNull()
 
     val newRequest = networkInterceptor.addAuthHeaders(request)
-
-    assertThat(newRequest.header("api_key")).isEqualTo("test_api_key")
-    assertThat(newRequest.header("app_package_name")).isNotNull()
-    assertThat(newRequest.header("app_version_name")).isNotNull()
-    assertThat(newRequest.header("app_version_code")).isNotNull()
+    verifyRequestHeaders(newRequest.headers)
   }
 
   @Test
@@ -76,14 +95,14 @@ class RemoteAuthNetworkInterceptorTest {
       .build()
 
     val newRequest = networkInterceptor.addAuthHeaders(request)
+    verifyRequestHeaders(newRequest.headers)
+  }
 
-    assertThat(newRequest.header("api_key")).isEqualTo("test_api_key")
-    assertThat(newRequest.header("app_package_name"))
-      .isNotEqualTo("wrong_package_name")
-    assertThat(newRequest.header("app_version_name"))
-      .isNotEqualTo("wrong_version_name")
-    assertThat(newRequest.header("app_version_code"))
-      .isNotEqualTo("wrong_version_code")
+  private fun verifyRequestHeaders(headers: Headers) {
+    assertThat(headers.get("api_key")).isEqualTo("test_api_key")
+    assertThat(headers.get("app_package_name")).isEqualTo("test_package_name")
+    assertThat(headers.get("app_version_name")).isEqualTo(context.getVersionName())
+    assertThat(headers.get("app_version_code")).isEqualTo(context.getVersionCode().toString())
   }
 
   private fun setUpMockRetrofit() {

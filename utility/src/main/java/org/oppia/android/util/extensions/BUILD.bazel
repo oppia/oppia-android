@@ -16,6 +16,18 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "context_extensinos",
+    srcs = [
+        "ContextExtensions.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model",
+        "//third_party:com_google_protobuf_protobuf-lite",
+    ],
+)
+
+kt_android_library(
     name = "language_code_extensions",
     srcs = [
         "LanguageCodeExtensions.kt",
