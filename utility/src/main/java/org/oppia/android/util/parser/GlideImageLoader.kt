@@ -36,7 +36,8 @@ class GlideImageLoader @Inject constructor(
     Glide.with(context)
       .asBitmap()
       .load(model)
-      .dontTransform()
+      .fitCenter()
+      .transform(*transformations.toGlideTransformations())
       .intoTarget(target)
   }
 
@@ -59,7 +60,7 @@ class GlideImageLoader @Inject constructor(
       .fitCenter()
       .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
       .load(model)
-      .dontTransform()
+      .transform(*transformations.toGlideTransformations())
       .intoTarget(target)
   }
 
@@ -71,7 +72,8 @@ class GlideImageLoader @Inject constructor(
     Glide.with(context)
       .asDrawable()
       .load(imageDrawableResId)
-      .dontTransform()
+      .fitCenter()
+      .transform(*transformations.toGlideTransformations())
       .intoTarget(target)
   }
 
