@@ -36,7 +36,6 @@ class GlideImageLoader @Inject constructor(
     Glide.with(context)
       .asBitmap()
       .load(model)
-      .fitCenter()
       .transform(*transformations.toGlideTransformations())
       .intoTarget(target)
   }
@@ -72,7 +71,6 @@ class GlideImageLoader @Inject constructor(
     Glide.with(context)
       .asDrawable()
       .load(imageDrawableResId)
-      .fitCenter()
       .transform(*transformations.toGlideTransformations())
       .intoTarget(target)
   }
