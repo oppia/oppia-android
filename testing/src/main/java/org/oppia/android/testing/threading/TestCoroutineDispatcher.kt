@@ -2,7 +2,6 @@ package org.oppia.android.testing.threading
 
 import android.os.Build
 import kotlinx.coroutines.CoroutineDispatcher
-import org.oppia.android.testing.FakeSystemClock
 import java.util.concurrent.TimeUnit
 
 /**
@@ -34,10 +33,11 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
    * Returns whether there are any tasks known to the dispatcher that have not yet been started.
    *
    * Note that some of these tasks may be scheduled for the future. This is meant to be used in
-   * conjunction with [FakeSystemClock.advanceTime] since that along with [runCurrent] will execute
-   * all tasks up to the new time. If the time returned by [getNextFutureTaskCompletionTimeMillis]
-   * plus the current time is passed to [FakeSystemClock.advanceTime], this dispatcher guarantees
-   * that [hasPendingTasks] will return false after a call to [runCurrent] returns.
+   * conjunction with [org.oppia.android.testing.FakeSystemClock.advanceTime] since that along with
+   * [runCurrent] will execute all tasks up to the new time. If the time returned by
+   * [getNextFutureTaskCompletionTimeMillis] plus the current time is passed to
+   * [org.oppia.android.testing.FakeSystemClock.advanceTime], this dispatcher guarantees that
+   * [hasPendingTasks] will return false after a call to [runCurrent] returns.
    *
    * This function makes no guarantees about idleness with respect to other dispatchers (e.g. even
    * if all tasks are executed, another dispatcher could schedule another task on this dispatcher in

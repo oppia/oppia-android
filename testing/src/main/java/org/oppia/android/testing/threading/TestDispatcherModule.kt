@@ -6,7 +6,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
-import org.oppia.android.testing.IsOnRobolectric
+import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.BlockingDispatcher
 import java.util.concurrent.Executors

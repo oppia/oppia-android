@@ -31,7 +31,7 @@ import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.RobolectricModule
+import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule

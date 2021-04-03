@@ -1,6 +1,6 @@
 package org.oppia.android.testing.threading
 
-import org.oppia.android.testing.FakeSystemClock
+import org.oppia.android.testing.time.FakeSystemClock
 import java.lang.reflect.Method
 import java.time.Duration
 import java.util.TreeSet

@@ -12,7 +12,7 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import org.oppia.android.testing.FakeSystemClock
+import org.oppia.android.testing.time.FakeSystemClock
 import java.util.TreeSet
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.Executors

@@ -27,7 +27,7 @@ import org.mockito.Mockito.verifyZeroInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.RobolectricModule
+import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule

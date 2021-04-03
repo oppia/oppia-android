@@ -12,8 +12,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
-import org.oppia.android.testing.FakeSystemClock
-import org.oppia.android.testing.RobolectricModule
+import org.oppia.android.testing.time.FakeSystemClock
+import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule

@@ -35,7 +35,7 @@ import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILA
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.RobolectricModule
+import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
