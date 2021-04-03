@@ -755,7 +755,7 @@ class RecentlyPlayedFragmentTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.promoted_story_recycler_view,
-          position =  1,
+          position = 1,
           targetViewId = R.id.lesson_thumbnail
         )
       ).check(
