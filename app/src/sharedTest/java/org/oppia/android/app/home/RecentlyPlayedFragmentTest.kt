@@ -195,7 +195,7 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -229,7 +229,7 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -595,7 +595,7 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_sectionDividerIsNotDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId,
+      profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
