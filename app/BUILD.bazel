@@ -510,7 +510,7 @@ kt_android_library(
     custom_package = "org.oppia.android.app",
     deps = [
         ":dagger",
-        "//model",
+        "//model:topic_java_proto_lite",
         "//third_party:androidx_recyclerview_recyclerview",
     ],
 )
