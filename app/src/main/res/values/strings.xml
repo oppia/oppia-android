@@ -6,6 +6,7 @@
   <string name="menu_options">Options</string>
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
+  <string name="help_activity_title">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="administrator_controls">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
@@ -61,6 +62,7 @@
   <string name="topic_page">Topic page</string>
   <string name="topic_name">Topic: %s</string>
   <string name="topic">Topic</string>
+  <string name="ongoing_topic_list_activity_title">Topics in Progress</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
   <string name="topic_play_chapter_index">%s.</string>
   <string name="chapter_name">Chapter %s: %s</string>
@@ -77,6 +79,7 @@
   <string name="view_all">View All</string>
   <string name="ongoing_story_last_week">Played within the Last Week</string>
   <string name="ongoing_story_last_month">Played within the Last Month</string>
+  <string name="story_activity_title">Chapter List</string>
   <string name="lesson_thumbnail_content_description">Image for %s</string>
   <string name="all_topics">All Topics</string>
   <string name="stories_you_can_play">Stories You Can Play</string>
@@ -93,7 +96,6 @@
   <string name="status_completed">Completed</string>
   <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>
   <string name="play_pause_audio">Play/Pause Audio</string>
-  <string name="help">Help</string>
   <string name="preferences">Preferences</string>
   <string name="profile_progress_activity_title">Profile Progress Page</string>
   <string name="search">Search</string>
@@ -218,6 +220,7 @@
   <string name="save">Save</string>
   <string name="admin_pin_activity_title">Authorise to add profiles</string>
   <!-- AddProfileActivity -->
+  <string name="add_profile_activity_label">Add Profile</string>
   <string name="add_profile_title">Add Profile</string>
   <string name="add_profile_input_name">Name*</string>
   <string name="add_profile_input_pin">3-Digit PIN*</string>
@@ -300,7 +303,7 @@
   <string name="profile_picture_edit_alert_dialog_view_profile_picture">View Profile Picture</string>
   <string name="profile_picture_edit_alert_dialog_choose_from_library">Choose From Library</string>
   <!-- ProfileRenameActivity -->
-  <string name="profile_rename_title">Rename Profile</string>
+  <string name="profile_rename_activity_title">Rename Profile</string>
   <string name="profile_rename_label">New Name</string>
   <string name="profile_rename_save">save</string>
   <!-- ProfileResetPinActivity -->
@@ -336,6 +339,7 @@
   <!-- AppVersionFragment -->
   <string name="app_version_name">App Version %s</string>
   <string name="app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
+  <string name="app_version_activity_title">App Version</string>
   <!-- OptionsActivity -->
   <string name="app_language_activity_title">App Language</string>
   <string name="audio_language_activity_title">Default Audio Language</string>
@@ -436,4 +440,5 @@
   <string name="coming_soon">Coming Soon</string>
   <string name="recommended_stories">Recommended Stories</string>
   <string name="stories_for_you">Stories For You</string>
+  <string name="revision_card_activity_title">Skill revision page</string>
 </resources>

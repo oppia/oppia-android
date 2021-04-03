@@ -132,6 +132,23 @@ class HelpFragmentTest {
   }
 
   @Test
+  fun testHelpFragment_notFromNavigationDrawer_navigationDrawerIsNotPresent() {
+    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+      onView(withId(R.id.help_activity_fragment_navigation_drawer))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testHelpFragment_notFromNavigationDrawer_configChange_navigationDrawerIsNotPresent() {
+    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_activity_fragment_navigation_drawer))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
   fun testHelpFragment_parentIsNotExploration_checkBackArrowNotVisible() {
     launch<HelpActivity>(
       createHelpActivityIntent(
@@ -269,7 +286,6 @@ class HelpFragmentTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
