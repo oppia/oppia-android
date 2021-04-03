@@ -440,9 +440,6 @@
   <string name="coming_soon">Coming Soon</string>
   <string name="recommended_stories">Recommended Stories</string>
   <string name="stories_for_you">Stories For You</string>
-<<<<<<< HEAD
   <string name="question_player_activity_title">Practice Mode</string>
-=======
   <string name="revision_card_activity_title">Skill revision page</string>
->>>>>>> develop
 </resources>
