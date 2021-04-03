@@ -1,5 +1,8 @@
 package org.oppia.android.testing
 
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -76,8 +79,12 @@ class CoroutineExecutorServiceTest {
   @Inject
   lateinit var testDispatcherFactory: TestCoroutineDispatcher.Factory
 
+  @Inject
+  lateinit var fakeSystemClock: FakeSystemClock
+
   @Mock
   lateinit var mockRunnable: Runnable
+
   @Mock
   lateinit var mockCallable: Callable<String>
 
@@ -1091,6 +1098,18 @@ class CoroutineExecutorServiceTest {
         }
       }
     }
+  }
+
+  private fun TestCoroutineDispatcher.runUntilIdle() {
+    var nextTaskTimeMillis: Long?
+    do {
+      val currentTimeMillis = fakeSystemClock.getTimeMillis()
+      runCurrent()
+      nextTaskTimeMillis = getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
+      if (nextTaskTimeMillis != null) {
+        fakeSystemClock.advanceTime(nextTaskTimeMillis - currentTimeMillis)
+      }
+    } while (nextTaskTimeMillis != null)
   }
 
   // TODO(#89): Move this to a common test application component.

@@ -1,7 +1,8 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.threading
 
 import android.os.Build
 import kotlinx.coroutines.CoroutineDispatcher
+import org.oppia.android.testing.FakeSystemClock
 import java.util.concurrent.TimeUnit
 
 /**
@@ -72,16 +73,6 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
    *     when trying to execute tasks before giving up
    */
   abstract fun runCurrent(
-    timeout: Long = DEFAULT_TIMEOUT_SECONDS,
-    timeoutUnit: TimeUnit = DEFAULT_TIMEOUT_UNIT
-  )
-
-  /**
-   * Runs all tasks currently scheduled, including future sheduled tasks. Normal use cases should
-   * use [TestCoroutineDispatchers], not this method. This is reserved for special cases (like
-   * isolated test dispatchers).
-   */
-  abstract fun runUntilIdle(
     timeout: Long = DEFAULT_TIMEOUT_SECONDS,
     timeoutUnit: TimeUnit = DEFAULT_TIMEOUT_UNIT
   )

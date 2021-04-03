@@ -1,5 +1,6 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.threading
 
+import org.oppia.android.testing.FakeSystemClock
 import java.lang.reflect.Method
 import java.time.Duration
 import java.util.TreeSet
@@ -130,15 +131,15 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     private val idleMethod by lazy { loadIdleMethod() }
     private val nextScheduledTimeMethod by lazy { loadGetNextScheduledTaskTimeMethod() }
 
-    internal fun isIdle(): Boolean {
+    fun isIdle(): Boolean {
       return isIdleMethod.invoke(shadowUiLooper) as Boolean
     }
 
-    internal fun idle() {
+    fun idle() {
       idleMethod.invoke(shadowUiLooper)
     }
 
-    internal fun getNextUiThreadFutureTaskTimeMillis(timeMillis: Long): Long? {
+    fun getNextUiThreadFutureTaskTimeMillis(timeMillis: Long): Long? {
       val nextScheduledTime = nextScheduledTimeMethod.invoke(shadowUiLooper) as Duration
       val delayMs = nextScheduledTime.toMillis()
       if (delayMs == 0L && isIdle()) {

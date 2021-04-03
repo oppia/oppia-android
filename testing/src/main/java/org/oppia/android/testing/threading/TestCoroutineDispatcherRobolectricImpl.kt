@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.threading
 
 import android.annotation.SuppressLint
 import kotlinx.coroutines.CancellableContinuation
@@ -11,17 +11,14 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.DelayController
-import kotlinx.coroutines.test.UncompletedCoroutinesError
 import kotlinx.coroutines.withTimeout
+import org.oppia.android.testing.FakeSystemClock
 import java.util.TreeSet
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
-import kotlin.Comparator
 import kotlin.coroutines.CoroutineContext
 
 // TODO(#89): Audit & adjust the thread safety of this class, and determine if there's a way to move
@@ -43,11 +40,10 @@ import kotlin.coroutines.CoroutineContext
 class TestCoroutineDispatcherRobolectricImpl private constructor(
   private val fakeSystemClock: FakeSystemClock,
   private val realCoroutineDispatcher: CoroutineDispatcher
-) : TestCoroutineDispatcher(), Delay, DelayController {
+) : TestCoroutineDispatcher(), Delay {
 
   /** Sorted set that first sorts on when a task should be executed, then insertion order. */
   private val taskQueue = CopyOnWriteArraySet<Task>()
-  private val isRunning = AtomicBoolean(true)
   private val executingTaskCount = AtomicInteger(0)
   private val totalTaskCount = AtomicInteger(0)
   private var taskIdleListener: TaskIdleListener? = null
@@ -63,10 +59,6 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
     CoroutineScope(queueCoroutineDispatcher)
   }
 
-  @ExperimentalCoroutinesApi
-  override val currentTime: Long
-    get() = fakeSystemClock.getTimeMillis()
-
   override fun dispatch(context: CoroutineContext, block: Runnable) {
     enqueueTask(createDeferredRunnable(context, block))
   }
@@ -78,87 +70,8 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
     enqueueTask(createContinuationRunnable(continuation), delayMillis = timeMillis)
   }
 
-  @ExperimentalCoroutinesApi
-  override fun advanceTimeBy(delayTimeMillis: Long): Long {
-    flushTaskQueueBlocking(
-      fakeSystemClock.advanceTime(delayTimeMillis),
-      DEFAULT_TIMEOUT_UNIT.toMillis(DEFAULT_TIMEOUT_SECONDS)
-    )
-    return delayTimeMillis
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun advanceUntilIdle(): Long {
-    throw UnsupportedOperationException(
-      "Use TestCoroutineDispatchers.advanceUntilIdle() to ensure the dispatchers are properly " +
-        "coordinated"
-    )
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun cleanupTestCoroutines() {
-    flushTaskQueueBlocking(
-      fakeSystemClock.getTimeMillis(), DEFAULT_TIMEOUT_UNIT.toMillis(DEFAULT_TIMEOUT_SECONDS)
-    )
-    val remainingTaskCount = taskQueue.size
-    if (remainingTaskCount != 0) {
-      throw UncompletedCoroutinesError(
-        "Expected no remaining tasks for test dispatcher, but found $remainingTaskCount"
-      )
-    }
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun pauseDispatcher() {
-    isRunning.set(false)
-  }
-
-  @ExperimentalCoroutinesApi
-  override suspend fun pauseDispatcher(block: suspend () -> Unit) {
-    // There's not a clear way to handle this block while maintaining the thread of the dispatcher,
-    // so disable it for now until it's later needed.
-    throw UnsupportedOperationException()
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun resumeDispatcher() {
-    isRunning.set(true)
-    flushTaskQueueBlocking(
-      fakeSystemClock.getTimeMillis(), DEFAULT_TIMEOUT_UNIT.toMillis(DEFAULT_TIMEOUT_SECONDS)
-    )
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun runCurrent() {
-    runCurrent(DEFAULT_TIMEOUT_SECONDS, DEFAULT_TIMEOUT_UNIT)
-  }
-
   override fun runCurrent(timeout: Long, timeoutUnit: TimeUnit) {
     flushTaskQueueBlocking(fakeSystemClock.getTimeMillis(), timeoutUnit.toMillis(timeout))
-  }
-
-  override fun runUntilIdle(timeout: Long, timeoutUnit: TimeUnit) {
-    val runUntilIdleDeferred = queueCoroutineScope.async {
-      var nextTaskTimeMillis: Long?
-      do {
-        val currentTimeMillis = fakeSystemClock.getTimeMillis()
-        flushTaskQueueNonBlocking(fakeSystemClock.getTimeMillis())
-        nextTaskTimeMillis = getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
-        if (nextTaskTimeMillis != null) {
-          fakeSystemClock.advanceTime(nextTaskTimeMillis - currentTimeMillis)
-        }
-      } while (nextTaskTimeMillis != null)
-    }
-    runBlocking {
-      val timeoutMillis = timeoutUnit.toMillis(timeout)
-      try {
-        withTimeout(timeoutMillis) {
-          runUntilIdleDeferred.await()
-        }
-      } catch (e: TimeoutCancellationException) {
-        throw IllegalStateException("Dispatcher failed to idle in ${timeoutMillis}ms", e)
-      }
-    }
   }
 
   override fun hasPendingTasks(): Boolean = taskQueue.isNotEmpty()
@@ -208,13 +121,9 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
 
   @Suppress("ControlFlowWithEmptyBody")
   private fun flushTaskQueueNonBlocking(currentTimeMillis: Long) {
-    while (isRunning.get()) {
-      if (!flushActiveTaskQueue(currentTimeMillis)) {
-        break
-      }
-    }
-    while (executingTaskCount.get() > 0)
-      notifyIfIdle()
+    while (flushActiveTaskQueue(currentTimeMillis));
+    while (executingTaskCount.get() > 0);
+    notifyIfIdle()
   }
 
   /** Flushes the current task queue and returns whether any tasks were executed. */
@@ -222,12 +131,10 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
     if (isTaskQueueActive(currentTimeMillis)) {
       // Create a copy of the task queue in case it's changed during modification.
       val tasksToRemove = createSortedTaskSet().filter { task ->
-        if (isRunning.get()) {
-          if (task.timeMillis <= currentTimeMillis) {
-            // Only remove the task if it was executed.
-            task.block.run()
-            return@filter true
-          }
+        if (task.timeMillis <= currentTimeMillis) {
+          // Only remove the task if it was executed.
+          task.block.run()
+          return@filter true
         }
         return@filter false
       }
@@ -288,6 +195,18 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
     taskIdleListener?.takeIf { executingTaskCount.get() == 0 }?.onDispatcherIdle()
   }
 
+  private companion object {
+    private data class Task(
+      val block: Runnable,
+      val timeMillis: Long,
+      val insertionOrder: Int
+    )
+
+    private fun CopyOnWriteArraySet<Task>.hasPendingCompletableTasks(currentTimeMillis: Long): Boolean {
+      return any { task -> task.timeMillis <= currentTimeMillis }
+    }
+  }
+
   /**
    * Injectable implementation of [TestCoroutineDispatcher.Factory] for
    * [TestCoroutineDispatcherEspressoImpl].
@@ -299,14 +218,4 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
       return TestCoroutineDispatcherRobolectricImpl(fakeSystemClock, realDispatcher)
     }
   }
-}
-
-private data class Task(
-  internal val block: Runnable,
-  internal val timeMillis: Long,
-  internal val insertionOrder: Int
-)
-
-private fun CopyOnWriteArraySet<Task>.hasPendingCompletableTasks(currentTimeMillis: Long): Boolean {
-  return any { task -> task.timeMillis <= currentTimeMillis }
 }
