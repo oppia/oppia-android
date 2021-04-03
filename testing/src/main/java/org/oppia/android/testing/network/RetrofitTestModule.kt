@@ -2,11 +2,7 @@ package org.oppia.android.testing.network
 
 import dagger.Module
 import dagger.Provides
-import okhttp3.OkHttpClient
-import org.oppia.android.data.backends.gae.NetworkInterceptor
-import org.oppia.android.data.backends.gae.NetworkSettings
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 import javax.inject.Singleton
@@ -20,21 +16,12 @@ import javax.inject.Singleton
 class RetrofitTestModule {
   @Provides
   @Singleton
-  fun provideMockRetrofit(): MockRetrofit {
-    val client = OkHttpClient.Builder()
-    client.addInterceptor(NetworkInterceptor())
-
-    val retrofit = Retrofit.Builder()
-      .baseUrl(NetworkSettings.getBaseUrl())
-      .addConverterFactory(MoshiConverterFactory.create())
-      .client(client.build())
-      .build()
-
+  fun provideMockRetrofit(@OppiaRetrofit retrofit: Retrofit): MockRetrofit {
     val behavior = NetworkBehavior.create()
     behavior.setFailurePercent(0)
 
-    return MockRetrofit.Builder(retrofit)
-      .networkBehavior(behavior)
-      .build()
+    return MockRetrofit.Builder(retrofit).apply {
+      networkBehavior(behavior)
+    }.build()
   }
 }
