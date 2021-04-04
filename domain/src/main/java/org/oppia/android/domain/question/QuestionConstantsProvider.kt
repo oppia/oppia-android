@@ -11,6 +11,15 @@ annotation class QuestionCountPerTrainingSession
 @Qualifier
 annotation class QuestionTrainingSeed
 
+@Qualifier
+annotation class ViewHintPenalty
+
+@Qualifier
+annotation class WrongAnswerPenalty
+
+@Qualifier
+annotation class MaxScorePerQuestion
+
 /** Provider to return any constants required during the training session. */
 @Module
 class QuestionModule {
@@ -21,4 +30,16 @@ class QuestionModule {
   @Provides
   @QuestionTrainingSeed
   fun provideQuestionTrainingSeed(oppiaClock: OppiaClock): Long = oppiaClock.getCurrentTimeMs()
+
+  @Provides
+  @ViewHintPenalty
+  fun provideViewHintPenalty(): Double = 0.1
+
+  @Provides
+  @WrongAnswerPenalty
+  fun provideWrongAnswerPenalty(): Double = 0.1
+
+  @Provides
+  @MaxScorePerQuestion
+  fun provideMaxScorePerQuestion(): Double = 1.0
 }
