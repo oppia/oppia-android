@@ -25,10 +25,13 @@ class QuestionAssessmentCalculation @Inject constructor(
   private lateinit var skillIdList: List<String>
   private lateinit var questionSessionMetrics: List<QuestionSessionMetrics>
   private lateinit var totalScore: MutableFractionGrade
-  private lateinit var scorePerSkillMapping : MutableMap<String, MutableFractionGrade>
+  private lateinit var scorePerSkillMapping: MutableMap<String, MutableFractionGrade>
 
   /** Initialize member fields. */
-  internal fun initialize(skillIdList: List<String>, questionSessionMetrics: List<QuestionSessionMetrics>) {
+  internal fun initialize(
+    skillIdList: List<String>,
+    questionSessionMetrics: List<QuestionSessionMetrics>
+  ) {
     this.skillIdList = skillIdList
     this.questionSessionMetrics = questionSessionMetrics
     this.totalScore = MutableFractionGrade(0.0, questionSessionMetrics.size.toDouble())
@@ -47,10 +50,12 @@ class QuestionAssessmentCalculation @Inject constructor(
   private fun calculateScores() {
     for (questionMetric in questionSessionMetrics) {
       val totalHintsPenalty = questionMetric.numberOfHintsUsed * viewHintPenalty
-      val totalWrongAnswerPenalty = (questionMetric.numberOfAnswersSubmitted - 1) * wrongAnswerPenalty
+      val totalWrongAnswerPenalty =
+        (questionMetric.numberOfAnswersSubmitted - 1) * wrongAnswerPenalty
       var questionScore = 0.0
       if (!questionMetric.didViewSolution) {
-        questionScore = maxOf(maxScorePerQuestion - totalHintsPenalty - totalWrongAnswerPenalty, questionScore)
+        questionScore =
+          maxOf(maxScorePerQuestion - totalHintsPenalty - totalWrongAnswerPenalty, questionScore)
       }
       this.totalScore.numerator += questionScore
       for (linkedSkillId in questionMetric.question.linkedSkillIdsList) {
@@ -67,7 +72,7 @@ class QuestionAssessmentCalculation @Inject constructor(
     // TODO: set up mastery calculations
 
     // Set up the return values
-    var finalScore = FractionGrade.newBuilder().apply{
+    var finalScore = FractionGrade.newBuilder().apply {
       numerator = totalScore.numerator
       denominator = totalScore.denominator
     }.build()

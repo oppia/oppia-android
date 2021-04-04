@@ -99,7 +99,8 @@ class QuestionAssessmentProgressControllerTest {
   lateinit var mockCurrentQuestionLiveDataObserver: Observer<AsyncResult<EphemeralQuestion>>
 
   @Mock
-  lateinit var mockScoreCalculationsLiveDataObserver: Observer<AsyncResult<UserAssessmentPerformance>>
+  lateinit var mockScoreCalculationsLiveDataObserver:
+    Observer<AsyncResult<UserAssessmentPerformance>>
 
   @Mock
   lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any>>
@@ -1072,7 +1073,8 @@ class QuestionAssessmentProgressControllerTest {
 
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
-    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2)).isEqualTo(grade)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
+      .isEqualTo(grade)
   }
 
   @Test
@@ -1126,7 +1128,8 @@ class QuestionAssessmentProgressControllerTest {
 
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
-    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2)).isEqualTo(grade)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
+      .isEqualTo(grade)
   }
 
   @Test
@@ -1178,7 +1181,8 @@ class QuestionAssessmentProgressControllerTest {
 
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
-    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2)).isEqualTo(grade)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
+      .isEqualTo(grade)
   }
 
   @Test
@@ -1208,7 +1212,8 @@ class QuestionAssessmentProgressControllerTest {
 
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
-    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2)).isEqualTo(grade)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
+      .isEqualTo(grade)
   }
 
   @Test
@@ -1286,8 +1291,10 @@ class QuestionAssessmentProgressControllerTest {
     }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
-    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0)).isEqualTo(skill0Score)
-    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_1)).isEqualTo(skill1Score)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Score)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Score)
   }
 
   @Test
@@ -1377,8 +1384,10 @@ class QuestionAssessmentProgressControllerTest {
     }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
-    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0)).isEqualTo(skill0Score)
-    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_1)).isEqualTo(skill1Score)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Score)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Score)
   }
 
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {

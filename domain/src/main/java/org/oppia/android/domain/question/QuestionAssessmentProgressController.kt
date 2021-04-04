@@ -339,10 +339,9 @@ class QuestionAssessmentProgressController @Inject constructor(
       return userAssessmentPerformanceDataProvider
     }
 
-  private suspend fun retrieveUserAssessmentPerformanceAsync(): AsyncResult<UserAssessmentPerformance> =
-    progressLock.withLock {
-      AsyncResult.success(scoreCalculator.computeAll())
-    }
+  private suspend fun retrieveUserAssessmentPerformanceAsync():
+    AsyncResult<UserAssessmentPerformance> =
+      progressLock.withLock { AsyncResult.success(scoreCalculator.computeAll()) }
 
   private fun createCurrentQuestionDataProvider(
     questionsListDataProvider: DataProvider<List<Question>>
