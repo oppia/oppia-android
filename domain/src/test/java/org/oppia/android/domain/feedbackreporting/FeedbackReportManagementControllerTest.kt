@@ -32,7 +32,7 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
 import org.oppia.android.app.model.UserSuppliedFeedback
-import org.oppia.android.data.backends.gae.NetworkInterceptor
+import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
@@ -258,7 +258,7 @@ class FeedbackReportManagementControllerTest {
     @Singleton
     fun provideMockRetrofitInstance(): MockRetrofit {
       val client = OkHttpClient.Builder()
-      client.addInterceptor(NetworkInterceptor())
+      client.addInterceptor(JsonPrefixNetworkInterceptor())
 
       val retrofit = retrofit2.Retrofit.Builder()
         .baseUrl(NetworkSettings.getBaseUrl())

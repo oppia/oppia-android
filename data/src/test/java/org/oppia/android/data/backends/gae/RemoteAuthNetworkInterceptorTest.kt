@@ -17,8 +17,14 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.api.TopicService
+import org.oppia.android.testing.RobolectricModule
+import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.network.MockTopicService
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.robolectric.Shadows
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -30,21 +36,31 @@ import javax.inject.Singleton
 
 /** Tests for [RemoteAuthNetworkInterceptor] */
 @RunWith(AndroidJUnit4::class)
+@Config(
+  application = RemoteAuthNetworkInterceptorTest.TestApplication::class,
+  packageName = "test.package.name"
+)
 @LooperMode(LooperMode.Mode.PAUSED)
 class RemoteAuthNetworkInterceptorTest {
 
-  @Inject lateinit var networkInterceptor: RemoteAuthNetworkInterceptor
+  @Inject
+  lateinit var networkInterceptor: RemoteAuthNetworkInterceptor
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
   private lateinit var mockRetrofit: MockRetrofit
 
   private lateinit var retrofit: Retrofit
 
+  private val testPackageName = "test.package.name"
+
+  private val testVersionName = "1.0"
+
+  private val testVersionCode = 1
+
   @Before
   fun setUp() {
-    setUpTestApplicationComponent()
-    setUpApplicationForContext()
     setUpMockRetrofit()
   }
 
@@ -52,20 +68,23 @@ class RemoteAuthNetworkInterceptorTest {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
       ApplicationInfoBuilder.newBuilder()
-        .setPackageName("test_package_name")
+        .setPackageName(testPackageName)
         .build()
     val packageInfo =
       PackageInfoBuilder.newBuilder()
-        .setPackageName("test_package_name")
+        .setPackageName(testPackageName)
         .setApplicationInfo(applicationInfo)
         .build()
-    packageInfo.versionName = "1.0"
-    packageInfo.versionCode = 1
+    packageInfo.versionName = testVersionName
+    packageInfo.versionCode = testVersionCode
     packageManager.installPackage(packageInfo)
   }
 
   @Test
   fun testNetworkInterceptor_withoutHeaders_addsCorrectHeaders() {
+    setUpTestApplicationComponent()
+    setUpApplicationForContext()
+
     val delegate = mockRetrofit.create(TopicService::class.java)
     val mockTopicService = MockTopicService(delegate)
 
@@ -120,10 +139,7 @@ class RemoteAuthNetworkInterceptorTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerRemoteAuthNetworkInterceptorTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Qualifier
@@ -155,8 +171,13 @@ class RemoteAuthNetworkInterceptorTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestNetworkModule::class, TestModule::class])
-  interface TestApplicationComponent {
+  @Component(
+    modules = [
+      RobolectricModule::class, TestNetworkModule::class, TestModule::class,
+      TestLogReportingModule::class, TestDispatcherModule::class
+    ]
+  )
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -165,6 +186,24 @@ class RemoteAuthNetworkInterceptorTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(networkInterceptorTest: RemoteAuthNetworkInterceptorTest)
+    fun inject(remoteAuthNetworkInterceptorTest: RemoteAuthNetworkInterceptorTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerRemoteAuthNetworkInterceptorTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(remoteAuthNetworkInterceptorTest: RemoteAuthNetworkInterceptorTest) {
+      component.inject(remoteAuthNetworkInterceptorTest)
+    }
+
+    public override fun attachBaseContext(base: Context?) {
+      super.attachBaseContext(base)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }
