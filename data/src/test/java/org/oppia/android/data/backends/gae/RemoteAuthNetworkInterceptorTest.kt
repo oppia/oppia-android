@@ -36,10 +36,7 @@ import javax.inject.Singleton
 
 /** Tests for [RemoteAuthNetworkInterceptor] */
 @RunWith(AndroidJUnit4::class)
-@Config(
-  application = RemoteAuthNetworkInterceptorTest.TestApplication::class,
-  packageName = "test.package.name"
-)
+@Config(application = RemoteAuthNetworkInterceptorTest.TestApplication::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class RemoteAuthNetworkInterceptorTest {
 
@@ -53,14 +50,14 @@ class RemoteAuthNetworkInterceptorTest {
 
   private lateinit var retrofit: Retrofit
 
-  private val testPackageName = "test.package.name"
-
   private val testVersionName = "1.0"
 
   private val testVersionCode = 1
 
   @Before
   fun setUp() {
+    setUpTestApplicationComponent()
+    setUpApplicationForContext()
     setUpMockRetrofit()
   }
 
@@ -68,11 +65,11 @@ class RemoteAuthNetworkInterceptorTest {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
       ApplicationInfoBuilder.newBuilder()
-        .setPackageName(testPackageName)
+        .setPackageName(context.packageName)
         .build()
     val packageInfo =
       PackageInfoBuilder.newBuilder()
-        .setPackageName(testPackageName)
+        .setPackageName(context.packageName)
         .setApplicationInfo(applicationInfo)
         .build()
     packageInfo.versionName = testVersionName
@@ -82,9 +79,6 @@ class RemoteAuthNetworkInterceptorTest {
 
   @Test
   fun testNetworkInterceptor_withoutHeaders_addsCorrectHeaders() {
-    setUpTestApplicationComponent()
-    setUpApplicationForContext()
-
     val delegate = mockRetrofit.create(TopicService::class.java)
     val mockTopicService = MockTopicService(delegate)
 
@@ -117,7 +111,7 @@ class RemoteAuthNetworkInterceptorTest {
 
   private fun verifyRequestHeaders(headers: Headers) {
     assertThat(headers.get("api_key")).isEqualTo("test_api_key")
-    assertThat(headers.get("app_package_name")).isEqualTo("test_package_name")
+    assertThat(headers.get("app_package_name")).isEqualTo(context.packageName)
     assertThat(headers.get("app_version_name")).isEqualTo("1.0")
     assertThat(headers.get("app_version_code")).isEqualTo("1")
   }
