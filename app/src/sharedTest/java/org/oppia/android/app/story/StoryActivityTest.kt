@@ -1,6 +1,7 @@
 package org.oppia.android.app.story
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -16,10 +17,13 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -80,7 +84,17 @@ class StoryActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var context: Context
+
   private val internalProfileId = 0
+
+  @get:Rule
+  val activityTestRule: ActivityTestRule<StoryActivity> = ActivityTestRule(
+    StoryActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
 
   @Before
   fun setUp() {
@@ -93,6 +107,22 @@ class StoryActivityTest {
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
+  }
+
+  @Test
+  fun testStoryActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(
+      createStoryActivityIntent(
+        internalProfileId = internalProfileId,
+        topicId = TEST_TOPIC_ID_0,
+        storyId = TEST_STORY_ID_1
+      )
+    )
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.story_activity_title))
   }
 
   @Test
@@ -149,7 +179,6 @@ class StoryActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [

@@ -25,9 +25,9 @@ class MockTopicService(private val delegate: BehaviorDelegate<TopicService>) : T
   private fun createMockGaeTopic(): GaeTopic {
     val networkInterceptor = NetworkInterceptor()
     var topicResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("topic.json")
+      NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("topic.json")
 
-    topicResponseWithXssiPrefix = networkInterceptor.removeXSSIPrefix(topicResponseWithXssiPrefix)
+    topicResponseWithXssiPrefix = networkInterceptor.removeXssiPrefix(topicResponseWithXssiPrefix)
 
     val moshi = Moshi.Builder().build()
     val adapter: JsonAdapter<GaeTopic> = moshi.adapter(GaeTopic::class.java)
