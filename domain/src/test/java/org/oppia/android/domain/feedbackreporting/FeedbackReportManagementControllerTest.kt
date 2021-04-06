@@ -94,6 +94,8 @@ class FeedbackReportManagementControllerTest {
   @Captor
   lateinit var reportStoreResultCaptor: ArgumentCaptor<AsyncResult<FeedbackReportingDatabase>>
 
+  private val featureSuggestionText = "A feature suggestion"
+
   private val appContext = FeedbackReportingAppContext.newBuilder()
     .setNavigationDrawer(NavigationDrawerEntryPoint.getDefaultInstance())
     .setTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
@@ -105,7 +107,7 @@ class FeedbackReportManagementControllerTest {
 
   private val featureSuggestion = Suggestion.newBuilder()
     .setSuggestionCategory(SuggestionCategory.FEATURE_SUGGESTION)
-    .setUserSubmittedSuggestion("A feature suggestion")
+    .setUserSubmittedSuggestion(featureSuggestionText)
     .build()
 
   private val userSuppliedSuggestionFeedback = UserSuppliedFeedback.newBuilder()
@@ -169,7 +171,7 @@ class FeedbackReportManagementControllerTest {
     assertThat(report.userSuppliedInfo.suggestion.suggestionCategory)
       .isEqualTo(SuggestionCategory.FEATURE_SUGGESTION)
     assertThat(report.userSuppliedInfo.suggestion.userSubmittedSuggestion)
-      .isEqualTo("A feature suggestion")
+      .isEqualTo(featureSuggestionText)
   }
 
   @Test
@@ -240,9 +242,9 @@ class FeedbackReportManagementControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  // Creates a fake logcat file in this directory so that the controller being tested has a file to
-  // read when recording the logcat events.
   private fun setUpFakeLogcatFile() {
+    // Creates a fake logcat file in this directory so that the controller being tested has a file to
+    // read when recording the logcat events.
     val logFile = File(context.filesDir, "oppia_app.log")
     logFile.printWriter().use { out -> out.println("Fake logcat log") }
   }
