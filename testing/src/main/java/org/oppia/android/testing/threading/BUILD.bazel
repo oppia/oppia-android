@@ -26,7 +26,6 @@ kt_android_library(
     srcs = [
         "TestCoroutineDispatcher.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
@@ -54,6 +53,7 @@ kt_android_library(
         ":test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_system_clock",
+        "//third_party:androidx_annotation_annotation",
     ],
 )
 

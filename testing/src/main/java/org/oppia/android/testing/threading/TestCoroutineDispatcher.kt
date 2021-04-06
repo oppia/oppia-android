@@ -68,6 +68,12 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
    * Runs all tasks currently scheduled to be run in the dispatcher, but none scheduled for the
    * future.
    *
+   * Note that this function will definitely result in out-of-order execution regardless of when a
+   * task is scheduled if the clock has been advanced past that task's time. For this reason, it's
+   * highly recommended that callers use [getNextFutureTaskCompletionTimeMillis] in order to ensure
+   * that tasks are run in-order on this dispatcher, and among other dispatchers to ensure tasks
+   * don't inadvertently run out of order.
+   *
    * @param timeout the timeout value in the specified unit after which this run attempt should fail
    * @param timeoutUnit the unit for [timeout] corresponding to how long this method should wait
    *     when trying to execute tasks before giving up
@@ -77,7 +83,10 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
     timeoutUnit: TimeUnit = DEFAULT_TIMEOUT_UNIT
   )
 
-  /** A listener for whether the test coroutine dispatcher has become idle. */
+  /**
+   * A listener for whether the test coroutine dispatcher has become idle (that is, is not running
+   * any tasks but may have tasks scheduled).
+   */
   interface TaskIdleListener {
     /**
      * Called when the dispatcher has become non-idle. This may be called immediately after
