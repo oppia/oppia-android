@@ -195,6 +195,7 @@ format_import_proto_library(
 
 java_lite_proto_library(
     name = "topic_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":topic_proto"],
 )
 
@@ -224,7 +225,6 @@ android_library(
         ":question_java_proto_lite",
         ":subtitled_unicode_java_proto_lite",
         ":thumbnail_java_proto_lite",
-        ":topic_java_proto_lite",
         ":translation_java_proto_lite",
     ],
 )
