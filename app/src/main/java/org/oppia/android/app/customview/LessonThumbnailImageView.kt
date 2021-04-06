@@ -5,6 +5,10 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.oppia.android.R
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
@@ -69,17 +73,25 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     this.isBlurred = isBlurred
   }
 
-  private fun checkIfLoadingIsPossible() {
-    if (::entityId.isInitialized &&
-      ::entityType.isInitialized &&
-      ::lessonThumbnail.isInitialized &&
-      ::thumbnailDownloadUrlTemplate.isInitialized &&
+  private val allDependenciesInjected
+    get() = ::thumbnailDownloadUrlTemplate.isInitialized &&
       ::resourceBucketName.isInitialized &&
       ::gcsPrefix.isInitialized &&
       ::imageLoader.isInitialized &&
       ::logger.isInitialized
+
+  private fun checkIfLoadingIsPossible() {
+    if (::entityId.isInitialized &&
+      ::entityType.isInitialized &&
+      ::lessonThumbnail.isInitialized
     ) {
-      loadLessonThumbnail()
+      GlobalScope.launch(Dispatchers.Default) {
+        @Suppress("ControlFlowWithEmptyBody")
+        while (!allDependenciesInjected);
+        withContext(Dispatchers.Main) {
+          loadLessonThumbnail()
+        }
+      }
     }
   }
 
