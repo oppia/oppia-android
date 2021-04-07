@@ -38,8 +38,8 @@ public final class ImageViewBindingAdapters {
    */
   @BindingAdapter("android:src")
   public static void setImageDrawable(
-    @NonNull ImageView imageView,
-    @DrawableRes int drawableResourceId
+      @NonNull ImageView imageView,
+      @DrawableRes int drawableResourceId
   ) {
     imageView.setImageResource(drawableResourceId);
   }
@@ -51,8 +51,8 @@ public final class ImageViewBindingAdapters {
    */
   @BindingAdapter("android:src")
   public static void setImageDrawable(
-    @NonNull ImageView imageView,
-    ChapterPlayState chapterPlayState
+      @NonNull ImageView imageView,
+      ChapterPlayState chapterPlayState
   ) {
     switch (chapterPlayState) {
       case COMPLETED:
@@ -75,8 +75,8 @@ public final class ImageViewBindingAdapters {
    */
   @BindingAdapter("android:src")
   public static void setImageDrawable(
-    ImageView imageView,
-    LessonThumbnailGraphic thumbnailGraphic
+      ImageView imageView,
+      LessonThumbnailGraphic thumbnailGraphic
   ) {
     int drawableResourceId;
     switch (thumbnailGraphic) {
