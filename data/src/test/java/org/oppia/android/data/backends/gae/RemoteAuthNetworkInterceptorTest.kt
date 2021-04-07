@@ -118,7 +118,7 @@ class RemoteAuthNetworkInterceptorTest {
 
   private fun setUpMockRetrofit() {
     val client = OkHttpClient.Builder()
-    client.addInterceptor(JsonPrefixNetworkInterceptor())
+    client.addInterceptor(networkInterceptor)
 
     retrofit = retrofit2.Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())

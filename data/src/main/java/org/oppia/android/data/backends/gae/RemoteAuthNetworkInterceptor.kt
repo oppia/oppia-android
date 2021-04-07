@@ -4,18 +4,17 @@ import android.content.Context
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import org.jetbrains.annotations.TestOnly
 import org.oppia.android.app.utility.getVersionCode
 import org.oppia.android.app.utility.getVersionName
 import java.io.IOException
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Interceptor on top of Retrofit to modify outgoing requests for authenticating messages.
  *
  * The Interceptor adds header parameters to outgoing messages.
  */
-@Singleton
 class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
 
   @Inject

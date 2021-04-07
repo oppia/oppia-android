@@ -17,8 +17,7 @@ import javax.inject.Singleton
  * Sample resource: https://github.com/gahfy/Feed-Me/tree/unitTests
  */
 @Module
-class
-NetworkModule {
+class NetworkModule {
 
   @Qualifier
   private annotation class OppiaRetrofit
@@ -30,10 +29,13 @@ NetworkModule {
   @OppiaRetrofit
   @Provides
   @Singleton
-  fun provideRetrofitInstance(): Retrofit {
+  fun provideRetrofitInstance(
+    jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
+    remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor
+  ): Retrofit {
     val client = OkHttpClient.Builder()
-    client.addInterceptor(JsonPrefixNetworkInterceptor())
-      .addInterceptor(RemoteAuthNetworkInterceptor())
+    client.addInterceptor(jsonPrefixNetworkInterceptor)
+      .addInterceptor(remoteAuthNetworkInterceptor)
 
     return Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
@@ -72,9 +74,8 @@ NetworkModule {
   }
 
   // Provides the API key to use in authenticating remote messages sent or received. This will be
-  // replaced with a stronger, secret key will in production.
+  // replaced with a secret key in production.
   @Provides
-  @Singleton
   @NetworkApiKey
   fun provideNetworkApiKey(): String = ""
 }
