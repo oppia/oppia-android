@@ -89,6 +89,7 @@ proto_library(
 
 java_lite_proto_library(
     name = "profile_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":profile_proto"],
 )
 
@@ -194,6 +195,7 @@ format_import_proto_library(
 
 java_lite_proto_library(
     name = "topic_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":topic_proto"],
 )
 
@@ -220,11 +222,9 @@ android_library(
     visibility = ["//visibility:public"],
     exports = [
         ":arguments_java_proto_lite",
-        ":profile_java_proto_lite",
         ":question_java_proto_lite",
         ":subtitled_unicode_java_proto_lite",
         ":thumbnail_java_proto_lite",
-        ":topic_java_proto_lite",
         ":translation_java_proto_lite",
     ],
 )
