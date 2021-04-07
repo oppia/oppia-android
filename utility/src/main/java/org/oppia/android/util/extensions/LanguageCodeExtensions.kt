@@ -13,7 +13,7 @@ enum class LanguageCode {
   CHINESE;
 }
 
-fun LanguageCode.toString(): String {
+fun LanguageCode.toLanguageCodeString(): String {
   return when (this) {
     LanguageCode.ENGLISH -> "en"
     LanguageCode.HINDI -> "hi"

@@ -85,6 +85,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.work:work-testing": "2.4.0",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.truth:truth": "0.43",
+    "com.squareup.okhttp3:mockwebserver":"4.1.0",
     "com.squareup.retrofit2:retrofit-mock": "2.5.0",
     "junit:junit": "4.12",
     "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",

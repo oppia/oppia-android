@@ -26,6 +26,7 @@ import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.toLanguageCode
+import org.oppia.android.util.extensions.toLanguageCodeString
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
@@ -275,8 +276,8 @@ class FeedbackReportManagementController @Inject constructor(
     return GaeFeedbackReportingAppContext(
       entryPoint = getEntryPointData(appContext),
       textSize = appContext.textSize.name,
-      textLanguageCode = appContext.textLanguage.toLanguageCode().toString(),
-      audioLanguageCode = appContext.audioLanguage.toLanguageCode().toString(),
+      textLanguageCode = appContext.textLanguage.toLanguageCode().toLanguageCodeString(),
+      audioLanguageCode = appContext.audioLanguage.toLanguageCode().toLanguageCodeString(),
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
       automaticallyUpdateTopics = appContext.deviceSettings.automaticallyUpdateTopics,
       isAdmin = appContext.isAdmin,

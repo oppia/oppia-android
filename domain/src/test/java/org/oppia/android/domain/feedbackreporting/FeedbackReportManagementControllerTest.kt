@@ -6,11 +6,16 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,12 +39,14 @@ import org.oppia.android.app.model.Suggestion.SuggestionCategory
 import org.oppia.android.app.model.UserSuppliedFeedback
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
+import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.network.ApiMockLoader
 import org.oppia.android.testing.network.MockFeedbackReportingService
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncResult
@@ -59,6 +66,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 import java.io.File
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -93,18 +101,22 @@ class FeedbackReportManagementControllerTest {
   @Captor
   lateinit var reportStoreResultCaptor: ArgumentCaptor<AsyncResult<FeedbackReportingDatabase>>
 
+  private val mockWebServer: MockWebServer = MockWebServer()
+
+  private val languageSuggestionText = "french"
+
   private val appContext = FeedbackReportingAppContext.newBuilder()
     .setNavigationDrawer(NavigationDrawerEntryPoint.getDefaultInstance())
-    .setTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
+    .setTextSize(ReadingTextSize.LARGE_TEXT_SIZE)
     .setDeviceSettings(DeviceSettings.getDefaultInstance())
-    .setAudioLanguage(AudioLanguage.NO_AUDIO)
+    .setAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
     .setTextLanguage(AppLanguage.ENGLISH_APP_LANGUAGE)
     .setIsAdmin(false)
     .build()
 
   private val featureSuggestion = Suggestion.newBuilder()
-    .setSuggestionCategory(SuggestionCategory.FEATURE_SUGGESTION)
-    .setUserSubmittedSuggestion("A feature suggestion")
+    .setSuggestionCategory(SuggestionCategory.LANGUAGE_SUGGESTION)
+    .setUserSubmittedSuggestion(languageSuggestionText)
     .build()
 
   private val userSuppliedSuggestionFeedback = UserSuppliedFeedback.newBuilder()
@@ -133,6 +145,24 @@ class FeedbackReportManagementControllerTest {
     setUpTestApplicationComponent()
     setUpFakeLogcatFile()
     MockitoAnnotations.initMocks(this)
+  }
+
+  @After
+  fun tearDown() {
+    mockWebServer.shutdown()
+  }
+
+  @Test
+  fun testController_submitFeedbackReport_withNetwork_sendsNetworkRequest_isSuccessful() {
+    mockWebServer.start()
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
+
+    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    val request = mockWebServer.takeRequest(timeout = 10, unit = TimeUnit.SECONDS)
+    feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
+
+    val gaeFeedbackReport = createMockGaeFeedbackReport()
+    assertThat(request?.body).isEqualTo(gaeFeedbackReport)
   }
 
   @Test
@@ -166,9 +196,9 @@ class FeedbackReportManagementControllerTest {
     val report = reportStoreResultCaptor.value.getOrThrow().getReports(0)
     assertThat(report.reportSubmissionTimestampSec).isEqualTo(LATER_TIMESTAMP)
     assertThat(report.userSuppliedInfo.suggestion.suggestionCategory)
-      .isEqualTo(SuggestionCategory.FEATURE_SUGGESTION)
+      .isEqualTo(SuggestionCategory.LANGUAGE_SUGGESTION)
     assertThat(report.userSuppliedInfo.suggestion.userSubmittedSuggestion)
-      .isEqualTo("A feature suggestion")
+      .isEqualTo(languageSuggestionText)
   }
 
   @Test
@@ -239,11 +269,20 @@ class FeedbackReportManagementControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  // Creates a fake logcat file in this directory so that the controller being tested has a file to
-  // read when recording the logcat events.
   private fun setUpFakeLogcatFile() {
+    // Creates a fake logcat file in this directory so that the controller being tested has a file to
+    // read when recording the logcat events.
     val logFile = File(context.filesDir, "oppia_app.log")
     logFile.printWriter().use { out -> out.println("Fake logcat log") }
+  }
+
+  private fun createMockGaeFeedbackReport(): GaeFeedbackReport {
+    val feedbackReportJson = ApiMockLoader.getFakeJson("feedback_reporting.json")
+    val moshi = Moshi.Builder().build()
+
+    val adapter: JsonAdapter<GaeFeedbackReport> = moshi.adapter(GaeFeedbackReport::class.java)
+    val mockGaeFeedbackReport = adapter.fromJson(feedbackReportJson)
+    return mockGaeFeedbackReport!!
   }
 
   @Qualifier
@@ -259,7 +298,9 @@ class FeedbackReportManagementControllerTest {
       val client = OkHttpClient.Builder()
 
       val retrofit = retrofit2.Retrofit.Builder()
-        .baseUrl(NetworkSettings.getBaseUrl())
+        .baseUrl(
+          MockWebServer().url(NetworkSettings.getBaseUrl())
+        )
         .addConverterFactory(MoshiConverterFactory.create())
         .client(client.build())
         .build()

@@ -4,7 +4,6 @@ import android.content.Context
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import org.jetbrains.annotations.TestOnly
 import org.oppia.android.app.utility.getVersionCode
 import org.oppia.android.app.utility.getVersionName
 import java.io.IOException
