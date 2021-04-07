@@ -275,8 +275,8 @@ class FeedbackReportManagementController @Inject constructor(
     return GaeFeedbackReportingAppContext(
       entryPoint = getEntryPointData(appContext),
       textSize = appContext.textSize.name,
-      textLanguageCode = appContext.textLanguage.toLanguageCode().toString(),
-      audioLanguageCode = appContext.audioLanguage.toLanguageCode().toString(),
+      textLanguageCode = appContext.textLanguage.toLanguageCode().toLanguageCodeString(),
+      audioLanguageCode = appContext.audioLanguage.toLanguageCode().toLanguageCodeString(),
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
       automaticallyUpdateTopics = appContext.deviceSettings.automaticallyUpdateTopics,
       isAdmin = appContext.isAdmin,
