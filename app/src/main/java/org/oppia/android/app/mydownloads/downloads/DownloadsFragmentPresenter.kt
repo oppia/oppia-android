@@ -27,30 +27,42 @@ class DownloadsFragmentPresenter @Inject constructor(
 
   private var internalProfileId: Int = -1
 
+  private lateinit var sortByListIndexListener: SortByListIndexListener
+
   @Inject
   lateinit var downloadsViewModel: DownloadsViewModel
 
-  lateinit var binding: DownloadsFragmentBinding
+  private lateinit var downloadsRecyclerViewAdapter: BindableAdapter<DownloadsItemViewModel>
+  private lateinit var binding: DownloadsFragmentBinding
+  private var previousSortTypeIndex: Int? = null
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int
+    internalProfileId: Int,
+    previousSortTypeIndex: Int?,
+    sortByListIndexListener: SortByListIndexListener
   ): View? {
     binding = DownloadsFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
+    this.previousSortTypeIndex = previousSortTypeIndex
     this.internalProfileId = internalProfileId
+    this.sortByListIndexListener = sortByListIndexListener
+
     binding.apply {
       this.lifecycleOwner = fragment
       this.viewModel = downloadsViewModel
     }
+
     downloadsViewModel.setInternalProfileId(internalProfileId)
     downloadsViewModel.setProfileId(internalProfileId)
+
     binding.downloadsRecyclerView.apply {
-      adapter = createRecyclerViewAdapter()
+      downloadsRecyclerViewAdapter = createRecyclerViewAdapter()
+      adapter = downloadsRecyclerViewAdapter
     }
     return binding.root
   }
@@ -91,11 +103,60 @@ class DownloadsFragmentPresenter @Inject constructor(
     viewModel: DownloadsSortByViewModel
   ) {
     binding.viewModel = viewModel
-    val items = listOf("Newest", "Alphabetical", "Download Size", "Option 4")
-    val adapter = ArrayAdapter(fragment.requireContext(), R.layout.downloads_sortby_menu, items)
+    val adapter = ArrayAdapter(
+      fragment.requireContext(),
+      R.layout.downloads_sortby_menu,
+      SortByItems.values()
+    )
+    // setting input type to zero makes AutoCompleteTextView no editable
     binding.sortByMenu.setInputType(0)
-    binding.sortByMenu.setText(adapter.getItem(0).toString(), false)
+    binding.sortByMenu.setText(adapter.getItem(previousSortTypeIndex ?: 0).toString(), false)
     binding.sortByMenu.setAdapter(adapter)
+
+    // TODO(#552): orientation change, keep list sorted as per previousSortTypeIndex
+
+    binding.sortByMenu.setOnItemClickListener { parent, view, position, id ->
+      if (previousSortTypeIndex != position) {
+        when (parent.getItemAtPosition(position)) {
+          SortByItems.NEWEST -> {
+            // TODO(#552)
+          }
+          SortByItems.ALPHABETICAL -> {
+            sortTopicAlphabetically()
+          }
+          SortByItems.DOWNLOAD_SIZE -> {
+            // TODO(#552)
+          }
+        }
+        previousSortTypeIndex = position
+        sortByListIndexListener.onSortByItemClicked(previousSortTypeIndex)
+        binding.sortByMenu.setText(adapter.getItem(position).toString(), false)
+      }
+    }
+  }
+
+  private fun sortTopicAlphabetically() {
+    val sortedTopicNameList = mutableListOf<String>()
+    val downloadsItemViewModelList = downloadsViewModel.downloadsViewModelLiveData.getValue()
+    downloadsItemViewModelList?.forEach { downloadsItemViewModel ->
+      if (downloadsItemViewModel is DownloadsTopicViewModel) {
+        sortedTopicNameList.add(downloadsItemViewModel.topicSummary.name)
+      }
+    }
+    sortedTopicNameList.sort()
+
+    val sortedDownloadsItemViewModel = mutableListOf<DownloadsItemViewModel>()
+    sortedDownloadsItemViewModel.add(downloadsItemViewModelList!!.get(0))
+    sortedTopicNameList.forEach { topicName ->
+      downloadsItemViewModelList.forEach { downloadsItemViewModel ->
+        if (downloadsItemViewModel is DownloadsTopicViewModel &&
+          topicName == downloadsItemViewModel.topicSummary.name
+        ) {
+          sortedDownloadsItemViewModel.add(downloadsItemViewModel)
+        }
+      }
+    }
+    downloadsRecyclerViewAdapter.setData(sortedDownloadsItemViewModel)
   }
 
   private fun bindDownloadsTopicCard(
@@ -108,14 +169,7 @@ class DownloadsFragmentPresenter @Inject constructor(
     binding.isDeleteExpanded = isDeleteExpanded
 
     binding.expandListIcon.setOnClickListener {
-      isDeleteExpanded = when (isDeleteExpanded) {
-        true -> {
-          false
-        }
-        else -> {
-          true
-        }
-      }
+      isDeleteExpanded = !isDeleteExpanded
       binding.isDeleteExpanded = isDeleteExpanded
     }
 
@@ -123,18 +177,29 @@ class DownloadsFragmentPresenter @Inject constructor(
       downloadsViewModel.profileLiveData.observe(
         fragment,
         Observer { profile ->
-          if (profile.allowDownloadAccess) {
-            val dialogFragment = DownloadsTopicDeleteDialogFragment
-              .newInstance(internalProfileId, profile.allowDownloadAccess)
-            dialogFragment.showNow(fragment.childFragmentManager, DELETE_DOWNLOAD_TOPIC_DIALOG_TAG)
-          } else {
-            val adminPin = downloadsViewModel.adminPin
-            val dialogFragment = DownloadsAccessDialogFragment
-              .newInstance(adminPin, internalProfileId, profile.allowDownloadAccess)
-            dialogFragment.showNow(fragment.childFragmentManager, ADMIN_PIN_CONFIRMATION_DIALOG_TAG)
+          when {
+            profile.allowDownloadAccess -> {
+              openDeleteConfirmationDialog(profile.allowDownloadAccess)
+            }
+            else -> {
+              openAdminPinInputDialog(profile.allowDownloadAccess)
+            }
           }
         }
       )
     }
+  }
+
+  private fun openDeleteConfirmationDialog(allowDownloadAccess: Boolean) {
+    val dialogFragment = DownloadsTopicDeleteDialogFragment
+      .newInstance(internalProfileId, allowDownloadAccess)
+    dialogFragment.showNow(fragment.childFragmentManager, DELETE_DOWNLOAD_TOPIC_DIALOG_TAG)
+  }
+
+  private fun openAdminPinInputDialog(allowDownloadAccess: Boolean) {
+    val adminPin = downloadsViewModel.adminPin
+    val dialogFragment = DownloadsAccessDialogFragment
+      .newInstance(adminPin, internalProfileId, allowDownloadAccess)
+    dialogFragment.showNow(fragment.childFragmentManager, ADMIN_PIN_CONFIRMATION_DIALOG_TAG)
   }
 }

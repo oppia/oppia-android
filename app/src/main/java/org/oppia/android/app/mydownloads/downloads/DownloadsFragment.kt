@@ -9,10 +9,18 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.mydownloads.INTERNAL_PROFILE_ID_SAVED_KEY
 import javax.inject.Inject
 
+private const val CURRENT_SORT_TYPE_INDEX_SAVED_KEY =
+  "DownloadsFragment.current_sort_type_index"
+
 /** Fragment that contains downloaded topic list. */
-class DownloadsFragment : InjectableFragment() {
+class DownloadsFragment :
+  InjectableFragment(),
+  SortByListIndexListener {
+
   @Inject
   lateinit var downloadsFragmentPresenter: DownloadsFragmentPresenter
+
+  private var previousSortTypeIndex: Int? = null
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -24,7 +32,30 @@ class DownloadsFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
+    if (savedInstanceState != null) {
+      previousSortTypeIndex = savedInstanceState.getInt(CURRENT_SORT_TYPE_INDEX_SAVED_KEY, -1)
+      if (previousSortTypeIndex == -1) {
+        previousSortTypeIndex = null
+      }
+    }
     val internalProfileId = arguments?.getInt(INTERNAL_PROFILE_ID_SAVED_KEY) ?: -1
-    return downloadsFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
+    return downloadsFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      internalProfileId,
+      previousSortTypeIndex,
+      this as SortByListIndexListener
+    )
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    if (previousSortTypeIndex != null) {
+      outState.putInt(CURRENT_SORT_TYPE_INDEX_SAVED_KEY, previousSortTypeIndex!!)
+    }
+  }
+
+  override fun onSortByItemClicked(index: Int?) {
+    previousSortTypeIndex = index
   }
 }
