@@ -11,12 +11,12 @@ data class GaeFeedbackReportingEntryPoint(
   /** Corresponds to a location in the app that a user can access feedback reporting. */
   @Json(name = "entry_point_name") val entryPointName: String,
   /** Corresponds to the topic ID if the entry point is from a lesson or revision session */
-  @Json(name = "entry_point_topic_id") val topicId: String?,
+  @Json(name = "topic_id") val topicId: String?,
   /** Corresponds to the subtopic ID if the entry point is from a lesson. */
-  @Json(name = "entry_point_story_id") val storyId: String?,
+  @Json(name = "story_id") val storyId: String?,
   /** Corresponds to the exploration ID if the entry point is from a lesson. */
-  @Json(name = "entry_point_exploration_id") val explorationId: String?,
+  @Json(name = "exploration_id") val explorationId: String?,
   /** Corresponds to the subtopic ID if the entry point is from a revision session. */
-  @Json(name = "entry_point_subtopic_id") val subtopicId: String?
+  @Json(name = "subtopic_id") val subtopicId: String?
 
 )

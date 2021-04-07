@@ -10,7 +10,7 @@ data class GaeFeedbackReport(
 
   /** The current version of the feedback report used. */
   @Json(name = "android_report_info_schema_version") val schemaVersion: Int,
-  /** The date and time in ms that the report was submitted. */
+  /** The date and time in ms that the report was created. */
   @Json(name = "report_submission_timestamp_sec") val reportSubmissionTimestampSec: Int,
   /** The information that user's provide in the feedback report. */
   @Json(name = "user_supplied_feedback") val userSuppliedFeedback: GaeUserSuppliedFeedback,
