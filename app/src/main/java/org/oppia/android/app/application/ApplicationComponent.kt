@@ -66,7 +66,7 @@ import javax.inject.Singleton
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
-    NetworkModule::class
+    NetworkModule::class,
   ]
 )
 interface ApplicationComponent : ApplicationInjector {
