@@ -21,8 +21,8 @@
     ]
   },
   "device_context": {
-    "android_device_model": "example_model",
-    "android_sdk_version": 23,
+    "device_model": "example_model",
+    "sdk_version": 23,
     "build_fingerprint": "example_fingerprint_id",
     "network_type": "wifi"
   },
