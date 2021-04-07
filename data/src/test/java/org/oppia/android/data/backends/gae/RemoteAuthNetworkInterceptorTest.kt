@@ -7,10 +7,12 @@ import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.util.concurrent.MoreExecutors
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import okhttp3.Dispatcher
 import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -91,16 +93,16 @@ class RemoteAuthNetworkInterceptorTest {
     val mockTopicService = MockTopicService(delegate)
 
     mockWebServer.start()
-    val call = mockTopicService.getTopicByName(topicName)
-    val request = call.request()
+    val serviceCall = mockTopicService.getTopicByName(topicName)
+    val request = serviceCall.request()
     assertThat(request.header("api_key")).isNull()
     assertThat(request.header("app_package_name")).isNull()
     assertThat(request.header("app_version_name")).isNull()
     assertThat(request.header("app_version_code")).isNull()
 
-    call.execute()
-    val req = mockWebServer.takeRequest(timeout = 8, unit = TimeUnit.SECONDS)
-    verifyRequestHeaders(req!!.headers)
+    serviceCall.execute()
+    val interceptedRequest = mockWebServer.takeRequest(timeout = 8, unit = TimeUnit.SECONDS)
+    verifyRequestHeaders(interceptedRequest!!.headers)
   }
 
   @Test
@@ -129,6 +131,7 @@ class RemoteAuthNetworkInterceptorTest {
 
   private fun setUpMockRetrofit() {
     val client = OkHttpClient.Builder()
+      .dispatcher(Dispatcher(MoreExecutors.newDirectExecutorService()))
     client.addInterceptor(remoteAuthNetworkInterceptor)
 
     retrofit = retrofit2.Retrofit.Builder()
@@ -136,12 +139,14 @@ class RemoteAuthNetworkInterceptorTest {
         MockWebServer().url(NetworkSettings.getBaseUrl())
       )
       .addConverterFactory(MoshiConverterFactory.create())
+      .callbackExecutor(MoreExecutors.directExecutor())
       .client(client.build())
       .build()
 
     val behavior = NetworkBehavior.create()
     mockRetrofit = MockRetrofit.Builder(retrofit)
       .networkBehavior(behavior)
+      .backgroundExecutor(MoreExecutors.newDirectExecutorService())
       .build()
   }
 
