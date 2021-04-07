@@ -26,7 +26,7 @@ import javax.inject.Singleton
 class JsonPrefixNetworkInterceptorTest {
 
   @Inject
-  lateinit var networkInterceptor: JsonPrefixNetworkInterceptor
+  lateinit var jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor
 
   @Before
   fun setUp() {
@@ -40,7 +40,7 @@ class JsonPrefixNetworkInterceptorTest {
   @Test
   fun testNetworkInterceptor_withXssiPrefix_removesXssiPrefix() {
     val rawJson: String =
-      networkInterceptor.removeXssiPrefix(
+      jsonPrefixNetworkInterceptor.removeXssiPrefix(
         loadUnformattedFakeJson(
           "dummy_response_with_xssi_prefix.json"
         )
@@ -56,7 +56,7 @@ class JsonPrefixNetworkInterceptorTest {
   @Test
   fun testNetworkInterceptor_withoutXssiPrefix_removesXssiPrefix() {
     val rawJson: String =
-      networkInterceptor.removeXssiPrefix(
+      jsonPrefixNetworkInterceptor.removeXssiPrefix(
         loadUnformattedFakeJson(
           "dummy_response_without_xssi_prefix.json"
         )
@@ -109,7 +109,7 @@ class JsonPrefixNetworkInterceptorTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(networkInterceptorTest: JsonPrefixNetworkInterceptorTest)
-    fun inject(networkInterceptor: JsonPrefixNetworkInterceptor)
+    fun inject(jsonPrefixNetworkInterceptorTest: JsonPrefixNetworkInterceptorTest)
+    fun inject(jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor)
   }
 }
