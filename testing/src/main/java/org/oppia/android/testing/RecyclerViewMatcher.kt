@@ -68,6 +68,10 @@ class RecyclerViewMatcher {
       }
     }
 
+    /**
+     * This function verifies item displayed for a specific view
+     * within the item inside RecyclerView from a specified position.
+     */
     fun verifyItemDisplayedOnRecyclerView(
       recyclerView: Int,
       itemPosition: Int,
