@@ -90,6 +90,7 @@ class RemoteAuthNetworkInterceptorTest {
     val delegate = mockRetrofit.create(TopicService::class.java)
     val mockTopicService = MockTopicService(delegate)
 
+    mockWebServer.start()
     val call = mockTopicService.getTopicByName(topicName)
     val request = call.request()
     assertThat(request.header("api_key")).isNull()
@@ -97,7 +98,7 @@ class RemoteAuthNetworkInterceptorTest {
     assertThat(request.header("app_version_name")).isNull()
     assertThat(request.header("app_version_code")).isNull()
 
-    val response = call.execute()
+    call.execute()
     val req = mockWebServer.takeRequest(timeout = 8, unit = TimeUnit.SECONDS)
     verifyRequestHeaders(req!!.headers)
   }
