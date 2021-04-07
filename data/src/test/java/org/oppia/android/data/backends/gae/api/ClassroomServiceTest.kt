@@ -14,6 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
+import javax.inject.Inject
 
 /**
  * Test for [ClassroomService] retrofit instance using [MockClassroomService]
@@ -24,10 +25,14 @@ class ClassroomServiceTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit
 
+  @Inject
+  lateinit var jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor
+
   @Before
   fun setUp() {
+//    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     val client = OkHttpClient.Builder()
-    client.addInterceptor(JsonPrefixNetworkInterceptor())
+//    client.addInterceptor()
 
     retrofit = retrofit2.Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
@@ -51,5 +56,46 @@ class ClassroomServiceTest {
 
     assertThat(classroomResponse.isSuccessful).isTrue()
     assertThat(classroomResponse.body()!!.topicSummaryDicts?.get(0)?.name).isEqualTo("Math")
+//  }
+//
+//  // TODO(#89): Move this to a common test application component.
+//  @Module
+//  class TestModule {
+//    @Provides
+//    @Singleton
+//    fun provideContext(application: Application): Context {
+//      return application
+//    }
+//  }
+//
+//  // TODO(#89): Move this to a common test application component.
+//  @Singleton
+//  @Component(
+//    modules = [
+//      RobolectricModule::class, TestModule::class, TestDispatcherModule::class,
+//      TestLogReportingModule::class
+//    ]
+//  )
+//  interface TestApplicationComponent {
+//    @Component.Builder
+//    interface Builder {
+//      @BindsInstance
+//      fun setApplication(application: Application): Builder
+//      fun build(): TestApplicationComponent
+//    }
+//
+//    fun inject(classroomServiceTest: ClassroomServiceTest)
+//  }
+//
+//  class TestApplication : Application() {
+//    private val component: TestApplicationComponent by lazy {
+//      DaggerClassroomServiceTest_TestApplicationComponent.builder()
+//        .setApplication(this)
+//        .build()
+//    }
+//
+//    fun inject(classroomServiceTest: ClassroomServiceTest) {
+//      component.inject(classroomServiceTest)
+//    }
   }
 }
