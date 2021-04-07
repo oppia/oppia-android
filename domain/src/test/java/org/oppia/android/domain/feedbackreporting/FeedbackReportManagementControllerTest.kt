@@ -37,7 +37,6 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
 import org.oppia.android.app.model.UserSuppliedFeedback
-import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
@@ -63,7 +62,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
@@ -298,7 +296,6 @@ class FeedbackReportManagementControllerTest {
     @Singleton
     fun provideMockRetrofitInstance(): MockRetrofit {
       val client = OkHttpClient.Builder()
-      client.addInterceptor(NetworkInterceptor())
 
       val retrofit = retrofit2.Retrofit.Builder()
         .baseUrl(
