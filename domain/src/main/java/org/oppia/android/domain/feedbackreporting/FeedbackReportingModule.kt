@@ -2,7 +2,6 @@ package org.oppia.android.domain.feedbackreporting
 
 import dagger.Module
 import dagger.Provides
-import javax.inject.Qualifier
 
 /** Module to provide dependencies used in feedback reporting. */
 @Module
