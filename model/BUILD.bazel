@@ -163,7 +163,6 @@ format_import_proto_library(
 
 java_lite_proto_library(
     name = "feedback_reporting_java_proto_lite",
-    visibility = ["//visibility:public"],
     deps = [":feedback_reporting_proto"],
 )
 
@@ -223,7 +222,6 @@ android_library(
     visibility = ["//visibility:public"],
     exports = [
         ":arguments_java_proto_lite",
-        ":profile_java_proto_lite",
         ":question_java_proto_lite",
         ":subtitled_unicode_java_proto_lite",
         ":thumbnail_java_proto_lite",
