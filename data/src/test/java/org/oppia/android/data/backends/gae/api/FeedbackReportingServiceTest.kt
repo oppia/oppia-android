@@ -8,6 +8,7 @@ import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.testing.network.ApiMockLoader
@@ -28,7 +29,7 @@ class FeedbackReportingServiceTest {
   @Before
   fun setUp() {
     val client = OkHttpClient.Builder()
-//    client.addInterceptor(JsonPrefixNetworkInterceptor())
+    client.addInterceptor(JsonPrefixNetworkInterceptor())
 
     retrofit = retrofit2.Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
