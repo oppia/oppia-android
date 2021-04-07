@@ -87,7 +87,8 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     ) {
       GlobalScope.launch(Dispatchers.Default) {
         @Suppress("ControlFlowWithEmptyBody")
-        while (!allDependenciesInjected);
+        while (!allDependenciesInjected) {
+        }
         withContext(Dispatchers.Main) {
           loadLessonThumbnail()
         }
