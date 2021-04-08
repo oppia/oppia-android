@@ -19,6 +19,7 @@ import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -136,6 +137,27 @@ class PinPasswordActivityTest {
       )
     ).use {
       onView(withId(R.id.input_pin)).check(matches(hasFocus()))
+    }
+  }
+
+  @Test
+  fun testPinPassword_pinView_hasContentDescription() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      onView(withId(R.id.input_pin)).check(
+        matches(
+          withContentDescription(
+            context.resources.getString(
+              R.string.enter_your_pin
+            )
+          )
+        )
+      )
     }
   }
 
@@ -695,7 +717,27 @@ class PinPasswordActivityTest {
         .check(
           matches(
             withDrawable(
-              R.drawable.ic_show_eye_icon
+              R.drawable.ic_hide_eye_icon
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testPinPassword_withAdmin_showHideIcon_hasPasswordHiddenContentDescription() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      onView(withId(R.id.show_hide_password_image_view))
+        .check(
+          matches(
+            withContentDescription(
+              R.string.password_hidden_icon
             )
           )
         )
@@ -719,7 +761,29 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withAdmin_showHidePassword_imageChangesToHide() {
+  fun testPinPassword_withAdmin_clickShowHideIcon_hasPasswordShownContentDescription() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      closeSoftKeyboard()
+      onView(withId(R.id.show_pin)).perform(click())
+      onView(withId(R.id.show_hide_password_image_view))
+        .check(
+          matches(
+            withContentDescription(
+              R.string.password_shown_icon
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testPinPassword_withAdmin_showHidePassword_imageChangesToShow() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -734,7 +798,7 @@ class PinPasswordActivityTest {
         .check(
           matches(
             withDrawable(
-              R.drawable.ic_hide_eye_icon
+              R.drawable.ic_show_eye_icon
             )
           )
         )
@@ -742,7 +806,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withAdmin_showHidePassword_configChange_hideViewIsShown() {
+  fun testPinPassword_withAdmin_showHidePassword_configChange_showViewIsShown() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -759,7 +823,7 @@ class PinPasswordActivityTest {
         .check(
           matches(
             withDrawable(
-              R.drawable.ic_hide_eye_icon
+              R.drawable.ic_show_eye_icon
             )
           )
         )
