@@ -109,6 +109,7 @@ class RemoteAuthNetworkInterceptorTest {
 
   @Test
   fun testNetworkInterceptor_withHeaders_setsCorrectHeaders() {
+    setUpMockRetrofit()
     val delegate = mockRetrofit.create(TopicService::class.java)
     val mockTopicService = MockTopicService(delegate)
 
