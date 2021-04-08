@@ -33,16 +33,19 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
    * Returns whether there are any tasks known to the dispatcher that have not yet been started.
    *
    * Note that some of these tasks may be scheduled for the future. This is meant to be used in
-   * conjunction with [org.oppia.android.testing.FakeSystemClock.advanceTime] since that along with
-   * [runCurrent] will execute all tasks up to the new time. If the time returned by
+   * conjunction with [org.oppia.android.testing.time.FakeSystemClock.advanceTime] since that along
+   * with [runCurrent] will execute all tasks up to the new time. If the time returned by
    * [getNextFutureTaskCompletionTimeMillis] plus the current time is passed to
-   * [org.oppia.android.testing.FakeSystemClock.advanceTime], this dispatcher guarantees that
+   * [org.oppia.android.testing.time.FakeSystemClock.advanceTime], this dispatcher guarantees that
    * [hasPendingTasks] will return false after a call to [runCurrent] returns.
    *
    * This function makes no guarantees about idleness with respect to other dispatchers (e.g. even
    * if all tasks are executed, another dispatcher could schedule another task on this dispatcher in
    * response to a task from this dispatcher being executed). Cross-thread communication should be
    * managed using [TestCoroutineDispatchers], instead.
+   *
+   * Note that it's up to the implementation to define what constitutes as 'pending' as this may
+   * differ for different testing environments.
    */
   abstract fun hasPendingTasks(): Boolean
 
@@ -58,6 +61,9 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
    * If [runCurrent] is used, this function is guaranteed to return false after that function
    * returns. Note that the same threading caveats mentioned for [hasPendingTasks] also pertains to
    * this function.
+   *
+   * Note that it's up to the implementation to define what constitutes as 'completable' as this may
+   * differ for different testing environments.
    */
   abstract fun hasPendingCompletableTasks(): Boolean
 

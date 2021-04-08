@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import kotlin.math.min
 import kotlinx.coroutines.delay as delayInScope // Needed to avoid conflict with Delay.delay().
 
 /**
@@ -44,18 +43,15 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
     // Tasks immediately will start running, so track the task immediately.
     executingTaskCount.incrementAndGet()
     notifyIfRunning()
-    realCoroutineDispatcher.dispatch(
-      context,
-      kotlinx.coroutines.Runnable {
-        try {
-          block.run()
-        } finally {
-          executingTaskCount.decrementAndGet()
-          taskCompletionTimes.remove(taskId)
-        }
-        notifyIfIdle()
+    realCoroutineDispatcher.dispatch(context) {
+      try {
+        block.run()
+      } finally {
+        executingTaskCount.decrementAndGet()
+        taskCompletionTimes.remove(taskId)
       }
-    )
+      notifyIfIdle()
+    }
   }
 
   override fun scheduleResumeAfterDelay(
@@ -63,7 +59,7 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
     continuation: CancellableContinuation<Unit>
   ) {
     val taskId = totalTaskCount.incrementAndGet()
-    taskCompletionTimes[taskId] = timeMillis
+    taskCompletionTimes[taskId] = System.currentTimeMillis() + timeMillis
     val block: CancellableContinuation<Unit>.() -> Unit = {
       realCoroutineDispatcher.resumeUndispatched(Unit)
     }
@@ -93,14 +89,8 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
   override fun hasPendingTasks(): Boolean = executingTaskCount.get() != 0
 
   override fun getNextFutureTaskCompletionTimeMillis(timeMillis: Long): Long? {
-    var nextFutureTaskTime: Long? = null
     // Find the next most recent task completion time that's after the specified time.
-    for (entry in taskCompletionTimes.entries) {
-      if (entry.value > timeMillis) {
-        nextFutureTaskTime = nextFutureTaskTime?.let { min(it, entry.value) } ?: entry.value
-      }
-    }
-    return nextFutureTaskTime
+    return taskCompletionTimes.values.filter { it > timeMillis }.minOrNull()
   }
 
   override fun hasPendingCompletableTasks(): Boolean {

@@ -76,8 +76,9 @@ TEST_DEPS = [
 # Qualified file paths for test classes that have been migrated over to their own packages &
 # shouldn't be defined as module-level tests.
 # keep sorted
-MIGRATED_TESTS = [
-]
+MIGRATED_TESTS = glob([
+    "src/test/java/org/oppia/android/testing/threading/*.kt",
+])
 
 [testing_test(
     name = test_file_path,

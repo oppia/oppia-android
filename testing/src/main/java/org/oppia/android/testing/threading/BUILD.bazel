@@ -20,11 +20,17 @@ kt_android_library(
     ],
 )
 
+# Note that this library has restricted visibility since tests should only use the dependency
+# directly in special circumstances. In general, you don't need this. Use TestCoroutineDispatchers
+# instead.
 kt_android_library(
     name = "test_coroutine_dispatcher",
     testonly = True,
     srcs = [
         "TestCoroutineDispatcher.kt",
+    ],
+    visibility = [
+        "//testing/src/test/java/org/oppia/android/testing/threading:__pkg__",
     ],
     deps = [
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
