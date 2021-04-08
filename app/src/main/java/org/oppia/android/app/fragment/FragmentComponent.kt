@@ -13,7 +13,6 @@ import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.home.HomeFragment
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedFragment
-import org.oppia.android.app.mydownloads.MyDownloadsFragment
 import org.oppia.android.app.mydownloads.downloads.DownloadsAccessDialogFragment
 import org.oppia.android.app.mydownloads.downloads.DownloadsFragment
 import org.oppia.android.app.mydownloads.updates.UpdatesFragment
@@ -92,7 +91,6 @@ interface FragmentComponent {
   fun inject(hintsAndSolutionQuestionManagerFragment: HintsAndSolutionQuestionManagerFragment)
   fun inject(imageRegionSelectionTestFragment: ImageRegionSelectionTestFragment)
   fun inject(homeFragment: HomeFragment)
-  fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
   fun inject(onboardingFragment: OnboardingFragment)
   fun inject(ongoingTopicListFragment: OngoingTopicListFragment)

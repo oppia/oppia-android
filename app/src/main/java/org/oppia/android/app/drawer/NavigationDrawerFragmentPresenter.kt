@@ -208,8 +208,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
         NavigationDrawerItem.OPTIONS -> {
           val intent = OptionsActivity.createOptionsActivity(
-            activity, internalProfileId,
-            /* isFromNavigationDrawer= */ true
+            activity,
+            internalProfileId,
+            isFromNavigationDrawer = true
           )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
@@ -219,8 +220,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
         NavigationDrawerItem.HELP -> {
           val intent = HelpActivity.createHelpActivityIntent(
-            activity, internalProfileId,
-            /* isFromNavigationDrawer= */ true
+            activity,
+            internalProfileId,
+            isFromNavigationDrawer = true
           )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
@@ -230,7 +232,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
         NavigationDrawerItem.DOWNLOADS -> {
           val intent =
-            MyDownloadsActivity.createMyDownloadsActivityIntent(activity, internalProfileId)
+            MyDownloadsActivity.createMyDownloadsActivityIntent(
+              activity,
+              internalProfileId,
+              isFromNavigationDrawer = true
+            )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()
