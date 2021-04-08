@@ -141,8 +141,10 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
 
   @Suppress("ControlFlowWithEmptyBody")
   private fun flushTaskQueueNonBlocking(currentTimeMillis: Long) {
-    while (flushActiveTaskQueue(currentTimeMillis));
-    while (lock.withLock { isDispatcherActive() });
+    // Note that '{}' is used instead of a semicolon since ktlint may incorrectly remove semicolons
+    // in valid cases. See #3052 for context.
+    while (flushActiveTaskQueue(currentTimeMillis)) {}
+    while (lock.withLock { isDispatcherActive() }) {}
     maybeNotifyNewState()
   }
 
