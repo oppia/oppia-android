@@ -511,6 +511,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//model",
+        "//model:topic_java_proto_lite",
         "//third_party:androidx_recyclerview_recyclerview",
     ],
 )
