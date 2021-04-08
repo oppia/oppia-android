@@ -1,12 +1,19 @@
 package org.oppia.android.app.mydownloads.downloads
 
-/** Enum class containing the items for the Recycler view of [DownloadsFragment]. */
-enum class SortByItems(val value: String) {
-  NEWEST("Newest"),
-  ALPHABETICAL("Alphabetical"),
-  DOWNLOAD_SIZE("Download Size");
+import androidx.annotation.StringRes
+import org.oppia.android.R
 
-  override fun toString(): String {
-    return value
-  }
+/** Enum class containing the items for the Recycler view of [DownloadsFragment]. */
+enum class SortByItems(
+  @StringRes val value: Int
+) {
+  NEWEST(
+    value = R.string.sort_by_newest
+  ),
+  ALPHABETICAL(
+    value = R.string.sort_by_alphabetically
+  ),
+  DOWNLOAD_SIZE(
+    value = R.string.sort_by_download_size
+  );
 }

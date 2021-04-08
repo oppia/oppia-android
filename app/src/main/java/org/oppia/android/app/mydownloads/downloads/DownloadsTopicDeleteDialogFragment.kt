@@ -10,9 +10,8 @@ import org.oppia.android.R
 import org.oppia.android.app.mydownloads.INTERNAL_PROFILE_ID_SAVED_KEY
 import org.oppia.android.app.mydownloads.IS_ALLOWED_DOWNLOAD_ACCESS_SAVED_KEY
 
+/** [DialogFragment] that gives option to either cancel or delete the downloaded topic. */
 class DownloadsTopicDeleteDialogFragment : DialogFragment() {
-
-  private lateinit var alertDialog: AlertDialog
 
   companion object {
 
@@ -35,6 +34,7 @@ class DownloadsTopicDeleteDialogFragment : DialogFragment() {
         "Expected arguments to be pass to DownloadsTopicDeleteDialogFragment"
       }
 
+    // TODO(#552): remove if not needed
     val internalProfileId = args.getInt(INTERNAL_PROFILE_ID_SAVED_KEY)
     val isAllowedDownloadAccess = args.getBoolean(IS_ALLOWED_DOWNLOAD_ACCESS_SAVED_KEY)
 

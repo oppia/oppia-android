@@ -3,7 +3,6 @@ package org.oppia.android.app.mydownloads
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.help.HelpActivity
@@ -25,7 +24,6 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
     )
     internalProfileId = intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     myDownloadsActivityPresenter.handleOnCreate(internalProfileId, isFromNavigationDrawer)
-    title = getString(R.string.menu_my_downloads)
   }
 
   companion object {

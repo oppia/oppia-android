@@ -17,10 +17,20 @@ class DownloadsFragment :
   InjectableFragment(),
   SortByListIndexListener {
 
+  companion object {
+    fun newInstance(internalProfileId: Int): DownloadsFragment {
+      val downloadsFragment = DownloadsFragment()
+      val args = Bundle()
+      args.putInt(INTERNAL_PROFILE_ID_SAVED_KEY, internalProfileId)
+      downloadsFragment.arguments = args
+      return downloadsFragment
+    }
+  }
+
   @Inject
   lateinit var downloadsFragmentPresenter: DownloadsFragmentPresenter
 
-  private var previousSortTypeIndex: Int? = null
+  private var previousSortTypeIndex: Int = -1
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -34,9 +44,6 @@ class DownloadsFragment :
   ): View? {
     if (savedInstanceState != null) {
       previousSortTypeIndex = savedInstanceState.getInt(CURRENT_SORT_TYPE_INDEX_SAVED_KEY, -1)
-      if (previousSortTypeIndex == -1) {
-        previousSortTypeIndex = null
-      }
     }
     val internalProfileId = arguments?.getInt(INTERNAL_PROFILE_ID_SAVED_KEY) ?: -1
     return downloadsFragmentPresenter.handleCreateView(
@@ -55,7 +62,7 @@ class DownloadsFragment :
     }
   }
 
-  override fun onSortByItemClicked(index: Int?) {
+  override fun onSortByItemClicked(index: Int) {
     previousSortTypeIndex = index
   }
 }

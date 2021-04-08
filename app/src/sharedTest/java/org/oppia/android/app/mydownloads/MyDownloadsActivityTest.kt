@@ -1,6 +1,7 @@
 package org.oppia.android.app.mydownloads
 
 import android.app.Application
+import android.content.Context
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
@@ -15,10 +16,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -63,13 +67,24 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [MyDownloadsFragment]. */
+/** Tests for [MyDownloadsActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = MyDownloadsFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
-class MyDownloadsFragmentTest {
+@Config(application = MyDownloadsActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
+class MyDownloadsActivityTest {
+
+  @Inject
+  lateinit var context: Context
+
+  @get:Rule
+  val activityTestRule: ActivityTestRule<MyDownloadsActivity> = ActivityTestRule(
+    MyDownloadsActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
 
   @Before
   fun setUp() {
@@ -77,23 +92,39 @@ class MyDownloadsFragmentTest {
   }
 
   @Test
-  fun testMyDownloadsFragment_toolbarTitle_isDisplayedSuccessfully() {
+  fun testMyDownloadsActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(
+      MyDownloadsActivity.createMyDownloadsActivityIntent(
+        context = this.context.applicationContext,
+        profileId = 1,
+        isFromNavigationDrawer = true
+      )
+    )
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.my_downloads_activity_title))
+  }
+
+  @Test
+  fun testMyDownloadsActivity_toolbarTitle_isDisplayedSuccessfully() {
     launch(MyDownloadsActivity::class.java).use {
       onView(
         allOf(
           instanceOf(TextView::class.java),
-          withParent(withId(R.id.my_downloads_toolbar))
+          withParent(withId(R.id.my_downloads_activity_toolbar))
         )
       ).check(
         matches(
-          withText(R.string.my_downloads)
+          withText(R.string.my_downloads_activity_title)
         )
       )
     }
   }
 
   @Test
-  fun testMyDownloadsFragment_showsMyDownloadsFragmentWithMultipleTabs() {
+  fun testMyDownloadsActivity_showsMyDownloadsFragmentWithMultipleTabs() {
     launch(MyDownloadsActivity::class.java).use {
       onView(withId(R.id.my_downloads_tabs_container)).perform(click())
         .check(matches(isDisplayed()))
@@ -101,7 +132,7 @@ class MyDownloadsFragmentTest {
   }
 
   @Test
-  fun testMyDownloadsFragment_swipePage_hasSwipedPage() {
+  fun testMyDownloadsActivity_swipePage_hasSwipedPage() {
     launch(MyDownloadsActivity::class.java).use {
       onView(withId(R.id.my_downloads_tabs_viewpager)).perform(swipeLeft())
       onView(withId(R.id.my_downloads_tabs_container)).check(
@@ -117,7 +148,7 @@ class MyDownloadsFragmentTest {
   }
 
   @Test
-  fun testMyDownloadsFragment_defaultTabIsDownloads_isSuccessful() {
+  fun testMyDownloadsActivity_defaultTabIsDownloads_isSuccessful() {
     launch(MyDownloadsActivity::class.java).use {
       onView(withId(R.id.my_downloads_tabs_container)).check(
         matches(
@@ -132,7 +163,7 @@ class MyDownloadsFragmentTest {
   }
 
   @Test
-  fun testMyDownloadsFragment_clickOnDownloadsTab_showsDownloadsTabSelected() {
+  fun testMyDownloadsActivity_clickOnDownloadsTab_showsDownloadsTabSelected() {
     launch(MyDownloadsActivity::class.java).use {
       onView(
         allOf(
@@ -153,7 +184,7 @@ class MyDownloadsFragmentTest {
   }
 
   @Test
-  fun testMyDownloadsFragment_clickOnUpdatesTab_showsUpdatesTabSelected() {
+  fun testMyDownloadsActivity_clickOnUpdatesTab_showsUpdatesTabSelected() {
     launch(MyDownloadsActivity::class.java).use {
       onView(
         allOf(
@@ -202,18 +233,18 @@ class MyDownloadsFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(myDownloadsFragmentTest: MyDownloadsFragmentTest)
+    fun inject(myDownloadsActivityTest: MyDownloadsActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMyDownloadsFragmentTest_TestApplicationComponent.builder()
+      DaggerMyDownloadsActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(myDownloadsFragmentTest: MyDownloadsFragmentTest) {
-      component.inject(myDownloadsFragmentTest)
+    fun inject(myDownloadsActivityTest: MyDownloadsActivityTest) {
+      component.inject(myDownloadsActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

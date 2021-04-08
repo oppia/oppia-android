@@ -3,7 +3,7 @@ package org.oppia.android.app.mydownloads
 import androidx.annotation.StringRes
 import org.oppia.android.R
 
-/** Enum to store the tabs of [MyDownloadsFragment] and get tab by position. */
+/** Enum to store the tabs of [MyDownloadsActivity] and get tab by position. */
 enum class MyDownloadsTab(
   private var position: Int,
   @StringRes val tabLabelResId: Int

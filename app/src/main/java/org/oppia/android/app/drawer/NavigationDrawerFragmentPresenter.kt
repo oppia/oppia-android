@@ -243,12 +243,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.DOWNLOADS -> {
-          val intent =
-            MyDownloadsActivity.createMyDownloadsActivityIntent(
-              activity,
-              internalProfileId,
-              isFromNavigationDrawer = true
-            )
+          val intent = MyDownloadsActivity.createMyDownloadsActivityIntent(
+            activity,
+            internalProfileId,
+            isFromNavigationDrawer = true
+          )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()

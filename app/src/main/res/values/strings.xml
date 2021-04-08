@@ -264,7 +264,6 @@
   <!-- ResetPinDialogFragment -->
   <string name="reset_pin_enter">Enter a New Pin</string>
   <!-- MyDownloadsActivity -->
-  <string name="my_downloads">My Downloads</string>
   <string name="tab_downloads">Downloads</string>
   <string name="tab_updates">Updates (2)</string>
   <string name="sort_by">Sort By</string>
@@ -273,6 +272,10 @@
   <string name="download_topic_delete__dialog_delete">Delete</string>
   <string name="downloads_access_dialog_heading">Administrator Permission</string>
   <string name="downloads_access_dialog_message">Administrator\'s PIN is required to delete this topic from the device.</string>
+  <string name="my_downloads_activity_title">My Downloads</string>
+  <string name="sort_by_newest">Newest</string>
+  <string name="sort_by_alphabetically">Alphabetical</string>
+  <string name="sort_by_download_size">Download Size</string>
   <!-- HomeActivityBackDialog -->
   <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
   <string name="home_activity_back_dialog_cancel">Cancel</string>

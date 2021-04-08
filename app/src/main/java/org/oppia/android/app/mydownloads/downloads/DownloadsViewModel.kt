@@ -56,11 +56,9 @@ class DownloadsViewModel @Inject constructor(
     }
     adminPin = adminProfile.pin
 
-    val currentProfile = profileList.single { profile ->
+    return profileList.single { profile ->
       profileId == profile.id
     }
-
-    return currentProfile
   }
 
   fun setInternalProfileId(internalProfileId: Int) {

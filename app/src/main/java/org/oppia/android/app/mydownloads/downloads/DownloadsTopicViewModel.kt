@@ -23,6 +23,7 @@ class DownloadsTopicViewModel(
   }
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
+    // TODO(#552): use interface
     val intent = intentFactoryShim.createTopicActivityIntent(
       activity.applicationContext,
       internalProfileId,

@@ -34,13 +34,13 @@ class DownloadsFragmentPresenter @Inject constructor(
 
   private lateinit var downloadsRecyclerViewAdapter: BindableAdapter<DownloadsItemViewModel>
   private lateinit var binding: DownloadsFragmentBinding
-  private var previousSortTypeIndex: Int? = null
+  private var previousSortTypeIndex: Int = -1
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
-    previousSortTypeIndex: Int?,
+    previousSortTypeIndex: Int,
     sortByListIndexListener: SortByListIndexListener
   ): View? {
     binding = DownloadsFragmentBinding.inflate(
@@ -48,7 +48,7 @@ class DownloadsFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    this.previousSortTypeIndex = previousSortTypeIndex
+    this.previousSortTypeIndex = if (previousSortTypeIndex == -1) 0 else previousSortTypeIndex
     this.internalProfileId = internalProfileId
     this.sortByListIndexListener = sortByListIndexListener
 
@@ -103,19 +103,26 @@ class DownloadsFragmentPresenter @Inject constructor(
     viewModel: DownloadsSortByViewModel
   ) {
     binding.viewModel = viewModel
-    val adapter = ArrayAdapter(
+    val sortByItemsList = mutableListOf<String>()
+    SortByItems.values().forEach {
+      sortByItemsList.add(fragment.getString(it.value))
+    }
+    val sortItemAdapter = ArrayAdapter(
       fragment.requireContext(),
       R.layout.downloads_sortby_menu,
-      SortByItems.values()
+      sortByItemsList
     )
     // setting input type to zero makes AutoCompleteTextView no editable
-    binding.sortByMenu.setInputType(0)
-    binding.sortByMenu.setText(adapter.getItem(previousSortTypeIndex ?: 0).toString(), false)
-    binding.sortByMenu.setAdapter(adapter)
+    binding.sortByMenu.inputType = 0
+    binding.sortByMenu.setText(
+      sortItemAdapter.getItem(previousSortTypeIndex).toString(),
+      /* filter =*/ false
+    )
+    binding.sortByMenu.setAdapter(sortItemAdapter)
 
     // TODO(#552): orientation change, keep list sorted as per previousSortTypeIndex
 
-    binding.sortByMenu.setOnItemClickListener { parent, view, position, id ->
+    binding.sortByMenu.setOnItemClickListener { parent, _, position, _ ->
       if (previousSortTypeIndex != position) {
         when (parent.getItemAtPosition(position)) {
           SortByItems.NEWEST -> {
@@ -130,14 +137,17 @@ class DownloadsFragmentPresenter @Inject constructor(
         }
         previousSortTypeIndex = position
         sortByListIndexListener.onSortByItemClicked(previousSortTypeIndex)
-        binding.sortByMenu.setText(adapter.getItem(position).toString(), false)
+        binding.sortByMenu.setText(
+          sortItemAdapter.getItem(position).toString(),
+          /* filter =*/ false
+        )
       }
     }
   }
 
   private fun sortTopicAlphabetically() {
     val sortedTopicNameList = mutableListOf<String>()
-    val downloadsItemViewModelList = downloadsViewModel.downloadsViewModelLiveData.getValue()
+    val downloadsItemViewModelList = downloadsViewModel.downloadsViewModelLiveData.value
     downloadsItemViewModelList?.forEach { downloadsItemViewModel ->
       if (downloadsItemViewModel is DownloadsTopicViewModel) {
         sortedTopicNameList.add(downloadsItemViewModel.topicSummary.name)
@@ -146,7 +156,7 @@ class DownloadsFragmentPresenter @Inject constructor(
     sortedTopicNameList.sort()
 
     val sortedDownloadsItemViewModel = mutableListOf<DownloadsItemViewModel>()
-    sortedDownloadsItemViewModel.add(downloadsItemViewModelList!!.get(0))
+    sortedDownloadsItemViewModel.add(downloadsItemViewModelList!![0])
     sortedTopicNameList.forEach { topicName ->
       downloadsItemViewModelList.forEach { downloadsItemViewModel ->
         if (downloadsItemViewModel is DownloadsTopicViewModel &&

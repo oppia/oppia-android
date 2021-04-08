@@ -6,13 +6,15 @@ import android.os.Bundle
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
-const val ADMIN_PIN_SAVED_KEY = "DownloadsFragment.admin_pin"
-const val INTERNAL_PROFILE_ID_SAVED_KEY = "DownloadsFragment.internal_profile_id"
-const val ALLOW_DOWNLOAD_ACCESS_SAVED_KEY = "DownloadsFragment.allow_download_access"
-
+/** DialogFragment that ask user to input admin PIN in order to delete the downloaded topic. */
 class DownloadsAccessDialogFragment : InjectableDialogFragment() {
 
   companion object {
+
+    internal const val ADMIN_PIN_SAVED_KEY = "DownloadsFragment.admin_pin"
+    internal const val INTERNAL_PROFILE_ID_SAVED_KEY = "DownloadsFragment.internal_profile_id"
+    internal const val ALLOW_DOWNLOAD_ACCESS_SAVED_KEY = "DownloadsFragment.allow_download_access"
+
     fun newInstance(
       adminPin: String,
       internalProfileId: Int,

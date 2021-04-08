@@ -14,6 +14,7 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.DownloadsAccessDialogBinding
 import javax.inject.Inject
 
+/** The presenter for [DownloadsAccessDialogFragment]. */
 @FragmentScope
 class DownloadsAccessDialogFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -86,6 +87,7 @@ class DownloadsAccessDialogFragmentPresenter @Inject constructor(
         if (binding.downloadsAccessInputPinEditText.text.toString() == adminPin) {
           // call delete confirmation dialog
           dialog.dismiss()
+          // TODO(#552) perform below call using interface
           val dialogFragment = DownloadsTopicDeleteDialogFragment
             .newInstance(internalProfileId, allowDownloadAccess)
           dialogFragment.showNow(fragment.parentFragmentManager, DELETE_DOWNLOAD_TOPIC_DIALOG_TAG)

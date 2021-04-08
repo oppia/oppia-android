@@ -36,7 +36,7 @@ class MyDownloadsActivityPresenter @Inject constructor(private val activity: App
     }
     toolbar = binding.myDownloadsActivityToolbar
     activity.setSupportActionBar(toolbar)
-    activity.supportActionBar!!.title = activity.getString(R.string.menu_my_downloads)
+    activity.supportActionBar!!.title = activity.getString(R.string.my_downloads_activity_title)
 
     this.internalProfileId = internalProfileId
     if (isFromNavigationDrawer) {
