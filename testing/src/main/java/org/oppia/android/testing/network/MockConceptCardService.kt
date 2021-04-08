@@ -26,10 +26,10 @@ class MockConceptCardService(private val delegate: BehaviorDelegate<ConceptCardS
   private fun createMockGaeConceptCard(): GaeConceptCard {
     val networkInterceptor = NetworkInterceptor()
     var conceptCardResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("concept_card.json")
+      NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("concept_card.json")
 
     conceptCardResponseWithXssiPrefix =
-      networkInterceptor.removeXSSIPrefix(conceptCardResponseWithXssiPrefix)
+      networkInterceptor.removeXssiPrefix(conceptCardResponseWithXssiPrefix)
 
     val moshi = Moshi.Builder().build()
     val adapter: JsonAdapter<GaeConceptCard> = moshi.adapter(GaeConceptCard::class.java)
