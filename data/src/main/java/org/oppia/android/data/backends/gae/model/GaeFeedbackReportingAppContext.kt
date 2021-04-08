@@ -17,7 +17,7 @@ data class GaeFeedbackReportingAppContext(
   /** The audio language set in the app. */
   @Json(name = "audio_language_code") val audioLanguageCode: String,
   /** Whether the app downloads items and updates only when connected to wifi. */
-  @Json(name = "download_and_update_only_on_wifi") val downloadAndUpdateOnlyOnWifi: Boolean,
+  @Json(name = "only_allows_wifi_download_and_update") val downloadAndUpdateOnlyOnWifi: Boolean,
   /** Whether the app automatically updates topics. */
   @Json(name = "automatically_update_topics") val automaticallyUpdateTopics: Boolean,
   /** Whether the profile sending the report is an admin account. */
