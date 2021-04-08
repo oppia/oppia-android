@@ -11,6 +11,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import okhttp3.Dispatcher
 import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -18,6 +19,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.TopicService
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestDispatcherModule
@@ -87,13 +89,14 @@ class RemoteAuthNetworkInterceptorTest {
   @Test
   fun testNetworkInterceptor_withoutHeaders_addsCorrectHeaders() {
     mockWebServer.enqueue(MockResponse().setBody("{}"))
-    val delegate = mockRetrofit.create(TopicService::class.java)
-    val mockTopicService = MockTopicService(delegate)
+    val service = retrofit.create(TopicService::class.java)
+//    val delegate = mockRetrofit.create(TopicService::class.java)
+//    val mockTopicService = MockTopicService(delegate)
 //    val request = Request.Builder()
 //      .url(mockWebServer.url("/"))
 //      .get()
 //      .build()
-    val call = mockTopicService.getTopicByName(topicName)
+    val call = service.getTopicByName(topicName)
     val request = call.request()
     assertThat(request.header("api_key")).isNull()
     assertThat(request.header("app_package_name")).isNull()
@@ -136,9 +139,9 @@ class RemoteAuthNetworkInterceptorTest {
   }
 
   private fun setUpMockRetrofit() {
-    mockWebServer.start(61566)
+    mockWebServer.dispatcher
     val client = OkHttpClient.Builder()
-    client.addInterceptor(remoteAuthNetworkInterceptor)
+      .addInterceptor(remoteAuthNetworkInterceptor)
 
     retrofit = retrofit2.Retrofit.Builder()
       .baseUrl(mockWebServer.url("/"))
