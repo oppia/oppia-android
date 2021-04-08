@@ -15,7 +15,6 @@ class OnboardingActivity : InjectableAppCompatActivity(), RouteToProfileListList
   companion object {
     fun createOnboardingActivity(context: Context): Intent {
       val intent = Intent(context, OnboardingActivity::class.java)
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
       return intent
     }
   }
