@@ -65,35 +65,37 @@ import javax.inject.Singleton
 )
 class ImageViewBindingAdaptersTest {
 
+  // TODO(#3059): Add more tests for other BindableAdapters present in [ImageViewBindingAdapters].
+
   private val context: Context = ApplicationProvider.getApplicationContext<TestApplication>()
 
   lateinit var imageView: ImageView
 
   @Before
-  fun setup() {
+  fun setUp() {
     imageView = ImageView(context)
   }
 
   @Test
-  fun testSetImageDrawableWithChapterPlayState_completedStateHasCorrectDrawable() {
+  fun testSetImageDrawableWithChapterPlayState_completedState_hasCorrectDrawable() {
     ImageViewBindingAdapters.setImageDrawable(imageView, ChapterPlayState.COMPLETED)
     verifyIfDrawableMatches(R.drawable.circular_solid_color_primary_32dp)
   }
 
   @Test
-  fun testSetImageDrawableWithChapterPlayState_notStartedStateHasCorrectDrawable() {
+  fun testSetImageDrawableWithChapterPlayState_notStartedState_hasCorrectDrawable() {
     ImageViewBindingAdapters.setImageDrawable(imageView, ChapterPlayState.NOT_STARTED)
     verifyIfDrawableMatches(R.drawable.circular_stroke_2dp_color_primary_32dp)
   }
 
   @Test
-  fun testSetImageDrawableWithChapterPlayState_startedNotCompletedStateHasCorrectDrawable() {
+  fun testSetImageDrawableWithChapterPlayState_startedNotCompletedState_hasCorrectDrawable() {
     ImageViewBindingAdapters.setImageDrawable(imageView, ChapterPlayState.STARTED_NOT_COMPLETED)
     verifyIfDrawableMatches(R.drawable.circular_stroke_2dp_color_primary_32dp)
   }
 
   @Test
-  fun testSetImageDrawableWithChapterPlayState_notPlayableStateHasCorrectDrawable() {
+  fun testSetImageDrawableWithChapterPlayState_notPlayableState_hasCorrectDrawable() {
     ImageViewBindingAdapters.setImageDrawable(
       imageView,
       ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
