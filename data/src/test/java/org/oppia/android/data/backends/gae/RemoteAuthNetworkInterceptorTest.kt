@@ -90,7 +90,7 @@ class RemoteAuthNetworkInterceptorTest {
   fun testNetworkInterceptor_withoutHeaders_addsCorrectHeaders() {
     mockWebServer.enqueue(MockResponse().setBody("{}"))
     val request = Request.Builder()
-      .url(mockWebServer.url(NetworkSettings.getBaseUrl() + "/topic_data_handler/$topicName"))
+      .url(mockWebServer.url("/"))
       .get()
       .build()
     assertThat(request.header("api_key")).isNull()
@@ -103,7 +103,6 @@ class RemoteAuthNetworkInterceptorTest {
       .addInterceptor(remoteAuthNetworkInterceptor)
       .build()
     client.newCall(request).execute()
-
     val interceptedRequest = mockWebServer.takeRequest(timeout = 8, unit = TimeUnit.SECONDS)
     verifyRequestHeaders(interceptedRequest!!.headers)
   }
@@ -134,20 +133,17 @@ class RemoteAuthNetworkInterceptorTest {
 
   private fun setUpMockRetrofit() {
     val client = OkHttpClient.Builder()
-      .dispatcher(Dispatcher(MoreExecutors.newDirectExecutorService()))
     client.addInterceptor(remoteAuthNetworkInterceptor)
 
     retrofit = retrofit2.Retrofit.Builder()
-      .baseUrl(mockWebServer.url(NetworkSettings.getBaseUrl() + "/"))
+      .baseUrl(mockWebServer.url("/"))
       .addConverterFactory(MoshiConverterFactory.create())
-      .callbackExecutor(MoreExecutors.directExecutor())
       .client(client.build())
       .build()
 
     val behavior = NetworkBehavior.create()
     mockRetrofit = MockRetrofit.Builder(retrofit)
       .networkBehavior(behavior)
-      .backgroundExecutor(MoreExecutors.newDirectExecutorService())
       .build()
   }
 
