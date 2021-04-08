@@ -6,6 +6,7 @@ import androidx.work.Configuration
 import dagger.BindsInstance
 import dagger.Component
 import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.mydownloads.MyDownloadsModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -65,7 +66,7 @@ import javax.inject.Singleton
     ExpirationMetaDataRetrieverModule::class, RatioInputModule::class,
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-    HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class
+    HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class, MyDownloadsModule::class
   ]
 )
 interface ApplicationComponent : ApplicationInjector {

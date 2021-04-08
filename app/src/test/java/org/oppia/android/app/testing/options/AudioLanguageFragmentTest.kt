@@ -29,6 +29,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.mydownloads.MyDownloadsModule
 import org.oppia.android.app.options.AUDIO_LANGUAGE
 import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.options.OptionsActivity
@@ -226,7 +227,7 @@ class AudioLanguageFragmentTest {
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
       RatioInputModule::class, HintsAndSolutionConfigModule::class,
       WorkManagerConfigurationModule::class, LogUploadWorkerModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, MyDownloadsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

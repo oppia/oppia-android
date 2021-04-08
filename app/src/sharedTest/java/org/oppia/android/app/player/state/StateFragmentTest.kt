@@ -61,6 +61,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.mydownloads.MyDownloadsModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
@@ -1409,7 +1410,8 @@ class StateFragmentTest {
       ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       HintsAndSolutionConfigFastShowTestModule::class, WorkManagerConfigurationModule::class,
-      LogUploadWorkerModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      LogUploadWorkerModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
+      MyDownloadsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

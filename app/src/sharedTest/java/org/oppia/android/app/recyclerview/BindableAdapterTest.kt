@@ -38,6 +38,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentModule
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.mydownloads.MyDownloadsModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.android.app.recyclerview.BindableAdapter.MultiTypeBuilder
@@ -708,7 +709,7 @@ class BindableAdapterTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, MyDownloadsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

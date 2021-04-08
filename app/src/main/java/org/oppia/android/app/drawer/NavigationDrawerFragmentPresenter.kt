@@ -25,6 +25,7 @@ import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.mydownloads.EnableMyDownloads
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
@@ -52,7 +53,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private val topicController: TopicController,
   private val logger: ConsoleLogger,
   private val headerViewModelProvider: ViewModelProvider<NavigationDrawerHeaderViewModel>,
-  private val footerViewModelProvider: ViewModelProvider<NavigationDrawerFooterViewModel>
+  private val footerViewModelProvider: ViewModelProvider<NavigationDrawerFooterViewModel>,
+  @EnableMyDownloads private val enableMyDownloads: Boolean
 ) : NavigationView.OnNavigationItemSelectedListener {
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
@@ -64,6 +66,16 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = DrawerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.fragmentDrawerNavView.setNavigationItemSelectedListener(this)
+
+    enableMyDownloads.apply {
+      binding.fragmentDrawerNavView.menu.getItem(
+        NavigationDrawerItem.DOWNLOADS.ordinal
+      ).isEnabled = this
+
+      binding.fragmentDrawerNavView.menu.getItem(
+        NavigationDrawerItem.DOWNLOADS.ordinal
+      ).isVisible = this
+    }
 
     fragment.setHasOptionsMenu(true)
 
