@@ -15,6 +15,7 @@ import dagger.Provides
 import okhttp3.Dispatcher
 import okhttp3.Headers
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
@@ -61,11 +62,12 @@ class RemoteAuthNetworkInterceptorTest {
 
   private val topicName = "Topic1"
 
+  private val mockWebServer = MockWebServer()
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     setUpApplicationForContext()
-    setUpMockRetrofit()
   }
 
   private fun setUpApplicationForContext() {
@@ -86,21 +88,22 @@ class RemoteAuthNetworkInterceptorTest {
 
   @Test
   fun testNetworkInterceptor_withoutHeaders_addsCorrectHeaders() {
-    val mockWebServer = MockWebServer()
     mockWebServer.enqueue(MockResponse().setBody("{}"))
-
-    val delegate = mockRetrofit.create(TopicService::class.java)
-    val mockTopicService = MockTopicService(delegate)
-
-    mockWebServer.start()
-    val serviceCall = mockTopicService.getTopicByName(topicName)
-    val request = serviceCall.request()
+    val request = Request.Builder()
+      .url(mockWebServer.url(NetworkSettings.getBaseUrl() + "/topic_data_handler/$topicName"))
+      .get()
+      .build()
     assertThat(request.header("api_key")).isNull()
     assertThat(request.header("app_package_name")).isNull()
     assertThat(request.header("app_version_name")).isNull()
     assertThat(request.header("app_version_code")).isNull()
 
-    serviceCall.execute()
+    val client = OkHttpClient.Builder()
+      .dispatcher(Dispatcher(MoreExecutors.newDirectExecutorService()))
+      .addInterceptor(remoteAuthNetworkInterceptor)
+      .build()
+    client.newCall(request).execute()
+
     val interceptedRequest = mockWebServer.takeRequest(timeout = 8, unit = TimeUnit.SECONDS)
     verifyRequestHeaders(interceptedRequest!!.headers)
   }
@@ -135,9 +138,7 @@ class RemoteAuthNetworkInterceptorTest {
     client.addInterceptor(remoteAuthNetworkInterceptor)
 
     retrofit = retrofit2.Retrofit.Builder()
-      .baseUrl(
-        MockWebServer().url(NetworkSettings.getBaseUrl())
-      )
+      .baseUrl(mockWebServer.url(NetworkSettings.getBaseUrl() + "/"))
       .addConverterFactory(MoshiConverterFactory.create())
       .callbackExecutor(MoreExecutors.directExecutor())
       .client(client.build())
