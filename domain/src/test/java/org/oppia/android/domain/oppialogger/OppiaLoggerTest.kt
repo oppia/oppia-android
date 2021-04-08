@@ -13,9 +13,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog

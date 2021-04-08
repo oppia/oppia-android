@@ -29,11 +29,11 @@ import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData

@@ -24,10 +24,10 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.Profile
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData

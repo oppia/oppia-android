@@ -1,8 +1,5 @@
 package org.oppia.android.testing
 
-import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -32,6 +29,9 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatcher
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.testing.time.FakeSystemClock
 import org.oppia.android.util.data.AsyncResult

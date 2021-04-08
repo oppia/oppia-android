@@ -45,10 +45,10 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_3
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData

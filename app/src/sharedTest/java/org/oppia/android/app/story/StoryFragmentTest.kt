@@ -89,12 +89,12 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_STORY_ID_1
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
-import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule

@@ -177,8 +177,8 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
   }
 
   private fun isTaskQueueActive(currentTimeMillis: Long): Boolean {
-    return taskQueue.hasPendingCompletableTasks(currentTimeMillis)
-      || lock.withLock { executingTaskCount } != 0
+    return taskQueue.hasPendingCompletableTasks(currentTimeMillis) ||
+      lock.withLock { executingTaskCount } != 0
   }
 
   private fun createDeferredRunnable(context: CoroutineContext, block: Runnable): Runnable {
@@ -264,7 +264,9 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
       val insertionOrder: Int
     )
 
-    private fun CopyOnWriteArraySet<Task>.hasPendingCompletableTasks(currentTimeMillis: Long): Boolean {
+    private fun CopyOnWriteArraySet<Task>.hasPendingCompletableTasks(
+      currentTimeMillis: Long
+    ): Boolean {
       return any { task -> task.timeMillis <= currentTimeMillis }
     }
   }

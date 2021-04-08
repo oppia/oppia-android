@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.inOrder
 import org.mockito.Mockito.never
@@ -586,7 +585,7 @@ abstract class TestCoroutineDispatcherTestBase(
   }
 
   private fun LongSubject.isWithinTimeDelta(time: Long) =
-    isWithin(time - longTaskDelayDeltaCheckMillis .. time + longTaskDelayDeltaCheckMillis)
+    isWithin(time - longTaskDelayDeltaCheckMillis..time + longTaskDelayDeltaCheckMillis)
 
   private fun LongSubject.isWithin(range: LongRange) = isIn(range.toGuavaRange())
 
@@ -609,7 +608,7 @@ abstract class TestCoroutineDispatcherTestBase(
 
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
-  protected inline fun <reified T: TestCoroutineDispatcher> verifyDispatcherImplementation() {
+  protected inline fun <reified T : TestCoroutineDispatcher> verifyDispatcherImplementation() {
     // Sanity check to ensure the correct implementation is being tested.
     assertThat(backgroundTestDispatcher).isInstanceOf(T::class.java)
   }

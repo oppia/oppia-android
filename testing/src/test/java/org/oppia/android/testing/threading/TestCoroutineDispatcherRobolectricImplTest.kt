@@ -43,7 +43,7 @@ import javax.inject.Singleton
   application = TestCoroutineDispatcherRobolectricImplTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class TestCoroutineDispatcherRobolectricImplTest: TestCoroutineDispatcherTestBase(
+class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBase(
   shortTaskDelayMillis = 100L,
   longTaskDelayMillis = 100L,
   // Exact matching isn't essential for correctness, and a nonzero value avoids an invalid range
