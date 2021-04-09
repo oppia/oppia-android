@@ -127,7 +127,6 @@ class ImageViewBindingAdaptersTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
