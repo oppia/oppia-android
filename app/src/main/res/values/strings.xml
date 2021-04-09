@@ -54,6 +54,7 @@
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
   <string name="faq_activity_title">FAQs (Frequently Asked Questions)</string>
+  <string name="pin_password_activity_title">PIN verification</string>
   <string name="onboarding_activity_title">Oppia Introduction</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="info">Info</string>
