@@ -48,9 +48,6 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     internalProfileId: Int
   ): View? {
     binding = RecentlyPlayedFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    binding.recentlyPlayedToolbar.setNavigationOnClickListener {
-      (activity as RecentlyPlayedActivity).finish()
-    }
 
     this.internalProfileId = internalProfileId
 
@@ -77,17 +74,14 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       fragment,
       {
         if (it.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
-          binding.recentlyPlayedToolbar.title = activity.getString(R.string.recently_played_stories)
           addRecentlyPlayedStoryListSection(it.promotedStoryList.recentlyPlayedStoryList)
         }
 
         if (it.promotedStoryList.olderPlayedStoryList.isNotEmpty()) {
-          binding.recentlyPlayedToolbar.title = activity.getString(R.string.recently_played_stories)
           addOlderStoryListSection(it.promotedStoryList.olderPlayedStoryList)
         }
 
         if (it.promotedStoryList.suggestedStoryList.isNotEmpty()) {
-          binding.recentlyPlayedToolbar.title = activity.getString(R.string.stories_for_you)
           addRecommendedStoryListSection(it.promotedStoryList.suggestedStoryList)
         }
 

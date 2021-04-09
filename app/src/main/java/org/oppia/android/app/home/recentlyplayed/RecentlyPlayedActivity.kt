@@ -21,7 +21,10 @@ class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExploration
       RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
       -1
     )
-    recentlyPlayedActivityPresenter.handleOnCreate(internalProfileId)
+    val recentlyPlayedTitleEnum =
+      intent.getSerializableExtra(RECENTLY_PLAYED_ACTIVITY_TITLE_ENUM_KEY)
+        as RecentlyPlayedTitleEnum
+    recentlyPlayedActivityPresenter.handleOnCreate(internalProfileId, recentlyPlayedTitleEnum)
   }
 
   companion object {
@@ -29,10 +32,18 @@ class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExploration
     const val RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY =
       "RecentlyPlayedActivity.internal_profile_id"
 
+    internal const val RECENTLY_PLAYED_ACTIVITY_TITLE_ENUM_KEY =
+      "RecentlyPlayedActivity.title_enum_key"
+
     /** Returns a new [Intent] to route to [RecentlyPlayedActivity]. */
-    fun createRecentlyPlayedActivityIntent(context: Context, internalProfileId: Int): Intent {
+    fun createRecentlyPlayedActivityIntent(
+      context: Context,
+      internalProfileId: Int,
+      recentlyPlayedTitleEnum: RecentlyPlayedTitleEnum
+    ): Intent {
       val intent = Intent(context, RecentlyPlayedActivity::class.java)
       intent.putExtra(RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId)
+      intent.putExtra(RECENTLY_PLAYED_ACTIVITY_TITLE_ENUM_KEY, recentlyPlayedTitleEnum)
       return intent
     }
   }

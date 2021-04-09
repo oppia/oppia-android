@@ -7,6 +7,7 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedTitleEnum
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import javax.inject.Inject
 
@@ -33,7 +34,8 @@ class ProfileProgressActivity :
     startActivity(
       RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
         this,
-        internalProfileId
+        internalProfileId,
+        RecentlyPlayedTitleEnum.RECENTLY_PLAYED_STORIES
       )
     )
   }
