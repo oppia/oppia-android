@@ -111,7 +111,7 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_6
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.CoroutineExecutorService
+import org.oppia.android.testing.threading.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
