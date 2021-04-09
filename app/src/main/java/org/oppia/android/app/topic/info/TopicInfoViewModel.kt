@@ -24,6 +24,7 @@ class TopicInfoViewModel @Inject constructor(
     ObservableField(R.drawable.ic_available_offline_primary_24dp)
   val isDescriptionExpanded = ObservableField<Boolean>(true)
   val isSeeMoreVisible = ObservableField<Boolean>(true)
+  val skillsItemList = ObservableField<List<TopicInfoSkillItemViewModel>>()
 
   fun calculateTopicSizeWithUnit() {
     val sizeWithUnit = topic.get()?.let { topic ->
