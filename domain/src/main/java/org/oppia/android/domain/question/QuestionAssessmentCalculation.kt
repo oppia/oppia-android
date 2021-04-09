@@ -69,7 +69,7 @@ class QuestionAssessmentCalculation @Inject constructor(
   /** Compute the overall score as well as the score and mastery per skill. */
   internal fun computeAll(): UserAssessmentPerformance {
     calculateScores()
-    // TODO: set up mastery calculations
+    // TODO(#3067): create mastery calculations method
 
     // Set up the return values
     var finalScore = FractionGrade.newBuilder().apply {
@@ -79,12 +79,15 @@ class QuestionAssessmentCalculation @Inject constructor(
 
     var finalScorePerSkillMapping = mutableMapOf<String, FractionGrade>()
     for (score in scorePerSkillMapping) {
-      finalScorePerSkillMapping[score.key] = FractionGrade.newBuilder().apply {
-        numerator = score.value.numerator
-        denominator = score.value.denominator
-      }.build()
+      if (score.value.denominator != 0.0) { // Exclude entries with 0 as the denominator
+        finalScorePerSkillMapping[score.key] = FractionGrade.newBuilder().apply {
+          numerator = score.value.numerator
+          denominator = score.value.denominator
+        }.build()
+      }
     }
 
+    // TODO(#3067): set up finalMasteryPerSkillMapping
     var finalMasteryPerSkillMapping = mapOf<String, Double>()
 
     return UserAssessmentPerformance.newBuilder().apply {

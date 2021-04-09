@@ -1976,6 +1976,12 @@
                 "html": "<p>Hint text will appear here</p>",
                 "content_id": "hint_1"
               }
+            },
+            {
+              "hint_content": {
+                "html": "<p>Second hint text will appear here</p>",
+                "content_id": "hint_2"
+              }
             }
           ],
           "id": "MultipleChoiceInput",

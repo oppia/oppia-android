@@ -1390,6 +1390,156 @@ class QuestionAssessmentProgressControllerTest {
       .isEqualTo(skill1Score)
   }
 
+  @Test
+  fun hintViewed_for2QuestionsWithWrongAnswer_returnScore2Point6Outof3() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // submit question 1 wrong answer
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    var ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
+    var hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
+    assertThat(hint.hintContent.html)
+      .contains("<p>Hint text will appear here</p>")
+
+    // view question 1 hint
+    questionAssessmentProgressController.submitHintIsRevealed(
+      ephemeralQuestion.ephemeralState.state, true, 0
+    )
+
+    // submit question 1 correct answer
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+
+    // submit question 2 wrong answer
+    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
+    hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
+    assertThat(hint.hintContent.html)
+      .contains("<p>Hint text will appear here</p>")
+    // view question 2 hint
+    questionAssessmentProgressController.submitHintIsRevealed(
+      ephemeralQuestion.ephemeralState.state, true, 0
+    )
+    // submit question 2 correct answer
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+
+    // submit question 3 correct answer
+    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+
+    // check the computed score
+    subscribeToScoreCalculations(TEST_SKILL_ID_LIST_01)
+    testCoroutineDispatchers.runCurrent()
+    verify(
+      mockScoreCalculationsLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(scoreCalculationCaptor.capture())
+
+    val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
+    val totalScore = FractionGrade.newBuilder().apply {
+      numerator = 2.6
+      denominator = 3.0
+    }.build()
+    val skill0Score = FractionGrade.newBuilder().apply {
+      numerator = 1.6
+      denominator = 2.0
+    }.build()
+    val skill1Score = FractionGrade.newBuilder().apply {
+      numerator = 1.0
+      denominator = 1.0
+    }.build()
+    assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
+    assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Score)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Score)
+  }
+
+  @Test
+  fun multipleHintsViewed_forQuestionsWithWrongAnswer_returnScore2Point7Outof3() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // submit question 1 wrong answer
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    var ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
+
+    // view question 1 hint 0
+    var hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
+    assertThat(hint.hintContent.html)
+      .contains("<p>Hint text will appear here</p>")
+    questionAssessmentProgressController.submitHintIsRevealed(
+      ephemeralQuestion.ephemeralState.state, true, 0
+    )
+
+    // view question 1 hint 1
+    hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(1)
+    assertThat(hint.hintContent.html)
+      .contains("<p>Second hint text will appear here</p>")
+    questionAssessmentProgressController.submitHintIsRevealed(
+      ephemeralQuestion.ephemeralState.state, true, 1
+    )
+
+    // submit question 1 correct answer
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+
+    // submit question 2 correct answer
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+
+    // submit question 3 correct answer
+    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+
+    // check the computed score
+    subscribeToScoreCalculations(TEST_SKILL_ID_LIST_01)
+    testCoroutineDispatchers.runCurrent()
+    verify(
+      mockScoreCalculationsLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(scoreCalculationCaptor.capture())
+
+    val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
+    val totalScore = FractionGrade.newBuilder().apply {
+      numerator = 2.7
+      denominator = 3.0
+    }.build()
+    val skill0Score = FractionGrade.newBuilder().apply {
+      numerator = 1.7
+      denominator = 2.0
+    }.build()
+    val skill1Score = FractionGrade.newBuilder().apply {
+      numerator = 1.0
+      denominator = 1.0
+    }.build()
+    assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
+    assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Score)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Score)
+  }
+
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {
     TestQuestionModule.questionSeed = questionSeed
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
