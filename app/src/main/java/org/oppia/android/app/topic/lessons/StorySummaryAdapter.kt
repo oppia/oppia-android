@@ -1,9 +1,11 @@
 package org.oppia.android.app.topic.lessons
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.R
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -20,9 +22,9 @@ private const val VIEW_TYPE_STORY_ITEM = 2
 class StorySummaryAdapter(
   private val itemList: MutableList<TopicLessonsItemViewModel>,
   private val expandedChapterListIndexListener: ExpandedChapterListIndexListener,
-  private var currentExpandedChapterListIndex: Int?
-) :
-  RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+  private var currentExpandedChapterListIndex: Int?,
+  private val context: Context
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -54,7 +56,12 @@ class StorySummaryAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, i: Int) {
     when (holder.itemViewType) {
       VIEW_TYPE_TITLE_TEXT -> {
-        (holder as TopicPlayTitleViewHolder).bind()
+        (holder as TopicPlayTitleViewHolder).bind(
+          itemList.count {
+            it is StorySummaryViewModel
+          },
+          context
+        )
       }
       VIEW_TYPE_STORY_ITEM -> {
         (holder as StorySummaryViewHolder).bind(itemList[i] as StorySummaryViewModel, i)
@@ -82,9 +89,16 @@ class StorySummaryAdapter(
   }
 
   private class TopicPlayTitleViewHolder(
-    binding: TopicLessonsTitleBinding
+    private val binding: TopicLessonsTitleBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind() {}
+    internal fun bind(size: Int, context: Context) {
+      binding.topicPlayTextView.setText(
+        context.resources.getQuantityText(
+          R.plurals.story_play_heading,
+          size
+        )
+      )
+    }
   }
 
   inner class StorySummaryViewHolder(private val binding: TopicLessonsStorySummaryBinding) :

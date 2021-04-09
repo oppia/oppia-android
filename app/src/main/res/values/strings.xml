@@ -82,7 +82,15 @@
   <string name="story_activity_title">Chapter List</string>
   <string name="lesson_thumbnail_content_description">Image for %s</string>
   <string name="all_topics">All Topics</string>
-  <string name="stories_you_can_play">Stories You Can Play</string>
+  <string name="topic_info_skills_heading">Skills</string>
+  <plurals name="story_play_heading">
+    <item quantity="one">
+      Story You Can Play
+    </item>
+    <item quantity="other">
+      Stories You Can Play
+    </item>
+  </plurals>
   <string name="navigate_up">Navigate up</string>
   <string name="recently_played_activity">Recently-Played Stories</string>
   <string name="topic_downloaded">Topic Downloaded</string>
