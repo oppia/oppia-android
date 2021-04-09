@@ -5,10 +5,6 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.oppia.android.R
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
@@ -73,26 +69,17 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     this.isBlurred = isBlurred
   }
 
-  private val allDependenciesInjected
-    get() = ::thumbnailDownloadUrlTemplate.isInitialized &&
+  private fun checkIfLoadingIsPossible() {
+    if (::entityId.isInitialized &&
+      ::entityType.isInitialized &&
+      ::lessonThumbnail.isInitialized &&
+      ::thumbnailDownloadUrlTemplate.isInitialized &&
       ::resourceBucketName.isInitialized &&
       ::gcsPrefix.isInitialized &&
       ::imageLoader.isInitialized &&
       ::logger.isInitialized
-
-  private fun checkIfLoadingIsPossible() {
-    if (::entityId.isInitialized &&
-      ::entityType.isInitialized &&
-      ::lessonThumbnail.isInitialized
     ) {
-      GlobalScope.launch(Dispatchers.Default) {
-        @Suppress("ControlFlowWithEmptyBody")
-        while (!allDependenciesInjected) {
-        }
-        withContext(Dispatchers.Main) {
-          loadLessonThumbnail()
-        }
-      }
+      loadLessonThumbnail()
     }
   }
 
@@ -135,6 +122,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
       super.onAttachedToWindow()
       (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
         .createViewComponent(this).inject(this)
+      checkIfLoadingIsPossible()
     } catch (e: IllegalStateException) {
       if (::logger.isInitialized)
         logger.e(
