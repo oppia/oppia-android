@@ -2,13 +2,14 @@ package org.oppia.android.domain.question
 
 import org.oppia.android.app.model.FractionGrade
 import org.oppia.android.app.model.UserAssessmentPerformance
+import java.math.BigDecimal
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
  * Private mutable class that stores a grade as a fraction.
  */
-private class MutableFractionGrade(var numerator: Double, var denominator: Double)
+private class MutableFractionGrade(var numerator: BigDecimal, var denominator: BigDecimal)
 
 /**
  * Private class that computes the state of the user's performance at the end of a practice session.
@@ -34,7 +35,8 @@ class QuestionAssessmentCalculation @Inject constructor(
   ) {
     this.skillIdList = skillIdList
     this.questionSessionMetrics = questionSessionMetrics
-    this.totalScore = MutableFractionGrade(0.0, questionSessionMetrics.size.toDouble())
+    this.totalScore =
+      MutableFractionGrade(0.toBigDecimal(), questionSessionMetrics.size.toBigDecimal())
     createScorePerSkillMapping()
   }
 
@@ -42,26 +44,31 @@ class QuestionAssessmentCalculation @Inject constructor(
   private fun createScorePerSkillMapping() {
     scorePerSkillMapping = mutableMapOf()
     for (skillId in skillIdList) {
-      scorePerSkillMapping[skillId] = MutableFractionGrade(0.0, 0.0)
+      scorePerSkillMapping[skillId] = MutableFractionGrade(0.toBigDecimal(), 0.toBigDecimal())
     }
   }
 
   /** Calculate the user's overall score and score per skill for this practice session. */
   private fun calculateScores() {
     for (questionMetric in questionSessionMetrics) {
-      val totalHintsPenalty = questionMetric.numberOfHintsUsed * viewHintPenalty
+      val totalHintsPenalty =
+        questionMetric.numberOfHintsUsed.toBigDecimal() * viewHintPenalty.toBigDecimal()
       val totalWrongAnswerPenalty =
-        (questionMetric.numberOfAnswersSubmitted - 1) * wrongAnswerPenalty
-      var questionScore = 0.0
+        (questionMetric.numberOfAnswersSubmitted - 1)
+          .toBigDecimal() * wrongAnswerPenalty.toBigDecimal()
+      var questionScore = 0.toBigDecimal()
       if (!questionMetric.didViewSolution) {
         questionScore =
-          maxOf(maxScorePerQuestion - totalHintsPenalty - totalWrongAnswerPenalty, questionScore)
+          maxOf(
+            maxScorePerQuestion.toBigDecimal() - totalHintsPenalty - totalWrongAnswerPenalty,
+            questionScore
+          )
       }
       this.totalScore.numerator += questionScore
       for (linkedSkillId in questionMetric.question.linkedSkillIdsList) {
         if (!scorePerSkillMapping.containsKey(linkedSkillId)) continue
         scorePerSkillMapping[linkedSkillId]!!.numerator += questionScore
-        scorePerSkillMapping[linkedSkillId]!!.denominator += 1
+        scorePerSkillMapping[linkedSkillId]!!.denominator += 1.toBigDecimal()
       }
     }
   }
@@ -73,16 +80,16 @@ class QuestionAssessmentCalculation @Inject constructor(
 
     // Set up the return values
     var finalScore = FractionGrade.newBuilder().apply {
-      numerator = totalScore.numerator
-      denominator = totalScore.denominator
+      numerator = totalScore.numerator.toDouble()
+      denominator = totalScore.denominator.toDouble()
     }.build()
 
     var finalScorePerSkillMapping = mutableMapOf<String, FractionGrade>()
     for (score in scorePerSkillMapping) {
-      if (score.value.denominator != 0.0) { // Exclude entries with 0 as the denominator
+      if (score.value.denominator != 0.toBigDecimal()) { // Exclude entries with denominator of 0
         finalScorePerSkillMapping[score.key] = FractionGrade.newBuilder().apply {
-          numerator = score.value.numerator
-          denominator = score.value.denominator
+          numerator = score.value.numerator.toDouble()
+          denominator = score.value.denominator.toDouble()
         }.build()
       }
     }
