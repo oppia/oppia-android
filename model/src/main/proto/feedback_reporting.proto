@@ -20,14 +20,17 @@ message FeedbackReport {
   // The date as a Unix timestamp for when the report was submitted on the Android device. This is
   // an int32 for seconds instead of an int64 msec to match the backend storage datetime object.
   int32 report_submission_timestamp_sec = 1;
+  // The local timezone of the report as an offset in hours, based on the Android device's local
+  // clock.
+  int32 report_submission_utc_offset_hours = 2;
   // The information supplied by the user in a feedback report.
-  UserSuppliedFeedback user_supplied_info = 2;
+  UserSuppliedFeedback user_supplied_info = 3;
   // Information collected about the user's physical device.
-  FeedbackReportingSystemContext system_context = 3;
+  FeedbackReportingSystemContext system_context = 4;
   // Information collected about the physical device's build.
-  FeedbackReportingDeviceContext device_context = 4;
+  FeedbackReportingDeviceContext device_context = 5;
   // Information collected about the specific app build on the device.
-  FeedbackReportingAppContext app_context = 5;
+  FeedbackReportingAppContext app_context = 6;
 }
 
 // Information supplied by the user in the feedback report.

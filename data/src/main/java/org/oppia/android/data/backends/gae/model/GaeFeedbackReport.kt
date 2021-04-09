@@ -13,7 +13,7 @@ data class GaeFeedbackReport(
   /** The date and time in sec that the report was submitted. */
   @Json(name = "report_submission_timestamp_sec") val reportSubmissionTimestampSec: Int,
   /** The date and time in ms that the report was submitted. */
-  @Json(name = "report_submission_utc_offset") val reportSubmissionUtcOffset: Int,
+  @Json(name = "report_submission_utc_offset_hrs") val reportSubmissionUtcOffset: Int,
   /** The information that user's provide in the feedback report. */
   @Json(name = "user_supplied_feedback") val userSuppliedFeedback: GaeUserSuppliedFeedback,
   /** Information collected about the user device's system. */

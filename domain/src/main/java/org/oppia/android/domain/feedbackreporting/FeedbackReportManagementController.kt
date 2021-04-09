@@ -108,6 +108,7 @@ class FeedbackReportManagementController @Inject constructor(
     val gaeFeedbackReport = GaeFeedbackReport(
       schemaVersion = reportSchemaVersion,
       reportSubmissionTimestampSec = report.reportSubmissionTimestampSec,
+      reportSubmissionUtcOffset = report.reportSubmissionUtcOffsetHours,
       userSuppliedFeedback = createGaeUserSuppliedFeedback(report.userSuppliedInfo),
       systemContext = getSystemContext(report.systemContext),
       deviceContext = getDeviceContext(report.deviceContext),

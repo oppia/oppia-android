@@ -8,7 +8,7 @@
     "text_size": "large",
     "text_language_code": "EN",
     "audio_language_code": "EN",
-    "download_and_update_only_on_wifi": false,
+    "only_allows_wifi_download_and_update": false,
     "automatically_update_topics": false,
     "account_is_profile_admin": false,
     "event_logs": [
@@ -27,6 +27,7 @@
     "network_type": "wifi"
   },
   "report_submission_timestamp_sec": 1615688684,
+  "reportSubmissionUtcOffset": 0,
   "system_context": {
     "platform_version": "0.1-alpha-abcdef1234",
     "package_version_code": 1,

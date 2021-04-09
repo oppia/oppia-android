@@ -62,6 +62,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
@@ -294,30 +295,24 @@ class FeedbackReportManagementControllerTest {
     @OppiaRetrofit
     @Provides
     @Singleton
-    fun provideMockRetrofitInstance(): MockRetrofit {
+    fun providRetrofitInstance(): Retrofit {
       val client = OkHttpClient.Builder()
 
-      val retrofit = retrofit2.Retrofit.Builder()
+      return retrofit2.Retrofit.Builder()
         .baseUrl(
           MockWebServer().url(NetworkSettings.getBaseUrl())
         )
         .addConverterFactory(MoshiConverterFactory.create())
         .client(client.build())
         .build()
-
-      val behavior = NetworkBehavior.create()
-      return MockRetrofit.Builder(retrofit)
-        .networkBehavior(behavior)
-        .build()
     }
 
     @Provides
     @Singleton
     fun provideFeedbackReportingService(
-      @OppiaRetrofit mockRetrofit: MockRetrofit
+      @OppiaRetrofit retrofit: Retrofit
     ): FeedbackReportingService {
-      val delegate = mockRetrofit.create(FeedbackReportingService::class.java)
-      return MockFeedbackReportingService(delegate)
+      return retrofit.create(MockFeedbackReportingService::class.java)
     }
   }
 

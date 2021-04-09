@@ -46,6 +46,7 @@ class ReportSchemaVersionTest {
   private val gaeFeedbackReportParameterNamesV1 = listOf(
     "schemaVersion",
     "reportSubmissionTimestampSec",
+    "reportSubmissionUtcOffset",
     "userSuppliedFeedback",
     "systemContext",
     "deviceContext",
