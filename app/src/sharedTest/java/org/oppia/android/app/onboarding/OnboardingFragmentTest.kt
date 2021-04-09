@@ -17,6 +17,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -533,6 +534,13 @@ class OnboardingFragmentTest {
         (view as ViewPager2).setCurrentItem(position, /* smoothScroll= */ false)
       }
     }
+  }
+
+  @Test
+  fun testnextArrowDescription() {
+    launch(OnboardingActivity::class.java).use{
+      val nextArrowDescription = onView(withId(R.id.onboarding_fragment_next_image_view))
+      nextArrowDescription.check(matches(ViewMatchers.withContentDescription("Next")))}
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
