@@ -110,6 +110,5 @@ class JsonPrefixNetworkInterceptorTest {
     }
 
     fun inject(jsonPrefixNetworkInterceptorTest: JsonPrefixNetworkInterceptorTest)
-    fun inject(jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor)
   }
 }
