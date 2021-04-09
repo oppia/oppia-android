@@ -7,6 +7,8 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//domain:domain_test.bzl", "domain_test")
 
+MIGRATED_PROD_FILES = glob([])
+
 kt_android_library(
     name = "domain",
     srcs = glob(
@@ -31,9 +33,10 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "testing",
-    testonly = True,
-    srcs = glob(["src/main/java/org/oppia/android/domain/testing/**/*.kt"]),
+    name = "domain",
+    srcs = glob(
+        ["src/main/java/org/oppia/android/domain/**/*.kt"],
+        exclude = [MIGRATED_PROD_FILES, "src/main/java/org/oppia/android/domain/testing/**/*.kt"],),
     deps = [
         ":domain",
         "//third_party:androidx_work_work-runtime-ktx",
