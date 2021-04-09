@@ -35,7 +35,7 @@ class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
    * @param request the request being sent over the network
    * @return the exact same request as the parameter with added headers
    */
-  internal fun addAuthHeaders(request: Request): Request {
+  private fun addAuthHeaders(request: Request): Request {
     return request.newBuilder()
       .addHeader("api_key", networkApiKey)
       .addHeader("app_package_name", context.packageName)
