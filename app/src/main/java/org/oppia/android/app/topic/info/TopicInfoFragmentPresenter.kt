@@ -11,12 +11,14 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicInfoFragmentBinding
 import org.oppia.android.databinding.TopicInfoSkillsItemBinding
+import org.oppia.android.databinding.TopicInfoStorySummaryBinding
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -58,7 +60,19 @@ class TopicInfoFragmentPresenter @Inject constructor(
     binding.skillsRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }
+    binding.topicInfoStorySummaryRecyclerView.apply {
+      this!!.adapter = createStoryRecyclerViewAdapter()
+    }
     return binding.root
+  }
+
+  private fun createStoryRecyclerViewAdapter(): BindableAdapter<TopicInfoStoryItemViewModel> {
+    return BindableAdapter.SingleTypeBuilder
+      .newBuilder<TopicInfoStoryItemViewModel>()
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = TopicInfoStorySummaryBinding::inflate,
+        setViewModel = TopicInfoStorySummaryBinding::setViewModel
+      ).build()
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicInfoSkillItemViewModel> {
@@ -85,6 +99,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
         topicInfoViewModel.calculateTopicSizeWithUnit()
         controlSeeMoreTextVisibility()
         topicInfoViewModel.skillsItemList.set(extractTopicSkillList(topic.subtopicList))
+        topicInfoViewModel.storyItemList.set(extractTopicStorySummaryList(topic.storyList))
       }
     )
   }
@@ -130,5 +145,17 @@ class TopicInfoFragmentPresenter @Inject constructor(
       }
     )
     return topicSkillsList
+  }
+
+  private fun extractTopicStorySummaryList(
+    storySummaryList: MutableList<StorySummary>
+  ): ArrayList<TopicInfoStoryItemViewModel> {
+    val topicStoryList = ArrayList<TopicInfoStoryItemViewModel>()
+    topicStoryList.addAll(
+      storySummaryList.map {
+        TopicInfoStoryItemViewModel(it)
+      }
+    )
+    return topicStoryList
   }
 }

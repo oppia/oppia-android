@@ -13,21 +13,21 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.topic.lessons.StorySummaryViewModel" />
+      type="org.oppia.android.app.topic.info.TopicInfoStoryItemViewModel" />
   </data>
 
   <com.google.android.material.card.MaterialCardView
     android:id="@+id/topic_info_story_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="20dp"
-    android:layout_marginTop="12dp"
-    android:layout_marginEnd="20dp"
-    android:layout_marginBottom="12dp"
+    android:layout_marginStart="32dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="32dp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
-    app:cardElevation="4dp"
-    app:rippleColor="@color/transparent">
+    app:rippleColor="@color/transparent"
+    app:strokeColor="@color/oppiaTopicInfoStoryCardBorder"
+    app:strokeWidth="1dp">
 
     <LinearLayout
       android:layout_width="match_parent"
@@ -37,9 +37,7 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -50,7 +48,7 @@
           <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="16dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="vertical">
@@ -59,9 +57,10 @@
               android:id="@+id/topic_info_story_name_text_view"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
+              android:ellipsize="end"
               android:fontFamily="sans-serif-medium"
-              android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
-              android:paddingTop="24dp"
+              android:maxLines="2"
+              android:paddingTop="8dp"
               android:paddingBottom="4dp"
               android:text="@{viewModel.storySummary.storyName}"
               android:textColor="@color/oppiaPrimaryText"
@@ -104,7 +103,7 @@
         android:id="@+id/chapter_list_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/whiteLight"
+        android:background="@color/oppiaGreyBackground"
         android:orientation="vertical"
         android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 
@@ -121,8 +120,7 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
           android:layout_marginBottom="8dp"
-          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-          app:list="@{viewModel.chapterSummaryItemList}" />
+          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
       </LinearLayout>
     </LinearLayout>
   </com.google.android.material.card.MaterialCardView>
