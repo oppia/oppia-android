@@ -140,6 +140,7 @@ proto_library(
 
 java_lite_proto_library(
     name = "translation_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":translation_proto"],
 )
 
@@ -225,7 +226,6 @@ android_library(
         ":arguments_java_proto_lite",
         ":subtitled_unicode_java_proto_lite",
         ":thumbnail_java_proto_lite",
-        ":translation_java_proto_lite",
     ],
 )
 
