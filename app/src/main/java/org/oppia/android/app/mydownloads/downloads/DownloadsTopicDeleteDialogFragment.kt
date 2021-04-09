@@ -34,18 +34,18 @@ class DownloadsTopicDeleteDialogFragment : DialogFragment() {
         "Expected arguments to be pass to DownloadsTopicDeleteDialogFragment"
       }
 
-    // TODO(#552): remove if not needed
+    // TODO(#3068): keeping these values if the controller required else can be removed
     val internalProfileId = args.getInt(INTERNAL_PROFILE_ID_SAVED_KEY)
     val isAllowedDownloadAccess = args.getBoolean(IS_ALLOWED_DOWNLOAD_ACCESS_SAVED_KEY)
 
     val alertDialog = AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.AlertDialogTheme))
-      .setMessage(R.string.download_topic_delete_dialog_message)
-      .setNegativeButton(R.string.download_topic_delete__dialog_cancel) { dialog, _ ->
+      .setMessage(R.string.downloads_topic_delete_dialog_message)
+      .setNegativeButton(R.string.downloads_topic_delete_dialog_cancel) { dialog, _ ->
         dialog.dismiss()
       }
-      .setPositiveButton(R.string.download_topic_delete__dialog_delete) { _, _ ->
-        // TODO(): call delete API in DownloadManagementController
+      .setPositiveButton(R.string.downloads_topic_delete_dialog_delete) { _, _ ->
+        // TODO(#3068): call delete API in DownloadManagementController
       }
       .create()
 

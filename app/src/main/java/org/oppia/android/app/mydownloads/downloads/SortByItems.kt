@@ -8,12 +8,12 @@ enum class SortByItems(
   @StringRes val value: Int
 ) {
   NEWEST(
-    value = R.string.sort_by_newest
+    value = R.string.downloads_sort_by_newest
   ),
   ALPHABETICAL(
-    value = R.string.sort_by_alphabetically
+    value = R.string.downloads_sort_by_alphabetically
   ),
   DOWNLOAD_SIZE(
-    value = R.string.sort_by_download_size
+    value = R.string.downloads_sort_by_download_size
   );
 }

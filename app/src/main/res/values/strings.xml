@@ -274,15 +274,18 @@
   <string name="tab_downloads">Downloads</string>
   <string name="tab_updates">Updates (2)</string>
   <string name="sort_by">Sort By</string>
-  <string name="download_topic_delete_dialog_message">Delete this topic from the device?</string>
-  <string name="download_topic_delete__dialog_cancel">Cancel</string>
-  <string name="download_topic_delete__dialog_delete">Delete</string>
+  <string name="downloads_topic_delete_dialog_message">Delete this topic from the device?</string>
+  <string name="downloads_topic_delete_dialog_cancel">Cancel</string>
+  <string name="downloads_topic_delete_dialog_delete">Delete</string>
   <string name="downloads_access_dialog_heading">Administrator Permission</string>
   <string name="downloads_access_dialog_message">Administrator\'s PIN is required to delete this topic from the device.</string>
+  <string name="downloads_delete_heading">DELETE</string>
+  <string name="downloads_delete_icon_content_description">Delete Button</string>
+  <string name="downloads_expand_card_show_delete">Show/hide delete</string>
   <string name="my_downloads_activity_title">My Downloads</string>
-  <string name="sort_by_newest">Newest</string>
-  <string name="sort_by_alphabetically">Alphabetical</string>
-  <string name="sort_by_download_size">Download Size</string>
+  <string name="downloads_sort_by_newest">Newest</string>
+  <string name="downloads_sort_by_alphabetically">Alphabetical</string>
+  <string name="downloads_sort_by_download_size">Download Size</string>
   <!-- HomeActivityBackDialog -->
   <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
   <string name="home_activity_back_dialog_cancel">Cancel</string>
@@ -414,29 +417,19 @@
   <string name="completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
   <string name="item_selection_text">Please select at least one choice.</string>
   <!-- SplashActivity -->
-  <string
-    name="unsupported_app_version_dialog_title"
-    description="The title of the dialog shown when a user's pre-release app has expired.">
+  <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
     Unsupported app version
   </string>
-  <string
-    name="unsupported_app_version_dialog_message"
-    description="The main message of the dialog shown when a user's pre-release app has expired.">
+  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">
     This version of the app is no longer supported. Please update it through the Play Store.
   </string>
-  <string
-    name="unsupported_app_version_dialog_close_button_text"
-    description="The close button text of the dialog shown when a user's pre-release app has expired.">
+  <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
     Close app
   </string>
-  <string
-    name="ratio_content_description_separator"
-    description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">
+  <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">
     \u0020to\u0020
   </string>
-  <string
-    name="ratio_default_hint_text"
-    description="The default hint text for the ratio interaction if the placeholder text is not available.">
+  <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">
     Enter a ratio in the form x:y.
   </string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
