@@ -12,18 +12,15 @@ class DownloadsAccessDialogFragment : InjectableDialogFragment() {
   companion object {
 
     internal const val ADMIN_PIN_SAVED_KEY = "DownloadsFragment.admin_pin"
-    internal const val INTERNAL_PROFILE_ID_SAVED_KEY = "DownloadsFragment.internal_profile_id"
     internal const val ALLOW_DOWNLOAD_ACCESS_SAVED_KEY = "DownloadsFragment.allow_download_access"
 
     fun newInstance(
       adminPin: String,
-      internalProfileId: Int,
       allowDownloadAccess: Boolean
     ): DownloadsAccessDialogFragment {
       val downloadsAccessDialogFragment = DownloadsAccessDialogFragment()
       val args = Bundle()
       args.putString(ADMIN_PIN_SAVED_KEY, adminPin)
-      args.putInt(INTERNAL_PROFILE_ID_SAVED_KEY, internalProfileId)
       args.putBoolean(ALLOW_DOWNLOAD_ACCESS_SAVED_KEY, allowDownloadAccess)
       downloadsAccessDialogFragment.arguments = args
       return downloadsAccessDialogFragment
@@ -41,11 +38,9 @@ class DownloadsAccessDialogFragment : InjectableDialogFragment() {
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val adminPin = arguments?.getString(ADMIN_PIN_SAVED_KEY)
     checkNotNull(adminPin) { "Admin Pin must not be null" }
-    val internalProfileId = arguments?.getInt(INTERNAL_PROFILE_ID_SAVED_KEY) ?: -1
     val allowDownloadAccess = arguments?.getBoolean(ALLOW_DOWNLOAD_ACCESS_SAVED_KEY) ?: false
     return downloadsAccessDialogFragmentPresenter.handleOnCreateDialog(
       adminPin,
-      internalProfileId,
       allowDownloadAccess
     )
   }

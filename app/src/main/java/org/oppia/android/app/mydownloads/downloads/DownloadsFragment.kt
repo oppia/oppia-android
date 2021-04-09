@@ -17,7 +17,8 @@ private const val CURRENT_SORT_TYPE_INDEX_SAVED_KEY =
 class DownloadsFragment :
   InjectableFragment(),
   SortByListIndexListener,
-  RouteToTopicListener {
+  RouteToTopicListener,
+  DownloadsTopicDeleteInterface {
 
   companion object {
     fun newInstance(internalProfileId: Int): DownloadsFragment {
@@ -67,5 +68,9 @@ class DownloadsFragment :
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
     downloadsFragmentPresenter.startTopicActivity(internalProfileId, topicId)
+  }
+
+  override fun showDownloadsTopicDeleteDialogFragment(allowDownloadAccess: Boolean) {
+    downloadsFragmentPresenter.openDownloadTopicDeleteDialog(allowDownloadAccess)
   }
 }

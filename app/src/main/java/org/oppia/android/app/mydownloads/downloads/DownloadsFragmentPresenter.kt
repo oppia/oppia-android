@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.databinding.DownloadsFragmentBinding
@@ -32,7 +31,6 @@ class DownloadsFragmentPresenter @Inject constructor(
   private var internalProfileId: Int = -1
 
   private val sortByListIndexListener = fragment as SortByListIndexListener
-  private val routeToTopicListener = fragment as RouteToTopicListener
 
   @Inject
   lateinit var downloadsViewModel: DownloadsViewModel
@@ -192,7 +190,7 @@ class DownloadsFragmentPresenter @Inject constructor(
         Observer { profile ->
           when {
             profile.allowDownloadAccess -> {
-              openDeleteConfirmationDialog(profile.allowDownloadAccess)
+              openDownloadTopicDeleteDialog(profile.allowDownloadAccess)
             }
             else -> {
               openAdminPinInputDialog(profile.allowDownloadAccess)
@@ -203,16 +201,10 @@ class DownloadsFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun openDeleteConfirmationDialog(allowDownloadAccess: Boolean) {
-    val dialogFragment = DownloadsTopicDeleteDialogFragment
-      .newInstance(internalProfileId, allowDownloadAccess)
-    dialogFragment.showNow(fragment.childFragmentManager, DELETE_DOWNLOAD_TOPIC_DIALOG_TAG)
-  }
-
   private fun openAdminPinInputDialog(allowDownloadAccess: Boolean) {
     val adminPin = downloadsViewModel.adminPin
     val dialogFragment = DownloadsAccessDialogFragment
-      .newInstance(adminPin, internalProfileId, allowDownloadAccess)
+      .newInstance(adminPin, allowDownloadAccess)
     dialogFragment.showNow(fragment.childFragmentManager, ADMIN_PIN_CONFIRMATION_DIALOG_TAG)
   }
 
@@ -224,5 +216,11 @@ class DownloadsFragmentPresenter @Inject constructor(
         topicId
       )
     )
+  }
+
+  fun openDownloadTopicDeleteDialog(allowDownloadAccess: Boolean) {
+    val dialogFragment = DownloadsTopicDeleteDialogFragment
+      .newInstance(internalProfileId, allowDownloadAccess)
+    dialogFragment.showNow(fragment.childFragmentManager, DELETE_DOWNLOAD_TOPIC_DIALOG_TAG)
   }
 }

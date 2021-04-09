@@ -22,13 +22,14 @@ class DownloadsAccessDialogFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<DownloadsAccessViewModel>
 ) {
 
+  private val downloadsTopicDeleteInterface =
+    fragment.parentFragment as DownloadsTopicDeleteInterface
   private val downloadsAccessAllowedViewModel by lazy {
     getDownloadsAccessViewModel()
   }
 
   fun handleOnCreateDialog(
     adminPin: String?,
-    internalProfileId: Int,
     allowDownloadAccess: Boolean
   ): Dialog {
     val binding: DownloadsAccessDialogBinding =
@@ -85,12 +86,8 @@ class DownloadsAccessDialogFragmentPresenter @Inject constructor(
           return@setOnClickListener
         }
         if (binding.downloadsAccessInputPinEditText.text.toString() == adminPin) {
-          // call delete confirmation dialog
           dialog.dismiss()
-          // TODO(#552) perform below call using interface
-          val dialogFragment = DownloadsTopicDeleteDialogFragment
-            .newInstance(internalProfileId, allowDownloadAccess)
-          dialogFragment.showNow(fragment.parentFragmentManager, DELETE_DOWNLOAD_TOPIC_DIALOG_TAG)
+          downloadsTopicDeleteInterface.showDownloadsTopicDeleteDialogFragment(allowDownloadAccess)
         } else {
           downloadsAccessAllowedViewModel.errorMessage.set(
             fragment.resources.getString(
