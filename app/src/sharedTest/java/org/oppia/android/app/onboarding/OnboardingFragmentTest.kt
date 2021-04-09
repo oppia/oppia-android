@@ -538,9 +538,10 @@ class OnboardingFragmentTest {
 
   @Test
   fun testnextArrowDescription() {
-    launch(OnboardingActivity::class.java).use{
+    launch(OnboardingActivity::class.java).use {
       val nextArrowDescription = onView(withId(R.id.onboarding_fragment_next_image_view))
-      nextArrowDescription.check(matches(ViewMatchers.withContentDescription("Next")))}
+      nextArrowDescription.check(matches(ViewMatchers.withContentDescription("Next")))
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
