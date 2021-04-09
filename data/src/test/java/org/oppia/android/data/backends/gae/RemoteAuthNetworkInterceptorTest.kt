@@ -22,7 +22,6 @@ import org.oppia.android.data.backends.gae.api.TopicService
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.network.MockTopicService
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.robolectric.Shadows
@@ -146,12 +145,6 @@ class RemoteAuthNetworkInterceptorTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestNetworkModule {
-    @Provides
-    @Singleton
-    fun provideMockTopicService(@OppiaRetrofit retrofit: Retrofit): MockTopicService {
-      return retrofit.create(MockTopicService::class.java)
-    }
-
     @Provides
     @Singleton
     @NetworkApiKey
