@@ -4,26 +4,7 @@ This library provides data to the rest of the application.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//data:data_test.bzl", "data_test")
-
-kt_android_library(
-    name = "persistent_cache_store",
-    srcs = ["src/main/java/org/oppia/android/data/persistence/PersistentCacheStore.kt"],
-    custom_package = "org.oppia.android.data.persistence",
-    manifest = "src/main/AndroidManifest.xml",
-    visibility = ["//visibility:public"],
-    deps = [
-        ":dagger",
-        "//model:profile_java_proto_lite",
-        "//third_party:androidx_appcompat_appcompat",
-        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
-        "//third_party:com_caverock_androidsvg-aar",
-        "//third_party:com_github_bumptech_glide_glide",
-        "//utility",
-        "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
-    ],
-)
 
 # keep sorted
 TEST_DEPS = [
