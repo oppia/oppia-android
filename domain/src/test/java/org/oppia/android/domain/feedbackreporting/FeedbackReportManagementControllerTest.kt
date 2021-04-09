@@ -102,7 +102,7 @@ class FeedbackReportManagementControllerTest {
   @Captor
   lateinit var reportStoreResultCaptor: ArgumentCaptor<AsyncResult<FeedbackReportingDatabase>>
 
-  private val mockWebServer: MockWebServer = MockWebServer()
+  private val mockWebServer = MockWebServer()
 
   private val languageSuggestionText = "french"
 
@@ -299,9 +299,7 @@ class FeedbackReportManagementControllerTest {
       val client = OkHttpClient.Builder()
 
       return retrofit2.Retrofit.Builder()
-        .baseUrl(
-          MockWebServer().url(NetworkSettings.getBaseUrl())
-        )
+        .baseUrl(mockWebServer.url(NetworkSettings.getBaseUrl()))
         .addConverterFactory(MoshiConverterFactory.create())
         .client(client.build())
         .build()
@@ -312,7 +310,7 @@ class FeedbackReportManagementControllerTest {
     fun provideFeedbackReportingService(
       @OppiaRetrofit retrofit: Retrofit
     ): FeedbackReportingService {
-      return retrofit.create(MockFeedbackReportingService::class.java)
+      return retrofit.create(FeedbackReportingService::class.java)
     }
   }
 
