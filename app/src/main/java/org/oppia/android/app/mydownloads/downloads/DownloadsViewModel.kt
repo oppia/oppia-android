@@ -1,13 +1,12 @@
 package org.oppia.android.app.mydownloads.downloads
 
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicList
-import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
@@ -21,12 +20,11 @@ import javax.inject.Inject
 /** [ObservableViewModel] for [DownloadsFragment]. */
 @FragmentScope
 class DownloadsViewModel @Inject constructor(
-  private val activity: AppCompatActivity,
+  private val fragment: Fragment,
   private val logger: ConsoleLogger,
   private val downloadManagementController: TopicListController,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   private val fileSizeUtil: FileSizeUtil,
-  private val intentFactoryShim: IntentFactoryShim,
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
 
@@ -108,11 +106,10 @@ class DownloadsViewModel @Inject constructor(
     downloadsItemViewModelList.addAll(
       downloadedTopicList.topicSummaryList.map { topic ->
         DownloadsTopicViewModel(
-          activity = activity,
+          fragment = fragment,
           topicSummary = topic,
           topicEntityType = topicEntityType,
           topicSize = fileSizeUtil.calculateTopicSizeWithBytes(topic.diskSizeBytes),
-          intentFactoryShim = intentFactoryShim,
           internalProfileId = internalProfileId
         )
       }

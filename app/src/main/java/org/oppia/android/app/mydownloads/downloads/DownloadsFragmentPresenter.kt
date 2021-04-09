@@ -4,11 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.databinding.DownloadsFragmentBinding
 import org.oppia.android.databinding.DownloadsSortbyBinding
 import org.oppia.android.databinding.DownloadsTopicCardBinding
@@ -22,12 +25,14 @@ const val ADMIN_PIN_CONFIRMATION_DIALOG_TAG =
 /** The presenter for [DownloadsFragment]. */
 @FragmentScope
 class DownloadsFragmentPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
   private val fragment: Fragment
 ) {
 
   private var internalProfileId: Int = -1
 
-  private lateinit var sortByListIndexListener: SortByListIndexListener
+  private val sortByListIndexListener = fragment as SortByListIndexListener
+  private val routeToTopicListener = fragment as RouteToTopicListener
 
   @Inject
   lateinit var downloadsViewModel: DownloadsViewModel
@@ -40,8 +45,7 @@ class DownloadsFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
-    previousSortTypeIndex: Int,
-    sortByListIndexListener: SortByListIndexListener
+    previousSortTypeIndex: Int
   ): View? {
     binding = DownloadsFragmentBinding.inflate(
       inflater,
@@ -50,7 +54,6 @@ class DownloadsFragmentPresenter @Inject constructor(
     )
     this.previousSortTypeIndex = if (previousSortTypeIndex == -1) 0 else previousSortTypeIndex
     this.internalProfileId = internalProfileId
-    this.sortByListIndexListener = sortByListIndexListener
 
     binding.apply {
       this.lifecycleOwner = fragment
@@ -211,5 +214,15 @@ class DownloadsFragmentPresenter @Inject constructor(
     val dialogFragment = DownloadsAccessDialogFragment
       .newInstance(adminPin, internalProfileId, allowDownloadAccess)
     dialogFragment.showNow(fragment.childFragmentManager, ADMIN_PIN_CONFIRMATION_DIALOG_TAG)
+  }
+
+  fun startTopicActivity(internalProfileId: Int, topicId: String) {
+    activity.startActivity(
+      TopicActivity.createTopicActivityIntent(
+        activity,
+        internalProfileId,
+        topicId
+      )
+    )
   }
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.mydownloads.INTERNAL_PROFILE_ID_SAVED_KEY
 import javax.inject.Inject
 
@@ -15,7 +16,8 @@ private const val CURRENT_SORT_TYPE_INDEX_SAVED_KEY =
 /** Fragment that contains downloaded topic list. */
 class DownloadsFragment :
   InjectableFragment(),
-  SortByListIndexListener {
+  SortByListIndexListener,
+  RouteToTopicListener {
 
   companion object {
     fun newInstance(internalProfileId: Int): DownloadsFragment {
@@ -50,19 +52,20 @@ class DownloadsFragment :
       inflater,
       container,
       internalProfileId,
-      previousSortTypeIndex,
-      this as SortByListIndexListener
+      previousSortTypeIndex
     )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    if (previousSortTypeIndex != null) {
-      outState.putInt(CURRENT_SORT_TYPE_INDEX_SAVED_KEY, previousSortTypeIndex!!)
-    }
+    outState.putInt(CURRENT_SORT_TYPE_INDEX_SAVED_KEY, previousSortTypeIndex)
   }
 
   override fun onSortByItemClicked(index: Int) {
     previousSortTypeIndex = index
+  }
+
+  override fun routeToTopic(internalProfileId: Int, topicId: String) {
+    downloadsFragmentPresenter.startTopicActivity(internalProfileId, topicId)
   }
 }

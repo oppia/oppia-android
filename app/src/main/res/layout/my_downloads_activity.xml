@@ -44,6 +44,7 @@
           app:tabIconTint="@color/tab_icon_color_selector"
           app:tabIndicatorColor="@android:color/white"
           app:tabIndicatorHeight="2dp"
+          app:tabMaxWidth="0dp"
           app:tabMode="fixed"
           app:tabTextAppearance="@style/AppTabTextAppearance"
           app:tabTextColor="@color/tab_icon_color_selector" />
