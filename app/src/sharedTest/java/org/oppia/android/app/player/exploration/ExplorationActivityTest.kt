@@ -166,7 +166,7 @@ class ExplorationActivityTest {
     }
   }
 
-  // TODO(#163): Fill in remaining tests for this activity.
+  // TODO(#388): Fill in remaining tests for this activity.
   @get:Rule
   var explorationActivityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
     ExplorationActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
@@ -845,7 +845,6 @@ class ExplorationActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [

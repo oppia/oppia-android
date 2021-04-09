@@ -15,6 +15,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -304,6 +305,27 @@ class ProfileEditActivityTest {
   }
 
   @Test
+  fun testProfileEdit_startWithUserProfile_clickDelete_configChange_checkDeletionDialogIsVisible() {
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context,
+        profileId = 1
+      )
+    ).use {
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_message))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            isCompletelyDisplayed()
+          )
+        )
+    }
+  }
+
+  @Test
   fun testProfileEdit_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
@@ -390,7 +412,6 @@ class ProfileEditActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
