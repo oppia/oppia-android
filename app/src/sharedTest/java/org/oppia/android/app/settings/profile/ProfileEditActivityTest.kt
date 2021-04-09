@@ -15,6 +15,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -125,7 +126,7 @@ class ProfileEditActivityTest {
     )
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -139,7 +140,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithAdminProfile_checkAdminInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 0
       )
     ).use {
@@ -155,7 +156,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithAdminProfile_checkAdminInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 0
       )
     ).use {
@@ -172,7 +173,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithUserProfile_checkUserInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -188,7 +189,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithUserProfile_checkUserInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -214,7 +215,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithUserProfile_clickRenameButton_checkOpensProfileRename() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -227,7 +228,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithUserProfile_clickRename_checkOpensProfileRename() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -241,7 +242,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -254,7 +255,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithUserProfile_clickResetPin_checkOpensProfileResetPin() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -268,7 +269,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_startWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -287,7 +288,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -305,10 +306,31 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() {
+  fun testProfileEdit_startWithUserProfile_clickDelete_configChange_checkDeletionDialogIsVisible() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
+        profileId = 1
+      )
+    ).use {
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_message))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            isCompletelyDisplayed()
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testProfileEdit_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() {
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context = context,
         profileId = 1
       )
     ).use {
@@ -329,7 +351,7 @@ class ProfileEditActivityTest {
   fun testProfileEdit_landscape_deleteProfile_checkReturnsProfileListOnTabletAdminControlOnPhone() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 1
       )
     ).use {
@@ -359,7 +381,7 @@ class ProfileEditActivityTest {
     ).toLiveData()
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 4
       )
     ).use {
@@ -380,7 +402,7 @@ class ProfileEditActivityTest {
     ).toLiveData()
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
-        context,
+        context = context,
         profileId = 4
       )
     ).use {
@@ -391,7 +413,6 @@ class ProfileEditActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [

@@ -553,9 +553,9 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.ongoing_topics_container
+          recyclerViewId = R.id.profile_progress_list,
+          position = 0,
+          targetViewId = R.id.ongoing_topics_container
         )
       ).check(matches(not(isClickable())))
     }
@@ -567,9 +567,9 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.completed_stories_container
+          recyclerViewId = R.id.profile_progress_list,
+          position = 0,
+          targetViewId = R.id.completed_stories_container
         )
       ).check(matches(not(isClickable())))
     }
@@ -583,9 +583,9 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.completed_stories_container
+          recyclerViewId = R.id.profile_progress_list,
+          position = 0,
+          targetViewId = R.id.completed_stories_container
         )
       ).check(matches(not(isClickable())))
     }
@@ -664,9 +664,9 @@ class ProfileProgressFragmentTest {
   ) {
     onView(
       atPositionOnView(
-        R.id.profile_progress_list,
-        itemPosition,
-        targetViewId
+        recyclerViewId = R.id.profile_progress_list,
+        position = itemPosition,
+        targetViewId = targetViewId
       )
     ).check(matches(withText(stringToMatch)))
   }
@@ -674,9 +674,9 @@ class ProfileProgressFragmentTest {
   private fun clickProfileProgressItem(itemPosition: Int, targetViewId: Int) {
     onView(
       atPositionOnView(
-        R.id.profile_progress_list,
-        itemPosition,
-        targetViewId
+        recyclerViewId = R.id.profile_progress_list,
+        position = itemPosition,
+        targetViewId = targetViewId
       )
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
@@ -706,7 +706,6 @@ class ProfileProgressFragmentTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [

@@ -85,7 +85,7 @@ class FaqListActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.faq_activity_label))
+    assertThat(title).isEqualTo(context.getString(R.string.faq_activity_title))
   }
 
   private fun setUpTestApplicationComponent() {
@@ -99,7 +99,6 @@ class FaqListActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [

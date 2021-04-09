@@ -120,9 +120,9 @@ class TopicPracticeFragmentTest {
       clickPracticeTab()
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          0,
-          R.id.master_skills_text_view
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 0,
+          targetViewId = R.id.master_skills_text_view
         )
       ).check(
         matches(
@@ -135,16 +135,16 @@ class TopicPracticeFragmentTest {
       scrollToPosition(position = 5)
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(isCompletelyDisplayed()))
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(not(isClickable())))
     }
@@ -157,17 +157,17 @@ class TopicPracticeFragmentTest {
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          1,
-          R.id.subtopic_check_box
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 1,
+          targetViewId = R.id.subtopic_check_box
         )
       ).check(matches(isChecked()))
       clickPracticeItem(position = 2, targetViewId = R.id.subtopic_check_box)
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          2,
-          R.id.subtopic_check_box
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 2,
+          targetViewId = R.id.subtopic_check_box
         )
       ).check(matches(isChecked()))
     }
@@ -182,9 +182,9 @@ class TopicPracticeFragmentTest {
       scrollToPosition(position = 5)
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(isClickable()))
     }
@@ -198,9 +198,9 @@ class TopicPracticeFragmentTest {
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          1,
-          R.id.subtopic_check_box
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 1,
+          targetViewId = R.id.subtopic_check_box
         )
       ).check(matches(not(isChecked())))
     }
@@ -216,9 +216,9 @@ class TopicPracticeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(not(isClickable())))
     }
@@ -244,9 +244,9 @@ class TopicPracticeFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          1,
-          R.id.subtopic_check_box
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 1,
+          targetViewId = R.id.subtopic_check_box
         )
       ).check(matches(isChecked()))
     }
@@ -260,18 +260,18 @@ class TopicPracticeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(not(isClickable())))
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 5)
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(not(isClickable())))
     }
@@ -287,9 +287,9 @@ class TopicPracticeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(isClickable()))
     }
@@ -301,9 +301,9 @@ class TopicPracticeFragmentTest {
       clickPracticeTab()
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          0,
-          R.id.master_skills_text_view
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 0,
+          targetViewId = R.id.master_skills_text_view
         )
       ).check(
         matches(
@@ -315,9 +315,9 @@ class TopicPracticeFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          0,
-          R.id.master_skills_text_view
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 0,
+          targetViewId = R.id.master_skills_text_view
         )
       ).check(
         matches(
@@ -346,7 +346,7 @@ class TopicPracticeFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(2).name),
+        withText(TopicTab.getTabForPosition(position = 2).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
@@ -365,16 +365,15 @@ class TopicPracticeFragmentTest {
   private fun clickPracticeItem(position: Int, targetViewId: Int) {
     onView(
       atPositionOnView(
-        R.id.topic_practice_skill_list,
-        position,
-        targetViewId
+        recyclerViewId = R.id.topic_practice_skill_list,
+        position = position,
+        targetViewId = targetViewId
       )
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [

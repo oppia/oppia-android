@@ -16,6 +16,7 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -42,6 +43,7 @@ import org.oppia.android.app.mydownloads.MyDownloadsModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -148,6 +150,23 @@ class OptionsFragmentTest {
   fun testOptionsFragment_parentIsNotExploration_checkBackArrowNotVisible() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testOptionFragment_notFromNavigationDrawer_navigationDrawerIsNotPresent() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
+      onView(withId(R.id.options_activity_fragment_navigation_drawer))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testOptionFragment_notFromNavigationDrawer_configChange_navigationDrawerIsNotPresent() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.options_activity_fragment_navigation_drawer))
         .check(doesNotExist())
     }
   }
@@ -338,7 +357,6 @@ class OptionsFragmentTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [

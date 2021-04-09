@@ -229,7 +229,13 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavDrawer_openNavDrawer_profileProgressIsDisplayed() {
+  fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileProgressIsDisplayedCorrectly() {
+    storyProfileTestHelper.markCompletedRatiosStory1Exp0(
+      ProfileId.newBuilder().setInternalId(
+        internalProfileId
+      ).build(),
+      timestampOlderThanOneWeek = false
+    )
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -905,7 +911,6 @@ class NavigationDrawerActivityTest {
     }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [

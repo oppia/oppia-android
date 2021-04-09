@@ -111,7 +111,8 @@ class RevisionCardFragmentTest {
     ).use {
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
-      onView(withText(context.getString(R.string.help))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.menu_help)))
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -126,7 +127,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.help))).perform(ViewActions.click())
+      onView(withText(context.getString(R.string.menu_help))).perform(ViewActions.click())
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
         hasExtra(
@@ -298,7 +299,6 @@ class RevisionCardFragmentTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
