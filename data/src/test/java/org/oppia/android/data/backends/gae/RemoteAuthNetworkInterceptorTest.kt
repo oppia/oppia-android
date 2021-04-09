@@ -11,7 +11,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import okhttp3.Dispatcher
 import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -19,7 +18,6 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.TopicService
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestDispatcherModule
@@ -32,8 +30,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.mock.MockRetrofit
-import retrofit2.mock.NetworkBehavior
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Qualifier
@@ -51,9 +47,9 @@ class RemoteAuthNetworkInterceptorTest {
   @Inject
   lateinit var context: Context
 
-  private lateinit var mockRetrofit: MockRetrofit
-
   private lateinit var retrofit: Retrofit
+
+  lateinit var topicService: TopicService
 
   private val testVersionName = "1.0"
 
@@ -67,7 +63,7 @@ class RemoteAuthNetworkInterceptorTest {
   fun setUp() {
     setUpTestApplicationComponent()
     setUpApplicationForContext()
-    setUpMockRetrofit()
+    setUpRetrofit()
   }
 
   private fun setUpApplicationForContext() {
@@ -89,25 +85,13 @@ class RemoteAuthNetworkInterceptorTest {
   @Test
   fun testNetworkInterceptor_withoutHeaders_addsCorrectHeaders() {
     mockWebServer.enqueue(MockResponse().setBody("{}"))
-    val service = retrofit.create(TopicService::class.java)
-//    val delegate = mockRetrofit.create(TopicService::class.java)
-//    val mockTopicService = MockTopicService(delegate)
-//    val request = Request.Builder()
-//      .url(mockWebServer.url("/"))
-//      .get()
-//      .build()
-    val call = service.getTopicByName(topicName)
-    val request = call.request()
-    assertThat(request.header("api_key")).isNull()
-    assertThat(request.header("app_package_name")).isNull()
-    assertThat(request.header("app_version_name")).isNull()
-    assertThat(request.header("app_version_code")).isNull()
+    val call = topicService.getTopicByName(topicName)
+    val serviceRequest = call.request()
+    assertThat(serviceRequest.header("api_key")).isNull()
+    assertThat(serviceRequest.header("app_package_name")).isNull()
+    assertThat(serviceRequest.header("app_version_name")).isNull()
+    assertThat(serviceRequest.header("app_version_code")).isNull()
 
-//    val client = OkHttpClient.Builder()
-//      .dispatcher(Dispatcher(MoreExecutors.newDirectExecutorService()))
-//      .addInterceptor(remoteAuthNetworkInterceptor)
-//      .build()
-//    client.newCall(request).execute()
     call.execute()
     val interceptedRequest = mockWebServer.takeRequest(timeout = 8, unit = TimeUnit.SECONDS)
     verifyRequestHeaders(interceptedRequest!!.headers)
@@ -115,11 +99,10 @@ class RemoteAuthNetworkInterceptorTest {
 
   @Test
   fun testNetworkInterceptor_withHeaders_setsCorrectHeaders() {
-    setUpMockRetrofit()
-    val delegate = mockRetrofit.create(TopicService::class.java)
-    val mockTopicService = MockTopicService(delegate)
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
+    val call = topicService.getTopicByName(topicName)
 
-    val serviceRequest = mockTopicService.getTopicByName(topicName).request()
+    val serviceRequest = topicService.getTopicByName(topicName).request()
     val request = serviceRequest.newBuilder()
       .addHeader("api_key", "wrong_api_key")
       .addHeader("app_package_name", "wrong_package_name")
@@ -127,8 +110,9 @@ class RemoteAuthNetworkInterceptorTest {
       .addHeader("app_version_code", "wrong_version_code")
       .build()
 
-    val newRequest = remoteAuthNetworkInterceptor.addAuthHeaders(request)
-    verifyRequestHeaders(newRequest.headers)
+    call.execute()
+    val interceptedRequest = mockWebServer.takeRequest(timeout = 8, unit = TimeUnit.SECONDS)
+    verifyRequestHeaders(interceptedRequest!!.headers)
   }
 
   private fun verifyRequestHeaders(headers: Headers) {
@@ -138,7 +122,7 @@ class RemoteAuthNetworkInterceptorTest {
     assertThat(headers.get("app_version_code")).isEqualTo("1")
   }
 
-  private fun setUpMockRetrofit() {
+  private fun setUpRetrofit() {
     mockWebServer.dispatcher
     val client = OkHttpClient.Builder()
       .addInterceptor(remoteAuthNetworkInterceptor)
@@ -149,10 +133,7 @@ class RemoteAuthNetworkInterceptorTest {
       .client(client.build())
       .build()
 
-    val behavior = NetworkBehavior.create()
-    mockRetrofit = MockRetrofit.Builder(retrofit)
-      .networkBehavior(behavior)
-      .build()
+    topicService = retrofit.create(TopicService::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
