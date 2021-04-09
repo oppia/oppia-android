@@ -53,7 +53,7 @@ class ReportSchemaVersionTest {
   )
 
   private val gaeUserSuppliedFeedbackParameterNamesV1 = listOf(
-    "reportType", "category", "userFeedbackSelectedItems", "userFeedbackOtherTextInput"
+    "reportType", "category", "feedbackList", "openTextUserInput"
   )
 
   private val gaeFeedbackReportingSystemContextParameterNamesV1 = listOf(
