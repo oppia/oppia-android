@@ -16,6 +16,7 @@ import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
+import org.oppia.android.databinding.TopicInfoChapterListItemBinding
 import org.oppia.android.databinding.TopicInfoFragmentBinding
 import org.oppia.android.databinding.TopicInfoSkillsItemBinding
 import org.oppia.android.databinding.TopicInfoStorySummaryBinding
@@ -71,7 +72,32 @@ class TopicInfoFragmentPresenter @Inject constructor(
       .newBuilder<TopicInfoStoryItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TopicInfoStorySummaryBinding::inflate,
-        setViewModel = TopicInfoStorySummaryBinding::setViewModel
+        setViewModel = this::bindStorySummary
+      ).build()
+  }
+
+  private fun bindStorySummary(
+    binding: TopicInfoStorySummaryBinding,
+    model: TopicInfoStoryItemViewModel
+  ) {
+    binding.viewModel = model
+
+    var isChapterListVisible = false
+    binding.isListExpanded = isChapterListVisible
+
+    binding.expandListIcon.setOnClickListener {
+      isChapterListVisible = !isChapterListVisible
+      binding.isListExpanded = isChapterListVisible
+    }
+    binding.topicInfoChapterRecyclerView.adapter = createChapterRecyclerViewAdapter()
+  }
+
+  private fun createChapterRecyclerViewAdapter(): BindableAdapter<TopicInfoChapterItemViewModel> {
+    return BindableAdapter.SingleTypeBuilder
+      .newBuilder<TopicInfoChapterItemViewModel>()
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = TopicInfoChapterListItemBinding::inflate,
+        setViewModel = TopicInfoChapterListItemBinding::setViewModel,
       ).build()
   }
 
@@ -151,9 +177,15 @@ class TopicInfoFragmentPresenter @Inject constructor(
     storySummaryList: MutableList<StorySummary>
   ): ArrayList<TopicInfoStoryItemViewModel> {
     val topicStoryList = ArrayList<TopicInfoStoryItemViewModel>()
+    val topicStoryChapterList = ArrayList<TopicInfoChapterItemViewModel>()
     topicStoryList.addAll(
       storySummaryList.map {
-        TopicInfoStoryItemViewModel(it)
+        topicStoryChapterList.addAll(
+          it.chapterList.mapIndexed { index, chapterSummary ->
+            TopicInfoChapterItemViewModel(index, chapterSummary.name)
+          }
+        )
+        TopicInfoStoryItemViewModel(it, topicStoryChapterList)
       }
     )
     return topicStoryList
