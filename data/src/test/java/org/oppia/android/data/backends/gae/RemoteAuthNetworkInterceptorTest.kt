@@ -19,6 +19,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.oppia.android.data.backends.gae.api.TopicService
 import org.oppia.android.testing.BackgroundTestDispatcher
 import org.oppia.android.testing.RobolectricModule
@@ -53,6 +54,8 @@ class RemoteAuthNetworkInterceptorTest {
 
   private lateinit var retrofit: Retrofit
 
+  private lateinit var mockWebServer: MockWebServer
+
   lateinit var topicService: TopicService
 
   private val testVersionName = "1.0"
@@ -61,7 +64,6 @@ class RemoteAuthNetworkInterceptorTest {
 
   private val topicName = "Topic1"
 
-  private val mockWebServer = MockWebServer()
 
   @Before
   fun setUp() {
@@ -142,6 +144,7 @@ class RemoteAuthNetworkInterceptorTest {
   }
 
   private fun setUpRetrofit() {
+    mockWebServer = MockWebServer()
     val client = OkHttpClient.Builder()
       .addInterceptor(remoteAuthNetworkInterceptor)
 
@@ -155,6 +158,7 @@ class RemoteAuthNetworkInterceptorTest {
   }
 
   private fun verifyRequestHeaders(headers: Headers) {
+    assertThat(headers).isNotNull()
     assertThat(headers.get("api_key")).isEqualTo("test_api_key")
     assertThat(headers.get("app_package_name")).isEqualTo(context.packageName)
     assertThat(headers.get("app_version_name")).isEqualTo("1.0")
