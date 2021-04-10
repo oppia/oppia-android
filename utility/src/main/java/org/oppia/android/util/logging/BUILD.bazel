@@ -84,7 +84,7 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":exception_logger",
-        "//third_party:com_google_firebase_firebase-crashlytics"
+        "//third_party:com_google_firebase_firebase-crashlytics",
     ],
 )
 
