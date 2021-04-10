@@ -13,13 +13,13 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.Headers
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.oppia.android.data.backends.gae.api.TopicService
 import org.oppia.android.testing.BackgroundTestDispatcher
 import org.oppia.android.testing.RobolectricModule
@@ -56,6 +56,8 @@ class RemoteAuthNetworkInterceptorTest {
 
   private lateinit var mockWebServer: MockWebServer
 
+  private lateinit var client: OkHttpClient
+
   lateinit var topicService: TopicService
 
   private val testVersionName = "1.0"
@@ -63,7 +65,6 @@ class RemoteAuthNetworkInterceptorTest {
   private val testVersionCode = 1
 
   private val topicName = "Topic1"
-
 
   @Before
   fun setUp() {
@@ -99,26 +100,26 @@ class RemoteAuthNetworkInterceptorTest {
 
   @Test
   fun testNetworkInterceptor_withIncorrectHeaders_setsCorrectHeaders() {
-    mockWebServer.enqueue(MockResponse().setBody("{}"))
-
-    val call = topicService.getTopicByName(topicName)
-    val recordedRequest = mockWebServer.takeRequest(
-      timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
-      unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
-    )
-    val newRequest = call.request().newBuilder()
+    val request = Request.Builder()
+      .url(mockWebServer.url("/"))
       .addHeader("api_key", "wrong_api_key")
       .addHeader("app_package_name", "wrong_package_name")
       .addHeader("app_version_name", "wrong_version_name")
       .addHeader("app_version_code", "wrong_version_code")
-      .addHeader("is_test_request", true.toString())
       .build()
+    assertThat(request.header("api_key")).isEqualTo("wrong_api_key")
+    assertThat(request.header("app_package_name")).isEqualTo("wrong_package_name")
+    assertThat(request.header("app_version_name")).isEqualTo("wrong_version_name")
+    assertThat(request.header("app_version_code")).isEqualTo("wrong_version_code")
+
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
+    client.newCall(request).execute()
     val interceptedRequest = mockWebServer.takeRequest(
       timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
       unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
     )
 
-    recordedRequest?.let {
+    interceptedRequest?.let {
       verifyRequestHeaders(it.headers)
     }
   }
@@ -145,13 +146,14 @@ class RemoteAuthNetworkInterceptorTest {
 
   private fun setUpRetrofit() {
     mockWebServer = MockWebServer()
-    val client = OkHttpClient.Builder()
+    client = OkHttpClient.Builder()
       .addInterceptor(remoteAuthNetworkInterceptor)
+      .build()
 
     retrofit = retrofit2.Retrofit.Builder()
       .baseUrl(mockWebServer.url("/"))
       .addConverterFactory(MoshiConverterFactory.create())
-      .client(client.build())
+      .client(client)
       .build()
 
     topicService = retrofit.create(TopicService::class.java)
