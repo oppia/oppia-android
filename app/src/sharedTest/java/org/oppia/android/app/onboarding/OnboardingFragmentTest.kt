@@ -521,11 +521,15 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_nextArrowIcon_hasCorrectContentDescription(){
+  fun testOnboardingFragment_nextArrowIcon_hasCorrectContentDescription() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_fragment_next_image_view)).check(
         matches(
-          withContentDescription(R.string.next_arrow)))
+          withContentDescription(
+            R.string.next_arrow
+          )
+        )
+      )
     }
   }
 
