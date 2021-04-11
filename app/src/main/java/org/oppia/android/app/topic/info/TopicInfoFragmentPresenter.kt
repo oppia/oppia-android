@@ -1,5 +1,6 @@
 package org.oppia.android.app.topic.info
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -179,13 +180,13 @@ class TopicInfoFragmentPresenter @Inject constructor(
     val topicStoryList = ArrayList<TopicInfoStoryItemViewModel>()
     val topicStoryChapterList = ArrayList<TopicInfoChapterItemViewModel>()
     topicStoryList.addAll(
-      storySummaryList.map {
+      storySummaryList.map { storySummary ->
         topicStoryChapterList.addAll(
-          it.chapterList.mapIndexed { index, chapterSummary ->
+          storySummary.chapterList.mapIndexed { index, chapterSummary ->
             TopicInfoChapterItemViewModel(index, chapterSummary.name)
           }
         )
-        TopicInfoStoryItemViewModel(it, topicStoryChapterList)
+        TopicInfoStoryItemViewModel(storySummary, topicStoryChapterList)
       }
     )
     return topicStoryList

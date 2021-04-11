@@ -39,6 +39,7 @@ class TopicFragmentPresenter @Inject constructor(
       R.drawable.ic_practice_icon_24dp,
       R.drawable.ic_revision_icon_24dp
     )
+  private val enableMyDownloads = false
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -71,6 +72,7 @@ class TopicFragmentPresenter @Inject constructor(
     val viewModel = getTopicViewModel()
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
+    viewModel.enableMyDownloads = enableMyDownloads
     binding.viewModel = viewModel
 
     setUpViewPager(viewPager, topicId, isConfigChanged)
@@ -84,28 +86,30 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun setUpViewPager(viewPager2: ViewPager2, topicId: String, isConfigChanged: Boolean) {
     val adapter =
-      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId)
+      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId, enableMyDownloads)
     viewPager2.adapter = adapter
-    TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-      when (position) {
-        0 -> {
-          tab.text = fragment.getString(R.string.info)
-          tab.icon = ContextCompat.getDrawable(activity, tabIcons[0])
+    if (enableMyDownloads) {
+      TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+        when (position) {
+          0 -> {
+            tab.text = fragment.getString(R.string.info)
+            tab.icon = ContextCompat.getDrawable(activity, tabIcons[0])
+          }
+          1 -> {
+            tab.text = fragment.getString(R.string.lessons)
+            tab.icon = ContextCompat.getDrawable(activity, tabIcons[1])
+          }
+          2 -> {
+            tab.text = fragment.getString(R.string.practice)
+            tab.icon = ContextCompat.getDrawable(activity, tabIcons[2])
+          }
+          3 -> {
+            tab.text = fragment.getString(R.string.revision)
+            tab.icon = ContextCompat.getDrawable(activity, tabIcons[3])
+          }
         }
-        1 -> {
-          tab.text = fragment.getString(R.string.lessons)
-          tab.icon = ContextCompat.getDrawable(activity, tabIcons[1])
-        }
-        2 -> {
-          tab.text = fragment.getString(R.string.practice)
-          tab.icon = ContextCompat.getDrawable(activity, tabIcons[2])
-        }
-        3 -> {
-          tab.text = fragment.getString(R.string.revision)
-          tab.icon = ContextCompat.getDrawable(activity, tabIcons[3])
-        }
-      }
-    }.attach()
+      }.attach()
+    }
     if (!isConfigChanged && topicId.isNotEmpty()) {
       setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
     }

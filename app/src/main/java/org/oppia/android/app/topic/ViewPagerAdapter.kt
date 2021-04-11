@@ -12,26 +12,35 @@ class ViewPagerAdapter(
   fragment: Fragment,
   private val internalProfileId: Int,
   private val topicId: String,
-  private val storyId: String
+  private val storyId: String,
+  private val enableMyDownloads: Boolean
 ) : FragmentStateAdapter(fragment) {
 
   override fun getItemCount(): Int {
-    return TopicTab.values().size
+    if (!enableMyDownloads) {
+      return 1
+    } else {
+      return TopicTab.values().size
+    }
   }
 
   override fun createFragment(position: Int): Fragment {
-    return when (TopicTab.getTabForPosition(position)) {
-      TopicTab.INFO -> {
-        TopicInfoFragment.newInstance(internalProfileId, topicId)
-      }
-      TopicTab.LESSONS -> {
-        TopicLessonsFragment.newInstance(internalProfileId, topicId, storyId)
-      }
-      TopicTab.PRACTICE -> {
-        TopicPracticeFragment.newInstance(internalProfileId, topicId)
-      }
-      TopicTab.REVISION -> {
-        TopicRevisionFragment.newInstance(internalProfileId, topicId)
+    if (!enableMyDownloads) {
+      return TopicInfoFragment.newInstance(internalProfileId, topicId)
+    } else {
+      return when (TopicTab.getTabForPosition(position)) {
+        TopicTab.INFO -> {
+          TopicInfoFragment.newInstance(internalProfileId, topicId)
+        }
+        TopicTab.LESSONS -> {
+          TopicLessonsFragment.newInstance(internalProfileId, topicId, storyId)
+        }
+        TopicTab.PRACTICE -> {
+          TopicPracticeFragment.newInstance(internalProfileId, topicId)
+        }
+        TopicTab.REVISION -> {
+          TopicRevisionFragment.newInstance(internalProfileId, topicId)
+        }
       }
     }
   }

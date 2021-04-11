@@ -61,6 +61,7 @@
   <string name="revision">Revision</string>
   <string name="topic_page">Topic page</string>
   <string name="topic_name">Topic: %s</string>
+  <string name="topic_not_downloaded_name">Info: %s</string>
   <string name="topic">Topic</string>
   <string name="ongoing_topic_list_activity_title">Topics in Progress</string>
   <string name="topic_story_progress_percentage">%s\%%</string>

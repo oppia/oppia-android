@@ -244,6 +244,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/testing/BindableAdapterTestDataModel.kt",
     "src/main/java/org/oppia/android/app/testing/BindableAdapterTestViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/conceptcard/ConceptCardViewModel.kt",
+    "src/main/java/org/oppia/android/app/topic/info/TopicInfoChapterItemViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/info/TopicInfoSkillItemViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/info/TopicInfoStoryItemViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/StorySummaryViewModel.kt",
