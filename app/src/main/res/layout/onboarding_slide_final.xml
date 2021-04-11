@@ -22,7 +22,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:overScrollMode="always"
-      android:contentDescription="@string/onboarding_slide_3_titledescriptionmerged">
+      android:contentDescription="@{@string/onboarding_slide_3_title} + @{@string/onboarding_slide_3_description}">
 
       <ImageView
         android:id="@+id/slide_image_view"
