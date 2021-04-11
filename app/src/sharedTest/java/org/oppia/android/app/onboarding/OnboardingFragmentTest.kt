@@ -17,12 +17,12 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withAlpha
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -520,6 +520,15 @@ class OnboardingFragmentTest {
     }
   }
 
+  @Test
+  fun testOnboardingFragment_nextArrowIcon_hasCorrectContentDescription(){
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_fragment_next_image_view)).check(
+        matches(
+          withContentDescription(R.string.next_arrow)))
+    }
+  }
+
   private fun scrollToPosition(position: Int): ViewAction {
     return object : ViewAction {
       override fun getDescription(): String {
@@ -533,14 +542,6 @@ class OnboardingFragmentTest {
       override fun perform(uiController: UiController?, view: View?) {
         (view as ViewPager2).setCurrentItem(position, /* smoothScroll= */ false)
       }
-    }
-  }
-
-  @Test
-  fun testnextArrowDescription() {
-    launch(OnboardingActivity::class.java).use {
-      val nextArrowDescription = onView(withId(R.id.onboarding_fragment_next_image_view))
-      nextArrowDescription.check(matches(ViewMatchers.withContentDescription("Next")))
     }
   }
 
