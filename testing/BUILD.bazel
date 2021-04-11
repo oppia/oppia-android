@@ -53,6 +53,7 @@ TEST_DEPS = [
     "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-test",
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",
+    "//utility/src/main/java/org/oppia/android/util/logging:logger_module",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
