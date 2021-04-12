@@ -525,23 +525,23 @@ class HomeActivityTest {
         targetViewId = R.id.recently_played_stories_text_view,
         stringToMatch = context.getString(R.string.stories_for_you)
       )
-      scrollToPositionOfPromotedList(position = 1)
+      scrollToPositionOfPromotedList(position = 0)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Fractions"
+        stringToMatch = "Second Test Topic"
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Ratios and Proportional Reasoning"
+        stringToMatch = "Fractions"
       )
       scrollToPositionOfPromotedList(position = 2)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Second Test Topic"
+        stringToMatch = "Ratios and Proportional Reasoning"
       )
     }
   }
@@ -825,7 +825,7 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 3,
         targetViewId = R.id.lesson_count_text_view,
-        stringToMatch = "5 Lessons"
+        stringToMatch = "2 Lessons"
       )
     }
   }

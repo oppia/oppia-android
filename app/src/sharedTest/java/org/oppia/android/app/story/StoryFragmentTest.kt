@@ -303,9 +303,9 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "This is outline/summary for Second Exploration. It is very long but " +
-              "it has to be fully visible. You wil be learning about oppia app in Second Story. " +
-              "Learn about oppia app via testing in second exploration."
+            "This is the outline/summary for the first exploration of the story. It is very long " +
+              "but it has to be fully visible. You wil be learning about Oppia interactions. " +
+              "There is no second story to follow-up, but there is a second chapter."
           )
         )
       )
@@ -331,9 +331,9 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "This is outline/summary for Second Exploration. It is very long but " +
-              "it has to be fully visible. You wil be learning about oppia app in Second Story. " +
-              "Learn about oppia app via testing in second exploration."
+            "This is the outline/summary for the first exploration of the story. It is very long " +
+              "but it has to be fully visible. You wil be learning about Oppia interactions. " +
+              "There is no second story to follow-up, but there is a second chapter."
           )
         )
       )
