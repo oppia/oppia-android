@@ -37,17 +37,17 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
 import org.oppia.android.app.model.UserSuppliedFeedback
-import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.testing.BackgroundTestDispatcher
 import org.oppia.android.testing.RobolectricModule
+import org.oppia.android.testing.TestCoroutineDispatcher
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.network.ApiMockLoader
-import org.oppia.android.testing.network.MockFeedbackReportingService
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -64,10 +64,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.mock.MockRetrofit
-import retrofit2.mock.NetworkBehavior
 import java.io.File
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -96,13 +93,17 @@ class FeedbackReportManagementControllerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @field:[Inject BackgroundTestDispatcher]
+  lateinit var testCoroutineDispatcher: TestCoroutineDispatcher
+
   @Mock
   lateinit var mockReportsStoreObserver: Observer<AsyncResult<FeedbackReportingDatabase>>
 
   @Captor
   lateinit var reportStoreResultCaptor: ArgumentCaptor<AsyncResult<FeedbackReportingDatabase>>
 
-  private val mockWebServer = MockWebServer()
+  @Inject
+  lateinit var mockWebServer: MockWebServer
 
   private val languageSuggestionText = "french"
 
@@ -144,6 +145,7 @@ class FeedbackReportManagementControllerTest {
   fun setUp() {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
+    setUpRetrofit()
     setUpFakeLogcatFile()
     MockitoAnnotations.initMocks(this)
   }
@@ -155,15 +157,19 @@ class FeedbackReportManagementControllerTest {
 
   @Test
   fun testController_submitFeedbackReport_withNetwork_sendsNetworkRequest_isSuccessful() {
-    mockWebServer.start()
     mockWebServer.enqueue(MockResponse().setBody("{}"))
 
     networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
-    val request = mockWebServer.takeRequest(timeout = 10, unit = TimeUnit.SECONDS)
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
-
     val gaeFeedbackReport = createMockGaeFeedbackReport()
-    assertThat(request?.body).isEqualTo(gaeFeedbackReport)
+
+    val request = mockWebServer.takeRequest(
+      timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
+      unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
+    )
+    request?.let {
+      assertThat(it.body).isEqualTo(gaeFeedbackReport)
+    }
   }
 
   @Test
@@ -270,6 +276,21 @@ class FeedbackReportManagementControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun setUpRetrofit() {
+//    mockWebServer = MockWebServer()
+//    client = OkHttpClient.Builder()
+//      .addInterceptor(remoteAuthNetworkInterceptor)
+//      .build()
+//
+//    retrofit = retrofit2.Retrofit.Builder()
+//      .baseUrl(mockWebServer.url("/"))
+//      .addConverterFactory(MoshiConverterFactory.create())
+//      .client(client)
+//      .build()
+//
+//    topicService = retrofit.create(TopicService::class.java)
+  }
+
   private fun setUpFakeLogcatFile() {
     // Creates a fake logcat file in this directory so that the controller being tested has a file to
     // read when recording the logcat events.
@@ -292,16 +313,23 @@ class FeedbackReportManagementControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestNetworkModule {
+    @Provides
+    @Singleton
+    fun provideMockWebServer(): MockWebServer {
+      return MockWebServer()
+    }
+
     @OppiaRetrofit
     @Provides
     @Singleton
-    fun providRetrofitInstance(): Retrofit {
+    fun providRetrofitInstance(mockWebServer: MockWebServer): Retrofit {
       val client = OkHttpClient.Builder()
+        .build()
 
       return retrofit2.Retrofit.Builder()
-        .baseUrl(mockWebServer.url(NetworkSettings.getBaseUrl()))
+        .baseUrl(mockWebServer.url("/"))
         .addConverterFactory(MoshiConverterFactory.create())
-        .client(client.build())
+        .client(client)
         .build()
     }
 
