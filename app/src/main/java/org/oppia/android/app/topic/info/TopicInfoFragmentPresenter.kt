@@ -37,6 +37,8 @@ class TopicInfoFragmentPresenter @Inject constructor(
   private val topicInfoViewModel = getTopicInfoViewModel()
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
+  private val enableMyDownloads = false
+  private val isTopicDownloaded = false
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -118,12 +120,17 @@ class TopicInfoFragmentPresenter @Inject constructor(
     topicLiveData.observe(
       fragment,
       Observer<Topic> { topic ->
+        // TODO(#3082): update isTopicDownloaded variable with the value from the topic item
         topicInfoViewModel.topic.set(topic)
         topicInfoViewModel.topicDescription.set(topic.description)
         topicInfoViewModel.calculateTopicSizeWithUnit()
         controlSeeMoreTextVisibility()
-        topicInfoViewModel.skillsItemList.set(extractTopicSkillList(topic.subtopicList))
-        topicInfoViewModel.storyItemList.set(extractTopicStorySummaryList(topic.storyList))
+        topicInfoViewModel.enableMyDownloads.set(enableMyDownloads)
+        topicInfoViewModel.isTopicDownloaded.set(isTopicDownloaded)
+        if (!isTopicDownloaded) {
+          topicInfoViewModel.skillsItemList.set(extractTopicSkillList(topic.subtopicList))
+          topicInfoViewModel.storyItemList.set(extractTopicStorySummaryList(topic.storyList))
+        }
       }
     )
   }

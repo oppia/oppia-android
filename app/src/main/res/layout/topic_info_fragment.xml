@@ -143,7 +143,7 @@
           android:layout_marginStart="12dp"
           android:fontFamily="sans-serif"
           android:gravity="center_vertical"
-          android:text="@string/topic_downloaded"
+          android:text="@{viewModel.isTopicDownloaded ? @string/topic_info_topic_downloaded : @string/topic_info_download_topic}"
           android:textColor="@color/oppiaPrimaryText"
           android:textDirection="locale"
           android:textSize="18sp"
