@@ -793,6 +793,7 @@ class PinPasswordActivityTest {
         profileId = adminId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       closeSoftKeyboard()
       onView(withId(R.id.show_pin)).perform(click())
       onView(withId(R.id.show_hide_password_image_view))
