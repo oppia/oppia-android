@@ -84,6 +84,7 @@
   <string name="lesson_thumbnail_content_description">Image for %s</string>
   <string name="all_topics">All Topics</string>
   <string name="topic_info_skills_heading">Skills</string>
+  <string name="topic_info_download_to_play">DOWNLOAD TO PLAY</string>
   <plurals name="story_play_heading">
     <item quantity="one">
       Story You Can Play
