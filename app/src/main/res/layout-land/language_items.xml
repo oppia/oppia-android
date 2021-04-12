@@ -15,6 +15,7 @@
     android:gravity="center_vertical"
     android:minHeight="48dp"
     android:onClick="@{() -> viewModel.languageRadioButtonListener.onLanguageSelected(viewModel.language)}"
+    android:importantForAccessibility="yes"
     android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatRadioButton
@@ -26,6 +27,8 @@
       android:layout_marginEnd="24dp"
       android:checked="@{viewModel.isLanguageSelected}"
       android:clickable="false"
+      android:focusable="false"
+      android:labelFor="@id/language_text_view"
       android:minWidth="20dp"
       android:minHeight="20dp" />
 

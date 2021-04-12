@@ -691,7 +691,6 @@ class BindableAdapterTest {
     ): ActivityComponent.Builder
   }
 
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
