@@ -33,7 +33,8 @@ jobs:
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
         # comma-separated list of test targets for the matrix.
         run: |
-          TEST_TARGET_LIST=$(bash ./scripts/compute_affected_tests.sh bazel | sed 's/^\|$/"/g' | paste -sd, -)
+          bash ./scripts/compute_affected_tests.sh ./affected_targets.txt
+          TEST_TARGET_LIST=$(cat ./affected_targets.txt | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
           echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
           if [[ ! -z "$TEST_TARGET_LIST" ]]; then
@@ -62,16 +63,97 @@ jobs:
       matrix: ${{fromJson(needs.bazel_compute_affected_targets.outputs.matrix)}}
     env:
       ENABLE_CACHING: false
+      CACHE_DIRECTORY: ~/.bazel_cache
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up JDK 9
         uses: actions/setup-java@v1
         with:
           java-version: 9
+
+      - name: Check Java version & path
+        run: |
+          which java
+          java -version
+          echo "Java home: $JAVA_HOME"
+          $JAVA_HOME/bin/java -version
+
+      - name: Compute test caching bucket
+        env:
+          TEST_TARGET: ${{ matrix.test-target }}
+        run: |
+          echo "Test target: $TEST_TARGET"
+          TEST_CATEGORY=$(echo "$TEST_TARGET" | grep -oP 'org/oppia/android/(.+?)/' | cut -f 4 -d "/")
+          echo "Test category: $TEST_CATEGORY"
+          echo "TEST_CACHING_BUCKET=$TEST_CATEGORY" >> $GITHUB_ENV
+
+      # For reference on this & the later cache actions, see:
+      # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
+      # https://github.com/actions/cache/issues/109#issuecomment-558771281. Note that these work
+      # with Bazel since Bazel can share the most recent cache from an unrelated build and still
+      # benefit from incremental build performance (assuming that actions/cache aggressively removes
+      # older caches due to the 5GB cache limit size & Bazel's large cache size).
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-${{ env.TEST_CACHING_BUCKET }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-${{ env.TEST_CACHING_BUCKET }}-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      # This check is needed to ensure that Bazel's unbounded cache growth doesn't result in a
+      # situation where the cache never updates (e.g. due to exceeding GitHub's cache size limit)
+      # thereby only ever using the last successful cache version. This solution will result in a
+      # few slower CI actions around the time cache is detected to be too large, but it should
+      # incrementally improve thereafter.
+      - name: Ensure cache size
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          # See https://stackoverflow.com/a/27485157 for reference.
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
+          echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
+          # Use a 4.5GB threshold since actions/cache compresses the results, and Bazel caches seem
+          # to only increase by a few hundred megabytes across changes for unrelated branches. This
+          # is also a reasonable upper-bound (local tests as of 2021-03-31 suggest that a full build
+          # of the codebase (e.g. //...) from scratch only requires a ~2.1GB uncompressed/~900MB
+          # compressed cache).
+          if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
+            echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
+            rm -rf $EXPANDED_BAZEL_CACHE_PATH
+          fi
+
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
           version: 4.0.0
+          
+      - name: Configure Bazel to use JDK 9 for building
+        run: |
+          echo "build --java_language_version=9" >> $HOME/.bazelrc
+
+      - name: Configure Bazel to use specific sandbox tmpfs
+        run: |
+          echo "build --enable_platform_specific_config" >> $HOME/.bazelrc
+          echo "build:linux --sandbox_tmpfs_path=/tmp" >> $HOME/.bazelrc
+
+      - name: Configure Bazel to use a local cache
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
+
+      - name: Check Bazel environment
+        run: bazel info
+
       - name: Set up Oppia Bazel Android Tools
         run: |
           mkdir $HOME/opensource
@@ -79,6 +161,7 @@ jobs:
           git clone https://github.com/oppia/oppia-bazel-tools
           echo build --override_repository=android_tools="$(cd "$(dirname "$HOME/opensource/oppia-bazel-tools")"; pwd)/$(basename "$HOME/opensource/oppia-bazel-tools")" >> $HOME/.bazelrc
           echo build --android_databinding_use_androidx >> $HOME/.bazelrc
+
       # See explanation in bazel_build_app for how this is installed.
       - name: Install git-secret (non-fork only)
         if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
@@ -91,6 +174,7 @@ jobs:
           PREFIX="$HOME/gitsecret" make install
           echo "$HOME/gitsecret" >> $GITHUB_PATH
           echo "$HOME/gitsecret/bin" >> $GITHUB_PATH
+
       - name: Decrypt secrets (non-fork only)
         if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
         env:
@@ -102,11 +186,13 @@ jobs:
           gpg --import ./git_secret_private_key.gpg
           cd $GITHUB_WORKSPACE
           git secret reveal
+
       - name: Run Oppia Test (with caching, non-fork only)
         if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
         run: bazel test --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- ${{ matrix.test-target }}
+
       - name: Run Oppia Test (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || ((github.ref != 'refs/heads/develop' || github.event_name != 'push') && (github.event.pull_request.head.repo.full_name != 'oppia/oppia-android')) }}
         env:

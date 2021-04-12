@@ -1,4 +1,4 @@
-package org.oppia.android.data.backends.test
+package org.oppia.android.data.backends.gae.api
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -8,12 +8,11 @@ import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.ApiUtils
-import org.oppia.android.data.backends.api.MockFeedbackReportingService
 import org.oppia.android.data.backends.gae.NetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
-import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
+import org.oppia.android.testing.network.ApiMockLoader
+import org.oppia.android.testing.network.MockFeedbackReportingService
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -23,7 +22,7 @@ import retrofit2.mock.NetworkBehavior
 /** Test for [FeedbackReportingService] retrofit instance using a [MockFeedbackReportingService]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class MockFeedbackReportingTest {
+class FeedbackReportingServiceTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit
 
@@ -57,7 +56,7 @@ class MockFeedbackReportingTest {
   }
 
   private fun createMockGaeFeedbackReport(): GaeFeedbackReport {
-    val feedbackReportJson = ApiUtils.getFakeJson("feedback_reporting.json")
+    val feedbackReportJson = ApiMockLoader.getFakeJson("feedback_reporting.json")
     val moshi = Moshi.Builder().build()
 
     val adapter: JsonAdapter<GaeFeedbackReport> = moshi.adapter(GaeFeedbackReport::class.java)
