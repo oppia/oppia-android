@@ -4,15 +4,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityRouter
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
-import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
-import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedTitleEnum
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.topic.TopicActivity
+import org.oppia.app.model.DestinationScreen
+import org.oppia.app.model.RecentlyPlayedActivityIntentExtras
+import org.oppia.app.model.RecentlyPlayedActivityTitle
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
@@ -24,6 +27,9 @@ class HomeActivity :
   @Inject
   lateinit var homeActivityPresenter: HomeActivityPresenter
   private var internalProfileId: Int = -1
+
+  @Inject
+  lateinit var activityRouter: ActivityRouter
 
   companion object {
     fun createHomeActivity(context: Context, profileId: Int?): Intent {
@@ -77,13 +83,32 @@ class HomeActivity :
     )
   }
 
-  override fun routeToRecentlyPlayed() {
-    startActivity(
-      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-        this,
-        internalProfileId,
-        RecentlyPlayedTitleEnum.STORIES_FOR_YOU
-      )
+  override fun routeToRecentlyPlayed(title: String) {
+    val recentlyPlayedActivityIntentExtras =
+      RecentlyPlayedActivityIntentExtras
+        .newBuilder()
+        .setProfileId(
+          ProfileId.newBuilder().setInternalId(internalProfileId).build()
+        )
+        .setActivityTitle(
+          when (title) {
+            getString(R.string.stories_for_you) -> {
+              RecentlyPlayedActivityTitle.STORIES_FOR_YOU
+            }
+            getString(R.string.recently_played_activity_title) -> {
+              RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+            }
+            else -> {
+              RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+            }
+          }
+        ).build()
+
+    activityRouter.routeToScreen(
+      DestinationScreen
+        .newBuilder()
+        .setRecentlyPlayedActivityIntentExtras(recentlyPlayedActivityIntentExtras)
+        .build()
     )
   }
 }

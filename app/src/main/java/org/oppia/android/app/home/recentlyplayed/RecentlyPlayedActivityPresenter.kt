@@ -5,15 +5,17 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.RecentlyPlayedActivityBinding
+import org.oppia.app.model.RecentlyPlayedActivityIntentExtras
+import org.oppia.app.model.RecentlyPlayedActivityTitle
 import javax.inject.Inject
 
 /** The presenter for [RecentlyPlayedActivity]. */
 @ActivityScope
 class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  fun handleOnCreate(internalProfileId: Int, recentlyPlayedTitleEnum: RecentlyPlayedTitleEnum) {
+  fun handleOnCreate(recentlyPlayedActivityIntentExtras: RecentlyPlayedActivityIntentExtras) {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
-    activity.title = recentlyPlayedTitleEnum.getTitleFromStringRes(activity)
+    activity.title = getTitle(recentlyPlayedActivityIntentExtras)
     val binding =
       DataBindingUtil.setContentView<RecentlyPlayedActivityBinding>(
         activity,
@@ -24,11 +26,11 @@ class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: 
       (activity as RecentlyPlayedActivity).finish()
     }
 
-    binding.recentlyPlayedToolbar.title = recentlyPlayedTitleEnum.getTitleFromStringRes(activity)
+    binding.recentlyPlayedToolbar.title = getTitle(recentlyPlayedActivityIntentExtras)
     if (getRecentlyPlayedFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.recently_played_fragment_placeholder,
-        RecentlyPlayedFragment.newInstance(internalProfileId),
+        RecentlyPlayedFragment.newInstance(recentlyPlayedActivityIntentExtras.profileId.internalId),
         RecentlyPlayedFragment.TAG_RECENTLY_PLAYED_FRAGMENT
       ).commitNow()
     }
@@ -38,5 +40,21 @@ class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: 
     return activity.supportFragmentManager.findFragmentById(
       R.id.recently_played_fragment_placeholder
     ) as RecentlyPlayedFragment?
+  }
+
+  private fun getTitle(
+    recentlyPlayedActivityIntentExtras: RecentlyPlayedActivityIntentExtras
+  ): String {
+    return when (recentlyPlayedActivityIntentExtras.activityTitle) {
+      RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES -> {
+        activity.getString(R.string.recently_played_activity_title)
+      }
+      RecentlyPlayedActivityTitle.STORIES_FOR_YOU -> {
+        activity.getString(R.string.stories_for_you)
+      }
+      else -> {
+        activity.getString(R.string.recently_played_activity_title)
+      }
+    }
   }
 }

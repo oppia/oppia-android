@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package model;
+
+import "profile.proto";
+
+option java_package = "org.oppia.app.model";
+option java_multiple_files = true;
+
+message DestinationScreen {
+  oneof destination_screen {
+    RecentlyPlayedActivityIntentExtras recently_played_activity_intent_extras = 1;
+  }
+}
+
+message RecentlyPlayedActivityIntentExtras{
+  ProfileId profileId = 1;
+  RecentlyPlayedActivityTitle activity_title = 2;
+}
+
+enum RecentlyPlayedActivityTitle {
+  UNSPECIFIED = 0;
+
+  RECENTLY_PLAYED_STORIES = 1;
+
+  STORIES_FOR_YOU = 2;
+}
