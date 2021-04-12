@@ -3,7 +3,6 @@ package org.oppia.android.app.topic.info
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -29,7 +28,6 @@ import javax.inject.Inject
 /** The presenter for [TopicInfoFragment]. */
 @FragmentScope
 class TopicInfoFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicInfoViewModel>,
   private val logger: ConsoleLogger,
@@ -59,7 +57,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
       it.viewModel = topicInfoViewModel
     }
     binding.skillsRecyclerView.apply {
-      adapter = createRecyclerViewAdapter()
+      adapter = createSkillRecyclerViewAdapter()
     }
     binding.topicInfoStorySummaryRecyclerView.apply {
       this!!.adapter = createStoryRecyclerViewAdapter()
@@ -101,7 +99,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
       ).build()
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<TopicInfoSkillItemViewModel> {
+  private fun createSkillRecyclerViewAdapter(): BindableAdapter<TopicInfoSkillItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
       .newBuilder<TopicInfoSkillItemViewModel>()
       .registerViewDataBinderWithSameModelType(
@@ -185,7 +183,10 @@ class TopicInfoFragmentPresenter @Inject constructor(
             TopicInfoChapterItemViewModel(index, chapterSummary.name)
           }
         )
-        TopicInfoStoryItemViewModel(storySummary, topicStoryChapterList)
+        val newTopicStoryChapterList = ArrayList<TopicInfoChapterItemViewModel>()
+        newTopicStoryChapterList.addAll(topicStoryChapterList)
+        topicStoryChapterList.clear()
+        TopicInfoStoryItemViewModel(storySummary, newTopicStoryChapterList)
       }
     )
     return topicStoryList
