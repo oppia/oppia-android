@@ -533,6 +533,21 @@ class OnboardingFragmentTest {
     }
   }
 
+
+  @Test
+  fun testOnboardingFragment_configChange_nextArrowIcon_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.onboarding_fragment_next_image_view)).check(
+        matches(
+          withContentDescription(
+            R.string.next_arrow
+          )
+        )
+      )
+    }
+  }
+
   private fun scrollToPosition(position: Int): ViewAction {
     return object : ViewAction {
       override fun getDescription(): String {
