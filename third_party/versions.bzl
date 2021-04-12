@@ -101,6 +101,9 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd",
         "version": "2.28.1",
     },
+    "protobuf_tools": {
+        "version": "3.11.0",
+    },
     "rules_java": {
         "sha": "220b87d8cfabd22d1c6d8e3cdb4249abd4c93dcc152e0667db061fb1b957ee68",
         "version": "0.1.1",
@@ -116,9 +119,6 @@ HTTP_DEPENDENCY_VERSIONS = {
     "rules_proto": {
         "sha": "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",
         "version": "97d8af4dc474595af3900dd85cb3a29ad28cc313",
-    },
-    "protobuf_tools": {
-        "version": "3.11.0",
     },
 }
 

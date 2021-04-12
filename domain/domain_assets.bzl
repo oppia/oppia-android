@@ -2,10 +2,13 @@
 Macros for preparing & creating assets to include in the domain module.
 """
 
+load("@rules_proto//proto:defs.bzl", "ProtoInfo")
+
 def _extract_proto_sources(deps):
     """
-    Returns the list of proto source files that make up the input list of proto dependencies
-    (including transitive dependencies).
+    Returns the list of proto source files that make up the specified list of proto dependencies.
+
+    The returned list includes transitive dependencies.
     """
 
     # See https://github.com/bazelbuild/rules_proto/pull/77/files &
@@ -53,7 +56,6 @@ def _gen_binary_proto_from_text_impl(ctx):
 # never need to be checked into the repository.
 _gen_binary_proto_from_text = rule(
     attrs = {
-        "proto_type_name": attr.string(mandatory = True),
         "input_file": attr.label(
             allow_files = True,
             mandatory = True,
@@ -65,6 +67,7 @@ _gen_binary_proto_from_text = rule(
             allow_empty = False,
             mandatory = True,
         ),
+        "proto_type_name": attr.string(mandatory = True),
         "_protoc_tool": attr.label(
             # This was partly inspired by https://stackoverflow.com/a/39138074.
             executable = True,
@@ -102,14 +105,15 @@ def gen_binary_proto_from_text(name, proto_type_name, input_file, output_file, p
     )
     return output_file
 
-def _generate_single_asset_proto_binary(name, proto_dep_name, proto_type_name):
+def _generate_single_asset_proto_binary(name, proto_file_name, proto_dep_name, proto_type_name):
     """
     Converts a single asset text proto to a new binary asset.
 
     Args:
-        name: str. The file name of the text proto under the assets directory that will be
-            converted. This is assuming to correspond to 'src/main/assets/<name>.textproto' and will
-            lead to a new generated file called 'src/main/assets/<name>.pb'.
+        name: str. The name of this target.
+        proto_file_name: str. The file name of the text proto under the assets directory that will
+            be converted. This is assuming to correspond to 'src/main/assets/<name>.textproto' and
+            will lead to a new generated file called 'src/main/assets/<name>.pb'.
         proto_dep_name: str. The name of the proto library under //model that contains the proto
             definition being converted to binary.
         proto_type_name: str. The name of the proto type being converted in the text proto. This is
@@ -121,15 +125,15 @@ def _generate_single_asset_proto_binary(name, proto_dep_name, proto_type_name):
     asset_dir = "src/main/assets"
     return gen_binary_proto_from_text(
         name = "generate_binary_proto_for_text_proto_%s" % name,
-        input_file = "%s/%s.textproto" % (asset_dir, name),
-        output_file = "%s/%s.pb" % (asset_dir, name),
+        input_file = "%s/%s.textproto" % (asset_dir, proto_file_name),
+        output_file = "%s/%s.pb" % (asset_dir, proto_file_name),
         proto_deps = [
             "//model:%s_proto" % proto_dep_name,
         ],
         proto_type_name = "model.%s" % proto_type_name,
     )
 
-def _generate_proto_binary_assets(names, proto_dep_name, proto_type_name):
+def _generate_proto_binary_assets(names, proto_dep_name, proto_type_name, name_prefix):
     """
     Converts a list of text proto assets to binary.
 
@@ -138,13 +142,15 @@ def _generate_proto_binary_assets(names, proto_dep_name, proto_type_name):
             be converted.
         proto_dep_name: str. See _generate_single_asset_proto_binary.
         proto_type_name: str. See _generate_single_asset_proto_binary.
+        name_prefix: str. A prefix to attach to the name of this target.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.
     """
     return [
         _generate_single_asset_proto_binary(
-            name = name,
+            name = "%s_%s" % (name_prefix, name),
+            proto_file_name = name,
             proto_dep_name = proto_dep_name,
             proto_type_name = proto_type_name,
         )
@@ -152,6 +158,7 @@ def _generate_proto_binary_assets(names, proto_dep_name, proto_type_name):
     ]
 
 def generate_assets_list_from_text_protos(
+        name,
         topic_list_file_names,
         topic_file_names,
         subtopic_file_names,
@@ -162,12 +169,13 @@ def generate_assets_list_from_text_protos(
     Converts multiple lists of text proto assets to binary.
 
     Args:
+        name: str. The name of this generation instance. This will be a prefix for derived targets.
         topic_list_file_names: list of str. The list of topic list file names.
         topic_file_names: list of str. The list of topic file names.
         subtopic_file_names: list of str. The list of subtopic file names.
         story_file_names: list of str. The list of story file names.
         skills_file_names: list of str. The list of skills/concept card list file names.
-        exploration_file_name: list of str. The list of exploration file names.
+        exploration_file_names: list of str. The list of exploration file names.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.
@@ -176,24 +184,30 @@ def generate_assets_list_from_text_protos(
         names = topic_list_file_names,
         proto_dep_name = "topic",
         proto_type_name = "TopicIdList",
+        name_prefix = name,
     ) + _generate_proto_binary_assets(
         names = topic_file_names,
         proto_dep_name = "topic",
         proto_type_name = "TopicRecord",
+        name_prefix = name,
     ) + _generate_proto_binary_assets(
         names = subtopic_file_names,
         proto_dep_name = "topic",
         proto_type_name = "SubtopicRecord",
+        name_prefix = name,
     ) + _generate_proto_binary_assets(
         names = story_file_names,
         proto_dep_name = "topic",
         proto_type_name = "StoryRecord",
+        name_prefix = name,
     ) + _generate_proto_binary_assets(
         names = skills_file_names,
         proto_dep_name = "topic",
         proto_type_name = "ConceptCardList",
+        name_prefix = name,
     ) + _generate_proto_binary_assets(
         names = exploration_file_names,
         proto_dep_name = "exploration",
         proto_type_name = "Exploration",
+        name_prefix = name,
     )

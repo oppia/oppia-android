@@ -3,7 +3,6 @@ Macros for domain module tests.
 """
 
 load("//:oppia_android_test.bzl", "oppia_android_module_level_test")
-load("//domain:domain_assets.bzl", "generate_assets_list_from_text_protos")
 
 # TODO(#1620): Remove module-specific test macros once Gradle is removed
 def domain_test(name, filtered_tests, deps):
