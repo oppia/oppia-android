@@ -258,7 +258,7 @@
           android:fontFamily="sans-serif"
           android:text="@string/topic_info_download_to_play"
           android:textColor="@color/white"
-          android:textSize="16dp"
+          android:textSize="16sp"
           app:layout_constraintBottom_toBottomOf="@+id/download_image_view"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="@+id/download_image_view" />
