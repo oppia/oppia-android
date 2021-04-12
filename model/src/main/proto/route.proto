@@ -18,6 +18,7 @@ message DestinationScreen {
 message RecentlyPlayedActivityIntentExtras{
   // The ID of current profile.
   ProfileId profileId = 1;
+  
   // The title which should be displayed for the activity.
   RecentlyPlayedActivityTitle activity_title = 2;
 }
