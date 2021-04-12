@@ -170,6 +170,28 @@ class PinPasswordActivityTest {
   }
 
   @Test
+  fun testPinPassword_configChange_pinView_hasContentDescription() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.input_pin)).check(
+        matches(
+          withContentDescription(
+            context.resources.getString(
+              R.string.enter_your_pin
+            )
+          )
+        )
+      )
+    }
+  }
+
+  @Test
   fun testPinPassword_withAdmin_inputCorrectPin_opensHomeActivity() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
