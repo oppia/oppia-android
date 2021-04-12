@@ -37,6 +37,7 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
 import org.oppia.android.app.model.UserSuppliedFeedback
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
@@ -63,7 +64,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Qualifier
@@ -102,8 +102,11 @@ class FeedbackReportManagementControllerTest {
   @Captor
   lateinit var reportStoreResultCaptor: ArgumentCaptor<AsyncResult<FeedbackReportingDatabase>>
 
-  @Inject
-  lateinit var mockWebServer: MockWebServer
+  private lateinit var retrofit: Retrofit
+
+  private lateinit var mockWebServer: MockWebServer
+
+  private lateinit var client: OkHttpClient
 
   private val languageSuggestionText = "french"
 
@@ -145,7 +148,6 @@ class FeedbackReportManagementControllerTest {
   fun setUp() {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
-    setUpRetrofit()
     setUpFakeLogcatFile()
     MockitoAnnotations.initMocks(this)
   }
@@ -276,21 +278,6 @@ class FeedbackReportManagementControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun setUpRetrofit() {
-//    mockWebServer = MockWebServer()
-//    client = OkHttpClient.Builder()
-//      .addInterceptor(remoteAuthNetworkInterceptor)
-//      .build()
-//
-//    retrofit = retrofit2.Retrofit.Builder()
-//      .baseUrl(mockWebServer.url("/"))
-//      .addConverterFactory(MoshiConverterFactory.create())
-//      .client(client)
-//      .build()
-//
-//    topicService = retrofit.create(TopicService::class.java)
-  }
-
   private fun setUpFakeLogcatFile() {
     // Creates a fake logcat file in this directory so that the controller being tested has a file to
     // read when recording the logcat events.
@@ -305,41 +292,6 @@ class FeedbackReportManagementControllerTest {
     val adapter: JsonAdapter<GaeFeedbackReport> = moshi.adapter(GaeFeedbackReport::class.java)
     val mockGaeFeedbackReport = adapter.fromJson(feedbackReportJson)
     return mockGaeFeedbackReport!!
-  }
-
-  @Qualifier
-  annotation class OppiaRetrofit
-
-  // TODO(#89): Move this to a common test application component.
-  @Module
-  class TestNetworkModule {
-    @Provides
-    @Singleton
-    fun provideMockWebServer(): MockWebServer {
-      return MockWebServer()
-    }
-
-    @OppiaRetrofit
-    @Provides
-    @Singleton
-    fun providRetrofitInstance(mockWebServer: MockWebServer): Retrofit {
-      val client = OkHttpClient.Builder()
-        .build()
-
-      return retrofit2.Retrofit.Builder()
-        .baseUrl(mockWebServer.url("/"))
-        .addConverterFactory(MoshiConverterFactory.create())
-        .client(client)
-        .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideFeedbackReportingService(
-      @OppiaRetrofit retrofit: Retrofit
-    ): FeedbackReportingService {
-      return retrofit.create(FeedbackReportingService::class.java)
-    }
   }
 
   @Module
@@ -375,12 +327,27 @@ class FeedbackReportManagementControllerTest {
     fun provideExceptionLogStorageCacheSize(): Int = 2
   }
 
+  @Qualifier
+  annotation class OppiaRetrofit
+
+  // TODO(#89): Move this to a common test application component.
+  @Module
+  class TestNetworkModule {
+    @Provides
+    @Singleton
+    fun provideFeedbackReportingService(
+      @OppiaRetrofit retrofit: Retrofit
+    ): FeedbackReportingService {
+      return retrofit.create(FeedbackReportingService::class.java)
+    }
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, TestLogStorageModule::class, TestNetworkModule::class,
+      TestDispatcherModule::class, TestLogStorageModule::class, NetworkModule::class,
       FakeOppiaClockModule::class, FeedbackReportingModule::class
     ]
   )

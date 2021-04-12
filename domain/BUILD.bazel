@@ -63,6 +63,7 @@ TEST_DEPS = [
     ":interaction_object_test_builder",
     ":testing",
     "//data:persistent_cache_store",
+    "//data:prod_module",
     "//model",
     "//testing",
     "//third_party:androidx_arch_core_core-testing",
