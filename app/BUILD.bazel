@@ -301,7 +301,6 @@ VIEW_MODELS = [
 VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
-    "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
     "src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt",
 ]
 
@@ -512,6 +511,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//model",
+        "//model:question_java_proto_lite",
         "//model:topic_java_proto_lite",
         "//third_party:androidx_recyclerview_recyclerview",
     ],

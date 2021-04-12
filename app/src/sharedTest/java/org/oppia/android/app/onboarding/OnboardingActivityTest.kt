@@ -1,15 +1,16 @@
-package org.oppia.android.app.databinding
+package org.oppia.android.app.onboarding
 
 import android.app.Application
 import android.content.Context
-import android.widget.ImageView
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -20,7 +21,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -54,65 +54,54 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [ImageViewBindingAdapters]. */
+/** Tests for [OnboardingActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(
-  application = ImageViewBindingAdaptersTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
-)
-class ImageViewBindingAdaptersTest {
+@Config(application = OnboardingActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
+class OnboardingActivityTest {
 
-  // TODO(#3059): Add more tests for other BindableAdapters present in [ImageViewBindingAdapters].
+  @get:Rule
+  val activityTestRule: ActivityTestRule<OnboardingActivity> = ActivityTestRule(
+    OnboardingActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
-  private val context: Context = ApplicationProvider.getApplicationContext<TestApplication>()
-
-  lateinit var imageView: ImageView
+  @Inject
+  lateinit var context: Context
 
   @Before
   fun setUp() {
-    imageView = ImageView(context)
+    setUpTestApplicationComponent()
   }
 
   @Test
-  fun testSetImageDrawableWithChapterPlayState_completedState_hasCorrectDrawable() {
-    ImageViewBindingAdapters.setImageDrawable(imageView, ChapterPlayState.COMPLETED)
-    verifyIfDrawableMatches(R.drawable.circular_solid_color_primary_32dp)
+  fun testOnboardingActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createOnboardingActivity())
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.onboarding_activity_title))
   }
 
-  @Test
-  fun testSetImageDrawableWithChapterPlayState_notStartedState_hasCorrectDrawable() {
-    ImageViewBindingAdapters.setImageDrawable(imageView, ChapterPlayState.NOT_STARTED)
-    verifyIfDrawableMatches(R.drawable.circular_stroke_2dp_color_primary_32dp)
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  @Test
-  fun testSetImageDrawableWithChapterPlayState_startedNotCompletedState_hasCorrectDrawable() {
-    ImageViewBindingAdapters.setImageDrawable(imageView, ChapterPlayState.STARTED_NOT_COMPLETED)
-    verifyIfDrawableMatches(R.drawable.circular_stroke_2dp_color_primary_32dp)
-  }
-
-  @Test
-  fun testSetImageDrawableWithChapterPlayState_notPlayableState_hasCorrectDrawable() {
-    ImageViewBindingAdapters.setImageDrawable(
-      imageView,
-      ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+  private fun createOnboardingActivity(): Intent {
+    return OnboardingActivity.createOnboardingActivity(
+      ApplicationProvider.getApplicationContext()
     )
-    verifyIfDrawableMatches(R.drawable.circular_stroke_1dp_grey_32dp)
   }
 
-  private fun verifyIfDrawableMatches(drawableResId: Int) {
-    val drawable = imageView.drawable
-    val expectedDrawable = ContextCompat.getDrawable(context, drawableResId)
-    assertThat(drawable.constantState).isEqualTo(expectedDrawable?.constantState)
-  }
-
+  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, TestDispatcherModule::class, ApplicationModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -127,23 +116,22 @@ class ImageViewBindingAdaptersTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(imageViewBindingAdaptersTest: ImageViewBindingAdaptersTest)
+    fun inject(onboardingActivityTest: OnboardingActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerImageViewBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerOnboardingActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(imageViewBindingAdaptersTest: ImageViewBindingAdaptersTest) {
-      component.inject(imageViewBindingAdaptersTest)
+    fun inject(onboardingActivityTest: OnboardingActivityTest) {
+      component.inject(onboardingActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
