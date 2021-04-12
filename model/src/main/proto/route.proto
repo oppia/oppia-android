@@ -4,7 +4,7 @@ package model;
 
 import "profile.proto";
 
-option java_package = "org.oppia.app.model";
+option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
 // Corresponds to intent extras of destination activity.

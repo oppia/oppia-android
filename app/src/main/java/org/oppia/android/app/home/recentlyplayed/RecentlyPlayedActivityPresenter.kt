@@ -4,9 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.databinding.RecentlyPlayedActivityBinding
-import org.oppia.app.model.RecentlyPlayedActivityIntentExtras
-import org.oppia.app.model.RecentlyPlayedActivityTitle
 import javax.inject.Inject
 
 /** The presenter for [RecentlyPlayedActivity]. */

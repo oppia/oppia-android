@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 import org.oppia.android.app.player.exploration.ExplorationActivity
-import org.oppia.app.model.RecentlyPlayedActivityIntentExtras
 import javax.inject.Inject
 
 /** Activity for recent stories. */

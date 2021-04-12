@@ -8,11 +8,11 @@ import org.oppia.android.app.activity.ActivityRouter
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
+import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
-import org.oppia.app.model.DestinationScreen
-import org.oppia.app.model.RecentlyPlayedActivityIntentExtras
-import org.oppia.app.model.RecentlyPlayedActivityTitle
 import javax.inject.Inject
 
 /** Activity to display profile progress. */
