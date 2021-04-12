@@ -532,7 +532,7 @@ class OnboardingFragmentTest {
       )
     }
   }
-  
+
   @Test
   fun testOnboardingFragment_configChange_nextArrowIcon_hasCorrectContentDescription() {
     launch(OnboardingActivity::class.java).use {
