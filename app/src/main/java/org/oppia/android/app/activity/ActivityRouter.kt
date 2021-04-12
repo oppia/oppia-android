@@ -7,7 +7,10 @@ import org.oppia.app.model.DestinationScreen.DestinationScreenCase.RECENTLY_PLAY
 import org.oppia.app.model.RecentlyPlayedActivityIntentExtras
 import javax.inject.Inject
 
+/** Central utility to manage routing to different activities. */
 class ActivityRouter @Inject constructor(private val activity: AppCompatActivity) {
+
+  /** Checks the value of [DestinationScreen] and routes to different activities accordingly. */
   fun routeToScreen(destinationScreen: DestinationScreen) {
     if (destinationScreen.destinationScreenCase == RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS) {
       openRecentlyPlayedActivity(destinationScreen.recentlyPlayedActivityIntentExtras)
