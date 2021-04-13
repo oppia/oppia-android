@@ -166,7 +166,7 @@ class ExplorationActivityTest {
     }
   }
 
-  // TODO(#163): Fill in remaining tests for this activity.
+  // TODO(#388): Fill in remaining tests for this activity.
   @get:Rule
   var explorationActivityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
     ExplorationActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
