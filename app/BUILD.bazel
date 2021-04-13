@@ -489,6 +489,7 @@ android_library(
         ":views",
         "//model",
         "//model:interaction_object_java_proto_lite",
+        "//model:thumbnail_java_proto_lite",
         "//third_party:androidx_annotation_annotation",
         "//third_party:androidx_constraintlayout_constraintlayout",
         "//third_party:androidx_core_core",
@@ -518,6 +519,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//model",
+        "//model:question_java_proto_lite",
         "//model:topic_java_proto_lite",
         "//third_party:androidx_recyclerview_recyclerview",
     ],
@@ -600,6 +602,7 @@ android_library(
         ":resources",
         ":view_models",
         "//model",
+        "//model:thumbnail_java_proto_lite",
         "//third_party:androidx_annotation_annotation",
         "//third_party:androidx_constraintlayout_constraintlayout",
         "//third_party:androidx_lifecycle_lifecycle-livedata-core",
