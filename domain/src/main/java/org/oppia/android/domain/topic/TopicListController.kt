@@ -64,7 +64,6 @@ val STORY_THUMBNAILS = mapOf(
   RATIOS_STORY_ID_0 to createStoryThumbnail1(),
   RATIOS_STORY_ID_1 to createStoryThumbnail2(),
   TEST_STORY_ID_0 to createStoryThumbnail3(),
-  TEST_STORY_ID_1 to createStoryThumbnail4(),
   TEST_STORY_ID_2 to createStoryThumbnail5()
 )
 val EXPLORATION_THUMBNAILS = mapOf(

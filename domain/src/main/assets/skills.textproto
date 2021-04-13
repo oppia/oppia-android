@@ -1,0 +1,264 @@
+concept_cards {
+  skill_id: "test_skill_id_0"
+  skill_description: "An important skill"
+  explanation {
+    html: "Hello. Welcome to Oppia."
+    content_id: "explanation"
+  }
+  worked_example {
+    html: "This is the first example."
+    content_id: "test_skill_content_id_1"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+      voiceover_mapping {
+        key: "es"
+        value {
+          file_size_bytes: 456
+          file_name: "fake_spanish_xlated_explanation.mp3"
+        }
+      }
+    }
+  }
+  recorded_voiceover {
+    key: "test_skill_content_id_1"
+    value {
+      voiceover_mapping {
+        key: "es"
+        value {
+          file_size_bytes: 456
+          file_name: "fake_spanish_xlated_example.mp3"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+      translation_mapping {
+        key: "es"
+        value {
+          html: "Hola. Bienvenidos a Oppia."
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "test_skill_content_id_1"
+    value {
+      translation_mapping {
+        key: "es"
+        value {
+          html: "Este es el primer ejemplo trabajado."
+        }
+      }
+    }
+  }
+}
+concept_cards {
+  skill_id: "test_skill_id_1"
+  skill_description: "Another important skill"
+  explanation {
+    html: "Explanation with <b>rich text</b>."
+    content_id: "explanation"
+  }
+  worked_example {
+    html: "Worked example with <i>rich text</i>."
+    content_id: "worked_example_1"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  recorded_voiceover {
+    key: "worked_example_1"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+    }
+  }
+  written_translation {
+    key: "worked_example_1"
+    value {
+    }
+  }
+}
+concept_cards {
+  skill_id: "test_skill_id_2"
+  skill_description: "A different skill in a different topic"
+  explanation {
+    html: "Explanation without rich text."
+    content_id: "explanation"
+  }
+  worked_example {
+    html: "Worked example without rich text."
+    content_id: "worked_example_1"
+  }
+  worked_example {
+    html: "Second worked example."
+    content_id: "worked_example_2"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  recorded_voiceover {
+    key: "worked_example_1"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+    }
+  }
+  written_translation {
+    key: "worked_example_1"
+    value {
+    }
+  }
+}
+concept_cards {
+  skill_id: "test_skill_id_3"
+  skill_description: "Another important skill 4"
+  explanation {
+    html: "The content for test skill id 3. This is a dummy skill content."
+    content_id: "explanation"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  recorded_voiceover {
+    key: "worked_example_1"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+    }
+  }
+  written_translation {
+    key: "worked_example_1"
+    value {
+    }
+  }
+}
+concept_cards {
+  skill_id: "5RM9KPfQxobH"
+  skill_description: "Given a picture divided into unequal parts, write the fraction."
+  explanation {
+    html: "<p>First, divide the picture into equal parts, so that you can figure out what the denominator (the total number of parts) is.<br>\n<br>\nThen, count the number of equal parts that are shaded/selected. That is the numerator of the fraction.</p>"
+    content_id: "explanation"
+  }
+  worked_example {
+    html: "<p>[Show a picture of a square, divided into quarters, except that two of the quarters are joined to form a single larger \"1/2\" rectangle. One of the quarters is shaded.]</p>\n\n<p>What fraction of this picture is shaded?<br>\n<br>\nAnswer: First, we must divide the picture into equal parts. We can divide the square into four equal parts, like this: [Show picture of square divided into quarters, with the same shading].<br>\n<br>\nNow, there are 4 equal parts and only 1 is shaded, so the fraction shown is <strong>1/4</strong>.</p>"
+    content_id: "worked_example_1"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  recorded_voiceover {
+    key: "worked_example_1"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+    }
+  }
+  written_translation {
+    key: "worked_example_1"
+    value {
+    }
+  }
+}
+concept_cards {
+  skill_id: "UxTGIJqaHMLa"
+  skill_description: "Identify the numerator and denominator of a fraction."
+  explanation {
+    html: "<p>The numerator is the number at the \"top\" of the fraction. It counts (\"enumerates\") how many pieces the fraction represents.<br>\n<br>\nThe denominator is the number at the \"bottom\" of the fraction. It names (\"denominates\") the size of each piece.<br>\n<br>\nFor example, in 2/3, the numerator is 2 and the denominator is 3.</p>"
+    content_id: "explanation"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+    }
+  }
+}
+concept_cards {
+  skill_id: "B39yK4cbHZYI"
+  skill_description: "Explain the conceptual meaning of the terms \"numerator\" and \"denominator\"."
+  explanation {
+    html: "<p>The numerator is the number at the \"top\" of the fraction. It counts (\"enumerates\") how many pieces the fraction represents.<br>\n<br>\nThe denominator is the number at the \"bottom\" of the fraction. It names (\"denominates\") what the size of each piece is, based on how many equal parts the \"whole\" is divided into.</p>"
+    content_id: "explanation"
+  }
+  worked_example {
+    html: "<p>What does the <strong>denominator</strong>&nbsp;of a fraction represent?</p>\n\n<ul>\n\t<li>The total number of parts</li>\n\t<li>The number of unselected parts</li>\n\t<li>The number of selected parts</li>\n</ul>\n\n<p><br>\nAnswer: <strong>The total number of parts</strong>. (The \"denominator\" specifies the total number of parts in the whole, in order to explain what the size of each part is.)</p>"
+    content_id: "worked_example_1"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  recorded_voiceover {
+    key: "worked_example_1"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+    }
+  }
+  written_translation {
+    key: "worked_example_1"
+    value {
+    }
+  }
+}
+concept_cards {
+  skill_id: "NGZ89uMw0IGV"
+  skill_description: "Derive a ratio from a description or a picture"
+  explanation {
+    html: "<p>A ratio represents a relative relationship between two or more amounts. To write a ratio, start by writing these amounts, separating them by a colon. Remember that the order matters!</p><p>For example, let\'s say you have 9 apples and 6 pears. You can write the ratio of apples to pears as <b> 9 : 6.</b></p>If, instead, you have 3 pears, 5 apples and 9 bananas, you can write the ratio of apples to bananas to pears as <b>5 : 9 : 3.</b> Notice that the order of items in the ratio follows the order that was asked for."
+    content_id: "explanation"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  recorded_voiceover {
+    key: "worked_example_1"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+    }
+  }
+  written_translation {
+    key: "worked_example_1"
+    value {
+    }
+  }
+}
