@@ -27,13 +27,13 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
       - name: "[PLEASE READ] Branch is not based on develop"
-        if: ${{ github.base_ref != 'develop' && !startsWith(github.base_ref, "release-") }}
+        if: ${{ github.base_ref != 'develop' && !startsWith(github.base_ref, 'release-') }}
         run: |
           echo "Note: this check is expected to fail for chained PRs so that they can't accidentally be merged. PRs should only ever be merged directly into develop."
           exit 1
 
       - name: "Branch verified as based on develop/release branch"
-        if: ${{ github.base_ref == 'develop' || startsWith(github.base_ref, "release-") }}
+        if: ${{ github.base_ref == 'develop' || startsWith(github.base_ref, 'release-') }}
         run: |
           echo "Branch is correctly branched off of valid branch to merge PRs into: $BASE_BRANCH"
         env:
