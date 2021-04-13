@@ -37,9 +37,7 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
 import org.oppia.android.app.model.UserSuppliedFeedback
-import org.oppia.android.data.backends.gae.NetworkInterceptorTest
 import org.oppia.android.data.backends.gae.NetworkModule
-import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
@@ -64,10 +62,8 @@ import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import retrofit2.Retrofit
 import java.io.File
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 // Timestamp in sec for 3/2/21, 12:38pm GMT.
@@ -102,7 +98,6 @@ class FeedbackReportManagementControllerTest {
 
   @Captor
   lateinit var reportStoreResultCaptor: ArgumentCaptor<AsyncResult<FeedbackReportingDatabase>>
-
 
   private lateinit var mockWebServer: MockWebServer
 
